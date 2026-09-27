@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -25,7 +25,18 @@ export const metadata: Metadata = {
     template: "%s · Kadence",
   },
   description:
-    "Open source project tool that keeps small projects up to date. Part of the Haij family.",
+    "Open source training planning for young cyclists, their coaches and their parents. Part of the Haij family.",
+  applicationName: "Kadence",
+  appleWebApp: { capable: true, title: "Kadence", statusBarStyle: "default" },
+  icons: { apple: "/apple-touch-icon.png" },
+};
+
+/** The browser's own chrome in 2a's paper, light and dark (src/app/theme.css). */
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f7f5f1" },
+    { media: "(prefers-color-scheme: dark)", color: "#141210" },
+  ],
 };
 
 export function generateStaticParams() {

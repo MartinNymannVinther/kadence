@@ -19,7 +19,8 @@
       "copy": "Copy link",
       "copied": "Copied",
       "noMail": "Kadence sends no e-mail. Copy the link and send it yourself by text or e-mail. It only works for that address."
-    }
+    },
+    "rider": "Rider"
   },
   "landing": {
     "nav": {
@@ -165,7 +166,9 @@
       "today": "Today",
       "calendar": "Calendar",
       "riders": "Riders",
-      "library": "Library"
+      "library": "Library",
+      "season": "Season",
+      "parents": "Parents"
     },
     "orgSwitcher": {
       "label": "Workspace",
@@ -270,7 +273,8 @@
       "ai": "AI",
       "data": "Data",
       "team": "Team",
-      "me": "Me"
+      "me": "Me",
+      "devices": "Devices"
     },
     "access": {
       "title": "Access to this installation",
@@ -493,7 +497,7 @@
       "weight": "Allow weight for riders under 19",
       "weightHint": "Off by default. A focus on weight and W/kg can lead to low energy availability and eating disorders in young people, as Team Danmark's ATK warns. Only turn it on for a good reason.",
       "ai": "May the AI read the riders' data",
-      "aiHint": "Off by default. The riders' training and check-ins are health data about young people. The AI arrives later, and it may only read them if you turn it on here. It never writes anything itself.",
+      "aiHint": "Off by default. The riders' training and check-ins are health data about young people. If you turn it on, the AI may read them when a coach asks for a week proposal or a summary of who needs attention. It never writes anything itself.",
       "on": "On",
       "off": "Off"
     }
@@ -608,6 +612,34 @@
       "parents": {
         "title": "Parents",
         "body": "The coach adds a parent and sends a link. The parent sees nothing until the rider has confirmed the link under Settings → Me. The rider also decides whether the parents can see the training, and whether they can see how the rider is doing. From the year the rider turns 18, the rider confirms again as an adult."
+      },
+      "season": {
+        "title": "The season plan and DCU",
+        "body": "The season runs from October to September. The plan is filled with DCU's hours for the rider's class (U17, U19 or U23 and the year in it), month by month, with DCU's phases: break and free riding in October, distance in November and December, long base intervals in January and February, short hard intervals around March, and the racing season from April. The coach and the rider can change anything, but DCU's numbers and the deviation always stand beside it. Only hours on the bike count. Kadence's seven zones are Kadence's own; DCU's heart-rate bands are shown beside them for comparison."
+      },
+      "load": {
+        "title": "Load: fitness, fatigue and freshness",
+        "body": "Every session gets a load. With a power meter it is worked out from power, otherwise from heart rate, and otherwise from how hard the session felt (RPE from 1 to 10) times the minutes. The last works for every session, strength too. An hour at threshold counts 100, and an easy hour at RPE 3 about 17. Fitness is what the last six weeks have built. Fatigue is what the last week has cost. Freshness is fitness minus fatigue: above zero you are rested, below zero tired, and a little below zero is normal in the middle of a training week."
+      },
+      "warnings": {
+        "title": "Warnings",
+        "body": "Kadence shows the coach when a week goes past the limits, but does not decide. The warnings are: hours on the bike above or below DCU's range for the week, more than 15 % more hours than the last weeks, a ride longer than DCU's limit (U17 at most 4 hours or 120 km, U19 at most 5 hours or 150 km), strength sessions less than 48 hours apart, too little sleep, pain on ATK's pain ladder, and check-ins in the yellow or red zone. Each warning has a word for how much it matters: \"Act now\", \"Take a look\" or \"Good to know\"."
+      },
+      "checkin": {
+        "title": "Check-in and wellbeing zones",
+        "body": "Every morning the rider answers on sleep, energy, mood, fresh legs, calm and pain, and whether they are ill. The answers give a zone for the day: green, yellow or red. Kadence looks at the pattern over three weeks, not at one bad day. The zones build on Kolding Talent's wellbeing model from Team Danmark's guide for parents: when a rider is in the yellow zone for a while, rider, parent and coach have a talk within 14 days, and in the red zone professionals are involved. The coach sees check-ins; the parents only if the rider shares them. Kadence never diagnoses."
+      },
+      "devices": {
+        "title": "Uploads and devices",
+        "body": "Upload a FIT file from the bike computer, watch or trainer under Today, in the calendar or on the rider's page. Kadence reads the file itself, offline too, and puts the ride on the day's session when it fits. Every ride has its own page with curves, time in zones and best power. Wahoo and Garmin can be connected under Settings → Devices, so rides come in by themselves and sessions can be sent to the bike computer. They are US companies, and it is the rider's own choice. A bike session can also be downloaded as .zwo, .erg, .mrc or .fit."
+      },
+      "parentsPage": {
+        "title": "The parents' page",
+        "body": "Under Parents a parent sees their child's week, the form in words, the next race or exam and, if the child shares it, how things are going. The page also has the parents' guide: Team Danmark's and Kolding Talent's ten themes and nine pieces of advice, written briefly in Kadence's own words with links to the originals."
+      },
+      "ai": {
+        "title": "The AI",
+        "body": "The AI may propose, never decide. It can read a coach's shorthand like \"3x10 min Z4 / 5 min rest\" into steps (the rules manage most of it without any language model), propose a week for a rider, and write a short summary of who needs attention. Nothing goes in the calendar until a coach presses. It never writes to a rider and never deletes anything. Week proposals and the summary read the riders' data, so they only work if the team has turned on \"May the AI read the riders' data\" under Settings → Team. Without a language model everything else works as before."
       }
     }
   },
@@ -626,7 +658,11 @@
       "done": "Done",
       "doneTitle": "Well done! How did it go?",
       "open": "See the whole session",
-      "comments": "{count, plural, one {# comment} other {# comments}}"
+      "comments": "{count, plural, one {# comment} other {# comments}}",
+      "upload": "Upload a ride",
+      "uploadBody": "FIT files from your bike computer, watch or trainer. The ride lands on the day's session by itself.",
+      "form": "My form",
+      "formBody": "What your training looks like over the last 90 days."
     },
     "week": {
       "nothing": "Nothing planned"
@@ -672,7 +708,10 @@
     "generic": "Something went wrong. Try again.",
     "alreadyDone": "The session is already marked as done. Reload the page.",
     "alreadyInvited": "There is already an open link for that address. Copy the one that exists, or withdraw it under Settings → Workspace.",
-    "alreadyMember": "The person is already on the team."
+    "alreadyMember": "The person is already on the team.",
+    "youthWeight": "Weight is turned off for riders under 19. A coach can turn it on under Settings → Team.",
+    "not_connected": "There is no connection to end. Reload the page.",
+    "not_a_rider": "Only a rider can connect their own device."
   },
   "calendar": {
     "title": "Calendar",
@@ -710,7 +749,15 @@
     "totals": {
       "all": "Hours in total",
       "bike": "On the bike",
-      "of": "{done} of {planned} h"
+      "of": "{done} of {planned} h",
+      "corridor": "DCU's range",
+      "corridorValue": "{hours} h of {low}–{high} h",
+      "corridorNote": "Ridden and planned on the bike this week against DCU's range for {klass}: {state}.",
+      "state": {
+        "inside": "inside the range",
+        "over": "above the range",
+        "under": "below the range"
+      }
     },
     "actions": {
       "addSession": "Add session",
@@ -987,6 +1034,25 @@
       "restore": "Restore the rider",
       "restoreTitle": "Restore {name}?",
       "restoreBody": "The rider comes back in the lists and the calendar."
+    },
+    "season": "Season plan",
+    "sections": {
+      "week": "The week and wellbeing",
+      "form": "Form and hours",
+      "upload": "Upload a ride",
+      "uploadBody": "A ride from the rider's FIT file, if the rider has not uploaded it themselves.",
+      "profile": "Profile and thresholds"
+    },
+    "erase": {
+      "title": "Delete the rider and all data",
+      "body": "The rider, all training, all check-ins, measurements, comments and the audit trail's copies of them are deleted for good. Do it when the rider or the parents ask for it.",
+      "versusArchive": "Archiving hides the rider but keeps the history and can be undone. Deleting cannot be undone. If you want to keep anything, download the data first under Settings → Data.",
+      "button": "Delete the rider and all data",
+      "confirmTitle": "Delete {name} for good?",
+      "confirmBody": "It cannot be undone. Type the rider's name to confirm.",
+      "typeName": "Type \"{name}\"",
+      "confirm": "Delete for good",
+      "done": "{name} and all data are deleted."
     }
   },
   "session": {
@@ -1008,7 +1074,8 @@
       "note": "Note",
       "undo": "Undo done",
       "undoTitle": "Undo done?",
-      "undoBody": "The session is open again, and the time and rating that were entered disappear."
+      "undoBody": "The session is open again, and the time and rating that were entered disappear.",
+      "openActivity": "See the activity"
     },
     "notDoneYet": "Not done yet.",
     "comments": {
@@ -1039,7 +1106,41 @@
       "saved": "Well done! The session is done."
     },
     "doneTitle": "Done",
-    "commentsTitle": "{count, plural, =0 {Comments} one {# comment} other {# comments}}"
+    "commentsTitle": "{count, plural, =0 {Comments} one {# comment} other {# comments}}",
+    "export": {
+      "button": "Get for trainer/device",
+      "zwo": {
+        "label": "Zwift (.zwo)",
+        "hint": "Put the file in Zwift's workouts folder."
+      },
+      "erg": {
+        "label": "Trainer in watts (.erg)",
+        "hint": "Watts from the rider's FTP."
+      },
+      "mrc": {
+        "label": "Trainer in percent (.mrc)",
+        "hint": "Percent of FTP, for any trainer program."
+      },
+      "fit": {
+        "label": "Bike computer (.fit)",
+        "hint": "A workout Garmin, Wahoo and others can ride."
+      }
+    },
+    "push": {
+      "send": "Send to {name}",
+      "sending": "Sending …",
+      "sent": "The session is sent to {name}. It is on its day in the {name} calendar.",
+      "error": {
+        "not_bike": "Only bike sessions can be sent to a device.",
+        "no_steps": "The session has no steps to send. Build it in steps first.",
+        "not_connected": "The rider has not connected {name}.",
+        "reconnect": "The connection to {name} no longer works. The rider must connect again under Settings → Devices.",
+        "provider_permission": "{name} has not been allowed to receive sessions. The rider can allow it at {name} and connect again.",
+        "provider_error": "{name} did not accept the session. Try again in a moment.",
+        "not_configured": "{name} is not set up on this installation.",
+        "generic": "The session could not be sent to {name}. Try again."
+      }
+    }
   },
   "training": {
     "sport": {
@@ -1273,6 +1374,679 @@
       "setsReps": "{sets} × {reps}",
       "progression": "Progression",
       "rule": "{open, select, yes {{group}, from session {from}} other {{group}, sessions {from}–{to}}}: {sets} × {reps}"
+    }
+  },
+  "load": {
+    "title": "Form and load",
+    "fitness": "Fitness",
+    "fatigue": "Fatigue",
+    "form": "Freshness",
+    "explain": {
+      "fitness": "what the last six weeks of training have built. It rises slowly when you train steadily.",
+      "fatigue": "what the last week of training has cost. It rises fast after hard days and falls when you rest.",
+      "form": "fitness minus fatigue. Above zero you are rested, below zero you are tired, and a little below zero is quite normal in the middle of a training week."
+    },
+    "scale": "The numbers are Kadence's own scale: an hour of training at threshold counts 100. Sessions without a power meter count by heart rate or by how hard they felt (RPE).",
+    "chartLabel": "Fitness, fatigue and freshness over the last 90 days. Today: fitness {fitness}, fatigue {fatigue}, freshness {form}.",
+    "readout": "{date}: fitness {fitness} · fatigue {fatigue} · freshness {form}",
+    "hint": "Point at the chart, or use the arrow keys, to read a particular day.",
+    "empty": "No training in the last 90 days yet.",
+    "emptyBody": "The curve is drawn once sessions are done. Press \"Done\" after a session, or upload the ride.",
+    "table": "See the numbers",
+    "tableCaption": "Fitness, fatigue and freshness, one row per week",
+    "date": "Date",
+    "weeks": {
+      "title": "Hours on the bike per week",
+      "done": "Ridden",
+      "planned": "Planned for the rest of the week",
+      "corridor": "DCU's range",
+      "target": "DCU's target",
+      "label": "{count, plural, one {Hours on the bike in the last week against DCU's range.} other {Hours on the bike in the last # weeks against DCU's range.}}",
+      "weekShort": "w{week}",
+      "readoutDone": "Week {week}: {hours} h ridden",
+      "readoutPlanned": "{hours} h planned",
+      "readoutCorridor": "DCU's range {low}–{high} h"
+    },
+    "riderTitle": "Form and hours",
+    "trend": {
+      "title": "Form over the last weeks",
+      "up": "Fitness has risen over the last four weeks.",
+      "flat": "Fitness has held steady over the last four weeks.",
+      "down": "Fitness has dropped a little over the last four weeks. That is normal after a break or an easy spell.",
+      "rested": "Right now {name} is rested.",
+      "tired": "Right now {name} is a little tired after the last days' training. That is normal in a training week.",
+      "veryTired": "Right now {name} is quite tired. Sleep, food and rest help.",
+      "label": "Fitness over the last 90 days"
+    },
+    "formScale": "above 0 rested · below 0 tired"
+  },
+  "insight": {
+    "title": "Needs attention",
+    "subtitle": "From the week's hours, the check-ins and DCU's ranges. Suggestions for who to talk to, not rules.",
+    "riderTitle": "Warnings",
+    "noFlags": "No warnings this week.",
+    "allCalm": "No warnings this week. The team looks to be in balance.",
+    "othersCalm": "{count, plural, one {# more rider has no warnings.} other {# more riders have no warnings.}}",
+    "modelNote": "The wellbeing zones follow Kolding Talent's wellbeing model from Team Danmark's guide for parents: yellow for a while means a conversation between rider, parent and coach within 14 days, and red means professionals should be involved. Kadence never diagnoses.",
+    "basis": "{category} year {year}",
+    "severity": {
+      "alert": "Act now",
+      "warn": "Take a look",
+      "info": "Good to know"
+    },
+    "action": {
+      "talk": "Have a talk within 14 days",
+      "help": "Seek professional help"
+    },
+    "flag": {
+      "hours_above_corridor": "The week is {hours} h on the bike, ridden and planned, above DCU's range of {high} h for {klass}.",
+      "hours_below_corridor": "The week is {hours} h on the bike, ridden and planned, below DCU's range of at least {low} h for {klass}.",
+      "ramp": "The week is {hours} h on the bike, {percent} % more than the average of {average} h in the last weeks. More than {limit} % from week to week raises the risk of injury.",
+      "longest_ride": "The longest ride this week was {hours} h. DCU says at most {limitHours} h or {limitKm} km for the class.",
+      "longest_ride_km": "The longest ride this week was {hours} h and {km} km. DCU says at most {limitHours} h or {limitKm} km for the class.",
+      "strength_spacing": "The strength sessions on {first} and {second} are too close. DCU recommends at least 48 hours between them.",
+      "wellbeing_talk": "{days, plural, one {Check-ins in the yellow zone on # day in the last three weeks.} other {Check-ins in the yellow zone on # days in the last three weeks.}}",
+      "wellbeing_help_red": "A check-in in the red zone in the last seven days.",
+      "wellbeing_help_long": "{days, plural, one {Check-ins in the yellow zone three weeks running (# day).} other {Check-ins in the yellow zone three weeks running (# days).}}",
+      "pain_2": "Pain at step 2: when training starts and the next day. ATK says: cut training by at least half, skip races, and have a therapist look at it.",
+      "pain_3": "Pain at step 3: during training or in everyday life. ATK says: pause what hurts until a physiotherapist or doctor has looked at it.",
+      "sleep_short": "{nights, plural, one {Sleep has averaged {average} h over the last night, under {limit} h.} other {Sleep has averaged {average} h over the last # nights, under {limit} h.}}",
+      "sleep_below_minimum": "{nights, plural, one {Sleep has averaged {average} h over the last night. 14–17-year-olds need at least {minimum} h.} other {Sleep has averaged {average} h over the last # nights. 14–17-year-olds need at least {minimum} h.}}",
+      "compliance": "{red} of {judged} sessions this week have not gone as planned. Perhaps the plan does not fit the week.",
+      "signs": "Signs: {signs}"
+    },
+    "sign": {
+      "ill": "ill",
+      "pain": "pain",
+      "mood": "mood at rock bottom",
+      "low_answer": "one answer at the bottom",
+      "low_average": "low answers overall",
+      "short_sleep": "under 6 hours' sleep"
+    }
+  },
+  "wellbeing": {
+    "title": "Wellbeing",
+    "stripTitle": "Check-ins over the last 14 days",
+    "zone": {
+      "green": "Green",
+      "yellow": "Yellow",
+      "red": "Red"
+    },
+    "noCheckin": "No check-in",
+    "stripSummary": "Green: {green} · Yellow: {yellow} · Red: {red}",
+    "hidden": "The rider does not share how they are doing with their parents.",
+    "none": "No check-ins in the last 14 days."
+  },
+  "checkin": {
+    "title": "How are you?",
+    "body": "A minute in the morning. Your answers help you and your coach see whether training fits the rest of life.",
+    "sleep": "How many hours did you sleep last night?",
+    "hours": "hours",
+    "less": "Less sleep",
+    "more": "More sleep",
+    "scales": {
+      "sleepQuality": {
+        "label": "How well did you sleep?",
+        "low": "Really badly",
+        "high": "Really well"
+      },
+      "energy": {
+        "label": "Energy",
+        "low": "Completely flat",
+        "high": "Loads of energy"
+      },
+      "mood": {
+        "label": "Mood",
+        "low": "Really bad",
+        "high": "Really good"
+      },
+      "soreness": {
+        "label": "Fresh legs",
+        "low": "Very sore",
+        "high": "Completely fresh"
+      },
+      "stress": {
+        "label": "Calm",
+        "low": "Very stressed",
+        "high": "Completely calm"
+      }
+    },
+    "pain": {
+      "label": "Does anything hurt?",
+      "hint": "The pain ladder from Team Danmark's ATK.",
+      "0": {
+        "title": "No",
+        "body": "No pain."
+      },
+      "1": {
+        "title": "A little sore",
+        "body": "Sore after training, but it passes."
+      },
+      "2": {
+        "title": "Pain when starting",
+        "body": "Hurts when I start, and the next day."
+      },
+      "3": {
+        "title": "Pain while training",
+        "body": "Hurts during training or in everyday life."
+      }
+    },
+    "painWhere": "Where does it hurt?",
+    "painWherePlaceholder": "E.g. right knee",
+    "ill": "I am ill",
+    "illHint": "E.g. a fever, a cold or an upset stomach.",
+    "note": "Anything you want to say?",
+    "noteHint": "Your coach can read it. Your parents only if you share how you are doing.",
+    "save": "Save",
+    "cancel": "Cancel",
+    "saved": "Thanks! Today's check-in is saved.",
+    "edit": "Change today's check-in",
+    "doneTitle": "Today's check-in",
+    "result": {
+      "green": "Great that you are doing well today.",
+      "yellow": "It is quite normal to have a hard day now and then.",
+      "red": "Take good care of yourself today."
+    },
+    "next": "Your coach can see it and will have a talk with you.",
+    "illAdvice": "Do not train when you are ill. Your body needs its strength to get well.",
+    "pain2Advice": "Cut training by at least half, and skip races, until a therapist has looked at it.",
+    "pain3Advice": "Pause what hurts until a physiotherapist or doctor has looked at it."
+  },
+  "measurements": {
+    "title": "Height and growth",
+    "body": "Measure height every month or two through the growth spurt. When a rider grows fast, technique can wobble for a while, and extra care is needed.",
+    "height": "Height",
+    "weight": "Weight",
+    "kind": "What",
+    "valueCm": "Centimetres",
+    "valueKg": "Kilos",
+    "date": "Date",
+    "add": "Add measurement",
+    "cm": "{value} cm",
+    "kg": "{value} kg",
+    "empty": "No measurements yet.",
+    "grown": "Grew {cm} cm in the last year.",
+    "chartLabel": "Height from {from} to {to} cm",
+    "delete": "Delete the measurement from {date}",
+    "deleteTitle": "Delete the measurement?",
+    "deleteBody": "The measurement disappears from the list and the curve.",
+    "weightOff": "Weight is turned off for riders under 19, as Team Danmark's ATK recommends. A coach can turn it on under Settings → Team."
+  },
+  "activities": {
+    "title": "Activity",
+    "back": "Back to the week",
+    "missing": "The activity does not exist",
+    "missingHint": "It may have been deleted, or you may not have access to it.",
+    "startedAt": "started {time}",
+    "source": {
+      "fit": "From a FIT file",
+      "wahoo": "From Wahoo",
+      "garmin": "From Garmin",
+      "manual": "Entered by hand"
+    },
+    "session": "Belongs to the session “{title}”",
+    "streamsTitle": "The ride as it went",
+    "noStreams": "The file had no samples along the way.",
+    "zonesTitle": "Time in zones",
+    "zonesNote": "Kadence's own seven zones, worked out from the rider's FTP and threshold heart rate when the ride came in.",
+    "bestTitle": "Best power",
+    "feelTitle": "How it felt",
+    "commentsTitle": "{count, plural, =0 {Comments} one {# comment} other {# comments}}",
+    "summary": {
+      "time": "Moving time",
+      "elapsed": "Total time",
+      "distance": "Distance",
+      "ascent": "Climbing",
+      "avgPower": "Avg. power",
+      "weightedPower": "Weighted power",
+      "weightedHint": "Hard stretches count more",
+      "maxPower": "Max. power",
+      "avgHr": "Avg. heart rate",
+      "maxHr": "Max. heart rate",
+      "cadence": "Cadence",
+      "work": "Work",
+      "load": "Load",
+      "km": "{km} km",
+      "m": "{m} m",
+      "watt": "{w} W",
+      "bpm": "{bpm} bpm",
+      "rpm": "{rpm} rpm",
+      "kj": "{kj} kJ",
+      "method": {
+        "power": "from power",
+        "hr": "from heart rate",
+        "rpe": "from how hard it felt",
+        "none": "cannot be worked out"
+      }
+    },
+    "streams": {
+      "show": "Show curves",
+      "power": "Power",
+      "hr": "Heart rate",
+      "cadence": "Cadence",
+      "alt": "Altitude",
+      "watt": "{w} W",
+      "bpm": "{bpm} bpm",
+      "rpm": "{rpm} rpm",
+      "m": "{m} m",
+      "hint": "Point at the curves, or use the arrow keys, to read a particular moment.",
+      "label": "The ride as it went: {channels}",
+      "none": "The file had no samples along the way."
+    },
+    "zones": {
+      "power": "By power",
+      "hr": "By heart rate",
+      "none": "The file had neither power nor heart rate.",
+      "noFtp": "Set the rider's FTP under thresholds to see time in zones by power.",
+      "noThresholdHr": "Set the rider's threshold heart rate to see time in zones by heart rate."
+    },
+    "best": {
+      "none": "No power in the file.",
+      "d5": "5 sec",
+      "d60": "1 min",
+      "d300": "5 min",
+      "d1200": "20 min",
+      "d3600": "60 min",
+      "watt": "{w} W"
+    },
+    "actions": {
+      "download": "Download the original file",
+      "delete": "Delete the activity",
+      "deleteTitle": "Delete the activity?",
+      "deleteBody": "The activity and its file disappear. A session it belonged to opens again."
+    },
+    "upload": {
+      "title": "Upload a ride",
+      "body": "FIT files from your bike computer, your watch or your trainer. It always works, without Wahoo and Garmin too.",
+      "drop": "Drag files here, or tap to choose",
+      "busy": "Uploading …",
+      "hint": ".fit, at most 25 MB per file",
+      "matched": "Uploaded and placed on the session “{title}”.",
+      "unmatched": "Uploaded. It did not match a planned session, so it stands on its own in the calendar.",
+      "open": "See the ride",
+      "error": {
+        "duplicate": "That ride is already uploaded.",
+        "conflict": "That ride is already uploaded.",
+        "not_fit": "That is not a FIT file.",
+        "truncated": "The file is not complete. Fetch it from the device again and retry.",
+        "bad_crc": "The file is damaged.",
+        "too_large": "The file is too large. It may be at most 25 MB.",
+        "unsupported": "It is a kind of FIT file Kadence cannot read yet.",
+        "corrupt": "The file is broken inside and cannot be read.",
+        "empty": "The file has no samples from a ride.",
+        "forbidden": "You may not upload rides for that rider.",
+        "notFound": "The rider does not exist.",
+        "unauthorized": "You are no longer signed in.",
+        "rateLimited": "You have uploaded many files just now. Try again in a moment.",
+        "invalid": "Choose at least one file.",
+        "generic": "Something went wrong with the file. Try again."
+      }
+    }
+  },
+  "season": {
+    "title": "Season",
+    "subtitle": "{name} · October {from} to September {to}",
+    "seasonNav": "Choose season",
+    "seasonLabel": "Season {from}/{to}",
+    "previous": "Previous",
+    "next": "Next",
+    "thisSeason": "This season",
+    "noRiders": {
+      "coachTitle": "No riders yet",
+      "coachBody": "A season plan belongs to a rider. Add the team's riders, and you can lay a plan for each of them from DCU.",
+      "coachAction": "Add riders",
+      "title": "There is no season plan for you here yet",
+      "body": "The season plan belongs to a rider. If you are a rider or a parent, ask the coach for an invitation as exactly that."
+    },
+    "none": {
+      "title": "No season plan yet",
+      "body": "The plan is filled with DCU's hours for the class, month by month from October to September. Afterwards you can change anything, and the deviation from DCU always stands beside it.",
+      "readOnly": "There is no season plan for this season yet. The coach or the rider can make one."
+    },
+    "create": "Create from DCU",
+    "created": "The season plan is made from DCU.",
+    "basisLabel": "Plan from",
+    "pickBasis": "Choose a class",
+    "basisHint": "The rider's class is chosen. Pick another if the rider should plan from another year, for example because they started late.",
+    "noClass": "The rider is not in one of DCU's classes (U17 to U23) this season. Choose the class the plan should build on.",
+    "basis": "{category} year {year}",
+    "basisNow": "The plan builds on DCU's hours for {basis}.",
+    "reset": {
+      "button": "Fill again from DCU",
+      "title": "Fill the plan again from DCU?",
+      "body": "Every month gets DCU's hours and phases for {basis}. Your own changes to the months disappear, but the season's note stays.",
+      "confirm": "Fill again",
+      "done": "The plan is filled again from DCU."
+    },
+    "monthsTitle": "Month by month",
+    "plan": "Plan",
+    "dcu": "DCU",
+    "ridden": "Ridden",
+    "hours": "{hours} h",
+    "dcuHours": "DCU: {hours} h",
+    "deviationLabel": "Deviation from DCU",
+    "deviation": {
+      "same": "As DCU",
+      "over": "{hours} h over DCU",
+      "under": "{hours} h under DCU",
+      "breakOver": "DCU takes a break"
+    },
+    "phase": {
+      "break": "Break and free riding",
+      "distance": "Distance",
+      "base_intervals": "Long base intervals",
+      "peak_intervals": "Short, hard intervals",
+      "season": "Racing season"
+    },
+    "phaseInfo": {
+      "break": "rest for body and mind after the season, then short, easy rides. The winter toward next season's goals is planned.",
+      "distance": "form is built mainly by more and more volume. Track, MTB and cross riders also ride some intervals.",
+      "base_intervals": "relatively long base intervals begin, while the volume keeps rising month by month.",
+      "peak_intervals": "around March come the real peak intervals, short and hard, timed to when the rider wants to peak.",
+      "season": "training fits the racing, and the season is ridden to the end."
+    },
+    "dcuSays": "DCU:",
+    "ownNote": "Note",
+    "monthNote": {
+      "10": "Break and free riding. Two weeks of full rest is usually enough, a month if the rider is worn out. Then short rides every other day, and other sports are welcome. Plan the winter.",
+      "11": "The first month with a set volume. No hard intervals yet: build the base that later hard training rests on.",
+      "12": "Volume rises. Light planned intervals may begin, short at first (about 5 min) with long pauses. Harder periods are about 10 % of the volume.",
+      "1": "Relatively long base intervals begin while the volume rises. Intervals at least 10 % of the volume and under about 85 % of maximum heart rate.",
+      "2": "Volume keeps rising, and intervals are about 15–20 %. The most intensive work starts 6–8 weeks before the rider wants to peak.",
+      "3": "Around March, short, hard peak intervals, timed to the wanted peak. A camp in the south may be needed for the hours.",
+      "4": "The season: training fits the rider's racing. At most two peaks a season, each followed by much less volume and low intensity.",
+      "5": "The season: training fits the rider's racing.",
+      "6": "A little less volume: many important races, ending with the national championships.",
+      "7": "A little more volume: the summer holiday leaves room to build for the second half of the season.",
+      "8": "A little less volume late in the season, when riders may be worn out, not least mentally.",
+      "9": "A little less volume, but ride the season to the end: there are many races in September."
+    },
+    "edit": "Change the plan",
+    "save": "Save the plan",
+    "cancel": "Cancel",
+    "saved": "The season plan is saved.",
+    "hoursLabel": "Hours",
+    "phaseLabel": "Phase",
+    "noteLabel": "Note",
+    "notePlaceholder": "E.g. a camp or exams",
+    "planNote": "Note for the season",
+    "planNotePlaceholder": "E.g. the season's goals, or why the plan differs from DCU",
+    "totals": "The season in total: {plan} h planned · DCU {dcu} h · {ridden} h ridden",
+    "readOnlyNote": "You can see the plan. The coach and the rider can change it.",
+    "chart": {
+      "title": "Hours per month",
+      "planned": "Plan",
+      "ridden": "Ridden on the bike",
+      "dcu": "DCU",
+      "label": "Hours per month in the season: plan, ridden and DCU's hours",
+      "readout": "{month}: plan {plan} h · DCU {dcu} h · ridden {ridden} h",
+      "hint": "Point at a month, or use the arrow keys, to see the numbers."
+    },
+    "reference": {
+      "title": "DCU's recommendations",
+      "body": "The hours are DCU's road training recommendations for 2025. Only hours on the bike count, not strength, running or anything else.",
+      "phasesTitle": "The season's phases",
+      "zonesTitle": "Zones: Kadence's and DCU's",
+      "zonesBody": "Kadence's seven zones are Kadence's own and are worked out from FTP and threshold heart rate. DCU uses five heart-rate bands in percent of heart-rate reserve: working pulse minus resting pulse, divided by maximum pulse minus resting pulse. They are shown here for comparison.",
+      "kadenceZones": "Kadence's zones",
+      "dcuBands": "DCU's heart-rate bands",
+      "zone": "Zone",
+      "ftp": "% of FTP",
+      "thresholdHr": "% of threshold HR",
+      "band": "Band",
+      "hrr": "% of heart-rate reserve",
+      "range": "{low}–{high} %",
+      "upTo": "up to {high} %",
+      "over": "over {low} %",
+      "noBand": "no number",
+      "sourcesTitle": "The sources at DCU",
+      "opensElsewhere": "(opens at Cycling Denmark)",
+      "snapshot": "Kadence keeps a copy of the numbers from DCU's documents. When DCU publishes new recommendations, the numbers are updated by hand."
+    }
+  },
+  "assist": {
+    "decide": "A proposal. You decide what to use; nothing is saved until you press.",
+    "dismiss": "Close the proposal",
+    "byRules": "Read by the rules",
+    "byModel": "Read by {engine}",
+    "byGuardrails": "From Kadence's warnings",
+    "errors": {
+      "noModel": "No language model is set up, so the AI cannot answer. Everything else works.",
+      "noModelLink": "Settings → AI",
+      "notAllowed": "The team has not let the AI read the riders' data. It is off by default, because it is health data about young people.",
+      "notAllowedLink": "Settings → Team",
+      "rateLimited": "Many AI calls have been made just now. Try again in a moment.",
+      "unreachable": "The language model is not answering. Try again in a moment.",
+      "badAnswer": "The language model answered with something that could not be used. Try again.",
+      "notFound": "It no longer exists. Reload the page.",
+      "invalid": "Something is missing in what you sent.",
+      "unauthorized": "You are no longer signed in.",
+      "unreadable": "The text could not be read as a session. Try writing it a little differently, e.g. \"3x10 min Z4 / 5 min rest\".",
+      "generic": "Could not get a proposal. Try again."
+    },
+    "parse": {
+      "open": "Write it the way you usually do",
+      "label": "Write the session in your own words",
+      "placeholder": "E.g. 15 min warm-up, 3x10 min Z4 / 5 min rest, 10 min cool-down",
+      "hint": "The rules read the usual shorthand without any language model. The AI is used only for what the rules cannot read, and it gets no rider data.",
+      "read": "Read it",
+      "reading": "Reading …",
+      "close": "Close",
+      "title": "How it was read",
+      "body": "Look through the steps. \"Use\" replaces the session's steps, and nothing is saved until you save the session.",
+      "use": "Use"
+    },
+    "week": {
+      "open": "Propose the week",
+      "title": "A proposal for the week",
+      "body": "The AI reads DCU's hours and phase, the calendar, the last weeks and the warnings, and proposes sessions. You choose what goes in the calendar.",
+      "thinking": "Thinking … it can take a little while.",
+      "proposal": "Proposed by the AI",
+      "empty": "The AI proposed no sessions for the week.",
+      "accept": "{count, plural, =0 {Put the chosen in the calendar} one {Put the chosen session in the calendar} other {Put # chosen sessions in the calendar}}",
+      "again": "Propose again",
+      "added": "{count, plural, one {The session is in the calendar.} other {# sessions are in the calendar.}}"
+    },
+    "brief": {
+      "ask": "Write a summary",
+      "thinking": "Thinking …",
+      "title": "Summary from the AI",
+      "nothing": "No riders need attention, so there is nothing to summarise.",
+      "noSummary": "The AI has nothing to add to the list.",
+      "off": "A short summary from the AI needs the team to have turned on \"May the AI read the riders' data\".",
+      "offLink": "Settings → Team"
+    }
+  },
+  "devices": {
+    "title": "Devices",
+    "subtitle": "Connect Wahoo or Garmin, and your rides come in by themselves and sessions can be sent to your bike computer. FIT upload always works, without them too.",
+    "coachNote": "Riders connect their own Wahoo or Garmin here under Settings → Devices. Once a rider has connected, you can send sessions to the rider's device from the session in the calendar.",
+    "otherNote": "Devices belong to the rider. Only the rider can connect their Wahoo or Garmin.",
+    "name": {
+      "wahoo": "Wahoo",
+      "garmin": "Garmin"
+    },
+    "about": {
+      "wahoo": "ELEMNT bike computers and KICKR trainers. Rides come in automatically, and sessions can be sent to them.",
+      "garmin": "Edge bike computers and watches through Garmin Connect. Rides come in automatically, and sessions can be sent to the Garmin Connect calendar."
+    },
+    "state": {
+      "notConfigured": "Not set up here",
+      "notConnected": "Not connected",
+      "connected": "Connected",
+      "error": "Not working",
+      "revoked": "Disconnected"
+    },
+    "notConfigured": "This installation of Kadence has no keys for it. Upload your rides as FIT files instead: it works just as well.",
+    "connect": "Connect {name}",
+    "reconnect": "Connect {name} again",
+    "lastSync": "Last fetched {when}.",
+    "noSyncYet": "No rides fetched yet. Your next ride comes in by itself.",
+    "canPush": "You can send a bike session to {name} from the session in the calendar.",
+    "lastError": {
+      "refresh_failed": "{name} would not renew the connection. Connect again.",
+      "unauthorized": "{name} refused Kadence. Connect again.",
+      "deregistered": "The connection was ended at {name}. Connect again if you want your rides in.",
+      "provider_unavailable": "{name} did not answer the last time Kadence tried. It usually sorts itself out.",
+      "invalid_file": "A ride from {name} could not be read. Upload the file yourself if it is missing.",
+      "download": "A ride could not be fetched from {name}. Upload the file yourself if it is missing.",
+      "unknown": "Something went wrong with {name} last time. Connect again if your rides do not come in."
+    },
+    "connected": "{name} is connected. Your next rides come in by themselves.",
+    "connectError": {
+      "unauthorized": "You were not signed in. Sign in and try again.",
+      "not_configured": "That connection is not set up on this installation. Upload FIT files instead.",
+      "not_a_rider": "Only a rider can connect their own device.",
+      "rate_limited": "You have tried many times just now. Wait a few minutes and try again.",
+      "state": "The connection took too long or got mixed up. Try again.",
+      "denied": "You said no at the provider, so nothing is connected.",
+      "exchange_failed": "The provider did not answer as it should. Try again in a moment.",
+      "already_linked": "That account is already connected to another rider in Kadence.",
+      "failed": "Something went wrong. Try again."
+    },
+    "disconnect": "Disconnect",
+    "disconnectTitle": "Disconnect {name}?",
+    "disconnectBody": "Kadence deletes the keys to your {name} account and asks {name} to forget the connection. Rides already fetched stay.",
+    "disconnected": "{name} is disconnected.",
+    "uploadInstead": "Without Wahoo and Garmin you can always upload your rides as FIT files.",
+    "uploadLink": "Upload a ride",
+    "usTitle": "Wahoo and Garmin are US companies",
+    "usBody": "Kadence itself is in the EU. When you connect, Wahoo or Garmin send your rides to Kadence, and Kadence sends the sessions you choose to them. It is your choice, and you can disconnect at any time.",
+    "usLink": "Who can see what"
+  },
+  "parents": {
+    "title": "Parents",
+    "subtitle": "For parents of young riders: your child's week, and how best to back them.",
+    "sessionPanel": "Session",
+    "waitingTitle": "Waiting for your child to confirm",
+    "waitingBody": "You can see your child's week here once your child has confirmed the link to you. The rider does that under Settings → Me.",
+    "basicsTitle": "Good to know",
+    "child": {
+      "title": "{name}'s week",
+      "week": "Training this week",
+      "hours": "{sessions} of {total} sessions done · {done} of {planned} h",
+      "form": "Form",
+      "noForm": "Not enough training has been done to show the form yet.",
+      "upcoming": "Coming up",
+      "noUpcoming": "No races, exams or camps in the next month.",
+      "trainingHidden": "{name} does not share their training with you right now. That is the rider's own choice.",
+      "wellbeing": "How it is going",
+      "wellbeingNote": "Green is balance. Yellow for a while is a signal to have a talk together with the coach. Red means help is needed. Ask openly, and listen.",
+      "noCheckins": "No check-ins in the last 14 days.",
+      "wellbeingHidden": "{name} does not share their check-ins with you. That is the rider's own choice, and that is fine."
+    },
+    "guide": {
+      "title": "The parents' guide",
+      "body": "Ten themes and nine pieces of advice on supporting a child who does a lot of sport, written briefly in Kadence's own words. Read the originals at Team Danmark.",
+      "credit": "Builds on Team Danmark's and Kolding Talent's guide for parents.",
+      "guideLink": "The parents' guide at Team Danmark",
+      "opensElsewhere": "(opens at Team Danmark)",
+      "themesTitle": "Ten themes",
+      "themeNumber": "Theme {n}",
+      "themeLink": "Read theme {n} at Team Danmark",
+      "themes": {
+        "1": {
+          "title": "Why does your child do sport?",
+          "body": "Talk about it, especially when something changes: a new team, an injury, a long spell without progress. If you each have your own reason, it easily causes friction later."
+        },
+        "2": {
+          "title": "Before, during and after the race",
+          "body": "Give calm before, be calm and kind during, and let your child talk to the coach and team first afterwards. Praise the effort whatever the result, and see to food and rest."
+        },
+        "3": {
+          "title": "Working with the coach",
+          "body": "Raise worries early and directly, at a good time. Let the coach coach, but keep an eye yourself on whether your child thrives in the environment."
+        },
+        "4": {
+          "title": "Motivation",
+          "body": "Rather ask \"what did you learn today?\" than \"who won?\". Wanting to get better lasts longer than wanting to win, also when things go against you."
+        },
+        "5": {
+          "title": "Goals the child can control",
+          "body": "Process goals, like keeping to the plan or practising a corner, are the foundation. Placings cannot be controlled. Do not share the results on social media."
+        },
+        "6": {
+          "title": "You can get better",
+          "body": "Mistakes and feedback are part of the way, not proof that you cannot. Your own way of talking about ability rubs off."
+        },
+        "7": {
+          "title": "Feedback that helps",
+          "body": "Compare your child with themselves, not with the others: young people develop at very different paces. Ask whether your child even wants feedback from you; they have a coach."
+        },
+        "8": {
+          "title": "An everyday life that fits together",
+          "body": "Make the week's plan together, with school, training, friends and time for nothing. At exams school comes first, at championships the sport. Sleep matters most."
+        },
+        "9": {
+          "title": "Wellbeing",
+          "body": "Hard spells are normal, but about three weeks of your child having a hard time should not just pass. Yellow means a talk within 14 days, red means help from professionals. Never train with pain or illness."
+        },
+        "10": {
+          "title": "Boarding school and upper secondary",
+          "body": "The transition is hard, and many stop here. Talk openly about the choices, and consider agreeing with the coach to cut back a little the first months."
+        }
+      },
+      "adviceTitle": "Nine pieces of advice",
+      "adviceLink": "The advice at Team Danmark",
+      "advice": {
+        "1": {
+          "title": "You are a role model.",
+          "body": "Your child sees how you behave at races, at training and in the club."
+        },
+        "2": {
+          "title": "Support, but let your child stand on their own.",
+          "body": "Help with the practical things, and hand over responsibility bit by bit."
+        },
+        "3": {
+          "title": "Be a good part of the club.",
+          "body": "Lend a hand, and respect the coach's work."
+        },
+        "4": {
+          "title": "Keep an eye on wellbeing.",
+          "body": "You are the one who can say no on your child's behalf."
+        },
+        "5": {
+          "title": "Help the joy along.",
+          "body": "The sport should be fun, in the long run too."
+        },
+        "6": {
+          "title": "Find out what drives your child.",
+          "body": "And make it broader than winning."
+        },
+        "7": {
+          "title": "Praise the effort and what your child learns.",
+          "body": "Not only the result."
+        },
+        "8": {
+          "title": "Remember everything else the sport gives.",
+          "body": "Friends, belonging and things that are useful at school and in life."
+        },
+        "9": {
+          "title": "Ask openly.",
+          "body": "And compare your child with themselves, not with the others."
+        }
+      }
+    },
+    "basics": {
+      "sleepTitle": "Sleep",
+      "sleepBody": "Young people aged 14–17 need 8–10 hours of sleep. Fixed bedtimes, at weekends too, a cool, dark room and the screen away before bed help most. If your child is tired, check the sleep first.",
+      "sleepLink": "Team Danmark on sleep",
+      "schoolTitle": "School and sport",
+      "schoolBody": "At exams school comes first, at championships the sport. Put school, exams and camps in the calendar, and the coach can take them into account. A session skipped to be with friends can well be a step in the right direction.",
+      "seeTitle": "What you can see in Kadence, and why",
+      "canLabel": "You can",
+      "cannotLabel": "You cannot",
+      "can": {
+        "training": "Your child's training: sessions, what is done, and the hours, once your child has confirmed the link and shares the training.",
+        "wellbeing": "How your child is doing (check-ins), but only if your child chooses to share it.",
+        "comments": "The conversation about the training: you can read along, but not write. There are no private messages between an adult and a young rider."
+      },
+      "cannot": {
+        "others": "See other riders on the team.",
+        "change": "Change the plan or write in it.",
+        "hidden": "See what your child does not share. From the year your child turns 18, your child must confirm the link again."
+      },
+      "why": "The rider owns their data. Training and wellbeing are health information about young people, and a 16-year-old decides what their parents see. Kadence enforces it in the database, not only on the screen."
     }
   }
 }

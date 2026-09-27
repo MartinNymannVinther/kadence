@@ -19,7 +19,8 @@
       "copy": "Kopiér link",
       "copied": "Kopieret",
       "noMail": "Kadence sender ingen mail. Kopiér linket, og send det selv på sms eller mail. Det virker kun for den e-mailadresse."
-    }
+    },
+    "rider": "Rytter"
   },
   "landing": {
     "nav": {
@@ -165,7 +166,9 @@
       "today": "I dag",
       "calendar": "Kalender",
       "riders": "Ryttere",
-      "library": "Bibliotek"
+      "library": "Bibliotek",
+      "season": "Sæson",
+      "parents": "Forældre"
     },
     "orgSwitcher": {
       "label": "Arbejdsrum",
@@ -270,7 +273,8 @@
       "ai": "AI",
       "data": "Data",
       "team": "Holdet",
-      "me": "Mig"
+      "me": "Mig",
+      "devices": "Enheder"
     },
     "access": {
       "title": "Adgang til installationen",
@@ -493,7 +497,7 @@
       "weight": "Tillad vægt for ryttere under 19",
       "weightHint": "Slået fra som standard. Fokus på vægt og W/kg kan give lav energitilgængelighed og spiseforstyrrelser hos unge, som Team Danmarks ATK advarer om. Slå det kun til, hvis der er en god grund.",
       "ai": "Må AI'en læse rytternes data",
-      "aiHint": "Slået fra som standard. Rytternes træning og check-ins er helbredsdata om unge mennesker. AI'en kommer først senere, og den må kun læse dem, hvis I slår det til her. Den skriver aldrig selv noget.",
+      "aiHint": "Slået fra som standard. Rytternes træning og check-ins er helbredsdata om unge mennesker. Slår I det til, må AI'en læse dem, når en træner beder om et ugeforslag eller et resumé af, hvem der kræver opmærksomhed. Den skriver aldrig selv noget.",
       "on": "Slået til",
       "off": "Slået fra"
     }
@@ -608,6 +612,34 @@
       "parents": {
         "title": "Forældre",
         "body": "Træneren tilføjer en forælder og sender et link. Forælderen ser først noget, når rytteren selv har bekræftet forbindelsen under Indstillinger → Mig. Rytteren bestemmer også, om forældrene kan se træningen, og om de kan se, hvordan rytteren har det. Fra det år, rytteren fylder 18, skal rytteren bekræfte igen som voksen."
+      },
+      "season": {
+        "title": "Sæsonplanen og DCU",
+        "body": "Sæsonen går fra oktober til september. Planen fyldes ud med DCU's timer for rytterens årgang (U17, U19 eller U23 og året i den), måned for måned, med DCU's faser: pause og frit i oktober, distance i november og december, lange basisintervaller i januar og februar, korte hårde intervaller omkring marts og løbssæson fra april. Træneren og rytteren kan rette alt, men DCU's tal og afvigelsen står altid ved siden af. Kun timer på cyklen tæller med. Kadences syv zoner er Kadences egne; DCU's pulsbånd står ved siden af til sammenligning."
+      },
+      "load": {
+        "title": "Belastning: kondition, træthed og friskhed",
+        "body": "Hvert pas får en belastning. Med wattmåler regnes den ud fra watt, ellers fra puls, og ellers fra hvor hårdt passet føltes (RPE fra 1 til 10) gange minutterne. Det sidste virker for alle pas, også styrke. En time i tærskeltempo tæller 100, og en let time på RPE 3 tæller omkring 17. Kondition er det, de seneste seks uger har bygget op. Træthed er det, den seneste uge har kostet. Friskhed er kondition minus træthed: over nul er man udhvilet, under nul træt, og lidt under nul er normalt midt i en træningsuge."
+      },
+      "warnings": {
+        "title": "Advarsler",
+        "body": "Kadence viser træneren, når en uge går ud over rammerne, men bestemmer ikke. Advarslerne er: timer på cyklen over eller under DCU's ramme for ugen, mere end 15 % flere timer end de seneste uger, en tur længere end DCU's grænse (U17 højst 4 timer eller 120 km, U19 højst 5 timer eller 150 km), styrkepas med under 48 timer imellem, for lidt søvn, smerter efter ATK's smertetrappe og check-ins i gul eller rød zone. Hver advarsel har et ord for, hvor meget den betyder: \"Handl nu\", \"Se på det\" eller \"Godt at vide\"."
+      },
+      "checkin": {
+        "title": "Check-in og trivselszoner",
+        "body": "Rytteren svarer hver morgen på søvn, energi, humør, friske ben, ro på og smerter, og om man er syg. Svarene giver en zone for dagen: grøn, gul eller rød. Kadence ser på mønstret over tre uger, ikke på én dårlig dag. Zonerne bygger på Kolding Talents trivselsmodel fra Team Danmarks forældreguide: er rytteren i gul zone i en periode, tager rytter, forælder og træner en snak inden for 14 dage, og i rød zone skal fagfolk ind over. Træneren ser check-ins; forældrene kun, hvis rytteren deler dem. Kadence stiller aldrig en diagnose."
+      },
+      "devices": {
+        "title": "Upload og enheder",
+        "body": "Upload en FIT-fil fra cykelcomputeren, uret eller hometraineren under I dag, i kalenderen eller på rytterens side. Kadence læser filen selv, også uden internet, og sætter turen på dagens pas, hvis det passer. Hver tur har sin egen side med kurver, tid i zoner og bedste watt. Wahoo og Garmin kan forbindes under Indstillinger → Enheder, så ture kommer ind af sig selv og pas kan sendes til cykelcomputeren. De er amerikanske firmaer, og det er rytterens eget valg. Et cykelpas kan også hentes som .zwo, .erg, .mrc eller .fit."
+      },
+      "parentsPage": {
+        "title": "Forældresiden",
+        "body": "Under Forældre ser en forælder sit barns uge, formen med ord, det næste løb eller eksamen og, hvis barnet deler det, hvordan det går. Siden har også Forældreguiden: Team Danmarks og Kolding Talents ti temaer og ni råd, skrevet kort med Kadences egne ord og med links til originalerne."
+      },
+      "ai": {
+        "title": "AI'en",
+        "body": "AI'en må foreslå, aldrig bestemme. Den kan læse en træners kortform som \"3x10 min Z4 / 5 min pause\" til trin (reglerne klarer det meste uden nogen sprogmodel), foreslå en uge for en rytter og skrive et kort resumé af, hvem der kræver opmærksomhed. Intet lægges i kalenderen, før en træner trykker. Den skriver aldrig til en rytter og sletter aldrig noget. Ugeforslag og resumé læser rytternes data, så de virker kun, hvis holdet har slået \"Må AI'en læse rytternes data\" til under Indstillinger → Holdet. Uden en sprogmodel virker alt andet som før."
       }
     }
   },
@@ -626,7 +658,11 @@
       "done": "Udført",
       "doneTitle": "Godt gået! Hvordan gik det?",
       "open": "Se hele passet",
-      "comments": "{count, plural, one {# kommentar} other {# kommentarer}}"
+      "comments": "{count, plural, one {# kommentar} other {# kommentarer}}",
+      "upload": "Upload tur",
+      "uploadBody": "FIT-filer fra cykelcomputeren, uret eller hometraineren. Turen lander på dagens pas af sig selv.",
+      "form": "Min form",
+      "formBody": "Sådan ser din træning ud de seneste 90 dage."
     },
     "week": {
       "nothing": "Intet planlagt"
@@ -672,7 +708,10 @@
     "generic": "Noget gik galt. Prøv igen.",
     "alreadyDone": "Passet er allerede markeret som udført. Genindlæs siden.",
     "alreadyInvited": "Der er allerede et åbent link til den adresse. Kopiér det, der findes, eller træk det tilbage under Indstillinger → Arbejdsrum.",
-    "alreadyMember": "Personen er allerede med på holdet."
+    "alreadyMember": "Personen er allerede med på holdet.",
+    "youthWeight": "Vægt er slået fra for ryttere under 19. En træner kan slå det til under Indstillinger → Holdet.",
+    "not_connected": "Der er ingen forbindelse at afbryde. Genindlæs siden.",
+    "not_a_rider": "Kun en rytter kan forbinde sin egen enhed."
   },
   "calendar": {
     "title": "Kalender",
@@ -710,7 +749,15 @@
     "totals": {
       "all": "Timer i alt",
       "bike": "På cyklen",
-      "of": "{done} af {planned} t"
+      "of": "{done} af {planned} t",
+      "corridor": "DCU's ramme",
+      "corridorValue": "{hours} t af {low}–{high} t",
+      "corridorNote": "Kørt og planlagt på cyklen i ugen mod DCU's ramme for {klass}: {state}.",
+      "state": {
+        "inside": "inden for rammen",
+        "over": "over rammen",
+        "under": "under rammen"
+      }
     },
     "actions": {
       "addSession": "Tilføj pas",
@@ -987,6 +1034,25 @@
       "restore": "Gendan rytteren",
       "restoreTitle": "Gendan {name}?",
       "restoreBody": "Rytteren kommer tilbage på listerne og i kalenderen."
+    },
+    "season": "Sæsonplan",
+    "sections": {
+      "week": "Ugen og trivsel",
+      "form": "Form og timer",
+      "upload": "Upload tur",
+      "uploadBody": "En tur fra rytterens FIT-fil, hvis rytteren ikke selv har hentet den.",
+      "profile": "Profil og tærskler"
+    },
+    "erase": {
+      "title": "Slet rytteren og alle data",
+      "body": "Rytteren, al træning, alle check-ins, målinger, kommentarer og revisionssporets kopier af dem slettes for altid. Gør det, når rytteren eller forældrene beder om det.",
+      "versusArchive": "Arkivering skjuler rytteren, men gemmer historikken og kan fortrydes. Sletning kan ikke fortrydes. Vil I gemme noget, så hent data først under Indstillinger → Data.",
+      "button": "Slet rytteren og alle data",
+      "confirmTitle": "Slet {name} for altid?",
+      "confirmBody": "Det kan ikke fortrydes. Skriv rytterens navn for at bekræfte.",
+      "typeName": "Skriv \"{name}\"",
+      "confirm": "Slet for altid",
+      "done": "{name} og alle data er slettet."
     }
   },
   "session": {
@@ -1008,7 +1074,8 @@
       "note": "Note",
       "undo": "Fortryd udført",
       "undoTitle": "Fortryd udført?",
-      "undoBody": "Passet bliver åbent igen, og den tid og vurdering, der blev skrevet, forsvinder."
+      "undoBody": "Passet bliver åbent igen, og den tid og vurdering, der blev skrevet, forsvinder.",
+      "openActivity": "Se aktiviteten"
     },
     "notDoneYet": "Ikke udført endnu.",
     "comments": {
@@ -1039,7 +1106,41 @@
       "saved": "Godt gået! Passet er udført."
     },
     "doneTitle": "Udført",
-    "commentsTitle": "{count, plural, =0 {Kommentarer} one {# kommentar} other {# kommentarer}}"
+    "commentsTitle": "{count, plural, =0 {Kommentarer} one {# kommentar} other {# kommentarer}}",
+    "export": {
+      "button": "Hent til træner/enhed",
+      "zwo": {
+        "label": "Zwift (.zwo)",
+        "hint": "Læg filen i Zwifts mappe med workouts."
+      },
+      "erg": {
+        "label": "Træner i watt (.erg)",
+        "hint": "Watt ud fra rytterens FTP."
+      },
+      "mrc": {
+        "label": "Træner i procent (.mrc)",
+        "hint": "Procent af FTP, til ethvert trænerprogram."
+      },
+      "fit": {
+        "label": "Cykelcomputer (.fit)",
+        "hint": "Et pas, som Garmin, Wahoo og andre kan køre."
+      }
+    },
+    "push": {
+      "send": "Send til {name}",
+      "sending": "Sender …",
+      "sent": "Passet er sendt til {name}. Det ligger på dagen i {name}s kalender.",
+      "error": {
+        "not_bike": "Kun cykelpas kan sendes til en enhed.",
+        "no_steps": "Passet har ingen trin at sende. Byg det i trin først.",
+        "not_connected": "Rytteren har ikke forbundet {name}.",
+        "reconnect": "Forbindelsen til {name} virker ikke længere. Rytteren skal forbinde igen under Indstillinger → Enheder.",
+        "provider_permission": "{name} har ikke fået lov til at modtage pas. Rytteren kan give lov hos {name} og forbinde igen.",
+        "provider_error": "{name} tog ikke imod passet. Prøv igen om lidt.",
+        "not_configured": "{name} er ikke sat op på denne installation.",
+        "generic": "Passet kunne ikke sendes til {name}. Prøv igen."
+      }
+    }
   },
   "training": {
     "sport": {
@@ -1273,6 +1374,679 @@
       "setsReps": "{sets} × {reps}",
       "progression": "Progression",
       "rule": "{open, select, yes {{group}, fra pas {from}} other {{group}, pas {from}–{to}}}: {sets} × {reps}"
+    }
+  },
+  "load": {
+    "title": "Form og belastning",
+    "fitness": "Kondition",
+    "fatigue": "Træthed",
+    "form": "Friskhed",
+    "explain": {
+      "fitness": "det, de seneste seks ugers træning har bygget op. Den stiger langsomt, når du træner jævnt.",
+      "fatigue": "det, den seneste uges træning har kostet. Den stiger hurtigt efter hårde dage og falder, når du hviler.",
+      "form": "kondition minus træthed. Over nul er du udhvilet, under nul er du træt, og lidt under nul er helt normalt midt i en træningsuge."
+    },
+    "scale": "Tallene er Kadences egen skala: en times træning i tærskeltempo tæller 100. Pas uden wattmåler tæller ud fra puls eller ud fra, hvor hårdt det føltes (RPE).",
+    "chartLabel": "Kondition, træthed og friskhed de seneste 90 dage. I dag: kondition {fitness}, træthed {fatigue}, friskhed {form}.",
+    "readout": "{date}: kondition {fitness} · træthed {fatigue} · friskhed {form}",
+    "hint": "Peg på grafen, eller brug piletasterne, for at læse en bestemt dag.",
+    "empty": "Ingen træning de seneste 90 dage endnu.",
+    "emptyBody": "Kurven tegnes, når der er gennemført pas. Tryk \"Udført\" efter et pas, eller upload turen.",
+    "table": "Se tallene",
+    "tableCaption": "Kondition, træthed og friskhed, én række pr. uge",
+    "date": "Dato",
+    "weeks": {
+      "title": "Timer på cyklen pr. uge",
+      "done": "Kørt",
+      "planned": "Planlagt resten af ugen",
+      "corridor": "DCU's ramme",
+      "target": "DCU's mål",
+      "label": "Timer på cyklen de seneste {count} uger mod DCU's ramme.",
+      "weekShort": "u{week}",
+      "readoutDone": "Uge {week}: {hours} t kørt",
+      "readoutPlanned": "{hours} t planlagt",
+      "readoutCorridor": "DCU's ramme {low}–{high} t"
+    },
+    "riderTitle": "Form og timer",
+    "trend": {
+      "title": "Formen de seneste uger",
+      "up": "Konditionen er steget de seneste fire uger.",
+      "flat": "Konditionen har ligget stabilt de seneste fire uger.",
+      "down": "Konditionen er faldet lidt de seneste fire uger. Det er normalt efter en pause eller en let periode.",
+      "rested": "Lige nu er {name} udhvilet.",
+      "tired": "Lige nu er {name} lidt træt efter de seneste dages træning. Det er normalt i en træningsuge.",
+      "veryTired": "Lige nu er {name} ret træt. Søvn, mad og ro hjælper.",
+      "label": "Konditionen de seneste 90 dage"
+    },
+    "formScale": "over 0 udhvilet · under 0 træt"
+  },
+  "insight": {
+    "title": "Kræver opmærksomhed",
+    "subtitle": "Ud fra ugens timer, check-ins og DCU's rammer. Forslag til, hvem du skal tale med, ikke regler.",
+    "riderTitle": "Advarsler",
+    "noFlags": "Ingen advarsler i denne uge.",
+    "allCalm": "Ingen advarsler i denne uge. Holdet ser ud til at være i balance.",
+    "othersCalm": "{count, plural, one {# rytter mere har ingen advarsler.} other {# ryttere mere har ingen advarsler.}}",
+    "modelNote": "Trivselszonerne følger Kolding Talents trivselsmodel fra Team Danmarks forældreguide: gul zone i en periode betyder en snak mellem rytter, forælder og træner inden for 14 dage, og rød zone betyder, at der skal hjælp fra fagfolk ind over. Kadence stiller aldrig en diagnose.",
+    "basis": "{category} {year}. år",
+    "severity": {
+      "alert": "Handl nu",
+      "warn": "Se på det",
+      "info": "Godt at vide"
+    },
+    "action": {
+      "talk": "Tag en snak inden for 14 dage",
+      "help": "Søg professionel hjælp"
+    },
+    "flag": {
+      "hours_above_corridor": "Ugen er {hours} timer på cyklen, kørt og planlagt, over DCU's ramme på {high} timer for {klass}.",
+      "hours_below_corridor": "Ugen er {hours} timer på cyklen, kørt og planlagt, under DCU's ramme på mindst {low} timer for {klass}.",
+      "ramp": "Ugen er {hours} timer på cyklen, {percent} % mere end snittet på {average} timer i de seneste uger. Mere end {limit} % fra uge til uge øger risikoen for skader.",
+      "longest_ride": "Den længste tur i ugen var {hours} timer. DCU siger højst {limitHours} timer eller {limitKm} km for årgangen.",
+      "longest_ride_km": "Den længste tur i ugen var {hours} timer og {km} km. DCU siger højst {limitHours} timer eller {limitKm} km for årgangen.",
+      "strength_spacing": "Styrkepassene {first} og {second} ligger for tæt. DCU anbefaler mindst 48 timer imellem.",
+      "wellbeing_talk": "Check-ins i gul zone {days, plural, one {# dag} other {# dage}} de seneste tre uger.",
+      "wellbeing_help_red": "Et check-in i rød zone de seneste syv dage.",
+      "wellbeing_help_long": "Check-ins i gul zone tre uger i træk ({days, plural, one {# dag} other {# dage}}).",
+      "pain_2": "Smerte på trin 2: når træningen starter og dagen efter. ATK siger: skær træningen mindst til det halve, spring løb over, og få en behandler til at se på det.",
+      "pain_3": "Smerte på trin 3: under træning eller i hverdagen. ATK siger: pause fra det, der gør ondt, til en fysioterapeut eller læge har set på det.",
+      "sleep_short": "Søvnen har i snit været {average} timer de seneste {nights, plural, one {# nat} other {# nætter}}, under {limit} timer.",
+      "sleep_below_minimum": "Søvnen har i snit været {average} timer de seneste {nights, plural, one {# nat} other {# nætter}}. 14–17-årige har brug for mindst {minimum} timer.",
+      "compliance": "{red} af {judged} pas i denne uge er ikke gået som planlagt. Måske passer planen ikke til ugen.",
+      "signs": "Tegn: {signs}"
+    },
+    "sign": {
+      "ill": "syg",
+      "pain": "smerter",
+      "mood": "humøret helt i bund",
+      "low_answer": "et svar helt i bund",
+      "low_average": "lave svar generelt",
+      "short_sleep": "under 6 timers søvn"
+    }
+  },
+  "wellbeing": {
+    "title": "Trivsel",
+    "stripTitle": "Check-ins de seneste 14 dage",
+    "zone": {
+      "green": "Grøn",
+      "yellow": "Gul",
+      "red": "Rød"
+    },
+    "noCheckin": "Intet check-in",
+    "stripSummary": "Grøn: {green} · Gul: {yellow} · Rød: {red}",
+    "hidden": "Rytteren deler ikke, hvordan det går, med forældrene.",
+    "none": "Ingen check-ins de seneste 14 dage."
+  },
+  "checkin": {
+    "title": "Hvordan har du det?",
+    "body": "Et minut om morgenen. Svarene hjælper dig og din træner med at se, om træningen passer til resten af livet.",
+    "sleep": "Hvor mange timer sov du i nat?",
+    "hours": "timer",
+    "less": "Mindre søvn",
+    "more": "Mere søvn",
+    "scales": {
+      "sleepQuality": {
+        "label": "Hvor godt sov du?",
+        "low": "Rigtig dårligt",
+        "high": "Rigtig godt"
+      },
+      "energy": {
+        "label": "Energi",
+        "low": "Helt flad",
+        "high": "Masser af energi"
+      },
+      "mood": {
+        "label": "Humør",
+        "low": "Rigtig dårligt",
+        "high": "Rigtig godt"
+      },
+      "soreness": {
+        "label": "Friske ben",
+        "low": "Meget ømme",
+        "high": "Helt friske"
+      },
+      "stress": {
+        "label": "Ro på",
+        "low": "Meget stress",
+        "high": "Helt rolig"
+      }
+    },
+    "pain": {
+      "label": "Gør noget ondt?",
+      "hint": "Smertetrappen fra Team Danmarks ATK.",
+      "0": {
+        "title": "Nej",
+        "body": "Ingen smerter."
+      },
+      "1": {
+        "title": "Lidt ømhed",
+        "body": "Ømt efter træning, men det går over."
+      },
+      "2": {
+        "title": "Smerte ved start",
+        "body": "Gør ondt, når jeg starter, og dagen efter."
+      },
+      "3": {
+        "title": "Smerte under træning",
+        "body": "Gør ondt under træning eller i hverdagen."
+      }
+    },
+    "painWhere": "Hvor gør det ondt?",
+    "painWherePlaceholder": "Fx højre knæ",
+    "ill": "Jeg er syg",
+    "illHint": "Fx feber, forkølelse eller ondt i maven.",
+    "note": "Noget, du vil fortælle?",
+    "noteHint": "Din træner kan læse det. Dine forældre kun, hvis du deler, hvordan du har det.",
+    "save": "Gem",
+    "cancel": "Fortryd",
+    "saved": "Tak! Dagens check-in er gemt.",
+    "edit": "Ret dagens check-in",
+    "doneTitle": "Dagens check-in",
+    "result": {
+      "green": "Dejligt, at du har det godt i dag.",
+      "yellow": "Det er helt normalt at have en hård dag en gang imellem.",
+      "red": "Pas godt på dig selv i dag."
+    },
+    "next": "Din træner kan se det og tager en snak med dig.",
+    "illAdvice": "Træn ikke, når du er syg. Kroppen skal bruge kræfterne på at blive rask.",
+    "pain2Advice": "Skær træningen mindst til det halve, og spring løb over, til en behandler har set på det.",
+    "pain3Advice": "Hold pause fra det, der gør ondt, til en fysioterapeut eller læge har set på det."
+  },
+  "measurements": {
+    "title": "Højde og vækst",
+    "body": "Mål højden hver måned eller to gennem vækstspurten. Vokser rytteren hurtigt, kan teknikken svinge en tid, og der skal passes ekstra på.",
+    "height": "Højde",
+    "weight": "Vægt",
+    "kind": "Hvad",
+    "valueCm": "Centimeter",
+    "valueKg": "Kilo",
+    "date": "Dato",
+    "add": "Tilføj måling",
+    "cm": "{value} cm",
+    "kg": "{value} kg",
+    "empty": "Ingen målinger endnu.",
+    "grown": "Voksede {cm} cm det seneste år.",
+    "chartLabel": "Højden fra {from} til {to} cm",
+    "delete": "Slet målingen fra {date}",
+    "deleteTitle": "Slet målingen?",
+    "deleteBody": "Målingen forsvinder fra listen og kurven.",
+    "weightOff": "Vægt er slået fra for ryttere under 19, som Team Danmarks ATK anbefaler. En træner kan slå det til under Indstillinger → Holdet."
+  },
+  "activities": {
+    "title": "Aktivitet",
+    "back": "Tilbage til ugen",
+    "missing": "Aktiviteten findes ikke",
+    "missingHint": "Den er måske slettet, eller også har du ikke adgang til den.",
+    "startedAt": "start kl. {time}",
+    "source": {
+      "fit": "Fra en FIT-fil",
+      "wahoo": "Fra Wahoo",
+      "garmin": "Fra Garmin",
+      "manual": "Skrevet ind i hånden"
+    },
+    "session": "Hører til passet “{title}”",
+    "streamsTitle": "Turen undervejs",
+    "noStreams": "Filen havde ingen målinger undervejs.",
+    "zonesTitle": "Tid i zoner",
+    "zonesNote": "Kadences egne syv zoner, regnet ud fra rytterens FTP og tærskelpuls, da turen blev hentet.",
+    "bestTitle": "Bedste watt",
+    "feelTitle": "Hvordan det føltes",
+    "commentsTitle": "{count, plural, =0 {Kommentarer} one {# kommentar} other {# kommentarer}}",
+    "summary": {
+      "time": "Tid i bevægelse",
+      "elapsed": "Tid i alt",
+      "distance": "Distance",
+      "ascent": "Højdemeter",
+      "avgPower": "Gns. watt",
+      "weightedPower": "Vægtet watt",
+      "weightedHint": "Hårde stykker tæller mere",
+      "maxPower": "Maks. watt",
+      "avgHr": "Gns. puls",
+      "maxHr": "Maks. puls",
+      "cadence": "Kadence",
+      "work": "Arbejde",
+      "load": "Belastning",
+      "km": "{km} km",
+      "m": "{m} m",
+      "watt": "{w} W",
+      "bpm": "{bpm} slag/min",
+      "rpm": "{rpm} omdr./min",
+      "kj": "{kj} kJ",
+      "method": {
+        "power": "ud fra watt",
+        "hr": "ud fra puls",
+        "rpe": "ud fra hvor hårdt det føltes",
+        "none": "kan ikke regnes ud"
+      }
+    },
+    "streams": {
+      "show": "Vis kurver",
+      "power": "Watt",
+      "hr": "Puls",
+      "cadence": "Kadence",
+      "alt": "Højde",
+      "watt": "{w} W",
+      "bpm": "{bpm} slag/min",
+      "rpm": "{rpm} omdr./min",
+      "m": "{m} m",
+      "hint": "Peg på kurverne, eller brug piletasterne, for at læse et bestemt tidspunkt.",
+      "label": "Turen undervejs: {channels}",
+      "none": "Filen havde ingen målinger undervejs."
+    },
+    "zones": {
+      "power": "Efter watt",
+      "hr": "Efter puls",
+      "none": "Filen havde hverken watt eller puls.",
+      "noFtp": "Sæt rytterens FTP under tærskler for at se tid i zoner efter watt.",
+      "noThresholdHr": "Sæt rytterens tærskelpuls for at se tid i zoner efter puls."
+    },
+    "best": {
+      "none": "Ingen watt i filen.",
+      "d5": "5 sek.",
+      "d60": "1 min",
+      "d300": "5 min",
+      "d1200": "20 min",
+      "d3600": "60 min",
+      "watt": "{w} W"
+    },
+    "actions": {
+      "download": "Hent den originale fil",
+      "delete": "Slet aktiviteten",
+      "deleteTitle": "Slet aktiviteten?",
+      "deleteBody": "Aktiviteten og dens fil forsvinder. Et pas, den hørte til, bliver åbent igen."
+    },
+    "upload": {
+      "title": "Upload tur",
+      "body": "FIT-filer fra din cykelcomputer, dit ur eller din hometrainer. Det virker altid, også uden Wahoo og Garmin.",
+      "drop": "Træk filer hertil, eller tryk for at vælge",
+      "busy": "Henter …",
+      "hint": ".fit, højst 25 MB pr. fil",
+      "matched": "Hentet og sat på passet “{title}”.",
+      "unmatched": "Hentet. Den passede ikke til et planlagt pas, så den står for sig selv i kalenderen.",
+      "open": "Se turen",
+      "error": {
+        "duplicate": "Den tur er allerede hentet.",
+        "conflict": "Den tur er allerede hentet.",
+        "not_fit": "Det er ikke en FIT-fil.",
+        "truncated": "Filen er ikke hel. Hent den igen fra enheden, og prøv igen.",
+        "bad_crc": "Filen er beskadiget.",
+        "too_large": "Filen er for stor. Den må højst fylde 25 MB.",
+        "unsupported": "Det er en slags FIT-fil, Kadence ikke kan læse endnu.",
+        "corrupt": "Filen er ødelagt indeni og kan ikke læses.",
+        "empty": "Filen har ingen målinger fra en tur.",
+        "forbidden": "Du må ikke hente ture for den rytter.",
+        "notFound": "Rytteren findes ikke.",
+        "unauthorized": "Du er ikke logget ind længere.",
+        "rateLimited": "Du har hentet mange filer lige nu. Prøv igen om lidt.",
+        "invalid": "Vælg mindst én fil.",
+        "generic": "Noget gik galt med filen. Prøv igen."
+      }
+    }
+  },
+  "season": {
+    "title": "Sæson",
+    "subtitle": "{name} · oktober {from} til september {to}",
+    "seasonNav": "Vælg sæson",
+    "seasonLabel": "Sæson {from}/{to}",
+    "previous": "Forrige",
+    "next": "Næste",
+    "thisSeason": "Denne sæson",
+    "noRiders": {
+      "coachTitle": "Ingen ryttere endnu",
+      "coachBody": "En sæsonplan hører til en rytter. Tilføj holdets ryttere, så kan du lægge en plan for hver af dem ud fra DCU.",
+      "coachAction": "Tilføj ryttere",
+      "title": "Her er ingen sæsonplan til dig endnu",
+      "body": "Sæsonplanen hører til en rytter. Er du rytter eller forælder, så bed træneren om en invitation til netop det."
+    },
+    "none": {
+      "title": "Ingen sæsonplan endnu",
+      "body": "Planen fyldes ud med DCU's timer for årgangen, måned for måned fra oktober til september. Bagefter kan I rette alt, og afvigelsen fra DCU står altid ved siden af.",
+      "readOnly": "Der er ingen sæsonplan for den her sæson endnu. Træneren eller rytteren kan lave en."
+    },
+    "create": "Opret fra DCU",
+    "created": "Sæsonplanen er lavet ud fra DCU.",
+    "basisLabel": "Plan ud fra",
+    "pickBasis": "Vælg årgang",
+    "basisHint": "Rytterens årgang er valgt. Vælg en anden, hvis rytteren skal planlægge ud fra et andet år, fx fordi rytteren er startet sent.",
+    "noClass": "Rytteren er ikke i en af DCU's årgange (U17 til U23) i denne sæson. Vælg den årgang, planen skal bygge på.",
+    "basis": "{category} {year}. år",
+    "basisNow": "Planen bygger på DCU's timer for {basis}.",
+    "reset": {
+      "button": "Fyld ud igen fra DCU",
+      "title": "Fyld planen ud igen fra DCU?",
+      "body": "Alle måneder får DCU's timer og faser for {basis}. Jeres egne ændringer i månederne forsvinder, men noten til sæsonen bliver.",
+      "confirm": "Fyld ud igen",
+      "done": "Planen er fyldt ud igen fra DCU."
+    },
+    "monthsTitle": "Måned for måned",
+    "plan": "Plan",
+    "dcu": "DCU",
+    "ridden": "Kørt",
+    "hours": "{hours} t",
+    "dcuHours": "DCU: {hours} t",
+    "deviationLabel": "Afvigelse fra DCU",
+    "deviation": {
+      "same": "Som DCU",
+      "over": "{hours} t over DCU",
+      "under": "{hours} t under DCU",
+      "breakOver": "DCU holder pause"
+    },
+    "phase": {
+      "break": "Pause og frit",
+      "distance": "Distance",
+      "base_intervals": "Lange basisintervaller",
+      "peak_intervals": "Korte, hårde intervaller",
+      "season": "Løbssæson"
+    },
+    "phaseInfo": {
+      "break": "hvile for krop og hoved efter sæsonen, derefter korte, lette ture. Vinteren mod næste sæsons mål planlægges.",
+      "distance": "formen bygges først og fremmest med mere og mere mængde. Bane-, MTB- og crossryttere kører også lidt intervaller.",
+      "base_intervals": "relativt lange basisintervaller begynder, mens mængden stadig stiger fra måned til måned.",
+      "peak_intervals": "omkring marts kommer de egentlige formtopintervaller, korte og hårde, lagt efter hvornår rytteren vil toppe.",
+      "season": "træningen tilpasses løbene, og sæsonen køres til ende."
+    },
+    "dcuSays": "DCU:",
+    "ownNote": "Note",
+    "monthNote": {
+      "10": "Pause og frit. To ugers fuld hvile er som regel nok, en måned hvis rytteren er slidt. Derefter korte ture hver anden dag, og gerne andre sportsgrene. Planlæg vinteren.",
+      "11": "Den første måned med en fast mængde. Ingen hårde intervaller endnu: byg det fundament, den hårde træning senere skal stå på.",
+      "12": "Mængden stiger. Lette, planlagte intervaller kan begynde, korte i starten (omkring 5 min) med lange pauser. De hårdere perioder er omkring 10 % af mængden.",
+      "1": "Relativt lange basisintervaller begynder, mens mængden stiger. Intervaller mindst 10 % af mængden og under omkring 85 % af maks. puls.",
+      "2": "Mængden stiger fortsat, og intervallerne er omkring 15–20 %. Det mest intensive begynder 6–8 uger før rytteren vil toppe.",
+      "3": "Omkring marts korte, hårde formtopintervaller, lagt efter hvornår rytteren vil toppe. En lejr i syden kan være nødvendig for timerne.",
+      "4": "Sæsonen: træningen tilpasses rytterens løb. Højst to formtoppe på en sæson, hver fulgt af meget mindre mængde og lav intensitet.",
+      "5": "Sæsonen: træningen tilpasses rytterens løb.",
+      "6": "Lidt mindre mængde: mange vigtige løb, som slutter med DM.",
+      "7": "Lidt mere mængde: sommerferien giver plads til at bygge op til anden halvdel af sæsonen.",
+      "8": "Lidt mindre mængde sidst på sæsonen, hvor ryttere kan være slidte, ikke mindst i hovedet.",
+      "9": "Lidt mindre mængde, men kør sæsonen til ende: der er mange løb i september."
+    },
+    "edit": "Ret planen",
+    "save": "Gem planen",
+    "cancel": "Fortryd",
+    "saved": "Sæsonplanen er gemt.",
+    "hoursLabel": "Timer",
+    "phaseLabel": "Fase",
+    "noteLabel": "Note",
+    "notePlaceholder": "Fx lejr eller eksamen",
+    "planNote": "Note til sæsonen",
+    "planNotePlaceholder": "Fx sæsonens mål, eller hvorfor planen afviger fra DCU",
+    "totals": "Sæsonen i alt: {plan} t planlagt · DCU {dcu} t · {ridden} t kørt",
+    "readOnlyNote": "Du kan se planen. Træneren og rytteren kan rette den.",
+    "chart": {
+      "title": "Timer pr. måned",
+      "planned": "Plan",
+      "ridden": "Kørt på cyklen",
+      "dcu": "DCU",
+      "label": "Timer pr. måned i sæsonen: plan, kørt og DCU's timer",
+      "readout": "{month}: plan {plan} t · DCU {dcu} t · kørt {ridden} t",
+      "hint": "Peg på en måned, eller brug piletasterne, for at se tallene."
+    },
+    "reference": {
+      "title": "DCU's anbefalinger",
+      "body": "Timerne er DCU's træningsanbefalinger for landevej 2025. Kun timer på cyklen tæller med, ikke styrke, løb eller andet.",
+      "phasesTitle": "Sæsonens faser",
+      "zonesTitle": "Zoner: Kadences og DCU's",
+      "zonesBody": "Kadences syv zoner er Kadences egne og regnes ud fra FTP og tærskelpuls. DCU bruger fem pulsbånd i procent af pulsreserven, altså arbejdspuls minus hvilepuls, delt med maks. puls minus hvilepuls. De står her til sammenligning.",
+      "kadenceZones": "Kadences zoner",
+      "dcuBands": "DCU's pulsbånd",
+      "zone": "Zone",
+      "ftp": "% af FTP",
+      "thresholdHr": "% af tærskelpuls",
+      "band": "Bånd",
+      "hrr": "% af pulsreserven",
+      "range": "{low}–{high} %",
+      "upTo": "op til {high} %",
+      "over": "over {low} %",
+      "noBand": "intet tal",
+      "sourcesTitle": "Kilderne hos DCU",
+      "opensElsewhere": "(åbner hos Cykling Danmark)",
+      "snapshot": "Kadence har en kopi af tallene fra DCU's dokumenter. Når DCU udgiver nye anbefalinger, bliver tallene opdateret i hånden."
+    }
+  },
+  "assist": {
+    "decide": "Et forslag. Du bestemmer, hvad du bruger; intet gemmes, før du trykker.",
+    "dismiss": "Luk forslaget",
+    "byRules": "Læst af reglerne",
+    "byModel": "Læst af {engine}",
+    "byGuardrails": "Ud fra Kadences advarsler",
+    "errors": {
+      "noModel": "Der er ingen sprogmodel sat op, så AI'en kan ikke svare. Alt andet virker.",
+      "noModelLink": "Indstillinger → AI",
+      "notAllowed": "Holdet har ikke givet AI'en lov til at læse rytternes data. Det er slået fra som standard, fordi det er helbredsdata om unge.",
+      "notAllowedLink": "Indstillinger → Holdet",
+      "rateLimited": "Der er brugt mange AI-kald lige nu. Prøv igen om lidt.",
+      "unreachable": "Sprogmodellen svarer ikke. Prøv igen om lidt.",
+      "badAnswer": "Sprogmodellen svarede med noget, der ikke kunne bruges. Prøv igen.",
+      "notFound": "Det findes ikke længere. Genindlæs siden.",
+      "invalid": "Der mangler noget i det, du sendte.",
+      "unauthorized": "Du er ikke logget ind længere.",
+      "unreadable": "Teksten kunne ikke læses som et pas. Prøv at skrive det lidt anderledes, fx \"3x10 min Z4 / 5 min pause\".",
+      "generic": "Det lykkedes ikke at få et forslag. Prøv igen."
+    },
+    "parse": {
+      "open": "Skriv det som du plejer",
+      "label": "Skriv passet med dine egne ord",
+      "placeholder": "Fx 15 min opvarmning, 3x10 min Z4 / 5 min pause, 10 min nedkørsel",
+      "hint": "Reglerne læser den almindelige kortform uden nogen sprogmodel. AI'en bruges kun til det, reglerne ikke kan læse, og den får ingen rytterdata.",
+      "read": "Læs det",
+      "reading": "Læser …",
+      "close": "Luk",
+      "title": "Sådan blev det læst",
+      "body": "Se trinene igennem. \"Brug\" erstatter trinene i passet, og intet gemmes, før du gemmer passet.",
+      "use": "Brug"
+    },
+    "week": {
+      "open": "Foreslå ugen",
+      "title": "Forslag til ugen",
+      "body": "AI'en læser DCU's timer og fase, kalenderen, de seneste uger og advarslerne og foreslår pas. Du vælger, hvad der kommer i kalenderen.",
+      "thinking": "Tænker … det kan tage lidt tid.",
+      "proposal": "Forslag fra AI'en",
+      "empty": "AI'en foreslog ingen pas til ugen.",
+      "accept": "{count, plural, =0 {Læg valgte i kalenderen} one {Læg det valgte pas i kalenderen} other {Læg # valgte pas i kalenderen}}",
+      "again": "Foreslå igen",
+      "added": "{count, plural, one {Passet er lagt i kalenderen.} other {# pas er lagt i kalenderen.}}"
+    },
+    "brief": {
+      "ask": "Skriv et resumé",
+      "thinking": "Tænker …",
+      "title": "Resumé fra AI'en",
+      "nothing": "Ingen ryttere kræver opmærksomhed, så der er intet at opsummere.",
+      "noSummary": "AI'en har ikke noget at tilføje til listen.",
+      "off": "Et kort resumé fra AI'en kræver, at holdet har slået \"Må AI'en læse rytternes data\" til.",
+      "offLink": "Indstillinger → Holdet"
+    }
+  },
+  "devices": {
+    "title": "Enheder",
+    "subtitle": "Forbind Wahoo eller Garmin, så kommer dine ture ind af sig selv, og pas kan sendes til din cykelcomputer. FIT-upload virker altid, også uden.",
+    "coachNote": "Ryttere forbinder selv deres Wahoo eller Garmin her under Indstillinger → Enheder. Når en rytter har forbundet, kan du sende pas til rytterens enhed fra passet i kalenderen.",
+    "otherNote": "Enheder hører til rytteren. Kun rytteren selv kan forbinde sin Wahoo eller Garmin.",
+    "name": {
+      "wahoo": "Wahoo",
+      "garmin": "Garmin"
+    },
+    "about": {
+      "wahoo": "ELEMNT-cykelcomputere og KICKR-hometrainere. Ture hentes automatisk, og pas kan sendes til dem.",
+      "garmin": "Edge-cykelcomputere og ure via Garmin Connect. Ture hentes automatisk, og pas kan sendes til Garmin Connect-kalenderen."
+    },
+    "state": {
+      "notConfigured": "Ikke sat op her",
+      "notConnected": "Ikke forbundet",
+      "connected": "Forbundet",
+      "error": "Virker ikke",
+      "revoked": "Afbrudt"
+    },
+    "notConfigured": "Denne installation af Kadence har ikke nøgler til den. Upload dine ture som FIT-filer i stedet: det virker lige så godt.",
+    "connect": "Forbind {name}",
+    "reconnect": "Forbind {name} igen",
+    "lastSync": "Senest hentet {when}.",
+    "noSyncYet": "Ingen ture hentet endnu. Din næste tur kommer ind af sig selv.",
+    "canPush": "Du kan sende et cykelpas til {name} fra passet i kalenderen.",
+    "lastError": {
+      "refresh_failed": "{name} ville ikke forny forbindelsen. Forbind igen.",
+      "unauthorized": "{name} afviste Kadence. Forbind igen.",
+      "deregistered": "Forbindelsen er afbrudt hos {name}. Forbind igen, hvis du vil have dine ture ind.",
+      "provider_unavailable": "{name} svarede ikke sidst, Kadence prøvede. Det ordner sig som regel selv.",
+      "invalid_file": "En tur fra {name} kunne ikke læses. Upload filen selv, hvis den mangler.",
+      "download": "En tur kunne ikke hentes fra {name}. Upload filen selv, hvis den mangler.",
+      "unknown": "Noget gik galt med {name} sidst. Forbind igen, hvis dine ture ikke kommer ind."
+    },
+    "connected": "{name} er forbundet. Dine næste ture kommer ind af sig selv.",
+    "connectError": {
+      "unauthorized": "Du var ikke logget ind. Log ind, og prøv igen.",
+      "not_configured": "Den forbindelse er ikke sat op på denne installation. Upload FIT-filer i stedet.",
+      "not_a_rider": "Kun en rytter kan forbinde sin egen enhed.",
+      "rate_limited": "Du har prøvet mange gange lige nu. Vent et par minutter, og prøv igen.",
+      "state": "Forbindelsen tog for lang tid eller blev blandet sammen. Prøv igen.",
+      "denied": "Du sagde nej hos udbyderen, så intet er forbundet.",
+      "exchange_failed": "Udbyderen svarede ikke, som den skulle. Prøv igen om lidt.",
+      "already_linked": "Den konto er allerede forbundet til en anden rytter i Kadence.",
+      "failed": "Noget gik galt. Prøv igen."
+    },
+    "disconnect": "Afbryd",
+    "disconnectTitle": "Afbryd {name}?",
+    "disconnectBody": "Kadence sletter nøglerne til din {name}-konto og beder {name} om at glemme forbindelsen. Ture, der allerede er hentet, bliver.",
+    "disconnected": "{name} er afbrudt.",
+    "uploadInstead": "Uden Wahoo og Garmin kan du altid uploade dine ture som FIT-filer.",
+    "uploadLink": "Upload tur",
+    "usTitle": "Wahoo og Garmin er amerikanske firmaer",
+    "usBody": "Kadence selv ligger i EU. Når du forbinder, sender Wahoo eller Garmin dine ture til Kadence, og Kadence sender de pas, du vælger, til dem. Det er dit valg, og du kan afbryde når som helst.",
+    "usLink": "Hvem der kan se hvad"
+  },
+  "parents": {
+    "title": "Forældre",
+    "subtitle": "Til forældre til unge ryttere: dit barns uge, og hvordan du bedst bakker op.",
+    "sessionPanel": "Pas",
+    "waitingTitle": "Venter på dit barns bekræftelse",
+    "waitingBody": "Du kan se dit barns uge her, når dit barn har bekræftet forbindelsen til dig. Det gør rytteren selv under Indstillinger → Mig.",
+    "basicsTitle": "Godt at vide",
+    "child": {
+      "title": "{name}s uge",
+      "week": "Træningen i denne uge",
+      "hours": "{sessions} af {total} pas udført · {done} af {planned} t",
+      "form": "Formen",
+      "noForm": "Der er ikke gennemført træning nok til at vise formen endnu.",
+      "upcoming": "Det næste",
+      "noUpcoming": "Ingen løb, eksamener eller lejre den næste måned.",
+      "trainingHidden": "{name} deler ikke sin træning med dig lige nu. Det er rytterens eget valg.",
+      "wellbeing": "Hvordan det går",
+      "wellbeingNote": "Grøn er balance. Gul i en periode er et signal om at tage en snak sammen med træneren. Rød betyder, at der skal hjælp til. Spørg åbent, og lyt.",
+      "noCheckins": "Ingen check-ins de seneste 14 dage.",
+      "wellbeingHidden": "{name} deler ikke sine check-ins med dig. Det er rytterens eget valg, og det er helt i orden."
+    },
+    "guide": {
+      "title": "Forældreguiden",
+      "body": "Ti temaer og ni råd om at støtte et barn, der dyrker meget sport, skrevet kort med Kadences egne ord. Læs originalerne hos Team Danmark.",
+      "credit": "Bygger på Team Danmarks og Kolding Talents forældreguide.",
+      "guideLink": "Forældreguiden hos Team Danmark",
+      "opensElsewhere": "(åbner hos Team Danmark)",
+      "themesTitle": "Ti temaer",
+      "themeNumber": "Tema {n}",
+      "themeLink": "Læs tema {n} hos Team Danmark",
+      "themes": {
+        "1": {
+          "title": "Hvorfor dyrker dit barn sport?",
+          "body": "Tal om det, især når noget skifter: nyt hold, en skade, en lang periode uden fremgang. Har I hver jeres grund, giver det let gnidninger senere."
+        },
+        "2": {
+          "title": "Før, under og efter løbet",
+          "body": "Giv ro før, vær rolig og venlig under, og lad barnet tale med træner og hold først bagefter. Ros indsatsen uanset resultatet, og sørg for mad og hvile."
+        },
+        "3": {
+          "title": "Samarbejdet med træneren",
+          "body": "Tag bekymringer op tidligt og direkte, på et godt tidspunkt. Lad træneren træne, men hold selv øje med, om dit barn trives i miljøet."
+        },
+        "4": {
+          "title": "Motivation",
+          "body": "Spørg hellere \"hvad lærte du i dag?\" end \"hvem vandt?\". Lyst til at blive bedre holder længere end lyst til at vinde, også når det går imod."
+        },
+        "5": {
+          "title": "Mål, barnet selv kan styre",
+          "body": "Procesmål, som at holde sin plan eller øve et sving, er fundamentet. Placeringer kan man ikke styre selv. Lad være med at dele resultaterne på sociale medier."
+        },
+        "6": {
+          "title": "Man kan blive bedre",
+          "body": "Fejl og feedback er en del af vejen, ikke et bevis på, at man ikke kan. Din egen måde at tale om evner på smitter."
+        },
+        "7": {
+          "title": "Feedback, der hjælper",
+          "body": "Sammenlign med barnet selv, ikke med de andre: unge udvikler sig i vidt forskelligt tempo. Spørg om barnet overhovedet vil have feedback fra dig, det har jo en træner."
+        },
+        "8": {
+          "title": "En hverdag, der hænger sammen",
+          "body": "Lav ugeplanen sammen, med skole, træning, venner og tid til ingenting. Til eksamen går skolen forud, til mesterskaber sporten. Søvn er det vigtigste."
+        },
+        "9": {
+          "title": "Trivsel",
+          "body": "Svære perioder er normale, men omkring tre uger, hvor barnet har det svært, skal ikke bare gå. Gult betyder en snak inden for 14 dage, rødt betyder hjælp fra fagfolk. Træn aldrig med smerter eller sygdom."
+        },
+        "10": {
+          "title": "Efterskole og ungdomsuddannelse",
+          "body": "Overgangen er hård, og mange stopper her. Tal åbent om valgene, og aftal gerne med træneren at skære lidt ned de første måneder."
+        }
+      },
+      "adviceTitle": "Ni råd",
+      "adviceLink": "Rådene hos Team Danmark",
+      "advice": {
+        "1": {
+          "title": "Du er rollemodel.",
+          "body": "Dit barn ser, hvordan du opfører dig ved løb, til træning og i klubben."
+        },
+        "2": {
+          "title": "Støt, men lad barnet stå selv.",
+          "body": "Hjælp med det praktiske, og giv ansvaret videre lidt efter lidt."
+        },
+        "3": {
+          "title": "Vær en god del af klubben.",
+          "body": "Giv en hånd, og vis respekt for trænerens arbejde."
+        },
+        "4": {
+          "title": "Hold øje med trivslen.",
+          "body": "Det er dig, der kan sige fra på barnets vegne."
+        },
+        "5": {
+          "title": "Hjælp glæden på vej.",
+          "body": "Sporten skal være sjov, også på lang sigt."
+        },
+        "6": {
+          "title": "Find ud af, hvad der driver barnet.",
+          "body": "Og gør det bredere end at vinde."
+        },
+        "7": {
+          "title": "Ros indsatsen og det, barnet lærer.",
+          "body": "Ikke kun resultatet."
+        },
+        "8": {
+          "title": "Husk alt det andet, sporten giver.",
+          "body": "Venner, fællesskab og ting, der kan bruges i skolen og i livet."
+        },
+        "9": {
+          "title": "Spørg åbent.",
+          "body": "Og sammenlign med barnet selv, ikke med de andre."
+        }
+      }
+    },
+    "basics": {
+      "sleepTitle": "Søvn",
+      "sleepBody": "Unge på 14–17 år har brug for 8–10 timers søvn. Faste sengetider, også i weekenden, et køligt og mørkt værelse og skærmen væk før sengetid hjælper mest. Er dit barn træt, så tjek søvnen først.",
+      "sleepLink": "Team Danmark om søvn",
+      "schoolTitle": "Skole og sport",
+      "schoolBody": "Til eksamen går skolen forud, til mesterskaber sporten. Læg skole, eksamener og lejre i kalenderen, så kan træneren tage hensyn. En træning sprunget over for at være sammen med vennerne kan godt være et skridt i den rigtige retning.",
+      "seeTitle": "Det kan du se i Kadence, og hvorfor",
+      "canLabel": "Det kan du",
+      "cannotLabel": "Det kan du ikke",
+      "can": {
+        "training": "Dit barns træning: pas, hvad der er udført, og timerne, når dit barn har bekræftet forbindelsen og deler træningen.",
+        "wellbeing": "Hvordan dit barn har det (check-ins), men kun hvis dit barn vælger at dele det.",
+        "comments": "Samtalen om træningen: du kan læse med, men ikke skrive. Der findes ingen private beskeder mellem en voksen og en ung rytter."
+      },
+      "cannot": {
+        "others": "Se andre ryttere på holdet.",
+        "change": "Ændre planen eller skrive i den.",
+        "hidden": "Se det, dit barn ikke deler. Fra det år, dit barn fylder 18, skal dit barn bekræfte forbindelsen igen."
+      },
+      "why": "Rytteren ejer sine data. Træning og trivsel er helbredsoplysninger om unge mennesker, og en 16-årig bestemmer selv, hvad forældrene ser. Kadence håndhæver det i databasen, ikke kun på skærmen."
     }
   }
 }

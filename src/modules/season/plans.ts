@@ -115,6 +115,29 @@ export async function saveSeasonMonths(
   });
 }
 
+/**
+ * The plan filled again from DCU's table for another class-year — a rider
+ * who starts late and plans from an earlier year's hours, say. The months
+ * start over from DCU; the plan's note is kept. The deviation from then on
+ * is against the basis chosen here.
+ */
+export async function resetSeasonPlan(
+  ctx: OrgContext,
+  planId: string,
+  basis: ClassBasis,
+): Promise<void> {
+  await withOrgContext(ctx, async (tx) => {
+    const [row] = await tx.select().from(seasonPlans).where(eq(seasonPlans.id, planId));
+    if (!row) throw new Refused("notFound");
+    await requireWriteFor(tx, ctx, row.riderId);
+    const plan = buildSeasonPlan(basis, row.seasonStartYear);
+    await tx
+      .update(seasonPlans)
+      .set({ basis, months: plan.months })
+      .where(eq(seasonPlans.id, planId));
+  });
+}
+
 export async function deleteSeasonPlan(ctx: OrgContext, planId: string): Promise<void> {
   await withOrgContext(ctx, async (tx) => {
     const [row] = await tx.select().from(seasonPlans).where(eq(seasonPlans.id, planId));

@@ -6,12 +6,29 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("title") };
 }
 
-const HOW_TO = ["roles", "calendar", "sessions", "done", "comments", "parents", "data"] as const;
+const HOW_TO = [
+  "roles",
+  "calendar",
+  "sessions",
+  "done",
+  "comments",
+  "season",
+  "load",
+  "warnings",
+  "checkin",
+  "devices",
+  "parents",
+  "parentsPage",
+  "ai",
+  "data",
+] as const;
 
 /**
  * How the tool works, in the rhythm a season lives in: who may do what,
  * the calendar, sessions and templates, "done" and RPE, the comments, the
- * parents, then the way out. Each wave adds the part it built.
+ * season plan and DCU, the load, the warnings, the check-in, uploads and
+ * devices, the parents, the AI, then the way out. Each wave adds the part
+ * it built.
  */
 export default async function HelpPage() {
   const t = await getTranslations("help");

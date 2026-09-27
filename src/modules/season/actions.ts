@@ -3,7 +3,13 @@
 import { z } from "zod";
 import { runAction } from "@/core/action";
 import { CLASS_BASES } from "@/modules/dcu";
-import { createSeasonPlan, deleteSeasonPlan, saveSeasonMonths, SeasonMonthsInput } from "./plans";
+import {
+  createSeasonPlan,
+  deleteSeasonPlan,
+  resetSeasonPlan,
+  saveSeasonMonths,
+  SeasonMonthsInput,
+} from "./plans";
 
 /** The season plan's server actions; the season page and the calendar are refreshed after. */
 
@@ -32,6 +38,15 @@ export async function saveSeasonMonthsAction(raw: unknown) {
       note: z.string().trim().max(2000).default(""),
     }),
     (ctx, input) => saveSeasonMonths(ctx, input.planId, input.months, input.note),
+    PATHS,
+  );
+}
+
+export async function resetSeasonPlanAction(raw: unknown) {
+  return runAction(
+    raw,
+    z.object({ planId: id, basis: z.enum(CLASS_BASES) }),
+    (ctx, input) => resetSeasonPlan(ctx, input.planId, input.basis),
     PATHS,
   );
 }

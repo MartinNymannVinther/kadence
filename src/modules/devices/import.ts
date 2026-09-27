@@ -19,7 +19,13 @@ import { activityFromFit } from "./from-fit";
 
 export const MAX_UPLOAD_BYTES = 25 * 1024 * 1024;
 
-export type ImportResult = { activityId: string; sessionId: string | null; crcOk: boolean };
+export type ImportResult = {
+  activityId: string;
+  sessionId: string | null;
+  /** The matched session's title, so the upload can say where the ride landed. */
+  sessionTitle: string | null;
+  crcOk: boolean;
+};
 
 export type ImportSource = { source: "fit" | "wahoo" | "garmin"; externalId?: string | null };
 
@@ -81,6 +87,7 @@ export async function importFitIn(
   const open = await tx
     .select({
       id: plannedSessions.id,
+      title: plannedSessions.title,
       sport: plannedSessions.sport,
       onDate: plannedSessions.onDate,
       minutes: plannedSessions.plannedMinutes,
@@ -103,7 +110,8 @@ export async function importFitIn(
       .update(plannedSessions)
       .set({ activityId: activity.id })
       .where(eq(plannedSessions.id, sessionId));
-  return { activityId: activity.id, sessionId, crcOk };
+  const sessionTitle = open.find((s) => s.id === sessionId)?.title ?? null;
+  return { activityId: activity.id, sessionId, sessionTitle, crcOk };
 }
 
 export async function importFit(

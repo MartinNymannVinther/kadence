@@ -1,13 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Undo2 } from "lucide-react";
+import { Activity, Undo2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRun } from "@/components/common/use-run";
 import { Button } from "@/components/ui/button";
 import { ConfirmButton } from "@/components/ui/confirm-button";
 import { durationText } from "@/components/training/duration";
 import { rpeText } from "@/components/training/rpe";
+import { Link } from "@/i18n/navigation";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
 import { reopenSessionAction } from "@/modules/training/actions";
 import { FeedbackEditor } from "./feedback-editor";
 
@@ -71,8 +74,15 @@ export function DoneSummary({
         <p className="text-2sm leading-relaxed whitespace-pre-line">{activity.note}</p>
       )}
       {activity.source !== "manual" && <p className="text-meta text-xs">{t("fromFile")}</p>}
-      {canWrite && (
-        <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2">
+        <Link
+          href={`/activities/${activity.id}`}
+          className={cn(buttonVariants({ variant: "outline", size: "sm" }), "max-sm:h-11")}
+        >
+          <Activity data-icon="inline-start" />
+          {t("openActivity")}
+        </Link>
+        {canWrite && (
           <Button
             type="button"
             variant="outline"
@@ -82,21 +92,21 @@ export function DoneSummary({
           >
             {t("editFeedback")}
           </Button>
-          {activity.source === "manual" && (
-            <ConfirmButton
-              title={t("undoTitle")}
-              body={t("undoBody")}
-              confirmLabel={t("undo")}
-              variant="ghost"
-              disabled={pending}
-              onConfirm={() => run(() => reopenSessionAction({ sessionId }))}
-            >
-              <Undo2 data-icon="inline-start" />
-              {t("undo")}
-            </ConfirmButton>
-          )}
-        </div>
-      )}
+        )}
+        {canWrite && activity.source === "manual" && (
+          <ConfirmButton
+            title={t("undoTitle")}
+            body={t("undoBody")}
+            confirmLabel={t("undo")}
+            variant="ghost"
+            disabled={pending}
+            onConfirm={() => run(() => reopenSessionAction({ sessionId }))}
+          >
+            <Undo2 data-icon="inline-start" />
+            {t("undo")}
+          </ConfirmButton>
+        )}
+      </div>
     </div>
   );
 }

@@ -6,20 +6,29 @@ import { withQuery } from "@/components/calendar/href";
 import { toCard, toEventCard } from "@/components/calendar/to-card";
 import { SessionSheet } from "@/components/session/session-sheet";
 import { SessionView } from "@/components/session/session-view";
+import { FitUpload } from "@/components/activities/fit-upload";
+import { LoadPanel } from "@/components/load/load-panel";
+import { AttentionSection } from "@/components/today/attention-section";
+import { CheckinSection } from "@/components/today/checkin-section";
 import { CoachToday } from "@/components/today/coach-today";
 import { GettingStarted } from "@/components/today/getting-started";
 import { TodaySession } from "@/components/today/today-session";
 import { WeekGlance } from "@/components/today/week-glance";
+import { checkinValues } from "@/components/wellbeing/checkin-values";
+import { zoneDays } from "@/components/wellbeing/zone-days";
 import { dayLong } from "@/components/training/day-label";
 import { getOrgContext } from "@/core/auth/session";
 import { addDaysIso, maxIso, todayInCopenhagen } from "@/core/dates";
 import type { OrgContext } from "@/core/db/tenant";
 import { redirect } from "@/i18n/navigation";
+import { getInsights } from "@/modules/insight/service";
 import { whoAmI } from "@/modules/team/access";
 import { getRiders } from "@/modules/team/riders";
+import { getTeamSettings } from "@/modules/team/settings";
 import { listEvents } from "@/modules/training/events";
 import { listSessions } from "@/modules/training/sessions";
 import { weekDates, weekFrom } from "@/modules/training/week";
+import { getCheckin, listCheckins } from "@/modules/wellbeing/checkins";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("today");
@@ -36,12 +45,27 @@ async function weekOf(ctx: OrgContext, riderId: string, from: string, to: string
   return { sessions: sessions.map(toCard), events: events.map(toEventCard) };
 }
 
+/** The rider's own extras for today: the check-in, two weeks of zones and their load. */
+async function riderDay(ctx: OrgContext, riderId: string, today: string) {
+  const [checkin, recent, insights] = await Promise.all([
+    getCheckin(ctx, riderId, today),
+    listCheckins(ctx, { from: addDaysIso(today, -13), to: today, riderIds: [riderId] }),
+    getInsights(ctx, { riderIds: [riderId], today }),
+  ]);
+  return {
+    checkin: checkinValues(checkin),
+    days: zoneDays(recent, today),
+    insight: insights[0] ?? null,
+  };
+}
+
 /**
  * The front page, by who is looking. A rider sees today's and tomorrow's
- * sessions with a big "Udført", and the week at a glance; a coach sees
- * the team's day and the week's team events — or, on an empty team, the
- * three steps to start; a parent sees each confirmed child's week. One
- * person can be more than one of these, and sees each part.
+ * sessions with a big "Udført", the check-in, the week at a glance, the
+ * upload and their form; a coach sees who needs attention, the team's day
+ * and the week's team events — or, on an empty team, the three steps to
+ * start; a parent sees each confirmed child's week. One person can be more
+ * than one of these, and sees each part.
  */
 export default async function TodayPage({
   searchParams,
@@ -80,6 +104,10 @@ export default async function TodayPage({
       .map(async (c) => ({ ...c, week: await weekOf(ctx, c.riderId, monday, sunday) })),
   );
   const waiting = (me?.children ?? []).some((c) => !c.confirmed);
+  const mine = me?.rider ? await riderDay(ctx, me.rider.id, today) : null;
+  const [attention, settings] = team
+    ? await Promise.all([getInsights(ctx, { today }), getTeamSettings(ctx)])
+    : [null, null];
   const nothing = !me || (!me.isCoach && !me.rider && me.children.length === 0);
 
   return (
@@ -117,6 +145,14 @@ export default async function TodayPage({
               </section>
             );
           })}
+          {mine && (
+            <CheckinSection
+              riderId={me.rider.id}
+              today={today}
+              initial={mine.checkin}
+              days={mine.days}
+            />
+          )}
           <section aria-labelledby="rider-week" className="flex flex-col gap-3">
             <h2 id="rider-week" className="text-lg font-semibold">
               {t("rider.week")}
@@ -129,10 +165,33 @@ export default async function TodayPage({
               hrefFor={hrefFor}
             />
           </section>
+          <section aria-labelledby="rider-upload" className="flex flex-col gap-3">
+            <div className="flex flex-col gap-1">
+              <h2 id="rider-upload" className="text-lg font-semibold">
+                {t("rider.upload")}
+              </h2>
+              <p className="text-meta text-2sm leading-relaxed">{t("rider.uploadBody")}</p>
+            </div>
+            <FitUpload riderId={me.rider.id} compact />
+          </section>
+          {mine?.insight && (
+            <section aria-labelledby="rider-form" className="flex flex-col gap-3">
+              <div className="flex flex-col gap-1">
+                <h2 id="rider-form" className="text-lg font-semibold">
+                  {t("rider.form")}
+                </h2>
+                <p className="text-meta text-2sm leading-relaxed">{t("rider.formBody")}</p>
+              </div>
+              <LoadPanel insight={mine.insight} />
+            </section>
+          )}
         </>
       )}
 
       {me?.isCoach && riders.length === 0 && <GettingStarted />}
+      {attention && (
+        <AttentionSection insights={attention} aiAllowed={Boolean(settings?.aiOnRiderData)} />
+      )}
       {team && (
         <CoachToday
           riders={riders.map((r) => ({ id: r.id, name: r.name }))}

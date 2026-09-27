@@ -13,7 +13,10 @@ import { SessionSheet } from "@/components/session/session-sheet";
 import { SessionView } from "@/components/session/session-view";
 import { getOrgContext } from "@/core/auth/session";
 import { todayInCopenhagen } from "@/core/dates";
+import { basisText } from "@/components/season/basis-text";
 import { Link, redirect } from "@/i18n/navigation";
+import { seasonStartYear, weeklyCorridor } from "@/modules/dcu";
+import { riderClass } from "@/modules/season/class";
 import { whoAmI } from "@/modules/team/access";
 import { getRiders } from "@/modules/team/riders";
 import { listUnplanned } from "@/modules/training/activities";
@@ -53,7 +56,8 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
   const monday = weekFrom(param("week"), today);
   const days = weekDates(monday);
   const range = { from: monday, to: days[6] ?? monday };
-  const visible = (await getRiders(ctx)).map((r) => ({ id: r.id, name: r.name }));
+  const riderRows = await getRiders(ctx);
+  const visible = riderRows.map((r) => ({ id: r.id, name: r.name }));
 
   if (!me || visible.length === 0) {
     const waiting = me?.children.some((c) => !c.confirmed);
@@ -105,6 +109,15 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
     source: tpl.source,
   }));
   const openSession = param("session");
+  const row = riderRows.find((r) => r.id === rider.id);
+  const basis = row ? riderClass(row, seasonStartYear(monday)).basis : null;
+  const seasonT = await getTranslations("season");
+  const corridor = basis
+    ? {
+        ...weeklyCorridor(basis, monday),
+        klass: basisText(basis, (k, v) => seasonT(k, v)),
+      }
+    : null;
 
   return (
     <div className="flex min-w-0 flex-col gap-5">
@@ -147,6 +160,7 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
           riders={me.isCoach ? visible : [rider]}
           templates={templateOptions}
           query={query}
+          corridor={corridor}
         />
       )}
       {openSession && (

@@ -66,6 +66,16 @@
   --zone-5: oklch(0.7 0.09 65);
   --zone-6: oklch(0.58 0.11 45);
   --zone-7: oklch(0.45 0.11 30);
+  /*
+   * Two series for Kadence's charts, where a pair is read together:
+   * fitness beside fatigue, the plan beside what was ridden. Moss and clay
+   * a lightness step apart, so the pair holds under red-green colour
+   * blindness (ΔE 14 protan against the card, checked with the dataviz
+   * validator); 2a's low chroma is kept on purpose, and every chart names
+   * its series in a legend as well.
+   */
+  --series-1: oklch(0.505 0.055 150);
+  --series-2: oklch(0.655 0.065 60);
   --radius: 0.75rem;
   --surface-shadow: 0 1px 2px oklch(0.245 0.008 75 / 0.04);
   --dialog-shadow: 0 24px 60px -24px oklch(0.245 0.008 75 / 0.28);
@@ -129,6 +139,8 @@
   --zone-5: oklch(0.72 0.1 65);
   --zone-6: oklch(0.65 0.12 45);
   --zone-7: oklch(0.58 0.13 30);
+  --series-1: oklch(0.6 0.075 150);
+  --series-2: oklch(0.8 0.085 62);
   --surface-shadow: 0 1px 2px oklch(0 0 0 / 0.3);
   --dialog-shadow: 0 24px 60px -24px oklch(0 0 0 / 0.6);
   --scrim: oklch(0 0 0 / 0.5);

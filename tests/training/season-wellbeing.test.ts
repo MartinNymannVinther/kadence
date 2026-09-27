@@ -4,6 +4,7 @@ import { monthHours } from "@/modules/dcu";
 import {
   createSeasonPlan,
   getSeasonPlan,
+  resetSeasonPlan,
   riderClass,
   saveSeasonMonths,
 } from "@/modules/season/plans";
@@ -89,6 +90,19 @@ describe("the season plan", () => {
     await expect(saveSeasonMonths(FAR, plan.id, months, "")).rejects.toMatchObject({
       code: "forbidden",
     });
+  });
+
+  it("fills again from another class-year, keeping the note, for the rider or coach only", async () => {
+    const plan = (await getSeasonPlan(COACH, "s_lea", 2026))!;
+    await expect(resetSeasonPlan(FAR, plan.id, "U17-2")).rejects.toMatchObject({
+      code: "forbidden",
+    });
+    await resetSeasonPlan(LEA, plan.id, "U17-2");
+    const reset = (await getSeasonPlan(COACH, "s_lea", 2026))!;
+    expect(reset.basis).toBe("U17-2");
+    expect(reset.note).toBe("Mere i januar");
+    expect(reset.months.find((m) => m.month === 1)!.hours).toBe(monthHours("U17-2", 1));
+    expect(reset.deviations.every((d) => d.diff === 0)).toBe(true);
   });
 
   it("refuses a second plan for the same season", async () => {

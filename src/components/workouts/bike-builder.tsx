@@ -2,6 +2,7 @@
 
 import { Plus, Repeat as RepeatIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { TextToSteps } from "@/components/assist/text-to-steps";
 import { Button } from "@/components/ui/button";
 import { durationText } from "@/components/training/duration";
 import { structureMinutes, type BikeStructure } from "@/modules/workouts/structure";
@@ -18,7 +19,8 @@ const MAX_ITEMS = 60;
  * A bike session, built on a phone as well as at a desk: the profile and
  * the total time on top, live, and below them the steps and repeats in
  * riding order, each with its own up, down, copy and remove. New steps
- * land at the end, before the cool-down if there is one.
+ * land at the end, before the cool-down if there is one. "Skriv det som
+ * du plejer" reads the coach's shorthand into steps that replace these.
  */
 export function BikeBuilder({
   structure,
@@ -49,6 +51,7 @@ export function BikeBuilder({
 
   return (
     <div className="flex min-w-0 flex-col gap-3">
+      <TextToSteps onUse={(parsed) => onChange({ ...structure, steps: parsed.steps })} />
       <div className="flex flex-col gap-2">
         <ProfileChart structure={structure} />
         <p className="text-2sm flex items-center justify-between" aria-live="polite">

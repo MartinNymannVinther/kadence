@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { runAction } from "@/core/action";
 import { disconnect } from "./disconnect";
+import { deleteActivity } from "./import";
 import { PROVIDER_IDS } from "./providers";
 import { pushSession } from "./push";
 
@@ -28,4 +29,14 @@ export async function disconnectAction(raw: unknown) {
   return runAction(raw, z.object({ provider }), (ctx, input) => disconnect(ctx, input.provider), [
     "/settings/devices",
   ]);
+}
+
+/** Deletes a ride or session that was done, and its file: the rider's or a coach's. */
+export async function deleteActivityAction(raw: unknown) {
+  return runAction(
+    raw,
+    z.object({ activityId: id }),
+    (ctx, input) => deleteActivity(ctx, input.activityId),
+    ["/calendar", "/today", "/riders", "/season"],
+  );
 }

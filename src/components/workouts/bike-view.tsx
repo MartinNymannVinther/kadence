@@ -17,9 +17,12 @@ import { useTargetText } from "./use-target-text";
 export function BikeView({
   structure,
   rider,
+  preview = false,
 }: {
   structure: BikeStructure;
   rider: Thresholds | null;
+  /** A proposal being looked at, not a session to ride: no note about thresholds. */
+  preview?: boolean;
 }) {
   const t = useTranslations("workouts.view");
   const needsThresholds = structure.steps.some((item) =>
@@ -27,7 +30,7 @@ export function BikeView({
       (s) => s.target.kind !== "rpe" && s.target.kind !== "open",
     ),
   );
-  const missing = needsThresholds && !(rider?.ftp || rider?.thresholdHr);
+  const missing = !preview && needsThresholds && !(rider?.ftp || rider?.thresholdHr);
 
   return (
     <div className="flex min-w-0 flex-col gap-3">

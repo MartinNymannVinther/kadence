@@ -7,15 +7,17 @@ import { cn } from "@/lib/utils";
 
 /**
  * The app navigation. Text only, per the 2a handoff, in the rhythm a
- * week is lived in: today, the calendar, the team (coaches only), the
- * library, and help. Rendered in the desktop sidebar and inside the
+ * week is lived in: today, the calendar, the season, the team (coaches
+ * only), the library, the parents' page, and help. Rendered in the desktop sidebar and inside the
  * mobile sheet, where `onNavigate` lets the sheet close itself.
  */
 const ITEMS = [
   { href: "/today", key: "today", coach: false },
   { href: "/calendar", key: "calendar", coach: false },
+  { href: "/season", key: "season", coach: false },
   { href: "/riders", key: "riders", coach: true },
   { href: "/library", key: "library", coach: false },
+  { href: "/parents", key: "parents", coach: false },
   { href: "/help", key: "help", coach: false },
 ] as const;
 

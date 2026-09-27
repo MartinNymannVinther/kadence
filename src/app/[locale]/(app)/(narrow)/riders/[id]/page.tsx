@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
-import { CalendarDays, ChevronLeft } from "lucide-react";
+import { CalendarDays, CalendarRange, ChevronLeft } from "lucide-react";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
+import { FitUpload } from "@/components/activities/fit-upload";
+import { LoadPanel } from "@/components/load/load-panel";
 import { buttonVariants } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
@@ -9,19 +11,27 @@ import { calendarHref } from "@/components/calendar/href";
 import { accountState } from "@/components/team/account-badge";
 import { ArchiveRider } from "@/components/team/archive-rider";
 import { classText } from "@/components/team/class-text";
+import { EraseRider } from "@/components/team/erase-rider";
 import { GuardianList } from "@/components/team/guardian-list";
 import { guardianState } from "@/components/team/guardian-state";
 import { RiderAccount } from "@/components/team/rider-account";
+import { RiderInsightCard } from "@/components/team/rider-insight-card";
 import { RiderProfileForm } from "@/components/team/rider-profile-form";
 import { ThresholdsForm } from "@/components/team/thresholds-form";
+import { MeasurementsCard, type MeasurementRow } from "@/components/wellbeing/measurements-card";
+import { zoneDays } from "@/components/wellbeing/zone-days";
 import { getOrgContext } from "@/core/auth/session";
-import { todayInCopenhagen } from "@/core/dates";
+import { addDaysIso, todayInCopenhagen } from "@/core/dates";
 import { listPendingInvitations } from "@/core/team/service";
 import { Link, redirect } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+import { getInsights } from "@/modules/insight/service";
 import { whoAmI } from "@/modules/team/access";
 import { listGuardians } from "@/modules/team/guardians";
 import { getRider } from "@/modules/team/riders";
+import { getTeamSettings } from "@/modules/team/settings";
+import { listCheckins } from "@/modules/wellbeing/checkins";
+import { isYouth, listMeasurements } from "@/modules/wellbeing/measurements";
 
 export async function generateMetadata({
   params,
@@ -35,9 +45,12 @@ export async function generateMetadata({
 }
 
 /**
- * One rider, for a coach: the profile, the thresholds the zones are
- * worked out from, the rider's own account and invitation, the parents
- * and where their links stand, and the way to archive the rider.
+ * One rider, for a coach: the week's warnings and the last two weeks of
+ * check-ins, the load chart and the weeks' hours against DCU, height
+ * through the growth spurt, a ride uploaded on the rider's behalf; then
+ * the profile, the thresholds the zones are worked out from, the rider's
+ * own account and invitation, the parents and where their links stand,
+ * the way to archive the rider — and, apart, to erase them.
  */
 export default async function RiderPage({ params }: { params: Promise<{ id: string }> }) {
   const ctx = await getOrgContext();
@@ -55,16 +68,26 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
   const { id } = await params;
   const rider = await getRider(ctx, id);
   if (!rider) notFound();
-  const [guardians, invitations] = await Promise.all([
+  const today = todayInCopenhagen();
+  const [guardians, invitations, insights, checkins, measurements, settings] = await Promise.all([
     listGuardians(ctx, rider.id),
     listPendingInvitations(ctx.orgId),
+    getInsights(ctx, { riderIds: [rider.id], today }),
+    listCheckins(ctx, { from: addDaysIso(today, -13), to: today, riderIds: [rider.id] }),
+    listMeasurements(ctx, rider.id),
+    getTeamSettings(ctx),
   ]);
+  const insight = insights[0] ?? null;
+  const shownMeasurements: MeasurementRow[] = measurements.flatMap((m) =>
+    m.kind === "height_cm" || m.kind === "weight_kg"
+      ? [{ id: m.id, measuredOn: m.measuredOn, kind: m.kind, value: Number(m.value) }]
+      : [],
+  );
   const pending = new Set(invitations.map((i) => i.id));
   const invitationFor = (invitationId: string | null) => {
     const found = invitations.find((i) => i.id === invitationId);
     return found ? { url: found.url, email: found.email } : null;
   };
-  const today = todayInCopenhagen();
   const account = accountState(rider, pending);
 
   return (
@@ -84,15 +107,56 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
           class: classText(rider, today, classes),
         })}
         actions={
-          <Link
-            href={calendarHref({ rider: rider.id })}
-            className={cn(buttonVariants({ variant: "outline" }), "max-sm:h-11")}
-          >
-            <CalendarDays data-icon="inline-start" />
-            {t("calendar")}
-          </Link>
+          <>
+            <Link
+              href={calendarHref({ rider: rider.id })}
+              className={cn(buttonVariants({ variant: "outline" }), "max-sm:h-11")}
+            >
+              <CalendarDays data-icon="inline-start" />
+              {t("calendar")}
+            </Link>
+            <Link
+              href={`/season?rider=${rider.id}`}
+              className={cn(buttonVariants({ variant: "outline" }), "max-sm:h-11")}
+            >
+              <CalendarRange data-icon="inline-start" />
+              {t("season")}
+            </Link>
+          </>
         }
       />
+      <div className="grid max-w-3xl gap-8 [&>*]:min-w-0">
+        <section aria-labelledby="rider-week" className="flex flex-col gap-3">
+          <h2 id="rider-week" className="text-lg font-semibold">
+            {t("sections.week")}
+          </h2>
+          <RiderInsightCard insight={insight} days={zoneDays(checkins, today)} today={today} />
+        </section>
+        {insight && (
+          <section aria-labelledby="rider-form" className="flex flex-col gap-3">
+            <h2 id="rider-form" className="text-lg font-semibold">
+              {t("sections.form")}
+            </h2>
+            <LoadPanel insight={insight} />
+          </section>
+        )}
+        <MeasurementsCard
+          riderId={rider.id}
+          today={today}
+          rows={shownMeasurements}
+          weightAllowed={settings.allowYouthWeight || !isYouth(rider.birthYear, today)}
+        />
+        <section aria-labelledby="rider-upload" className="flex flex-col gap-3">
+          <div className="flex flex-col gap-1">
+            <h2 id="rider-upload" className="text-lg font-semibold">
+              {t("sections.upload")}
+            </h2>
+            <p className="text-meta text-2sm">{t("sections.uploadBody")}</p>
+          </div>
+          <FitUpload riderId={rider.id} compact />
+        </section>
+      </div>
+      <h2 className="mt-3 text-lg font-semibold">{t("sections.profile")}</h2>
       <div className="grid max-w-3xl gap-5">
         <RiderProfileForm
           rider={{
@@ -140,6 +204,7 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
           </p>
           <ArchiveRider riderId={rider.id} name={rider.name} archived={rider.archived} />
         </div>
+        <EraseRider riderId={rider.id} name={rider.name} />
       </div>
     </div>
   );

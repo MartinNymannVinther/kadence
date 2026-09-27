@@ -1,0 +1,192 @@
+import type { Metadata } from "next";
+import { ChevronLeft } from "lucide-react";
+import { getLocale, getTranslations } from "next-intl/server";
+import { ActivityActions } from "@/components/activities/activity-actions";
+import { ActivityFeedback } from "@/components/activities/activity-feedback";
+import { ActivitySummary } from "@/components/activities/activity-summary";
+import { BestPowers } from "@/components/activities/best-powers";
+import { StreamsChart, type Streams } from "@/components/activities/streams-chart";
+import { ZoneTime } from "@/components/activities/zone-time";
+import { calendarHref } from "@/components/calendar/href";
+import { CommentThread } from "@/components/session/comment-thread";
+import { dayLong } from "@/components/training/day-label";
+import { SportIcon } from "@/components/training/sport-icon";
+import { EmptyState } from "@/components/ui/empty-state";
+import { getOrgContext } from "@/core/auth/session";
+import { mondayOf } from "@/core/dates";
+import { Link, redirect } from "@/i18n/navigation";
+import { whoAmI } from "@/modules/team/access";
+import { getRider } from "@/modules/team/riders";
+import { getActivity, getActivitySession } from "@/modules/training/activities";
+import { listComments } from "@/modules/training/comments";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("activities");
+  return { title: t("title") };
+}
+
+const isStreams = (value: unknown): value is Streams =>
+  typeof value === "object" && value !== null && Array.isArray((value as Streams).t);
+
+/**
+ * One ride or session that was done: what it came to, the ride over time,
+ * time in zones and the best watt, how it felt, and the conversation about
+ * it — with the original file to take out again and the way to delete it.
+ * Whoever may read the rider's training may read this; the coach and the
+ * rider may change it (ADR 0011).
+ */
+export default async function ActivityPage({ params }: { params: Promise<{ id: string }> }) {
+  const ctx = await getOrgContext();
+  const locale = await getLocale();
+  if (!ctx) {
+    redirect({ href: "/login", locale });
+    return null;
+  }
+  const t = await getTranslations("activities");
+  const sports = await getTranslations("training.sport");
+  const { id } = await params;
+  const [me, activity] = await Promise.all([whoAmI(ctx.orgId, ctx.userId), getActivity(ctx, id)]);
+  if (!me || !activity) {
+    return (
+      <div className="flex max-w-2xl flex-col gap-5">
+        <EmptyState title={t("missing")} hint={t("missingHint")} />
+      </div>
+    );
+  }
+  const [rider, session, comments] = await Promise.all([
+    getRider(ctx, activity.riderId),
+    getActivitySession(ctx, activity.id),
+    listComments(ctx, { activityId: activity.id }),
+  ]);
+  const canWrite = me.isCoach || me.rider?.id === activity.riderId;
+  const back = calendarHref({
+    week: mondayOf(activity.onDate),
+    rider: me.rider?.id === activity.riderId ? null : activity.riderId,
+  });
+  const streams = isStreams(activity.streams) ? activity.streams : null;
+  const zones = (activity.zoneSeconds ?? null) as { power?: number[]; hr?: number[] } | null;
+  const best = (activity.bestPowers ?? {}) as Record<string, number>;
+  const started = new Intl.DateTimeFormat(locale === "en" ? "en-GB" : "da-DK", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Europe/Copenhagen",
+  }).format(activity.startedAt);
+  const fromFile = activity.source !== "manual";
+
+  return (
+    <div className="flex min-w-0 max-w-4xl flex-col gap-7">
+      <Link
+        href={back}
+        className="focus-ring text-meta hover:text-foreground flex min-h-11 w-fit items-center gap-1 text-2sm"
+      >
+        <ChevronLeft aria-hidden className="size-4" />
+        {t("back")}
+      </Link>
+
+      <header className="flex flex-col gap-2">
+        <p className="text-chart-2 text-2sm font-medium first-letter:uppercase">
+          {dayLong(activity.onDate, locale)}
+          {fromFile ? ` · ${t("startedAt", { time: started })}` : ""}
+          {rider ? ` · ${rider.name}` : ""}
+        </p>
+        <h1 className="flex items-center gap-2 text-[1.625rem] leading-tight font-semibold tracking-[-0.02em]">
+          <SportIcon sport={activity.sport} className="size-5" />
+          {activity.title || sports(activity.sport as "bike")}
+        </h1>
+        <p className="text-meta text-2sm">
+          {t(`source.${activity.source}` as "source.fit")}
+          {session && (
+            <>
+              {" · "}
+              <Link
+                href={`/calendar/session/${session.id}`}
+                className="focus-ring text-primary font-medium hover:underline"
+              >
+                {t("session", { title: session.title })}
+              </Link>
+            </>
+          )}
+        </p>
+      </header>
+
+      <ActivitySummary facts={activity} />
+
+      {fromFile && (
+        <section aria-labelledby="activity-streams" className="flex flex-col gap-3">
+          <h2 id="activity-streams" className="text-lg font-semibold">
+            {t("streamsTitle")}
+          </h2>
+          {streams ? (
+            <StreamsChart streams={streams} />
+          ) : (
+            <p className="text-meta text-2sm">{t("noStreams")}</p>
+          )}
+        </section>
+      )}
+
+      {fromFile && (
+        <section aria-labelledby="activity-zones" className="flex flex-col gap-3">
+          <h2 id="activity-zones" className="text-lg font-semibold">
+            {t("zonesTitle")}
+          </h2>
+          <ZoneTime
+            zoneSeconds={zones}
+            hasPower={activity.avgPower !== null && activity.avgPower > 0}
+            hasHr={activity.avgHr !== null && activity.avgHr > 0}
+          />
+          <p className="text-meta text-xs leading-relaxed">{t("zonesNote")}</p>
+        </section>
+      )}
+
+      {activity.avgPower !== null && activity.avgPower > 0 && (
+        <section aria-labelledby="activity-best" className="flex flex-col gap-3">
+          <h2 id="activity-best" className="text-lg font-semibold">
+            {t("bestTitle")}
+          </h2>
+          <BestPowers best={best} />
+        </section>
+      )}
+
+      <section aria-labelledby="activity-feel" className="flex flex-col gap-3">
+        <h2 id="activity-feel" className="text-lg font-semibold">
+          {t("feelTitle")}
+        </h2>
+        <ActivityFeedback
+          canWrite={canWrite}
+          activity={{
+            id: activity.id,
+            movingSeconds: activity.movingSeconds,
+            distanceM: activity.distanceM,
+            rpe: activity.rpe,
+            feel: activity.feel,
+            note: activity.note,
+            load: activity.load,
+            source: activity.source,
+          }}
+        />
+      </section>
+
+      <section aria-labelledby="activity-comments" className="flex max-w-2xl flex-col gap-3">
+        <h2 id="activity-comments" className="text-lg font-semibold">
+          {t("commentsTitle", { count: comments.length })}
+        </h2>
+        <CommentThread
+          target={{ activityId: activity.id }}
+          comments={comments}
+          currentUserId={ctx.userId}
+          isCoach={me.isCoach}
+          canWrite={canWrite}
+        />
+      </section>
+
+      <div className="border-border flex flex-col gap-2 border-t pt-5">
+        <ActivityActions
+          activityId={activity.id}
+          hasFile={fromFile}
+          canWrite={canWrite}
+          afterDeleteHref={back}
+        />
+      </div>
+    </div>
+  );
+}

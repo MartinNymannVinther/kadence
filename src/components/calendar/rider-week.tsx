@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { CalendarPlus, NotebookPen, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { UploadDialog } from "@/components/activities/upload-dialog";
+import { WeekDraftDialog } from "@/components/assist/week-draft-dialog";
 import { Button } from "@/components/ui/button";
 import { CalendarDialogs, type DialogState } from "./calendar-dialogs";
 import { DayColumn } from "./day-column";
@@ -12,12 +14,14 @@ import type { TemplateOption } from "./template-picker";
 import type { CalendarActivityCard, CalendarCard, CalendarEventCard, RiderOption } from "./types";
 import { useSessionDrag } from "./use-session-drag";
 import { useWeekSessions } from "./use-week-sessions";
-import { WeekTotals } from "./week-totals";
+import { WeekTotals, type Corridor } from "./week-totals";
 
 /**
  * One rider's week: seven columns on a desktop, a day-by-day list on a
  * phone. Sessions move by dragging on a desktop and by "Flyt" everywhere;
- * the week's hours sit on top, planned beside done.
+ * the week's hours sit on top, planned beside done and against DCU's
+ * corridor. A coach can ask the AI to propose the week; the rider and the
+ * coach can upload a ride.
  */
 export function RiderWeek({
   riderId,
@@ -31,6 +35,7 @@ export function RiderWeek({
   riders,
   templates,
   query,
+  corridor,
 }: {
   riderId: string;
   days: string[];
@@ -43,6 +48,8 @@ export function RiderWeek({
   riders: RiderOption[];
   templates: TemplateOption[];
   query: CalendarQuery;
+  /** DCU's corridor for the rider's class this week, when the rider has one. */
+  corridor: Corridor | null;
 }) {
   const t = useTranslations("calendar.actions");
   const { sessions, move, place, landed, announcement } = useWeekSessions(initial);
@@ -57,7 +64,13 @@ export function RiderWeek({
   return (
     <div className="flex min-w-0 flex-col gap-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
-        <WeekTotals monday={monday} sessions={sessions} activities={activities} />
+        <WeekTotals
+          monday={monday}
+          sessions={sessions}
+          activities={activities}
+          corridor={corridor}
+          today={today}
+        />
         {canWrite && (
           <div className="flex flex-wrap gap-2">
             {canPlan && (
@@ -85,6 +98,8 @@ export function RiderWeek({
               <CalendarPlus data-icon="inline-start" />
               {t("addEvent")}
             </Button>
+            <UploadDialog riderId={riderId} />
+            {isCoach && <WeekDraftDialog riderId={riderId} monday={monday} />}
           </div>
         )}
       </div>

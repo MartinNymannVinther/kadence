@@ -65,3 +65,17 @@ starts.
 
 Nightly encrypted dump of the database to EU object storage. Runs on the
 VPS from cron, not in a container; docs/deploy.md section 7 has the setup.
+
+## icons.ts
+
+Draws the web app's PNG icons from the three bars in `src/app/icon.svg`.
+
+```
+pnpm script scripts/icons.ts
+```
+
+Writes `public/icon-192.png`, `public/icon-512.png`,
+`public/icon-maskable-512.png` and `public/apple-touch-icon.png`, which
+`src/app/manifest.ts` and the root layout point to. It touches no
+database; it lives here because it is run by hand, once, when the mark
+changes. Node's own zlib writes the PNGs, so no image library is needed.

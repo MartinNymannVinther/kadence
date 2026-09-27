@@ -54,3 +54,21 @@ export async function getActivity(ctx: OrgContext, id: string): Promise<Activity
     return row ?? null;
   });
 }
+
+/** The planned session an activity fulfilled, if any, for the link back to it. */
+export async function getActivitySession(
+  ctx: OrgContext,
+  activityId: string,
+): Promise<{ id: string; title: string; onDate: string } | null> {
+  return withOrgContext(ctx, async (tx) => {
+    const [row] = await tx
+      .select({
+        id: plannedSessions.id,
+        title: plannedSessions.title,
+        onDate: plannedSessions.onDate,
+      })
+      .from(plannedSessions)
+      .where(eq(plannedSessions.activityId, activityId));
+    return row ?? null;
+  });
+}

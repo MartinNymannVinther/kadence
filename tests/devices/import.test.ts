@@ -2,6 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { Pool } from "pg";
 import { SPORT } from "@/modules/fit";
 import { deleteActivity, getActivityFile, importFit } from "@/modules/devices/import";
+import { getActivitySession } from "@/modules/training/activities";
 import { listSessions } from "@/modules/training/sessions";
 import { adminPool } from "../helpers/db";
 import { insertSql, seedPerson } from "../helpers/rows";
@@ -63,7 +64,11 @@ describe("importing a FIT file", () => {
 
   it("lands on the planned session with a load from power", async () => {
     const result = await importFit(IDA, "i_ida", "morgen.fit", ride);
-    expect(result).toMatchObject({ sessionId: "i_session", crcOk: true });
+    expect(result).toMatchObject({
+      sessionId: "i_session",
+      sessionTitle: "Grundtur",
+      crcOk: true,
+    });
     activityId = result.activityId;
     const [session] = await listSessions(COACH, { from: DAY, to: DAY, riderIds: ["i_ida"] });
     expect(session!.activity).toMatchObject({ id: activityId, loadMethod: "power", source: "fit" });
@@ -76,6 +81,15 @@ describe("importing a FIT file", () => {
     );
     expect(row.rows[0]).toMatchObject({ weighted_power: 200, avg_hr: 150 });
     expect(row.rows[0].moving_seconds).toBeGreaterThan(3500);
+  });
+
+  it("names the session it fulfilled, for the activity's page", async () => {
+    expect(await getActivitySession(COACH, activityId)).toEqual({
+      id: "i_session",
+      title: "Grundtur",
+      onDate: DAY,
+    });
+    expect(await getActivitySession(MIKKEL, activityId)).toBeNull();
   });
 
   it("keeps the file for the rider to take out again", async () => {

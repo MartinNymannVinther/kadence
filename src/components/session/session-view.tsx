@@ -10,6 +10,7 @@ import { SportIcon } from "@/components/training/sport-icon";
 import { StructureView } from "@/components/workouts/structure-view";
 import { todayInCopenhagen } from "@/core/dates";
 import type { OrgContext } from "@/core/db/tenant";
+import { listDeviceLinks } from "@/modules/devices/links";
 import type { Me } from "@/modules/team/access";
 import { getRider, getRiders } from "@/modules/team/riders";
 import { getActivity } from "@/modules/training/activities";
@@ -19,13 +20,17 @@ import { readStructure } from "@/modules/workouts/structure";
 import { CommentThread } from "./comment-thread";
 import { CompleteForm } from "./complete-form";
 import { DoneSummary } from "./done-summary";
+import { ExportMenu } from "./export-menu";
+import { PushButtons } from "./push-buttons";
 
 /**
  * One planned session, whole: what it is, how to ride it for this rider,
  * whether it was done and how it felt, and the conversation about it.
  * Rendered in the calendar's panel and on the session's own page. The
  * database decides whether the caller may see it at all; a parent sees
- * everything and writes nothing (ADR 0011, 0012).
+ * everything and writes nothing (ADR 0011, 0012). A bike session with
+ * steps can be taken to a trainer or head unit as a file, and sent to the
+ * rider's connected Wahoo or Garmin by the rider or a coach.
  */
 export async function SessionView({
   ctx,
@@ -59,6 +64,14 @@ export async function SessionView({
   ]);
   const card = toCard(session);
   const sport = card.sport as "bike" | "strength" | "other";
+  const structure = readStructure(session.structure, sport);
+  const exportable = structure.kind === "bike" && structure.steps.length > 0;
+  const pushTo =
+    exportable && canWrite && !card.activity
+      ? (await listDeviceLinks(ctx, session.riderId))
+          .filter((l) => l.canPush && l.status === "connected")
+          .map((l) => l.provider)
+      : [];
   const today = todayInCopenhagen();
   const Heading = heading;
 
@@ -107,10 +120,16 @@ export async function SessionView({
           {t("structure")}
         </h3>
         <StructureView
-          structure={readStructure(session.structure, sport)}
+          structure={structure}
           rider={rider ? { ftp: rider.ftpWatts, thresholdHr: rider.thresholdHr } : null}
           programmeSession={card.programmeSession}
         />
+        {exportable && (
+          <div className="flex flex-col items-start gap-2">
+            <ExportMenu sessionId={card.id} />
+            {pushTo.length > 0 && <PushButtons sessionId={card.id} providers={pushTo} />}
+          </div>
+        )}
       </section>
 
       <section aria-labelledby="session-done" className="flex flex-col gap-3">
@@ -144,7 +163,7 @@ export async function SessionView({
           {t("commentsTitle", { count: comments.length })}
         </h3>
         <CommentThread
-          sessionId={card.id}
+          target={{ plannedSessionId: card.id }}
           comments={comments}
           currentUserId={ctx.userId}
           isCoach={me.isCoach}

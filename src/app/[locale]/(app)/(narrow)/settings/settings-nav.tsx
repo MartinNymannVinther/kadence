@@ -17,16 +17,19 @@ const ITEMS = [
 /**
  * Vertical sub-navigation for settings, mirroring the main nav's active
  * style. "Holdet" is the coaches' and comes first for them; "Mig" is
- * everyone's. The admission page only exists for the installation's
+ * everyone's; "Enheder" is the riders', who connect their own Wahoo and
+ * Garmin (ADR 0018). The admission page only exists for the installation's
  * owner, so its entry is passed in rather than listed: `access` is null
  * for everyone else and the item is simply not there.
  */
 export function SettingsNav({
   access,
   isCoach,
+  isRider,
 }: {
   access: { pending: number } | null;
   isCoach: boolean;
+  isRider: boolean;
 }) {
   const t = useTranslations("settings.nav");
   const pathname = usePathname();
@@ -37,7 +40,12 @@ export function SettingsNav({
         ...ITEMS.slice(3),
       ]
     : ITEMS;
-  const items = isCoach ? [{ href: "/settings/team", key: "team" } as const, ...base] : base;
+  const withDevices = isRider
+    ? [base[0]!, { href: "/settings/devices", key: "devices" } as const, ...base.slice(1)]
+    : base;
+  const items = isCoach
+    ? [{ href: "/settings/team", key: "team" } as const, ...withDevices]
+    : withDevices;
 
   return (
     <nav className="border-border flex gap-1 overflow-x-auto @2xl:w-[210px] @2xl:shrink-0 @2xl:flex-col @2xl:overflow-visible @2xl:border-r @2xl:pr-4">
