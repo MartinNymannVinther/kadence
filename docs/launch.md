@@ -26,9 +26,9 @@ can be taken back afterwards.
 gh repo edit MartinNymannVinther/kadence --visibility public \
   --accept-visibility-change-consequences
 gh repo edit MartinNymannVinther/kadence \
-  --description "Porteføljen i én rytme. Simpel porteføljestyring til små og mellemstore organisationer, open source." \
+  --description "Unge ryttere i den rigtige kadence. Træningsplanlægning for U17, U19 og U23 efter DCU's anbefalinger, open source." \
   --homepage https://kadence.haij.dk \
-  --add-topic portfolio-management --add-topic roadmap --add-topic mistral --add-topic ollama \
+  --add-topic cycling --add-topic training --add-topic fit-file --add-topic mistral --add-topic ollama \
   --add-topic nextjs --add-topic postgresql --add-topic open-source --add-topic danish
 ```
 
@@ -122,10 +122,11 @@ open it. A backup nobody has restored is a hope, not a backup.
 ## 7. Turn the demo on
 
 Set `DEMO=on` in Coolify and redeploy. Open `https://kadence.haij.dk/demo`
-in a private window and check that you land on the overview with the
-demo stripe at the top, that the seeded portfolio is there — a committed
-quarter, a roadmap, a decision log — and that `/register` still shows the
-application form rather than a sign-up form.
+in a private window and check that you land on "I dag" with the demo
+stripe at the top, that the seeded U19 team is there — six riders, six
+weeks of sessions mostly ridden, a tired rider and a sore knee in the
+coach's list — and that `/register` still shows the application form
+rather than a sign-up form.
 
 Be clear-eyed about what this does: `DEMO=on` hands out throwaway
 accounts on this installation. That is the point of a public instance
@@ -142,20 +143,27 @@ you actually do.
 > Intet af det vi selv har bygget kommer i vinduet før det har kørt
 > rigtigt arbejde.
 
-Run one real quarter in it. Not the demo portfolio — a real
-organisation's initiatives, described, prioritized in a real meeting,
-planned against the teams' real capacity, and followed through the
-quarter with status and decisions, ending with the quarter closed and
-the next one committed. One quarter is enough to learn what a v1 is
-missing; whether the four scores are the right ones, how capacity is
-really counted, and what the roadmap's reader asks for are the likeliest
-first answers, and they should be findings rather than guesses.
+Run one real winter in it — November to March, the build period DCU's
+hours and strength programmes are written for. Not the demo team — a real
+club's U17 or U19 group, with a real coach planning in it, riders
+uploading their rides or ticking off their strength sessions, a daily
+check-in, and at least one parent following along. The likeliest first
+findings: whether session RPE lines up with the rides that have power
+(the calibration in ADR 0016), whether the guardrails flag the riders a
+coach already worries about and no one else, whether young riders keep
+up the check-in, and what parents actually open. They should be findings
+rather than guesses.
+
+Before that winter starts, two things only Martin can do: the legal
+review of health data about 15–17-year-olds (consent text, privacy
+policy, the data processing agreement with the club), and — if the team
+uses Wahoo or Garmin — the developer applications with both.
 
 Until that has happened, the tool card on haij.dk waits.
 
 ## 9. The tool card
 
-The copy for the card is written with the finish (CLAUDE.md, wave 5) as
+The copy for the card is written with the finish (CLAUDE.md, wave 4) as
 `docs/haij-tool-card.md`, in both languages, with the proposed entry for
 the site's `tools.ts`. It belongs in the haij.dk repository, not this one.
 
