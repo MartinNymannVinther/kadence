@@ -1,5 +1,6 @@
 import { and, asc, eq } from "drizzle-orm";
 import { z } from "zod";
+import { addDaysIso, todayInCopenhagen } from "@/core/dates";
 import { Refused } from "@/core/action";
 import {
   riderMeasurements,
@@ -45,7 +46,8 @@ export const MeasurementInput = z
   })
   .refine((m) => m.value >= LIMITS[m.kind][0] && m.value <= LIMITS[m.kind][1], {
     path: ["value"],
-  });
+  })
+  .refine((m) => m.measuredOn <= addDaysIso(todayInCopenhagen(), 1), { path: ["measuredOn"] });
 
 /** Under 19 in the racing year the measurement falls in: DCU's U17 and U19. */
 export function isYouth(birthYear: number, onDate: string): boolean {
@@ -64,7 +66,11 @@ export async function addMeasurement(ctx: OrgContext, input: z.infer<typeof Meas
         .select({ allow: teamSettings.allowYouthWeight })
         .from(teamSettings)
         .where(eq(teamSettings.orgId, ctx.orgId));
-      if (rider && isYouth(rider.birthYear, input.measuredOn) && !settings?.allow)
+      // Judged by today, not by the date typed: a date in the future must
+      // not make a 15-year-old old enough (the first review's finding).
+      const today = todayInCopenhagen();
+      const onDate = input.measuredOn < today ? input.measuredOn : today;
+      if (rider && isYouth(rider.birthYear, onDate) && !settings?.allow)
         throw new Refused("forbidden", "youthWeight");
     }
     const [row] = await tx

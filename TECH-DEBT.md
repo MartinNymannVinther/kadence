@@ -56,6 +56,17 @@ fails is not retried by the provider (the rider sees it in the link's
 last error and can upload the file), and two refreshes of one link at
 once are not serialised. All of it waits for developer access.
 
+### Members can read each other's addresses in the database
+
+The foundation's `users` policy (drizzle/0001, `app_select_org_members`)
+lets any member of a team read the name and email of everyone on it.
+Kadence needs the names (comment authors); no page, export or API shows
+a rider or a parent another member's address any more (ADR 0019), but
+the row is there for a query that bypasses the services. Closing it
+means a narrower view for names only, or column privileges on `users`
+for the application role — family code, better changed once for all
+siblings.
+
 ## Accepted, with the reason written down
 
 ### The content policy still allows inline scripts

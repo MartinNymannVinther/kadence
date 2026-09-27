@@ -470,7 +470,8 @@
         "removeTitle": "Fjern {name}?",
         "removeBody": "Forælderen kan ikke længere se din træning.",
         "waiting": "Venter på din bekræftelse",
-        "lapsed": "Bekræft igen, nu du er fyldt 18"
+        "lapsed": "Bekræft igen, nu du er fyldt 18",
+        "account": "Konto: {account}. Bekræft kun, hvis det er din forælder."
       },
       "children": {
         "title": "Dine børn på holdet",
@@ -677,7 +678,9 @@
     "parent": {
       "week": "{name}s uge",
       "waitingTitle": "Venter på dit barns bekræftelse",
-      "waitingBody": "Du kan se dit barns træning her, når dit barn har bekræftet forbindelsen til dig. Det gør rytteren selv under Indstillinger → Mig."
+      "waitingBody": "Du kan se dit barns træning her, når dit barn har bekræftet forbindelsen til dig. Det gør rytteren selv under Indstillinger → Mig.",
+      "hiddenTitle": "Dit barn deler ikke sin træning lige nu",
+      "hiddenBody": "Forbindelsen er bekræftet, men dit barn har valgt ikke at dele sin træning. Det er dit barns valg; tal sammen om det derhjemme."
     },
     "start": {
       "title": "Kom godt i gang",
@@ -2047,6 +2050,8 @@
         "hidden": "Se det, dit barn ikke deler. Fra det år, dit barn fylder 18, skal dit barn bekræfte forbindelsen igen."
       },
       "why": "Rytteren ejer sine data. Træning og trivsel er helbredsoplysninger om unge mennesker, og en 16-årig bestemmer selv, hvad forældrene ser. Kadence håndhæver det i databasen, ikke kun på skærmen."
-    }
+    },
+    "hiddenTitle": "Dit barn deler ikke sin træning lige nu",
+    "hiddenBody": "Forbindelsen er bekræftet, men dit barn har valgt ikke at dele sin træning. Det er dit barns valg; tal sammen om det derhjemme."
   }
 }

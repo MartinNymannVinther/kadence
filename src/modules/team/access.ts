@@ -21,7 +21,10 @@ export type Role = "owner" | "admin" | "member";
 export type Child = {
   guardianId: string;
   riderId: string;
-  /** Null until the rider has confirmed the link: the database hides the rider until then. */
+  /**
+   * Null until the rider has confirmed the link, and while the rider does
+   * not share their training: the database hides the rider row then.
+   */
   name: string | null;
   confirmed: boolean;
 };
@@ -83,7 +86,7 @@ export async function whoAmIIn(tx: AppTransaction, ctx: OrgContext): Promise<Me 
       guardianId: l.guardianId,
       riderId: l.riderId,
       name: l.name ?? null,
-      confirmed: l.confirmedAt !== null && l.name !== null,
+      confirmed: l.confirmedAt !== null,
     })),
   };
 }

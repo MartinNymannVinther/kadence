@@ -1,7 +1,7 @@
 import { and, asc, eq, isNull } from "drizzle-orm";
 import { z } from "zod";
 import { Refused } from "@/core/action";
-import { guardians, riders, type GuardianRow } from "@/core/db/schema";
+import { guardians, riders, users, type GuardianRow } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { requireCoach, whoAmIIn } from "./access";
 
@@ -21,14 +21,29 @@ export const GuardianInput = z.object({
   relation: z.enum(RELATIONS).default("guardian"),
 });
 
-export async function listGuardians(ctx: OrgContext, riderId: string): Promise<GuardianRow[]> {
-  return withOrgContext(ctx, (tx) =>
-    tx
-      .select()
+export type GuardianWithAccount = GuardianRow & {
+  /** The account that holds the link — what the rider says yes to, not the name a coach typed. */
+  accountName: string | null;
+  accountEmail: string | null;
+};
+
+export async function listGuardians(
+  ctx: OrgContext,
+  riderId: string,
+): Promise<GuardianWithAccount[]> {
+  return withOrgContext(ctx, async (tx) => {
+    const rows = await tx
+      .select({ guardian: guardians, accountName: users.name, accountEmail: users.email })
       .from(guardians)
+      .leftJoin(users, eq(users.id, guardians.userId))
       .where(eq(guardians.riderId, riderId))
-      .orderBy(asc(guardians.createdAt)),
-  );
+      .orderBy(asc(guardians.createdAt));
+    return rows.map((r) => ({
+      ...r.guardian,
+      accountName: r.accountName ?? null,
+      accountEmail: r.accountEmail ?? null,
+    }));
+  });
 }
 
 /**
@@ -78,6 +93,14 @@ export async function confirmGuardian(ctx: OrgContext, guardianId: string): Prom
   await withOrgContext(ctx, async (tx) => {
     const me = await whoAmIIn(tx, ctx);
     if (!me?.rider) throw new Refused("forbidden");
+    const [link] = await tx
+      .select({ userId: guardians.userId })
+      .from(guardians)
+      .where(and(eq(guardians.id, guardianId), eq(guardians.riderId, me.rider.id)));
+    if (!link) throw new Refused("notFound");
+    // The rider says yes to a person, not to a name a coach typed: a link
+    // nobody holds yet cannot be confirmed (drizzle/0007).
+    if (!link.userId) throw new Refused("conflict", "notJoined");
     const adult = new Date().getFullYear() >= me.rider.birthYear + 18;
     const rows = await tx
       .update(guardians)

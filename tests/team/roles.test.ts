@@ -178,12 +178,16 @@ describe("the services' own checks", () => {
     });
   });
 
-  it("lets only the rider confirm a parent", async () => {
+  it("lets only the rider confirm a parent, and only one who has joined", async () => {
     const other = (await addGuardian(coach, { riderId, name: "Far", relation: "father" })).id;
     await expect(confirmGuardian(coach, other)).rejects.toMatchObject({ code: "forbidden" });
     await expect(confirmGuardian(parent, other)).rejects.toMatchObject({ code: "forbidden" });
-    await confirmGuardian(rider, other);
+    await expect(confirmGuardian(rider, other)).rejects.toMatchObject({
+      code: "conflict",
+      detail: "notJoined",
+    });
     const links = await listGuardians(coach, riderId);
-    expect(links.filter((g) => g.confirmedAt !== null)).toHaveLength(2);
+    expect(links.filter((g) => g.confirmedAt !== null)).toHaveLength(1);
+    expect(links.find((g) => g.id === guardianId)?.accountEmail).toBe("roles-mor@example.com");
   });
 });

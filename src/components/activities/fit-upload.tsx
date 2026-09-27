@@ -16,7 +16,7 @@ type FileResult = {
 };
 
 /** The route takes five files at a time; more are sent in turns. */
-const BATCH = 5;
+const BATCH = 3;
 
 /**
  * A ride from a FIT file, the way that always works — offline, without

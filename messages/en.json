@@ -470,7 +470,8 @@
         "removeTitle": "Remove {name}?",
         "removeBody": "The parent can no longer see your training.",
         "waiting": "Waiting for your confirmation",
-        "lapsed": "Confirm again now you have turned 18"
+        "lapsed": "Confirm again now you have turned 18",
+        "account": "Account: {account}. Only confirm if this is your parent."
       },
       "children": {
         "title": "Your children on the team",
@@ -677,7 +678,9 @@
     "parent": {
       "week": "{name}'s week",
       "waitingTitle": "Waiting for your child's confirmation",
-      "waitingBody": "You can see your child's training here once your child has confirmed the link to you. The rider does that under Settings → Me."
+      "waitingBody": "You can see your child's training here once your child has confirmed the link to you. The rider does that under Settings → Me.",
+      "hiddenTitle": "Your child is not sharing their training right now",
+      "hiddenBody": "The link is confirmed, but your child has chosen not to share their training. It is their choice; talk about it at home."
     },
     "start": {
       "title": "Getting started",
@@ -2047,6 +2050,8 @@
         "hidden": "See what your child does not share. From the year your child turns 18, your child must confirm the link again."
       },
       "why": "The rider owns their data. Training and wellbeing are health information about young people, and a 16-year-old decides what their parents see. Kadence enforces it in the database, not only on the screen."
-    }
+    },
+    "hiddenTitle": "Your child is not sharing their training right now",
+    "hiddenBody": "The link is confirmed, but your child has chosen not to share their training. It is their choice; talk about it at home."
   }
 }

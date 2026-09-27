@@ -95,6 +95,8 @@ export default async function ParentsPage({
   const week = { monday, sunday: days[6] ?? today, today };
   const confirmed = (me?.children ?? []).filter((c) => c.confirmed);
   const waiting = (me?.children ?? []).some((c) => !c.confirmed);
+  // Confirmed, but the rider does not share training: the database hides the row (ADR 0011).
+  const hidden = (me?.children ?? []).some((c) => c.confirmed && c.name === null);
   const children = (
     await Promise.all(confirmed.map((c) => childView(ctx, c.riderId, week)))
   ).filter((c): c is ChildView => c !== null);
@@ -107,6 +109,7 @@ export default async function ParentsPage({
         <ChildCard key={child.riderId} child={child} days={days} today={today} hrefFor={hrefFor} />
       ))}
       {waiting && <EmptyState title={t("waitingTitle")} hint={t("waitingBody")} />}
+      {hidden && <EmptyState title={t("hiddenTitle")} hint={t("hiddenBody")} />}
 
       <section aria-labelledby="parent-guide" className="flex flex-col gap-4">
         <ParentGuide />

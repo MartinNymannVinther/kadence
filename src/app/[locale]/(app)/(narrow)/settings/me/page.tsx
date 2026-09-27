@@ -56,6 +56,7 @@ export default async function MePage() {
               name: g.name,
               relation: g.relation,
               state: guardianState(g, rider.birthYear, new Set()),
+              account: g.accountEmail ? `${g.accountName ?? ""} · ${g.accountEmail}`.trim() : null,
             }))}
           />
           <ThresholdsForm

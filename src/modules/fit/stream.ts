@@ -57,6 +57,9 @@ export interface StreamLimits {
   maxMessages: number;
 }
 
+/** Field reads one file may cost: ten times a long ride's worth. */
+export const MAX_FIELD_READS = 20_000_000;
+
 /**
  * Walks the messages in `bytes[start..end)` and hands every data message
  * whose global number is `wanted` to `onMessage`. Every other data message
@@ -76,6 +79,10 @@ export function readMessages(
   let lastTimestamp: number | undefined;
   let definitions = 0;
   let messages = 0;
+  // Field reads, the real cost of a file: a message of 255 one-byte fields
+  // costs 255 reads for one byte of file. Capped so no file can hold the
+  // event loop for long (the first review found 2 MB taking seconds).
+  let work = 0;
   let pos = start;
 
   while (pos < end) {
@@ -110,6 +117,9 @@ export function readMessages(
       throw new FitError("corrupt", `Data for local message ${local} before its definition.`);
     if (pos + definition.size > end)
       throw new FitError("truncated", "A message runs past the end of the data.");
+    work += definition.fields.length + 1;
+    if (work > MAX_FIELD_READS)
+      throw new FitError("too_large", `More than ${MAX_FIELD_READS} field reads.`);
 
     const stamp = definition.timestampField;
     if (stamp) {
@@ -120,7 +130,14 @@ export function readMessages(
         stamp.type,
         definition.littleEndian,
       );
-      if (typeof value === "number" && Number.isInteger(value) && value >= 0) {
+      // A FIT time is a uint32; a file that declares it otherwise (a float
+      // of 1e300) is not believed.
+      if (
+        typeof value === "number" &&
+        Number.isInteger(value) &&
+        value >= 0 &&
+        value <= 0xffffffff
+      ) {
         timestamp = value;
         lastTimestamp = value;
       }
@@ -172,6 +189,9 @@ function readDefinition(
       offset: size,
       type: baseTypeOf(view.getUint8(pos + 2)),
     };
+    // The protocol has no field of no bytes; one is a file built to cost
+    // reads without taking space.
+    if (field.size === 0) throw new FitError("corrupt", "A field of size zero.");
     fields.push(field);
     size += field.size;
     if (field.num === FIELD_TIMESTAMP) timestampField = field;
@@ -182,7 +202,11 @@ function readDefinition(
     const developerCount = view.getUint8(pos);
     pos += 1;
     if (pos + developerCount * 3 > end) throw truncated();
-    for (let i = 0; i < developerCount; i++, pos += 3) size += view.getUint8(pos + 1);
+    for (let i = 0; i < developerCount; i++, pos += 3) {
+      const fieldSize = view.getUint8(pos + 1);
+      if (fieldSize === 0) throw new FitError("corrupt", "A developer field of size zero.");
+      size += fieldSize;
+    }
   }
 
   return { definition: { global, littleEndian, fields, size, timestampField }, next: pos };

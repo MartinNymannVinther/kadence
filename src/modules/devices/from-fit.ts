@@ -1,5 +1,5 @@
 import { todayInCopenhagen } from "@/core/dates";
-import { decodeFit, summarizeActivity } from "@/modules/fit";
+import { decodeFit, FitError, summarizeActivity } from "@/modules/fit";
 import { activityLoad, bestMeanPowers, timeInZones, weightedPower } from "@/modules/load";
 
 /**
@@ -38,9 +38,20 @@ export type ActivityValues = {
 const int = (value: number | undefined) =>
   value === undefined || !Number.isFinite(value) ? null : Math.round(value);
 
+/** Numbers a ride can plausibly have; anything else is the file lying. */
+const MAX_SECONDS = 48 * 3600;
+const MAX_DISTANCE_M = 2_000_000;
+const MAX_ASCENT_M = 30_000;
+
+const within = (value: number | undefined, max: number) =>
+  value !== undefined && Number.isFinite(value) && value >= 0 && value <= max ? value : undefined;
+
 export function activityFromFit(bytes: Uint8Array, rider: RiderThresholds): ActivityValues {
   const fit = decodeFit(bytes);
   const summary = summarizeActivity(fit);
+  const year = summary.startedAt.getUTCFullYear();
+  if (!Number.isFinite(summary.startedAt.getTime()) || year < 1990 || year > 2100)
+    throw new FitError("corrupt", "The ride's start time is not a real time.");
   const hasPower = summary.power1hz.some((p) => p !== null && p > 0);
   const weighted = hasPower ? int(weightedPower(summary.power1hz) ?? undefined) : null;
   const load = activityLoad(
@@ -57,9 +68,9 @@ export function activityFromFit(bytes: Uint8Array, rider: RiderThresholds): Acti
     onDate: todayInCopenhagen(summary.startedAt),
     sport: summary.sport,
     movingSeconds: summary.movingSeconds,
-    elapsedSeconds: summary.elapsedSeconds,
-    distanceM: int(summary.distanceM),
-    ascentM: int(summary.ascentM),
+    elapsedSeconds: int(within(summary.elapsedSeconds, MAX_SECONDS)) ?? summary.movingSeconds,
+    distanceM: int(within(summary.distanceM, MAX_DISTANCE_M)),
+    ascentM: int(within(summary.ascentM, MAX_ASCENT_M)),
     avgPower: int(summary.avgPower),
     weightedPower: weighted,
     maxPower: int(summary.maxPower),

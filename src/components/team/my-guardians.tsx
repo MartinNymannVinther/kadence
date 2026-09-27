@@ -9,7 +9,14 @@ import { confirmGuardianAction, removeGuardianAction } from "@/modules/team/acti
 import { GuardianBadge } from "./guardian-badge";
 import type { GuardianState } from "./guardian-state";
 
-export type MyGuardian = { id: string; name: string; relation: string; state: GuardianState };
+export type MyGuardian = {
+  id: string;
+  name: string;
+  relation: string;
+  state: GuardianState;
+  /** The account that holds the link: who the rider actually says yes to. */
+  account: string | null;
+};
 
 /**
  * The rider's parents, and the rider's yes to each (ADR 0011): nothing is
@@ -38,6 +45,11 @@ export function MyGuardians({ guardians }: { guardians: MyGuardian[] }) {
                   <span className="flex flex-col">
                     <span className="text-sm font-semibold">{g.name}</span>
                     <span className="text-meta text-xs">{relations(g.relation as "mother")}</span>
+                    {g.account && (
+                      <span className="text-meta text-xs">
+                        {t("account", { account: g.account })}
+                      </span>
+                    )}
                   </span>
                   <GuardianBadge
                     state={g.state}

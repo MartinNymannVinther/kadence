@@ -104,6 +104,8 @@ export default async function TodayPage({
       .map(async (c) => ({ ...c, week: await weekOf(ctx, c.riderId, monday, sunday) })),
   );
   const waiting = (me?.children ?? []).some((c) => !c.confirmed);
+  // Confirmed, but the rider does not share training: the database hides the row (ADR 0011).
+  const hidden = (me?.children ?? []).some((c) => c.confirmed && c.name === null);
   const mine = me?.rider ? await riderDay(ctx, me.rider.id, today) : null;
   const [attention, settings] = team
     ? await Promise.all([getInsights(ctx, { today }), getTeamSettings(ctx)])
@@ -221,6 +223,7 @@ export default async function TodayPage({
         </section>
       ))}
       {waiting && <EmptyState title={t("parent.waitingTitle")} hint={t("parent.waitingBody")} />}
+      {hidden && <EmptyState title={t("parent.hiddenTitle")} hint={t("parent.hiddenBody")} />}
 
       {openSession && me && (
         <SessionSheet key={openSession} closeHref="/today" title={t("sessionPanel")}>

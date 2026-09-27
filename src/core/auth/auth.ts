@@ -2,7 +2,7 @@ import { passkey } from "@better-auth/passkey";
 import { eq } from "drizzle-orm";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { APIError, createAuthMiddleware } from "better-auth/api";
+import { APIError, createAuthMiddleware, getSessionFromCtx } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
 import { organization, twoFactor } from "better-auth/plugins";
 import { platformRoleForNewUser } from "@/core/access/service";
@@ -10,6 +10,7 @@ import { recordAuthEvent } from "@/core/audit/events";
 import { authDb } from "@/core/db/client";
 import * as schema from "@/core/db/schema";
 import { env } from "@/core/env";
+import { coachesTeam, COACH_ONLY_PATHS, trimForMember } from "./coach-only";
 import {
   countUsers,
   DEMO_HEADER,
@@ -129,6 +130,21 @@ export const auth = betterAuth({
       }
     }),
     after: createAuthMiddleware(async (ctx) => {
+      // The team's invitations and addresses are the coaches' (coach-only.ts).
+      if (COACH_ONLY_PATHS.has(ctx.path)) {
+        const returned = ctx.context.returned;
+        if (!returned || returned instanceof Error) return;
+        const session = ctx.context.session ?? (await getSessionFromCtx(ctx));
+        if (!session) return;
+        const orgId =
+          (returned as { id?: unknown }).id ??
+          (ctx.query as { organizationId?: unknown } | undefined)?.organizationId ??
+          (session.session as { activeOrganizationId?: string | null }).activeOrganizationId;
+        if (typeof orgId === "string" && (await coachesTeam(session.user.id, orgId))) return;
+        return ctx.json(
+          trimForMember(ctx.path, returned, session.user.id) as Record<string, unknown>,
+        );
+      }
       if (ctx.path === "/sign-out") {
         const session = ctx.context.session;
         await recordAuthEvent({
@@ -143,6 +159,10 @@ export const auth = betterAuth({
   },
   plugins: [
     organization({
+      // A team is deleted by delete_workspace, which takes the audit trail
+      // with it (drizzle/0003); the plugin's own delete would leave the
+      // riders' check-ins in the trail.
+      disableOrganizationDeletion: true,
       schema: {
         organization: { modelName: "organizations" },
         member: { modelName: "memberships" },

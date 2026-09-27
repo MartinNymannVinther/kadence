@@ -12,6 +12,11 @@ import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 
 export type Member = { userId: string; name: string; email: string; role: string; joinedAt: Date };
 
+/**
+ * The members page: the whole team for a coach, only themselves for a
+ * rider or a parent — young riders' addresses are not a teammate's to
+ * read (ADR 0011).
+ */
 export async function listMembers(ctx: OrgContext): Promise<Member[]> {
   return withOrgContext(ctx, async (tx) => {
     const rows = await tx
@@ -24,7 +29,12 @@ export async function listMembers(ctx: OrgContext): Promise<Member[]> {
       })
       .from(memberships)
       .innerJoin(users, eq(users.id, memberships.userId))
-      .where(eq(memberships.organizationId, ctx.orgId))
+      .where(
+        and(
+          eq(memberships.organizationId, ctx.orgId),
+          sql`(app_is_coach() or ${memberships.userId} = ${ctx.userId})`,
+        ),
+      )
       .orderBy(memberships.createdAt);
     return rows;
   });

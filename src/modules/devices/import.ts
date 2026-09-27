@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq, inArray, isNull } from "drizzle-orm";
 import { Refused } from "@/core/action";
 import { activities, activityFiles, plannedSessions, riders } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
@@ -59,6 +59,20 @@ export async function importFitIn(
     .from(activityFiles)
     .where(and(eq(activityFiles.riderId, riderId), eq(activityFiles.sha256, sha256)));
   if (seen) throw new Refused("conflict", "duplicate");
+
+  // The same ride twice — a byte added to dodge the hash, or the upload of
+  // a ride Wahoo already sent — is the same start by the same rider.
+  const [sameStart] = await tx
+    .select({ id: activities.id })
+    .from(activities)
+    .where(
+      and(
+        eq(activities.riderId, riderId),
+        eq(activities.startedAt, values.startedAt),
+        inArray(activities.source, ["fit", "wahoo", "garmin"]),
+      ),
+    );
+  if (sameStart) throw new Refused("conflict", "duplicate");
 
   const { crcOk, ...row } = values;
   const [activity] = await tx
