@@ -16,7 +16,12 @@ const intervals: BikeStructure = {
       kind: "repeat",
       times: 3,
       steps: [
-        { kind: "step", intent: "work", seconds: 600, target: { kind: "ftp_pct", low: 91, high: 100 } },
+        {
+          kind: "step",
+          intent: "work",
+          seconds: 600,
+          target: { kind: "ftp_pct", low: 91, high: 100 },
+        },
         { kind: "step", intent: "recover", seconds: 300, target: { kind: "zone", zone: 1 } },
       ],
     },
@@ -51,7 +56,10 @@ describe("reading a stored structure", () => {
   });
 
   it("reads rubbish as an empty session of the sport rather than failing", () => {
-    expect(readStructure({ kind: "bike", steps: "x" }, "bike")).toEqual({ kind: "bike", steps: [] });
+    expect(readStructure({ kind: "bike", steps: "x" }, "bike")).toEqual({
+      kind: "bike",
+      steps: [],
+    });
     expect(readStructure(null, "strength").kind).toBe("strength");
     expect(readStructure(intervals, "other")).toEqual({ kind: "other", text: "", minutes: 0 });
   });
@@ -76,7 +84,11 @@ describe("a strength programme's progression", () => {
   it("gives each session the sets and reps of its rule", () => {
     expect(resolveStrengthSession(programme, 1)[0]).toMatchObject({ sets: 3, reps: "16" });
     expect(resolveStrengthSession(programme, 7)[0]).toMatchObject({ sets: 3, reps: "12" });
-    expect(resolveStrengthSession(programme, 30)[0]).toMatchObject({ sets: 4, reps: "6-8", load: "RM" });
+    expect(resolveStrengthSession(programme, 30)[0]).toMatchObject({
+      sets: 4,
+      reps: "6-8",
+      load: "RM",
+    });
   });
 
   it("leaves a group without rules as it is", () => {

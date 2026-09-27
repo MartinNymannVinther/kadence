@@ -43,9 +43,6 @@ import { loadAt, rpeIntensity, rpeLoad } from "./calibration";
  * Pure: imports nothing from the database.
  */
 
-/** Where zone 1 starts in practice, in percent of FTP. */
-const RIDING_FLOOR_PCT = 40;
-
 export const OPEN_INTENSITY: Record<Intent, number> = {
   warmup: 0.65,
   cooldown: 0.65,
