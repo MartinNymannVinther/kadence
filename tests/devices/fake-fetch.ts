@@ -51,6 +51,7 @@ export const bytes = (value: Uint8Array) =>
   });
 
 export const WEBHOOK_TOKEN = "wahoo-webhook-token-for-tests";
+export const POLAR_SECRET = "polar-signature-secret-for-tests";
 
 const KEYS = {
   WAHOO_CLIENT_ID: "wahoo-client",
@@ -58,10 +59,13 @@ const KEYS = {
   WAHOO_WEBHOOK_TOKEN: WEBHOOK_TOKEN,
   GARMIN_CLIENT_ID: "garmin-client",
   GARMIN_CLIENT_SECRET: "garmin-secret",
+  POLAR_CLIENT_ID: "polar-client",
+  POLAR_CLIENT_SECRET: "polar-secret",
+  POLAR_WEBHOOK_SECRET: POLAR_SECRET,
 } as const;
 
 /**
- * Gives both providers keys for the length of a test file. The suite's
+ * Gives every provider keys for the length of a test file. The suite's
  * environment has none (vitest.config.mts), which is the shipped default;
  * `env` is read at call time by the adapters, so setting it here is
  * enough, and it is put back afterwards.

@@ -175,6 +175,20 @@ describe("the device providers", () => {
     );
   });
 
+  it("take Polar as a pair with its webhook secret, and refuse the secret alone", () => {
+    const POLAR = { POLAR_CLIENT_ID: "polar-client", POLAR_CLIENT_SECRET: "polar-secret" };
+    expect(
+      EnvSchema.safeParse({ ...REQUIRED, ...POLAR, POLAR_WEBHOOK_SECRET: "from-accesslink" })
+        .success,
+    ).toBe(true);
+    expect(failure({ ...REQUIRED, POLAR_CLIENT_ID: "polar-client" })).toContain(
+      "POLAR_CLIENT_SECRET",
+    );
+    expect(failure({ ...REQUIRED, POLAR_WEBHOOK_SECRET: "from-accesslink" })).toContain(
+      "POLAR_WEBHOOK_SECRET",
+    );
+  });
+
   it("refuse a webhook token short enough to guess", () => {
     expect(failure({ ...REQUIRED, ...WAHOO, WAHOO_WEBHOOK_TOKEN: "short" })).toContain(
       "WAHOO_WEBHOOK_TOKEN",

@@ -2,8 +2,8 @@ import type { z } from "zod";
 import { MAX_UPLOAD_BYTES } from "./import";
 
 /**
- * Every request Kadence makes to Wahoo or Garmin goes through here, and
- * everything that comes back is untrusted input (CLAUDE.md, security
+ * Every request Kadence makes to Wahoo, Garmin or Polar goes through here,
+ * and everything that comes back is untrusted input (CLAUDE.md, security
  * rules):
  *
  * - every call has a deadline (`AbortSignal.timeout`), so a provider that

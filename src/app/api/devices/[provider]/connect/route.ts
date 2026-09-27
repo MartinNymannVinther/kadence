@@ -9,7 +9,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**
- * Starts connecting the signed-in rider's Wahoo or Garmin account: sets
+ * Starts connecting the signed-in rider's Wahoo, Garmin or Polar account: sets
  * the short-lived, sealed state-and-verifier cookie and sends the browser
  * to the provider (src/modules/devices/connect.ts). Everything that is not
  * a rider with a configured provider lands back on the devices settings

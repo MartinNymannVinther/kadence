@@ -81,11 +81,12 @@ export const EnvSchema = z
     // them was supplied by the caller. Coolify/Traefik is one hop, which
     // is the default. See src/core/rate-limit.ts.
     TRUSTED_PROXY_HOPS: z.coerce.number().int().min(0).max(8).default(1),
-    // Wahoo and Garmin (src/modules/devices). External services, and US
-    // companies both: a rider chooses to connect their own account, and
-    // without these keys the device settings say so while FIT upload,
-    // the calendar and everything else work as before (dogma 2). A
-    // provider's client id and secret come as a pair or not at all.
+    // Wahoo, Garmin and Polar (src/modules/devices). External services —
+    // Wahoo and Garmin US companies, Polar a Finnish one: a rider chooses
+    // to connect their own account, and without these keys the device
+    // settings say so while FIT upload, the calendar and everything else
+    // work as before (dogma 2). A provider's client id and secret come as
+    // a pair or not at all.
     // Secrets: they live only in .env locally and in Coolify in production.
     WAHOO_CLIENT_ID: z.string().min(1).optional(),
     WAHOO_CLIENT_SECRET: z.string().min(1).optional(),
@@ -95,6 +96,15 @@ export const EnvSchema = z
     WAHOO_WEBHOOK_TOKEN: z.string().min(16).optional(),
     GARMIN_CLIENT_ID: z.string().min(1).optional(),
     GARMIN_CLIENT_SECRET: z.string().min(1).optional(),
+    // Polar's AccessLink (Polar Electro Oy, Finland). The client id and
+    // secret come from admin.polaraccesslink.com; the webhook secret is the
+    // `signature_secret_key` AccessLink answers with, once, when the
+    // installation's webhook is created (docs/devices-setup.md). Without it
+    // every Polar notification is refused, because the signature it checks
+    // is the only proof a notification came from Polar.
+    POLAR_CLIENT_ID: z.string().min(1).optional(),
+    POLAR_CLIENT_SECRET: z.string().min(1).optional(),
+    POLAR_WEBHOOK_SECRET: z.string().min(1).optional(),
   })
   .superRefine((value, ctx) => {
     // `next build` runs with NODE_ENV=production and placeholder values
@@ -154,6 +164,7 @@ export const EnvSchema = z
     for (const [id, secret] of [
       ["WAHOO_CLIENT_ID", "WAHOO_CLIENT_SECRET"],
       ["GARMIN_CLIENT_ID", "GARMIN_CLIENT_SECRET"],
+      ["POLAR_CLIENT_ID", "POLAR_CLIENT_SECRET"],
     ] as const) {
       if (Boolean(value[id]) !== Boolean(value[secret])) {
         ctx.addIssue({
@@ -168,6 +179,14 @@ export const EnvSchema = z
         code: "custom",
         message: "WAHOO_WEBHOOK_TOKEN does nothing without WAHOO_CLIENT_ID and WAHOO_CLIENT_SECRET",
         path: ["WAHOO_WEBHOOK_TOKEN"],
+      });
+    }
+    if (value.POLAR_WEBHOOK_SECRET && !value.POLAR_CLIENT_ID) {
+      ctx.addIssue({
+        code: "custom",
+        message:
+          "POLAR_WEBHOOK_SECRET does nothing without POLAR_CLIENT_ID and POLAR_CLIENT_SECRET",
+        path: ["POLAR_WEBHOOK_SECRET"],
       });
     }
   });

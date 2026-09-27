@@ -132,7 +132,7 @@ export const activities = pgTable(
     load: real("load"),
     /** power | hr | rpe | none — which model gave `load` (src/modules/load). */
     loadMethod: text("load_method").notNull().default("none"),
-    /** fit | wahoo | garmin | manual */
+    /** fit | wahoo | garmin | polar | manual */
     source: text("source").notNull(),
     externalId: text("external_id"),
     note: text("note").notNull().default(""),
@@ -145,7 +145,7 @@ export const activities = pgTable(
       .on(t.riderId, t.source, t.externalId)
       .where(sql`${t.externalId} is not null`),
     check("activities_sport", sql`${t.sport} in ('bike','strength','other')`),
-    check("activities_source", sql`${t.source} in ('fit','wahoo','garmin','manual')`),
+    check("activities_source", sql`${t.source} in ('fit','wahoo','garmin','polar','manual')`),
     check("activities_load_method", sql`${t.loadMethod} in ('power','hr','rpe','none')`),
     check("activities_rpe", sql`${t.rpe} is null or ${t.rpe} between 1 and 10`),
     check("activities_feel", sql`${t.feel} is null or ${t.feel} between 1 and 5`),
@@ -282,7 +282,7 @@ export const comments = pgTable(
 );
 
 /**
- * A rider's connection to Wahoo or Garmin. The tokens are sealed with the
+ * A rider's connection to Wahoo, Garmin or Polar. The tokens are sealed with the
  * installation's secret box (src/core/crypto) and never leave the server.
  */
 export const deviceLinks = pgTable(
@@ -293,7 +293,7 @@ export const deviceLinks = pgTable(
     riderId: text("rider_id")
       .notNull()
       .references(() => riders.id, { onDelete: "cascade" }),
-    /** wahoo | garmin */
+    /** wahoo | garmin | polar */
     provider: text("provider").notNull(),
     externalUserId: text("external_user_id").notNull(),
     accessTokenSealed: text("access_token_sealed").notNull(),
@@ -308,7 +308,7 @@ export const deviceLinks = pgTable(
   (t) => [
     uniqueIndex("device_links_rider_provider_uq").on(t.riderId, t.provider),
     uniqueIndex("device_links_external_uq").on(t.provider, t.externalUserId),
-    check("device_links_provider", sql`${t.provider} in ('wahoo','garmin')`),
+    check("device_links_provider", sql`${t.provider} in ('wahoo','garmin','polar')`),
     check("device_links_status", sql`${t.status} in ('connected','error','revoked')`),
   ],
 );

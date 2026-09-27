@@ -16,7 +16,7 @@ import {
 } from "./providers";
 
 /**
- * A rider's connection to Wahoo or Garmin: the `device_links` row. The
+ * A rider's connection to Wahoo, Garmin or Polar: the `device_links` row. The
  * rider writes it, a coach may see that it exists and remove it, nobody
  * else sees it (drizzle/0003). Tokens are sealed with the secret box and
  * bound to the rider and provider, so a sealed token copied into another
@@ -213,7 +213,7 @@ export async function accessTokenFor(
       .update(deviceLinks)
       .set({
         ...next,
-        // Both providers rotate refresh tokens; keep the old one if none came back.
+        // Wahoo and Garmin rotate refresh tokens; keep the old one if none came back.
         refreshTokenSealed: next.refreshTokenSealed ?? row.refreshTokenSealed,
         status: "connected",
         lastError: "",
@@ -221,6 +221,21 @@ export async function accessTokenFor(
       .where(and(eq(deviceLinks.riderId, owner.riderId), eq(deviceLinks.provider, provider.id))),
   );
   return tokens.accessToken;
+}
+
+/** The provider's id for the account on a rider's link, read as the rider; null without one. */
+export async function linkExternalUserId(
+  owner: LinkOwner,
+  provider: ProviderId,
+): Promise<string | null> {
+  const riderCtx = { orgId: owner.orgId, userId: owner.riderUserId };
+  const [row] = await withOrgContext(riderCtx, (tx) =>
+    tx
+      .select({ externalUserId: deviceLinks.externalUserId })
+      .from(deviceLinks)
+      .where(and(eq(deviceLinks.riderId, owner.riderId), eq(deviceLinks.provider, provider))),
+  );
+  return row?.externalUserId ?? null;
 }
 
 /** Removes the caller's own link; false when there was none. */

@@ -66,7 +66,7 @@
       "calendar": "Kalender med pas på cykel, i styrkerummet og andet",
       "dcu": "Sæsonplan og styrkeprogrammer efter DCU for U17, U19 og U23",
       "load": "Belastning, form og friskhed, også uden wattmåler",
-      "devices": "FIT-filer, Wahoo og Garmin",
+      "devices": "FIT-filer, Wahoo, Garmin og Polar",
       "parents": "Forældreside og trivsels-check-in",
       "model": "AI hos Mistral i EU eller Ollama på egen maskine"
     }
@@ -638,7 +638,7 @@
       },
       "devices": {
         "title": "Upload og enheder",
-        "body": "Upload en FIT-fil fra cykelcomputeren, uret eller hometraineren under I dag, i kalenderen eller på rytterens side. Kadence læser filen selv, også uden internet, og sætter turen på dagens pas, hvis det passer. Hver tur har sin egen side med kurver, tid i zoner og bedste watt. Wahoo og Garmin kan forbindes under Indstillinger → Enheder, så ture kommer ind af sig selv og pas kan sendes til cykelcomputeren. De er amerikanske firmaer, og det er rytterens eget valg. Et cykelpas kan også hentes som .zwo, .erg, .mrc eller .fit."
+        "body": "Upload en FIT-fil fra cykelcomputeren, uret eller hometraineren under I dag, i kalenderen eller på rytterens side. Kadence læser filen selv, også uden internet, og sætter turen på dagens pas, hvis det passer. Hver tur har sin egen side med kurver, tid i zoner og bedste watt. Wahoo, Garmin og Polar kan forbindes under Indstillinger → Enheder, så ture kommer ind af sig selv, og pas kan sendes til en Wahoo eller Garmin. Wahoo og Garmin er amerikanske firmaer, Polar er finsk, og det er rytterens eget valg. Et cykelpas kan også hentes som .zwo, .erg, .mrc eller .fit."
       },
       "parentsPage": {
         "title": "Forældresiden",
@@ -1591,6 +1591,7 @@
       "fit": "Fra en FIT-fil",
       "wahoo": "Fra Wahoo",
       "garmin": "Fra Garmin",
+      "polar": "Fra Polar",
       "manual": "Skrevet ind i hånden"
     },
     "session": "Hører til passet “{title}”",
@@ -1674,7 +1675,7 @@
     },
     "upload": {
       "title": "Upload tur",
-      "body": "FIT-filer fra din cykelcomputer, dit ur eller din hometrainer. Det virker altid, også uden Wahoo og Garmin.",
+      "body": "FIT-filer fra din cykelcomputer, dit ur eller din hometrainer. Det virker altid, også uden Wahoo, Garmin og Polar.",
       "drop": "Træk filer hertil, eller tryk for at vælge",
       "busy": "Henter …",
       "hint": ".fit, højst 25 MB pr. fil",
@@ -1918,16 +1919,18 @@
   },
   "devices": {
     "title": "Enheder",
-    "subtitle": "Forbind Wahoo eller Garmin, så kommer dine ture ind af sig selv, og pas kan sendes til din cykelcomputer. FIT-upload virker altid, også uden.",
-    "coachNote": "Ryttere forbinder selv deres Wahoo eller Garmin her under Indstillinger → Enheder. Når en rytter har forbundet, kan du sende pas til rytterens enhed fra passet i kalenderen.",
-    "otherNote": "Enheder hører til rytteren. Kun rytteren selv kan forbinde sin Wahoo eller Garmin.",
+    "subtitle": "Forbind Wahoo, Garmin eller Polar, så kommer dine ture ind af sig selv. Til Wahoo og Garmin kan pas også sendes til din cykelcomputer. FIT-upload virker altid, også uden.",
+    "coachNote": "Ryttere forbinder selv deres Wahoo, Garmin eller Polar her under Indstillinger → Enheder. Når en rytter har forbundet Wahoo eller Garmin, kan du sende pas til rytterens enhed fra passet i kalenderen.",
+    "otherNote": "Enheder hører til rytteren. Kun rytteren selv kan forbinde sin Wahoo, Garmin eller Polar.",
     "name": {
       "wahoo": "Wahoo",
-      "garmin": "Garmin"
+      "garmin": "Garmin",
+      "polar": "Polar"
     },
     "about": {
       "wahoo": "ELEMNT-cykelcomputere og KICKR-hometrainere. Ture hentes automatisk, og pas kan sendes til dem.",
-      "garmin": "Edge-cykelcomputere og ure via Garmin Connect. Ture hentes automatisk, og pas kan sendes til Garmin Connect-kalenderen."
+      "garmin": "Edge-cykelcomputere og ure via Garmin Connect. Ture hentes automatisk, og pas kan sendes til Garmin Connect-kalenderen.",
+      "polar": "Ure og cykelcomputere via Polar Flow. Ture hentes automatisk. Pas kan ikke sendes til Polar fra Kadence."
     },
     "state": {
       "notConfigured": "Ikke sat op her",
@@ -1967,10 +1970,10 @@
     "disconnectTitle": "Afbryd {name}?",
     "disconnectBody": "Kadence sletter nøglerne til din {name}-konto og beder {name} om at glemme forbindelsen. Ture, der allerede er hentet, bliver.",
     "disconnected": "{name} er afbrudt.",
-    "uploadInstead": "Uden Wahoo og Garmin kan du altid uploade dine ture som FIT-filer.",
+    "uploadInstead": "Uden Wahoo, Garmin og Polar kan du altid uploade dine ture som FIT-filer.",
     "uploadLink": "Upload tur",
-    "usTitle": "Wahoo og Garmin er amerikanske firmaer",
-    "usBody": "Kadence selv ligger i EU. Når du forbinder, sender Wahoo eller Garmin dine ture til Kadence, og Kadence sender de pas, du vælger, til dem. Det er dit valg, og du kan afbryde når som helst.",
+    "usTitle": "Wahoo og Garmin er amerikanske firmaer, Polar er finsk",
+    "usBody": "Kadence selv ligger i EU, og det gør Polar også. Når du forbinder, sender Wahoo, Garmin eller Polar dine ture til Kadence, og Kadence sender de pas, du vælger, til Wahoo eller Garmin. Det er dit valg, og du kan afbryde når som helst.",
     "usLink": "Hvem der kan se hvad"
   },
   "parents": {

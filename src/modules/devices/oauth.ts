@@ -6,7 +6,8 @@ import type { Tokens } from "./providers";
 /**
  * The OAuth 2.0 mechanics Wahoo and Garmin share: PKCE (RFC 7636, S256),
  * the state that ties a callback to the browser that started it, the
- * token request, and a constant-time comparison for anything secret.
+ * token request, and a constant-time comparison for anything secret
+ * (Polar's webhook signature included).
  */
 
 /** 32 random bytes, base64url: 43 characters, inside PKCE's 43–128. */

@@ -1,10 +1,11 @@
 import type { BikeStructure } from "@/modules/workouts/structure";
 import { garmin } from "./garmin";
+import { polar } from "./polar";
 import { wahoo } from "./wahoo";
 
 /**
- * Wahoo and Garmin behind one small interface, so the connect flow, the
- * webhook and the push to a head unit are written once. Each adapter is
+ * Wahoo, Garmin and Polar behind one small interface, so the connect flow,
+ * the webhook and the push to a head unit are written once. Each adapter is
  * inert without its keys (`configured()`): the settings page says so and
  * nothing else in Kadence notices (dogma 2).
  *
@@ -13,10 +14,16 @@ import { wahoo } from "./wahoo";
  * decide who may do what and write the rows.
  */
 
-export const PROVIDER_IDS = ["wahoo", "garmin"] as const;
+export const PROVIDER_IDS = ["wahoo", "garmin", "polar"] as const;
 export type ProviderId = (typeof PROVIDER_IDS)[number];
 
-export type Tokens = { accessToken: string; refreshToken: string | null; expiresAt: Date | null };
+export type Tokens = {
+  accessToken: string;
+  refreshToken: string | null;
+  expiresAt: Date | null;
+  /** The account's id, when the token answer names it (Polar's `x_user_id`). */
+  externalUserId?: string;
+};
 
 /** A finished activity a provider told Kadence about, and where its file is. */
 export type ActivityNotification = {
@@ -54,14 +61,30 @@ export interface DeviceProvider {
   authorizeUrl(state: string, codeChallenge: string, redirectUri: string): string;
   exchangeCode(code: string, verifier: string, redirectUri: string): Promise<Tokens>;
   refresh(refreshToken: string): Promise<Tokens>;
-  /** The provider's id for the account the token belongs to. */
-  userId(accessToken: string): Promise<string>;
+  /**
+   * The provider's id for the account the token belongs to. `named` is the
+   * id the token answer carried, for a provider that names it there.
+   */
+  userId(accessToken: string, named?: string): Promise<string>;
+  /**
+   * Registers the account with the provider after the OAuth round trip,
+   * for a provider that requires it before any data flows (Polar).
+   */
+  register?(accessToken: string, externalUserId: string): Promise<void>;
   /** Tells the provider the rider has disconnected, where its API allows. */
-  deregister?(accessToken: string): Promise<void>;
+  deregister?(accessToken: string, externalUserId: string): Promise<void>;
   /** Whether fetching an activity file takes the rider's access token. */
   fileNeedsToken: boolean;
-  /** Whether a webhook really came from the provider; false is a 401. */
-  verifyWebhook(payload: unknown, headers: Headers): boolean;
+  /**
+   * Whether a webhook really came from the provider; false is a 401. `raw`
+   * is the body exactly as it arrived, for a provider that signs it.
+   */
+  verifyWebhook(payload: unknown, headers: Headers, raw?: Uint8Array): boolean;
+  /**
+   * A provider's check that the webhook URL answers (Polar's PING), which
+   * cannot be verified and asks for nothing: answered 200, touching nothing.
+   */
+  isPing?(payload: unknown, headers: Headers): boolean;
   /** The events in a verified webhook. Unknown and malformed entries are left out. */
   webhookEvents(payload: unknown): WebhookEvent[];
   fetchActivityFile(
@@ -72,7 +95,7 @@ export interface DeviceProvider {
   pushWorkout?(accessToken: string, workout: PushWorkout): Promise<{ externalId: string }>;
 }
 
-const PROVIDERS: Record<ProviderId, DeviceProvider> = { wahoo, garmin };
+const PROVIDERS: Record<ProviderId, DeviceProvider> = { wahoo, garmin, polar };
 
 export function isProviderId(value: unknown): value is ProviderId {
   return typeof value === "string" && (PROVIDER_IDS as readonly string[]).includes(value);

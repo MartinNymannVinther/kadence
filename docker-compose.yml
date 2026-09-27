@@ -85,12 +85,16 @@ services:
       # `0`, which means no roof at all, still reaches the app as `0`.
       AI_DAILY_CALL_CAP: ${AI_DAILY_CALL_CAP:-}
       TRUSTED_PROXY_HOPS: ${TRUSTED_PROXY_HOPS:-}
-      # Wahoo and Garmin, for riders who choose to connect (.env.example).
+      # Wahoo, Garmin and Polar, for riders who choose to connect
+      # (.env.example, docs/devices-setup.md).
       WAHOO_CLIENT_ID: ${WAHOO_CLIENT_ID:-}
       WAHOO_CLIENT_SECRET: ${WAHOO_CLIENT_SECRET:-}
       WAHOO_WEBHOOK_TOKEN: ${WAHOO_WEBHOOK_TOKEN:-}
       GARMIN_CLIENT_ID: ${GARMIN_CLIENT_ID:-}
       GARMIN_CLIENT_SECRET: ${GARMIN_CLIENT_SECRET:-}
+      POLAR_CLIENT_ID: ${POLAR_CLIENT_ID:-}
+      POLAR_CLIENT_SECRET: ${POLAR_CLIENT_SECRET:-}
+      POLAR_WEBHOOK_SECRET: ${POLAR_WEBHOOK_SECRET:-}
     # No published port. Coolify's proxy reaches the app over the compose
     # network and terminates TLS in front of it; binding 0.0.0.0:3000 as
     # well would put the same app on the VPS's public address in cleartext,

@@ -157,7 +157,8 @@ rather than guesses.
 Before that winter starts, two things only Martin can do: the legal
 review of health data about 15–17-year-olds (consent text, privacy
 policy, the data processing agreement with the club), and — if the team
-uses Wahoo or Garmin — the developer applications with both.
+uses Wahoo, Garmin or Polar — the developer applications with them
+(docs/devices-setup.md).
 
 Until that has happened, the tool card on haij.dk waits.
 

@@ -66,7 +66,7 @@
       "calendar": "A calendar of sessions on the bike, in the gym and beyond",
       "dcu": "Season plan and strength programmes after DCU for U17, U19 and U23",
       "load": "Load, form and freshness, also without a power meter",
-      "devices": "FIT files, Wahoo and Garmin",
+      "devices": "FIT files, Wahoo, Garmin and Polar",
       "parents": "A page for parents and a wellbeing check-in",
       "model": "AI at Mistral in the EU or Ollama on your own machine"
     }
@@ -638,7 +638,7 @@
       },
       "devices": {
         "title": "Uploads and devices",
-        "body": "Upload a FIT file from the bike computer, watch or trainer under Today, in the calendar or on the rider's page. Kadence reads the file itself, offline too, and puts the ride on the day's session when it fits. Every ride has its own page with curves, time in zones and best power. Wahoo and Garmin can be connected under Settings → Devices, so rides come in by themselves and sessions can be sent to the bike computer. They are US companies, and it is the rider's own choice. A bike session can also be downloaded as .zwo, .erg, .mrc or .fit."
+        "body": "Upload a FIT file from the bike computer, watch or trainer under Today, in the calendar or on the rider's page. Kadence reads the file itself, offline too, and puts the ride on the day's session when it fits. Every ride has its own page with curves, time in zones and best power. Wahoo, Garmin and Polar can be connected under Settings → Devices, so rides come in by themselves, and sessions can be sent to a Wahoo or Garmin. Wahoo and Garmin are US companies, Polar is Finnish, and it is the rider's own choice. A bike session can also be downloaded as .zwo, .erg, .mrc or .fit."
       },
       "parentsPage": {
         "title": "The parents' page",
@@ -1591,6 +1591,7 @@
       "fit": "From a FIT file",
       "wahoo": "From Wahoo",
       "garmin": "From Garmin",
+      "polar": "From Polar",
       "manual": "Entered by hand"
     },
     "session": "Belongs to the session “{title}”",
@@ -1674,7 +1675,7 @@
     },
     "upload": {
       "title": "Upload a ride",
-      "body": "FIT files from your bike computer, your watch or your trainer. It always works, without Wahoo and Garmin too.",
+      "body": "FIT files from your bike computer, your watch or your trainer. It always works, without Wahoo, Garmin and Polar too.",
       "drop": "Drag files here, or tap to choose",
       "busy": "Uploading …",
       "hint": ".fit, at most 25 MB per file",
@@ -1918,16 +1919,18 @@
   },
   "devices": {
     "title": "Devices",
-    "subtitle": "Connect Wahoo or Garmin, and your rides come in by themselves and sessions can be sent to your bike computer. FIT upload always works, without them too.",
-    "coachNote": "Riders connect their own Wahoo or Garmin here under Settings → Devices. Once a rider has connected, you can send sessions to the rider's device from the session in the calendar.",
-    "otherNote": "Devices belong to the rider. Only the rider can connect their Wahoo or Garmin.",
+    "subtitle": "Connect Wahoo, Garmin or Polar, and your rides come in by themselves. With Wahoo and Garmin, sessions can also be sent to your bike computer. FIT upload always works, without them too.",
+    "coachNote": "Riders connect their own Wahoo, Garmin or Polar here under Settings → Devices. Once a rider has connected Wahoo or Garmin, you can send sessions to the rider's device from the session in the calendar.",
+    "otherNote": "Devices belong to the rider. Only the rider can connect their Wahoo, Garmin or Polar.",
     "name": {
       "wahoo": "Wahoo",
-      "garmin": "Garmin"
+      "garmin": "Garmin",
+      "polar": "Polar"
     },
     "about": {
       "wahoo": "ELEMNT bike computers and KICKR trainers. Rides come in automatically, and sessions can be sent to them.",
-      "garmin": "Edge bike computers and watches through Garmin Connect. Rides come in automatically, and sessions can be sent to the Garmin Connect calendar."
+      "garmin": "Edge bike computers and watches through Garmin Connect. Rides come in automatically, and sessions can be sent to the Garmin Connect calendar.",
+      "polar": "Watches and bike computers through Polar Flow. Rides come in automatically. Sessions cannot be sent to Polar from Kadence."
     },
     "state": {
       "notConfigured": "Not set up here",
@@ -1967,10 +1970,10 @@
     "disconnectTitle": "Disconnect {name}?",
     "disconnectBody": "Kadence deletes the keys to your {name} account and asks {name} to forget the connection. Rides already fetched stay.",
     "disconnected": "{name} is disconnected.",
-    "uploadInstead": "Without Wahoo and Garmin you can always upload your rides as FIT files.",
+    "uploadInstead": "Without Wahoo, Garmin and Polar you can always upload your rides as FIT files.",
     "uploadLink": "Upload a ride",
-    "usTitle": "Wahoo and Garmin are US companies",
-    "usBody": "Kadence itself is in the EU. When you connect, Wahoo or Garmin send your rides to Kadence, and Kadence sends the sessions you choose to them. It is your choice, and you can disconnect at any time.",
+    "usTitle": "Wahoo and Garmin are US companies, Polar is Finnish",
+    "usBody": "Kadence itself is in the EU, and so is Polar. When you connect, Wahoo, Garmin or Polar send your rides to Kadence, and Kadence sends the sessions you choose to Wahoo or Garmin. It is your choice, and you can disconnect at any time.",
     "usLink": "Who can see what"
   },
   "parents": {

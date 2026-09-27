@@ -19,7 +19,7 @@ import {
  * Kadence's own decoder (which refuses rather than guesses, and throws a
  * `FitError` with a code the upload can name), summarised, and given a
  * load by the best method the rider's thresholds allow (ADR 0016). Pure:
- * the upload, Wahoo and Garmin all come through here.
+ * the upload, Wahoo, Garmin and Polar all come through here.
  */
 
 export type RiderThresholds = { ftp: number | null; thresholdHr: number | null };

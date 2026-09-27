@@ -71,6 +71,13 @@
       "when": 1790539357523,
       "tag": "0009_activity_detail",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1790542470712,
+      "tag": "0010_polar_devices",
+      "breakpoints": true
     }
   ]
 }
