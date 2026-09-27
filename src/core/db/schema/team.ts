@@ -63,7 +63,7 @@ export const riders = pgTable(
     birthYear: smallint("birth_year").notNull(),
     /** female | male | null — optional, only used where recommendations differ. */
     sex: text("sex"),
-    /** A coach's override of the class the birth year gives, e.g. a rider moved up. */
+    /** A coach's override of the class and year the birth year gives ("U19-1"), e.g. a rider moved up. */
     categoryOverride: text("category_override"),
     ftpWatts: smallint("ftp_watts"),
     thresholdHr: smallint("threshold_hr"),
@@ -85,7 +85,7 @@ export const riders = pgTable(
     check("riders_sex", sql`${t.sex} is null or ${t.sex} in ('female','male')`),
     check(
       "riders_category",
-      sql`${t.categoryOverride} is null or ${t.categoryOverride} in ('U17','U19','U23','senior')`,
+      sql`${t.categoryOverride} is null or ${t.categoryOverride} in ('U17-1','U17-2','U19-1','U19-2','U23-1','U23-2','U23-3','U23-4','senior')`,
     ),
   ],
 );
@@ -152,7 +152,7 @@ export const riderMeasurements = pgTable(
 
 /**
  * A season plan for one rider: twelve months of planned hours and a phase
- * each, from November. Filled from DCU's recommendation for the rider's
+ * each, from October (ADR 0015). Filled from DCU's recommendation for the rider's
  * class and year in it (src/modules/dcu), then the coach's to change;
  * the difference from DCU is always shown, never hidden.
  */
@@ -164,11 +164,11 @@ export const seasonPlans = pgTable(
     riderId: text("rider_id")
       .notNull()
       .references(() => riders.id, { onDelete: "cascade" }),
-    /** The calendar year the season starts in (November). */
+    /** The calendar year the season starts in (October). */
     seasonStartYear: integer("season_start_year").notNull(),
     /** The DCU class and year the plan was filled from, e.g. "U19-1". */
     basis: text("basis").notNull(),
-    /** [{ month: 11, hours: 16, phase: "distance", note: "" }, … ] — twelve entries. */
+    /** [{ month: 10, hours: 0, phase: "break", note: "" }, … ] — twelve entries from October. */
     months: jsonb("months").notNull(),
     note: text("note").notNull().default(""),
     ...timestamps,

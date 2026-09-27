@@ -22,7 +22,10 @@ export const RiderInput = z.object({
     .min(1940)
     .max(thisYear() - 8),
   sex: z.enum(["female", "male"]).nullable().default(null),
-  categoryOverride: z.enum(["U17", "U19", "U23", "senior"]).nullable().default(null),
+  categoryOverride: z
+    .enum(["U17-1", "U17-2", "U19-1", "U19-2", "U23-1", "U23-2", "U23-3", "U23-4", "senior"])
+    .nullable()
+    .default(null),
 });
 
 const watts = z.coerce.number().int().min(50).max(700).nullable();

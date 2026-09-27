@@ -35,7 +35,7 @@ async function insertManual(
   input: z.infer<typeof ManualActivityInput>,
 ) {
   await requireWriteFor(tx, ctx, input.riderId);
-  const { load, method } = loadFromRpe(input.minutes, input.rpe);
+  const { load, method } = loadFromRpe(input.minutes, input.rpe, input.sport);
   const [row] = await tx
     .insert(activities)
     .values({
@@ -110,7 +110,11 @@ export async function setFeedback(
     };
     // A file with power or pulse keeps the load it was given; RPE decides only when nothing better did.
     if (row.loadMethod === "rpe" || row.loadMethod === "none") {
-      const { load, method } = loadFromRpe(Math.round(row.movingSeconds / 60), input.rpe);
+      const { load, method } = loadFromRpe(
+        Math.round(row.movingSeconds / 60),
+        input.rpe,
+        row.sport as (typeof SPORTS)[number],
+      );
       patch.load = load;
       patch.loadMethod = method;
     }

@@ -1,0 +1,2 @@
+ALTER TABLE "riders" DROP CONSTRAINT "riders_category";--> statement-breakpoint
+ALTER TABLE "riders" ADD CONSTRAINT "riders_category" CHECK ("riders"."category_override" is null or "riders"."category_override" in ('U17-1','U17-2','U19-1','U19-2','U23-1','U23-2','U23-3','U23-4','senior'));

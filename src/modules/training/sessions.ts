@@ -4,7 +4,6 @@ import {
   activities,
   comments,
   plannedSessions,
-  riders,
   type ActivityRow,
   type PlannedSessionRow,
 } from "@/core/db/schema";
@@ -91,17 +90,13 @@ export async function getSession(ctx: OrgContext, id: string): Promise<CalendarS
 }
 
 /** The values a session row gets from its input: minutes and load follow the structure. */
-async function derived(tx: AppTransaction, input: SessionInputT) {
-  const [rider] = await tx
-    .select({ ftp: riders.ftpWatts, thresholdHr: riders.thresholdHr })
-    .from(riders)
-    .where(eq(riders.id, input.riderId));
+function derived(input: Pick<SessionInputT, "structure" | "sport" | "plannedMinutes">) {
   const structure = readStructure(input.structure, input.sport);
   const minutes = input.plannedMinutes || structureMinutes(structure);
   return {
     structure,
     plannedMinutes: minutes,
-    plannedLoad: estimatePlannedLoad(structure, minutes, rider ?? null),
+    plannedLoad: estimatePlannedLoad(structure, minutes),
   };
 }
 
@@ -130,7 +125,7 @@ export async function createSessionIn(
       origin: input.origin ?? (input.templateId ? "template" : "manual"),
       programmeSession: input.programmeSession ?? null,
       createdBy: ctx.userId,
-      ...(await derived(tx, input)),
+      ...derived(input),
     })
     .returning({ id: plannedSessions.id });
   return row!;
@@ -167,7 +162,7 @@ export async function updateSession(
     const row = await loadOwn(tx, ctx, id);
     const copies = await targets(tx, ctx, row, scope);
     for (const copy of copies) {
-      const values = await derived(tx, { ...input, riderId: copy.riderId, onDate: copy.onDate });
+      const values = derived(input);
       await tx
         .update(plannedSessions)
         .set({
