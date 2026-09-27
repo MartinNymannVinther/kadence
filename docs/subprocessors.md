@@ -3,8 +3,15 @@
 Per the Haij dogmas, every subprocessor must be EU-owned and EU-hosted,
 and must be listed here **before** it is taken into use. This is the
 public list of who can see what for the installation at kadence.haij.dk. A
-self-hosted Kadence with `LLM_PROVIDER=ollama` or `none` has no
-subprocessor at all beyond the machine it runs on.
+self-hosted Kadence with `LLM_PROVIDER=ollama` or `none` and without Wahoo
+or Garmin keys has no subprocessor at all beyond the machine it runs on,
+and talks to nobody else.
+
+Wahoo and Garmin are not on the table below, because they are not
+Kadence's to choose: they are US services a rider may choose to connect
+their own account to. They have a table of their own further down,
+[Services a rider chooses to connect](#services-a-rider-chooses-to-connect),
+which says what goes where and when.
 
 | Subprocessor        | Purpose                                                                                                                                | Data                                                                                                                                                                      | Location                                      | Added      |
 | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- | ---------- |
@@ -70,6 +77,50 @@ and anything belonging to another workspace are never sent. Everything a
 person has written is placed in the prompt as data, never as instructions,
 which is the prompt-injection defence rather than a privacy measure —
 both matter, for different reasons.
+
+## Services a rider chooses to connect
+
+Dogma two names them: Wahoo and Garmin are external services, they say
+so, and FIT upload, the calendar and everything else keep working
+without them. Dogma four's EU rule is about what Kadence hands to
+others; these are the rider's own accounts with companies outside the
+EU, which a rider may already use to record every ride. So the choice
+is the rider's and nobody else's: only the rider can connect their own
+account (a coach cannot, and the database refuses it), the rider can
+disconnect at any time from Kadence or from the provider, and until they
+connect, nothing about them goes to either. An installation without the
+keys (`WAHOO_CLIENT_ID`, `GARMIN_CLIENT_ID` and their secrets) offers
+neither.
+
+| Service                                                                                    | Chosen by                        | From the provider to Kadence                                                                                                            | From Kadence to the provider                                                                                                                                                                                                                            | Location                            | Added      |
+| ------------------------------------------------------------------------------------------ | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ---------- |
+| Wahoo Fitness (Wahoo's Cloud API)                                                          | The rider, for their own account | The account's id; each ride saved on a Wahoo device as a FIT file (time, GPS track, power, heart rate, cadence) with the workout's name | The OAuth tokens it issued, when they are refreshed; a planned bike session when the rider or a coach presses "send": its title, description, date and steps, with targets from the rider's FTP and threshold heart rate; a disconnect                  | Atlanta, US                         | 2026-09-27 |
+| Garmin (the Connect Developer Program: Garmin International; the group is Swiss-domiciled) | The rider, for their own account | The account's id; each activity's FIT file, fetched from Garmin with the rider's token after Garmin says one is ready                   | The OAuth tokens it issued, when they are refreshed or used to fetch a file; a planned bike session on "send", as for Wahoo, with watts and beats worked out from the rider's thresholds; the deregistration Garmin requires when the rider disconnects | Olathe, Kansas, US (Garmin Connect) | 2026-09-27 |
+
+What this means in practice:
+
+- **Nothing about the rider goes out in the background.** A ride comes in
+  because the provider says one is ready; a session goes out only when a
+  person presses "send"; tokens are refreshed when they are about to be
+  used. Kadence never sends the rider's check-ins, their measurements,
+  their comments, their team or anyone else's data to either.
+- **What comes in is the rider's own ride**, imported exactly like a FIT
+  file the rider uploads, under the same rules for who may see it. A
+  file is fetched only from the provider's own host, capped in size and
+  decoded by Kadence's own decoder, which refuses rather than guesses.
+- **Wahoo's account endpoint answers with the whole profile** — name,
+  e-mail, birth date, height and weight. Kadence reads the id from it
+  and keeps nothing else.
+- **A coach's "send" goes to the rider's account**, and carries the
+  rider's FTP and threshold heart rate as the targets the device holds —
+  the same numbers the exported workout files carry.
+- **The tokens are sealed** with the installation's secret box, bound to
+  the rider's link, never shown in the interface and never written to the
+  audit trail. Disconnecting tells the provider where its API allows and
+  deletes the link and its tokens either way.
+- **Leaving is complete.** Disconnecting stops everything; what the
+  provider already holds about the rider's own rides is between the rider
+  and the provider, and Kadence neither sees nor controls it.
 
 ## Not subprocessors, but worth naming
 

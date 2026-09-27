@@ -81,6 +81,20 @@ export const EnvSchema = z
     // them was supplied by the caller. Coolify/Traefik is one hop, which
     // is the default. See src/core/rate-limit.ts.
     TRUSTED_PROXY_HOPS: z.coerce.number().int().min(0).max(8).default(1),
+    // Wahoo and Garmin (src/modules/devices). External services, and US
+    // companies both: a rider chooses to connect their own account, and
+    // without these keys the device settings say so while FIT upload,
+    // the calendar and everything else work as before (dogma 2). A
+    // provider's client id and secret come as a pair or not at all.
+    // Secrets: they live only in .env locally and in Coolify in production.
+    WAHOO_CLIENT_ID: z.string().min(1).optional(),
+    WAHOO_CLIENT_SECRET: z.string().min(1).optional(),
+    // The value Wahoo echoes in every webhook, chosen in Wahoo's developer
+    // portal. Without it the webhook refuses everything, because it is the
+    // only proof a notification came from Wahoo.
+    WAHOO_WEBHOOK_TOKEN: z.string().min(16).optional(),
+    GARMIN_CLIENT_ID: z.string().min(1).optional(),
+    GARMIN_CLIENT_SECRET: z.string().min(1).optional(),
   })
   .superRefine((value, ctx) => {
     // `next build` runs with NODE_ENV=production and placeholder values
@@ -132,6 +146,28 @@ export const EnvSchema = z
         code: "custom",
         message: "LLM_PROVIDER=mistral requires MISTRAL_API_KEY",
         path: ["LLM_PROVIDER"],
+      });
+    }
+    // Half a provider is a connect button that fails at the provider's
+    // door, which the rider would take for Kadence being broken. Refused
+    // at start instead, naming the missing half.
+    for (const [id, secret] of [
+      ["WAHOO_CLIENT_ID", "WAHOO_CLIENT_SECRET"],
+      ["GARMIN_CLIENT_ID", "GARMIN_CLIENT_SECRET"],
+    ] as const) {
+      if (Boolean(value[id]) !== Boolean(value[secret])) {
+        ctx.addIssue({
+          code: "custom",
+          message: `${id} and ${secret} go together: set both to connect, or neither`,
+          path: [value[id] ? secret : id],
+        });
+      }
+    }
+    if (value.WAHOO_WEBHOOK_TOKEN && !value.WAHOO_CLIENT_ID) {
+      ctx.addIssue({
+        code: "custom",
+        message: "WAHOO_WEBHOOK_TOKEN does nothing without WAHOO_CLIENT_ID and WAHOO_CLIENT_SECRET",
+        path: ["WAHOO_WEBHOOK_TOKEN"],
       });
     }
   });

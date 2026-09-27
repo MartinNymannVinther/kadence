@@ -130,3 +130,54 @@ describe("a variable forwarded but left blank", () => {
     expect(EnvSchema.safeParse({ ...REQUIRED, SIGNUP: "" }).success).toBe(false);
   });
 });
+
+describe("the device providers", () => {
+  /**
+   * Wahoo and Garmin are optional (dogma 2): without keys the devices page
+   * says so and nothing else notices. Half a pair is refused at start,
+   * because it would be a connect button that fails at the provider's door.
+   */
+  const WAHOO = { WAHOO_CLIENT_ID: "wahoo-client", WAHOO_CLIENT_SECRET: "wahoo-secret" };
+  const GARMIN = { GARMIN_CLIENT_ID: "garmin-client", GARMIN_CLIENT_SECRET: "garmin-secret" };
+
+  it("are off without keys", () => {
+    const parsed = EnvSchema.parse(REQUIRED);
+    expect(parsed.WAHOO_CLIENT_ID).toBeUndefined();
+    expect(parsed.GARMIN_CLIENT_ID).toBeUndefined();
+  });
+
+  it("accept a full pair for each, with a webhook token for Wahoo", () => {
+    expect(
+      EnvSchema.safeParse({
+        ...REQUIRED,
+        ...WAHOO,
+        ...GARMIN,
+        WAHOO_WEBHOOK_TOKEN: "a-long-enough-webhook-token",
+      }).success,
+    ).toBe(true);
+  });
+
+  it("refuse a client id without its secret, naming the missing half", () => {
+    const said = failure({ ...REQUIRED, WAHOO_CLIENT_ID: "wahoo-client" });
+    expect(said).toContain("WAHOO_CLIENT_SECRET");
+    expect(said).toContain("go together");
+  });
+
+  it("refuse a secret without its client id", () => {
+    expect(failure({ ...REQUIRED, GARMIN_CLIENT_SECRET: "garmin-secret" })).toContain(
+      "GARMIN_CLIENT_ID",
+    );
+  });
+
+  it("refuse a Wahoo webhook token with no Wahoo keys to go with it", () => {
+    expect(failure({ ...REQUIRED, WAHOO_WEBHOOK_TOKEN: "a-long-enough-webhook-token" })).toContain(
+      "WAHOO_WEBHOOK_TOKEN",
+    );
+  });
+
+  it("refuse a webhook token short enough to guess", () => {
+    expect(failure({ ...REQUIRED, ...WAHOO, WAHOO_WEBHOOK_TOKEN: "short" })).toContain(
+      "WAHOO_WEBHOOK_TOKEN",
+    );
+  });
+});

@@ -352,6 +352,16 @@ describe("rls coverage (guards future tables)", () => {
     // dogma 3 and which RLS and the append-only guard would otherwise
     // forbid (docs/adr/0003). Checks the caller's role itself.
     "delete_workspace",
+    // Whose connected Wahoo or Garmin link a provider's user id is, for a
+    // device webhook that arrives with nobody signed in and so no context
+    // RLS could answer from (drizzle/0005). It returns the team, the rider
+    // and the rider's account for one exact (provider, user id) pair and
+    // nothing else — no tokens, no status, nothing for a link that is not
+    // connected or a rider who is archived or no longer a member — and it
+    // cannot enumerate without the provider's id, which only the provider
+    // and the link hold. Everything after it runs as the rider, under the
+    // ordinary policies.
+    "device_link_owner",
   ];
 
   it("only the named definer functions can be called by a runtime role", async () => {
