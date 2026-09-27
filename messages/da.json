@@ -1626,7 +1626,13 @@
         "hr": "ud fra puls",
         "rpe": "ud fra hvor hårdt det føltes",
         "none": "kan ikke regnes ud"
-      }
+      },
+      "avgSpeed": "Gns. fart",
+      "maxSpeed": "Maks. fart",
+      "drift": "Pulsdrift",
+      "driftHint": "Hvor meget mere puls hver watt kostede i anden halvdel end i første",
+      "kmh": "{kmh} km/t",
+      "pct": "{pct} %"
     },
     "streams": {
       "show": "Vis kurver",
@@ -1640,7 +1646,9 @@
       "m": "{m} m",
       "hint": "Peg på kurverne, eller brug piletasterne, for at læse et bestemt tidspunkt.",
       "label": "Turen undervejs: {channels}",
-      "none": "Filen havde ingen målinger undervejs."
+      "none": "Filen havde ingen målinger undervejs.",
+      "speed": "Fart",
+      "kmh": "{kmh} km/t"
     },
     "zones": {
       "power": "Efter watt",
@@ -1690,6 +1698,48 @@
         "invalid": "Vælg mindst én fil.",
         "generic": "Noget gik galt med filen. Prøv igen."
       }
+    },
+    "routeTitle": "Ruten",
+    "lapsTitle": "Omgange",
+    "climbsTitle": "Stigninger",
+    "curveTitle": "Wattkurve",
+    "curveNote": "Den bedste gennemsnitlige watt over hver varighed på turen. Rytteren sammenlignet med sig selv, aldrig med andre.",
+    "route": {
+      "label": "Ruten, {km} km, tegnet fra GPS",
+      "start": "Start",
+      "finish": "Slut",
+      "none": "Filen havde ingen GPS-positioner.",
+      "note": "Tegnet ud fra GPS uden kort, så ingen position sendes videre til en korttjeneste."
+    },
+    "laps": {
+      "caption": "{count} omgange fra enheden",
+      "lap": "Omg.",
+      "time": "Tid",
+      "distance": "Km",
+      "speed": "Km/t",
+      "power": "Watt",
+      "hr": "Puls",
+      "cadence": "Kad.",
+      "ascent": "Hm"
+    },
+    "climbs": {
+      "name": "Stigning {n}",
+      "at": "ved km {km}",
+      "km": "{km} km",
+      "grade": "{pct} %",
+      "gain": "{m} hm",
+      "time": "{time}",
+      "watt": "{w} W",
+      "bpm": "{bpm} slag/min",
+      "note": "Fundet i højdekurven: mindst 15 højdemeter over 300 m med 3 % i gennemsnit."
+    },
+    "curve": {
+      "hint": "Peg på kurven, eller brug piletasterne, for at læse en varighed.",
+      "label": "Wattkurve fra {from} til {to}",
+      "readout": "{duration}: {w} W",
+      "s": "{n} sek.",
+      "min": "{n} min",
+      "h": "{n} t"
     }
   },
   "season": {

@@ -5,9 +5,14 @@ import { ActivityActions } from "@/components/activities/activity-actions";
 import { ActivityFeedback } from "@/components/activities/activity-feedback";
 import { ActivitySummary } from "@/components/activities/activity-summary";
 import { BestPowers } from "@/components/activities/best-powers";
-import { StreamsChart, type Streams } from "@/components/activities/streams-chart";
+import { ClimbsList } from "@/components/activities/climbs-list";
+import { LapsTable } from "@/components/activities/laps-table";
+import { PowerCurve } from "@/components/activities/power-curve";
+import { RideView } from "@/components/activities/ride-view";
+import type { Streams } from "@/components/activities/streams-chart";
 import { ZoneTime } from "@/components/activities/zone-time";
 import { calendarHref } from "@/components/calendar/href";
+import { num } from "@/components/charts/format";
 import { CommentThread } from "@/components/session/comment-thread";
 import { dayLong } from "@/components/training/day-label";
 import { SportIcon } from "@/components/training/sport-icon";
@@ -15,6 +20,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { getOrgContext } from "@/core/auth/session";
 import { mondayOf } from "@/core/dates";
 import { Link, redirect } from "@/i18n/navigation";
+import type { ClimbSummary, LapSummary } from "@/modules/fit";
 import { whoAmI } from "@/modules/team/access";
 import { getRider } from "@/modules/team/riders";
 import { getActivity, getActivitySession } from "@/modules/training/activities";
@@ -25,12 +31,16 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("title") };
 }
 
+/** A ride read before the power curve kept only the five tiles' durations. */
+const BEST_TILES = 5;
+
 const isStreams = (value: unknown): value is Streams =>
   typeof value === "object" && value !== null && Array.isArray((value as Streams).t);
 
 /**
- * One ride or session that was done: what it came to, the ride over time,
- * time in zones and the best watt, how it felt, and the conversation about
+ * One ride or session that was done: what it came to, the route and the
+ * ride over time, its laps and climbs, time in zones and the power curve,
+ * how it felt, and the conversation about
  * it — with the original file to take out again and the way to delete it.
  * Whoever may read the rider's training may read this; the coach and the
  * rider may change it (ADR 0011).
@@ -72,6 +82,8 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
     timeZone: "Europe/Copenhagen",
   }).format(activity.startedAt);
   const fromFile = activity.source !== "manual";
+  const laps = (Array.isArray(activity.laps) ? activity.laps : []) as LapSummary[];
+  const climbs = (Array.isArray(activity.climbs) ? activity.climbs : []) as ClimbSummary[];
 
   return (
     <div className="flex min-w-0 max-w-4xl flex-col gap-7">
@@ -111,16 +123,38 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
 
       <ActivitySummary facts={activity} />
 
-      {fromFile && (
-        <section aria-labelledby="activity-streams" className="flex flex-col gap-3">
-          <h2 id="activity-streams" className="text-lg font-semibold">
-            {t("streamsTitle")}
-          </h2>
-          {streams ? (
-            <StreamsChart streams={streams} />
-          ) : (
+      {fromFile &&
+        (streams ? (
+          <RideView
+            streams={streams}
+            titles={{ route: t("routeTitle"), streams: t("streamsTitle") }}
+            km={num((activity.distanceM ?? 0) / 1000, locale, 1)}
+          />
+        ) : (
+          <section aria-labelledby="activity-streams" className="flex flex-col gap-3">
+            <h2 id="activity-streams" className="text-lg font-semibold">
+              {t("streamsTitle")}
+            </h2>
             <p className="text-meta text-2sm">{t("noStreams")}</p>
-          )}
+          </section>
+        ))}
+
+      {laps.length > 0 && (
+        <section aria-labelledby="activity-laps" className="flex flex-col gap-3">
+          <h2 id="activity-laps" className="text-lg font-semibold">
+            {t("lapsTitle")}
+          </h2>
+          <LapsTable laps={laps} />
+        </section>
+      )}
+
+      {climbs.length > 0 && (
+        <section aria-labelledby="activity-climbs" className="flex flex-col gap-3">
+          <h2 id="activity-climbs" className="text-lg font-semibold">
+            {t("climbsTitle")}
+          </h2>
+          <ClimbsList climbs={climbs} />
+          <p className="text-meta text-xs leading-relaxed">{t("climbs.note")}</p>
         </section>
       )}
 
@@ -144,6 +178,13 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
             {t("bestTitle")}
           </h2>
           <BestPowers best={best} />
+          {Object.keys(best).length > BEST_TILES && (
+            <>
+              <h3 className="mt-2 text-sm font-semibold">{t("curveTitle")}</h3>
+              <PowerCurve best={best} />
+              <p className="text-meta text-xs leading-relaxed">{t("curveNote")}</p>
+            </>
+          )}
         </section>
       )}
 

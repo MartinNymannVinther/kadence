@@ -110,13 +110,21 @@ export const activities = pgTable(
     avgHr: smallint("avg_hr"),
     maxHr: smallint("max_hr"),
     avgCadence: smallint("avg_cadence"),
+    /** The fastest second, m/s. */
+    maxSpeed: real("max_speed"),
+    /** Heart-rate drift in per cent, first half against second (src/modules/load/drift.ts). */
+    hrDrift: real("hr_drift"),
     workKj: integer("work_kj"),
     /** { power: [s per zone], hr: [s per zone] } */
     zoneSeconds: jsonb("zone_seconds"),
-    /** { "5": w, "60": w, "300": w, "1200": w } — best mean power by duration in seconds. */
+    /** { "1": w, "5": w, … } — the power curve, best mean power by duration in seconds. */
     bestPowers: jsonb("best_powers"),
-    /** Thinned samples for the charts: { t: [], power: [], hr: [], cadence: [], speed: [], alt: [] } */
+    /** Thinned samples for the charts and the route: { t, power, hr, cadence, speed, alt, lat, lon } */
     streams: jsonb("streams"),
+    /** The device's laps, measured on the ride (src/modules/fit/laps.ts). */
+    laps: jsonb("laps"),
+    /** The climbs found in the altitude (src/modules/fit/climbs.ts). */
+    climbs: jsonb("climbs"),
     /** Session RPE, 1–10, from the rider afterwards. */
     rpe: smallint("rpe"),
     /** How it felt, 1–5. */

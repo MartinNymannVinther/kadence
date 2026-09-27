@@ -29,12 +29,15 @@ export {
 } from "./zones";
 export {
   BEST_POWER_SECONDS,
+  POWER_CURVE_SECONDS,
   WEIGHTED_POWER_WINDOW,
   bestMeanPower,
   bestMeanPowers,
+  powerCurve,
   weightedPower,
   type BestPowerSeconds,
 } from "./weighted-power";
+export { DRIFT_MIN_SECONDS, heartRateDrift } from "./drift";
 export {
   HR_RATIO_CAP,
   HR_RATIO_FLOOR,

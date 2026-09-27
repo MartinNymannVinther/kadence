@@ -54,6 +54,17 @@ Deletes demo workspaces that have expired. The application runs the same
 cleanup on every visit to `/demo`; the script is for a quiet installation
 or a scheduler that would rather not rely on visitors. Safe to run twice.
 
+## reread-activities.ts
+
+Reads every team's stored FIT files again, so rides imported before
+Kadence kept the route, the laps, the climbs and the power curve show them
+too. Only those details change; load, zones, RPE and notes stay. Runs as a
+coach of each team, through RLS. Safe to run twice.
+
+```
+pnpm script scripts/reread-activities.ts
+```
+
 ## migrate.ts
 
 Applies the checked-in migrations and, unlike `drizzle-kit migrate`, says

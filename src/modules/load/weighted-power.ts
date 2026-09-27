@@ -22,6 +22,16 @@ export const WEIGHTED_POWER_WINDOW = 30;
 export const BEST_POWER_SECONDS = [5, 60, 300, 1200, 3600] as const;
 export type BestPowerSeconds = (typeof BEST_POWER_SECONDS)[number];
 
+/**
+ * The durations the power curve is drawn through: close together where a
+ * sprint changes fast, further apart where an hour barely does. Includes
+ * every duration in `BEST_POWER_SECONDS`, so one map holds both.
+ */
+export const POWER_CURVE_SECONDS = [
+  1, 2, 5, 10, 15, 20, 30, 45, 60, 90, 120, 180, 300, 480, 600, 900, 1200, 1800, 2700, 3600, 5400,
+  7200, 10800, 14400, 18000, 21600,
+] as const;
+
 function clean(power1hz: readonly (number | null)[]): number[] {
   return power1hz.map((w) => (w !== null && Number.isFinite(w) && w > 0 ? w : 0));
 }
@@ -84,6 +94,21 @@ export function bestMeanPowers(
   for (const seconds of BEST_POWER_SECONDS) {
     const best = bestMeanPower(power1hz, seconds);
     if (best !== null) out[seconds] = Math.round(best);
+  }
+  return out;
+}
+
+/**
+ * The ride's power curve (`best_powers`): the best average watt for every
+ * duration in `POWER_CURVE_SECONDS` the ride was long enough to hold, in
+ * whole watts, keyed by seconds. The rider against themselves, never
+ * against anyone else (ADR 0013).
+ */
+export function powerCurve(power1hz: readonly (number | null)[]): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const seconds of POWER_CURVE_SECONDS) {
+    const best = bestMeanPower(power1hz, seconds);
+    if (best !== null) out[String(seconds)] = Math.round(best);
   }
   return out;
 }

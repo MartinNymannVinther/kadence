@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { num } from "@/components/charts/format";
 import { areaPath, linePath, linearScale, niceTicks } from "@/components/charts/scale";
@@ -13,10 +13,14 @@ export type Streams = {
   power?: (number | null)[];
   hr?: (number | null)[];
   cadence?: (number | null)[];
+  /** m/s; drawn as km/h. */
+  speed?: (number | null)[];
   alt?: (number | null)[];
+  lat?: (number | null)[];
+  lon?: (number | null)[];
 };
 
-const CHANNELS = ["power", "hr", "cadence", "alt"] as const;
+const CHANNELS = ["power", "hr", "speed", "cadence", "alt"] as const;
 type Channel = (typeof CHANNELS)[number];
 
 const PANEL = 72;
@@ -29,14 +33,20 @@ const RIGHT = 8;
 /** Points drawn per line at most; the stored streams are already 5-second averages. */
 const MAX_POINTS = 480;
 
-function thin(streams: Streams): { t: number[]; values: Record<Channel, (number | null)[]> } {
+function thin(streams: Streams): {
+  step: number;
+  t: number[];
+  values: Record<Channel, (number | null)[]>;
+} {
   const step = Math.max(1, Math.ceil(streams.t.length / MAX_POINTS));
   const pick = <T,>(list: T[] | undefined) => (list ?? []).filter((_, i) => i % step === 0);
   return {
+    step,
     t: pick(streams.t),
     values: {
       power: pick(streams.power),
       hr: pick(streams.hr),
+      speed: pick(streams.speed).map((v) => (typeof v === "number" ? v * 3.6 : null)),
       cadence: pick(streams.cadence),
       alt: pick(streams.alt),
     },
@@ -47,15 +57,30 @@ function thin(streams: Streams): { t: number[]; values: Record<Channel, (number 
 const hoursMinutes = (seconds: number) =>
   `${Math.floor(seconds / 3600)}:${String(Math.floor((seconds % 3600) / 60)).padStart(2, "0")}`;
 
+const STROKE: Record<Channel, string> = {
+  power: "var(--series-1)",
+  hr: "var(--series-2)",
+  speed: "var(--series-1)",
+  cadence: "var(--series-1)",
+  alt: "var(--meta)",
+};
+
 const present = (values: (number | null)[]) => values.some((v) => typeof v === "number" && v > 0);
 
 /**
- * The ride over time: watt, pulse, cadence and height, each in its own
- * strip on its own scale over one shared time axis — never two scales on
- * one plot. Each channel can be turned off; a pointer or the arrow keys
- * read every visible channel at the same moment.
+ * The ride over time: watt, pulse, speed, cadence and height, each in its
+ * own strip on its own scale over one shared time axis — never two scales
+ * on one plot. Each channel can be turned off; a pointer or the arrow keys
+ * read every visible channel at the same moment, and `onIndex` hears which
+ * sample of `streams` that is, so the route can show where it was.
  */
-export function StreamsChart({ streams }: { streams: Streams }) {
+export function StreamsChart({
+  streams,
+  onIndex,
+}: {
+  streams: Streams;
+  onIndex?: (index: number | null) => void;
+}) {
   const t = useTranslations("activities.streams");
   const locale = useLocale();
   const { ref, width } = useWidth<HTMLDivElement>();
@@ -67,6 +92,8 @@ export function StreamsChart({ streams }: { streams: Streams }) {
   const x = linearScale([0, Math.max(1, end)], [LEFT, width - RIGHT]);
   const hover = useHoverIndex(data.t.length, (i) => x(data.t[i] ?? 0));
   const height = visible.length * (LABEL + PANEL + GAP) + AXIS;
+  const reading = hover.index === null ? null : hover.index * data.step;
+  useEffect(() => onIndex?.(reading), [onIndex, reading]);
   const timeTicks = niceTicks(0, end / 60, 4)
     .map((m) => m * 60)
     .filter((s) => s <= end);
@@ -76,6 +103,7 @@ export function StreamsChart({ streams }: { streams: Streams }) {
   const unit: Record<Channel, (v: number) => string> = {
     power: (v) => t("watt", { w: Math.round(v) }),
     hr: (v) => t("bpm", { bpm: Math.round(v) }),
+    speed: (v) => t("kmh", { kmh: num(v, locale, 1) }),
     cadence: (v) => t("rpm", { rpm: Math.round(v) }),
     alt: (v) => t("m", { m: num(v, locale) }),
   };
@@ -172,13 +200,7 @@ export function StreamsChart({ streams }: { streams: Streams }) {
                   <path
                     d={linePath(points)}
                     fill="none"
-                    stroke={
-                      c === "hr"
-                        ? "var(--series-2)"
-                        : c === "alt"
-                          ? "var(--meta)"
-                          : "var(--series-1)"
-                    }
+                    stroke={STROKE[c]}
                     strokeWidth={c === "power" ? 1.25 : 1.75}
                     strokeLinejoin="round"
                   />
@@ -187,7 +209,7 @@ export function StreamsChart({ streams }: { streams: Streams }) {
                       cx={x(data.t[at] ?? 0)}
                       cy={y(values[at] as number)}
                       r={4}
-                      fill={c === "hr" ? "var(--series-2)" : "var(--series-1)"}
+                      fill={c === "alt" ? "var(--meta)" : STROKE[c]}
                       stroke="var(--card)"
                       strokeWidth={2}
                     />

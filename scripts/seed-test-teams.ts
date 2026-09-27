@@ -27,7 +27,8 @@ async function main() {
   // Local means the database is on this machine and nothing is served over
   // TLS: a development installation, reached as localhost or over the
   // tailnet, never one that real people use.
-  const dbHost = new URL(env.MIGRATION_DATABASE_URL).hostname;
+  // The app's own URL: the one the seeding writes through.
+  const dbHost = new URL(env.APP_DATABASE_URL).hostname;
   if (
     process.env.NODE_ENV === "production" ||
     !["localhost", "127.0.0.1"].includes(dbHost) ||

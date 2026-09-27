@@ -64,6 +64,13 @@
       "when": 1790509398743,
       "tag": "0008_demo_roles",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1790539357523,
+      "tag": "0009_activity_detail",
+      "breakpoints": true
     }
   ]
 }

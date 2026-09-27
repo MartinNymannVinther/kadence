@@ -13,14 +13,16 @@ export type ActivityFacts = {
   avgHr: number | null;
   maxHr: number | null;
   avgCadence: number | null;
+  maxSpeed: number | null;
+  hrDrift: number | null;
   workKj: number | null;
   load: number | null;
   loadMethod: string;
 };
 
 /**
- * What a ride or a session came to, in tiles: time, distance, climbing,
- * watt, pulse, cadence, work, and the load with the method it was worked
+ * What a ride or a session came to, in tiles: time, distance, speed,
+ * climbing, watt, pulse and its drift, cadence, work, and the load with the method it was worked
  * out by in words — from watt, from pulse, or from how hard it felt
  * (ADR 0016). A tile appears only when the file had the number.
  */
@@ -38,12 +40,24 @@ export function ActivitySummary({ facts }: { facts: ActivityFacts }) {
   if (facts.elapsedSeconds && facts.elapsedSeconds - facts.movingSeconds >= 120)
     add("elapsed", facts.elapsedSeconds, (v) => durationText(v / 60, duration));
   add("distance", facts.distanceM, (v) => t("km", { km: num(v / 1000, locale, 1) }));
+  const avgSpeed =
+    facts.distanceM && facts.movingSeconds > 0 ? facts.distanceM / facts.movingSeconds : null;
+  const kmh = (v: number) => t("kmh", { kmh: num(v * 3.6, locale, 1) });
+  add("avgSpeed", avgSpeed, kmh);
+  add("maxSpeed", facts.maxSpeed, kmh);
   add("ascent", facts.ascentM, (v) => t("m", { m: num(v, locale) }));
   add("avgPower", facts.avgPower, (v) => t("watt", { w: v }));
   add("weightedPower", facts.weightedPower, (v) => t("watt", { w: v }), t("weightedHint"));
   add("maxPower", facts.maxPower, (v) => t("watt", { w: v }));
   add("avgHr", facts.avgHr, (v) => t("bpm", { bpm: v }));
   add("maxHr", facts.maxHr, (v) => t("bpm", { bpm: v }));
+  if (facts.hrDrift !== null)
+    tiles.push({
+      key: "drift",
+      label: t("drift"),
+      value: t("pct", { pct: num(facts.hrDrift, locale, 1) }),
+      hint: t("driftHint"),
+    });
   add("cadence", facts.avgCadence, (v) => t("rpm", { rpm: v }));
   add("work", facts.workKj, (v) => t("kj", { kj: num(v, locale) }));
   if (facts.load !== null)

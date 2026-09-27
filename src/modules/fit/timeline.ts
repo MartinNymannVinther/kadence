@@ -52,6 +52,9 @@ export interface Timeline {
   speed: Channel;
   alt: Channel;
   distance: Channel;
+  /** Degrees; null where the device had no fix. */
+  lat: Channel;
+  lon: Channel;
   moving: boolean[];
 }
 
@@ -62,9 +65,11 @@ interface Sample {
   speed: number | null;
   alt: number | null;
   distance: number | null;
+  lat: number | null;
+  lon: number | null;
 }
 
-const CHANNELS = ["power", "hr", "cadence", "speed", "alt", "distance"] as const;
+const CHANNELS = ["power", "hr", "cadence", "speed", "alt", "distance", "lat", "lon"] as const;
 
 function within(value: number | undefined, min: number, max: number): number | null {
   return value !== undefined && Number.isFinite(value) && value >= min && value <= max
@@ -73,6 +78,9 @@ function within(value: number | undefined, min: number, max: number): number | n
 }
 
 function clean(record: FitRecord): Sample {
+  // 0°, 0° is in the Gulf of Guinea: a device without a fix that wrote
+  // zeros rather than "no value".
+  const fix = !(record.lat === 0 && record.lon === 0);
   return {
     power: within(record.power, 0, PLAUSIBLE.maxPower),
     hr: within(record.hr, PLAUSIBLE.minHr, PLAUSIBLE.maxHr),
@@ -80,6 +88,8 @@ function clean(record: FitRecord): Sample {
     speed: within(record.speed, 0, PLAUSIBLE.maxSpeed),
     alt: within(record.altitude, PLAUSIBLE.minAltitude, PLAUSIBLE.maxAltitude),
     distance: within(record.distance, 0, Number.MAX_SAFE_INTEGER),
+    lat: fix ? within(record.lat, -90, 90) : null,
+    lon: fix ? within(record.lon, -180, 180) : null,
   };
 }
 
@@ -122,6 +132,8 @@ export function buildTimeline(records: readonly FitRecord[]): Timeline {
     speed: new Array<number | null>(length).fill(null),
     alt: new Array<number | null>(length).fill(null),
     distance: new Array<number | null>(length).fill(null),
+    lat: new Array<number | null>(length).fill(null),
+    lon: new Array<number | null>(length).fill(null),
     moving: new Array<boolean>(length).fill(false),
   };
 

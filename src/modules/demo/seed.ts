@@ -4,6 +4,7 @@ import { raceYearOf, seasonStartYear, strengthFrequency } from "@/modules/dcu";
 import { createSeasonPlan } from "@/modules/season/plans";
 import { createRider, setThresholds } from "@/modules/team/riders";
 import { saveTeamSettings } from "@/modules/team/settings";
+import { importFit } from "@/modules/devices/import";
 import { addComment } from "@/modules/training/comments";
 import { completeSession } from "@/modules/training/complete";
 import { installDcuProgrammes } from "@/modules/training/dcu-library";
@@ -13,6 +14,7 @@ import { listSessions } from "@/modules/training/sessions";
 import { createTemplate, listTemplates } from "@/modules/training/templates";
 import { saveCheckin } from "@/modules/wellbeing/checkins";
 import { parseWorkoutText } from "@/modules/workouts/parse-text";
+import { sampleRideFit } from "./sample-ride";
 import { COMMENTS, EVENTS, EXAM, NOTES, pick, RIDERS, TEMPLATES, type L } from "./seed-data";
 
 export type { L };
@@ -23,7 +25,8 @@ export type { L };
  * DCU's strength programme, six weeks of group plans that were mostly
  * ridden (a few missed, as in life), next week planned, a fortnight of
  * check-ins with one rider tired and one with a sore knee, races and a
- * camp ahead, an exam, and a couple of comments. Written through the
+ * camp ahead, an exam, and a couple of comments. One long ride comes in as
+ * a real FIT file, so its page shows the route, laps, climbs and curves. Written through the
  * ordinary services, as the demo's coach, so what the visitor sees is what
  * the product does with real rows.
  */
@@ -106,7 +109,11 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
 
   // What was ridden: most sessions, a little shorter or longer, a few missed.
   const past = await listSessions(ctx, { from: firstMonday, to: addDaysIso(today, -1) });
+  const longRide = past.findLast(
+    (s) => s.riderId === riderIds[0] && s.sport === "bike" && s.plannedMinutes >= 90,
+  );
   for (const s of past) {
+    if (s === longRide) continue;
     if (rnd() < 0.1) continue;
     const factor = 0.85 + rnd() * 0.25;
     const base =
@@ -120,6 +127,14 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
       note: "",
     });
   }
+
+  if (longRide)
+    await importFit(
+      ctx,
+      longRide.riderId,
+      `${pick({ da: "Lang tur med bakker", en: "Long ride with hills" }, l)}.fit`,
+      sampleRideFit(Date.parse(`${longRide.onDate}T08:00:00Z`)),
+    );
 
   for (const [i, riderId] of riderIds.entries()) {
     for (let d = 13; d >= 0; d--) {

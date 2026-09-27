@@ -1,6 +1,18 @@
 import { todayInCopenhagen } from "@/core/dates";
-import { decodeFit, FitError, summarizeActivity } from "@/modules/fit";
-import { activityLoad, bestMeanPowers, timeInZones, weightedPower } from "@/modules/load";
+import {
+  decodeFit,
+  FitError,
+  summarizeActivity,
+  type ClimbSummary,
+  type LapSummary,
+} from "@/modules/fit";
+import {
+  activityLoad,
+  heartRateDrift,
+  powerCurve,
+  timeInZones,
+  weightedPower,
+} from "@/modules/load";
 
 /**
  * A FIT file turned into the values of an `activities` row: decoded by
@@ -26,7 +38,11 @@ export type ActivityValues = {
   avgHr: number | null;
   maxHr: number | null;
   avgCadence: number | null;
+  maxSpeed: number | null;
+  hrDrift: number | null;
   workKj: number | null;
+  laps: LapSummary[];
+  climbs: ClimbSummary[];
   zoneSeconds: { power: number[]; hr: number[] };
   bestPowers: Record<string, number>;
   streams: unknown;
@@ -42,6 +58,8 @@ const int = (value: number | undefined) =>
 const MAX_SECONDS = 48 * 3600;
 const MAX_DISTANCE_M = 2_000_000;
 const MAX_ASCENT_M = 30_000;
+/** m/s, the timeline's own ceiling (`PLAUSIBLE.maxSpeed`). */
+const MAX_SPEED = 40;
 
 const within = (value: number | undefined, max: number) =>
   value !== undefined && Number.isFinite(value) && value >= 0 && value <= max ? value : undefined;
@@ -77,16 +95,16 @@ export function activityFromFit(bytes: Uint8Array, rider: RiderThresholds): Acti
     avgHr: int(summary.avgHr),
     maxHr: int(summary.maxHr),
     avgCadence: int(summary.avgCadence),
+    maxSpeed: within(summary.maxSpeed, MAX_SPEED) ?? null,
+    hrDrift: hasPower ? heartRateDrift(summary.power1hz, summary.hr1hz) : null,
     workKj: int(summary.workKj),
+    laps: summary.laps,
+    climbs: summary.climbs,
     zoneSeconds: {
       power: timeInZones(summary.power1hz, rider.ftp, "power"),
       hr: timeInZones(summary.hr1hz, rider.thresholdHr, "hr"),
     },
-    bestPowers: hasPower
-      ? Object.fromEntries(
-          Object.entries(bestMeanPowers(summary.power1hz)).map(([k, v]) => [k, Math.round(v)]),
-        )
-      : {},
+    bestPowers: hasPower ? powerCurve(summary.power1hz) : {},
     streams: summary.streams,
     load: load.method === "none" ? null : load.load,
     loadMethod: load.method,

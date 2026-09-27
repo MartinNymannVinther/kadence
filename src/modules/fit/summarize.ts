@@ -1,5 +1,9 @@
+import { metresAlong } from "./along";
 import { ascentFromAltitude } from "./ascent";
+import { findClimbs, type ClimbSummary } from "./climbs";
+import { summarizeLaps, type LapSummary } from "./laps";
 import { SPORT, SUB_SPORT } from "./profile";
+import { pedalling, round, rounded, stats, type Channel } from "./stats";
 import { buildTimeline, type Timeline } from "./timeline";
 import type { FitFile, FitSession } from "./types";
 
@@ -24,16 +28,18 @@ import type { FitFile, FitSession } from "./types";
  *   included for power (coasting is part of the ride). `avgCadence` leaves
  *   zeros out: it is how fast the rider pedals when pedalling.
  * - `workKj`: power summed over the seconds, joules to kilojoules.
+ * - `maxSpeed`: the fastest second, m/s.
  * - `streams`: every channel thinned to one value per `STREAM_SECONDS`, the
  *   average of the window, for charts; `t` is seconds since `startedAt`.
+ *   `lat`/`lon` are the route, to five decimals (about a metre).
+ * - `laps` and `climbs`: the device's laps and the hills found in the
+ *   altitude (`laps.ts`, `climbs.ts`).
  *
  * `startedAt` is the time of the first record, second 0 of `power1hz` and
  * `hr1hz`.
  */
 
 export const STREAM_SECONDS = 5;
-
-type Channel = (number | null)[];
 
 export interface ActivityStreams {
   t: number[];
@@ -42,6 +48,8 @@ export interface ActivityStreams {
   cadence: Channel;
   speed: Channel;
   alt: Channel;
+  lat: Channel;
+  lon: Channel;
 }
 
 export interface ActivitySummary {
@@ -56,7 +64,10 @@ export interface ActivitySummary {
   avgHr?: number;
   maxHr?: number;
   avgCadence?: number;
+  maxSpeed?: number;
   workKj?: number;
+  laps: LapSummary[];
+  climbs: ClimbSummary[];
   power1hz: Channel;
   hr1hz: Channel;
   streams: ActivityStreams;
@@ -76,7 +87,8 @@ export function summarizeActivity(fit: FitFile): ActivitySummary {
   const line = buildTimeline(fit.records);
   const power = stats(line.power);
   const hr = stats(line.hr);
-  const cadence = stats(line.cadence.map((c) => (c === 0 ? null : c)));
+  const cadence = stats(pedalling(line.cadence));
+  const along = metresAlong(line);
 
   return {
     startedAt: new Date(line.startMs),
@@ -90,7 +102,10 @@ export function summarizeActivity(fit: FitFile): ActivitySummary {
     avgHr: rounded(hr.avg, 0),
     maxHr: hr.max,
     avgCadence: rounded(cadence.avg, 0),
+    maxSpeed: rounded(stats(line.speed).max, 2) || undefined,
     workKj: power.count > 0 ? round(power.sum / 1000, 1) : undefined,
+    laps: summarizeLaps(fit.laps, line, along),
+    climbs: findClimbs(line, along),
     power1hz: line.power,
     hr1hz: line.hr,
     streams: {
@@ -103,6 +118,8 @@ export function summarizeActivity(fit: FitFile): ActivitySummary {
       cadence: thin(line.cadence, 0),
       speed: thin(line.speed, 2),
       alt: thin(line.alt, 1),
+      lat: thin(line.lat, 5),
+      lon: thin(line.lon, 5),
     },
   };
 }
@@ -127,19 +144,6 @@ function recordedDistance(line: Timeline): number | undefined {
   return fromSpeed > 0 ? fromSpeed : undefined;
 }
 
-function stats(values: Channel): { avg?: number; max?: number; sum: number; count: number } {
-  let sum = 0;
-  let count = 0;
-  let max: number | undefined;
-  for (const value of values) {
-    if (value === null) continue;
-    sum += value;
-    count++;
-    if (max === undefined || value > max) max = value;
-  }
-  return { avg: count > 0 ? sum / count : undefined, max, sum, count };
-}
-
 /** Channel averaged over windows of `STREAM_SECONDS`; null where a window has no value. */
 function thin(values: Channel, digits: number): Channel {
   const out: Channel = [];
@@ -149,13 +153,4 @@ function thin(values: Channel, digits: number): Channel {
     out.push(avg === undefined ? null : round(avg, digits));
   }
   return out;
-}
-
-function round(value: number, digits: number): number {
-  const factor = 10 ** digits;
-  return Math.round(value * factor) / factor;
-}
-
-function rounded(value: number | undefined, digits: number): number | undefined {
-  return value === undefined ? undefined : round(value, digits);
 }

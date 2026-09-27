@@ -2,6 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { Pool } from "pg";
 import { SPORT } from "@/modules/fit";
 import { deleteActivity, getActivityFile, importFit } from "@/modules/devices/import";
+import { rereadActivityDetails } from "@/modules/devices/reread";
 import { getActivitySession } from "@/modules/training/activities";
 import { listSessions } from "@/modules/training/sessions";
 import { adminPool } from "../helpers/db";
@@ -81,6 +82,35 @@ describe("importing a FIT file", () => {
     );
     expect(row.rows[0]).toMatchObject({ weighted_power: 200, avg_hr: 150 });
     expect(row.rows[0].moving_seconds).toBeGreaterThan(3500);
+  });
+
+  it("keeps the route, the power curve and the fastest second", async () => {
+    const row = await admin.query(
+      "select streams, best_powers, max_speed, hr_drift, laps, climbs from activities where id = $1",
+      [activityId],
+    );
+    const r = row.rows[0];
+    expect(r.streams.lat[0]).toBeCloseTo(55.6761, 4);
+    expect(r.best_powers).toMatchObject({ "1": 200, "5": 200, "3600": 200 });
+    expect(r.max_speed).toBe(10);
+    expect(r.hr_drift).toBe(0);
+    expect(r).toMatchObject({ laps: [], climbs: [] });
+  });
+
+  it("reads the file again for a coach, and never for a rider", async () => {
+    await admin.query(
+      "update activities set streams = null, best_powers = null, max_speed = null, laps = null where id = $1",
+      [activityId],
+    );
+    await expect(rereadActivityDetails(IDA)).rejects.toMatchObject({ code: "forbidden" });
+    expect(await rereadActivityDetails(COACH)).toEqual({ read: 1, failed: 0 });
+    const row = await admin.query(
+      "select streams, best_powers, max_speed, laps, load, load_method from activities where id = $1",
+      [activityId],
+    );
+    expect(row.rows[0].streams.lat).toHaveLength(720);
+    expect(row.rows[0].best_powers["3600"]).toBe(200);
+    expect(row.rows[0]).toMatchObject({ max_speed: 10, laps: [], load_method: "power" });
   });
 
   it("names the session it fulfilled, for the activity's page", async () => {

@@ -1626,7 +1626,13 @@
         "hr": "from heart rate",
         "rpe": "from how hard it felt",
         "none": "cannot be worked out"
-      }
+      },
+      "avgSpeed": "Avg. speed",
+      "maxSpeed": "Max. speed",
+      "drift": "Heart-rate drift",
+      "driftHint": "How much more pulse each watt cost in the second half than in the first",
+      "kmh": "{kmh} km/h",
+      "pct": "{pct} %"
     },
     "streams": {
       "show": "Show curves",
@@ -1640,7 +1646,9 @@
       "m": "{m} m",
       "hint": "Point at the curves, or use the arrow keys, to read a particular moment.",
       "label": "The ride as it went: {channels}",
-      "none": "The file had no samples along the way."
+      "none": "The file had no samples along the way.",
+      "speed": "Speed",
+      "kmh": "{kmh} km/h"
     },
     "zones": {
       "power": "By power",
@@ -1690,6 +1698,48 @@
         "invalid": "Choose at least one file.",
         "generic": "Something went wrong with the file. Try again."
       }
+    },
+    "routeTitle": "The route",
+    "lapsTitle": "Laps",
+    "climbsTitle": "Climbs",
+    "curveTitle": "Power curve",
+    "curveNote": "The best average power over every duration in the ride. The rider against themselves, never against others.",
+    "route": {
+      "label": "The route, {km} km, drawn from GPS",
+      "start": "Start",
+      "finish": "Finish",
+      "none": "The file had no GPS positions.",
+      "note": "Drawn from GPS without a map, so no position is sent on to a map service."
+    },
+    "laps": {
+      "caption": "{count} laps from the device",
+      "lap": "Lap",
+      "time": "Time",
+      "distance": "Km",
+      "speed": "Km/h",
+      "power": "Watt",
+      "hr": "HR",
+      "cadence": "Cad.",
+      "ascent": "Climb m"
+    },
+    "climbs": {
+      "name": "Climb {n}",
+      "at": "at km {km}",
+      "km": "{km} km",
+      "grade": "{pct} %",
+      "gain": "{m} m up",
+      "time": "{time}",
+      "watt": "{w} W",
+      "bpm": "{bpm} bpm",
+      "note": "Found in the altitude: at least 15 metres up over 300 m at 3 % on average."
+    },
+    "curve": {
+      "hint": "Point at the curve, or use the arrow keys, to read a duration.",
+      "label": "Power curve from {from} to {to}",
+      "readout": "{duration}: {w} W",
+      "s": "{n} s",
+      "min": "{n} min",
+      "h": "{n} h"
     }
   },
   "season": {
