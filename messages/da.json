@@ -2151,7 +2151,7 @@
         "intro": "DCU's klasser går efter fødselsår, og hver klasse har sine grænser for løb. Kadence regner klassen ud for dig.",
         "points": {
           "1": "U17 er det kalenderår, man fylder 15 og 16, U19 17 og 18, og U23 19 til 22. Sæsonen løber fra oktober til september.",
-          "2": "U17 kører linjeløb på højst {u17Road} km og enkeltstart på højst {u17Tt} km, og udvekslingen må højst være {u17Gear} m pr. pedalomtråd.",
+          "2": "U17 kører linjeløb på højst {u17Road} km og enkeltstart på højst {u17Tt} km, og udvekslingen må højst være {u17Gear, number} m pr. pedalomtråd.",
           "3": "U19-drenge kører linjeløb på {u19mMin}–{u19mMax} km og U19-piger på {u19wMin}–{u19wMax} km, med enkeltstart på højst {u19Tt} km. Der er ingen udvekslingsgrænse i U19, da UCI fjernede juniorgrænsen i 2023. Byg arbejdet på store gear gradvist op i det første år.",
           "4": "Et etapeløb må højst vare {youthStage} dage for U17 og U19 og {u23Stage} dage for U23. For at stille op til DM for ungdom skal en rytter have kørt mindst 3 licensløb.",
           "5": "Den længste træningstur er for U17 højst {u17LongH} timer eller {u17LongKm} km og for U19 højst {u19LongH} timer eller {u19LongKm} km. Det længste løb er kortere end det, så der er ingen grund til at træne længere."

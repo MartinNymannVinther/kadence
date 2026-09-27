@@ -34,7 +34,8 @@ describe("the coach guide", () => {
     it(`fills every placeholder in ${lang} from the modules' numbers`, () => {
       const values = guideValues();
       const text = JSON.stringify(sections);
-      for (const [, name] of text.matchAll(/\{(\w+)\}/g)) expect(values).toHaveProperty(name!);
+      for (const [, name] of text.matchAll(/\{(\w+)(?:, number)?\}/g))
+        expect(values).toHaveProperty(name!);
     });
   }
 

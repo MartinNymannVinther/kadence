@@ -2151,7 +2151,7 @@
         "intro": "DCU's classes go by birth year, and each class has its own race limits. Kadence works out the class for you.",
         "points": {
           "1": "U17 is the calendar year a rider turns 15 and 16, U19 17 and 18, and U23 19 to 22. The season runs from October to September.",
-          "2": "U17 road races are at most {u17Road} km and time trials at most {u17Tt} km, and the gearing may be at most {u17Gear} m per pedal revolution.",
+          "2": "U17 road races are at most {u17Road} km and time trials at most {u17Tt} km, and the gearing may be at most {u17Gear, number} m per pedal revolution.",
           "3": "U19 men race {u19mMin}–{u19mMax} km and U19 women {u19wMin}–{u19wMax} km, with time trials of at most {u19Tt} km. There is no gear limit in U19, since the UCI dropped the junior limit in 2023. Build up work on big gears gradually in the first year.",
           "4": "A stage race may last at most {youthStage, plural, one {# day} other {# days}} for U17 and U19 and {u23Stage, plural, one {# day} other {# days}} for U23. To enter the youth national championships, a rider must have ridden at least 3 licensed races.",
           "5": "The longest training ride is at most {u17LongH, plural, one {# hour} other {# hours}} or {u17LongKm} km for U17 and at most {u19LongH, plural, one {# hour} other {# hours}} or {u19LongKm} km for U19. The longest race is shorter than that, so there is no reason to train longer."
