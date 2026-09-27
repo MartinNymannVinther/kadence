@@ -1,4 +1,4 @@
-import { index, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { index, jsonb, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { organizations } from "./foundation";
 
 /**
@@ -22,6 +22,14 @@ export const demoWorkspaces = pgTable(
       .references(() => organizations.id, { onDelete: "cascade" }),
     /** The throwaway account the visitor is signed in as. */
     userId: text("user_id").notNull(),
+    /**
+     * The demo's three people — the coach the visitor starts as, a rider and
+     * the rider's parent — so the visitor can see Kadence as each (the
+     * roles are the product, ADR 0010). Passwords sealed with the secret
+     * box; every one of these accounts is deleted with the demo.
+     * [{ role: "coach" | "rider" | "parent", userId, email, passwordSealed }]
+     */
+    accounts: jsonb("accounts").notNull().default([]),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
   },

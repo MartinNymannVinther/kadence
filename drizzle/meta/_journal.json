@@ -57,6 +57,13 @@
       "when": 1790500688266,
       "tag": "0007_review_hardening",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1790509398743,
+      "tag": "0008_demo_roles",
+      "breakpoints": true
     }
   ]
 }

@@ -6,6 +6,8 @@ import {
   demoLandingUrl,
   isDemoWorkspace,
 } from "@/modules/demo/service";
+import { readAccounts, switchDemoRole } from "@/modules/demo/roles";
+import { whoAmI } from "@/modules/team/access";
 import { adminPool } from "../helpers/db";
 
 /**
@@ -13,12 +15,15 @@ import { adminPool } from "../helpers/db";
  * throwaway account, and a date it stops existing. The suite runs with
  * DEMO=on (see the test environment); the shipped default is off and
  * proven in tests/core/env. A demo opens on a seeded portfolio, written
- * through the ordinary services (src/modules/demo/seed.ts).
+ * through the ordinary services (src/modules/demo/seed.ts), with a rider
+ * and a parent beside the coach so the visitor can see all three roles
+ * (src/modules/demo/roles.ts).
  */
 
 let admin: Pool;
 let orgId: string;
 let userId: string;
+let people: string[] = [];
 
 beforeAll(async () => {
   admin = adminPool();
@@ -56,7 +61,25 @@ describe("a demo workspace", () => {
     expect(seeded.rows[0].dcu).toBe(3);
   });
 
-  it("is deleted whole when its time is up, guest account included", async () => {
+  it("has a rider and her parent the visitor can switch to, and nobody else can", async () => {
+    const row = await admin.query(
+      `select accounts from demo_workspaces where organization_id = $1`,
+      [orgId],
+    );
+    const accounts = readAccounts(row.rows[0].accounts);
+    expect(accounts.map((a) => a.role)).toEqual(["coach", "rider", "parent"]);
+    people = accounts.map((a) => a.userId);
+    const parent = accounts.find((a) => a.role === "parent")!;
+    const me = await whoAmI(orgId, parent.userId);
+    expect(me?.children).toMatchObject([{ name: "Emma Holm", confirmed: true }]);
+
+    const switched = await switchDemoRole({ userId, orgId }, "parent");
+    expect(switched?.getSetCookie().join(";")).toMatch(/better-auth/);
+    expect(await switchDemoRole({ userId: "someone-else", orgId }, "rider")).toBeNull();
+    expect(await switchDemoRole({ userId, orgId: "another-org" }, "rider")).toBeNull();
+  });
+
+  it("is deleted whole when its time is up, every account it made included", async () => {
     await admin.query(
       `update demo_workspaces set expires_at = now() - interval '1 minute' where organization_id = $1`,
       [orgId],
@@ -66,5 +89,9 @@ describe("a demo workspace", () => {
     const user = await admin.query(`select 1 from users where id = $1`, [userId]);
     const rows = await admin.query(`select 1 from riders where org_id = $1`, [orgId]);
     expect([org.rowCount, user.rowCount, rows.rowCount]).toEqual([0, 0, 0]);
+    const left = await admin.query(`select count(*)::int as n from users where id = any($1)`, [
+      people,
+    ]);
+    expect(left.rows[0].n).toBe(0);
   });
 });

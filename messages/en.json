@@ -57,7 +57,7 @@
     },
     "demo": {
       "title": "Try it without creating anything",
-      "body": "You get your own U19 team in full swing: riders, a season plan after DCU, a week of sessions, activities and check-ins. It is deleted after {hours, plural, one {# hour} other {# hours}}. No email, no sign-up.",
+      "body": "You get your own U19 team in full swing: riders, a season plan after DCU, weeks of sessions, activities and check-ins. You start as the coach and can switch to the rider Emma and her mother to see Kadence through their eyes. It is all deleted after {hours, plural, one {# hour} other {# hours}}. No email, no sign-up.",
       "privacy": "Do not put real personal data in the demo. It passes through a database and possibly a language model on the way.",
       "cta": "Open a demo"
     },
@@ -506,7 +506,13 @@
   "demo": {
     "bannerTitle": "This is a demo.",
     "bannerBody": "The workspace and everything in it is deleted after {hours, plural, one {# hour} other {# hours}}. Feel free to write in it.",
-    "bannerCta": "Apply for a real account"
+    "bannerCta": "Apply for a real account",
+    "viewAs": "See as:",
+    "roles": {
+      "coach": "Coach",
+      "rider": "Rider (Emma)",
+      "parent": "Parent (Emma's mother)"
+    }
   },
   "terms": {
     "title": "Terms and privacy",

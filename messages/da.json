@@ -57,7 +57,7 @@
     },
     "demo": {
       "title": "Prøv uden at oprette noget",
-      "body": "Du får dit eget U19-hold i fuld gang: ryttere, en sæsonplan efter DCU, en uge med pas, aktiviteter og check-ins. Det slettes efter {hours, plural, one {# time} other {# timer}}. Ingen e-mail, ingen tilmelding.",
+      "body": "Du får dit eget U19-hold i fuld gang: ryttere, en sæsonplan efter DCU, uger med pas, aktiviteter og check-ins. Du starter som træner og kan skifte til rytteren Emma og hendes mor for at se Kadence med deres øjne. Det hele slettes efter {hours, plural, one {# time} other {# timer}}. Ingen e-mail, ingen tilmelding.",
       "privacy": "Skriv ikke rigtige personoplysninger i demoen. Den passerer en database og eventuelt en sprogmodel på vejen.",
       "cta": "Åbn en demo"
     },
@@ -506,7 +506,13 @@
   "demo": {
     "bannerTitle": "Det her er en demo.",
     "bannerBody": "Arbejdsrummet og alt i det slettes efter {hours, plural, one {# time} other {# timer}}. Skriv gerne i det.",
-    "bannerCta": "Ansøg om en rigtig konto"
+    "bannerCta": "Ansøg om en rigtig konto",
+    "viewAs": "Se som:",
+    "roles": {
+      "coach": "Træner",
+      "rider": "Rytter (Emma)",
+      "parent": "Forælder (Emmas mor)"
+    }
   },
   "terms": {
     "title": "Vilkår og privatliv",

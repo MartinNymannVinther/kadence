@@ -6,6 +6,7 @@ import { demoWorkspaces } from "@/core/db/schema";
 import { DEMO_HEADER, demoSignupHeaderValue } from "@/core/auth/signup";
 import { env } from "@/core/env";
 import { organizationSlug } from "@/lib/slug";
+import { createDemoRoles, readAccounts } from "./roles";
 import { seedDemoTeam } from "./seed";
 import { TEAM_NAME } from "./seed-data";
 
@@ -14,9 +15,9 @@ import { TEAM_NAME } from "./seed-data";
  * which it stops existing. Everything a visitor touches is the product:
  * the same tables, the same policies, the same services, so nothing shown
  * here can quietly differ from what a customer would get. A demo opens
- * on a portfolio in full swing (seed.ts), written through the same
- * services a person uses, so there is something to prioritize, plan and
- * read on the roadmap from the first click.
+ * on a U19 team in full swing (seed.ts), written through the same
+ * services a person uses, with a rider and a parent beside the coach so
+ * the visitor can see all three roles (roles.ts).
  *
  * Nothing here runs unless DEMO=on. On an installation that has not asked
  * for it, the route below answers 404 and this file is dead code.
@@ -74,18 +75,24 @@ function cookieHeaderFrom(responseHeaders: Headers): Headers {
  * and the endpoint exist for one that does not.
  *
  * The organization's cascades take the workspace's rows with it. The
- * throwaway user is removed too, because a demo that leaves accounts
+ * throwaway users — the visitor, the demo's rider and parent — are removed too, because a demo that leaves accounts
  * behind is a demo that leaks addresses nobody gave.
  */
 export async function cleanupExpiredDemos(now = new Date()): Promise<number> {
   const expired = await authDb
     .delete(demoWorkspaces)
     .where(lt(demoWorkspaces.expiresAt, now))
-    .returning({ organizationId: demoWorkspaces.organizationId, userId: demoWorkspaces.userId });
+    .returning({
+      organizationId: demoWorkspaces.organizationId,
+      userId: demoWorkspaces.userId,
+      accounts: demoWorkspaces.accounts,
+    });
   for (const row of expired) {
     try {
       await authDb.execute(sql`delete from organizations where id = ${row.organizationId}`);
-      await authDb.execute(sql`delete from users where id = ${row.userId}`);
+      // The visitor and the demo's rider and parent: every account it made.
+      const people = new Set([row.userId, ...readAccounts(row.accounts).map((a) => a.userId)]);
+      for (const id of people) await authDb.execute(sql`delete from users where id = ${id}`);
     } catch (error) {
       // One stuck demo must not stop the others being cleaned up.
       console.error("demo: cleanup failed for", row.organizationId, error);
@@ -151,8 +158,15 @@ export async function createDemoWorkspace(locale: "da" | "en"): Promise<DemoSess
 
   try {
     await seedDemoTeam({ orgId: organization.id, userId }, locale);
+    await createDemoRoles({
+      key,
+      orgId: organization.id,
+      coach: { userId, email, password },
+      coachHeaders: sessionHeaders,
+      locale,
+    });
   } catch (error) {
-    // An empty demo is still a demo; the visitor can add their own.
+    // An empty demo, or one with only the coach, is still a demo.
     console.error("demo: could not seed the team", error);
   }
 
