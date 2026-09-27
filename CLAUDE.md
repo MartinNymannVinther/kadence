@@ -241,19 +241,23 @@ codebase to:
   needs; the thirteen product tables with RLS per team and per rider,
   the guardian trigger, the invitation claim, audit triggers and
   isolation tests; this file; the repository.
-- Wave 1: the team, the roles and the calendar — riders, coaches and
-  guardians by invitation, the rider's profile, the week and month
-  calendar on a phone, the workout builder, the library with DCU's
-  strength programmes, group plans, completing a session by hand with RPE,
-  and the comments.
-- Wave 2: the season and the load — DCU's season plan per class, the
-  corridor, the load chart, the guardrails, the check-in and its zones,
-  races, school and exams, the coach's overview of who needs attention.
-- Wave 3: devices — the FIT decoder and upload, matching planned to done,
-  the Wahoo and Garmin adapters, workout export (.zwo, .erg, .mrc, FIT),
-  sync status.
-- Wave 4: parents and AI — the parents' view and guide, sharing
-  controls, the three AI proposals, the demo with a U19 team in full
-  swing, export, help and the docs.
+- Wave 1 (done): the team, the roles and the calendar — riders, coaches
+  and guardians by invitation, the week and the team grid on a phone,
+  the workout builder, the library with DCU's strength programmes, group
+  plans, done by hand with RPE, the open thread.
+- Wave 2 (done): the season and the load — DCU's season plan per class,
+  the corridor, fitness/fatigue/form, the guardrails, the check-in and
+  its zones, races, school and exams, the coach's attention list.
+- Wave 3 (done): devices — Kadence's own FIT decoder and upload, matching
+  planned to done, the Wahoo and Garmin adapters (ADR 0018), workout
+  export, sync status.
+- Wave 4 (done): parents and AI — the parents' page and guide, sharing,
+  the three AI proposals (ADR 0017), the demo, export, erasure, help,
+  the docs.
 - Before 1.0: dogma seven — one real winter with one real team
   (docs/launch.md).
+- Later, each as its own decision: a rider on two teams (club and
+  national squad), an assistant-coach role, a read-only role for a
+  physio, reminders to check in, Wahoo and Garmin verified against the
+  partner docs, COROS and others through their APIs, an ADR on the
+  RPE calibration after one winter's data.

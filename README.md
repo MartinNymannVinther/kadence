@@ -29,19 +29,62 @@ users, Team Danmark's guide for parents — is in
 
 ## Status
 
-0.1, wave 0: the foundation from Plot (auth with passkeys and TOTP,
-workspaces separated in the database, admission by invitation, the audit
-log, CI, Docker) and the thirteen product tables, separated per team and
-per rider in the database, with tests that prove a teammate never sees
-your check-ins and a parent sees only what the rider shares. The team,
-the calendar, the season, the devices, the parents and the AI come in
-waves 1 to 4 (CLAUDE.md). Nothing here has run a real team yet. Dogma
-seven is what 1.0 waits for — one real winter.
+0.9, waves 0 to 4 built: the foundation from Plot (auth with passkeys
+and TOTP, teams separated in the database, admission by invitation, the
+audit log, CI, Docker); riders separated inside a team in the database,
+with tests that prove a teammate never sees your check-ins and a parent
+sees only what the rider shares; coaches, riders and parents by
+invitation; the calendar, the workout builder and the library with DCU's
+strength programmes; the season plan from DCU's hours; load, form and the
+guardrails; the daily check-in; FIT files through Kadence's own decoder;
+Wahoo and Garmin behind keys; the parents' page; three AI proposals; the
+demo; export and erasure. Nothing here has run a real team yet. Dogma
+seven is what 1.0 waits for — one real winter — and
+[docs/launch.md](docs/launch.md) is the road to it.
 
 Much of the code is written together with Claude Code, under the rules
 in [CLAUDE.md](CLAUDE.md). Every change is reviewed, tested and deployed
 by a person; the tests for isolation — between teams and between riders
 — are the part of the codebase that is trusted least to good intentions.
+
+## What it is
+
+**The calendar.** A coach lays sessions in a rider's calendar — on the
+bike, in the gym, or anything else — for one rider or the whole group at
+once. The rider rides it; the ride comes in from a FIT file, Wahoo or
+Garmin and lands on the session it fulfilled, green, yellow or red for
+how close it came. A session done without a file is ticked off with how
+long and how hard it felt. Every session has one open thread.
+
+**DCU as the default.** A rider's class comes from the birth year, and
+the season plan (October to September) starts from Cycling Denmark's
+2025 hours for that class and year. DCU's strength programmes for U17,
+U19 and U23 sit in the library with their progression, so session seven
+of the programme says 3 × 12. The coach can change anything; DCU's number
+is always beside it.
+
+**Load without a power meter.** Power when there is power, pulse when
+there is pulse, how hard it felt when there is neither — on one scale,
+so fitness, fatigue and form mean something for every rider.
+
+**Guardrails and wellbeing.** The week against DCU's corridor, the
+longest ride for the class, the ramp, strength too close together, sleep,
+ATK's pain ladder and a daily check-in read after Kolding Talent's
+model: the coach's list of who needs a talk this week. Shown, never
+enforced.
+
+**Parents.** A parent sees their own child's training once the rider has
+confirmed the link, check-ins only if the rider shares them, and a page
+of advice built on Team Danmark's guide for parents. No private messages
+between an adult and a young rider.
+
+**AI that proposes.** A coach's shorthand becomes a structured session
+by rules that work offline; a model reads what the rules cannot. A week
+drafted from DCU's hours and the calendar, taken session by session. A
+Monday list of who needs attention, with a few sentences on top where
+the team has said the AI may read riders' data. Mistral at the EU
+endpoint, or Ollama on your own machine; without either, everything else
+works.
 
 ## Haij-dogmerne
 
