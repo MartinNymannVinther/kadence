@@ -24,8 +24,15 @@ type Account = { role: string; name: string; email: string };
 
 async function main() {
   const { env } = await import("@/core/env");
-  const host = new URL(env.BETTER_AUTH_URL).hostname;
-  if (process.env.NODE_ENV === "production" || !["localhost", "127.0.0.1"].includes(host)) {
+  // Local means the database is on this machine and nothing is served over
+  // TLS: a development installation, reached as localhost or over the
+  // tailnet, never one that real people use.
+  const dbHost = new URL(env.MIGRATION_DATABASE_URL).hostname;
+  if (
+    process.env.NODE_ENV === "production" ||
+    !["localhost", "127.0.0.1"].includes(dbHost) ||
+    env.BETTER_AUTH_URL.startsWith("https://")
+  ) {
     throw new Error("seed-test-teams runs only against a local installation.");
   }
   const keys = process.argv.slice(2);
@@ -83,7 +90,7 @@ async function main() {
     const riders = await getRiders(coach);
     const byName = (name: string) => riders.find((r) => r.name === name)!;
 
-    const join = async (email: string, name: string) => {
+    const join = async (email: string) => {
       const invited = await inviteMember(coachHeaders, { email, role: "member" });
       if (!invited.ok) throw new Error(`${key}: invitation for ${email} failed (${invited.error})`);
       return invited.invitation.id;
@@ -101,12 +108,12 @@ async function main() {
     };
 
     const emma = byName("Emma Holm");
-    const emmaInvitation = await join(mail("emma"), "Emma Holm");
+    const emmaInvitation = await join(mail("emma"));
     await attachRiderInvitation(coach, emma.id, emmaInvitation);
     const emmaCtx = await register(emmaInvitation, "Emma Holm", mail("emma"));
 
     const oskar = byName("Oskar Lund");
-    const oskarInvitation = await join(mail("oskar"), "Oskar Lund");
+    const oskarInvitation = await join(mail("oskar"));
     await attachRiderInvitation(coach, oskar.id, oskarInvitation);
     await register(oskarInvitation, "Oskar Lund", mail("oskar"));
 
@@ -115,7 +122,7 @@ async function main() {
       name: "Mette Holm",
       relation: "mother",
     });
-    const parentInvitation = await join(mail("mor"), "Mette Holm");
+    const parentInvitation = await join(mail("mor"));
     await attachGuardianInvitation(coach, guardian.id, parentInvitation);
     await register(parentInvitation, "Mette Holm", mail("mor"));
     await confirmGuardian(emmaCtx, guardian.id);
