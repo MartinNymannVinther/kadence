@@ -8,6 +8,7 @@ import { withOrgContext } from "@/core/db/tenant";
 import { redirect } from "@/i18n/navigation";
 import { DemoBanner } from "@/components/demo-banner";
 import { isDemoWorkspace } from "@/modules/demo/service";
+import { whoAmI } from "@/modules/team/access";
 import { AppSidebar } from "./app-sidebar";
 import { MobileHeader } from "./mobile-header";
 import { SidebarShell, SidebarToggle } from "./sidebar-shell";
@@ -41,6 +42,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const attention = (await ownerAccessSummary())?.pending ?? 0;
   const t = await getTranslations("app.nav");
   const demo = context ? await isDemoWorkspace(context.orgId) : false;
+  const isCoach = context ? Boolean((await whoAmI(context.orgId, context.userId))?.isCoach) : false;
 
   // Read on the server so the first paint is already the layout this
   // person left behind, rather than a rail that appears and vanishes.
@@ -64,6 +66,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             userEmail={session.user.email}
             organization={organization?.name ?? ""}
             attention={attention}
+            isCoach={isCoach}
             toggle={<SidebarToggle placement="sidebar" />}
           />
         }
@@ -74,6 +77,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           userEmail={session.user.email}
           organization={organization?.name ?? ""}
           attention={attention}
+          isCoach={isCoach}
         />
         {children}
       </SidebarShell>

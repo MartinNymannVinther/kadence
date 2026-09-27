@@ -1,7 +1,12 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { Pool } from "pg";
 import { monthHours } from "@/modules/dcu";
-import { createSeasonPlan, getSeasonPlan, riderClass, saveSeasonMonths } from "@/modules/season/plans";
+import {
+  createSeasonPlan,
+  getSeasonPlan,
+  riderClass,
+  saveSeasonMonths,
+} from "@/modules/season/plans";
 import { installDcuProgrammes } from "@/modules/training/dcu-library";
 import { listTemplates } from "@/modules/training/templates";
 import { listCheckins, saveCheckin } from "@/modules/wellbeing/checkins";

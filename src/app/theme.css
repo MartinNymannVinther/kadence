@@ -53,6 +53,19 @@
   --chart-3: oklch(0.8 0.012 85); /* #c9c2b6 */
   --chart-4: oklch(0.655 0.065 60); /* #c08a63 */
   --chart-5: oklch(0.885 0.01 85); /* #e0dbd1 */
+  /*
+   * Kadence's seven training zones (src/modules/workouts/structure.ts),
+   * from easy to all-out: the paper's grey, through the moss, to sand,
+   * clay and rust. The step profile and the zone chips draw with these;
+   * a zone is never told by its colour alone — the number stands beside it.
+   */
+  --zone-1: oklch(0.8 0.012 85);
+  --zone-2: oklch(0.72 0.045 150);
+  --zone-3: oklch(0.56 0.06 150);
+  --zone-4: oklch(0.8 0.1 90);
+  --zone-5: oklch(0.7 0.09 65);
+  --zone-6: oklch(0.58 0.11 45);
+  --zone-7: oklch(0.45 0.11 30);
   --radius: 0.75rem;
   --surface-shadow: 0 1px 2px oklch(0.245 0.008 75 / 0.04);
   --dialog-shadow: 0 24px 60px -24px oklch(0.245 0.008 75 / 0.28);
@@ -109,6 +122,13 @@
   --chart-3: oklch(0.45 0.01 82);
   --chart-4: oklch(0.7 0.075 60);
   --chart-5: oklch(0.33 0.008 82);
+  --zone-1: oklch(0.5 0.01 82);
+  --zone-2: oklch(0.6 0.05 150);
+  --zone-3: oklch(0.68 0.075 150);
+  --zone-4: oklch(0.75 0.1 90);
+  --zone-5: oklch(0.72 0.1 65);
+  --zone-6: oklch(0.65 0.12 45);
+  --zone-7: oklch(0.58 0.13 30);
   --surface-shadow: 0 1px 2px oklch(0 0 0 / 0.3);
   --dialog-shadow: 0 24px 60px -24px oklch(0 0 0 / 0.6);
   --scrim: oklch(0 0 0 / 0.5);

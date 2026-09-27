@@ -3,7 +3,23 @@
     "cancel": "Annuller",
     "close": "Luk",
     "error": "Noget gik galt. Prøv igen.",
-    "hours": "{value} t"
+    "hours": "{value} t",
+    "copyFailed": "Kunne ikke kopiere. Markér teksten, og kopiér den selv.",
+    "save": "Gem",
+    "saved": "Gemt",
+    "edit": "Ret",
+    "delete": "Slet",
+    "add": "Tilføj",
+    "back": "Tilbage",
+    "optional": "valgfrit",
+    "none": "Ingen",
+    "invitation": {
+      "title": "Invitationslink",
+      "titleFor": "Link til {email}",
+      "copy": "Kopiér link",
+      "copied": "Kopieret",
+      "noMail": "Kadence sender ingen mail. Kopiér linket, og send det selv på sms eller mail. Det virker kun for den e-mailadresse."
+    }
   },
   "landing": {
     "nav": {
@@ -146,7 +162,10 @@
       "skipToContent": "Spring til indholdet",
       "hideMenu": "Skjul menuen",
       "showMenu": "Vis menuen",
-      "today": "I dag"
+      "today": "I dag",
+      "calendar": "Kalender",
+      "riders": "Ryttere",
+      "library": "Bibliotek"
     },
     "orgSwitcher": {
       "label": "Arbejdsrum",
@@ -242,14 +261,16 @@
   },
   "settings": {
     "title": "Indstillinger",
-    "subtitle": "Din sikkerhed og din installation.",
+    "subtitle": "Dig selv, holdet og installationen.",
     "nav": {
       "security": "Sikkerhed",
       "about": "Om",
       "access": "Adgang",
       "workspace": "Arbejdsrum",
       "ai": "AI",
-      "data": "Data"
+      "data": "Data",
+      "team": "Holdet",
+      "me": "Mig"
     },
     "access": {
       "title": "Adgang til installationen",
@@ -416,6 +437,65 @@
         "invalid": "Skriv en gyldig e-mailadresse.",
         "generic": "Det gik galt. Prøv igen."
       }
+    },
+    "me": {
+      "title": "Mig",
+      "subtitle": "Dine egne valg: hvad dine forældre kan se, dine tærskler og din sikkerhed.",
+      "security": "Sikkerhed: passkeys og totrinsbekræftelse",
+      "coachNote": "Du er træner på holdet. Holdets egne valg finder du under Holdet.",
+      "memberNote": "Du er med på holdet, men er hverken rytter eller forælder her. Bed en træner om en invitation, hvis du skal være det.",
+      "sharing": {
+        "title": "Hvad dine forældre kan se",
+        "body": "Det er dit valg, ikke trænerens eller forældrenes. Du kan ændre det når som helst.",
+        "training": "Min træning",
+        "trainingHint": "Dine pas, det du har lavet, hvor hårdt det var, kommentarerne og din kalender med fx løb og eksamen.",
+        "wellbeing": "Hvordan jeg har det",
+        "wellbeingHint": "Dine check-ins: søvn, energi, humør, ømhed og smerter, og din højde. Kun hvis du slår det til.",
+        "coach": "Træneren ser altid det, du logger. Det er det, en træner er til.",
+        "on": "Slået til",
+        "off": "Slået fra"
+      },
+      "guardians": {
+        "title": "Dine forældre",
+        "body": "En forælder ser intet, før du har bekræftet. Fra det år, du fylder 18, skal du bekræfte igen som voksen.",
+        "empty": "Ingen forældre er koblet til dig.",
+        "confirm": "Bekræft",
+        "confirmAdult": "Bekræft igen som voksen",
+        "confirmed": "{name} er bekræftet.",
+        "remove": "Fjern forbindelsen",
+        "removeTitle": "Fjern {name}?",
+        "removeBody": "Forælderen kan ikke længere se din træning.",
+        "waiting": "Venter på din bekræftelse",
+        "lapsed": "Bekræft igen, nu du er fyldt 18"
+      },
+      "children": {
+        "title": "Dine børn på holdet",
+        "body": "Du ser dit barns træning, når dit barn har bekræftet forbindelsen. Dit barn bestemmer selv, hvad du kan se.",
+        "unnamed": "Dit barn (venter på bekræftelse)",
+        "remove": "Fjern forbindelse",
+        "removeTitle": "Fjern forbindelsen?",
+        "removeBody": "Du kan ikke længere se dit barns træning. En træner kan tilføje dig igen."
+      }
+    },
+    "team": {
+      "title": "Holdet",
+      "body": "Holdets egne valg. De gælder alle holdets ryttere.",
+      "coachOnly": "Kun trænere kan ændre dem.",
+      "kindTitle": "Hvad slags hold",
+      "kindBody": "Bruges til holdets standarder. Hver rytters klasse kommer stadig fra fødselsåret.",
+      "kinds": {
+        "U17": "U17",
+        "U19": "U19",
+        "U23": "U23",
+        "mixed": "Blandet"
+      },
+      "youthTitle": "Hensyn til unge ryttere",
+      "weight": "Tillad vægt for ryttere under 19",
+      "weightHint": "Slået fra som standard. Fokus på vægt og W/kg kan give lav energitilgængelighed og spiseforstyrrelser hos unge, som Team Danmarks ATK advarer om. Slå det kun til, hvis der er en god grund.",
+      "ai": "Må AI'en læse rytternes data",
+      "aiHint": "Slået fra som standard. Rytternes træning og check-ins er helbredsdata om unge mennesker. AI'en kommer først senere, og den må kun læse dem, hvis I slår det til her. Den skriver aldrig selv noget.",
+      "on": "Slået til",
+      "off": "Slået fra"
     }
   },
   "demo": {
@@ -508,13 +588,80 @@
       "data": {
         "title": "Jeres data",
         "body": "Alt kan hentes ud som regneark og JSON under Indstillinger → Data. Arbejdsrummet kan slettes helt igen, revisionsspor inklusive."
+      },
+      "calendar": {
+        "title": "Kalenderen",
+        "body": "Kalenderen viser en uge ad gangen. På en computer står dagene side om side, på telefonen under hinanden. Træneren kan se hele holdet på én gang og trække et pas til en anden dag. På telefonen bruger du \"Flyt\" i passets menu. Løb, eksamen, skole, lejr, ferie og sygdom står i kalenderen som små mærker. Farverne på passene viser, hvordan det gik: grøn er som planlagt, gul er lidt ved siden af, rød er ikke udført eller langt fra planen, og grå er ikke kørt endnu. Der står altid et ord ved farven."
+      },
+      "sessions": {
+        "title": "Pas og skabeloner",
+        "body": "Et pas bygges i trin: opvarmning, arbejde, pause og nedkørsel, med en længde og et mål i zoner, procent af FTP eller tærskelpuls, eller efter følelse. Gentagelser samler trin, der køres flere gange. Når rytterens tærskler er sat, står målene i watt og puls. Styrkepas har øvelser, og et program har en progression, så sæt og gentagelser følger med fra pas til pas. Gem et pas som skabelon i biblioteket, så kan det lægges til én rytter eller hele holdet på én gang."
+      },
+      "done": {
+        "title": "Udført og RPE",
+        "body": "Når passet er gjort, trykker rytteren \"Udført\". Minutterne står der allerede fra planen. Så svarer rytteren på, hvor hårdt det var på en skala fra 1 til 10 (RPE): 1 er meget, meget let, 5 er hårdt, og 10 er det hårdeste, man kan. Tænk på hele passet. Minutter gange RPE giver passets belastning, også uden wattmåler. Har man trykket forkert, kan det fortrydes."
+      },
+      "comments": {
+        "title": "Kommentarer",
+        "body": "Hvert pas har én samtale. Træneren og rytteren skriver i den, og rytterens forældre kan læse med. Der findes ingen private beskeder mellem en voksen og en ung rytter. Man kan rette og slette sine egne kommentarer, og en træner kan fjerne en kommentar."
+      },
+      "parents": {
+        "title": "Forældre",
+        "body": "Træneren tilføjer en forælder og sender et link. Forælderen ser først noget, når rytteren selv har bekræftet forbindelsen under Indstillinger → Mig. Rytteren bestemmer også, om forældrene kan se træningen, og om de kan se, hvordan rytteren har det. Fra det år, rytteren fylder 18, skal rytteren bekræfte igen som voksen."
       }
     }
   },
   "today": {
     "title": "I dag",
-    "emptyTitle": "Kadence er sat op",
-    "emptyBody": "Holdet, ryttere og kalenderen kommer i næste bølge. Indtil da kan du invitere trænere under Indstillinger → Arbejdsrum."
+    "sessionPanel": "Pas",
+    "none": {
+      "title": "Velkommen til holdet",
+      "body": "Du er med på holdet, men er hverken træner, rytter eller forælder her endnu. Bed en træner om en invitation som rytter eller forælder, så dukker træningen op her."
+    },
+    "rider": {
+      "today": "Dit pas i dag",
+      "tomorrow": "I morgen",
+      "week": "Din uge",
+      "rest": "Intet planlagt. Nyd det, eller log det, hvis du alligevel træner.",
+      "done": "Udført",
+      "doneTitle": "Godt gået! Hvordan gik det?",
+      "open": "Se hele passet",
+      "comments": "{count, plural, one {# kommentar} other {# kommentarer}}"
+    },
+    "week": {
+      "nothing": "Intet planlagt"
+    },
+    "coach": {
+      "title": "Holdet i dag",
+      "summary": "{done} af {total} pas udført",
+      "rest": "Intet planlagt i dag",
+      "events": "Holdets begivenheder i denne uge",
+      "noEvents": "Ingen løb eller lejre for hele holdet i denne uge."
+    },
+    "parent": {
+      "week": "{name}s uge",
+      "waitingTitle": "Venter på dit barns bekræftelse",
+      "waitingBody": "Du kan se dit barns træning her, når dit barn har bekræftet forbindelsen til dig. Det gør rytteren selv under Indstillinger → Mig."
+    },
+    "start": {
+      "title": "Kom godt i gang",
+      "body": "Tre skridt, så har holdet en uge at træne efter.",
+      "riders": {
+        "title": "Tilføj holdets ryttere",
+        "body": "Navn og fødselsår er nok. Du kan invitere dem, når de er klar.",
+        "action": "Tilføj ryttere"
+      },
+      "session": {
+        "title": "Byg eller vælg et pas",
+        "body": "Byg et pas i biblioteket, eller hent DCU's styrkeprogrammer.",
+        "action": "Åbn biblioteket"
+      },
+      "week": {
+        "title": "Planlæg ugen",
+        "body": "Læg pas i kalenderen til én rytter eller hele holdet på én gang.",
+        "action": "Åbn kalenderen"
+      }
+    }
   },
   "errors": {
     "unauthorized": "Du er ikke logget ind længere.",
@@ -522,6 +669,610 @@
     "invalid": "Noget i formularen er ikke gyldigt.",
     "notFound": "Det findes ikke længere. Genindlæs siden.",
     "conflict": "Nogen har ændret det samtidig. Genindlæs siden og prøv igen.",
-    "generic": "Noget gik galt. Prøv igen."
+    "generic": "Noget gik galt. Prøv igen.",
+    "alreadyDone": "Passet er allerede markeret som udført. Genindlæs siden.",
+    "alreadyInvited": "Der er allerede et åbent link til den adresse. Kopiér det, der findes, eller træk det tilbage under Indstillinger → Arbejdsrum.",
+    "alreadyMember": "Personen er allerede med på holdet."
+  },
+  "calendar": {
+    "title": "Kalender",
+    "teamSubtitle": "Hele holdets uge",
+    "sessionPanel": "Pas",
+    "backToWeek": "Tilbage til ugen",
+    "sessionMissing": "Passet findes ikke",
+    "sessionMissingHint": "Det er måske slettet, eller også har du ikke adgang til det.",
+    "empty": {
+      "coachTitle": "Ingen ryttere endnu",
+      "coachBody": "Kalenderen fyldes, når holdet har ryttere. Tilføj den første, så kan du lægge pas i ugen.",
+      "coachAction": "Tilføj ryttere",
+      "waitingTitle": "Venter på dit barns bekræftelse",
+      "waitingBody": "Du kan se dit barns træning, når rytteren har bekræftet forbindelsen til dig under Indstillinger → Mig.",
+      "noneTitle": "Her er ingen kalender til dig endnu",
+      "noneBody": "Kalenderen viser en rytters træning. Er du rytter eller forælder, så bed træneren om en invitation til netop det."
+    },
+    "nav": {
+      "label": "Vælg uge",
+      "previous": "Forrige uge",
+      "next": "Næste uge",
+      "thisWeek": "Denne uge",
+      "week": "Uge {n}"
+    },
+    "view": {
+      "show": "Vis",
+      "team": "Hele holdet"
+    },
+    "week": {
+      "today": "I dag",
+      "nothing": "Intet planlagt",
+      "addOn": "Tilføj pas {day}",
+      "movedTo": "{title} er flyttet til {day}."
+    },
+    "totals": {
+      "all": "Timer i alt",
+      "bike": "På cyklen",
+      "of": "{done} af {planned} t"
+    },
+    "actions": {
+      "addSession": "Tilføj pas",
+      "log": "Log træning",
+      "addEvent": "Tilføj begivenhed"
+    },
+    "card": {
+      "group": "Holdpas",
+      "comments": "{count, plural, one {# kommentar} other {# kommentarer}}"
+    },
+    "team": {
+      "caption": "Holdets uge: en række pr. rytter og en kolonne pr. dag",
+      "rider": "Rytter",
+      "week": "Ugen",
+      "hours": "{done} / {planned} t"
+    },
+    "menu": {
+      "label": "Handlinger for {title}",
+      "open": "Åbn",
+      "edit": "Ret",
+      "move": "Flyt",
+      "copy": "Kopiér",
+      "delete": "Slet"
+    },
+    "move": {
+      "moveTitle": "Flyt passet",
+      "copyTitle": "Kopiér passet",
+      "date": "Til dato",
+      "rider": "Til rytter",
+      "move": "Flyt",
+      "copy": "Kopiér",
+      "moved": "Passet er flyttet.",
+      "copied": "Passet er kopieret."
+    },
+    "delete": {
+      "title": "Slet {title}?",
+      "body": "Passet forsvinder fra kalenderen sammen med kommentarerne til det.",
+      "scope": "Hvem skal det slettes for?",
+      "scopes": {
+        "one": "Kun denne",
+        "group": "Hele gruppen"
+      },
+      "scopeHints": {
+        "one": "Kun denne rytters pas.",
+        "group": "Alle ryttere, der har fået passet og ikke har udført det endnu."
+      },
+      "deleted": "Passet er slettet."
+    },
+    "edit": {
+      "title": "Ret passet",
+      "scope": "Hvem skal ændringen gælde for?",
+      "scopes": {
+        "group": "Hele gruppen (dem, der ikke har udført det)",
+        "one": "Kun denne rytter"
+      }
+    },
+    "add": {
+      "title": "Tilføj pas",
+      "body": "Vælg hvem og hvornår, og tag et pas fra biblioteket eller byg et nyt.",
+      "riders": "Ryttere",
+      "all": "Vælg alle",
+      "none": "Fravælg alle",
+      "groupHint": "Flere ryttere bliver et holdpas: Du kan senere rette det for alle på én gang.",
+      "forRider": "For {name}",
+      "date": "Dato",
+      "how": "Hvordan",
+      "fromLibrary": "Fra biblioteket",
+      "build": "Byg selv",
+      "search": "Søg i biblioteket",
+      "template": "Skabelon",
+      "noTemplates": "Biblioteket er tomt endnu.",
+      "noMatch": "Ingen skabeloner passer til søgningen.",
+      "pickRider": "Vælg mindst én rytter.",
+      "pickTemplate": "Vælg et pas fra biblioteket.",
+      "submit": "Læg i kalenderen",
+      "added": "{count, plural, one {Passet er lagt i kalenderen.} other {Passet er lagt i # kalendere.}}"
+    },
+    "event": {
+      "addTitle": "Tilføj begivenhed",
+      "editTitle": "Ret begivenhed",
+      "body": "Løb, eksamen, skole, lejr, ferie eller sygdom. Så kan træningen tage hensyn til det.",
+      "kind": "Hvad",
+      "priority": "Prioritet",
+      "priorities": {
+        "A": "A: sæsonens mål",
+        "B": "B: vigtigt",
+        "C": "C: træningsløb"
+      },
+      "title": "Titel",
+      "titlePlaceholder": "Fx DM landevej eller matematik",
+      "from": "Fra",
+      "to": "Til og med",
+      "who": "For hvem",
+      "wholeTeam": "Hele holdet",
+      "onlyYou": "Kun i din kalender.",
+      "note": "Note",
+      "deleteTitle": "Slet begivenheden?",
+      "deleteBody": "Den forsvinder fra kalenderen."
+    },
+    "log": {
+      "title": "Log træning",
+      "body": "Noget du har lavet uden en plan: en tur med vennerne, en løbetur. Hvor længe og hvor hårdt er nok.",
+      "sport": "Sport",
+      "date": "Dato",
+      "name": "Titel",
+      "namePlaceholder": "Fx tur med klubben",
+      "minutes": "Minutter",
+      "km": "Distance",
+      "submit": "Gem",
+      "saved": "Træningen er gemt."
+    }
+  },
+  "library": {
+    "title": "Bibliotek",
+    "subtitle": "Holdets pas og programmer, klar til at lægge i kalenderen.",
+    "new": "Ny skabelon",
+    "newTitle": "Ny skabelon",
+    "newSubtitle": "Et pas, du kan bruge igen og igen, til én rytter eller hele holdet.",
+    "back": "Tilbage til biblioteket",
+    "search": "Søg efter navn",
+    "noMatch": "Ingen skabeloner passer til søgningen",
+    "emptyTitle": "Biblioteket er tomt",
+    "emptyBody": "Byg holdets første pas, eller hent DCU's styrkeprogrammer. Så kan du lægge dem i kalenderen med et par tryk.",
+    "archivedMark": "Arkiveret",
+    "showArchived": "Vis også arkiverede",
+    "hideArchived": "Skjul arkiverede",
+    "dcuSubtitle": "DCU's program. Det kan ikke rettes her, men du kan kopiere det og tilpasse kopien.",
+    "coachOnlyTitle": "Kun trænere laver skabeloner",
+    "coachOnlyBody": "Du kan stadig lægge bibliotekets pas i din egen kalender.",
+    "actions": {
+      "schedule": "Planlæg",
+      "edit": "Ret",
+      "copy": "Kopiér",
+      "copyToAdapt": "Kopiér for at tilpasse",
+      "copyName": "{name} (kopi)",
+      "copied": "Kopien er lavet. Nu kan du tilpasse den.",
+      "archive": "Arkivér",
+      "restore": "Gendan",
+      "archived": "Skabelonen er arkiveret.",
+      "restored": "Skabelonen er tilbage i biblioteket."
+    },
+    "schedule": {
+      "title": "Planlæg pas",
+      "forRider": "For {name}",
+      "date": "Dato",
+      "submit": "Læg i kalenderen",
+      "done": "{count, plural, one {Passet er lagt i kalenderen.} other {Passet er lagt i # kalendere.}}"
+    },
+    "editor": {
+      "create": "Gem skabelonen",
+      "created": "Skabelonen er gemt."
+    },
+    "dcu": {
+      "install": "Hent DCU's styrkeprogrammer",
+      "done": "DCU's programmer er i biblioteket: {installed} nye, {updated} opdateret."
+    }
+  },
+  "riders": {
+    "title": "Ryttere",
+    "subtitle": "Holdets ryttere, deres klasse, konto og forældre.",
+    "back": "Tilbage til rytterne",
+    "calendar": "Se kalenderen",
+    "emptyTitle": "Ingen ryttere endnu",
+    "emptyBody": "Tilføj holdets ryttere. Du kan lægge pas til dem med det samme, og invitere dem, når de er klar.",
+    "coachOnlyTitle": "Kun for trænere",
+    "coachOnlyBody": "Holdets liste over ryttere er trænernes. Din egen profil finder du under Indstillinger → Mig.",
+    "showArchived": "Vis også arkiverede ryttere",
+    "hideArchived": "Skjul arkiverede ryttere",
+    "archiveNote": "Har rytteren forladt holdet? Arkivér, så beholder rytteren sin historik, men forsvinder fra listerne.",
+    "archivedNote": "Rytteren er arkiveret og vises ikke i listerne og kalenderen.",
+    "class": {
+      "withYear": "{category} · {year}. år",
+      "senior": "Senior",
+      "youth": "Under U17"
+    },
+    "list": {
+      "meta": "Født {year} · {class}",
+      "archived": "Arkiveret",
+      "parents": "{count, plural, =0 {Ingen forældre} one {# forælder} other {# forældre}}"
+    },
+    "account": {
+      "account": "Har konto",
+      "invited": "Invitation sendt",
+      "expired": "Invitationen er udløbet",
+      "none": "Ikke inviteret"
+    },
+    "fields": {
+      "name": "Navn",
+      "birthYear": "Fødselsår",
+      "sex": "Køn",
+      "sexNone": "Ikke oplyst",
+      "female": "Pige / kvinde",
+      "male": "Dreng / mand"
+    },
+    "add": {
+      "button": "Tilføj rytter",
+      "title": "Tilføj rytter",
+      "body": "Fødselsåret giver rytterens klasse efter DCU's regler. Køn er valgfrit.",
+      "email": "Rytterens e-mail",
+      "emailHint": "Skriv en e-mail, hvis rytteren skal have sin egen konto nu. Du får et link, som du selv sender.",
+      "submit": "Tilføj",
+      "added": "{name} er tilføjet.",
+      "issuedTitle": "Rytteren er tilføjet",
+      "issuedBody": "Send linket til rytteren. Når rytteren opretter sig via linket, bliver kontoen koblet til rytteren her.",
+      "done": "Færdig"
+    },
+    "profile": {
+      "title": "Profil",
+      "body": "Navn, fødselsår og klasse.",
+      "class": "Klasse at planlægge efter",
+      "classAuto": "Efter fødselsår ({class})",
+      "senior": "Senior",
+      "classHint": "Vælg kun en anden klasse, hvis rytteren fx er rykket op. Afvigelsen fra DCU vises altid."
+    },
+    "thresholds": {
+      "title": "Tærskler",
+      "body": "Zonerne regnes om til watt og puls ud fra dem.",
+      "ftp": "FTP",
+      "thresholdHr": "Tærskelpuls",
+      "maxHr": "Maxpuls",
+      "restingHr": "Hvilepuls",
+      "bpm": "slag/min",
+      "date": "Målt den",
+      "hint": "Brug tallene fra den seneste test. Tomme felter er helt i orden: så viser passene zoner og følelse."
+    },
+    "accountCard": {
+      "title": "Rytterens konto",
+      "hasAccount": "Rytteren har sin egen konto og kan se og udføre sine pas.",
+      "body": "Med en konto kan rytteren se sine pas, markere dem udført og skrive kommentarer.",
+      "email": "Rytterens e-mail",
+      "send": "Lav invitationslink",
+      "resend": "Lav et nyt link"
+    },
+    "guardians": {
+      "title": "Forældre",
+      "body": "En forælder ser først noget, når rytteren selv har bekræftet forbindelsen. Rytteren bestemmer også, hvad forældrene kan se.",
+      "empty": "Ingen forældre er tilknyttet endnu.",
+      "remove": "Fjern forbindelsen",
+      "removeTitle": "Fjern {name}?",
+      "removeBody": "Forælderen mister adgangen til rytterens træning med det samme."
+    },
+    "guardianState": {
+      "notInvited": "Ikke inviteret",
+      "invited": "Invitation sendt",
+      "expired": "Invitationen er udløbet",
+      "waiting": "Venter på rytterens bekræftelse",
+      "confirmed": "Bekræftet",
+      "lapsed": "Skal bekræftes igen (rytteren er fyldt 18)"
+    },
+    "relation": {
+      "mother": "Mor",
+      "father": "Far",
+      "guardian": "Værge",
+      "other": "Anden"
+    },
+    "addGuardian": {
+      "button": "Tilføj forælder",
+      "title": "Tilføj forælder",
+      "body": "Forælderen kan se {rider}s træning, når {rider} har bekræftet forbindelsen.",
+      "name": "Navn",
+      "relation": "Relation",
+      "email": "Forælderens e-mail",
+      "submit": "Tilføj",
+      "added": "Forælderen er tilføjet.",
+      "issuedTitle": "Forælderen er tilføjet",
+      "issuedBody": "Send linket til forælderen. Bagefter skal {rider} bekræfte forbindelsen under Indstillinger → Mig.",
+      "done": "Færdig"
+    },
+    "archive": {
+      "button": "Arkivér rytteren",
+      "title": "Arkivér {name}?",
+      "body": "Rytteren forsvinder fra listerne og kalenderen, men historikken bliver. Du kan gendanne rytteren senere.",
+      "confirm": "Arkivér",
+      "restore": "Gendan rytteren",
+      "restoreTitle": "Gendan {name}?",
+      "restoreBody": "Rytteren kommer tilbage på listerne og i kalenderen."
+    }
+  },
+  "session": {
+    "notFound": "Passet findes ikke",
+    "notFoundHint": "Det er måske slettet, eller også har du ikke adgang til det.",
+    "km": "{km} km",
+    "group": "Holdpas",
+    "structure": "Passet",
+    "done": {
+      "time": "Tid",
+      "distance": "Distance",
+      "km": "{km} km",
+      "rpe": "Hvor hårdt",
+      "feel": "Følelse",
+      "load": "Belastning",
+      "notSaid": "Ikke sagt",
+      "fromFile": "Fra en fil eller en enhed.",
+      "editFeedback": "Ret vurdering",
+      "note": "Note",
+      "undo": "Fortryd udført",
+      "undoTitle": "Fortryd udført?",
+      "undoBody": "Passet bliver åbent igen, og den tid og vurdering, der blev skrevet, forsvinder."
+    },
+    "notDoneYet": "Ikke udført endnu.",
+    "comments": {
+      "empty": "Ingen kommentarer endnu.",
+      "write": "Skriv en kommentar",
+      "placeholder": "Fx hvordan gik intervallerne?",
+      "send": "Send",
+      "everyoneReads": "Træneren, rytteren og rytterens forældre kan læse med.",
+      "readOnly": "Du kan læse med, men ikke skrive her.",
+      "unknownAuthor": "Tidligere medlem",
+      "edited": "(rettet)",
+      "editLabel": "Ret kommentaren",
+      "deleteTitle": "Slet kommentaren?",
+      "deleteOwnBody": "Kommentaren forsvinder for alle.",
+      "deleteOtherBody": "Du fjerner en andens kommentar. Den forsvinder for alle."
+    },
+    "feedback": {
+      "rpe": "Hvor hårdt var det? (RPE)",
+      "rpeHint": "Tænk på hele passet. 1 er meget, meget let, 10 er det hårdeste, du kan.",
+      "feel": "Hvordan havde du det?"
+    },
+    "complete": {
+      "minutes": "Minutter",
+      "km": "Distance",
+      "note": "Note",
+      "notePlaceholder": "Fx tunge ben, men god dag",
+      "submit": "Udført",
+      "saved": "Godt gået! Passet er udført."
+    },
+    "doneTitle": "Udført",
+    "commentsTitle": "{count, plural, =0 {Kommentarer} one {# kommentar} other {# kommentarer}}"
+  },
+  "training": {
+    "sport": {
+      "bike": "Cykel",
+      "strength": "Styrke",
+      "other": "Andet"
+    },
+    "duration": {
+      "minutes": "{m} min",
+      "hours": "{h} t",
+      "hoursMinutes": "{h} t {m} min"
+    },
+    "state": {
+      "asPlanned": "Som planlagt",
+      "offPlan": "Afveg fra planen",
+      "farOff": "Langt fra planen",
+      "missed": "Ikke udført",
+      "today": "I dag",
+      "planned": "Planlagt",
+      "unplanned": "Uden plan"
+    },
+    "eventKind": {
+      "race": "Løb",
+      "exam": "Eksamen",
+      "school": "Skole",
+      "camp": "Lejr",
+      "holiday": "Ferie",
+      "ill": "Syg",
+      "other": "Andet"
+    },
+    "priority": "{priority}-løb",
+    "group": "Holdpas",
+    "teamEvent": "Hele holdet",
+    "zone": {
+      "1": "restitution",
+      "2": "udholdenhed",
+      "3": "tempo",
+      "4": "tærskel",
+      "5": "VO₂-max",
+      "6": "anaerob",
+      "7": "sprint"
+    },
+    "rpe": {
+      "1": "meget, meget let",
+      "2": "let",
+      "3": "moderat",
+      "4": "noget hårdt",
+      "5": "hårdt",
+      "7": "meget hårdt",
+      "9": "ekstremt hårdt",
+      "10": "maksimalt"
+    },
+    "feel": {
+      "1": "Rigtig dårligt",
+      "2": "Dårligt",
+      "3": "OK",
+      "4": "Godt",
+      "5": "Rigtig godt"
+    }
+  },
+  "workouts": {
+    "profile": {
+      "empty": "Ingen trin endnu. Tilføj et trin, så tegnes passet her.",
+      "label": "Passets profil: {steps, plural, one {# trin} other {# trin}}, {duration}"
+    },
+    "intent": {
+      "warmup": "Opvarmning",
+      "work": "Arbejde",
+      "recover": "Pause",
+      "cooldown": "Nedkørsel",
+      "steady": "Jævnt"
+    },
+    "actions": {
+      "up": "Flyt {name} op",
+      "down": "Flyt {name} ned",
+      "duplicate": "Kopiér {name}",
+      "remove": "Fjern {name}"
+    },
+    "step": {
+      "duration": "Varighed",
+      "minutes": "Minutter",
+      "seconds": "Sekunder",
+      "minutesShort": "min",
+      "secondsShort": "sek",
+      "intent": "Hvad trinet er",
+      "more": "Kadence og tekst",
+      "cadenceLow": "Kadence fra",
+      "cadenceHigh": "Kadence til",
+      "label": "Tekst på trinet",
+      "labelPlaceholder": "Fx siddende, stående start",
+      "cadenceHint": "Kadence er valgfri. Lad felterne stå tomme, hvis rytteren selv vælger."
+    },
+    "target": {
+      "kind": "Mål",
+      "kinds": {
+        "zone": "Zone",
+        "ftp_pct": "% af FTP",
+        "hr_pct": "% af tærskelpuls",
+        "rpe": "RPE (følelse)",
+        "open": "Frit"
+      },
+      "zone": "Zone",
+      "zoneOption": "Zone {zone} · {name}",
+      "low": "Fra",
+      "high": "Til",
+      "rpe": "Hvor hårdt",
+      "openHint": "Ingen mål: kør efter følelsen, eller giv alt."
+    },
+    "repeat": {
+      "times": "Antal gange",
+      "stepName": "trin {n}",
+      "addStep": "Tilføj trin i gentagelsen"
+    },
+    "bike": {
+      "total": "Samlet tid",
+      "stepName": "trin {n}",
+      "repeatName": "gentagelse {n}",
+      "repeatTitle": "Gentagelse {n} · {times} ×",
+      "empty": "Passet har ingen trin endnu.",
+      "addStep": "Tilføj trin",
+      "addRepeat": "Tilføj gentagelse"
+    },
+    "group": {
+      "legs": "Ben",
+      "core": "Mave og ryg",
+      "upper": "Overkrop",
+      "mobility": "Bevægelighed",
+      "other": "Andet"
+    },
+    "exercise": {
+      "name": "Øvelse",
+      "namePlaceholder": "Fx squat",
+      "group": "Gruppe",
+      "sets": "Sæt",
+      "reps": "Gentagelser",
+      "load": "Belastning",
+      "loadPlaceholder": "Fx RM eller 20 kg",
+      "rest": "Pause",
+      "secondsShort": "sek",
+      "note": "Note",
+      "notePlaceholder": "Fx hold ryggen rank"
+    },
+    "progression": {
+      "group": "Gruppe",
+      "from": "Fra pas",
+      "to": "Til pas",
+      "sets": "Sæt",
+      "reps": "Gentagelser",
+      "load": "Belastning",
+      "rowName": "Regel {n}",
+      "remove": "Fjern regel {n}",
+      "add": "Tilføj regel",
+      "hint": "Fra pas og til pas tæller rytterens pas i programmet. Lad \"til\" stå tomt for resten af programmet. Øvelser uden en regel beholder deres egne sæt og gentagelser."
+    },
+    "strength": {
+      "warmup": "Opvarmning",
+      "warmupPlaceholder": "Fx 10 min cykel og bevægelighed",
+      "minutes": "Varighed",
+      "minutesShort": "min",
+      "exercises": "Øvelser",
+      "exerciseName": "øvelse {n}",
+      "addExercise": "Tilføj øvelse",
+      "progression": "Progression"
+    },
+    "other": {
+      "text": "Hvad skal der ske",
+      "textPlaceholder": "Fx 40 min rolig løbetur i skoven",
+      "minutes": "Varighed",
+      "minutesShort": "min"
+    },
+    "fields": {
+      "title": "Titel",
+      "titlePlaceholder": "Fx 3 × 10 min tærskel",
+      "sport": "Sport",
+      "km": "Planlagt distance",
+      "description": "Besked til rytteren",
+      "descriptionPlaceholder": "Hvad skal rytteren tænke på?"
+    },
+    "problem": {
+      "title": "Passet mangler en titel.",
+      "structure": "Tjek {where}.",
+      "where": {
+        "session": "passet",
+        "step": "trin {n}",
+        "repeat": "gentagelse {n}",
+        "exercise": "øvelse {n}",
+        "rule": "regel {n} i progressionen"
+      },
+      "field": {
+        "seconds": "varighed",
+        "target": "mål",
+        "low": "fra",
+        "high": "til",
+        "cadenceLow": "kadence fra (30–200)",
+        "cadenceHigh": "kadence til (30–200)",
+        "label": "tekst",
+        "times": "antal gange",
+        "name": "navn",
+        "sets": "sæt",
+        "reps": "gentagelser",
+        "load": "belastning",
+        "restSeconds": "pause",
+        "note": "note",
+        "from": "fra pas",
+        "to": "til pas",
+        "minutes": "varighed",
+        "warmup": "opvarmning",
+        "text": "tekst"
+      }
+    },
+    "view": {
+      "zone": "zone {zone} · {name}",
+      "ftpPct": "{low}–{high} % af FTP",
+      "hrPct": "{low}–{high} % af tærskelpuls",
+      "rpe": "RPE {value}",
+      "open": "frit",
+      "watts": "{low}–{high} W",
+      "wattsOne": "{value} W",
+      "wattsUpTo": "op til {high} W",
+      "wattsFrom": "over {low} W",
+      "bpm": "{low}–{high} slag/min",
+      "bpmOne": "{value} slag/min",
+      "bpmUpTo": "op til {high} slag/min",
+      "bpmFrom": "over {low} slag/min",
+      "cadence": "kadence {low}–{high}",
+      "repeat": "{times} ×",
+      "noThresholds": "Når rytterens FTP og tærskelpuls er sat, står watt og puls her.",
+      "programmeSession": "Pas {n} i programmet",
+      "warmup": "Opvarmning:",
+      "rest": "{seconds} sek pause",
+      "setsReps": "{sets} × {reps}",
+      "progression": "Progression",
+      "rule": "{open, select, yes {{group}, fra pas {from}} other {{group}, pas {from}–{to}}}: {sets} × {reps}"
+    }
   }
 }

@@ -3,7 +3,23 @@
     "cancel": "Cancel",
     "close": "Close",
     "error": "Something went wrong. Please try again.",
-    "hours": "{value} h"
+    "hours": "{value} h",
+    "copyFailed": "Could not copy. Select the text and copy it yourself.",
+    "save": "Save",
+    "saved": "Saved",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "back": "Back",
+    "optional": "optional",
+    "none": "None",
+    "invitation": {
+      "title": "Invitation link",
+      "titleFor": "Link for {email}",
+      "copy": "Copy link",
+      "copied": "Copied",
+      "noMail": "Kadence sends no e-mail. Copy the link and send it yourself by text or e-mail. It only works for that address."
+    }
   },
   "landing": {
     "nav": {
@@ -146,7 +162,10 @@
       "skipToContent": "Skip to content",
       "hideMenu": "Hide the menu",
       "showMenu": "Show the menu",
-      "today": "Today"
+      "today": "Today",
+      "calendar": "Calendar",
+      "riders": "Riders",
+      "library": "Library"
     },
     "orgSwitcher": {
       "label": "Workspace",
@@ -242,14 +261,16 @@
   },
   "settings": {
     "title": "Settings",
-    "subtitle": "Your security and your installation.",
+    "subtitle": "You, the team and the installation.",
     "nav": {
       "security": "Security",
       "about": "About",
       "access": "Access",
       "workspace": "Workspace",
       "ai": "AI",
-      "data": "Data"
+      "data": "Data",
+      "team": "Team",
+      "me": "Me"
     },
     "access": {
       "title": "Access to this installation",
@@ -416,6 +437,65 @@
         "invalid": "Type a valid e-mail address.",
         "generic": "That went wrong. Try again."
       }
+    },
+    "me": {
+      "title": "Me",
+      "subtitle": "Your own choices: what your parents can see, your thresholds and your security.",
+      "security": "Security: passkeys and two-step verification",
+      "coachNote": "You are a coach on the team. The team's own choices are under Team.",
+      "memberNote": "You are on the team, but neither a rider nor a parent here. Ask a coach for an invitation if you should be.",
+      "sharing": {
+        "title": "What your parents can see",
+        "body": "It is your choice, not the coach's or your parents'. You can change it at any time.",
+        "training": "My training",
+        "trainingHint": "Your sessions, what you did, how hard it was, the comments and your calendar with races and exams.",
+        "wellbeing": "How I am doing",
+        "wellbeingHint": "Your check-ins: sleep, energy, mood, soreness and pain, and your height. Only if you turn it on.",
+        "coach": "The coach always sees what you log. That is what a coach is for.",
+        "on": "On",
+        "off": "Off"
+      },
+      "guardians": {
+        "title": "Your parents",
+        "body": "A parent sees nothing until you have confirmed. From the year you turn 18 you confirm again as an adult.",
+        "empty": "No parents are linked to you.",
+        "confirm": "Confirm",
+        "confirmAdult": "Confirm again as an adult",
+        "confirmed": "{name} is confirmed.",
+        "remove": "Remove the link",
+        "removeTitle": "Remove {name}?",
+        "removeBody": "The parent can no longer see your training.",
+        "waiting": "Waiting for your confirmation",
+        "lapsed": "Confirm again now you have turned 18"
+      },
+      "children": {
+        "title": "Your children on the team",
+        "body": "You see your child's training once your child has confirmed the link. Your child decides what you can see.",
+        "unnamed": "Your child (waiting for confirmation)",
+        "remove": "Remove link",
+        "removeTitle": "Remove the link?",
+        "removeBody": "You can no longer see your child's training. A coach can add you again."
+      }
+    },
+    "team": {
+      "title": "Team",
+      "body": "The team's own choices. They apply to all the team's riders.",
+      "coachOnly": "Only coaches can change them.",
+      "kindTitle": "What kind of team",
+      "kindBody": "Used for the team's defaults. Each rider's class still comes from their birth year.",
+      "kinds": {
+        "U17": "U17",
+        "U19": "U19",
+        "U23": "U23",
+        "mixed": "Mixed"
+      },
+      "youthTitle": "Care for young riders",
+      "weight": "Allow weight for riders under 19",
+      "weightHint": "Off by default. A focus on weight and W/kg can lead to low energy availability and eating disorders in young people, as Team Danmark's ATK warns. Only turn it on for a good reason.",
+      "ai": "May the AI read the riders' data",
+      "aiHint": "Off by default. The riders' training and check-ins are health data about young people. The AI arrives later, and it may only read them if you turn it on here. It never writes anything itself.",
+      "on": "On",
+      "off": "Off"
     }
   },
   "demo": {
@@ -508,13 +588,80 @@
       "data": {
         "title": "Your data",
         "body": "Everything can be downloaded as a spreadsheet and JSON under Settings → Data. The workspace can be deleted completely, audit trail included."
+      },
+      "calendar": {
+        "title": "The calendar",
+        "body": "The calendar shows one week at a time. On a computer the days stand side by side, on a phone one below the other. The coach can see the whole team at once and drag a session to another day. On a phone you use \"Move\" in the session's menu. Races, exams, school, camps, holidays and illness sit in the calendar as small labels. The colours on the sessions show how it went: green is as planned, yellow is a little off, red is not done or far from the plan, and grey is not ridden yet. There is always a word beside the colour."
+      },
+      "sessions": {
+        "title": "Sessions and templates",
+        "body": "A session is built in steps: warm-up, work, rest and cool-down, each with a length and a target in zones, percent of FTP or threshold heart rate, or by feel. Repeats gather steps that are ridden several times. Once the rider's thresholds are set, the targets read in watts and pulse. Strength sessions have exercises, and a programme has a progression, so sets and reps follow along from session to session. Save a session as a template in the library and it can be given to one rider or the whole team at once."
+      },
+      "done": {
+        "title": "Done and RPE",
+        "body": "When the session is done, the rider presses \"Done\". The minutes are already there from the plan. Then the rider says how hard it was on a scale from 1 to 10 (RPE): 1 is very, very easy, 5 is hard, and 10 is the hardest you can. Think of the whole session. Minutes times RPE gives the session's load, even without a power meter. A wrong press can be undone."
+      },
+      "comments": {
+        "title": "Comments",
+        "body": "Each session has one conversation. The coach and the rider write in it, and the rider's parents can read along. There are no private messages between an adult and a young rider. You can edit and delete your own comments, and a coach can remove a comment."
+      },
+      "parents": {
+        "title": "Parents",
+        "body": "The coach adds a parent and sends a link. The parent sees nothing until the rider has confirmed the link under Settings → Me. The rider also decides whether the parents can see the training, and whether they can see how the rider is doing. From the year the rider turns 18, the rider confirms again as an adult."
       }
     }
   },
   "today": {
     "title": "Today",
-    "emptyTitle": "Kadence is set up",
-    "emptyBody": "The team, riders and the calendar arrive in the next wave. Until then you can invite coaches under Settings → Workspace."
+    "sessionPanel": "Session",
+    "none": {
+      "title": "Welcome to the team",
+      "body": "You are on the team, but not yet a coach, a rider or a parent here. Ask a coach for an invitation as a rider or a parent, and the training shows up here."
+    },
+    "rider": {
+      "today": "Your session today",
+      "tomorrow": "Tomorrow",
+      "week": "Your week",
+      "rest": "Nothing planned. Enjoy it, or log it if you train anyway.",
+      "done": "Done",
+      "doneTitle": "Well done! How did it go?",
+      "open": "See the whole session",
+      "comments": "{count, plural, one {# comment} other {# comments}}"
+    },
+    "week": {
+      "nothing": "Nothing planned"
+    },
+    "coach": {
+      "title": "The team today",
+      "summary": "{done} of {total} sessions done",
+      "rest": "Nothing planned today",
+      "events": "The team's events this week",
+      "noEvents": "No races or camps for the whole team this week."
+    },
+    "parent": {
+      "week": "{name}'s week",
+      "waitingTitle": "Waiting for your child's confirmation",
+      "waitingBody": "You can see your child's training here once your child has confirmed the link to you. The rider does that under Settings → Me."
+    },
+    "start": {
+      "title": "Getting started",
+      "body": "Three steps, and the team has a week to train by.",
+      "riders": {
+        "title": "Add the team's riders",
+        "body": "A name and a birth year are enough. You can invite them when they are ready.",
+        "action": "Add riders"
+      },
+      "session": {
+        "title": "Build or pick a session",
+        "body": "Build a session in the library, or fetch DCU's strength programmes.",
+        "action": "Open the library"
+      },
+      "week": {
+        "title": "Plan the week",
+        "body": "Put sessions in the calendar for one rider or the whole team at once.",
+        "action": "Open the calendar"
+      }
+    }
   },
   "errors": {
     "unauthorized": "You are no longer signed in.",
@@ -522,6 +669,610 @@
     "invalid": "Something in the form is not valid.",
     "notFound": "It no longer exists. Reload the page.",
     "conflict": "Someone changed it at the same time. Reload the page and try again.",
-    "generic": "Something went wrong. Try again."
+    "generic": "Something went wrong. Try again.",
+    "alreadyDone": "The session is already marked as done. Reload the page.",
+    "alreadyInvited": "There is already an open link for that address. Copy the one that exists, or withdraw it under Settings → Workspace.",
+    "alreadyMember": "The person is already on the team."
+  },
+  "calendar": {
+    "title": "Calendar",
+    "teamSubtitle": "The whole team's week",
+    "sessionPanel": "Session",
+    "backToWeek": "Back to the week",
+    "sessionMissing": "The session does not exist",
+    "sessionMissingHint": "It may have been deleted, or you do not have access to it.",
+    "empty": {
+      "coachTitle": "No riders yet",
+      "coachBody": "The calendar fills up once the team has riders. Add the first one and you can plan the week.",
+      "coachAction": "Add riders",
+      "waitingTitle": "Waiting for your child's confirmation",
+      "waitingBody": "You can see your child's training once the rider has confirmed the link to you under Settings → Me.",
+      "noneTitle": "There is no calendar for you here yet",
+      "noneBody": "The calendar shows a rider's training. If you are a rider or a parent, ask the coach for an invitation as exactly that."
+    },
+    "nav": {
+      "label": "Choose week",
+      "previous": "Previous week",
+      "next": "Next week",
+      "thisWeek": "This week",
+      "week": "Week {n}"
+    },
+    "view": {
+      "show": "Show",
+      "team": "Whole team"
+    },
+    "week": {
+      "today": "Today",
+      "nothing": "Nothing planned",
+      "addOn": "Add a session on {day}",
+      "movedTo": "{title} moved to {day}."
+    },
+    "totals": {
+      "all": "Hours in total",
+      "bike": "On the bike",
+      "of": "{done} of {planned} h"
+    },
+    "actions": {
+      "addSession": "Add session",
+      "log": "Log training",
+      "addEvent": "Add event"
+    },
+    "card": {
+      "group": "Group session",
+      "comments": "{count, plural, one {# comment} other {# comments}}"
+    },
+    "team": {
+      "caption": "The team's week: a row per rider and a column per day",
+      "rider": "Rider",
+      "week": "Week",
+      "hours": "{done} / {planned} h"
+    },
+    "menu": {
+      "label": "Actions for {title}",
+      "open": "Open",
+      "edit": "Edit",
+      "move": "Move",
+      "copy": "Copy",
+      "delete": "Delete"
+    },
+    "move": {
+      "moveTitle": "Move the session",
+      "copyTitle": "Copy the session",
+      "date": "To date",
+      "rider": "To rider",
+      "move": "Move",
+      "copy": "Copy",
+      "moved": "The session was moved.",
+      "copied": "The session was copied."
+    },
+    "delete": {
+      "title": "Delete {title}?",
+      "body": "The session disappears from the calendar along with its comments.",
+      "scope": "Who should it be deleted for?",
+      "scopes": {
+        "one": "Only this one",
+        "group": "The whole group"
+      },
+      "scopeHints": {
+        "one": "Only this rider's session.",
+        "group": "Every rider who got the session and has not done it yet."
+      },
+      "deleted": "The session was deleted."
+    },
+    "edit": {
+      "title": "Edit the session",
+      "scope": "Who should the change apply to?",
+      "scopes": {
+        "group": "The whole group (those who have not done it)",
+        "one": "Only this rider"
+      }
+    },
+    "add": {
+      "title": "Add session",
+      "body": "Choose who and when, and take a session from the library or build a new one.",
+      "riders": "Riders",
+      "all": "Select all",
+      "none": "Select none",
+      "groupHint": "Several riders make a group session: you can later change it for everyone at once.",
+      "forRider": "For {name}",
+      "date": "Date",
+      "how": "How",
+      "fromLibrary": "From the library",
+      "build": "Build it",
+      "search": "Search the library",
+      "template": "Template",
+      "noTemplates": "The library is empty so far.",
+      "noMatch": "No templates match the search.",
+      "pickRider": "Choose at least one rider.",
+      "pickTemplate": "Choose a session from the library.",
+      "submit": "Put in the calendar",
+      "added": "{count, plural, one {The session is in the calendar.} other {The session is in # calendars.}}"
+    },
+    "event": {
+      "addTitle": "Add event",
+      "editTitle": "Edit event",
+      "body": "A race, an exam, school, a camp, a holiday or illness, so the training can take it into account.",
+      "kind": "What",
+      "priority": "Priority",
+      "priorities": {
+        "A": "A: the season's goal",
+        "B": "B: important",
+        "C": "C: training race"
+      },
+      "title": "Title",
+      "titlePlaceholder": "E.g. national road championship or maths",
+      "from": "From",
+      "to": "Up to and including",
+      "who": "For whom",
+      "wholeTeam": "Whole team",
+      "onlyYou": "Only in your calendar.",
+      "note": "Note",
+      "deleteTitle": "Delete the event?",
+      "deleteBody": "It disappears from the calendar."
+    },
+    "log": {
+      "title": "Log training",
+      "body": "Something you did without a plan: a ride with friends, a run. How long and how hard is enough.",
+      "sport": "Sport",
+      "date": "Date",
+      "name": "Title",
+      "namePlaceholder": "E.g. club ride",
+      "minutes": "Minutes",
+      "km": "Distance",
+      "submit": "Save",
+      "saved": "The training is saved."
+    }
+  },
+  "library": {
+    "title": "Library",
+    "subtitle": "The team's sessions and programmes, ready to put in the calendar.",
+    "new": "New template",
+    "newTitle": "New template",
+    "newSubtitle": "A session you can use again and again, for one rider or the whole team.",
+    "back": "Back to the library",
+    "search": "Search by name",
+    "noMatch": "No templates match the search",
+    "emptyTitle": "The library is empty",
+    "emptyBody": "Build the team's first session, or fetch DCU's strength programmes. Then you can put them in the calendar in a few taps.",
+    "archivedMark": "Archived",
+    "showArchived": "Show archived too",
+    "hideArchived": "Hide archived",
+    "dcuSubtitle": "DCU's programme. It cannot be changed here, but you can copy it and adapt the copy.",
+    "coachOnlyTitle": "Only coaches make templates",
+    "coachOnlyBody": "You can still put the library's sessions in your own calendar.",
+    "actions": {
+      "schedule": "Plan",
+      "edit": "Edit",
+      "copy": "Copy",
+      "copyToAdapt": "Copy to adapt",
+      "copyName": "{name} (copy)",
+      "copied": "The copy is made. Now you can adapt it.",
+      "archive": "Archive",
+      "restore": "Restore",
+      "archived": "The template is archived.",
+      "restored": "The template is back in the library."
+    },
+    "schedule": {
+      "title": "Plan session",
+      "forRider": "For {name}",
+      "date": "Date",
+      "submit": "Put in the calendar",
+      "done": "{count, plural, one {The session is in the calendar.} other {The session is in # calendars.}}"
+    },
+    "editor": {
+      "create": "Save the template",
+      "created": "The template is saved."
+    },
+    "dcu": {
+      "install": "Fetch DCU's strength programmes",
+      "done": "DCU's programmes are in the library: {installed} new, {updated} updated."
+    }
+  },
+  "riders": {
+    "title": "Riders",
+    "subtitle": "The team's riders, their class, account and parents.",
+    "back": "Back to the riders",
+    "calendar": "See the calendar",
+    "emptyTitle": "No riders yet",
+    "emptyBody": "Add the team's riders. You can plan sessions for them right away and invite them when they are ready.",
+    "coachOnlyTitle": "For coaches only",
+    "coachOnlyBody": "The team's list of riders is the coaches'. Your own profile is under Settings → Me.",
+    "showArchived": "Show archived riders too",
+    "hideArchived": "Hide archived riders",
+    "archiveNote": "Has the rider left the team? Archive them: they keep their history but disappear from the lists.",
+    "archivedNote": "The rider is archived and not shown in the lists and the calendar.",
+    "class": {
+      "withYear": "{category} · year {year}",
+      "senior": "Senior",
+      "youth": "Under U17"
+    },
+    "list": {
+      "meta": "Born {year} · {class}",
+      "archived": "Archived",
+      "parents": "{count, plural, =0 {No parents} one {# parent} other {# parents}}"
+    },
+    "account": {
+      "account": "Has an account",
+      "invited": "Invitation sent",
+      "expired": "The invitation expired",
+      "none": "Not invited"
+    },
+    "fields": {
+      "name": "Name",
+      "birthYear": "Birth year",
+      "sex": "Sex",
+      "sexNone": "Not given",
+      "female": "Girl / woman",
+      "male": "Boy / man"
+    },
+    "add": {
+      "button": "Add rider",
+      "title": "Add rider",
+      "body": "The birth year gives the rider's class by DCU's rules. Sex is optional.",
+      "email": "Rider's e-mail",
+      "emailHint": "Give an e-mail if the rider should have their own account now. You get a link to send yourself.",
+      "submit": "Add",
+      "added": "{name} was added.",
+      "issuedTitle": "The rider was added",
+      "issuedBody": "Send the link to the rider. When they sign up through it, the account is linked to the rider here.",
+      "done": "Done"
+    },
+    "profile": {
+      "title": "Profile",
+      "body": "Name, birth year and class.",
+      "class": "Class to plan from",
+      "classAuto": "By birth year ({class})",
+      "senior": "Senior",
+      "classHint": "Only choose another class if the rider has, say, moved up. The deviation from DCU is always shown."
+    },
+    "thresholds": {
+      "title": "Thresholds",
+      "body": "The zones are turned into watts and pulse from these.",
+      "ftp": "FTP",
+      "thresholdHr": "Threshold HR",
+      "maxHr": "Max HR",
+      "restingHr": "Resting HR",
+      "bpm": "bpm",
+      "date": "Measured on",
+      "hint": "Use the numbers from the latest test. Empty fields are fine: the sessions then show zones and feel."
+    },
+    "accountCard": {
+      "title": "The rider's account",
+      "hasAccount": "The rider has their own account and can see and complete their sessions.",
+      "body": "With an account the rider can see their sessions, mark them done and write comments.",
+      "email": "Rider's e-mail",
+      "send": "Make an invitation link",
+      "resend": "Make a new link"
+    },
+    "guardians": {
+      "title": "Parents",
+      "body": "A parent sees nothing until the rider has confirmed the link. The rider also decides what the parents can see.",
+      "empty": "No parents are linked yet.",
+      "remove": "Remove the link",
+      "removeTitle": "Remove {name}?",
+      "removeBody": "The parent loses access to the rider's training straight away."
+    },
+    "guardianState": {
+      "notInvited": "Not invited",
+      "invited": "Invitation sent",
+      "expired": "The invitation expired",
+      "waiting": "Waiting for the rider's confirmation",
+      "confirmed": "Confirmed",
+      "lapsed": "Needs confirming again (the rider has turned 18)"
+    },
+    "relation": {
+      "mother": "Mother",
+      "father": "Father",
+      "guardian": "Guardian",
+      "other": "Other"
+    },
+    "addGuardian": {
+      "button": "Add parent",
+      "title": "Add parent",
+      "body": "The parent can see {rider}'s training once {rider} has confirmed the link.",
+      "name": "Name",
+      "relation": "Relation",
+      "email": "Parent's e-mail",
+      "submit": "Add",
+      "added": "The parent was added.",
+      "issuedTitle": "The parent was added",
+      "issuedBody": "Send the link to the parent. Afterwards {rider} must confirm the link under Settings → Me.",
+      "done": "Done"
+    },
+    "archive": {
+      "button": "Archive the rider",
+      "title": "Archive {name}?",
+      "body": "The rider disappears from the lists and the calendar, but the history stays. You can restore the rider later.",
+      "confirm": "Archive",
+      "restore": "Restore the rider",
+      "restoreTitle": "Restore {name}?",
+      "restoreBody": "The rider comes back in the lists and the calendar."
+    }
+  },
+  "session": {
+    "notFound": "The session does not exist",
+    "notFoundHint": "It may have been deleted, or you do not have access to it.",
+    "km": "{km} km",
+    "group": "Group session",
+    "structure": "The session",
+    "done": {
+      "time": "Time",
+      "distance": "Distance",
+      "km": "{km} km",
+      "rpe": "How hard",
+      "feel": "Feel",
+      "load": "Load",
+      "notSaid": "Not said",
+      "fromFile": "From a file or a device.",
+      "editFeedback": "Change the rating",
+      "note": "Note",
+      "undo": "Undo done",
+      "undoTitle": "Undo done?",
+      "undoBody": "The session is open again, and the time and rating that were entered disappear."
+    },
+    "notDoneYet": "Not done yet.",
+    "comments": {
+      "empty": "No comments yet.",
+      "write": "Write a comment",
+      "placeholder": "E.g. how did the intervals go?",
+      "send": "Send",
+      "everyoneReads": "The coach, the rider and the rider's parents can read along.",
+      "readOnly": "You can read along, but not write here.",
+      "unknownAuthor": "Former member",
+      "edited": "(edited)",
+      "editLabel": "Edit the comment",
+      "deleteTitle": "Delete the comment?",
+      "deleteOwnBody": "The comment disappears for everyone.",
+      "deleteOtherBody": "You are removing someone else's comment. It disappears for everyone."
+    },
+    "feedback": {
+      "rpe": "How hard was it? (RPE)",
+      "rpeHint": "Think of the whole session. 1 is very, very easy, 10 is the hardest you can.",
+      "feel": "How did you feel?"
+    },
+    "complete": {
+      "minutes": "Minutes",
+      "km": "Distance",
+      "note": "Note",
+      "notePlaceholder": "E.g. heavy legs, but a good day",
+      "submit": "Done",
+      "saved": "Well done! The session is done."
+    },
+    "doneTitle": "Done",
+    "commentsTitle": "{count, plural, =0 {Comments} one {# comment} other {# comments}}"
+  },
+  "training": {
+    "sport": {
+      "bike": "Bike",
+      "strength": "Strength",
+      "other": "Other"
+    },
+    "duration": {
+      "minutes": "{m} min",
+      "hours": "{h} h",
+      "hoursMinutes": "{h} h {m} min"
+    },
+    "state": {
+      "asPlanned": "As planned",
+      "offPlan": "Off the plan",
+      "farOff": "Far from the plan",
+      "missed": "Not done",
+      "today": "Today",
+      "planned": "Planned",
+      "unplanned": "Unplanned"
+    },
+    "eventKind": {
+      "race": "Race",
+      "exam": "Exam",
+      "school": "School",
+      "camp": "Camp",
+      "holiday": "Holiday",
+      "ill": "Ill",
+      "other": "Other"
+    },
+    "priority": "{priority} race",
+    "group": "Group session",
+    "teamEvent": "Whole team",
+    "zone": {
+      "1": "recovery",
+      "2": "endurance",
+      "3": "tempo",
+      "4": "threshold",
+      "5": "VO₂ max",
+      "6": "anaerobic",
+      "7": "sprint"
+    },
+    "rpe": {
+      "1": "very, very easy",
+      "2": "easy",
+      "3": "moderate",
+      "4": "somewhat hard",
+      "5": "hard",
+      "7": "very hard",
+      "9": "extremely hard",
+      "10": "maximal"
+    },
+    "feel": {
+      "1": "Really bad",
+      "2": "Bad",
+      "3": "OK",
+      "4": "Good",
+      "5": "Really good"
+    }
+  },
+  "workouts": {
+    "profile": {
+      "empty": "No steps yet. Add a step and the session is drawn here.",
+      "label": "Session profile: {steps, plural, one {# step} other {# steps}}, {duration}"
+    },
+    "intent": {
+      "warmup": "Warm-up",
+      "work": "Work",
+      "recover": "Rest",
+      "cooldown": "Cool-down",
+      "steady": "Steady"
+    },
+    "actions": {
+      "up": "Move {name} up",
+      "down": "Move {name} down",
+      "duplicate": "Copy {name}",
+      "remove": "Remove {name}"
+    },
+    "step": {
+      "duration": "Duration",
+      "minutes": "Minutes",
+      "seconds": "Seconds",
+      "minutesShort": "min",
+      "secondsShort": "sec",
+      "intent": "What the step is",
+      "more": "Cadence and text",
+      "cadenceLow": "Cadence from",
+      "cadenceHigh": "Cadence to",
+      "label": "Text on the step",
+      "labelPlaceholder": "E.g. seated, standing start",
+      "cadenceHint": "Cadence is optional. Leave the fields empty if the rider chooses."
+    },
+    "target": {
+      "kind": "Target",
+      "kinds": {
+        "zone": "Zone",
+        "ftp_pct": "% of FTP",
+        "hr_pct": "% of threshold HR",
+        "rpe": "RPE (feel)",
+        "open": "Free"
+      },
+      "zone": "Zone",
+      "zoneOption": "Zone {zone} · {name}",
+      "low": "From",
+      "high": "To",
+      "rpe": "How hard",
+      "openHint": "No target: ride by feel, or go all out."
+    },
+    "repeat": {
+      "times": "Times",
+      "stepName": "step {n}",
+      "addStep": "Add a step to the repeat"
+    },
+    "bike": {
+      "total": "Total time",
+      "stepName": "step {n}",
+      "repeatName": "repeat {n}",
+      "repeatTitle": "Repeat {n} · {times} ×",
+      "empty": "The session has no steps yet.",
+      "addStep": "Add step",
+      "addRepeat": "Add repeat"
+    },
+    "group": {
+      "legs": "Legs",
+      "core": "Core",
+      "upper": "Upper body",
+      "mobility": "Mobility",
+      "other": "Other"
+    },
+    "exercise": {
+      "name": "Exercise",
+      "namePlaceholder": "E.g. squat",
+      "group": "Group",
+      "sets": "Sets",
+      "reps": "Reps",
+      "load": "Load",
+      "loadPlaceholder": "E.g. RM or 20 kg",
+      "rest": "Rest",
+      "secondsShort": "sec",
+      "note": "Note",
+      "notePlaceholder": "E.g. keep the back straight"
+    },
+    "progression": {
+      "group": "Group",
+      "from": "From session",
+      "to": "To session",
+      "sets": "Sets",
+      "reps": "Reps",
+      "load": "Load",
+      "rowName": "Rule {n}",
+      "remove": "Remove rule {n}",
+      "add": "Add rule",
+      "hint": "From and to count the rider's sessions in the programme. Leave \"to\" empty for the rest of the programme. Exercises without a rule keep their own sets and reps."
+    },
+    "strength": {
+      "warmup": "Warm-up",
+      "warmupPlaceholder": "E.g. 10 min on the bike and mobility",
+      "minutes": "Duration",
+      "minutesShort": "min",
+      "exercises": "Exercises",
+      "exerciseName": "exercise {n}",
+      "addExercise": "Add exercise",
+      "progression": "Progression"
+    },
+    "other": {
+      "text": "What to do",
+      "textPlaceholder": "E.g. a 40 min easy run in the woods",
+      "minutes": "Duration",
+      "minutesShort": "min"
+    },
+    "fields": {
+      "title": "Title",
+      "titlePlaceholder": "E.g. 3 × 10 min threshold",
+      "sport": "Sport",
+      "km": "Planned distance",
+      "description": "Message to the rider",
+      "descriptionPlaceholder": "What should the rider think about?"
+    },
+    "problem": {
+      "title": "The session needs a title.",
+      "structure": "Check {where}.",
+      "where": {
+        "session": "the session",
+        "step": "step {n}",
+        "repeat": "repeat {n}",
+        "exercise": "exercise {n}",
+        "rule": "rule {n} of the progression"
+      },
+      "field": {
+        "seconds": "duration",
+        "target": "target",
+        "low": "from",
+        "high": "to",
+        "cadenceLow": "cadence from (30–200)",
+        "cadenceHigh": "cadence to (30–200)",
+        "label": "text",
+        "times": "times",
+        "name": "name",
+        "sets": "sets",
+        "reps": "reps",
+        "load": "load",
+        "restSeconds": "rest",
+        "note": "note",
+        "from": "from session",
+        "to": "to session",
+        "minutes": "duration",
+        "warmup": "warm-up",
+        "text": "text"
+      }
+    },
+    "view": {
+      "zone": "zone {zone} · {name}",
+      "ftpPct": "{low}–{high} % of FTP",
+      "hrPct": "{low}–{high} % of threshold HR",
+      "rpe": "RPE {value}",
+      "open": "free",
+      "watts": "{low}–{high} W",
+      "wattsOne": "{value} W",
+      "wattsUpTo": "up to {high} W",
+      "wattsFrom": "above {low} W",
+      "bpm": "{low}–{high} bpm",
+      "bpmOne": "{value} bpm",
+      "bpmUpTo": "up to {high} bpm",
+      "bpmFrom": "above {low} bpm",
+      "cadence": "cadence {low}–{high}",
+      "repeat": "{times} ×",
+      "noThresholds": "Once the rider's FTP and threshold heart rate are set, watts and pulse appear here.",
+      "programmeSession": "Session {n} of the programme",
+      "warmup": "Warm-up:",
+      "rest": "{seconds} sec rest",
+      "setsReps": "{sets} × {reps}",
+      "progression": "Progression",
+      "rule": "{open, select, yes {{group}, from session {from}} other {{group}, sessions {from}–{to}}}: {sets} × {reps}"
+    }
   }
 }

@@ -104,10 +104,7 @@ export const whoAmI = cache(async (orgId: string, userId: string): Promise<Me | 
 
 /** The riders the caller may see — the database decides: all for a coach, self, or children. */
 export async function visibleRiderIds(tx: AppTransaction): Promise<string[]> {
-  const rows = await tx
-    .select({ id: riders.id })
-    .from(riders)
-    .where(eq(riders.archived, false));
+  const rows = await tx.select({ id: riders.id }).from(riders).where(eq(riders.archived, false));
   return rows.map((r) => r.id);
 }
 

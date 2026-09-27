@@ -9,8 +9,8 @@ building `src/modules/dcu` against the sources proved wrong:
 
 - that the season runs November to October. DCU's 2025 table
   (Landevej_traeningsanbefalinger_2025.pdf) starts with October — "pause
-  + frit" — and runs to September, and DCU's page speaks of the year in
-  the same way;
+  - frit" — and runs to September, and DCU's page speaks of the year in
+    the same way;
 - that DCU publishes no zone model. `intervaltraening.pdf`, linked from
   the same page, gives intensity bands as a share of heart-rate reserve
   (restitution up to 55 %, basis 56–75 %, medium 76–83 %, AT 84–92 %,

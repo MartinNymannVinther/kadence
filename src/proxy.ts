@@ -14,6 +14,7 @@ const PROTECTED_PREFIXES = [
   "/activities",
   "/parents",
   "/settings",
+  "/help",
   "/onboarding",
 ];
 

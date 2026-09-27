@@ -31,6 +31,15 @@ export async function listGuardians(ctx: OrgContext, riderId: string): Promise<G
   );
 }
 
+/**
+ * Every link the caller may see, for the team's list of riders: all of
+ * them for a coach, a rider's own parents for a rider, their own for a
+ * parent. The database decides; this is a plain select under RLS.
+ */
+export async function listTeamGuardians(ctx: OrgContext): Promise<GuardianRow[]> {
+  return withOrgContext(ctx, (tx) => tx.select().from(guardians).orderBy(asc(guardians.createdAt)));
+}
+
 export async function addGuardian(
   ctx: OrgContext,
   input: z.infer<typeof GuardianInput>,

@@ -6,11 +6,12 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("title") };
 }
 
-const HOW_TO = ["roles", "data"] as const;
+const HOW_TO = ["roles", "calendar", "sessions", "done", "comments", "parents", "data"] as const;
 
 /**
  * How the tool works, in the rhythm a season lives in: who may do what,
- * then the way out. Each wave adds the part it built.
+ * the calendar, sessions and templates, "done" and RPE, the comments, the
+ * parents, then the way out. Each wave adds the part it built.
  */
 export default async function HelpPage() {
   const t = await getTranslations("help");
