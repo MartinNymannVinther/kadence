@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { z } from "zod";
 import { requireOrgContext } from "@/core/auth/guard";
 import type { OrgContext } from "@/core/db/tenant";
+import { Refused } from "@/core/action";
 import { routing, type Locale } from "@/i18n/routing";
 import { classifyAiError, modelConfigured } from "./service";
 import type { ProposalResult } from "./wire";
@@ -52,6 +53,12 @@ export async function aiRead<S extends z.ZodType, T>(
     if (!result) return answer({ ok: false, error: "notFound" }, 404);
     return answer({ ok: true, ...result }, 200);
   } catch (error) {
+    // A service's own refusal (not a coach, say) is an answer, not a failure.
+    if (error instanceof Refused)
+      return answer(
+        { ok: false, error: error.code === "notFound" ? "notFound" : "notAllowed" },
+        403,
+      );
     const failure = classifyAiError(error);
     // The model not answering is not the server failing: a 5xx here would
     // be a red line in the log for an ordinary Tuesday with Ollama down.

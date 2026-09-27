@@ -23,6 +23,17 @@ export class NoModel extends Error {
   }
 }
 
+/**
+ * The team has not let the AI read its riders' data (team_settings,
+ * ADR 0017): a proposal that needs it says so instead of asking.
+ */
+export class NotAllowed extends Error {
+  constructor() {
+    super("not allowed");
+    this.name = "NotAllowed";
+  }
+}
+
 export type ModelAnswer = { data: unknown; engine: string };
 
 /** True when a model is configured for this workspace, for the UI. */
@@ -85,6 +96,7 @@ export async function streamAnswer(
 
 export function classifyAiError(error: unknown): AiFailure {
   if (error instanceof NoModel) return "noModel";
+  if (error instanceof NotAllowed) return "notAllowed";
   if (error instanceof Error && error.name === "RateLimited") return "rateLimited";
   if (error instanceof LlmError) {
     if (error.reason === "unreachable" || error.reason === "auth") return "unreachable";

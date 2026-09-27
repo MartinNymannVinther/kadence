@@ -24,11 +24,12 @@ export const MAX_CALLS_PER_WORKSPACE_PER_DAY = 600;
 export const MAX_CALLS_PER_INSTALLATION_PER_DAY = env.AI_DAILY_CALL_CAP;
 
 /**
- * What a model call was for. `sharpen` is a proposed description for an
- * initiative, `breakdown` a proposed set of deliverables for a quarter,
- * `test` the connection test under Settings → AI.
+ * What a model call was for (docs/adr/0017): `week_draft` a proposed week
+ * of sessions for a rider, `parse_workout` a coach's words turned into a
+ * structured session, `coach_brief` the Monday summary of who needs
+ * attention, `test` the connection test under Settings → AI.
  */
-export type AiKind = "sharpen" | "breakdown" | "test";
+export type AiKind = "week_draft" | "parse_workout" | "coach_brief" | "test";
 
 export class RateLimited extends Error {
   constructor() {

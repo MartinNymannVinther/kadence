@@ -31,14 +31,14 @@ describe("asking the AI for a read", () => {
   it("asks in the page's language and hands the proposal back", async () => {
     const seen = answering(JSON.stringify({ ok: true, proposal: { place: null }, engine: "e" }));
     const result = await askAi(
-      "sharpen",
+      "parse-workout",
       { boardId: "b", title: "et nyt kort" },
       {
         locale: "en",
       },
     );
     expect(result).toEqual({ ok: true, proposal: { place: null }, engine: "e" });
-    expect(seen[0]!.url).toBe("/api/ai/sharpen?locale=en");
+    expect(seen[0]!.url).toBe("/api/ai/parse-workout?locale=en");
     expect(seen[0]!.init?.method).toBe("POST");
     expect(JSON.parse(String(seen[0]!.init?.body))).toEqual({ boardId: "b", title: "et nyt kort" });
   });
@@ -48,7 +48,7 @@ describe("asking the AI for a read", () => {
     const controller = new AbortController();
     controller.abort();
     const result = await askAi(
-      "sharpen",
+      "parse-workout",
       { itemId: "i" },
       {
         locale: "da",
@@ -60,13 +60,13 @@ describe("asking the AI for a read", () => {
 
   it("degrades to nothing, not to broken", async () => {
     answering("<html>en fejlside</html>");
-    expect(await askAi("sharpen", { itemId: "i" }, { locale: "da" })).toEqual({
+    expect(await askAi("parse-workout", { itemId: "i" }, { locale: "da" })).toEqual({
       ok: false,
       error: "generic",
     });
 
     answering(JSON.stringify({ proposal: "uden ok" }));
-    expect(await askAi("sharpen", { itemId: "i" }, { locale: "da" })).toEqual({
+    expect(await askAi("parse-workout", { itemId: "i" }, { locale: "da" })).toEqual({
       ok: false,
       error: "badAnswer",
     });
@@ -74,7 +74,7 @@ describe("asking the AI for a read", () => {
     globalThis.fetch = (async () => {
       throw new TypeError("network down");
     }) as typeof fetch;
-    expect(await askAi("sharpen", { itemId: "i" }, { locale: "da" })).toEqual({
+    expect(await askAi("parse-workout", { itemId: "i" }, { locale: "da" })).toEqual({
       ok: false,
       error: "generic",
     });
