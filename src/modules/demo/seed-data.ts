@@ -1,0 +1,101 @@
+/**
+ * The demo team's words, in both languages: made-up riders, sessions and
+ * notes for a U19 team in full swing (ADR 0005). Names are invented and
+ * belong to nobody; the checklist forbids real people in a demo.
+ */
+
+export type L = "da" | "en";
+export type Text = Record<L, string>;
+export const pick = (text: Text, l: L) => text[l];
+
+export const TEAM_NAME: Text = { da: "Demo CK U19", en: "Demo CC U19" };
+
+/** Born so they ride U19 in the coming racing year: years 1 and 2. */
+export const RIDERS: Array<{
+  name: string;
+  u19Year: 1 | 2;
+  ftp: number;
+  thr: number;
+  sex: "female" | "male";
+}> = [
+  { name: "Emma Holm", u19Year: 1, ftp: 225, thr: 176, sex: "female" },
+  { name: "Oskar Lund", u19Year: 2, ftp: 295, thr: 181, sex: "male" },
+  { name: "Freja Dahl", u19Year: 1, ftp: 210, thr: 179, sex: "female" },
+  { name: "Magnus Berg", u19Year: 2, ftp: 280, thr: 174, sex: "male" },
+  { name: "Ida Kjær", u19Year: 2, ftp: 240, thr: 183, sex: "female" },
+  { name: "Noah Friis", u19Year: 1, ftp: 265, thr: 178, sex: "male" },
+];
+
+/** The library the coach built, in the coach's own shorthand (read by parse-text.ts). */
+export const TEMPLATES: Array<{ name: Text; text: string }> = [
+  { name: { da: "Grundtur", en: "Endurance ride" }, text: "2 t Z2" },
+  {
+    name: { da: "3 × 10 min AT", en: "3 × 10 min threshold" },
+    text: "15 min opvarmning, 3x10 min Z4 / 5 min pause, 10 min nedkørsel",
+  },
+  {
+    name: { da: "4 × 4 min VO2", en: "4 × 4 min VO2" },
+    text: "20 min opvarmning, 4x4 min 110-115% FTP / 4 min pause, 15 min nedkørsel",
+  },
+  { name: { da: "Restitution", en: "Recovery spin" }, text: "45 min Z1" },
+  {
+    name: { da: "Sprint og kadence", en: "Sprints and cadence" },
+    text: "20 min opvarmning, 6x30 s sprint / 4 min rolig, 20 min Z2",
+  },
+  {
+    name: { da: "Tempo", en: "Tempo" },
+    text: "15 min opvarmning, 2x20 min Z3 / 5 min pause, 10 min nedkørsel",
+  },
+];
+
+export const EVENTS: Array<{
+  kind: "race" | "camp";
+  title: Text;
+  inDays: number;
+  days: number;
+  priority: "A" | "B" | null;
+}> = [
+  {
+    kind: "race",
+    title: { da: "Sæsonstart, landevej", en: "Season opener, road" },
+    inDays: 19,
+    days: 1,
+    priority: "B",
+  },
+  {
+    kind: "camp",
+    title: { da: "Holdsamling", en: "Team camp" },
+    inDays: 33,
+    days: 3,
+    priority: null,
+  },
+  {
+    kind: "race",
+    title: { da: "DM enkeltstart", en: "National time trial" },
+    inDays: 47,
+    days: 1,
+    priority: "A",
+  },
+];
+
+export const EXAM: Text = { da: "Terminsprøve i matematik", en: "Maths mock exam" };
+
+export const COMMENTS: Array<{ coach: Text }> = [
+  {
+    coach: {
+      da: "Flot kørt! Hold pulsen lidt lavere i sidste interval næste gang.",
+      en: "Well ridden! Keep the pulse a little lower in the last interval next time.",
+    },
+  },
+  {
+    coach: {
+      da: "Tag den helt rolig i morgen — du har haft en travl uge i skolen.",
+      en: "Take it completely easy tomorrow — it has been a busy week at school.",
+    },
+  },
+];
+
+export const NOTES = {
+  soreLegs: { da: "Tunge ben efter weekenden", en: "Heavy legs after the weekend" },
+  knee: { da: "Knæet driller lidt", en: "My knee is bothering me a bit" },
+} satisfies Record<string, Text>;

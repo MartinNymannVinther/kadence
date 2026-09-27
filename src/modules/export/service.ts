@@ -4,7 +4,8 @@ import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/
 import { EXPORT_TABLES, MEMBERS_SHEET, type ExportTable } from "./tables";
 
 /**
- * The whole workspace, on its way out.
+ * The whole workspace, on its way out — or, for a rider, their own data:
+ * the same code, and RLS decides what is in it (ADR 0011).
  *
  * Full export is a dogma: you must be able to leave. So the export reads
  * through the ordinary RLS-guarded path, as the application role, with the
@@ -56,13 +57,17 @@ async function readTable(tx: AppTransaction, spec: ExportTable): Promise<ExportS
 /**
  * The members, from the workspace's own membership rather than from the
  * auth tables: who is in this workspace and in what role, without carrying
- * credentials along.
+ * credentials along. A coach's export has the whole team; anybody else's
+ * has themselves — a rider's or a parent's export must not hand out the
+ * other young riders' addresses (ADR 0011). Everything else is already
+ * cut to what the caller may see by RLS.
  */
-async function readMembers(tx: AppTransaction): Promise<ExportSection> {
+async function readMembers(tx: AppTransaction, ctx: OrgContext): Promise<ExportSection> {
   const result = await tx.execute(sql`
     select u.name, u.email, m.role, m.created_at
     from memberships m
     join users u on u.id = m.user_id
+    where app_is_coach() or m.user_id = ${ctx.userId}
     order by m.created_at
   `);
   const rows = result.rows as Array<Record<string, unknown>>;
@@ -81,7 +86,7 @@ export async function buildOrgExport(ctx: OrgContext): Promise<OrgExport> {
     `);
     const organization = (org.rows[0] ?? {}) as { id: string; name: string; slug: string | null };
 
-    const sections: ExportSection[] = [await readMembers(tx)];
+    const sections: ExportSection[] = [await readMembers(tx, ctx)];
     for (const spec of EXPORT_TABLES) {
       sections.push(await readTable(tx, spec));
     }

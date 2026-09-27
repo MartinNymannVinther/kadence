@@ -7,6 +7,7 @@ import { DEMO_HEADER, demoSignupHeaderValue } from "@/core/auth/signup";
 import { env } from "@/core/env";
 import { organizationSlug } from "@/lib/slug";
 import { seedDemoTeam } from "./seed";
+import { TEAM_NAME } from "./seed-data";
 
 /**
  * A demo is a real workspace with a throwaway account in it and a date on
@@ -113,7 +114,7 @@ export async function createDemoWorkspace(locale: "da" | "en"): Promise<DemoSess
   const email = `demo-${key}@demo.invalid`;
   const password = randomBytes(24).toString("base64url");
   const name = locale === "da" ? "Gæst" : "Guest";
-  const workspaceName = locale === "da" ? "Demo-arbejdsrum" : "Demo workspace";
+  const workspaceName = TEAM_NAME[locale];
 
   let sessionHeaders: Headers;
   let userId: string;
@@ -149,10 +150,10 @@ export async function createDemoWorkspace(locale: "da" | "en"): Promise<DemoSess
   });
 
   try {
-    await seedDemoTeam();
+    await seedDemoTeam({ orgId: organization.id, userId }, locale);
   } catch (error) {
     // An empty demo is still a demo; the visitor can add their own.
-    console.error("demo: could not seed the portfolio", error);
+    console.error("demo: could not seed the team", error);
   }
 
   return { headers: sessionHeaders };

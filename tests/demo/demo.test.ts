@@ -41,11 +41,19 @@ describe("a demo workspace", () => {
     expect(await isDemoWorkspace(orgId)).toBe(true);
     expect(demoLandingUrl("da").pathname).toBe("/today");
     expect(demoLandingUrl("en").pathname).toBe("/en/today");
-    // The seeded team arrives in wave 4; until then the demo is an empty team.
-    const seeded = await admin.query(`select count(*)::int as n from riders where org_id = $1`, [
-      orgId,
-    ]);
-    expect(seeded.rows[0].n).toBe(0);
+    const seeded = await admin.query(
+      `select (select count(*)::int from riders where org_id = $1) as riders,
+              (select count(*)::int from planned_sessions where org_id = $1) as sessions,
+              (select count(*)::int from planned_sessions where org_id = $1 and activity_id is not null) as done,
+              (select count(*)::int from checkins where org_id = $1) as checkins,
+              (select count(*)::int from workout_templates where org_id = $1 and source = 'dcu') as dcu`,
+      [orgId],
+    );
+    expect(seeded.rows[0].riders).toBe(6);
+    expect(seeded.rows[0].sessions).toBeGreaterThan(150);
+    expect(seeded.rows[0].done).toBeGreaterThan(100);
+    expect(seeded.rows[0].checkins).toBe(6 * 14);
+    expect(seeded.rows[0].dcu).toBe(3);
   });
 
   it("is deleted whole when its time is up, guest account included", async () => {
