@@ -10,6 +10,8 @@ import { FitUpload } from "@/components/activities/fit-upload";
 import { LoadPanel } from "@/components/load/load-panel";
 import { AttentionSection } from "@/components/today/attention-section";
 import { CheckinSection } from "@/components/today/checkin-section";
+import { CoachTips } from "@/components/coach/coach-tips";
+import { teamTips } from "@/components/coach/team-tips";
 import { CoachToday } from "@/components/today/coach-today";
 import { GettingStarted } from "@/components/today/getting-started";
 import { TodaySession } from "@/components/today/today-session";
@@ -110,6 +112,16 @@ export default async function TodayPage({
   const [attention, settings] = team
     ? await Promise.all([getInsights(ctx, { today }), getTeamSettings(ctx)])
     : [null, null];
+  const tips =
+    attention && settings
+      ? await teamTips(ctx, {
+          today,
+          locale,
+          riders,
+          flagKinds: attention.flatMap((i) => i.flags.map((f) => f.kind)),
+          allowYouthWeight: settings.allowYouthWeight,
+        })
+      : [];
   const nothing = !me || (!me.isCoach && !me.rider && me.children.length === 0);
 
   return (
@@ -194,6 +206,7 @@ export default async function TodayPage({
       {attention && (
         <AttentionSection insights={attention} aiAllowed={Boolean(settings?.aiOnRiderData)} />
       )}
+      {tips.length > 0 && <CoachTips tips={tips} />}
       {team && (
         <CoachToday
           riders={riders.map((r) => ({ id: r.id, name: r.name }))}

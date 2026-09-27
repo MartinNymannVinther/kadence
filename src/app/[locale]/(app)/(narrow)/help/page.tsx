@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { BookOpen } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("help");
@@ -32,11 +34,24 @@ const HOW_TO = [
  */
 export default async function HelpPage() {
   const t = await getTranslations("help");
+  const guide = await getTranslations("coachGuide");
 
   return (
     <div className="mx-auto max-w-2xl pb-16">
       <h1 className="text-2xl font-semibold">{t("title")}</h1>
       <p className="text-meta mt-1 text-sm">{t("intro")}</p>
+
+      <Link
+        href="/help/coach"
+        className="focus-ring border-border bg-card hover:border-primary mt-6 flex items-start gap-3 rounded-xl border p-4 shadow-[var(--surface-shadow)]"
+      >
+        <BookOpen aria-hidden className="text-primary mt-0.5 size-5 shrink-0" />
+        <span className="flex flex-col gap-1">
+          <span className="text-reading font-semibold">{guide("title")}</span>
+          <span className="text-meta text-2sm leading-relaxed">{guide("fromHelp")}</span>
+          <span className="text-primary text-2sm font-medium">{guide("open")}</span>
+        </span>
+      </Link>
 
       <h2 className="mt-10 text-xl font-semibold">{t("howToTitle")}</h2>
       {HOW_TO.map((key) => (

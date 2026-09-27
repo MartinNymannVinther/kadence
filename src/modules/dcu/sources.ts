@@ -12,9 +12,11 @@
  * that print no year.
  *
  * The research note (docs/research/dcu-traeningsanbefalinger.md) covers
- * the first six. The last three were read for this module: the web
+ * the first six. The next three were read for this module: the web
  * page's year wheel, the interval sheet the page links to, and the
- * sporting rules that define the age classes.
+ * sporting rules that define the age classes. The 2026 rules, which carry
+ * the youth rules over unchanged and give the race limits in `races.ts`,
+ * are in docs/research/traenermateriale.md.
  *
  * Pure: imports nothing from the database.
  */
@@ -28,7 +30,8 @@ export type DcuSourceId =
   | "u23Strength"
   | "yearWheel"
   | "intervals"
-  | "rules2025";
+  | "rules2025"
+  | "rules2026";
 
 export type DcuSource = {
   title: string;
@@ -105,5 +108,13 @@ export const DCU_SOURCES: Record<DcuSourceId, DcuSource> = {
     edition: 2025,
     created: "2025-03-18",
     pages: 123,
+  },
+  /** Updated version of 17 February 2026, in force 1 March 2026. Cited by paragraph and PDF page. */
+  rules2026: {
+    title: "Danmarks Cykle Unions sportslige regler 2026",
+    url: "https://www.cyklingdanmark.dk/fileadmin/files/PDFer/Sporstlige_regler_2026_-_Endelig_versin_-_17.02.2026.pdf",
+    edition: 2026,
+    created: "2026-02-17",
+    pages: 128,
   },
 };

@@ -1471,7 +1471,8 @@
       "low_answer": "et svar helt i bund",
       "low_average": "lave svar generelt",
       "short_sleep": "under 6 timers søvn"
-    }
+    },
+    "guideLink": "Råd i trænerguiden"
   },
   "wellbeing": {
     "title": "Trivsel",
@@ -2109,5 +2110,181 @@
     },
     "hiddenTitle": "Dit barn deler ikke sin træning lige nu",
     "hiddenBody": "Forbindelsen er bekræftet, men dit barn har valgt ikke at dele sin træning. Det er dit barns valg; tal sammen om det derhjemme."
+  },
+  "coachGuide": {
+    "title": "Trænerguide",
+    "intro": "Gode råd til trænere for U17-, U19- og U23-ryttere, samlet fra DCU, Team Danmark, DIF, Anti Doping Danmark og loven. Skrevet med Kadences egne ord, med links til originalerne.",
+    "note": "Guiden er vejledning, ikke regler. Kadence håndhæver intet af det her; det er dig, rytteren og forældrene, der beslutter. Ved skader og sygdom er det lægen.",
+    "contents": "Indhold",
+    "sources": "Kilder",
+    "opensElsewhere": "(åbner på en anden side)",
+    "research": "Hvad hver kilde siger, hvor gammel den er, og hvor kilderne er uenige, står i Kadences researchnote (docs/research/traenermateriale.md).",
+    "fromHelp": "Gode råd til trænere for unge ryttere: årgange og regler, mængde, styrke, vækst, skader, krop og vægt, trivsel og meget mere.",
+    "open": "Åbn trænerguiden",
+    "sections": {
+      "role": {
+        "title": "Din rolle som træner for unge ryttere",
+        "intro": "Det vigtigste, en træner for U17–U23 gør, er at holde de unge i sporten og få dem til at udvikle sig. Resultaterne kommer bagefter.",
+        "points": {
+          "1": "Udvikling før resultater. Et stort dansk studie af 7.110 unge i alderen 12–20 år fandt, at træning med fokus på udvikling, indflydelse og fællesskab får flere til at fortsætte næste sæson. Ensidigt resultatfokus og kontrollerende adfærd får flere til at stoppe, og det gælder lige meget for elite og bredde. Studiet omfattede ikke cykling, men mønstret er det samme på tværs af de idrætter, det dækkede.",
+          "2": "Cykling er en idræt med sen indgang. Fysiologi og kropsstørrelse betyder meget, og sene udviklere indhenter ofte dem, der var tidligt fremme. Vurder derfor ikke talent ud fra U17-resultater alene.",
+          "3": "Et sundt talentmiljø kendes blandt andet på en passende samlet belastning, tålmodighed, plads til hele mennesket, psykologisk tryghed og støtte, når det går imod.",
+          "4": "DIF's trænerløfte siger det kort: udvikl udøverne gennem gode, sjove og inddragende oplevelser, og tag udgangspunkt i hver enkelt."
+        }
+      },
+      "safeguarding": {
+        "title": "Børneattest, grænser og ansvar",
+        "intro": "Som træner for unge har du et særligt ansvar. Loven sætter bundlinjen, idrætten sætter en højere.",
+        "points": {
+          "1": "Børneattest er lovpligtig for trænere med direkte og vedvarende kontakt med børn under 15 år. En førsteårs U17-rytter kan være 14 år, indtil de har fødselsdag, så det gælder reelt alle U17-trænere. Det er klubben, der indhenter attesten.",
+          "2": "DIF anbefaler børneattest for alle, der træner unge under 18 år, og at den fornyes hvert 2.–3. år.",
+          "3": "Det er strafbart at have et seksuelt forhold til en person under 18 år, der er betroet én til undervisning eller opdragelse (straffeloven § 223). Aftal i klubben, hvad god fysisk kontakt er, og hold omklædningen adskilt.",
+          "4": "Kadence er bygget til åbenhed: der er ingen private beskeder mellem voksne og unge ryttere. Kommentarer på pas og ture læses af træneren, rytteren og rytterens forældre.",
+          "5": "DCU har kurser for trænere: B&U Basistræner, Træner 1 og 2, og Kaptajn Landevej til sikre fællesture. På fællesture må man køre to og to, hvor der er plads, og det ikke er til fare eller unødig ulempe (færdselsloven § 49)."
+        }
+      },
+      "classes": {
+        "title": "Årgangene og reglerne",
+        "intro": "DCU's klasser går efter fødselsår, og hver klasse har sine grænser for løb. Kadence regner klassen ud for dig.",
+        "points": {
+          "1": "U17 er det kalenderår, man fylder 15 og 16, U19 17 og 18, og U23 19 til 22. Sæsonen løber fra oktober til september.",
+          "2": "U17 kører linjeløb på højst {u17Road} km og enkeltstart på højst {u17Tt} km, og udvekslingen må højst være {u17Gear} m pr. pedalomtråd.",
+          "3": "U19-drenge kører linjeløb på {u19mMin}–{u19mMax} km og U19-piger på {u19wMin}–{u19wMax} km, med enkeltstart på højst {u19Tt} km. Der er ingen udvekslingsgrænse i U19, da UCI fjernede juniorgrænsen i 2023. Byg arbejdet på store gear gradvist op i det første år.",
+          "4": "Et etapeløb må højst vare {youthStage} dage for U17 og U19 og {u23Stage} dage for U23. For at stille op til DM for ungdom skal en rytter have kørt mindst 3 licensløb.",
+          "5": "Den længste træningstur er for U17 højst {u17LongH} timer eller {u17LongKm} km og for U19 højst {u19LongH} timer eller {u19LongKm} km. Det længste løb er kortere end det, så der er ingen grund til at træne længere."
+        }
+      },
+      "volume": {
+        "title": "Mængde og sæson",
+        "intro": "Kadence planlægger ud fra DCU's anbefalede timer for rytterens klasse og år og viser en korridor omkring dem.",
+        "points": {
+          "1": "Træn hverken meget mere eller meget mindre end anbefalingerne. De er vejledning til træneren, ikke en regel.",
+          "2": "I U17 er det vigtigste ikke at træne for meget, for for meget mængde tager lysten. I U19 er det naturligt at hæve mængden 10–15 % om året.",
+          "3": "Undgå store spring i mængden, også på træningslejr. Læg lettere uger ind, for det er ofte restitutionen, der udløser fremgangen.",
+          "4": "Stop ikke helt om vinteren. Oktober er pause og fri cykling, og derefter bygges der op igen."
+        }
+      },
+      "strength": {
+        "title": "Styrketræning",
+        "intro": "DCU's styrkeprogrammer, som Team Danmark har lavet, ligger i Kadences bibliotek med deres progression.",
+        "points": {
+          "1": "Fra november til midt i marts anbefales 2–3 styrkepas om ugen med mindst 48 timer imellem, derefter 1 om ugen. U17 og U19 bør nå mindst 30 pas over vinteren.",
+          "2": "Styrketræning er ikke farlig for unge og hæmmer ikke væksten. Giv tid til teknikken i øvelser med frie vægte, før belastningen sættes op.",
+          "3": "Start med kontrollerede gentagelser, ikke til udmattelse. DCU's egne tekster er uenige på et par punkter, og Kadence viser forskellene i stedet for at skjule dem.",
+          "4": "I vækstspurten skal du holde ekstra øje med smerter ved knæ og hæl."
+        }
+      },
+      "growth": {
+        "title": "Vækstspurt og biologisk alder",
+        "intro": "To ryttere i samme årgang kan være flere år fra hinanden i udvikling. Det påvirker både, hvad de kan tåle, og hvordan deres resultater skal læses.",
+        "points": {
+          "1": "Vækstspurten begynder typisk omkring 10½–11 år for piger og 12½–13 år for drenge, men for drenge kan det være alt fra 10½ til 16 år. Den varer 2–2½ år.",
+          "2": "Skelettet er først færdigudviklet omkring 20-årsalderen, og nogle drenge vokser, til de er 20–22.",
+          "3": "Teknik og koordination kan svinge i spurten. Skru ned for spring i belastningen, og tag smerter ved knæ (Osgood-Schlatter) og hæl (Sever) alvorligt.",
+          "4": "En rytter født sidst på året kan være næsten et år yngre end en årgangskammerat. Mål højden i Kadence, og vurder udviklingen, ikke kun resultaterne."
+        }
+      },
+      "injury": {
+        "title": "Smerter, sygdom og hjernerystelse",
+        "intro": "Kadence viser advarsler, men det er træneren, rytteren, forældrene og i sidste ende en læge, der beslutter.",
+        "points": {
+          "1": "Smertetrappen fra ATK ligger i Kadences check-in. Når smerten ændrer bevægelsen eller stopper træningen, skal belastningen ned, og en fagperson skal se på det.",
+          "2": "Feber betyder ingen træning.",
+          "3": "Ved mistanke om hjernerystelse efter et styrt skal rytteren stoppe med det samme og have en lægevurdering. Dansk vejledning fra 2024 tillader let aktivitet efter 24–48 timer og en gradvis tilbagevenden i seks trin, hvor fællesture og løb først kommer, når alle symptomer er væk. UCI kræver, at juniorer venter mindst to uger efter, de er blevet symptomfri, før de kører løb igen. Lægen afgør.",
+          "4": "I gennemsnit tager det omkring 14 dage at blive symptomfri og 19 dage at være fuldt tilbage i sporten. Skolen kommer helt på plads før fuld træning."
+        }
+      },
+      "sleepFood": {
+        "title": "Søvn, mad og væske",
+        "intro": "Unge i vækst har brug for mere søvn og mere mad, end man tror, og træningen virker kun, hvis de får det.",
+        "points": {
+          "1": "Unge har brug for 8–10 timers søvn. Kadences check-in viser søvnen og advarer, når den gentagne gange er kort.",
+          "2": "Faste måltider og et mellemmåltid før og efter træning. På ture over en time anbefaler Team Danmark 30–90 g kulhydrat i timen.",
+          "3": "D-vitamin på 10 µg dagligt fra oktober til april. Piger har brug for mere jern efter første menstruation, så ved træthed og mange infektioner kan man tale med lægen om jern.",
+          "4": "Energidrikke med koffein anbefales ikke til børn og unge.",
+          "5": "På lejre og etapeløb med den samme buffet hver dag spiser unge ofte mindre dag for dag. Hold øje med det."
+        }
+      },
+      "body": {
+        "title": "Krop, vægt og energi",
+        "intro": "Cykling er en idræt, hvor snak om vægt kan gøre stor skade. Kadence har derfor strammere standarder end de fleste.",
+        "points": {
+          "1": "Team Danmark anbefaler som udgangspunkt ikke at veje atleter under 18 år. Kadence går videre: ingen vægt og ingen W/kg for ryttere under 19, medmindre holdet selv slår det til.",
+          "2": "Kommenter aldrig vægt, krop, madvalg eller portioner, heller ikke i sjov, og tal aldrig om en rytters vægt, hvor andre kan høre det. Enhver måling skal have et formål og følges op af en samtale.",
+          "3": "Et dansk studie fra 2022 fandt tegn på spiseforstyrrelse hos 23 % af de kvindelige og 11 % af de mandlige eliteudøvere og hos endnu flere i subeliten. Kommentarer om vægttab fra trænere blev nævnt som en udløser.",
+          "4": "Tegn på for lidt energi er blandt andet faldende udbytte af træningen, mange skader og infektioner, humørsvingninger og uregelmæssig eller udeblevet menstruation. Rytteren behøver ikke at have tabt sig. Henvis til læge eller sportsdiætist, og regn ikke selv på det.",
+          "5": "Udeblevet menstruation skal altid til lægen. Vær åben om emnet, så rytterne tør tale om det."
+        }
+      },
+      "doping": {
+        "title": "Doping, medicin og kosttilskud",
+        "intro": "Rytteren har altid selv ansvaret for det, de indtager, også når et tilskud viser sig at være forurenet. Det gør gode vaner vigtige tidligt.",
+        "points": {
+          "1": "Reglen om objektivt ansvar betyder, at en positiv prøve er rytterens ansvar, uanset hvordan stoffet kom ind i kroppen.",
+          "2": "Under 18 år anbefaler ATK ingen kosttilskud ud over D-vitamin. Lister over præstationsfremmende tilskud er skrevet til voksne eliteudøvere.",
+          "3": "Hvis der bruges tilskud, så kun batch-testede produkter (for eksempel Informed-Sport eller Kölnerlisten), og gem dokumentationen.",
+          "4": "Slå medicin op hos Anti Doping Danmark. Visse astmamidler er tilladt op til en grænse, mens andre, som Bricanyl, kræver dispensation.",
+          "5": "UCI har siden 10. februar 2025 forbudt udstyr til CO-genindånding uden for medicinske faciliteter."
+        }
+      },
+      "wellbeing": {
+        "title": "Trivsel og mental sundhed",
+        "intro": "Kadences check-in er en hjælp til at se, hvordan rytterne har det. Den erstatter ikke en samtale.",
+        "points": {
+          "1": "Team Danmark ser mental sundhed på fire niveauer: atleten, træningsmiljøet, ledelsen og hverdagen, hver med grøn, gul eller rød. Det er, når nogen bliver i gul eller rød i længere tid, at der skal handles.",
+          "2": "Forældreguiden siger: har en ung haft det svært i omkring tre uger, så tag en snak inden for 14 dage. Kadence viser, når en rytter har været i den gule zone for længe.",
+          "3": "I Team Danmarks trivselsundersøgelse fra 2024 havde 14 % oplevet grænseoverskridende adfærd det seneste år, oftest nedgørende kommentarer og kommentarer om krop og vægt.",
+          "4": "Du kan få hjælp i klubben, hos DIF og i kommunen. For landsholdsmiljøer har Team Danmark EliteSupport."
+        }
+      },
+      "school": {
+        "title": "Skole, eksamen og overgange",
+        "intro": "De fleste ryttere i U17 og U19 går i skole, og skolen skal kunne hænge sammen med sporten.",
+        "points": {
+          "1": "Læg skoleskema og eksamener i kalenderen, og sænk belastningen og forventningerne i eksamensperioder.",
+          "2": "De første måneder på en ny ungdomsuddannelse er hårde. Et par måneder med markant mindre træning kan gøre underværker.",
+          "3": "Landsholdsryttere kan søge sportslig godkendelse til en gymnasial uddannelse med forlænget forløb og flyttede afleveringer og eksamener. Fristen ligger i januar.",
+          "4": "Agenter tager kontakt allerede i U17 og U19. DCU tilbyder uafhængig rådgivning om kontrakter."
+        }
+      },
+      "heat": {
+        "title": "Varme og vejr",
+        "intro": "Hverken DCU eller Team Danmark har en varmevejledning for unge ryttere. Rådene her er Kadences sammenfatning af generelle kilder.",
+        "points": {
+          "1": "Svedtabet kan være op til 2 liter i timen. Drik løbende, men vid, at kroppen højst optager omkring 1–1,2 liter i timen. Efter turen anbefaler Team Danmark 1,2–1,5 liter for hvert kilo, der er tabt.",
+          "2": "Ved kraftigt svedtab mister kroppen også salt, så tænk salt med på lange, varme ture.",
+          "3": "Flyt træningen til morgen eller aften, og kort intervallerne ned på de varmeste dage.",
+          "4": "UCI's varmeprotokol for løb vurderer risikoen ud fra både temperatur og luftfugtighed."
+        }
+      },
+      "parents": {
+        "title": "Samarbejdet med forældrene",
+        "intro": "Forældrene er rytterens vigtigste støtte, og Kadence giver dem et vindue ind, som rytteren styrer.",
+        "points": {
+          "1": "Forældre ser deres barns træning, når rytteren har bekræftet koblingen, og check-ins kun, hvis rytteren deler dem.",
+          "2": "Forældreguiden fra Team Danmark og Kolding Talent ligger på forældresiden i Kadence. Henvis gerne dertil.",
+          "3": "Der er én åben samtale: kommentarer på pas og ture læses af træner, rytter og forældre.",
+          "4": "For ryttere under 18 år anbefaler DIF at tænke forældrene ind i planen."
+        }
+      }
+    }
+  },
+  "coachTips": {
+    "title": "Råd til træneren",
+    "subtitle": "Ud fra det, der sker på holdet lige nu. Råd, ikke regler.",
+    "dismiss": "Skjul rådet",
+    "readMore": "Læs mere i trænerguiden",
+    "stageTooLong": "{title} ({date}) varer {days} dage. DCU tillader højst {limit} dage i etapeløb for {category}.",
+    "raceSoon": "{title} ({date}) nærmer sig. Tjek klassens distance- og udvekslingsgrænser, og hold dagen før let.",
+    "campSoon": "Lejren {title} ({date}): undgå store spring i mængden, og hold øje med, at rytterne spiser nok, når buffeten er den samme hver dag.",
+    "examSoon": "{title} ({date}): sænk belastningen og forventningerne i eksamensperioden.",
+    "wellbeing": "En eller flere ryttere har haft det svært i et stykke tid. Tag en snak, og se på hele miljøet, ikke kun rytteren.",
+    "newClassU17": "Nye U17-ryttere: det vigtigste er ikke at træne for meget. Løbene er højst {u17Road} km, og der er en udvekslingsgrænse.",
+    "newClassU19": "Nye U19-ryttere: løbene bliver længere, og udvekslingsgrænsen falder væk. Hæv mængden med omtanke, 10–15 % om året.",
+    "newClassU23": "Nye U23-ryttere: det er i orden at ligge lidt under DCU's timer de første år. De har fire år til at nå dem.",
+    "childCertificate": "Holdet har førsteårs U17-ryttere, som kan være 14 år. Så skal trænere have børneattest efter loven, og DIF anbefaler den for alle, der træner unge under 18.",
+    "strengthWinter": "Styrkesæsonen er i gang: 2–3 pas om ugen med mindst 48 timer imellem, og mindst 30 pas over vinteren for U17 og U19.",
+    "weightOn": "Holdet registrerer vægt for ryttere under 19. Kommenter aldrig vægt eller mad, og tal aldrig om en rytters vægt, hvor andre hører det.",
+    "heat": "Sommervarme: drik løbende, tænk salt med på lange ture, og flyt de hårde pas til morgen eller aften."
   }
 }

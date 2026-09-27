@@ -14,6 +14,8 @@ import { askForJson, modelConfigured, NoModel, NotAllowed } from "@/modules/ai/s
 import {
   PHASE_INFO,
   phaseOf,
+  RACE_RULES,
+  raceRulesFor,
   seasonStartYear,
   strengthFrequency,
   weeklyCorridor,
@@ -70,6 +72,7 @@ export function weekDraftPrompt(c: Context, locale: string) {
     "For a bike session, write the workout in the coach's shorthand, e.g. '15 min opvarmning, 3x10 min Z4 / 5 min pause, 10 min nedkørsel' or '2 t Z2'. Zones: 1 recovery, 2 endurance, 3 tempo, 4 threshold (AT), 5 VO2max, 6 anaerobic, 7 sprint.",
     "For a strength session, use a templateId from the library when one fits (DCU's strength programmes are there); otherwise leave it empty.",
     "Aim the week's bike hours at DCU's target and stay inside its corridor. Follow the phase. Keep strength sessions at least 48 hours apart. Give at least one rest day. Keep the day before an A race easy, and lighten exam days.",
+    "Never mention the rider's weight, body or food portions.",
     "Do not repeat sessions already planned. Respect the guardrails: if the rider shows signs of fatigue, pain or poor wellbeing, plan less and say so in the note.",
     "why: one short sentence per session a 16-year-old understands. note: two sentences at most for the coach.",
     DATA_RULE,
@@ -80,6 +83,7 @@ export function weekDraftPrompt(c: Context, locale: string) {
     c.corridor
       ? `DCU bike hours this week: target ${c.corridor.target.toFixed(1)}, corridor ${c.corridor.low.toFixed(1)}–${c.corridor.high.toFixed(1)}.`
       : "No DCU hours for this rider's class.",
+    raceRulesLine(c.category),
     `Strength this time of year: ${c.strength.min}–${c.strength.max} sessions a week.`,
     `Bike hours the last weeks: ${c.recentWeeks.map((h) => h.toFixed(1)).join(", ") || "none recorded"}.`,
     `Guardrails now: ${c.flags.join(", ") || "none"}.`,
@@ -91,6 +95,22 @@ export function weekDraftPrompt(c: Context, locale: string) {
     { role: "system" as const, content: system },
     { role: "user" as const, content: user },
   ];
+}
+
+/** DCU's race limits for the class (Sporstlige_regler_2026), as a line of context. */
+function raceRulesLine(category: string): string {
+  if (category !== "U17" && category !== "U19" && category !== "U23")
+    return "No DCU race rules for this class.";
+  const r = raceRulesFor(category);
+  const parts = [
+    r.roadMaxKm !== null ? `road races at most ${r.roadMaxKm} km` : null,
+    r.timeTrialMaxKm !== null ? `time trials at most ${r.timeTrialMaxKm} km` : null,
+    r.gearingM !== null
+      ? `gearing at most ${r.gearingM} m per pedal revolution`
+      : "no gearing limit",
+    `stage races at most ${r.stageRaceMaxDays} days`,
+  ].filter(Boolean);
+  return `DCU race rules for ${category}${category === "U19" ? ` (men; women race at most ${RACE_RULES.U19.women.roadMaxKm} km)` : ""}: ${parts.join(", ")}.`;
 }
 
 const SPORTS = ["bike", "strength", "other"] as const;

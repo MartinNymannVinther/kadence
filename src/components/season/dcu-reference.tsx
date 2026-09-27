@@ -9,7 +9,7 @@ const SOURCES: DcuSourceId[] = [
   "u17Compendium",
   "u19Compendium",
   "intervals",
-  "rules2025",
+  "rules2026",
 ];
 
 /**

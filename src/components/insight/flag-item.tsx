@@ -1,4 +1,6 @@
 import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
+import { FLAG_SECTION } from "@/modules/coach/flag-sections";
 import type { Flag } from "@/modules/load";
 import { cn } from "@/lib/utils";
 import { flagSentence, flagSigns } from "./flag-text";
@@ -15,7 +17,9 @@ export function FlagItem({ flag, klass }: { flag: Flag; klass: string }) {
   const locale = useLocale();
   const style = SEVERITY_STYLE[flag.severity];
   const Icon = style.icon;
+  const insight = useTranslations("insight");
   const signList = flagSigns(flag).map((s) => signs(s as "ill"));
+  const section = FLAG_SECTION[flag.kind];
   return (
     <li className="flex items-start gap-2.5 text-2sm leading-relaxed">
       <span
@@ -33,6 +37,14 @@ export function FlagItem({ flag, klass }: { flag: Flag; klass: string }) {
           <span className="text-meta block text-xs">
             {t("signs", { signs: signList.join(", ") })}
           </span>
+        )}
+        {section && (
+          <Link
+            href={`/help/coach#${section}`}
+            className="focus-ring text-primary block w-fit text-xs font-medium hover:underline"
+          >
+            {insight("guideLink")}
+          </Link>
         )}
       </span>
     </li>

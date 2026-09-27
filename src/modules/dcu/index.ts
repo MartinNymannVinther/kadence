@@ -42,6 +42,7 @@ export {
   type LongestRide,
   type VolumeRule,
 } from "./rules";
+export { RACE_RULES, raceDays, raceRulesFor, stageRaceTooLong, type RaceRules } from "./races";
 export { MONTH_NOTES, PHASES, PHASE_INFO, phaseOf, type Phase, type PhaseInfo } from "./phases";
 export {
   DCU_HRR_BANDS,

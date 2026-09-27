@@ -1471,7 +1471,8 @@
       "low_answer": "one answer at the bottom",
       "low_average": "low answers overall",
       "short_sleep": "under 6 hours' sleep"
-    }
+    },
+    "guideLink": "Advice in the coach guide"
   },
   "wellbeing": {
     "title": "Wellbeing",
@@ -2109,5 +2110,181 @@
     },
     "hiddenTitle": "Your child is not sharing their training right now",
     "hiddenBody": "The link is confirmed, but your child has chosen not to share their training. It is their choice; talk about it at home."
+  },
+  "coachGuide": {
+    "title": "Coach guide",
+    "intro": "Advice for coaches of U17, U19 and U23 riders, gathered from DCU, Team Danmark, DIF, Anti Doping Danmark and the law. In Kadence's own words, with links to the originals.",
+    "note": "The guide is guidance, not rules. Kadence enforces none of it; you, the rider and the parents decide. With injury and illness, the doctor does.",
+    "contents": "Contents",
+    "sources": "Sources",
+    "opensElsewhere": "(opens on another site)",
+    "research": "What each source says, how old it is, and where the sources disagree is in Kadence's research note (docs/research/traenermateriale.md).",
+    "fromHelp": "Advice for coaches of young riders: classes and rules, volume, strength, growth, injury, body and weight, wellbeing and more.",
+    "open": "Open the coach guide",
+    "sections": {
+      "role": {
+        "title": "Your role as a coach of young riders",
+        "intro": "The most important thing a coach of U17–U23 riders does is keep young people in the sport and help them develop. Results come after.",
+        "points": {
+          "1": "Development before results. A large Danish study of 7,110 young people aged 12–20 found that coaching focused on development, a say and belonging makes more of them continue the next season. A one-sided focus on results and controlling behaviour makes more of them stop, equally in elite and grassroots sport. The study did not include cycling, but the pattern held across the sports it covered.",
+          "2": "Cycling is a sport of late entry. Physiology and body size matter a great deal, and late developers often catch up with those who were early. Do not judge talent on U17 results alone.",
+          "3": "A healthy talent environment shows, among other things, in a suitable total load, patience, room for the whole person, psychological safety and support when things go wrong.",
+          "4": "DIF's coach pledge puts it briefly: develop your athletes through good, fun and involving experiences, and start from each one of them."
+        }
+      },
+      "safeguarding": {
+        "title": "Child certificates, boundaries and responsibility",
+        "intro": "As a coach of young people you carry a special responsibility. The law sets the floor; sport sets a higher bar.",
+        "points": {
+          "1": "A child certificate (børneattest) is required by law for coaches with direct and ongoing contact with children under 15. A first-year U17 rider can be 14 until their birthday, so in practice it applies to every U17 coach. The club obtains the certificate.",
+          "2": "DIF recommends a child certificate for everyone who coaches young people under 18, renewed every 2–3 years.",
+          "3": "A sexual relationship with a person under 18 entrusted to you for teaching or upbringing is a crime (Danish Penal Code § 223). Agree in the club on what good physical contact is, and keep changing rooms separate.",
+          "4": "Kadence is built for openness: there are no private messages between adults and young riders. Comments on sessions and rides are read by the coach, the rider and the rider's parents.",
+          "5": "DCU runs courses for coaches: B&U Basistræner, Træner 1 and 2, and Kaptajn Landevej for safe group rides. On group rides, riders may ride two abreast where there is room and it causes no danger or undue inconvenience (Road Traffic Act § 49)."
+        }
+      },
+      "classes": {
+        "title": "The classes and the rules",
+        "intro": "DCU's classes go by birth year, and each class has its own race limits. Kadence works out the class for you.",
+        "points": {
+          "1": "U17 is the calendar year a rider turns 15 and 16, U19 17 and 18, and U23 19 to 22. The season runs from October to September.",
+          "2": "U17 road races are at most {u17Road} km and time trials at most {u17Tt} km, and the gearing may be at most {u17Gear} m per pedal revolution.",
+          "3": "U19 men race {u19mMin}–{u19mMax} km and U19 women {u19wMin}–{u19wMax} km, with time trials of at most {u19Tt} km. There is no gear limit in U19, since the UCI dropped the junior limit in 2023. Build up work on big gears gradually in the first year.",
+          "4": "A stage race may last at most {youthStage, plural, one {# day} other {# days}} for U17 and U19 and {u23Stage, plural, one {# day} other {# days}} for U23. To enter the youth national championships, a rider must have ridden at least 3 licensed races.",
+          "5": "The longest training ride is at most {u17LongH, plural, one {# hour} other {# hours}} or {u17LongKm} km for U17 and at most {u19LongH, plural, one {# hour} other {# hours}} or {u19LongKm} km for U19. The longest race is shorter than that, so there is no reason to train longer."
+        }
+      },
+      "volume": {
+        "title": "Volume and season",
+        "intro": "Kadence plans from DCU's recommended hours for the rider's class and year and shows a corridor around them.",
+        "points": {
+          "1": "Train neither much more nor much less than the recommendations. They are guidance for the coach, not a rule.",
+          "2": "In U17 the most important thing is not to train too much, because too much volume kills motivation. In U19 it is natural to raise the volume 10–15 % a year.",
+          "3": "Avoid big jumps in volume, on training camps too. Build in lighter weeks, because recovery is often what releases the progress.",
+          "4": "Do not stop completely in the winter. October is a break and free riding, and then the build starts again."
+        }
+      },
+      "strength": {
+        "title": "Strength training",
+        "intro": "DCU's strength programmes, made by Team Danmark, are in Kadence's library with their progressions.",
+        "points": {
+          "1": "From November to mid-March, 2–3 strength sessions a week with at least 48 hours between them are recommended, then 1 a week. U17 and U19 riders should reach at least 30 sessions over the winter.",
+          "2": "Strength training is not dangerous for young people and does not stunt growth. Give free-weight lifts time for technique before the load goes up.",
+          "3": "Start with controlled repetitions, not to failure. DCU's own texts disagree on a few points, and Kadence shows the differences rather than hiding them.",
+          "4": "During the growth spurt, keep an extra eye on pain at the knee and the heel."
+        }
+      },
+      "growth": {
+        "title": "Growth spurt and biological age",
+        "intro": "Two riders in the same year group can be years apart in development. That affects both what they can take and how their results should be read.",
+        "points": {
+          "1": "The growth spurt typically starts around 10½–11 for girls and 12½–13 for boys, but for boys anything from 10½ to 16. It lasts 2–2½ years.",
+          "2": "The skeleton is not fully developed until around age 20, and some boys grow until they are 20–22.",
+          "3": "Technique and coordination can wobble during the spurt. Turn down jumps in load, and take pain at the knee (Osgood-Schlatter) and heel (Sever) seriously.",
+          "4": "A rider born late in the year can be almost a year younger than a teammate in the same class. Record height in Kadence and judge development, not just results."
+        }
+      },
+      "injury": {
+        "title": "Pain, illness and concussion",
+        "intro": "Kadence shows warnings, but the coach, the rider, the parents and in the end a doctor decide.",
+        "points": {
+          "1": "ATK's pain ladder is in Kadence's check-in. When pain changes the movement or stops training, the load comes down and a professional should look at it.",
+          "2": "A fever means no training.",
+          "3": "If concussion is suspected after a crash, the rider stops at once and sees a doctor. Danish guidance from 2024 allows light activity after 24–48 hours and a gradual return in six stages, where group rides and races come only when all symptoms are gone. The UCI requires juniors to wait at least two weeks after becoming symptom-free before racing again. The doctor decides.",
+          "4": "On average it takes about 14 days to become symptom-free and 19 days to be fully back in sport. School comes back fully before full training."
+        }
+      },
+      "sleepFood": {
+        "title": "Sleep, food and fluid",
+        "intro": "Growing young people need more sleep and more food than one might think, and training only works when they get it.",
+        "points": {
+          "1": "Young people need 8–10 hours of sleep. Kadence's check-in shows sleep and warns when it is short again and again.",
+          "2": "Regular meals and a snack before and after training. On rides over an hour, Team Danmark recommends 30–90 g of carbohydrate per hour.",
+          "3": "Vitamin D, 10 µg a day from October to April. Girls need more iron after their first period, so with tiredness and frequent infections it is worth asking the doctor about iron.",
+          "4": "Energy drinks with caffeine are not recommended for children and young people.",
+          "5": "At camps and stage races with the same buffet every day, young people often eat less day by day. Keep an eye on it."
+        }
+      },
+      "body": {
+        "title": "Body, weight and energy",
+        "intro": "Cycling is a sport where talk about weight can do great harm. Kadence therefore has stricter defaults than most.",
+        "points": {
+          "1": "Team Danmark recommends, as a starting point, not weighing athletes under 18. Kadence goes further: no weight and no W/kg for riders under 19 unless the team turns it on.",
+          "2": "Never comment on weight, body, food choices or portions, not even as a joke, and never talk about a rider's weight where others can hear. Every measurement needs a purpose and a conversation afterwards.",
+          "3": "A Danish study from 2022 found signs of eating disorders in 23 % of female and 11 % of male elite athletes, and in even more at sub-elite level. Coaches' comments about weight loss were named as a trigger.",
+          "4": "Signs of too little energy include a falling return from training, many injuries and infections, mood swings, and irregular or missing periods. The rider does not have to have lost weight. Refer to a doctor or sports dietitian, and do not calculate it yourself.",
+          "5": "A missing period always goes to the doctor. Be open about the subject so riders dare to talk about it."
+        }
+      },
+      "doping": {
+        "title": "Doping, medicine and supplements",
+        "intro": "The rider is always responsible for what they take, even when a supplement turns out to be contaminated. That makes good habits important early.",
+        "points": {
+          "1": "Strict liability means a positive test is the rider's responsibility, however the substance got into the body.",
+          "2": "Under 18, ATK recommends no supplements other than vitamin D. Lists of performance supplements are written for adult elite athletes.",
+          "3": "If supplements are used, only batch-tested products (for example Informed-Sport or the Cologne List), and keep the documentation.",
+          "4": "Look medicine up with Anti Doping Danmark. Some asthma medicines are allowed up to a limit, while others, such as Bricanyl, need an exemption.",
+          "5": "Since 10 February 2025 the UCI has banned CO-rebreathing equipment outside medical facilities."
+        }
+      },
+      "wellbeing": {
+        "title": "Wellbeing and mental health",
+        "intro": "Kadence's check-in helps you see how the riders are doing. It does not replace a conversation.",
+        "points": {
+          "1": "Team Danmark looks at mental health on four levels: the athlete, the training environment, the leadership and everyday life, each green, yellow or red. It is when someone stays in yellow or red for a long time that action is needed.",
+          "2": "The parents' guide says: if a young person has struggled for about three weeks, have a talk within 14 days. Kadence shows when a rider has been in the yellow zone for too long.",
+          "3": "In Team Danmark's 2024 wellbeing survey, 14 % had experienced boundary-crossing behaviour in the past year, most often belittling comments and comments about body and weight.",
+          "4": "Help is available in the club, from DIF and from the municipality. For national-team environments, Team Danmark has EliteSupport."
+        }
+      },
+      "school": {
+        "title": "School, exams and transitions",
+        "intro": "Most U17 and U19 riders are in school, and school has to fit with the sport.",
+        "points": {
+          "1": "Put the school timetable and exams in the calendar, and lower the load and the expectations in exam periods.",
+          "2": "The first months of a new upper-secondary school are hard. A couple of months with markedly less training can work wonders.",
+          "3": "National-squad riders can apply for sporting approval for upper-secondary school with an extended programme and moved hand-ins and exams. The deadline is in January.",
+          "4": "Agents make contact as early as U17 and U19. DCU offers independent advice on contracts."
+        }
+      },
+      "heat": {
+        "title": "Heat and weather",
+        "intro": "Neither DCU nor Team Danmark has heat guidance for young riders. The advice here is Kadence's summary of general sources.",
+        "points": {
+          "1": "Sweat loss can reach 2 litres an hour. Drink steadily, but know that the body absorbs at most about 1–1.2 litres an hour. After the ride Team Danmark recommends 1.2–1.5 litres for every kilo lost.",
+          "2": "Heavy sweating also costs salt, so think of salt on long, hot rides.",
+          "3": "Move training to the morning or evening, and shorten the intervals on the hottest days.",
+          "4": "The UCI's heat protocol for races judges the risk from both temperature and humidity."
+        }
+      },
+      "parents": {
+        "title": "Working with the parents",
+        "intro": "Parents are the rider's most important support, and Kadence gives them a window in that the rider controls.",
+        "points": {
+          "1": "Parents see their child's training once the rider has confirmed the link, and check-ins only if the rider shares them.",
+          "2": "The parents' guide from Team Danmark and Kolding Talent is on Kadence's parents' page. Point parents there.",
+          "3": "There is one open conversation: comments on sessions and rides are read by coach, rider and parents.",
+          "4": "For riders under 18, DIF recommends thinking the parents into the plan."
+        }
+      }
+    }
+  },
+  "coachTips": {
+    "title": "Advice for the coach",
+    "subtitle": "From what is happening on the team right now. Advice, not rules.",
+    "dismiss": "Hide this tip",
+    "readMore": "Read more in the coach guide",
+    "stageTooLong": "{title} ({date}) lasts {days, plural, one {# day} other {# days}}. DCU allows at most {limit, plural, one {# day} other {# days}} of stage racing for {category}.",
+    "raceSoon": "{title} ({date}) is coming up. Check the class's distance and gearing limits, and keep the day before easy.",
+    "campSoon": "The camp {title} ({date}): avoid big jumps in volume, and make sure the riders eat enough when the buffet is the same every day.",
+    "examSoon": "{title} ({date}): lower the load and the expectations in the exam period.",
+    "wellbeing": "One or more riders have been struggling for a while. Have a talk, and look at the whole environment, not only the rider.",
+    "newClassU17": "New U17 riders: the most important thing is not to train too much. Races are at most {u17Road} km, and there is a gearing limit.",
+    "newClassU19": "New U19 riders: races get longer and the gearing limit goes. Raise the volume with care, 10–15 % a year.",
+    "newClassU23": "New U23 riders: it is fine to be a little under DCU's hours in the first years. They have four years to reach them.",
+    "childCertificate": "The team has first-year U17 riders who may be 14. Coaches then need a child certificate by law, and DIF recommends one for everyone coaching young people under 18.",
+    "strengthWinter": "The strength season has started: 2–3 sessions a week with at least 48 hours between them, and at least 30 sessions over the winter for U17 and U19.",
+    "weightOn": "The team records weight for riders under 19. Never comment on weight or food, and never talk about a rider's weight where others can hear.",
+    "heat": "Summer heat: drink steadily, think of salt on long rides, and move the hard sessions to the morning or evening."
   }
 }
