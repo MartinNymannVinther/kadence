@@ -211,3 +211,10 @@ export const workoutTemplates = pgTable(
     check("workout_templates_minutes", sql`${t.plannedMinutes} between 0 and 1440`),
   ],
 );
+
+export type TeamSettingsRow = typeof teamSettings.$inferSelect;
+export type RiderRow = typeof riders.$inferSelect;
+export type GuardianRow = typeof guardians.$inferSelect;
+export type RiderMeasurementRow = typeof riderMeasurements.$inferSelect;
+export type SeasonPlanRow = typeof seasonPlans.$inferSelect;
+export type WorkoutTemplateRow = typeof workoutTemplates.$inferSelect;

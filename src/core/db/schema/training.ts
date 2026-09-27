@@ -304,3 +304,10 @@ export const deviceLinks = pgTable(
     check("device_links_status", sql`${t.status} in ('connected','error','revoked')`),
   ],
 );
+
+export type PlannedSessionRow = typeof plannedSessions.$inferSelect;
+export type ActivityRow = typeof activities.$inferSelect;
+export type CheckinRow = typeof checkins.$inferSelect;
+export type CalendarEventRow = typeof calendarEvents.$inferSelect;
+export type CommentRow = typeof comments.$inferSelect;
+export type DeviceLinkRow = typeof deviceLinks.$inferSelect;
