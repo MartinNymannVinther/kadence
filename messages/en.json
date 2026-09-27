@@ -1,0 +1,527 @@
+{
+  "common": {
+    "cancel": "Cancel",
+    "close": "Close",
+    "error": "Something went wrong. Please try again.",
+    "hours": "{value} h"
+  },
+  "landing": {
+    "nav": {
+      "login": "Log in",
+      "register": "Create account",
+      "apply": "Apply for access"
+    },
+    "hero": {
+      "title": "Young riders at the right cadence.",
+      "subtitle": "Kadence is training planning for U17, U19 and U23 cyclists, their coaches and their parents: a calendar of sessions on the bike and in the gym, Cycling Denmark's recommendations as the default, load that works without a power meter, and a page for parents. Open source, Danish and in the EU.",
+      "ctaPrimary": "Create account",
+      "ctaSecondary": "Log in",
+      "trust": "AGPL-3.0 · Passkeys and two-factor sign-in · Your data out in one click",
+      "ctaApply": "Apply for access",
+      "ctaDemo": "Try the demo"
+    },
+    "values": {
+      "aiTitle": "DCU as the default",
+      "aiBody": "The season plan is filled from Cycling Denmark's recommendations for the rider's age class, and the strength programmes for U17, U19 and U23 are ready. The coach can deviate, and the deviation is always visible. The AI can propose next week; the coach decides.",
+      "dataTitle": "The rider's data, always",
+      "dataBody": "The rider decides what parents see. Everything can be exported as a spreadsheet and JSON in one click and deleted completely.",
+      "securityTitle": "Secure from day one",
+      "securityBody": "Teams are separated in the database, and so are riders: a teammate never sees your check-ins. Passkeys, two-factor sign-in and a log that cannot be edited."
+    },
+    "status": "Version {version} · built to be used",
+    "family": {
+      "body": "Kadence is one tool in the Haij family of open source tools for organizations that want to own their own technology.",
+      "link": "Read about Haij"
+    },
+    "footer": {
+      "license": "Open source under AGPL-3.0",
+      "language": "Dansk",
+      "terms": "Terms and privacy"
+    },
+    "demo": {
+      "title": "Try it without creating anything",
+      "body": "You get your own U19 team in full swing: riders, a season plan after DCU, a week of sessions, activities and check-ins. It is deleted after {hours, plural, one {# hour} other {# hours}}. No email, no sign-up.",
+      "privacy": "Do not put real personal data in the demo. It passes through a database and possibly a language model on the way.",
+      "cta": "Open a demo"
+    },
+    "featuresLabel": "What you get",
+    "features": {
+      "calendar": "A calendar of sessions on the bike, in the gym and beyond",
+      "dcu": "Season plan and strength programmes after DCU for U17, U19 and U23",
+      "load": "Load, form and freshness, also without a power meter",
+      "devices": "FIT files, Wahoo and Garmin",
+      "parents": "A page for parents and a wellbeing check-in",
+      "model": "AI at Mistral in the EU or Ollama on your own machine"
+    }
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "The address is wrong, or the page has moved.",
+    "cta": "To the front page"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Welcome back.",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "or": "or",
+      "withPasskey": "Sign in with a passkey",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Create account",
+      "error": "Wrong email or password.",
+      "passkeyError": "Passkey sign-in failed. Please try again.",
+      "errorOrigin": "The app is not set up for this address. Open it on the address in BETTER_AUTH_URL, or add this one to AUTH_TRUSTED_ORIGINS."
+    },
+    "register": {
+      "title": "Create account",
+      "subtitle": "Your account and your workspace are created together.",
+      "name": "Your name",
+      "email": "Email",
+      "organizationName": "Workspace name",
+      "organizationHint": "Your company, association or team. Can be changed later.",
+      "password": "Password",
+      "passwordHint": "At least 12 characters.",
+      "submit": "Create account",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Log in",
+      "errorInvalid": "Check the fields and try again.",
+      "errorEmailExists": "An account with this email already exists.",
+      "errorGeneric": "The account could not be created. Please try again.",
+      "closedBody": "This Kadence installation is not accepting new users. Contact the owner if you need access.",
+      "invitedSubtitle": "You are invited. The account is created for the email and the workspace the invitation is for.",
+      "lockedHint": "Set by the invitation.",
+      "errorInvitationInvalid": "The invitation has expired or has already been used. Ask for a new link.",
+      "invitationInvalidTitle": "This link no longer works",
+      "invitationInvalidBody": "The invitation has expired, been used, or been replaced by a newer one. Ask the person who invited you for a new link, or apply for access again.",
+      "applyLink": "Apply for access"
+    },
+    "twoFactor": {
+      "title": "Two-factor authentication",
+      "subtitle": "Enter the code from your authenticator app.",
+      "submit": "Verify",
+      "error": "Wrong code. Please try again."
+    },
+    "onboarding": {
+      "title": "Create your workspace",
+      "subtitle": "You need a workspace before you can get started.",
+      "organizationName": "Workspace name",
+      "submit": "Create workspace",
+      "error": "The workspace could not be created. Please try again."
+    },
+    "apply": {
+      "title": "Apply for access",
+      "subtitle": "This Kadence installation accepts new users after a short application. The owner reads it personally and replies by email.",
+      "name": "Your name",
+      "email": "Email",
+      "organizationName": "Organisation or association",
+      "message": "What will you use Kadence for?",
+      "messageHint": "Optional. A line or two about the team makes it easier to say yes.",
+      "submit": "Send application",
+      "sentTitle": "Thanks, your application has been received",
+      "sentBody": "You will hear from the owner of this installation at {email}. The reply comes from a person, so allow a day or two.",
+      "errorInvalid": "Check the fields and try again.",
+      "errorTooMany": "Many applications have been sent from here in a short time. Try again in an hour.",
+      "privacy": "We store your name, email and organisation to handle the application, and nothing else. If it is declined, the details remain only as a note of the decision.",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Log in"
+    }
+  },
+  "app": {
+    "nav": {
+      "help": "Help",
+      "security": "Security",
+      "logout": "Log out",
+      "appearance": "Appearance",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "Follow system",
+      "language": "Language",
+      "danish": "Dansk",
+      "english": "English",
+      "openMenu": "Open menu",
+      "menuTitle": "Navigation",
+      "settings": "Settings",
+      "skipToContent": "Skip to content",
+      "hideMenu": "Hide the menu",
+      "showMenu": "Show the menu",
+      "today": "Today"
+    },
+    "orgSwitcher": {
+      "label": "Workspace",
+      "create": "Create workspace",
+      "createTitle": "Create new workspace",
+      "name": "Name",
+      "createSubmit": "Create",
+      "switched": "Switched to {name}",
+      "created": "{name} has been created",
+      "error": "The workspace could not be created. Please try again.",
+      "switch": "Switch workspace"
+    },
+    "security": {
+      "title": "Security",
+      "subtitle": "Passkeys and two-factor authentication for your account.",
+      "passkeys": {
+        "title": "Passkeys",
+        "description": "Sign in without a password using Touch ID, Face ID or a security key.",
+        "empty": "No passkeys yet.",
+        "nameLabel": "Name",
+        "namePlaceholder": "E.g. MacBook",
+        "add": "Add passkey",
+        "remove": "Remove",
+        "addedAt": "Added {date}",
+        "addedToast": "Passkey added",
+        "removedToast": "Passkey removed",
+        "error": "The passkey could not be added. Please try again."
+      },
+      "totp": {
+        "title": "Two-factor authentication (TOTP)",
+        "description": "Require a code from your authenticator app at sign-in.",
+        "statusEnabled": "Enabled",
+        "statusDisabled": "Disabled",
+        "enable": "Enable",
+        "disable": "Disable",
+        "password": "Confirm with your password",
+        "scan": "Scan the QR code with your authenticator app and enter the code below.",
+        "backupCodes": "Backup codes",
+        "backupHint": "Store the codes somewhere safe. They can be used if you lose your phone.",
+        "verifyLabel": "Code from the app",
+        "verify": "Verify",
+        "verifyError": "Wrong code. Please try again.",
+        "enabledToast": "Two-factor authentication enabled",
+        "disabledToast": "Two-factor authentication disabled",
+        "error": "The action failed. Check the password and try again.",
+        "totpQrAlt": "QR code to scan in your authenticator app to add Kadence"
+      }
+    },
+    "about": {
+      "title": "About Kadence",
+      "subtitle": "Which release of Kadence is running here, and whether the database has kept up.",
+      "short": "v{release}",
+      "dirtyShort": "modified",
+      "dirty": "Local changes",
+      "dirtyHint": "Built from a working tree with uncommitted changes, so the commit does not tell the whole truth about the code that is running.",
+      "releaseHint": "The version number is raised by hand when a step is worth naming. The commit is stamped in at build time and points at exactly the code answering here.",
+      "versionLabel": "Version",
+      "commitLabel": "Commit",
+      "builtAtLabel": "Built",
+      "environmentLabel": "Environment",
+      "runtimeLabel": "Runtime",
+      "environments": {
+        "development": "Development",
+        "test": "Test",
+        "production": "Production"
+      },
+      "schemaTitle": "Database schema",
+      "schemaHint": "The number of migrations the build was made from, against the number the database has applied.",
+      "schemaBehind": "Migrations pending",
+      "schemaBehindHint": "The database has fewer migrations than the code expects. Run the migrations before using the system further.",
+      "migrationLabel": "Latest migration",
+      "appliedLabel": "Applied",
+      "appliedValue": "{applied} of {expected}",
+      "appliedAtLabel": "Last applied",
+      "unknown": "Unknown",
+      "license": "Kadence is open source under AGPL-3.0 and part of the Haij family."
+    },
+    "dataExport": {
+      "title": "Data and export",
+      "subtitle": "Take a complete copy of everything this workspace holds.",
+      "xlsxTitle": "Spreadsheet",
+      "xlsxBody": "One file with a tab per kind of data: riders, sessions, activities, check-ins, calendar, comments, season plans, templates and history. For yourselves, or for anyone who needs to look without knowing Kadence.",
+      "xlsxAction": "Download spreadsheet",
+      "jsonTitle": "Machine-readable copy",
+      "jsonBody": "The same data as JSON, with every id kept. It is the file that lets you move to something other than Kadence without losing the links between sessions, activities and comments.",
+      "jsonAction": "Download JSON",
+      "sheetsLabel": "Tabs in the file (named in Danish, as the file writes them):",
+      "membersSheet": "Brugere",
+      "notBackupTitle": "This is not a backup.",
+      "notBackupBody": "An export can be read but not restored, and it is only as fresh as the day you downloaded it. The night's encrypted dump is what saves you when the database is gone.",
+      "privacy": "The export holds what you may see in the workspace and its history: a coach gets the whole team, a rider their own data. Passwords, passkeys, device tokens and the workspace's model key never go in it. That you downloaded the file is written to the audit trail."
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Your security and your installation.",
+    "nav": {
+      "security": "Security",
+      "about": "About",
+      "access": "Access",
+      "workspace": "Workspace",
+      "ai": "AI",
+      "data": "Data"
+    },
+    "access": {
+      "title": "Access to this installation",
+      "subtitle": "Who may create a workspace here. You approve and send the link; the rest happens by itself.",
+      "pendingTitle": "Applications",
+      "pendingEmpty": "No pending applications.",
+      "approve": "Approve",
+      "decline": "Decline",
+      "declinedToast": "The application was declined.",
+      "linkTitle": "Link for {email}",
+      "linkBody": "Shown only now. Copy it and send it yourself. It works for 7 days and only once.",
+      "copy": "Copy link",
+      "copiedToast": "Link copied.",
+      "inviteTitle": "Invite directly",
+      "inviteBody": "Without an application first. Same link, same rules.",
+      "inviteEmail": "E-mail",
+      "inviteOrganization": "Workspace name",
+      "inviteSubmit": "Create invitation",
+      "invitationsTitle": "Invitations",
+      "invitationsEmpty": "No invitations yet.",
+      "renew": "New link",
+      "expires": "Expires {date}",
+      "used": "Used {date}",
+      "applied": "Applied {date}",
+      "decidedApproved": "Approved {date}",
+      "decidedDeclined": "Declined {date}",
+      "historyTitle": "Earlier decisions",
+      "stateOpen": "Unused",
+      "stateUsed": "Used",
+      "stateExpired": "Expired",
+      "stateRevoked": "Replaced",
+      "errorInvalid": "Check the email and the workspace name."
+    },
+    "workspace": {
+      "title": "Workspace",
+      "subtitle": "Who is in it, and the way out again.",
+      "createdOn": "Created {date}",
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "roles": {
+        "owner": "Owner",
+        "admin": "Administrator",
+        "member": "Member"
+      },
+      "delete": {
+        "title": "Delete the workspace",
+        "body": "Everything in the workspace goes: every member's conversations and files, roles, tasks, and the whole audit trail about them. It cannot be undone.",
+        "exportFirst": "Take an export first if you want to keep anything. It is under Data.",
+        "typeName": "Type {name} to confirm",
+        "action": "Delete the workspace permanently",
+        "deleting": "Deleting …",
+        "failed": "The workspace was not deleted. Try again.",
+        "notOwner": "Only the workspace owner can delete it.",
+        "nameMismatch": "That name does not match. Type the workspace's name exactly."
+      }
+    },
+    "ai": {
+      "title": "AI",
+      "subtitle": "Which engine answers, and what it is allowed to do.",
+      "providerTitle": "Language model",
+      "providerHint": "The installation sets a model in the environment, and each workspace can choose its own instead.",
+      "provider": "Provider",
+      "model": {
+        "title": "Your own language model",
+        "subtitle": "This workspace can run on a different model than the installation set up. Choose nothing and you inherit the installation's.",
+        "current": "Model",
+        "source": "Chosen by",
+        "fromInstallation": "The installation",
+        "fromWorkspace": "This workspace",
+        "keySource": "Key",
+        "keyFromWorkspace": "The workspace's own",
+        "keyFromInstallation": "The installation's",
+        "keyMissing": "Missing",
+        "providerLabel": "Provider",
+        "provider_mistral": "Mistral (EU)",
+        "provider_ollama": "Ollama (local)",
+        "providerNone": "No model",
+        "inherit": "Follow the installation ({provider})",
+        "providerHelp": "The Ollama address is set by the installation. That is deliberate: a workspace that could point at an address of its own would make the server fetch from anywhere.",
+        "modelLabel": "Model name",
+        "modelHelpMistral": "Leave the field empty to use {placeholder}.",
+        "modelHelpOllama": "The name must match a model you have pulled with “ollama pull”. Test the connection above and it will list the ones you have.",
+        "keyLabel": "API key",
+        "keyPlaceholder": "Paste your Mistral key",
+        "keyStored": "A key is stored",
+        "keyHelp": "Leave the field empty to use the installation's key. The key is encrypted before it is stored and cannot be read back.",
+        "keyStoredHelp": "This workspace has its own key. Type a new one to replace it, or remove it to fall back on the installation's.",
+        "keyRemove": "Remove stored key",
+        "save": "Save",
+        "saving": "Saving …",
+        "saved": "Saved",
+        "saveFailed": "Could not be saved. Try again.",
+        "notAllowed": "Only owners and administrators can change the workspace's model.",
+        "short_mistral": "Mistral",
+        "short_ollama": "Ollama",
+        "shortNone": "no model"
+      },
+      "noModel": "No model configured",
+      "setupIntro": "Kadence is a chat and cannot answer without a model. Set one up:",
+      "setupOutro": "Then start Kadence again. Without a model the writing field says so, and settings, roles and tasks can still be edited.",
+      "limitsTitle": "Ceiling on AI calls",
+      "limitsHint": "A model call costs money on a hosted installation and minutes on a local one. The numbers are generous for a person and mean for a script.",
+      "perUser": "Calls per user per hour",
+      "perWorkspace": "Calls per workspace per day",
+      "messageLength": "Characters in a message, at most",
+      "principlesTitle": "How Kadence uses AI",
+      "principleDecides": "The AI answers, the person decides. The model writes an answer; it never sends anything out of the house, never deletes anything and changes nothing unless you do.",
+      "principleUndo": "Every conversation is your own. You can delete it, and you can take it out.",
+      "principleData": "What you write, and what your documents contain, is sent to the model as data, never as instructions. The system prompt and the roles live on the server, where the administrator sets them.",
+      "principleSovereign": "The model can be swapped, including for a local one. Who can see what is listed in docs/subprocessors.md.",
+      "test": "Test the connection",
+      "testing": "Testing …",
+      "testPatience": "A local model may have to be read off disk first. That can take up to a minute the first time.",
+      "testOk": "The model answers",
+      "testOkDetail": "{model} answered “{sample}” in {seconds} seconds.",
+      "testFailed": "The model does not answer",
+      "failAuth": "The key was rejected. Check the workspace's own key below, or the installation's MISTRAL_API_KEY.",
+      "failUnreachable": "Nothing is listening at that address. Is Ollama running? Check OLLAMA_BASE_URL.",
+      "failConfig": "The model is set up wrong. Correct the model name below, or LLM_MODEL in .env.",
+      "failGeneric": "The call failed. The details are below and in the server log.",
+      "failRateLimited": "Mistral refused the call as too many (429). The key works, but the account or plan sets the ceiling: on the free Experiment plan this happens often when the model is busy, and a key under a workspace with no active plan gets the same answer. Check Billing and Limits on console.mistral.ai for the organisation the key belongs to.",
+      "failWhereToLook": "The details are in the server log.",
+      "testNotAllowed": "Only the owner or an administrator can test the connection.",
+      "withoutTitle": "Without a model",
+      "withoutBody": "Kadence is built around the conversation: without a model you can still see your conversations, take them out and edit the workspace's roles and tasks, but the writing field says so plainly, and nothing breaks.",
+      "setupEuComment": "hosted in the EU (Mistral)",
+      "setupLocalComment": "or locally (Ollama)",
+      "setupKeyPlaceholder": "your-key-here",
+      "perInstallation": "Calls across the installation per day",
+      "failCeiling": "Kadence's own ceiling on AI calls was reached, not the provider's. The ceilings are under “Ceiling on AI calls” below; the installation's own is set with AI_DAILY_CALL_CAP. Try again shortly."
+    },
+    "members": {
+      "title": "Members",
+      "body": "Everyone in the workspace has their own conversations, which nobody else can see. Owners and admins can invite and remove members and edit roles and tasks.",
+      "name": "Name",
+      "email": "E-mail",
+      "role": "Role",
+      "you": "(you)",
+      "remove": "Remove",
+      "removeTitle": "Remove {name} from the workspace?",
+      "removeBody": "The person loses access immediately. Their conversations and files go with the account if it is deleted; otherwise they stay, unseen by anyone else.",
+      "removeConfirm": "Remove the member",
+      "leave": "Leave the workspace",
+      "leaveTitle": "Leave the workspace?",
+      "leaveBody": "You lose access to the workspace and your conversations in it. An owner or admin can invite you again.",
+      "leaveConfirm": "Leave",
+      "inviteTitle": "Invite a colleague",
+      "inviteBody": "Type the address and you get a link. Send it yourself, the way you talk to each other anyway. The link is for that address only and lasts 48 hours.",
+      "invite": "Make a link",
+      "issued": "Link for {email}",
+      "issuedHint": "Copy and send. If the person has no account, it is created through the link; otherwise they sign in and accept.",
+      "copy": "Copy",
+      "copied": "Copied",
+      "copyLink": "Copy link",
+      "copyFailed": "Could not copy. Select the link and copy it yourself.",
+      "pendingEmail": "Invited",
+      "expires": "Expires",
+      "cancel": "Withdraw",
+      "errors": {
+        "alreadyMember": "The person is already a member.",
+        "alreadyInvited": "There is already an open link for that address. Withdraw it first to make a new one.",
+        "forbidden": "That takes an owner or an admin.",
+        "invalid": "Type a valid e-mail address.",
+        "generic": "That went wrong. Try again."
+      }
+    }
+  },
+  "demo": {
+    "bannerTitle": "This is a demo.",
+    "bannerBody": "The workspace and everything in it is deleted after {hours, plural, one {# hour} other {# hours}}. Feel free to write in it.",
+    "bannerCta": "Apply for a real account"
+  },
+  "terms": {
+    "title": "Terms and privacy",
+    "updated": "Last updated 19 September 2026.",
+    "back": "Back",
+    "language": "På dansk",
+    "intro": "Kadence is an open source tool for training planning for young cyclists, run by Haij. This is the agreement between you and us when you use the edition we run. If you run the code yourself, only the licence applies.",
+    "what": {
+      "title": "What Kadence is",
+      "body": "A tool to plan and follow training for riders, coaches and parents: sessions in a calendar, activities from FIT files and devices, check-ins and a season plan. Recommendations and AI proposals are drafts, not answers, and replace neither a coach nor a doctor."
+    },
+    "account": {
+      "title": "Accounts and access",
+      "body": "You get in by applying or being invited. We store your name, your email and your workspace's name, and use them to sign you in and to write to you about the service. Passwords are stored hashed, and you can add a passkey and two-factor. We sell nothing, and we do not send marketing you did not ask for."
+    },
+    "yourData": {
+      "title": "Your data",
+      "body": "Everything you write in Kadence belongs to you and your team, and a rider's training and check-ins belong to the rider. It can be downloaded as a spreadsheet and JSON in one click and deleted again. We do not look at it unless you ask us for help, and we never pass it on."
+    },
+    "ai": {
+      "title": "AI",
+      "body": "With a language model set up, when a coach asks for a proposal, what it builds on — sessions, load and, if the team has turned it on, check-ins — is sent to the model provider. Who that is, is under Settings → AI and in the list of subprocessors. Without a model everything else works as before."
+    },
+    "leaving": {
+      "title": "Leaving",
+      "body": "You can delete your workspace immediately, without writing to anyone and without waiting. The export is one click away and readable without Kadence. We keep no copy afterwards beyond the nightly encrypted backups, which roll off after 30 days — on the server and in the EU storage they are copied to."
+    },
+    "availability": {
+      "title": "Operation and guarantees",
+      "body": "Kadence is new, and there is no uptime guarantee. We look after your data with encrypted backups every night, but you should download an export now and then. The service is provided as is, without guarantees beyond what mandatory law requires."
+    },
+    "license": {
+      "title": "Licence",
+      "body": "The code is AGPL-3.0. You may use it, change it and run it yourself; if you change it and offer it to others over a network, your changes must be available too. What you write in the tool is not covered by the licence — that is yours."
+    },
+    "demo": {
+      "title": "The demo",
+      "body": "A demo workspace is created without e-mail or sign-up and deleted entirely after 24 hours, account included. Do not put real personal data in it. We keep only the technical log data needed to keep the demo running."
+    },
+    "contact": {
+      "title": "Contact",
+      "body": "Write to martin@vintherconsulting.dk. If you have found a security problem, SECURITY.md in the repository says how to report it; use that rather than an ordinary email."
+    },
+    "subprocessorsNote": "Who can see what is listed in",
+    "shareLinks": {
+      "title": "Invitations",
+      "body": "An invitation link is for one address and expires after two days. You send it; we send no mail."
+    }
+  },
+  "join": {
+    "title": "You are invited",
+    "intro": "{inviter} has invited you into the workspace {workspace}.",
+    "someone": "A colleague",
+    "invalidTitle": "This link no longer works",
+    "invalidBody": "The invitation has expired or been withdrawn. Ask the person who invited you for a new link.",
+    "acceptedBody": "The invitation has already been used. Sign in to enter the workspace.",
+    "toLogin": "Sign in",
+    "wrongAccount": "The invitation is for {email}, but you are signed in as {current}. Sign out and open the link again.",
+    "switchAccount": "Sign out",
+    "accept": "Enter the workspace",
+    "wrongPerson": "The invitation was sent to another address than the one you are signed in with.",
+    "name": "Your name",
+    "email": "E-mail",
+    "lockedHint": "The invitation is for this address. The account becomes a member of {workspace}.",
+    "password": "Password",
+    "passwordHint": "At least 12 characters. A sentence is easier to remember than a word.",
+    "submit": "Create account and enter",
+    "haveAccount": "Already have an account?",
+    "loginLink": "Sign in",
+    "errorEmailExists": "An account with that address already exists. Sign in and open the link again.",
+    "errorInvalid": "Something you wrote could not be used. Check the fields.",
+    "errorGeneric": "That went wrong. Try again."
+  },
+  "help": {
+    "title": "Help",
+    "intro": "How Kadence works, in the rhythm a season lives in.",
+    "howToTitle": "How to use the tool",
+    "closing": "Something missing here? Write to us, or fix the page yourself: the code is open.",
+    "howTo": {
+      "roles": {
+        "title": "Who may do what",
+        "body": "Coaches are the workspace's owners and admins: they plan for every rider on the team. A rider sees and writes their own data and nobody else's. A parent sees their own child's training once the rider has confirmed the link, and check-ins only if the rider shares them. The database enforces it, not just the screens."
+      },
+      "data": {
+        "title": "Your data",
+        "body": "Everything can be downloaded as a spreadsheet and JSON under Settings → Data. The workspace can be deleted completely, audit trail included."
+      }
+    }
+  },
+  "today": {
+    "title": "Today",
+    "emptyTitle": "Kadence is set up",
+    "emptyBody": "The team, riders and the calendar arrive in the next wave. Until then you can invite coaches under Settings → Workspace."
+  },
+  "errors": {
+    "unauthorized": "You are no longer signed in.",
+    "forbidden": "You may not do that here. Ask a coach on the team.",
+    "invalid": "Something in the form is not valid.",
+    "notFound": "It no longer exists. Reload the page.",
+    "conflict": "Someone changed it at the same time. Reload the page and try again.",
+    "generic": "Something went wrong. Try again."
+  }
+}

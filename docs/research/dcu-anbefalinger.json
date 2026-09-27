@@ -1,0 +1,1720 @@
+{
+  "meta": {
+    "description": "Maskinlæsbart udtræk af Cykling Danmark/DCU's træningsanbefalinger. Kun værdier der står i kildedokumenterne; null = ikke angivet. Felter markeret derived=true er beregnet af os (ikke DCU).",
+    "language": "da",
+    "extracted": "2026-09-27",
+    "sources": [
+      {
+        "id": "A",
+        "file": "Landevej_traeningsanbefalinger_2025.pdf",
+        "url": "https://www.cyklingdanmark.dk/fileadmin/user_upload/Landevej_traeningsanbefalinger_2025.pdf",
+        "pages": 1,
+        "title": "TRÆNINGSANBEFALINGER - LANDEVEJ 2025",
+        "pdfCreated": "2024-10-07"
+      },
+      {
+        "id": "B",
+        "file": "DCU_U17_kompendium_2016.pdf",
+        "url": "https://www.cyklingdanmark.dk/fileadmin/user_upload/DCU_U17_kompendium_2016.pdf",
+        "pages": 21,
+        "title": "U17-rytter 2016 – Kompendium (Danmarks Cykle Union)",
+        "author": "Morten Bennekou, talentchef",
+        "pdfCreated": "2015-11-02"
+      },
+      {
+        "id": "C",
+        "file": "DCU_U19_kompendium_2016.pdf",
+        "url": "https://www.cyklingdanmark.dk/fileadmin/user_upload/DCU_U19_kompendium_2016.pdf",
+        "pages": 31,
+        "title": "U19-rytter 2016 – Kompendium (Danmarks Cykle Union)",
+        "author": "Morten Bennekou, talentchef",
+        "pdfCreated": "2015-11-02"
+      },
+      {
+        "id": "D",
+        "file": "DCU_U17_styrketraening.pdf",
+        "url": "https://www.cyklingdanmark.dk/fileadmin/user_upload/DCU_U17_styrketraening.pdf",
+        "pages": 2,
+        "title": "Styrketræningsprogram for U17 landsholdsryttere",
+        "author": "Jarl Pors Jakobsen, sportsfysiolog og fysisk træner, Team Danmark",
+        "pdfCreated": "2015-10-23"
+      },
+      {
+        "id": "E",
+        "file": "DCU_U19_styrketraening.pdf",
+        "url": "https://www.cyklingdanmark.dk/fileadmin/user_upload/DCU_U19_styrketraening.pdf",
+        "pages": 2,
+        "title": "Styrketræningsprogram for U19 landsholdsryttere",
+        "author": "Jarl Pors Jakobsen, sportsfysiolog og fysisk træner, Team Danmark",
+        "pdfCreated": "2015-10-23"
+      },
+      {
+        "id": "F",
+        "file": "DCU_U23_styrketraening.pdf",
+        "url": "https://www.cyklingdanmark.dk/fileadmin/user_upload/DCU_U23_styrketraening.pdf",
+        "pages": 1,
+        "title": "Styrketræningsprogram for U23 landsholdsryttere",
+        "author": "Jarl Pors Jakobsen, sportsfysiolog og fysisk træner, Team Danmark",
+        "pdfCreated": "2015-10-22"
+      }
+    ],
+    "yearLabelInterpretation": "'U17 1'/'U17 2', 'U19 1'/'U19 2', 'U23 1'..'U23 4' tolkes som 1., 2. (…4.) år i kategorien. Ikke eksplicit defineret i tabellerne; understøttes af B s.6 (U17 = 'de første to år') og B s.13/C s.14 (U23 har 'fire år').",
+    "seasonYear": "Træningsåret løber oktober (pause) → november–september.",
+    "companionDoc": "docs/research/dcu-traeningsanbefalinger.md"
+  },
+  "global": {
+    "countedHours": "Kun 'timer på cykel' (landevej, bane, MTB, spinning, ruller mv.); løb, svømning, gymnastik, ski, boldspil mv. tæller ikke med [B s.12].",
+    "volumeGuidance": "Træn hverken meget mere eller meget mindre end anbefalingerne; de er vejledende og bør nuanceres af klub- eller landstrænere [B s.12; C s.13].",
+    "intensityPrinciple": "Intensitetstræning bør hvile på et passende træningsvolumengrundlag; grundtræningen skal være i orden inden intervaltræning [B s.13; C s.14].",
+    "recovery": [
+      "Superkompensationsuger: træningsvolumen, antal træningspas og træningsintensitet nedsættes; restitutionen udløser ofte fremgangen [B s.12]. Hyppighed/længde ikke angivet.",
+      "Kvalitet kan også bestå af aktiv hvile og deciderede hviledage uden træning [B s.12].",
+      "Hold ikke fuldstændig pause vinteren igennem; lange vinterpauser betyder at man i princippet ikke når højere end sidste sæsons niveau [B s.12].",
+      "Oktober: 'pause + frit' [A s.1]."
+    ],
+    "trainingCamps": "Undgå store 'spring' i træningsmængden på træningslejr (risiko for overtræning, led- og seneskader); planlæg fornuftigt uden at give slip på tøjlerne [B s.14–15; C s.17].",
+    "gearingRestrictions": null,
+    "gearingNote": "Ingen udvekslingsbegrænsninger nævnt i nogen af de 6 dokumenter.",
+    "zoneModelFound": false,
+    "zoneModelNote": "Der er INGEN zonemodel defineret ud fra % af FTP, % af max-puls e.l. i dokumenterne. Eneste intensitetsangivelser er i eksempeluger (se zones)."
+  },
+  "zones": [
+    {
+      "id": "grundtraening",
+      "name": "Grundtræning",
+      "percentRange": null,
+      "reference": null,
+      "definition": null,
+      "source": "B s.14; C s.16–17",
+      "note": "Bruges som 'Fokus' i eksempeluger; ikke defineret med intensitet."
+    },
+    {
+      "id": "tempo",
+      "name": "Tempotræning",
+      "percentRange": {
+        "min": 70,
+        "max": 80
+      },
+      "reference": null,
+      "definition": "Tempotræning (70-80 %)",
+      "source": "B s.14; C s.16–17",
+      "note": "Dokumentet angiver IKKE hvad procenten er af (fx FTP, max-puls eller max-watt)."
+    },
+    {
+      "id": "at",
+      "name": "AT",
+      "percentRange": {
+        "min": 80,
+        "max": 90
+      },
+      "reference": null,
+      "definition": "AT (80-90 %)",
+      "source": "B s.14; C s.16–17",
+      "note": "Forkortelsen udfoldes ikke (almindeligvis 'anaerob tærskel' – tolkning). Procentens reference er ikke angivet."
+    },
+    {
+      "id": "fartleg",
+      "name": "Fartlege",
+      "percentRange": null,
+      "reference": null,
+      "definition": "fartlege",
+      "source": "B s.14; C s.16–17"
+    },
+    {
+      "id": "opladning",
+      "name": "Opladning",
+      "percentRange": null,
+      "reference": null,
+      "definition": "1*5 min. AT eller 1*3 max.",
+      "source": "B s.14; C s.17",
+      "note": "Dagen før cykelløb i sæsoneksempelugen."
+    },
+    {
+      "id": "restitution",
+      "name": "Restitution",
+      "percentRange": null,
+      "reference": null,
+      "definition": null,
+      "source": "B s.14; C s.17"
+    },
+    {
+      "id": "formtop_intervaller",
+      "name": "Formtop intervaller",
+      "percentRange": null,
+      "reference": null,
+      "definition": "korte, hårde intervaller",
+      "source": "B s.14; C s.14–15"
+    },
+    {
+      "id": "basisintervaller",
+      "name": "Basisintervaltræning",
+      "percentRange": null,
+      "reference": null,
+      "definition": "relativt lang basisintervaltræning",
+      "source": "B s.14; C s.14"
+    }
+  ],
+  "ageGroups": {
+    "U17": {
+      "years": {
+        "1": {
+          "label2025": "U17 1",
+          "hours2025": {
+            "source": "A s.1",
+            "monthly": {
+              "okt": "pause + frit",
+              "nov": 21,
+              "dec": 34,
+              "jan": 43,
+              "feb": 45,
+              "mar": 50,
+              "apr": 42,
+              "maj": 43,
+              "jun": 38,
+              "jul": 46,
+              "aug": 37,
+              "sep": 30
+            },
+            "perDay": {
+              "okt": null,
+              "nov": 0.7,
+              "dec": 1.1,
+              "jan": 1.4,
+              "feb": 1.6,
+              "mar": 1.6,
+              "apr": 1.4,
+              "maj": 1.4,
+              "jun": 1.3,
+              "jul": 1.5,
+              "aug": 1.2,
+              "sep": 1.0
+            },
+            "totalNovMar": 193,
+            "totalNovSep": 429,
+            "weeklyDerived": {
+              "okt": null,
+              "nov": 4.9,
+              "dec": 7.7,
+              "jan": 9.8,
+              "feb": 11.2,
+              "mar": 11.2,
+              "apr": 9.8,
+              "maj": 9.8,
+              "jun": 9.1,
+              "jul": 10.5,
+              "aug": 8.4,
+              "sep": 7.0
+            },
+            "weeklyDerivedNote": "BEREGNET = timer/dag × 7 (står ikke i dokumentet). Timer/dag svarer til månedstimer / kalenderdage."
+          },
+          "hours2016": {
+            "source": "B s.13; C s.13",
+            "monthly": {
+              "nov": 20,
+              "dec": 26,
+              "jan": 36,
+              "feb": 45,
+              "mar": 56,
+              "apr": 40,
+              "maj": 40,
+              "jun": 35,
+              "jul": 45,
+              "aug": 40,
+              "sep": 35
+            },
+            "total": 418
+          }
+        },
+        "2": {
+          "label2025": "U17 2",
+          "hours2025": {
+            "source": "A s.1",
+            "monthly": {
+              "okt": "pause + frit",
+              "nov": 27,
+              "dec": 40,
+              "jan": 50,
+              "feb": 50,
+              "mar": 56,
+              "apr": 46,
+              "maj": 48,
+              "jun": 42,
+              "jul": 52,
+              "aug": 43,
+              "sep": 36
+            },
+            "perDay": {
+              "okt": null,
+              "nov": 0.9,
+              "dec": 1.3,
+              "jan": 1.6,
+              "feb": 1.8,
+              "mar": 1.8,
+              "apr": 1.5,
+              "maj": 1.5,
+              "jun": 1.4,
+              "jul": 1.7,
+              "aug": 1.4,
+              "sep": 1.2
+            },
+            "totalNovMar": 223,
+            "totalNovSep": 490,
+            "weeklyDerived": {
+              "okt": null,
+              "nov": 6.3,
+              "dec": 9.1,
+              "jan": 11.2,
+              "feb": 12.6,
+              "mar": 12.6,
+              "apr": 10.5,
+              "maj": 10.5,
+              "jun": 9.8,
+              "jul": 11.9,
+              "aug": 9.8,
+              "sep": 8.4
+            },
+            "weeklyDerivedNote": "BEREGNET = timer/dag × 7 (står ikke i dokumentet). Timer/dag svarer til månedstimer / kalenderdage."
+          },
+          "hours2016": {
+            "source": "B s.13; C s.13",
+            "monthly": {
+              "nov": 25,
+              "dec": 32,
+              "jan": 42,
+              "feb": 50,
+              "mar": 64,
+              "apr": 45,
+              "maj": 45,
+              "jun": 40,
+              "jul": 50,
+              "aug": 45,
+              "sep": 40
+            },
+            "total": 478
+          }
+        }
+      },
+      "weeklyHours": {
+        "min": 4.9,
+        "max": 12.6,
+        "derived": true,
+        "note": "Min/max på tværs af årgange og måneder nov–sep, beregnet som timer/dag × 7 fra 2025-tabellen [A s.1]. Kun 'timer på cykel' (landevej, bane, MTB, spinning, ruller mv.) tæller [B s.12].",
+        "byPhase": {
+          "okt": {
+            "value": "pause + frit",
+            "source": "A s.1",
+            "description": "Oktober: 'pause + frit' (ingen timetal) [A s.1]"
+          },
+          "novDec": {
+            "min": 4.9,
+            "max": 9.1,
+            "derived": true,
+            "description": "Nov–dec: formopbygning primært via stigende træningsmængde (distance); bane-/MTB-/crossryttere kører dog også intervaller [B s.13–14; C s.14]"
+          },
+          "janFeb": {
+            "min": 9.8,
+            "max": 12.6,
+            "derived": true,
+            "description": "Efter nytår: relativt lang basisintervaltræning påbegyndes, mens mængden fortsat øges måned for måned [B s.14; C s.14]"
+          },
+          "mar": {
+            "min": 11.2,
+            "max": 12.6,
+            "derived": true,
+            "description": "Omkring marts: egentlige formtop-intervaller (korte, hårde intervaller) indføres i relation til ønsket tidspunkt for formtop [B s.14; C s.14–15]"
+          },
+          "aprSep": {
+            "min": 7.0,
+            "max": 11.9,
+            "derived": true,
+            "description": "Sæson (april–september). Juni lidt mindre (mange vigtige starter sluttende med DM), juli lidt mere (sommerferie/træningsbase), august–september lidt mindre; sæsonen bør køres helt til ende [B s.12–13; C s.14] (tekst om U19/U23, 2016)"
+          }
+        }
+      },
+      "annualHours": {
+        "2025": {
+          "year1": {
+            "novMar": 193,
+            "novSep": 429
+          },
+          "year2": {
+            "novMar": 223,
+            "novSep": 490
+          },
+          "source": "A s.1"
+        },
+        "2016": {
+          "year1": 418,
+          "year2": 478,
+          "source": "B s.13; C s.13"
+        }
+      },
+      "sessionsPerWeek": {
+        "explicit": null,
+        "fromExampleWeeks": {
+          "februar": {
+            "bikeDays": 5,
+            "intervalSessions": 3,
+            "strengthSessions": 2,
+            "daysWithoutBike": 2,
+            "hours": 12,
+            "derived": true
+          },
+          "saeson": {
+            "bikeDays": 6,
+            "intervalSessions": 2,
+            "strengthSessions": 0,
+            "raceDays": 1,
+            "daysOff": 1,
+            "hours": 12,
+            "derived": true
+          }
+        }
+      },
+      "exampleWeeks": {
+        "februar": {
+          "days": [
+            {
+              "day": "Mandag",
+              "hours": "Fri",
+              "focus": "Styrketræning",
+              "intervals": null
+            },
+            {
+              "day": "Tirsdag",
+              "hours": 2,
+              "focus": "Interval",
+              "intervals": "Tempotræning (70-80 %), AT (80-90 %), fartlege"
+            },
+            {
+              "day": "Onsdag",
+              "hours": 2,
+              "focus": "Grundtræning",
+              "intervals": null
+            },
+            {
+              "day": "Torsdag",
+              "hours": 2,
+              "focus": "Interval",
+              "intervals": "Tempotræning (70-80 %), AT (80-90 %), fartlege"
+            },
+            {
+              "day": "Fredag",
+              "hours": "Fri",
+              "focus": "Styrketræning",
+              "intervals": null
+            },
+            {
+              "day": "Lørdag",
+              "hours": 3,
+              "focus": "Interval",
+              "intervals": "Tempotræning (70-80 %), AT (80-90 %), fartlege"
+            },
+            {
+              "day": "Søndag",
+              "hours": 3,
+              "focus": "Grundtræning",
+              "intervals": null
+            }
+          ],
+          "totalHours": 12,
+          "source": "B s.14"
+        },
+        "saeson": {
+          "days": [
+            {
+              "day": "Mandag",
+              "hours": 1,
+              "focus": "Restitution",
+              "intervals": null
+            },
+            {
+              "day": "Tirsdag",
+              "hours": 3,
+              "focus": "Interval",
+              "intervals": "Tempotræning (70-80 %), AT (80-90 %), fartlege"
+            },
+            {
+              "day": "Onsdag",
+              "hours": 3,
+              "focus": "Grundtræning",
+              "intervals": null
+            },
+            {
+              "day": "Torsdag",
+              "hours": 2,
+              "focus": "Interval",
+              "intervals": "Tempotræning (70-80 %), AT (80-90 %), fartlege"
+            },
+            {
+              "day": "Fredag",
+              "hours": "Fri",
+              "focus": null,
+              "intervals": null
+            },
+            {
+              "day": "Lørdag",
+              "hours": 1,
+              "focus": "Opladning",
+              "intervals": "1*5 min. AT eller 1*3 max."
+            },
+            {
+              "day": "Søndag",
+              "hours": 2,
+              "focus": "Cykelløb",
+              "intervals": null
+            }
+          ],
+          "totalHours": 12,
+          "source": "B s.14"
+        }
+      },
+      "intensityDistribution": null,
+      "intensityNotes": [
+        "Ingen %-fordeling angivet. Nov–dec: primært stigende mængde (distance); efter nytår relativt lang basisintervaltræning; omkring marts korte, hårde formtop-intervaller [B s.13–14]."
+      ],
+      "raceDaysPerSeason": null,
+      "maxRide": {
+        "hours": 4,
+        "km": 120,
+        "text": "du ALDRIG kører træningsture, der overstiger fire timer eller 120 km.",
+        "source": "B s.15"
+      },
+      "volumeProgression": {
+        "text": "Det vigtigste er at U17-ryttere ikke træner for meget; anbefalingerne er baseret på ikke alt for store mængder, hverken i første halvdel af vinteren eller i sæsonen [B s.12; C s.13].",
+        "percentPerYear": null
+      },
+      "strength": {
+        "sessionsPerWeek": {
+          "buildPhase": {
+            "min": 2,
+            "max": 3
+          },
+          "maintenancePhase": 1,
+          "source": "D s.2"
+        },
+        "minimumSessionsPerWinter": 30,
+        "minimumSessionsNote": "Kan man ikke gennemføre mindst 30 sessioner i løbet af vinteren, anbefales det slet ikke at påbegynde et forløb [B s.15]. Forløbet kan afsluttes senest omkring 1. marts [B s.16].",
+        "restBetweenSets": "ca. 3 minutter [B s.16]",
+        "warmup": {
+          "text": "8 minutter på kondicykel",
+          "source": "D s.1",
+          "conflict": "B s.18 angiver 10 minutter på kondicykel"
+        },
+        "periodization": [
+          {
+            "phase": "start november – medio marts",
+            "focus": "Tilvænning til styrketræning, tekniktræning og muskelstyrke.",
+            "sessionsPerWeek": {
+              "min": 2,
+              "max": 3
+            },
+            "notes": [
+              "Prøv at få minimum 48 timer imellem hvert styrketræningspas",
+              "Husk restitutionsmåltid lige efter træning"
+            ],
+            "source": "D s.2"
+          },
+          {
+            "phase": "medio marts – start november",
+            "focus": "Vedligeholdelse af muskelstyrke",
+            "sessionsPerWeek": {
+              "min": 1,
+              "max": 1
+            },
+            "source": "D s.2"
+          }
+        ],
+        "programs": [
+          {
+            "name": "Styrketræningsprogram for U17 landsholdsryttere (Basis styrke)",
+            "phase": "start november – medio marts (opbygning); samme program 1x/uge medio marts – start november (vedligehold)",
+            "source": "D s.1–2; B s.15–18",
+            "exercises": [
+              {
+                "name": "Squat (opvarmning)",
+                "catalogName": "Deep back squat 03553",
+                "sets": 1,
+                "reps": "20",
+                "notes": "Opvarmning. Lav belastning. Ret ryg/let svaj, knæene på linje med fødderne, fødder i skulderbredde.",
+                "progression": null,
+                "source": "D s.1; B s.16"
+              },
+              {
+                "name": "Mave bøjning",
+                "catalogName": "Sit up 04869",
+                "sets": 3,
+                "reps": "15-20 RM",
+                "notes": null,
+                "progression": null,
+                "source": "D s.1; B s.16"
+              },
+              {
+                "name": "Faldskærm - Ryg bøjning",
+                "catalogName": "Faldskærm 10010",
+                "sets": 3,
+                "reps": "15-20 RM",
+                "notes": null,
+                "progression": null,
+                "source": "D s.1; B s.17"
+              },
+              {
+                "name": "Ben ekstension (i stedet for squat)",
+                "catalogName": "Leg extension 00854",
+                "sets": 4,
+                "reps": "6-8 RM",
+                "notes": "Størst mulig indsats i den koncentriske fase.",
+                "progression": [
+                  {
+                    "sessions": "1-6",
+                    "sets": 3,
+                    "reps": "16 RM",
+                    "note": "træn ikke til udmattelse"
+                  },
+                  {
+                    "sessions": "7-12",
+                    "sets": 3,
+                    "reps": "12 RM"
+                  },
+                  {
+                    "sessions": "13+",
+                    "sets": 4,
+                    "reps": "6-8 RM"
+                  }
+                ],
+                "source": "D s.1; B s.17"
+              },
+              {
+                "name": "Ben fleksion",
+                "catalogName": "Leg curl 03149",
+                "sets": 4,
+                "reps": "6-8 RM",
+                "notes": "Få puden til at ramme ballerne. Størst mulig indsats i den koncentriske fase.",
+                "progression": [
+                  {
+                    "sessions": "1-6",
+                    "sets": 3,
+                    "reps": "16 RM",
+                    "note": "træn ikke til udmattelse"
+                  },
+                  {
+                    "sessions": "7-12",
+                    "sets": 3,
+                    "reps": "12 RM"
+                  },
+                  {
+                    "sessions": "13+",
+                    "sets": 4,
+                    "reps": "6-8 RM"
+                  }
+                ],
+                "source": "D s.1; B s.17"
+              },
+              {
+                "name": "Benpres",
+                "catalogName": "Leg press 00923",
+                "sets": 4,
+                "reps": "6-8 RM",
+                "notes": "Hold hoften i sædet, knæ på linje med fod. Størst mulig indsats i den koncentriske fase.",
+                "progression": [
+                  {
+                    "sessions": "1-6",
+                    "sets": 3,
+                    "reps": "16 RM",
+                    "note": "træn ikke til udmattelse"
+                  },
+                  {
+                    "sessions": "7-12",
+                    "sets": 3,
+                    "reps": "12 RM"
+                  },
+                  {
+                    "sessions": "13+",
+                    "sets": 4,
+                    "reps": "6-8 RM"
+                  }
+                ],
+                "source": "D s.1; B s.17"
+              },
+              {
+                "name": "Læg strækning",
+                "catalogName": "Calf raise 03132",
+                "sets": 4,
+                "reps": "6-8 RM",
+                "notes": "Strakte ben, vip op på tæerne og sænk langsomt. Størst mulig indsats i den koncentriske fase.",
+                "progression": [
+                  {
+                    "sessions": "1-6",
+                    "sets": 3,
+                    "reps": "16 RM",
+                    "note": "træn ikke til udmattelse"
+                  },
+                  {
+                    "sessions": "7-12",
+                    "sets": 3,
+                    "reps": "12 RM"
+                  },
+                  {
+                    "sessions": "13+",
+                    "sets": 4,
+                    "reps": "6-8 RM"
+                  }
+                ],
+                "source": "D s.1; B s.18"
+              }
+            ]
+          }
+        ],
+        "guidelines": [
+          "Følg opstartsprotokollen: 6 pas 3×16, 6 pas 3×12, derefter 4×6-8 [D s.2].",
+          "Størst mulig indsats i koncentrisk fase, kontrolleret hastighed i excentrisk fase [D s.2].",
+          "Styrketræning så tidligt på dagen og cykeltræning så sent på dagen som muligt [D s.2]; samme dag: styrke først, gerne min. 5-6 timer mellem pas [B s.18].",
+          "Teknik før belastning [D s.2]. Stræk efter styrketræning [B s.18]."
+        ],
+        "conflicts": [
+          "Opvarmning 8 min [D s.1] vs 10 min [B s.18].",
+          "D s.1: pas 1-6 'træn ikke til udmattelse' vs B s.16: 'der altid løftes til udmattelse'.",
+          "B s.16: 'første 6 uger' er tilvænningsfase vs D s.2: protokol i antal pas (6+6).",
+          "B s.15 nævner 'altid fire sæt i hver øvelse', men programmet har 3 sæt i pas 1-12 og for mave/ryg.",
+          "Afslutning af opbygning: 'senest omkring 1. marts' [B s.16] vs 'medio marts' [D s.2].",
+          "Sæsoneksempelugen [B s.14] indeholder ingen styrketræning, selvom D s.2 anbefaler 1 pas/uge i sæsonen."
+        ]
+      },
+      "notes": [
+        "Karrieren begynder ofte i drenge-/pigeklasserne, hvor kammeratskab, leg, sjov, klubliv og klubture er vigtige – 'Sådan SKAL det fortsat være!'; som U17 skal træningen for første gang angribes mere systematisk [B s.5].",
+        "Bruttolandsholdstrup ca. 30 ryttere fordelt på de to U17-årgange, to vintersamlinger (weekender), månedlig indsendelse af træningsregistreringer [B s.6, s.19]. Talentudviklingstrup ca. 30 ryttere, efterårssamling i november [B s.7].",
+        "Oprykning til U19 efter B&U DM i august for relevante ryttere; subjektiv vurdering [B s.21].",
+        "Styrketræning anses for skadesforebyggende også for unge på 15-16 år; ingen betydelig risiko for knogler, led eller vækst når protokollen følges [B s.15; D s.2]."
+      ]
+    },
+    "U19": {
+      "years": {
+        "1": {
+          "label2025": "U19 1",
+          "hours2025": {
+            "source": "A s.1",
+            "monthly": {
+              "okt": "pause + frit",
+              "nov": 34,
+              "dec": 46,
+              "jan": 56,
+              "feb": 56,
+              "mar": 62,
+              "apr": 52,
+              "maj": 54,
+              "jun": 46,
+              "jul": 56,
+              "aug": 50,
+              "sep": 42
+            },
+            "perDay": {
+              "okt": null,
+              "nov": 1.1,
+              "dec": 1.5,
+              "jan": 1.8,
+              "feb": 2.0,
+              "mar": 2.0,
+              "apr": 1.7,
+              "maj": 1.7,
+              "jun": 1.5,
+              "jul": 1.8,
+              "aug": 1.6,
+              "sep": 1.4
+            },
+            "totalNovMar": 254,
+            "totalNovSep": 554,
+            "weeklyDerived": {
+              "okt": null,
+              "nov": 7.7,
+              "dec": 10.5,
+              "jan": 12.6,
+              "feb": 14.0,
+              "mar": 14.0,
+              "apr": 11.9,
+              "maj": 11.9,
+              "jun": 10.5,
+              "jul": 12.6,
+              "aug": 11.2,
+              "sep": 9.8
+            },
+            "weeklyDerivedNote": "BEREGNET = timer/dag × 7 (står ikke i dokumentet). Timer/dag svarer til månedstimer / kalenderdage."
+          },
+          "hours2016": {
+            "source": "B s.13; C s.13",
+            "monthly": {
+              "nov": 30,
+              "dec": 38,
+              "jan": 48,
+              "feb": 55,
+              "mar": 72,
+              "apr": 52,
+              "maj": 52,
+              "jun": 46,
+              "jul": 56,
+              "aug": 52,
+              "sep": 45
+            },
+            "total": 546
+          }
+        },
+        "2": {
+          "label2025": "U19 2",
+          "hours2025": {
+            "source": "A s.1",
+            "monthly": {
+              "okt": "pause + frit",
+              "nov": 38,
+              "dec": 54,
+              "jan": 62,
+              "feb": 60,
+              "mar": 68,
+              "apr": 60,
+              "maj": 60,
+              "jun": 50,
+              "jul": 66,
+              "aug": 56,
+              "sep": 48
+            },
+            "perDay": {
+              "okt": null,
+              "nov": 1.3,
+              "dec": 1.7,
+              "jan": 2.0,
+              "feb": 2.1,
+              "mar": 2.2,
+              "apr": 2.0,
+              "maj": 1.9,
+              "jun": 1.7,
+              "jul": 2.1,
+              "aug": 1.8,
+              "sep": 1.6
+            },
+            "totalNovMar": 282,
+            "totalNovSep": 622,
+            "weeklyDerived": {
+              "okt": null,
+              "nov": 9.1,
+              "dec": 11.9,
+              "jan": 14.0,
+              "feb": 14.7,
+              "mar": 15.4,
+              "apr": 14.0,
+              "maj": 13.3,
+              "jun": 11.9,
+              "jul": 14.7,
+              "aug": 12.6,
+              "sep": 11.2
+            },
+            "weeklyDerivedNote": "BEREGNET = timer/dag × 7 (står ikke i dokumentet). Timer/dag svarer til månedstimer / kalenderdage."
+          },
+          "hours2016": {
+            "source": "B s.13; C s.13",
+            "monthly": {
+              "nov": 35,
+              "dec": 44,
+              "jan": 54,
+              "feb": 60,
+              "mar": 78,
+              "apr": 60,
+              "maj": 60,
+              "jun": 52,
+              "jul": 65,
+              "aug": 60,
+              "sep": 50
+            },
+            "total": 618
+          }
+        }
+      },
+      "weeklyHours": {
+        "min": 7.7,
+        "max": 15.4,
+        "derived": true,
+        "note": "Min/max på tværs af årgange og måneder nov–sep, beregnet som timer/dag × 7 fra 2025-tabellen [A s.1]. Kun 'timer på cykel' (landevej, bane, MTB, spinning, ruller mv.) tæller [B s.12].",
+        "byPhase": {
+          "okt": {
+            "value": "pause + frit",
+            "source": "A s.1",
+            "description": "Oktober: 'pause + frit' (ingen timetal) [A s.1]"
+          },
+          "novDec": {
+            "min": 7.7,
+            "max": 11.9,
+            "derived": true,
+            "description": "Nov–dec: formopbygning primært via stigende træningsmængde (distance); bane-/MTB-/crossryttere kører dog også intervaller [B s.13–14; C s.14]"
+          },
+          "janFeb": {
+            "min": 12.6,
+            "max": 14.7,
+            "derived": true,
+            "description": "Efter nytår: relativt lang basisintervaltræning påbegyndes, mens mængden fortsat øges måned for måned [B s.14; C s.14]"
+          },
+          "mar": {
+            "min": 14.0,
+            "max": 15.4,
+            "derived": true,
+            "description": "Omkring marts: egentlige formtop-intervaller (korte, hårde intervaller) indføres i relation til ønsket tidspunkt for formtop [B s.14; C s.14–15]"
+          },
+          "aprSep": {
+            "min": 9.8,
+            "max": 14.7,
+            "derived": true,
+            "description": "Sæson (april–september). Juni lidt mindre (mange vigtige starter sluttende med DM), juli lidt mere (sommerferie/træningsbase), august–september lidt mindre; sæsonen bør køres helt til ende [B s.12–13; C s.14] (tekst om U19/U23, 2016)"
+          }
+        }
+      },
+      "annualHours": {
+        "2025": {
+          "year1": {
+            "novMar": 254,
+            "novSep": 554
+          },
+          "year2": {
+            "novMar": 282,
+            "novSep": 622
+          },
+          "source": "A s.1"
+        },
+        "2016": {
+          "year1": 546,
+          "year2": 618,
+          "source": "B s.13; C s.13"
+        }
+      },
+      "monthlyHoursText2016": {
+        "marchPeak": {
+          "min": 72,
+          "max": 78
+        },
+        "seasonPerMonth": {
+          "min": 45,
+          "max": 60
+        },
+        "text": "stødt stigende træningsmængde, som topper med 72-78 anbefalede træningstimer i marts ... formentlig kræver en træningslejr sydpå ... I sæsonen anbefales en træningsmængde på 45-60 timer hver måned",
+        "source": "C s.14; B s.12"
+      },
+      "sessionsPerWeek": {
+        "explicit": null,
+        "fromExampleWeeks": {
+          "februar": {
+            "bikeDays": 5,
+            "intervalSessions": 3,
+            "strengthSessions": 3,
+            "daysWithoutBike": 2,
+            "hours": 15,
+            "derived": true
+          },
+          "saeson": {
+            "bikeDays": 6,
+            "intervalSessions": 2,
+            "strengthSessions": 1,
+            "raceDays": 1,
+            "daysWithoutBike": 1,
+            "hours": 14,
+            "derived": true
+          }
+        }
+      },
+      "exampleWeeks": {
+        "februar": {
+          "days": [
+            {
+              "day": "Mandag",
+              "hours": "Fri",
+              "focus": "Styrketræning",
+              "intervals": null
+            },
+            {
+              "day": "Tirsdag",
+              "hours": 3,
+              "focus": "Interval",
+              "intervals": "Tempotræning (70-80 %), AT (80-90 %), fartlege"
+            },
+            {
+              "day": "Onsdag",
+              "hours": 2,
+              "focus": "Grundtræning + Styrketræning",
+              "intervals": null
+            },
+            {
+              "day": "Torsdag",
+              "hours": 3,
+              "focus": "Interval",
+              "intervals": "Tempotræning (70-80 %), AT (80-90 %), fartlege"
+            },
+            {
+              "day": "Fredag",
+              "hours": "Fri",
+              "focus": "Styrketræning",
+              "intervals": null
+            },
+            {
+              "day": "Lørdag",
+              "hours": 3,
+              "focus": "Interval",
+              "intervals": "Tempotræning (70-80 %), AT (80-90 %), fartlege"
+            },
+            {
+              "day": "Søndag",
+              "hours": 4,
+              "focus": "Grundtræning",
+              "intervals": null
+            }
+          ],
+          "totalHours": 15,
+          "source": "C s.16"
+        },
+        "saeson": {
+          "days": [
+            {
+              "day": "Mandag",
+              "hours": "Fri",
+              "focus": "Styrketræning",
+              "intervals": null
+            },
+            {
+              "day": "Tirsdag",
+              "hours": 3,
+              "focus": "Interval",
+              "intervals": "Tempotræning (70-80 %), AT (80-90 %), fartlege"
+            },
+            {
+              "day": "Onsdag",
+              "hours": 3,
+              "focus": "Grundtræning",
+              "intervals": null
+            },
+            {
+              "day": "Torsdag",
+              "hours": 3,
+              "focus": "Interval",
+              "intervals": "Tempotræning (70-80 %), AT (80-90 %), fartlege"
+            },
+            {
+              "day": "Fredag",
+              "hours": 1,
+              "focus": "Restitution",
+              "intervals": null
+            },
+            {
+              "day": "Lørdag",
+              "hours": 1,
+              "focus": "Opladning",
+              "intervals": "1*5 min. AT eller 1*3 max."
+            },
+            {
+              "day": "Søndag",
+              "hours": 3,
+              "focus": "Cykelløb",
+              "intervals": null
+            }
+          ],
+          "totalHours": 14,
+          "source": "C s.17"
+        }
+      },
+      "intensityDistribution": null,
+      "intensityNotes": [
+        "Ingen %-fordeling angivet. Samme faseforløb som U17: nov–dec distance, efter nytår basisintervaller, omkring marts formtop-intervaller [C s.14–15]."
+      ],
+      "raceDaysPerSeason": null,
+      "maxRide": {
+        "hours": 5,
+        "km": 150,
+        "text": "du som U19-rytter ALDRIG kører træningsture, der overstiger fem timer eller 150 km.",
+        "source": "C s.18"
+      },
+      "volumeProgression": {
+        "text": "Naturligt at øge træningsmængden passende (10-15 %) på dette stadie; for store mængder for tidligt er uhensigtsmæssigt [C s.12].",
+        "percentPerYear": {
+          "min": 10,
+          "max": 15
+        },
+        "source": "C s.12"
+      },
+      "testing": "DCU tester tre gange årligt fem U19-ryttere på Team Danmark Testcentrene (Brøndby og Odense) i november, februar og maj [C s.8]. Testprotokol ikke beskrevet.",
+      "strength": {
+        "sessionsPerWeek": {
+          "buildPhase": {
+            "min": 2,
+            "max": 3
+          },
+          "maintenancePhase": 1,
+          "source": "E s.2; C s.22 ('i hvert fald et enkelt træningspas og [sic] ugen' i sæsonen)"
+        },
+        "minimumSessionsPerWinter": 30,
+        "minimumSessionsNote": "Min. 30 sessioner i løbet af vinteren [C s.22]; minimum 30 gange over off-season, afslut senest omkring 1. marts [C s.20]. Styrketræning er supplement og må ikke erstatte cykeltimer [C s.18].",
+        "restBetweenSets": "ca. 3 minutter [C s.20]",
+        "warmup": {
+          "text": "8 minutter på kondicykel + 1 x 20 squat med lav belastning (ret/let svaj i ryggen, knæene på linje med fødderne)",
+          "source": "E s.1; C s.23"
+        },
+        "periodization": [
+          {
+            "phase": "start november – medio marts",
+            "focus": "Tilvænning og muskelstyrke.",
+            "sessionsPerWeek": {
+              "min": 2,
+              "max": 3
+            },
+            "notes": [
+              "Prøv at få minimum 48 timer imellem hvert styrketræningspas",
+              "Husk restitutionsmåltid lige efter træning"
+            ],
+            "source": "E s.2"
+          },
+          {
+            "phase": "medio marts – start november",
+            "focus": "Vedligeholdelse af muskelstyrke",
+            "sessionsPerWeek": {
+              "min": 1,
+              "max": 1
+            },
+            "source": "E s.2"
+          }
+        ],
+        "programs": [
+          {
+            "name": "Styrketræningsprogram for U19 landsholdsryttere (Basis styrke)",
+            "phase": "start november – medio marts (opbygning); 1x/uge medio marts – start november (vedligehold)",
+            "source": "E s.1–2; C s.20–23",
+            "exercises": [
+              {
+                "name": "Mave bøjning med vægtstang",
+                "catalogName": "BB sit up 01182",
+                "sets": 3,
+                "reps": "15-20 RM",
+                "notes": null,
+                "progression": null,
+                "source": "E s.1; C s.21"
+              },
+              {
+                "name": "Ryg bøjning evt. med vægt på brystet",
+                "catalogName": "Roman chair back extension 04278",
+                "sets": 3,
+                "reps": "15-20 RM",
+                "notes": null,
+                "progression": null,
+                "source": "E s.1; C s.21"
+              },
+              {
+                "name": "Ben ekstension (i stedet for squat)",
+                "catalogName": "Leg extension 00854",
+                "sets": 4,
+                "reps": "6 RM",
+                "notes": "Størst mulig indsats i den koncentriske fase. Køres indtil squat-teknikken mestres; droppes derefter.",
+                "progression": [
+                  {
+                    "sessions": "1-6",
+                    "sets": 3,
+                    "reps": "12 RM",
+                    "note": "træn ikke til udmattelse"
+                  },
+                  {
+                    "sessions": "7-12",
+                    "sets": 3,
+                    "reps": "8 RM"
+                  },
+                  {
+                    "sessions": "13+",
+                    "sets": 4,
+                    "reps": "6 RM"
+                  }
+                ],
+                "source": "E s.1; C s.21"
+              },
+              {
+                "name": "Squat (i stedet for ben ekstension)",
+                "catalogName": "Deep back squat 03553",
+                "sets": 4,
+                "reps": "6 RM",
+                "notes": "Ret ryg/let svaj, knæene på linje med fødderne. Størst mulig indsats i den koncentriske fase. Køres først når teknikken mestres (øves i opvarmningen); derefter 4 sæt af 6 RM og ben ekstension droppes.",
+                "progression": null,
+                "source": "E s.1; C s.22"
+              },
+              {
+                "name": "Ben fleksion",
+                "catalogName": "Leg curl 03149",
+                "sets": 4,
+                "reps": "6 RM",
+                "notes": "Få puden til at ramme ballerne. Størst mulig indsats i den koncentriske fase.",
+                "progression": [
+                  {
+                    "sessions": "1-6",
+                    "sets": 3,
+                    "reps": "12 RM",
+                    "note": "træn ikke til udmattelse"
+                  },
+                  {
+                    "sessions": "7-12",
+                    "sets": 3,
+                    "reps": "8 RM"
+                  },
+                  {
+                    "sessions": "13+",
+                    "sets": 4,
+                    "reps": "6 RM"
+                  }
+                ],
+                "source": "E s.1; C s.22"
+              },
+              {
+                "name": "Et bens pres",
+                "catalogName": "Single leg leg press 00925",
+                "sets": 4,
+                "reps": "6 RM",
+                "notes": "Hold hoften i sædet, knæ på linje med fod. Størst mulig indsats i den koncentriske fase.",
+                "progression": [
+                  {
+                    "sessions": "1-6",
+                    "sets": 3,
+                    "reps": "12 RM",
+                    "note": "træn ikke til udmattelse"
+                  },
+                  {
+                    "sessions": "7-12",
+                    "sets": 3,
+                    "reps": "8 RM"
+                  },
+                  {
+                    "sessions": "13+",
+                    "sets": 4,
+                    "reps": "6 RM"
+                  }
+                ],
+                "source": "E s.1; C s.22"
+              }
+            ],
+            "alternativeProgression": {
+              "progression": [
+                {
+                  "sessions": "1-4",
+                  "sets": 3,
+                  "reps": "12 RM"
+                },
+                {
+                  "sessions": "5-8",
+                  "sets": 3,
+                  "reps": "8 RM"
+                },
+                {
+                  "sessions": "9+",
+                  "sets": 4,
+                  "reps": "6 RM"
+                }
+              ],
+              "source": "E s.2 (opstartsprotokol: 4 pas 3×12, 4 pas 3×8, derefter 4×6) og C s.21–22 (pas 1-4 / 5-8)",
+              "note": "Modstrider E s.1 (pas 1-6 / 7-12)."
+            },
+            "exerciseCountNote": "'Alt i alt indeholder programmet 5 øvelser' (ben ekstension og squat er alternativer) [E s.2]."
+          }
+        ],
+        "guidelines": [
+          "Muskelstyrke opbygges/trænes primært ved tung belastning på 4-6 RM og kan opnås med moderat frekvens og volumen, dvs 1-3 pas per uge; jo højere frekvens, jo større udbytte [E s.2].",
+          "Størst mulig indsats i koncentrisk fase, kontrolleret hastighed i excentrisk fase [E s.2].",
+          "Styrke så tidligt og cykel så sent på dagen som muligt [E s.2]; samme dag: styrke først, gerne min. 5-6 timer imellem [C s.23]. Stræk efter styrketræning [C s.23].",
+          "Foretræk neural styrketræning (ikke øget tværsnitsareal) for de fleste; hypertrofi kun relevant for fx spinkle ryttere, der ønsker vægtforøgelse [C s.19]."
+        ],
+        "conflicts": [
+          "Progression for benøvelser: pas 1-6/7-12 [E s.1] vs 4+4 pas [E s.2] og pas 1-4/5-8 [C s.21–22].",
+          "C s.20 nævner 'i alt fire benstyrketræningsøvelser' og 'altid fire sæt', men programmet har 3 benøvelser ad gangen (ben ekstension ELLER squat + ben fleksion + et bens pres) og 3 sæt i opstart.",
+          "Afslutning af opbygning: 'senest omkring 1. marts' [C s.20] vs 'medio marts' [E s.2]."
+        ]
+      },
+      "notes": [
+        "Bruttolandsholdstrup ca. 30 ryttere, to træningssamlinger om vinteren, månedlig indsendelse af træningsregistreringer [C s.7, s.24].",
+        "Landsholdets kørestil: aggressivt/offensivt, køre løbene forfra, køre egen chance frem for at ødelægge andres [C s.26–27].",
+        "Oprykning efter 2. år U19: continental-kontrakt → A-klassen; ≥24 point → B; 5-23 point → C; <5 point → D. 1. års U19 med <5 point kan søge D-licens [C s.30]."
+      ]
+    },
+    "U23": {
+      "years": {
+        "1": {
+          "label2025": "U23 1",
+          "hours2025": {
+            "source": "A s.1",
+            "monthly": {
+              "okt": "pause + frit",
+              "nov": 44,
+              "dec": 64,
+              "jan": 70,
+              "feb": 64,
+              "mar": 70,
+              "apr": 66,
+              "maj": 68,
+              "jun": 54,
+              "jul": 72,
+              "aug": 68,
+              "sep": 54
+            },
+            "perDay": {
+              "okt": null,
+              "nov": 1.5,
+              "dec": 2.1,
+              "jan": 2.3,
+              "feb": 2.3,
+              "mar": 2.3,
+              "apr": 2.2,
+              "maj": 2.2,
+              "jun": 1.8,
+              "jul": 2.3,
+              "aug": 2.2,
+              "sep": 1.8
+            },
+            "totalNovMar": 312,
+            "totalNovSep": 694,
+            "weeklyDerived": {
+              "okt": null,
+              "nov": 10.5,
+              "dec": 14.7,
+              "jan": 16.1,
+              "feb": 16.1,
+              "mar": 16.1,
+              "apr": 15.4,
+              "maj": 15.4,
+              "jun": 12.6,
+              "jul": 16.1,
+              "aug": 15.4,
+              "sep": 12.6
+            },
+            "weeklyDerivedNote": "BEREGNET = timer/dag × 7 (står ikke i dokumentet). Timer/dag svarer til månedstimer / kalenderdage."
+          },
+          "hours2016": {
+            "source": "B s.13; C s.13",
+            "monthly": {
+              "nov": 40,
+              "dec": 50,
+              "jan": 60,
+              "feb": 65,
+              "mar": 84,
+              "apr": 70,
+              "maj": 70,
+              "jun": 58,
+              "jul": 75,
+              "aug": 70,
+              "sep": 60
+            },
+            "total": 702
+          }
+        },
+        "2": {
+          "label2025": "U23 2",
+          "hours2025": {
+            "source": "A s.1",
+            "monthly": {
+              "okt": "pause + frit",
+              "nov": 54,
+              "dec": 70,
+              "jan": 76,
+              "feb": 70,
+              "mar": 74,
+              "apr": 70,
+              "maj": 70,
+              "jun": 60,
+              "jul": 78,
+              "aug": 70,
+              "sep": 60
+            },
+            "perDay": {
+              "okt": null,
+              "nov": 1.8,
+              "dec": 2.3,
+              "jan": 2.5,
+              "feb": 2.5,
+              "mar": 2.4,
+              "apr": 2.3,
+              "maj": 2.3,
+              "jun": 2.0,
+              "jul": 2.5,
+              "aug": 2.3,
+              "sep": 2.0
+            },
+            "totalNovMar": 344,
+            "totalNovSep": 752,
+            "weeklyDerived": {
+              "okt": null,
+              "nov": 12.6,
+              "dec": 16.1,
+              "jan": 17.5,
+              "feb": 17.5,
+              "mar": 16.8,
+              "apr": 16.1,
+              "maj": 16.1,
+              "jun": 14.0,
+              "jul": 17.5,
+              "aug": 16.1,
+              "sep": 14.0
+            },
+            "weeklyDerivedNote": "BEREGNET = timer/dag × 7 (står ikke i dokumentet). Timer/dag svarer til månedstimer / kalenderdage."
+          },
+          "hours2016": {
+            "source": "B s.13; C s.13",
+            "monthly": {
+              "nov": 45,
+              "dec": 56,
+              "jan": 66,
+              "feb": 70,
+              "mar": 90,
+              "apr": 75,
+              "maj": 75,
+              "jun": 62,
+              "jul": 80,
+              "aug": 75,
+              "sep": 70
+            },
+            "total": 764
+          }
+        },
+        "3": {
+          "label2025": "U23 3",
+          "hours2025": {
+            "source": "A s.1",
+            "monthly": {
+              "okt": "pause + frit",
+              "nov": 60,
+              "dec": 76,
+              "jan": 84,
+              "feb": 75,
+              "mar": 80,
+              "apr": 74,
+              "maj": 76,
+              "jun": 64,
+              "jul": 86,
+              "aug": 78,
+              "sep": 66
+            },
+            "perDay": {
+              "okt": null,
+              "nov": 2.0,
+              "dec": 2.5,
+              "jan": 2.7,
+              "feb": 2.7,
+              "mar": 2.6,
+              "apr": 2.5,
+              "maj": 2.5,
+              "jun": 2.1,
+              "jul": 2.8,
+              "aug": 2.5,
+              "sep": 2.2
+            },
+            "totalNovMar": 375,
+            "totalNovSep": 819,
+            "weeklyDerived": {
+              "okt": null,
+              "nov": 14.0,
+              "dec": 17.5,
+              "jan": 18.9,
+              "feb": 18.9,
+              "mar": 18.2,
+              "apr": 17.5,
+              "maj": 17.5,
+              "jun": 14.7,
+              "jul": 19.6,
+              "aug": 17.5,
+              "sep": 15.4
+            },
+            "weeklyDerivedNote": "BEREGNET = timer/dag × 7 (står ikke i dokumentet). Timer/dag svarer til månedstimer / kalenderdage."
+          },
+          "hours2016": {
+            "source": "B s.13; C s.13",
+            "monthly": {
+              "nov": 50,
+              "dec": 62,
+              "jan": 72,
+              "feb": 75,
+              "mar": 94,
+              "apr": 80,
+              "maj": 80,
+              "jun": 66,
+              "jul": 90,
+              "aug": 80,
+              "sep": 75
+            },
+            "total": 824
+          }
+        },
+        "4": {
+          "label2025": "U23 4",
+          "hours2025": {
+            "source": "A s.1",
+            "monthly": {
+              "okt": "pause + frit",
+              "nov": 68,
+              "dec": 84,
+              "jan": 90,
+              "feb": 80,
+              "mar": 84,
+              "apr": 78,
+              "maj": 80,
+              "jun": 66,
+              "jul": 92,
+              "aug": 80,
+              "sep": 68
+            },
+            "perDay": {
+              "okt": null,
+              "nov": 2.3,
+              "dec": 2.7,
+              "jan": 2.9,
+              "feb": 2.9,
+              "mar": 2.7,
+              "apr": 2.6,
+              "maj": 2.6,
+              "jun": 2.2,
+              "jul": 3.0,
+              "aug": 2.6,
+              "sep": 2.3
+            },
+            "totalNovMar": 406,
+            "totalNovSep": 870,
+            "weeklyDerived": {
+              "okt": null,
+              "nov": 16.1,
+              "dec": 18.9,
+              "jan": 20.3,
+              "feb": 20.3,
+              "mar": 18.9,
+              "apr": 18.2,
+              "maj": 18.2,
+              "jun": 15.4,
+              "jul": 21.0,
+              "aug": 18.2,
+              "sep": 16.1
+            },
+            "weeklyDerivedNote": "BEREGNET = timer/dag × 7 (står ikke i dokumentet). Timer/dag svarer til månedstimer / kalenderdage."
+          },
+          "hours2016": {
+            "source": "B s.13; C s.13",
+            "monthly": {
+              "nov": 55,
+              "dec": 68,
+              "jan": 78,
+              "feb": 80,
+              "mar": 98,
+              "apr": 85,
+              "maj": 85,
+              "jun": 70,
+              "jul": 100,
+              "aug": 85,
+              "sep": 80
+            },
+            "total": 884
+          }
+        }
+      },
+      "weeklyHours": {
+        "min": 10.5,
+        "max": 21.0,
+        "derived": true,
+        "note": "Min/max på tværs af årgange og måneder nov–sep, beregnet som timer/dag × 7 fra 2025-tabellen [A s.1]. Kun 'timer på cykel' (landevej, bane, MTB, spinning, ruller mv.) tæller [B s.12].",
+        "byPhase": {
+          "okt": {
+            "value": "pause + frit",
+            "source": "A s.1",
+            "description": "Oktober: 'pause + frit' (ingen timetal) [A s.1]"
+          },
+          "novDec": {
+            "min": 10.5,
+            "max": 18.9,
+            "derived": true,
+            "description": "Nov–dec: formopbygning primært via stigende træningsmængde (distance); bane-/MTB-/crossryttere kører dog også intervaller [B s.13–14; C s.14]"
+          },
+          "janFeb": {
+            "min": 16.1,
+            "max": 20.3,
+            "derived": true,
+            "description": "Efter nytår: relativt lang basisintervaltræning påbegyndes, mens mængden fortsat øges måned for måned [B s.14; C s.14]"
+          },
+          "mar": {
+            "min": 16.1,
+            "max": 18.9,
+            "derived": true,
+            "description": "Omkring marts: egentlige formtop-intervaller (korte, hårde intervaller) indføres i relation til ønsket tidspunkt for formtop [B s.14; C s.14–15]"
+          },
+          "aprSep": {
+            "min": 12.6,
+            "max": 21.0,
+            "derived": true,
+            "description": "Sæson (april–september). Juni lidt mindre (mange vigtige starter sluttende med DM), juli lidt mere (sommerferie/træningsbase), august–september lidt mindre; sæsonen bør køres helt til ende [B s.12–13; C s.14] (tekst om U19/U23, 2016)"
+          }
+        }
+      },
+      "annualHours": {
+        "2025": {
+          "year1": {
+            "novMar": 312,
+            "novSep": 694
+          },
+          "year2": {
+            "novMar": 344,
+            "novSep": 752
+          },
+          "year3": {
+            "novMar": 375,
+            "novSep": 819
+          },
+          "year4": {
+            "novMar": 406,
+            "novSep": 870
+          }
+        },
+        "2016": {
+          "year1": 702,
+          "year2": 764,
+          "year3": 824,
+          "year4": 884
+        }
+      },
+      "volumeProgression": {
+        "text": "Samme skabelon: progressivt stigende mængde over vinteren; i sæsonen samme skabelon som U19, dog med ca. 20 % forøgelse måned for måned. Naturligt at yngre U23-ryttere ligger lidt under anbefalingerne (fire år til at nå niveauet).",
+        "percentVsU19InSeason": 20,
+        "source": "B s.13; C s.14"
+      },
+      "sessionsPerWeek": {
+        "explicit": null,
+        "fromExampleWeeks": null
+      },
+      "exampleWeeks": null,
+      "intensityDistribution": null,
+      "raceDaysPerSeason": null,
+      "maxRide": null,
+      "strength": {
+        "sessionsPerWeek": {
+          "buildPhase": {
+            "min": 2,
+            "max": 3
+          },
+          "maintenancePhase": 1,
+          "source": "F s.1"
+        },
+        "minimumSessionsPerWinter": null,
+        "restBetweenSets": null,
+        "warmup": {
+          "text": "8 minutter på kondicykel + 1 x 20 squat med 50 % af træningsbelastning (ret/let svaj i ryggen, knæene på linje med fødderne)",
+          "source": "F s.1"
+        },
+        "periodization": [
+          {
+            "phase": "start november – medio marts",
+            "focus": "Tilvænning og muskelstyrke.",
+            "sessionsPerWeek": {
+              "min": 2,
+              "max": 3
+            },
+            "notes": [
+              "Prøv at få minimum 48 timer imellem hvert styrketræningspas",
+              "Husk restitutionsmåltid lige efter træning"
+            ],
+            "source": "F s.1"
+          },
+          {
+            "phase": "medio marts – start november",
+            "focus": "Vedligeholdelse af muskelstyrke",
+            "sessionsPerWeek": {
+              "min": 1,
+              "max": 1
+            },
+            "source": "F s.1"
+          }
+        ],
+        "programs": [
+          {
+            "name": "Styrketræningsprogram for U23 landsholdsryttere (Basis styrke)",
+            "phase": "start november – medio marts (opbygning); 1x/uge medio marts – start november (vedligehold)",
+            "source": "F s.1",
+            "exercises": [
+              {
+                "name": "Mave bøjning med vægtstang",
+                "catalogName": "BB sit up 01182",
+                "sets": 3,
+                "reps": "15-20 RM",
+                "notes": null,
+                "progression": null,
+                "source": "F s.1"
+              },
+              {
+                "name": "Ryg bøjning evt. med vægt på brystet",
+                "catalogName": "Roman chair back extension 04278",
+                "sets": 3,
+                "reps": "15-20 RM",
+                "notes": null,
+                "progression": null,
+                "source": "F s.1"
+              },
+              {
+                "name": "Squat",
+                "catalogName": "Deep back squat 03553",
+                "sets": 4,
+                "reps": "4-6 RM",
+                "notes": "Ret ryg/let svaj, knæene på linje med fødderne. Størst mulig indsats i den koncentriske fase.",
+                "progression": [
+                  {
+                    "sessions": "1-3",
+                    "sets": 3,
+                    "reps": "10-12 RM"
+                  },
+                  {
+                    "sessions": "4-6",
+                    "sets": 3,
+                    "reps": "8 RM"
+                  },
+                  {
+                    "sessions": "7+",
+                    "sets": 4,
+                    "reps": "4-6 RM"
+                  }
+                ],
+                "source": "F s.1"
+              },
+              {
+                "name": "Et bens pres",
+                "catalogName": "Single leg leg press 00925",
+                "sets": 4,
+                "reps": "4-6 RM til hvert ben",
+                "notes": "Hold hoften i sædet, knæ på linje med fod. Størst mulig indsats i den koncentriske fase.",
+                "progression": [
+                  {
+                    "sessions": "1-3",
+                    "sets": 3,
+                    "reps": "10-12 RM til hvert ben"
+                  },
+                  {
+                    "sessions": "4-6",
+                    "sets": 3,
+                    "reps": "8 RM til hvert ben"
+                  },
+                  {
+                    "sessions": "7+",
+                    "sets": 4,
+                    "reps": "4-6 RM til hvert ben"
+                  }
+                ],
+                "source": "F s.1"
+              }
+            ]
+          }
+        ],
+        "guidelines": [
+          "Opstartsprotokol: 3 pas 3×10-12, 3 pas 3×8, derefter 4×4-6 [F s.1].",
+          "Muskelstyrke opbygges primært ved 4-6 RM; 1-3 pas per uge; jo højere frekvens, jo større udbytte [F s.1].",
+          "Størst mulig indsats koncentrisk, kontrolleret excentrisk; styrke tidligt og cykel sent på dagen [F s.1]."
+        ]
+      },
+      "notes": [
+        "Der findes intet U23-kompendium blandt kilderne; U23-tekst stammer fra U17/U19-kompendierne [B s.13; C s.14]. Ingen eksempeluger, turlængdegrænse eller intensitetsangivelser for U23."
+      ]
+    },
+    "younger": {
+      "weeklyHours": null,
+      "notes": [
+        "Ingen tal for drenge/pige-klasser (fx 'Yngste Drenge/Yngste Pige'). Kun kvalitativt: kammeratskab, leg, sjov, klubliv og klubture er vigtige elementer [B s.5]."
+      ]
+    },
+    "senior": {
+      "weeklyHours": null,
+      "notes": [
+        "Ingen træningstal for seniorer. Kun oprykningsregler fra U19 til A/B/C/D-klassen [C s.30–31]."
+      ]
+    }
+  }
+}
