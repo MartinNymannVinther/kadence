@@ -43,6 +43,13 @@
       "when": 1790495497772,
       "tag": "0005_device_webhooks",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1790496655407,
+      "tag": "0006_erase_rider",
+      "breakpoints": true
     }
   ]
 }

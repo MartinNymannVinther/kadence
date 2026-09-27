@@ -46,20 +46,15 @@ it is a sibling's. Each carries a line at the top saying so.
 because the adapter is the family's and is kept in step across the
 tools; it is tested and costs nothing but lines.
 
-### A rider cannot yet have their own trail erased
+### Wahoo and Garmin have never answered a real request
 
-Deleting a rider deletes their rows by cascade, but the audit trail keeps
-the before-images of their check-ins and training until the whole team is
-deleted (`delete_workspace` purges it). A rider's right to erasure needs
-a `delete_rider` definer function that purges the trail for that rider's
-rows, like the workspace one. Planned for wave 4.
-
-### Docs still describe Plot in places
-
-`docs/deploy.md`, `docs/launch.md`, `docs/subprocessors.md` and
-`docs/haij-tool-card.md` came with the foundation and name portfolio
-examples. They are rewritten for Kadence in wave 4, when there is a
-product to launch and a model call to list.
+The adapters (src/modules/devices) are built from the public docs; the
+endpoints those do not pin down are marked "verify against the partner
+docs on approval" in the code. Garmin does not sign its pings (what a
+forged one can do is written at `verifyWebhook`), a ride whose download
+fails is not retried by the provider (the rider sees it in the link's
+last error and can upload the file), and two refreshes of one link at
+once are not serialised. All of it waits for developer access.
 
 ## Accepted, with the reason written down
 
@@ -120,4 +115,9 @@ A rider on a club team and a national squad at once needs two accounts
 
 ## Paid
 
-Nothing yet.
+### A rider cannot yet have their own trail erased
+
+Paid in wave 4: `erase_rider` (drizzle/0006) deletes one rider and the
+audit rows about them, checked by the function itself like
+`delete_workspace`, and records that an erasure happened without naming
+anyone (tests/team/erase.test.ts).

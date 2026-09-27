@@ -15,6 +15,7 @@ import {
   archiveRider,
   attachRiderInvitation,
   createRider,
+  eraseRider,
   RiderInput,
   setSharing,
   setThresholds,
@@ -143,4 +144,13 @@ export async function removeGuardianAction(raw: unknown) {
 
 export async function saveTeamSettingsAction(raw: unknown) {
   return runAction(raw, TeamSettingsInput, saveTeamSettings, ["/settings/team"]);
+}
+
+export async function eraseRiderAction(raw: unknown) {
+  return runAction(
+    raw,
+    z.object({ riderId: id, confirm: z.literal(true) }),
+    (ctx, input) => eraseRider(ctx, input.riderId),
+    PATHS,
+  );
 }

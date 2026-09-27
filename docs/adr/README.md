@@ -37,3 +37,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0015](0015-dcu-season-and-heart-rate-bands.md)  | The season runs October to September; DCU's heart-rate bands beside Kadence's zones | → 0014    |
 | [0016](0016-load-without-a-power-meter.md)       | Load without a power meter, on one scale                                            |           |
 | [0017](0017-ai-proposals-for-coaches.md)         | Three AI proposals for coaches, and the team's yes to riders' data                  | → 0008    |
+| [0018](0018-devices-act-as-the-rider.md)         | A device's ride comes in as the rider it belongs to                                 | → 0011    |

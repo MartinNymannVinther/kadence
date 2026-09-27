@@ -362,6 +362,11 @@ describe("rls coverage (guards future tables)", () => {
     // and the link hold. Everything after it runs as the rider, under the
     // ordinary policies.
     "device_link_owner",
+    // A rider's right to erasure (drizzle/0006): deletes one rider of the
+    // active team and purges the audit rows about that rider, which the
+    // append-only guard would otherwise keep forever. Checks itself that
+    // the caller coaches the team, like delete_workspace.
+    "erase_rider",
   ];
 
   it("only the named definer functions can be called by a runtime role", async () => {

@@ -1,4 +1,4 @@
-import { and, asc, eq } from "drizzle-orm";
+import { and, asc, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { Refused } from "@/core/action";
 import { riders, type RiderRow } from "@/core/db/schema";
@@ -150,5 +150,20 @@ export async function attachRiderInvitation(
   await withOrgContext(ctx, async (tx) => {
     await requireCoach(tx, ctx);
     await tx.update(riders).set({ invitationId }).where(eq(riders.id, riderId));
+  });
+}
+
+/**
+ * A rider's right to erasure: the rider, everything about them and the
+ * audit trail's copies of it, gone (drizzle/0006 `erase_rider`, which
+ * checks the caller coaches the team itself). Archiving keeps history;
+ * this does not. A coach does it at the rider's or the parents' request.
+ */
+export async function eraseRider(ctx: OrgContext, riderId: string): Promise<void> {
+  await withOrgContext(ctx, async (tx) => {
+    await requireCoach(tx, ctx);
+    const [row] = await tx.select({ id: riders.id }).from(riders).where(eq(riders.id, riderId));
+    if (!row) throw new Refused("notFound");
+    await tx.execute(sql`select erase_rider(${riderId})`);
   });
 }
