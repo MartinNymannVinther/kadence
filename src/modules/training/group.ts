@@ -21,10 +21,14 @@ export async function createGroupSessions(
   input: Omit<SessionInputT, "riderId">,
 ): Promise<{ groupKey: string; ids: string[] }> {
   return withOrgContext(ctx, async (tx) => {
-    await requireCoach(tx, ctx);
-    const groupKey = riderIds.length > 1 ? randomUUID() : null;
+    // A plan for several riders is a coach's; a session for one rider is
+    // anyone's who may write for that rider — a rider planning their own
+    // (createSessionIn checks).
+    const unique = [...new Set(riderIds)];
+    if (unique.length > 1) await requireCoach(tx, ctx);
+    const groupKey = unique.length > 1 ? randomUUID() : null;
     const ids: string[] = [];
-    for (const riderId of [...new Set(riderIds)]) {
+    for (const riderId of unique) {
       const { id } = await createSessionIn(tx, ctx, {
         ...input,
         riderId,

@@ -114,8 +114,16 @@ describe("planning", () => {
     ]);
   });
 
-  it("refuses a rider planning for a teammate, and a group plan from a rider", async () => {
+  it("lets a rider plan their own session, never a teammate's or a group", async () => {
+    const own = await createGroupSessions(ANNA, ["t_anna"], {
+      ...input("Egen tur"),
+      onDate: "2026-11-21",
+    });
+    expect(own.ids).toHaveLength(1);
     await expect(createGroupSessions(ANNA, ["t_bo"], input("x"))).rejects.toMatchObject({
+      code: "forbidden",
+    });
+    await expect(createGroupSessions(ANNA, ["t_anna", "t_bo"], input("x"))).rejects.toMatchObject({
       code: "forbidden",
     });
     await expect(createGroupSessions(MOR, ["t_anna"], input("x"))).rejects.toMatchObject({
