@@ -6,8 +6,9 @@ import { useTranslations } from "next-intl";
 import { pushErrorKey } from "@/components/devices/device-words";
 import { Button } from "@/components/ui/button";
 import { pushSessionAction } from "@/modules/devices/actions";
+import type { ProviderId } from "@/modules/devices/providers";
 
-type Provider = "wahoo" | "garmin";
+type Provider = ProviderId;
 
 /**
  * "Send til Wahoo" / "Send til Garmin", for a bike session whose rider has

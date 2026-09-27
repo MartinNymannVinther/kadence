@@ -9,7 +9,7 @@ import { requireWriteFor } from "@/modules/team/access";
 import { activityFromFit } from "./from-fit";
 
 /**
- * A ride comes in: from the rider's upload, or from Wahoo or Garmin. The
+ * A ride comes in: from the rider's upload, or from Wahoo, Garmin or Polar. The
  * file is decoded, summarised and stored beside the activity (so a better
  * decoder can read it again), the same file twice is refused, and the ride
  * lands on the planned session it fulfilled — same rider, same day, same
@@ -27,7 +27,10 @@ export type ImportResult = {
   crcOk: boolean;
 };
 
-export type ImportSource = { source: "fit" | "wahoo" | "garmin"; externalId?: string | null };
+export type ImportSource = {
+  source: "fit" | "wahoo" | "garmin" | "polar";
+  externalId?: string | null;
+};
 
 export async function importFitIn(
   tx: AppTransaction,
@@ -69,7 +72,7 @@ export async function importFitIn(
       and(
         eq(activities.riderId, riderId),
         eq(activities.startedAt, values.startedAt),
-        inArray(activities.source, ["fit", "wahoo", "garmin"]),
+        inArray(activities.source, ["fit", "wahoo", "garmin", "polar"]),
       ),
     );
   if (sameStart) throw new Refused("conflict", "duplicate");

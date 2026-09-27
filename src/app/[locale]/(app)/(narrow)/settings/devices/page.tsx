@@ -18,10 +18,11 @@ const SUBPROCESSORS =
   "https://github.com/MartinNymannVinther/kadence/blob/main/docs/subprocessors.md#services-a-rider-chooses-to-connect";
 
 /**
- * A rider's own Wahoo and Garmin (ADR 0018): each with where it stands and
- * the one thing to do next. Without the installation's keys a provider
- * says so and FIT upload does the job (dogma 2). Wahoo and Garmin are US
- * companies; the rider chooses to connect, and the page says what flows.
+ * A rider's own Wahoo, Garmin and Polar (ADR 0018, 0020): each with where
+ * it stands and the one thing to do next. Without the installation's keys
+ * a provider says so and FIT upload does the job (dogma 2). Wahoo and
+ * Garmin are US companies, Polar a Finnish one; the rider chooses to
+ * connect, and the page says what flows.
  * Coaches and parents do not connect anyone's device; they are told so.
  * The OAuth round trip lands back here with `?connected=` or `?error=`.
  */

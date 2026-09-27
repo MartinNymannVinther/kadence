@@ -39,4 +39,5 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0017](0017-ai-proposals-for-coaches.md)         | Three AI proposals for coaches, and the team's yes to riders' data                  | → 0008       |
 | [0018](0018-devices-act-as-the-rider.md)         | A device's ride comes in as the rider it belongs to                                 | → 0011       |
 | [0019](0019-hardening-after-the-first-review.md) | Hardening after the first security review                                           | → 0011       |
+| [0020](0020-polar-as-the-third-device.md)        | Polar as the third device                                                           | → 0018       |
 | [0021](0021-coach-guide-and-tips.md)             | A coach guide in Kadence's own words, and tips that never enforce                   | → 0013, 0014 |

@@ -66,19 +66,20 @@ export async function handleWebhook(
     });
 
   let payload: unknown;
+  let raw: Uint8Array;
   try {
-    const bytes = await readLimited(
-      request.body,
-      MAX_WEBHOOK_BYTES,
-      request.headers.get("content-length"),
-    );
-    payload = JSON.parse(new TextDecoder().decode(bytes));
+    raw = await readLimited(request.body, MAX_WEBHOOK_BYTES, request.headers.get("content-length"));
+    payload = JSON.parse(new TextDecoder().decode(raw));
   } catch (error) {
     const tooLarge = error instanceof DeviceHttpError && error.code === "too_large";
     return new Response(null, { status: tooLarge ? 413 : 400 });
   }
 
-  if (!provider.verifyWebhook(payload, request.headers)) return new Response(null, { status: 401 });
+  // A ping asks for nothing and comes before the provider has handed over
+  // the key it signs with (Polar): it is answered, and nothing else happens.
+  if (provider.isPing?.(payload, request.headers)) return new Response(null, { status: 200 });
+  if (!provider.verifyWebhook(payload, request.headers, raw))
+    return new Response(null, { status: 401 });
 
   const events = provider.webhookEvents(payload).slice(0, MAX_EVENTS);
   if (events.length > 0) defer(() => processWebhookEvents(provider, events));

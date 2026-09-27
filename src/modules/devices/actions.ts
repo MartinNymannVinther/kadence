@@ -24,7 +24,7 @@ export async function pushSessionAction(raw: unknown) {
   );
 }
 
-/** Disconnects the caller's own Wahoo or Garmin account. */
+/** Disconnects the caller's own Wahoo, Garmin or Polar account. */
 export async function disconnectAction(raw: unknown) {
   return runAction(raw, z.object({ provider }), (ctx, input) => disconnect(ctx, input.provider), [
     "/settings/devices",

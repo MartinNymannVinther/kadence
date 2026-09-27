@@ -10,8 +10,9 @@ import { codeChallenge, randomToken, safeEqual } from "./oauth";
 import { providerById, type ProviderId } from "./providers";
 
 /**
- * Connecting a rider's Wahoo or Garmin account: OAuth 2.0 with PKCE and
- * state.
+ * Connecting a rider's Wahoo, Garmin or Polar account: OAuth 2.0 with
+ * state, and PKCE where the provider supports it (Wahoo and Garmin; Polar
+ * documents no PKCE and exchanges the code with the client's secret).
  *
  * `startConnect` is for a signed-in rider only — a coach cannot connect a
  * device in a rider's name, and the database refuses the row if one tries.
@@ -23,9 +24,10 @@ import { providerById, type ProviderId } from "./providers";
  *
  * `finishConnect` checks that the callback is this person's, in this
  * team, for this provider, in time, with the same state; exchanges the
- * code with the verifier; asks the provider whose account it is; and
- * stores the sealed tokens on the rider's link. It answers with where to
- * send the browser: the devices settings, saying connected or naming what
+ * code with the verifier; asks the provider whose account it is; registers
+ * the account where the provider requires it (Polar); and stores the
+ * sealed tokens on the rider's link. It answers with where to send the
+ * browser: the devices settings, saying connected or naming what
  * went wrong in a short code.
  */
 
@@ -135,7 +137,8 @@ export async function finishConnect(
   let tokens;
   try {
     tokens = await provider.exchangeCode(params.code, pending.verifier, redirectUri(providerId));
-    externalUserId = await provider.userId(tokens.accessToken);
+    externalUserId = await provider.userId(tokens.accessToken, tokens.externalUserId);
+    await provider.register?.(tokens.accessToken, externalUserId);
   } catch (error) {
     console.error("device connect: exchange failed", providerId, loggable(error));
     return settingsUrl({ error: "exchange_failed" });

@@ -1,6 +1,6 @@
 # ADR 0018: A device's ride comes in as the rider it belongs to
 
-Status: accepted · Date: 2026-09-27
+Status: accepted · Date: 2026-09-27 · Amended by 0020 (Polar, a third provider)
 
 ## Context
 

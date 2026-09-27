@@ -10,7 +10,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**
- * Where Wahoo or Garmin sends the rider back: checks the state against
+ * Where Wahoo, Garmin or Polar sends the rider back: checks the state against
  * the sealed cookie, exchanges the code with the verifier, stores the
  * rider's link (src/modules/devices/connect.ts) and lands on the devices
  * settings with `?connected=<provider>` or `?error=<code>`. The cookie is

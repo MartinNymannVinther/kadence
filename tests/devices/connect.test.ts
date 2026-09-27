@@ -188,6 +188,14 @@ describe("a coach", () => {
         lastSyncAt: null,
         lastError: "",
       },
+      {
+        provider: "polar",
+        configured: true,
+        canPush: false,
+        status: null,
+        lastSyncAt: null,
+        lastError: "",
+      },
     ]);
     expect(JSON.stringify(views)).not.toContain("sealed");
   });

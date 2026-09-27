@@ -7,10 +7,11 @@ import { buttonVariants } from "@/components/ui/button";
 import { ConfirmButton } from "@/components/ui/confirm-button";
 import { cn } from "@/lib/utils";
 import { disconnectAction } from "@/modules/devices/actions";
+import type { ProviderId } from "@/modules/devices/providers";
 import { lastErrorKey } from "./device-words";
 
 export type DeviceLink = {
-  provider: "wahoo" | "garmin";
+  provider: ProviderId;
   configured: boolean;
   canPush: boolean;
   status: "connected" | "error" | "revoked" | null;
