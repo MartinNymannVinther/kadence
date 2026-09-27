@@ -17,7 +17,8 @@ import { z } from "zod";
  */
 
 /**
- * Kadence's own seven zones. Not DCU's: DCU publishes none (ADR 0014).
+ * Kadence's own seven zones. Not DCU's: DCU's heart-rate-reserve bands are
+ * kept beside them as reference (ADR 0015).
  * They follow the bands of threshold power and threshold heart rate in
  * wide use among cycling coaches, so a coach who thinks in another model
  * can still read them; a session may also say watts, pulse or RPE
@@ -35,6 +36,23 @@ export const ZONE_FTP_PCT: Record<Zone, { low: number; high: number }> = {
   5: { low: 106, high: 120 },
   6: { low: 121, high: 150 },
   7: { low: 151, high: 250 },
+};
+
+/**
+ * The one power a zone is ridden at when a single number is needed: what
+ * a trainer in ERG mode holds, and what the load model estimates a
+ * planned step from. The middle of each band, except where the middle
+ * would not be riding: zone 1 is held at 50 % (easy spinning, not 27 %),
+ * and zone 7, open-ended above 150 %, at 160 %.
+ */
+export const ZONE_FTP_RIDE: Record<Zone, number> = {
+  1: 50,
+  2: 65,
+  3: 83,
+  4: 98,
+  5: 113,
+  6: 135,
+  7: 160,
 };
 
 export const ZONE_HR_PCT: Record<Zone, { low: number; high: number }> = {

@@ -77,13 +77,14 @@ codebase to:
 - **DCU is the default** (ADR 0014). The season plan is filled from DCU's
   2025 hours for the rider's class and year in it, the strength
   programmes are DCU's (Team Danmark's) with their progression, and a
-  deviation is always shown, never hidden. DCU publishes no zone model:
-  Kadence's zones are its own and say so.
+  deviation is always shown, never hidden. Kadence's seven zones are its
+  own; DCU's heart-rate-reserve bands are shown beside them for reference
+  (ADR 0015).
 - **Guardrails, not bans.** Weekly hours against DCU's corridor, the
   longest ride for the class, the week-to-week ramp, strength sessions
   closer than 48 hours, a wellbeing check-in in the yellow zone for too
   long, ATK's pain ladder — shown to the coach, never enforced.
-- **Load without a power meter** (ADR 0015). Session RPE (minutes ×
+- **Load without a power meter** (ADR 0016). Session RPE (minutes ×
   effort 1–10) is the base model and works for every session including
   strength; power and heart rate refine it when they exist. Fitness,
   fatigue and form carry Kadence's own names: TSS, CTL, ATL, TSB, NP and
@@ -179,10 +180,12 @@ codebase to:
 
 ## Domain knowledge
 
-- **DCU's classes go by birth year** (docs/research/dcu-traeningsanbefalinger.md):
-  U17 is the year a rider turns 15 and 16, U19 17 and 18, U23 19 to 22.
-  The season runs November to September; October is a break and free
-  riding. Only hours on the bike count toward the hours.
+- **DCU's classes go by birth year** (DCU's sportslige regler 2025, cited
+  in `src/modules/dcu/classes.ts`): U17 is the calendar year a rider turns
+  15 and 16, U19 17 and 18, U23 19 to 22. The season runs October to
+  September and leads into the racing year it ends in; October is a break
+  and free riding (ADR 0015). Only hours on the bike count toward the
+  hours.
 - **DCU's 2025 hours** (Landevej_traeningsanbefalinger_2025.pdf) are the
   source of the season plan: U17 1st/2nd year 429/490 h November–September,
   U19 554/622, U23 1st–4th year 694/752/819/870. Longest ride: U17 at most

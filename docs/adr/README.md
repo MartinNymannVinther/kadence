@@ -34,3 +34,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0012](0012-one-open-conversation.md)            | One open conversation, no private messages                             | → 0011    |
 | [0013](0013-youth-defaults.md)                   | Youth defaults — no weight, no leaderboards, school in the calendar    |           |
 | [0014](0014-dcu-as-the-default.md)               | DCU's recommendations are the default, and deviations show             |           |
+| [0015](0015-dcu-season-and-heart-rate-bands.md)   | The season runs October to September; DCU's heart-rate bands beside Kadence's zones | → 0014    |
