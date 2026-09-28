@@ -20,6 +20,7 @@ import {
   strengthFrequency,
   weeklyCorridor,
 } from "@/modules/dcu";
+import type { RiderInsight } from "@/modules/insight/rider";
 import { getInsights } from "@/modules/insight/service";
 import { riderClass } from "@/modules/season/class";
 import { requireCoach } from "@/modules/team/access";
@@ -114,6 +115,19 @@ function raceRulesLine(category: string): string {
 }
 
 const SPORTS = ["bike", "strength", "other"] as const;
+
+/**
+ * Every flag the week raised, afklaret or not: the draft plans load, and
+ * a pain the coach has talked about is still a pain to plan around (ADR
+ * 0026). The brief and the tips ask "who needs my attention" and see open
+ * flags only; the draft asks "how much can this rider do".
+ */
+export function draftFlagKinds(
+  insight: Pick<RiderInsight, "flags" | "resolved"> | undefined,
+): string[] {
+  if (!insight) return [];
+  return [...insight.flags, ...insight.resolved.map((r) => r.flag)].map((f) => f.kind);
+}
 
 /** The model's week, made safe: dates in the week, known sports and templates, real sessions. */
 export function sanitizeWeekDraft(
@@ -237,7 +251,7 @@ export async function proposeWeek(
       priority: e.priority,
     })),
     recentWeeks: (insight?.weeks ?? []).slice(-4).map((w) => w.bikeHours),
-    flags: (insight?.flags ?? []).map((f) => f.kind),
+    flags: draftFlagKinds(insight),
     templates: templates.map((t) => ({
       id: t.id,
       name: t.name,

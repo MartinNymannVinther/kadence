@@ -1,5 +1,7 @@
 import { useTranslations } from "next-intl";
 import { FlagList } from "@/components/insight/flag-item";
+import { ResolvedFlags } from "@/components/insight/resolved-flags";
+import { resolvedGroups } from "@/components/insight/resolved-groups";
 import { WellbeingAction } from "@/components/insight/wellbeing-action";
 import { basisText } from "@/components/season/basis-text";
 import type { ZoneDay } from "@/components/wellbeing/zone-days";
@@ -8,8 +10,9 @@ import type { RiderInsight } from "@/modules/insight/rider";
 
 /**
  * One rider's week for the coach: the guardrails' warnings with the
- * wellbeing action on top, and the last two weeks of check-in zones.
- * Shown, never enforced.
+ * wellbeing action on top, what the coach has marked afklaret this week
+ * (ADR 0026), and the last two weeks of check-in zones. Shown, never
+ * enforced.
  */
 export function RiderInsightCard({
   insight,
@@ -22,6 +25,7 @@ export function RiderInsightCard({
 }) {
   const t = useTranslations("insight");
   const wellbeing = useTranslations("wellbeing");
+  const klass = basisText(insight?.basis, (k, v) => t(k, v));
   return (
     <div className="border-border bg-card flex flex-col gap-5 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5">
       <div className="flex flex-col gap-2.5">
@@ -29,7 +33,11 @@ export function RiderInsightCard({
         <WellbeingAction status={insight?.wellbeing ?? null} />
         <FlagList
           flags={insight?.flags ?? []}
-          klass={basisText(insight?.basis, (k, v) => t(k, v))}
+          klass={klass}
+          resolve={insight ? { riderId: insight.riderId } : undefined}
+        />
+        <ResolvedFlags
+          groups={insight ? resolvedGroups([insight], () => klass, { named: false }) : []}
         />
       </div>
       <div className="flex flex-col gap-2">

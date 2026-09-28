@@ -198,6 +198,53 @@ export const riderGoals = pgTable(
 export type RiderGoalRow = typeof riderGoals.$inferSelect;
 
 /**
+ * A coach's "afklaret" on one guardrail flag for one week (ADR 0026). The
+ * flag is never stored — it is computed from the rider's data on every
+ * view (src/modules/load/guardrails.ts) — only the coach's decision that it
+ * has been dealt with: the rider, the kind, the Monday of the week, the
+ * most serious severity seen and the values of every flag of that kind at
+ * the press, so a flag that comes back worse is shown again
+ * (src/modules/load/resolved.ts). The week, the severity and the snapshot
+ * are the server's, never the client's. Only a coach writes; a rider
+ * cannot wave their own warning away. Read with the scope of the data
+ * behind the flag: a resolution of a check-in flag is health data.
+ */
+export const flagResolutions = pgTable(
+  "flag_resolutions",
+  {
+    id: domainId("id"),
+    orgId: tenant(),
+    riderId: text("rider_id")
+      .notNull()
+      .references(() => riders.id, { onDelete: "cascade" }),
+    /** A FlagKind from src/modules/load/guardrails.ts. */
+    kind: text("kind").notNull(),
+    /** info | warn | alert — the most serious of the kind when resolved. */
+    severity: text("severity").notNull(),
+    /** The Monday of the week the flag was raised in. */
+    weekMonday: date("week_monday").notNull(),
+    /** The `values` of every flag of this kind that fired at the press. */
+    seen: jsonb("seen").$type<Record<string, number | string>[]>().notNull().default([]),
+    /** Reserved for a later UI; open reading for the rider and their guardians (ADR 0026). */
+    note: text("note").notNull().default(""),
+    resolvedBy: text("resolved_by").references(() => users.id, { onDelete: "set null" }),
+    ...timestamps,
+  },
+  (t) => [
+    uniqueIndex("flag_resolutions_rider_kind_week_uq").on(t.riderId, t.kind, t.weekMonday),
+    index("flag_resolutions_org_week_idx").on(t.orgId, t.weekMonday),
+    check(
+      "flag_resolutions_kind",
+      sql`${t.kind} in ('hours_above_corridor','hours_below_corridor','ramp','longest_ride','strength_spacing','compliance','wellbeing_talk','wellbeing_help','pain','sleep_short','sleep_below_minimum')`,
+    ),
+    check("flag_resolutions_severity", sql`${t.severity} in ('info','warn','alert')`),
+    check("flag_resolutions_monday", sql`extract(isodow from ${t.weekMonday}) = 1`),
+  ],
+);
+
+export type FlagResolutionRow = typeof flagResolutions.$inferSelect;
+
+/**
  * A season plan for one rider: twelve months of planned hours and a phase
  * each, from October (ADR 0015). Filled from DCU's recommendation for the rider's
  * class and year in it (src/modules/dcu), then the coach's to change;

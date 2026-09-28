@@ -45,3 +45,6 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0023](0023-a-map-served-by-kadence.md)          | The map behind a route is served by Kadence itself                                  | → 0022       |
 | [0024](0024-process-goals.md)                    | Process goals, counted from what was done                                           | → 0013       |
 | [0025](0025-training-blocks.md)                  | Training blocks, previewed before they are applied                                  | → 0014       |
+| [0026](0026-resolved-flags.md)                   | A coach's "afklaret" on a guardrail flag, one week at a time                        | → 0011, 0017 |
+| [0027](0027-strava-stays-a-file-source.md)       | Strava stays a file source                                                          | → 0018, 0022 |
+| [0028](0028-zoom-on-the-curves.md)               | Zoom on the ride's curves: a drag or two taps, and no number changes                | → 0022       |

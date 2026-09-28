@@ -91,6 +91,10 @@ beforeAll(async () => {
       starts_on: DAY,
       ends_on: DAY,
     });
+    // One resolution of a training flag and one of a check-in flag: the
+    // second is health data and follows the check-ins (drizzle/0013).
+    for (const kind of ["ramp", "pain"])
+      await seed("flag_resolutions", { rider_id: r, kind, severity: "warn", week_monday: DAY });
     await seed("activities", {
       id: `act_${r}`,
       rider_id: r,
@@ -139,6 +143,18 @@ describe("the coach", () => {
     expect(await count(COACH, "device_links")).toBe(1);
   });
 
+  it("reads every resolution and marks a flag afklaret for any rider", async () => {
+    expect(await count(COACH, "flag_resolutions")).toBe(6);
+    const q = insertSql("flag_resolutions", {
+      org_id: ORG,
+      rider_id: "r2",
+      kind: "sleep_short",
+      severity: "warn",
+      week_monday: DAY,
+    });
+    expect((await asApp(app, COACH, (c) => c.query(q.text, q.values))).rowCount).toBe(1);
+  });
+
   it("cannot connect a device in a rider's name", async () => {
     const q = insertSql("device_links", {
       org_id: ORG,
@@ -173,6 +189,7 @@ describe("a rider", () => {
       "comments",
       "rider_measurements",
       "rider_goals",
+      "flag_resolutions",
     ]) {
       expect(await count(R1, table, "rider_id <> 'r1'")).toBe(0);
     }
@@ -203,6 +220,28 @@ describe("a rider", () => {
       c.query(`update activities set rpe = 9 where rider_id = 'r2'`),
     );
     expect(upd.rowCount).toBe(0);
+  });
+
+  it("reads the coach's afklaret on their own flags, and cannot wave a warning away", async () => {
+    expect(await count(R1, "flag_resolutions", "rider_id = 'r1'")).toBe(2);
+    const own = insertSql("flag_resolutions", {
+      org_id: ORG,
+      rider_id: "r1",
+      kind: "sleep_short",
+      severity: "warn",
+      week_monday: DAY,
+    });
+    expect(await expectSqlError(asApp(app, R1, (c) => c.query(own.text, own.values)))).toBe(
+      "42501",
+    );
+    const upd = await asApp(app, R1, (c) =>
+      c.query(`update flag_resolutions set note = 'x' where rider_id = 'r1'`),
+    );
+    expect(upd.rowCount).toBe(0);
+    const del = await asApp(app, R1, (c) =>
+      c.query(`delete from flag_resolutions where rider_id = 'r1'`),
+    );
+    expect(del.rowCount).toBe(0);
   });
 
   it("cannot add a rider, change the template library or the team's calendar", async () => {
@@ -286,6 +325,27 @@ describe("a parent", () => {
       return c.query(`select count(*)::int as n from checkins`);
     });
     expect(shared.rows[0].n).toBe(1);
+  });
+
+  it("sees a resolution of a training flag, and of a check-in flag only if the rider shares wellbeing", async () => {
+    expect(await count(PARENT, "flag_resolutions", "rider_id = 'r1' and kind = 'ramp'")).toBe(1);
+    expect(await count(PARENT, "flag_resolutions", "rider_id = 'r1' and kind = 'pain'")).toBe(0);
+    const shared = await asApp(app, R1, async (c) => {
+      await c.query(`update riders set share_wellbeing = true where id = 'r1'`);
+      await c.query("select set_config('app.user_id', $1, true)", [PARENT.userId]);
+      return c.query(`select count(*)::int as n from flag_resolutions where rider_id = 'r1'`);
+    });
+    expect(shared.rows[0].n).toBe(2);
+    const q = insertSql("flag_resolutions", {
+      org_id: ORG,
+      rider_id: "r1",
+      kind: "ramp",
+      severity: "warn",
+      week_monday: "2026-11-09",
+    });
+    expect(await expectSqlError(asApp(app, PARENT, (c) => c.query(q.text, q.values)))).toBe(
+      "42501",
+    );
   });
 
   it("loses the training too when the rider stops sharing it", async () => {
@@ -389,7 +449,14 @@ describe("confirming a guardian is the rider's alone", () => {
 describe("a member who is neither rider nor parent", () => {
   it("sees the team's calendar and library and no rider", async () => {
     expect(await count(OTHER, "riders")).toBe(0);
-    for (const table of ["checkins", "activities", "planned_sessions", "comments", "guardians"]) {
+    for (const table of [
+      "checkins",
+      "activities",
+      "planned_sessions",
+      "comments",
+      "guardians",
+      "flag_resolutions",
+    ]) {
       expect(await count(OTHER, table)).toBe(0);
     }
     expect(await count(OTHER, "calendar_events")).toBe(1);

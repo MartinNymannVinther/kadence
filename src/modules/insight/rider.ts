@@ -6,12 +6,16 @@ import {
   forecastForm,
   guardrails,
   loadSeries,
+  splitResolved,
   weeklyTotals,
   wellbeingStatus,
   type ComplianceColour,
   type Flag,
+  type FlagKind,
   type Forecast,
   type LoadDay,
+  type ResolvedFlag,
+  type Severity,
   type WeekTotal,
   type WellbeingStatus,
 } from "@/modules/load";
@@ -29,6 +33,14 @@ export const SERIES_DAYS = 90;
 /** Days read before the series starts, so fitness has warmed up by its first day. */
 export const WARMUP_DAYS = 120;
 
+/** A coach's "afklaret" this week, as the row's key (ADR 0026). */
+export type InsightResolution = {
+  id: string;
+  kind: FlagKind;
+  severity: Severity;
+  seen: Flag["values"][];
+};
+
 export type RiderInsight = {
   riderId: string;
   name: string;
@@ -38,7 +50,10 @@ export type RiderInsight = {
   corridor: WeeklyCorridor | null;
   series: LoadDay[];
   weeks: WeekTotal[];
+  /** The week's open flags, the most serious first. */
   flags: Flag[];
+  /** This week's flags a coach has marked afklaret and that still fire; `flags` holds the open ones. */
+  resolved: ResolvedFlag<InsightResolution>[];
   wellbeing: WellbeingStatus | null;
   today: LoadDay | null;
   /** Form ahead if the plan is ridden, to the next A/B race (src/modules/load/forecast.ts). */
@@ -55,6 +70,7 @@ export function riderInsight(
   todayIso: string,
   wellbeingVisible: boolean,
   races: readonly InsightRace[] = [],
+  resolutions: readonly InsightResolution[] = [],
 ): RiderInsight {
   const monday = mondayOf(todayIso);
   const sunday = addDaysIso(monday, 6);
@@ -141,6 +157,7 @@ export function riderInsight(
     sleepMinimum: age < 18 ? 8 : null,
     compliance: colours,
   });
+  const { open, resolved } = splitResolved(flags, resolutions);
 
   return {
     riderId: rider.id,
@@ -156,7 +173,8 @@ export function riderInsight(
     corridor,
     series,
     weeks,
-    flags,
+    flags: open,
+    resolved,
     wellbeing,
     today: series.at(-1) ?? null,
     forecast: forecastAhead(series.at(-1) ?? null, sessions, races, todayIso),

@@ -19,20 +19,32 @@ import type { WellbeingStatus } from "./wellbeing";
  * Pure: imports nothing from the database.
  */
 
-export type Severity = "info" | "warn" | "alert";
+export const SEVERITIES = ["info", "warn", "alert"] as const;
+export type Severity = (typeof SEVERITIES)[number];
 
-export type FlagKind =
-  | "hours_above_corridor"
-  | "hours_below_corridor"
-  | "ramp"
-  | "longest_ride"
-  | "strength_spacing"
-  | "wellbeing_talk"
-  | "wellbeing_help"
-  | "pain"
-  | "sleep_short"
-  | "sleep_below_minimum"
-  | "compliance";
+/**
+ * Kinds computed from training alone; a resolution of one is read with
+ * the 'training' scope (drizzle/0013).
+ */
+export const TRAINING_KINDS = [
+  "hours_above_corridor",
+  "hours_below_corridor",
+  "ramp",
+  "longest_ride",
+  "strength_spacing",
+  "compliance",
+] as const;
+/** Kinds computed from the check-ins: health data, read with the 'wellbeing' scope (drizzle/0013). */
+export const WELLBEING_KINDS = [
+  "wellbeing_talk",
+  "wellbeing_help",
+  "pain",
+  "sleep_short",
+  "sleep_below_minimum",
+] as const;
+/** Every kind, the partition above made total by construction. */
+export const FLAG_KINDS = [...TRAINING_KINDS, ...WELLBEING_KINDS] as const;
+export type FlagKind = (typeof FLAG_KINDS)[number];
 
 export interface Flag {
   kind: FlagKind;

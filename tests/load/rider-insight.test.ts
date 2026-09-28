@@ -99,4 +99,21 @@ describe("a rider's insight", () => {
     expect(hidden.wellbeing).toBeNull();
     expect(hidden.flags.map((f) => f.kind)).not.toContain("pain");
   });
+
+  it("moves a flag a coach has marked afklaret out of the open ones", () => {
+    const checks = [checkin("2026-12-10", { pain: 2 })];
+    const insight = riderInsight(
+      rider,
+      [],
+      [],
+      checks,
+      TODAY,
+      true,
+      [],
+      [{ id: "x", kind: "pain", severity: "warn", seen: [{ pain: 2 }] }],
+    );
+    expect(insight.flags.map((f) => f.kind)).not.toContain("pain");
+    expect(insight.resolved.map((r) => r.flag.kind)).toEqual(["pain"]);
+    expect(insight.resolved[0]!.resolution.id).toBe("x");
+  });
 });

@@ -44,6 +44,10 @@ const TABLES: Array<{ table: string; row: (s: string) => Record<string, unknown>
     }),
   },
   {
+    table: "flag_resolutions",
+    row: (s) => ({ rider_id: `rider_${s}`, kind: "ramp", severity: "warn", week_monday: DAY }),
+  },
+  {
     table: "season_plans",
     row: (s) => ({ rider_id: `rider_${s}`, season_start_year: 2026, basis: "U19-1", months: [] }),
   },
@@ -246,6 +250,16 @@ describe("a row can only name rows of its own team (drizzle/0003)", () => {
       },
     ],
     ["a guardian for B's rider", { table: "guardians", rider_id: "rider_b", name: "x" }],
+    [
+      "a resolution for B's rider",
+      {
+        table: "flag_resolutions",
+        rider_id: "rider_b",
+        kind: "ramp",
+        severity: "warn",
+        week_monday: DAY,
+      },
+    ],
     [
       "a comment on B's session",
       {

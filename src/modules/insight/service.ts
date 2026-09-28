@@ -1,19 +1,23 @@
-import { addDaysIso, todayInCopenhagen } from "@/core/dates";
+import { addDaysIso, mondayOf, todayInCopenhagen } from "@/core/dates";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { whoAmIIn } from "@/modules/team/access";
-import { FORECAST_MAX_DAYS } from "@/modules/load";
+import { FORECAST_MAX_DAYS, type FlagKind, type Severity } from "@/modules/load";
 import { gather } from "./gather";
+import { resolutionsFor } from "./resolutions";
 import { riderInsight, SERIES_DAYS, WARMUP_DAYS, type RiderInsight } from "./rider";
 
 /**
  * The insight for the pages: one rider's load and guardrails, or the whole
  * team's, ordered so the riders who need attention come first. A parent
  * gets their children's, with wellbeing only where the rider shares it —
- * which the database has already decided by what it returned.
+ * which the database has already decided by what it returned. A flag a
+ * coach has marked afklaret this week is split off here (ADR 0026), so
+ * every consumer of `flags` sees the open ones alone.
  */
 
 const SEVERITY = { alert: 3, warn: 2, info: 1 } as const;
 
+/** Open flags only: a rider whose flags are all afklaret sorts with the calm ones. */
 export function attentionScore(insight: RiderInsight): number {
   return insight.flags.reduce((sum, f) => sum + SEVERITY[f.severity] ** 2, 0);
 }
@@ -32,6 +36,11 @@ export async function getInsights(
       riderIds: options.riderIds,
       aheadTo: addDaysIso(today, FORECAST_MAX_DAYS),
     });
+    const resolutions = await resolutionsFor(
+      tx,
+      data.riders.map((r) => r.id),
+      mondayOf(today),
+    );
     const insights = data.riders.map((rider) => {
       const checks = data.checkins.filter((c) => c.riderId === rider.id);
       // A parent's view has check-ins only when the rider shares them; a
@@ -46,6 +55,14 @@ export async function getInsights(
         today,
         wellbeingVisible,
         data.races.filter((r) => r.riderId === null || r.riderId === rider.id),
+        resolutions
+          .filter((r) => r.riderId === rider.id)
+          .map((r) => ({
+            id: r.id,
+            kind: r.kind as FlagKind,
+            severity: r.severity as Severity,
+            seen: r.seen,
+          })),
       );
     });
     return insights.sort(
