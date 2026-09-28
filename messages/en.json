@@ -1430,7 +1430,13 @@
       "veryTired": "Right now {name} is quite tired. Sleep, food and rest help.",
       "label": "Fitness over the last 90 days"
     },
-    "formScale": "above 0 rested · below 0 tired"
+    "formScale": "above 0 rested · below 0 tired",
+    "ahead": "If the plan is ridden",
+    "today": "Today",
+    "readoutAhead": "{date}, if the plan is ridden: fitness {fitness} · fatigue {fatigue} · freshness {form}",
+    "aheadRace": "If {name} rides what is planned, freshness is expected to be {form} at {title} ({priority} race, {date}). A forecast to plan with, not a target.",
+    "aheadNoRace": "The dashed lines show where the curves are heading over the next {days, plural, one {# day} other {# days}} if the plan is ridden.",
+    "you": "you"
   },
   "insight": {
     "title": "Needs attention",

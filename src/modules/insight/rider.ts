@@ -3,18 +3,20 @@ import type { CheckinRow, RiderRow } from "@/core/db/schema";
 import { LONGEST_RIDE, seasonStartYear, weeklyCorridor, type WeeklyCorridor } from "@/modules/dcu";
 import {
   compliance,
+  forecastForm,
   guardrails,
   loadSeries,
   weeklyTotals,
   wellbeingStatus,
   type ComplianceColour,
   type Flag,
+  type Forecast,
   type LoadDay,
   type WeekTotal,
   type WellbeingStatus,
 } from "@/modules/load";
 import { riderClass } from "@/modules/season/class";
-import type { InsightActivity, InsightSession } from "./gather";
+import type { InsightActivity, InsightRace, InsightSession } from "./gather";
 
 /**
  * One rider's week and season at a glance, from rows already read: the
@@ -39,6 +41,8 @@ export type RiderInsight = {
   flags: Flag[];
   wellbeing: WellbeingStatus | null;
   today: LoadDay | null;
+  /** Form ahead if the plan is ridden, to the next A/B race (src/modules/load/forecast.ts). */
+  forecast: Forecast | null;
 };
 
 const hours = (seconds: number) => seconds / 3600;
@@ -50,6 +54,7 @@ export function riderInsight(
   checks: CheckinRow[],
   todayIso: string,
   wellbeingVisible: boolean,
+  races: readonly InsightRace[] = [],
 ): RiderInsight {
   const monday = mondayOf(todayIso);
   const sunday = addDaysIso(monday, 6);
@@ -154,5 +159,22 @@ export function riderInsight(
     flags,
     wellbeing,
     today: series.at(-1) ?? null,
+    forecast: forecastAhead(series.at(-1) ?? null, sessions, races, todayIso),
   };
+}
+
+/** Form ahead from the end of today, over the open planned sessions. */
+function forecastAhead(
+  last: LoadDay | null,
+  sessions: InsightSession[],
+  races: readonly InsightRace[],
+  todayIso: string,
+): Forecast | null {
+  if (!last) return null;
+  return forecastForm(
+    todayIso,
+    { fitness: last.fitness, fatigue: last.fatigue },
+    sessions.filter((s) => !s.activityId),
+    races.map((r) => ({ title: r.title, date: r.startsOn, priority: r.priority })),
+  );
 }

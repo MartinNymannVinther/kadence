@@ -1,6 +1,7 @@
 import { addDaysIso, todayInCopenhagen } from "@/core/dates";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { whoAmIIn } from "@/modules/team/access";
+import { FORECAST_MAX_DAYS } from "@/modules/load";
 import { gather } from "./gather";
 import { riderInsight, SERIES_DAYS, WARMUP_DAYS, type RiderInsight } from "./rider";
 
@@ -29,6 +30,7 @@ export async function getInsights(
       from: addDaysIso(today, -(SERIES_DAYS + WARMUP_DAYS)),
       to: addDaysIso(today, 7),
       riderIds: options.riderIds,
+      aheadTo: addDaysIso(today, FORECAST_MAX_DAYS),
     });
     const insights = data.riders.map((rider) => {
       const checks = data.checkins.filter((c) => c.riderId === rider.id);
@@ -43,6 +45,7 @@ export async function getInsights(
         checks,
         today,
         wellbeingVisible,
+        data.races.filter((r) => r.riderId === null || r.riderId === rider.id),
       );
     });
     return insights.sort(

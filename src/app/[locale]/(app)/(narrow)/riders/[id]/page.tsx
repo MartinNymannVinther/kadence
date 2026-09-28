@@ -137,7 +137,7 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
             <h2 id="rider-form" className="text-lg font-semibold">
               {t("sections.form")}
             </h2>
-            <LoadPanel insight={insight} />
+            <LoadPanel insight={insight} firstName={insight.name.split(" ")[0] ?? null} />
           </section>
         )}
         <MeasurementsCard

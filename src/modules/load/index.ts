@@ -39,6 +39,15 @@ export {
 } from "./weighted-power";
 export { DRIFT_MIN_SECONDS, heartRateDrift } from "./drift";
 export {
+  DEFAULT_DAYS as FORECAST_DEFAULT_DAYS,
+  MAX_DAYS as FORECAST_MAX_DAYS,
+  forecastForm,
+  plannedDayLoad,
+  type Forecast,
+  type ForecastRace,
+  type PlannedDay,
+} from "./forecast";
+export {
   HR_RATIO_CAP,
   HR_RATIO_FLOOR,
   activityLoad,

@@ -1430,7 +1430,13 @@
       "veryTired": "Lige nu er {name} ret træt. Søvn, mad og ro hjælper.",
       "label": "Konditionen de seneste 90 dage"
     },
-    "formScale": "over 0 udhvilet · under 0 træt"
+    "formScale": "over 0 udhvilet · under 0 træt",
+    "ahead": "Efter planen",
+    "today": "I dag",
+    "readoutAhead": "{date}, efter planen: kondition {fitness} · træthed {fatigue} · friskhed {form}",
+    "aheadRace": "Kører {name} det, der er planlagt, ventes friskheden {form} ved {title} ({priority}-løb, {date}). Det er en forudsigelse at planlægge efter, ikke et mål.",
+    "aheadNoRace": "De stiplede linjer viser, hvor kurverne går hen de næste {days, plural, one {# dag} other {# dage}}, hvis det planlagte bliver kørt.",
+    "you": "du"
   },
   "insight": {
     "title": "Kræver opmærksomhed",

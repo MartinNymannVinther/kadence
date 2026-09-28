@@ -1,4 +1,5 @@
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { dayMonthShort, signed } from "@/components/charts/format";
 import { EmptyState } from "@/components/ui/empty-state";
 import type { RiderInsight } from "@/modules/insight/rider";
 import { LoadChart } from "./load-chart";
@@ -12,8 +13,16 @@ import { WeeklyHoursChart } from "./weekly-hours-chart";
  * against DCU's corridor. On the coach's rider page and the rider's own
  * today; the parents get the simpler FormTrend.
  */
-export function LoadPanel({ insight }: { insight: RiderInsight }) {
+export function LoadPanel({
+  insight,
+  firstName = null,
+}: {
+  insight: RiderInsight;
+  /** The rider's name for the sentence under the chart; null says "you". */
+  firstName?: string | null;
+}) {
   const t = useTranslations("load");
+  const locale = useLocale();
   const days = insight.series.map((d) => ({
     date: d.date,
     fitness: d.fitness,
@@ -21,11 +30,34 @@ export function LoadPanel({ insight }: { insight: RiderInsight }) {
     form: d.form,
   }));
   const trained = days.some((d) => d.fitness > 0 || d.fatigue > 0);
+  const forecast = insight.forecast;
+  const ahead = (forecast?.days ?? []).map((d) => ({
+    date: d.date,
+    fitness: d.fitness,
+    fatigue: d.fatigue,
+    form: d.form,
+  }));
+  const raceDay = forecast?.race ? ahead.find((d) => d.date === forecast.race!.date) : undefined;
   return (
     <div className="flex flex-col gap-6">
       <div className="border-border bg-card flex flex-col gap-4 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5">
         {trained ? (
-          <LoadChart days={days} />
+          <>
+            <LoadChart days={days} ahead={ahead} race={forecast?.race ?? null} />
+            {ahead.length > 0 && (
+              <p className="text-2sm leading-relaxed">
+                {forecast?.race && raceDay
+                  ? t("aheadRace", {
+                      name: firstName ?? t("you"),
+                      form: signed(raceDay.form, locale),
+                      title: forecast.race.title,
+                      priority: forecast.race.priority,
+                      date: dayMonthShort(forecast.race.date, locale),
+                    })
+                  : t("aheadNoRace", { days: ahead.length })}
+              </p>
+            )}
+          </>
         ) : (
           <EmptyState variant="inline" title={t("empty")} hint={t("emptyBody")} />
         )}

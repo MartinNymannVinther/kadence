@@ -1,6 +1,7 @@
-import { and, asc, eq, gte, inArray, lte } from "drizzle-orm";
+import { and, asc, eq, gte, inArray, isNull, lte, or } from "drizzle-orm";
 import {
   activities,
+  calendarEvents,
   checkins,
   plannedSessions,
   riders,
@@ -36,16 +37,31 @@ export type InsightSession = {
   activityId: string | null;
 };
 
+/** An A or B race ahead, the rider's own or the team's (riderId null). */
+export type InsightRace = {
+  riderId: string | null;
+  title: string;
+  startsOn: string;
+  priority: "A" | "B";
+};
+
 export type Gathered = {
   riders: RiderRow[];
   activities: InsightActivity[];
   sessions: InsightSession[];
   checkins: CheckinRow[];
+  races: InsightRace[];
 };
 
 export async function gather(
   tx: AppTransaction,
-  range: { from: string; to: string; riderIds?: string[] },
+  range: {
+    from: string;
+    to: string;
+    riderIds?: string[];
+    /** How far ahead planned sessions and A/B races are read, for form ahead. */
+    aheadTo?: string;
+  },
 ): Promise<Gathered> {
   const riderRows = await tx
     .select()
@@ -60,7 +76,9 @@ export async function gather(
     )
     .orderBy(asc(riders.name));
   const ids = riderRows.map((r) => r.id);
-  if (ids.length === 0) return { riders: [], activities: [], sessions: [], checkins: [] };
+  if (ids.length === 0)
+    return { riders: [], activities: [], sessions: [], checkins: [], races: [] };
+  const sessionsTo = range.aheadTo && range.aheadTo > range.to ? range.aheadTo : range.to;
 
   const acts = await tx
     .select({
@@ -94,7 +112,7 @@ export async function gather(
       and(
         inArray(plannedSessions.riderId, ids),
         gte(plannedSessions.onDate, range.from),
-        lte(plannedSessions.onDate, range.to),
+        lte(plannedSessions.onDate, sessionsTo),
       ),
     );
   const checks = await tx
@@ -108,10 +126,30 @@ export async function gather(
       ),
     )
     .orderBy(asc(checkins.onDate));
+  const races = range.aheadTo
+    ? await tx
+        .select({
+          riderId: calendarEvents.riderId,
+          title: calendarEvents.title,
+          startsOn: calendarEvents.startsOn,
+          priority: calendarEvents.priority,
+        })
+        .from(calendarEvents)
+        .where(
+          and(
+            eq(calendarEvents.kind, "race"),
+            inArray(calendarEvents.priority, ["A", "B"]),
+            gte(calendarEvents.startsOn, range.from),
+            lte(calendarEvents.startsOn, range.aheadTo),
+            or(isNull(calendarEvents.riderId), inArray(calendarEvents.riderId, ids)),
+          ),
+        )
+    : [];
   return {
     riders: riderRows,
     activities: acts.map((a) => ({ ...a, sport: a.sport as InsightActivity["sport"] })),
     sessions,
     checkins: checks,
+    races: races.map((r) => ({ ...r, priority: r.priority as "A" | "B" })),
   };
 }
