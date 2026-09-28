@@ -34,7 +34,11 @@ export function kindOf(title: string): RideKind {
   return "endurance";
 }
 
-/** The route for the n-th ride: round the eight in turn, long rides on the long loops. */
+/**
+ * The route for a day's ride: the team rides together, so every rider on
+ * the same day gets the same loop — round the eight in turn by day, long
+ * rides on the long loops.
+ */
 export function routeFor(n: number, minutes: number): Route {
   const long = ROUTES.filter((r) => r.loopM >= 40_000);
   const short = ROUTES.filter((r) => r.loopM < 40_000);

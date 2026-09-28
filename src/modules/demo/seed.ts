@@ -1,4 +1,4 @@
-import { addDaysIso, mondayOf, todayInCopenhagen } from "@/core/dates";
+import { addDaysIso, diffDays, mondayOf, todayInCopenhagen } from "@/core/dates";
 import type { OrgContext } from "@/core/db/tenant";
 import { raceYearOf, seasonStartYear, strengthFrequency } from "@/modules/dcu";
 import { createSeasonPlan } from "@/modules/season/plans";
@@ -14,6 +14,7 @@ import { listSessions } from "@/modules/training/sessions";
 import { createTemplate, listTemplates } from "@/modules/training/templates";
 import { saveCheckin } from "@/modules/wellbeing/checkins";
 import { parseWorkoutText } from "@/modules/workouts/parse-text";
+import { kindOf, rideFit, routeFor } from "./rides";
 import { sampleRideFit } from "./sample-ride";
 import { COMMENTS, EVENTS, EXAM, NOTES, pick, RIDERS, TEMPLATES, type L } from "./seed-data";
 
@@ -25,13 +26,18 @@ export type { L };
  * DCU's strength programme, six weeks of group plans that were mostly
  * ridden (a few missed, as in life), next week planned, a fortnight of
  * check-ins with one rider tired and one with a sore knee, races and a
- * camp ahead, an exam, and a couple of comments. One long ride comes in as
- * a real FIT file, so its page shows the route, laps, climbs and curves. Written through the
+ * camp ahead, an exam, and a couple of comments. The last weeks' rides
+ * come in as real FIT files — routes round Østjylland, watt and pulse at
+ * each rider's own threshold (`rides.ts`) — so the calendar, the records
+ * and every activity page show what an upload gives; one long ride with a
+ * coffee stop is the showcase. Written through the
  * ordinary services, as the demo's coach, so what the visitor sees is what
  * the product does with real rows.
  */
 
 const WEEKS_BACK = 6;
+/** The weeks whose rides are real files; earlier ones are ticked off by hand. */
+const RIDE_WEEKS = 3;
 
 /** A small deterministic generator, so every demo tells the same story. */
 function random(seed: number) {
@@ -112,10 +118,38 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
   const longRide = past.findLast(
     (s) => s.riderId === riderIds[0] && s.sport === "bike" && s.plannedMinutes >= 90,
   );
+  const thresholds = new Map(riderIds.map((id, i) => [id, RIDERS[i]!]));
+  const ridesFrom = addDaysIso(mondayOf(today), -7 * (RIDE_WEEKS - 1));
+  let rideNo = 0;
   for (const s of past) {
     if (s === longRide) continue;
     if (rnd() < 0.1) continue;
     const factor = 0.85 + rnd() * 0.25;
+    const rider = thresholds.get(s.riderId);
+    if (s.sport === "bike" && s.onDate >= ridesFrom && rider) {
+      rideNo++;
+      const route = routeFor(diffDays(firstMonday, s.onDate), s.plannedMinutes);
+      const weekend = [0, 6].includes(new Date(`${s.onDate}T12:00:00Z`).getUTCDay());
+      await importFit(
+        ctx,
+        s.riderId,
+        `${pick(route.name, l)}.fit`,
+        rideFit(
+          {
+            route,
+            kind: kindOf(s.title),
+            minutes: s.plannedMinutes,
+            ftp: rider.ftp,
+            thresholdHr: rider.thr,
+            factor,
+            seed: 100 + rideNo,
+            stopSeconds: s.plannedMinutes >= 120 && rnd() < 0.5 ? 12 * 60 : undefined,
+          },
+          Date.parse(`${s.onDate}T${weekend ? "07" : "14"}:30:00Z`),
+        ),
+      );
+      continue;
+    }
     const base =
       s.sport === "strength" ? 6 : s.title.includes("VO2") ? 8 : s.title.includes("AT") ? 7 : 3;
     await completeSession(ctx, s.id, {

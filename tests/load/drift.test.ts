@@ -25,6 +25,12 @@ describe("heart-rate drift", () => {
     expect(heartRateDrift(coasting.power, coasting.hr)).toBeNull();
   });
 
+  it("says nothing about an uneven ride: intervals first, easy after, is the plan, not drift", () => {
+    const power = Array.from({ length: 3600 }, (_, s) => (s < 1800 ? 300 : 150));
+    const hr = Array.from({ length: 3600 }, (_, s) => (s < 1800 ? 175 : 150));
+    expect(heartRateDrift(power, hr)).toBeNull();
+  });
+
   it("uses only the seconds with both a pulse and a watt", () => {
     const { power, hr } = steady(3600, 200, () => 140);
     const gaps = hr.map((v, s) => (s % 2 === 0 ? null : v));
