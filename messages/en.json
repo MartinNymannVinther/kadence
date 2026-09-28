@@ -743,7 +743,10 @@
       "previous": "Previous week",
       "next": "Next week",
       "thisWeek": "This week",
-      "week": "Week {n}"
+      "week": "Week {n}",
+      "jump": "Go to",
+      "previousYear": "Previous year",
+      "nextYear": "Next year"
     },
     "view": {
       "show": "Show",

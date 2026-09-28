@@ -6,10 +6,12 @@ import { addDaysIso, mondayOf, weekNumber } from "@/core/dates";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { calendarHref, type CalendarQuery } from "./href";
+import { MonthJump } from "./month-jump";
 
 /**
- * Which week, and the way to the one before, the one after and this one.
- * Links, not buttons: a week is a place, and the back button knows it.
+ * Which week, and the way to the one before, the one after, this one,
+ * and any month of any year ("Gå til"). Links, not buttons: a week is a
+ * place, and the back button knows it.
  */
 export async function WeekNav({
   monday,
@@ -35,6 +37,7 @@ export async function WeekNav({
       <Link href={href(addDaysIso(monday, 7))} className={icon} aria-label={t("next")}>
         <ChevronRight />
       </Link>
+      <MonthJump monday={monday} today={today} weekHref={href("__WEEK__")} />
       {monday !== thisWeek && (
         <Link
           href={href(thisWeek)}

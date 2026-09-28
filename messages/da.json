@@ -743,7 +743,10 @@
       "previous": "Forrige uge",
       "next": "Næste uge",
       "thisWeek": "Denne uge",
-      "week": "Uge {n}"
+      "week": "Uge {n}",
+      "jump": "Gå til",
+      "previousYear": "Forrige år",
+      "nextYear": "Næste år"
     },
     "view": {
       "show": "Vis",
