@@ -15,6 +15,14 @@ export function linearScale(domain: [number, number], range: [number, number]): 
   return (value) => (span === 0 ? r0 : r0 + ((value - d0) / span) * (r1 - r0));
 }
 
+/** The mirror of `linearScale`: a position in `range` back to its value; a flat range maps to the domain's start. */
+export function invertScale(domain: [number, number], range: [number, number]): Scale {
+  const [d0, d1] = domain;
+  const [r0, r1] = range;
+  const span = r1 - r0;
+  return (position) => (span === 0 ? d0 : d0 + ((position - r0) / span) * (d1 - d0));
+}
+
 /** A step of 1, 2, 2.5 or 5 times a power of ten that cuts `span` into about `count` parts. */
 export function niceStep(span: number, count: number): number {
   if (!(span > 0) || count < 1) return 1;
@@ -40,6 +48,22 @@ export function niceTicks(min: number, max: number, count = 4): number[] {
   const ticks: number[] = [];
   for (let v = start; v <= end + step / 2; v += step) ticks.push(Math.round(v * 1e6) / 1e6);
   return ticks.length > 1 ? ticks : [start, start + step];
+}
+
+/**
+ * Where a symbol sits on a band the plot may cut: the middle of the
+ * band's visible part, kept `inset` inside the plot's edges so a band
+ * running off the plot still carries its symbol where it can be seen.
+ */
+export function visibleCentre(
+  band: readonly [number, number],
+  plot: readonly [number, number],
+  inset: number,
+): number {
+  const from = Math.max(Math.min(band[0], band[1]), plot[0]);
+  const to = Math.min(Math.max(band[0], band[1]), plot[1]);
+  const centre = (from + to) / 2;
+  return Math.min(Math.max(centre, plot[0] + inset), plot[1] - inset);
 }
 
 /** A line through the points; a null breaks it, so a gap in the data is a gap in the line. */

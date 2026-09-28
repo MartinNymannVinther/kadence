@@ -1,4 +1,4 @@
-import type { Streams } from "./streams-chart";
+import type { Streams } from "./streams-data";
 
 /**
  * Rides laid over each other line up by distance — everyone rode the same

@@ -722,7 +722,8 @@
     "alreadyMember": "The person is already on the team.",
     "youthWeight": "Weight is turned off for riders under 19. A coach can turn it on under Settings → Team.",
     "not_connected": "There is no connection to end. Reload the page.",
-    "not_a_rider": "Only a rider can connect their own device."
+    "not_a_rider": "Only a rider can connect their own device.",
+    "flagGone": "That warning is no longer active. Reload the page."
   },
   "calendar": {
     "title": "Calendar",
@@ -1479,6 +1480,7 @@
     "riderTitle": "Warnings",
     "noFlags": "No warnings this week.",
     "allCalm": "No warnings this week. The team looks to be in balance.",
+    "allResolved": "Every warning this week has been resolved.",
     "othersCalm": "{count, plural, one {# more rider has no warnings.} other {# more riders have no warnings.}}",
     "modelNote": "The wellbeing zones follow Kolding Talent's wellbeing model from Team Danmark's guide for parents: yellow for a while means a conversation between rider, parent and coach within 14 days, and red means professionals should be involved. Kadence never diagnoses.",
     "basis": "{category} year {year}",
@@ -1516,7 +1518,17 @@
       "low_average": "low answers overall",
       "short_sleep": "under 6 hours' sleep"
     },
-    "guideLink": "Advice in the coach guide"
+    "guideLink": "Advice in the coach guide",
+    "resolve": {
+      "button": "Resolved",
+      "label": "Mark as resolved",
+      "done": "Marked as resolved",
+      "count": "{count, plural, one {# item resolved this week} other {# items resolved this week}}",
+      "show": "Show",
+      "hide": "Hide",
+      "undo": "Undo",
+      "weekNote": "A resolution lasts the week unless the numbers get clearly worse. If the same thing comes up next week, it is a new warning. The Monday brief and the tips see only what is not resolved; the week draft sees every warning, because it plans load."
+    }
   },
   "wellbeing": {
     "title": "Wellbeing",
@@ -1690,11 +1702,29 @@
       "bpm": "{bpm} bpm",
       "rpm": "{rpm} rpm",
       "m": "{m} m",
-      "hint": "Point at the curves, or use the arrow keys, to read a particular moment.",
+      "hint": "Point at or tap the curves, or use the arrow keys, to read a particular moment.",
+      "hintDrag": "Drag across a stretch to zoom in on it.",
+      "hintTouch": "Tap “{select}” below the curves to zoom in on a stretch.",
       "label": "The ride as it went: {channels}",
+      "labelZoomed": "The ride as it went: {channels} — showing {from}–{to} of {total}",
       "none": "The file had no samples along the way.",
       "speed": "Speed",
-      "kmh": "{kmh} km/h"
+      "kmh": "{kmh} km/h",
+      "select": "Select a stretch",
+      "selectHint": "Tap two places on the curves, or drag sideways, to select a stretch.",
+      "selecting": "Selecting {from}–{to} · release to zoom in",
+      "edgeSet": "Start set at {time} · tap where the stretch should end · Esc cancels",
+      "edgeSetTouch": "Start set at {time} · tap where the stretch should end · turn “{select}” off to cancel",
+      "showing": "Showing {from}–{to} of {total}",
+      "wholeStatus": "Whole ride · {total}",
+      "window": "Window",
+      "whole": "Show the whole ride",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "earlier": "Earlier",
+      "later": "Later",
+      "zoomTools": "Zoom on the curves",
+      "zoomHint": "With the keyboard: the arrow keys read, Enter sets the start and end of a stretch, + and − zoom, Shift + arrow keys move the stretch, Esc shows the whole ride."
     },
     "zones": {
       "power": "By power",

@@ -8,7 +8,7 @@ import { useHoverIndex } from "@/components/charts/use-hover-index";
 import { useWidth } from "@/components/charts/use-width";
 import { clockText } from "@/components/training/duration";
 import { alignRides, nearestIndex } from "./compare-align";
-import type { Streams } from "./streams-chart";
+import type { Streams } from "./streams-data";
 
 export type CompareRide = { id: string; name: string; streams: Streams };
 

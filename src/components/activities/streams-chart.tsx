@@ -1,79 +1,37 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { num } from "@/components/charts/format";
-import { areaPath, linePath, linearScale, niceTicks } from "@/components/charts/scale";
+import { invertScale, linearScale } from "@/components/charts/scale";
+import { EdgeMark, SelectionBand } from "@/components/charts/selection-band";
 import { useHoverIndex } from "@/components/charts/use-hover-index";
+import { useRangeSelect } from "@/components/charts/use-range-select";
 import { useWidth } from "@/components/charts/use-width";
-import { clockText } from "@/components/training/duration";
+import { spanFromSeconds, type Span } from "@/components/charts/zoom";
+import { usePointerCoarse } from "@/components/common/use-pointer-coarse";
+import { clockStamp, momentText } from "./axis-ticks";
+import { ChannelToggles } from "./channel-toggles";
 import { PauseMarks, type PauseMark } from "./pause-marks";
+import { CHANNELS, hoursMinutes, present, type Channel, type Streams } from "./streams-data";
+import { StreamsHint } from "./streams-hint";
+import { readoutText } from "./streams-readout";
+import { AXIS, LEFT, RIGHT, ROW, StreamsStrip, StripLabel } from "./streams-strip";
+import { TimeAxis } from "./time-axis";
+import { useStreamsZoom } from "./use-streams-zoom";
+import { ZoomToolbar } from "./zoom-toolbar";
 
-export type Streams = {
-  t: number[];
-  power?: (number | null)[];
-  hr?: (number | null)[];
-  cadence?: (number | null)[];
-  /** m/s; drawn as km/h. */
-  speed?: (number | null)[];
-  alt?: (number | null)[];
-  lat?: (number | null)[];
-  lon?: (number | null)[];
-};
-
-const CHANNELS = ["power", "hr", "speed", "cadence", "alt"] as const;
-type Channel = (typeof CHANNELS)[number];
-
-const PANEL = 72;
-const GAP = 10;
-/** Room above each strip for its name, so the name never sits on the line. */
-const LABEL = 16;
-const AXIS = 18;
-const LEFT = 36;
-const RIGHT = 8;
-/** Points drawn per line at most; the stored streams are already 5-second averages. */
-const MAX_POINTS = 480;
-
-function thin(streams: Streams): {
-  step: number;
-  t: number[];
-  values: Record<Channel, (number | null)[]>;
-} {
-  const step = Math.max(1, Math.ceil(streams.t.length / MAX_POINTS));
-  const pick = <T,>(list: T[] | undefined) => (list ?? []).filter((_, i) => i % step === 0);
-  return {
-    step,
-    t: pick(streams.t),
-    values: {
-      power: pick(streams.power),
-      hr: pick(streams.hr),
-      speed: pick(streams.speed).map((v) => (typeof v === "number" ? v * 3.6 : null)),
-      cadence: pick(streams.cadence),
-      alt: pick(streams.alt),
-    },
-  };
-}
-
-/** Time into the ride as h:mm, the axis' own short form. */
-const hoursMinutes = (seconds: number) =>
-  `${Math.floor(seconds / 3600)}:${String(Math.floor((seconds % 3600) / 60)).padStart(2, "0")}`;
-
-const STROKE: Record<Channel, string> = {
-  power: "var(--series-1)",
-  hr: "var(--series-2)",
-  speed: "var(--series-1)",
-  cadence: "var(--series-1)",
-  alt: "var(--meta)",
-};
-
-const present = (values: (number | null)[]) => values.some((v) => typeof v === "number" && v > 0);
+export type { Streams } from "./streams-data";
 
 /**
  * The ride over time: watt, pulse, speed, cadence and height, each in its
  * own strip on its own scale over one shared time axis — never two scales
- * on one plot. Each channel can be turned off; a pointer or the arrow keys
- * read every visible channel at the same moment, and `onIndex` hears which
- * sample of `streams` that is, so the route can show where it was.
+ * on one plot. Each channel can be turned off; a pointer, a tap or the
+ * arrow keys read every visible channel at the same moment, and `onIndex`
+ * hears which sample of `streams` that is, so the route can show where it
+ * was. A stretch dragged across the curves, two taps in the select mode,
+ * or the buttons below zoom the time axis; every number read is the same
+ * stored sample either way.
  */
 export function StreamsChart({
   streams,
@@ -88,19 +46,81 @@ export function StreamsChart({
   const t = useTranslations("activities.streams");
   const locale = useLocale();
   const { ref, width } = useWidth<HTMLDivElement>();
-  const data = thin(streams);
-  const available = CHANNELS.filter((c) => present(data.values[c]));
+  const available = useMemo(() => CHANNELS.filter((c) => present(streams[c] ?? [])), [streams]);
   const [on, setOn] = useState<Set<Channel>>(() => new Set(available));
+  const [armed, setArmed] = useState(false);
+  const coarse = usePointerCoarse();
+  const zoom = useStreamsZoom(streams);
+  const { span, data, clock } = zoom;
   const visible = available.filter((c) => on.has(c));
-  const end = data.t.at(-1) ?? 1;
-  const x = linearScale([0, Math.max(1, end)], [LEFT, width - RIGHT]);
-  const hover = useHoverIndex(data.t.length, (i) => x(data.t[i] ?? 0));
-  const height = visible.length * (LABEL + PANEL + GAP) + AXIS;
-  const reading = hover.index === null ? null : hover.index * data.step;
+  // One x-scale for everything drawn, over the window's own ends: the last
+  // drawn point may sit a few samples short of the edge when thinned, but
+  // the printed end and a drag to the edge both mean the window's last sample.
+  const lo = span?.lo ?? 0;
+  const hi = span?.hi ?? streams.t.length - 1;
+  const domain: [number, number] = [
+    streams.t[lo] ?? 0,
+    Math.max((streams.t[lo] ?? 0) + 1, streams.t[hi] ?? 1),
+  ];
+  const plot: [number, number] = [LEFT, width - RIGHT];
+  const x = linearScale(domain, plot);
+  const invert = invertScale(domain, plot);
+  const clampX = (px: number) => Math.min(Math.max(px, plot[0]), plot[1]);
+  // The hover works in drawn positions; `reading` is the sample of `streams` behind one.
+  const hover = useHoverIndex(data.t.length, (k) => x(data.t[k] ?? 0), { pinTouch: true });
+  // A new clock — pauses hidden or shown — reads nothing until asked again: a
+  // drawn-point index on the old clock names another moment on this one, and
+  // across a pause there is no moment to carry it to (ADR 0028). The zoom's
+  // token is one object per clock, so a server round trip — a comment posted
+  // under the ride — keeps the reading. Cleared before this render is shown,
+  // so the route never hears a moment nobody chose.
+  const [readClock, setReadClock] = useState(clock);
+  if (readClock !== clock) {
+    setReadClock(clock);
+    hover.set(null);
+  }
+  const at =
+    hover.index === null || data.t.length === 0 ? null : Math.min(hover.index, data.t.length - 1);
+  const reading = at === null ? null : (data.index[at] ?? null);
   useEffect(() => onIndex?.(reading), [onIndex, reading]);
-  const timeTicks = niceTicks(0, end / 60, 4)
-    .map((m) => m * 60)
-    .filter((s) => s <= end);
+  const clipId = `clip-${useId().replace(/\W/g, "")}`;
+
+  /** The one place a window changes; the reading follows to the drawn point nearest its moment. */
+  function changeSpan(next: Span | null) {
+    zoom.setSpan(next);
+    if (at !== null) hover.set(zoom.nearest(next, data.t[at] ?? 0));
+  }
+  const select = useRangeSelect({
+    armed,
+    onSelect: (x0, x1) => {
+      changeSpan(spanFromSeconds(streams.t, invert(clampX(x0)), invert(clampX(x1))));
+      setArmed(false);
+    },
+    onReset: () => changeSpan(null),
+  });
+  // A start stored in px never outlives a rotation, a zoom or a new clock.
+  const { clear } = select;
+  useEffect(() => clear(), [clear, width, span, clock]);
+
+  function onArm(next: boolean) {
+    setArmed(next);
+    if (!next) select.clear();
+  }
+  const anchor = reading ?? undefined;
+  function onKeyDown(e: React.KeyboardEvent<SVGSVGElement>) {
+    if (e.key === "Escape" && (select.band || select.edge !== null)) select.clear();
+    else if (e.key === "Escape" && armed) onArm(false);
+    else if (e.key === "Enter" && at !== null) select.tap(x(data.t[at] ?? 0));
+    else {
+      const next = zoom.keyMove(e, anchor);
+      if (next === undefined) {
+        hover.handlers.onKeyDown(e);
+        return;
+      }
+      changeSpan(next);
+    }
+    e.preventDefault();
+  }
 
   if (available.length === 0) return <p className="text-meta text-2sm">{t("none")}</p>;
 
@@ -111,142 +131,167 @@ export function StreamsChart({
     cadence: (v) => t("rpm", { rpm: Math.round(v) }),
     alt: (v) => t("m", { m: num(v, locale) }),
   };
-  const at = hover.index;
-  const readout =
-    at !== null
-      ? [
-          clockText(data.t[at] ?? 0),
-          ...visible.map((c) => {
+  // One clock for the window: the ticks, the printed ends, the status and the
+  // selection's readout all go through `stamp`, so none of them mixes shapes.
+  const totalSeconds = streams.t.at(-1) ?? 0;
+  const stamp = clockStamp(domain, totalSeconds);
+  const total = hoursMinutes(totalSeconds);
+  const shown = span
+    ? { from: stamp(streams.t[span.lo] ?? 0), to: stamp(streams.t[span.hi] ?? 0), total }
+    : null;
+  const status = shown ? t("showing", shown) : t("wholeStatus", { total });
+  const band = select.band ? ([clampX(select.band[0]), clampX(select.band[1])] as const) : null;
+  const readout = readoutText({
+    t,
+    band,
+    edge: select.edge === null ? null : clampX(select.edge),
+    armed,
+    coarse,
+    select: t("select"),
+    at,
+    clock: at === null ? "" : momentText(data.t[at] ?? 0, totalSeconds),
+    values:
+      at === null
+        ? []
+        : visible.map((c) => {
             const v = data.values[c][at];
-            return `${t(c)} ${typeof v === "number" ? unit[c](v) : "–"}`;
+            return { label: t(c), text: typeof v === "number" ? unit[c](v) : "–" };
           }),
-        ].join(" · ")
-      : t("hint");
+    stamp: (px) => stamp(invert(px)),
+  });
+  const height = visible.length * ROW + AXIS;
+  const channels = visible.map((c) => t(c)).join(", ");
 
   return (
     <div className="flex min-w-0 flex-col gap-2">
-      <div role="group" aria-label={t("show")} className="flex flex-wrap gap-1.5">
-        {available.map((c) => (
-          <label
-            key={c}
-            className="border-border bg-card has-checked:border-primary has-checked:bg-accent has-focus-visible:outline-ring flex min-h-11 cursor-pointer items-center gap-2 rounded-md border px-3 text-2sm has-focus-visible:outline-2 sm:min-h-9"
-          >
-            <input
-              type="checkbox"
-              checked={on.has(c)}
-              className="accent-primary size-4"
-              onChange={(e) =>
-                setOn((current) => {
-                  const next = new Set(current);
-                  if (e.target.checked) next.add(c);
-                  else next.delete(c);
-                  return next;
-                })
-              }
-            />
-            {t(c)}
-          </label>
-        ))}
-      </div>
-      <p className="text-2sm min-h-5 font-medium tabular-nums" aria-live="polite">
-        {readout}
+      <ChannelToggles
+        available={available}
+        on={on}
+        label={t("show")}
+        name={(c) => t(c)}
+        onChange={(c, checked) =>
+          setOn((current) => {
+            const next = new Set(current);
+            if (checked) next.add(c);
+            else next.delete(c);
+            return next;
+          })
+        }
+      />
+      {/* On a phone the hint runs to three lines and a reading to two; the
+          line keeps the hint's height, so the curves and the buttons under
+          them never move under the finger that changed the words. */}
+      <p
+        className="text-2sm pointer-coarse:min-h-[3lh] min-h-5 font-medium tabular-nums"
+        aria-live="polite"
+      >
+        {readout ?? <StreamsHint zoomable={zoom.zoomable} />}
       </p>
-      <div ref={ref} className="w-full">
+      <div
+        ref={ref}
+        className={`w-full rounded-md ${armed ? "outline-primary outline-2 outline-dashed outline-offset-2" : ""}`}
+      >
         {visible.length > 0 && (
           <svg
             width="100%"
             height={height}
             viewBox={`0 0 ${width} ${height}`}
             role="img"
-            aria-label={t("label", { channels: visible.map((c) => t(c)).join(", ") })}
-            className="focus-visible:outline-ring block touch-pan-y rounded-md outline-none focus-visible:outline-2"
+            aria-label={shown ? t("labelZoomed", { channels, ...shown }) : t("label", { channels })}
+            className="focus-visible:outline-ring block cursor-crosshair touch-pan-y touch-pinch-zoom rounded-md outline-none select-none [-webkit-touch-callout:none] focus-visible:outline-2"
             {...hover.handlers}
+            {...select.handlers}
+            onPointerDown={(e) => {
+              hover.handlers.onPointerDown(e);
+              select.handlers.onPointerDown(e);
+            }}
+            onPointerMove={(e) => {
+              // While a press is held only the band moves; the reading stays where it was pressed.
+              if (!select.active) hover.handlers.onPointerMove(e);
+              select.handlers.onPointerMove(e);
+            }}
+            onPointerUp={(e) => {
+              hover.handlers.onPointerUp(e);
+              select.handlers.onPointerUp(e);
+            }}
+            onPointerCancel={(e) => {
+              hover.handlers.onPointerCancel(e);
+              select.handlers.onPointerCancel(e);
+            }}
+            onKeyDown={onKeyDown}
           >
-            {visible.map((c, row) => {
-              const head = row * (LABEL + PANEL + GAP);
-              const top = head + LABEL;
-              const values = data.values[c];
-              const numbers = values.filter((v): v is number => typeof v === "number");
-              const low = c === "alt" ? Math.min(...numbers) : 0;
-              const ticks = niceTicks(low, Math.max(...numbers, low + 1), 2);
-              const y = linearScale([ticks[0]!, ticks.at(-1)!], [top + PANEL, top + 4]);
-              const points = values.map((v, i) =>
-                typeof v === "number" ? ([x(data.t[i] ?? 0), y(v)] as const) : null,
-              );
-              const solid = points.filter((p): p is readonly [number, number] => p !== null);
-              return (
-                <g key={c}>
-                  <text x={LEFT} y={head + 11} className="fill-foreground text-2xs font-medium">
-                    {t(c)}
-                  </text>
-                  {[ticks[0]!, ticks.at(-1)!].map((tick) => (
-                    <g key={tick}>
-                      <line
-                        x1={LEFT}
-                        x2={width - RIGHT}
-                        y1={y(tick)}
-                        y2={y(tick)}
-                        stroke="var(--border)"
-                      />
-                      <text
-                        x={LEFT - 6}
-                        y={y(tick) + 4}
-                        textAnchor="end"
-                        className="fill-meta text-2xs"
-                      >
-                        {num(tick, locale)}
-                      </text>
-                    </g>
-                  ))}
-                  {c === "alt" && (
-                    <path d={areaPath(solid, top + PANEL)} fill="var(--chart-3)" opacity={0.35} />
-                  )}
-                  <path
-                    d={linePath(points)}
-                    fill="none"
-                    stroke={STROKE[c]}
-                    strokeWidth={c === "power" ? 1.25 : 1.75}
-                    strokeLinejoin="round"
-                  />
-                  {at !== null && typeof values[at] === "number" && (
-                    <circle
-                      cx={x(data.t[at] ?? 0)}
-                      cy={y(values[at] as number)}
-                      r={4}
-                      fill={c === "alt" ? "var(--meta)" : STROKE[c]}
-                      stroke="var(--card)"
-                      strokeWidth={2}
-                    />
-                  )}
-                </g>
-              );
-            })}
-            <PauseMarks marks={pauses} x={x} top={0} bottom={height - AXIS} />
-            {at !== null && (
-              <line
-                x1={x(data.t[at] ?? 0)}
-                x2={x(data.t[at] ?? 0)}
-                y1={0}
-                y2={height - AXIS}
-                stroke="var(--meta)"
-                strokeWidth={1}
-                aria-hidden
+            <defs>
+              <clipPath id={clipId}>
+                <rect x={LEFT} y={0} width={plot[1] - plot[0]} height={height - AXIS} />
+              </clipPath>
+            </defs>
+            {visible.map((c, row) => (
+              <StreamsStrip
+                key={c}
+                channel={c}
+                values={data.values[c]}
+                t={data.t}
+                x={x}
+                width={width}
+                head={row * ROW}
+                at={at}
+                locale={locale}
               />
-            )}
-            {timeTicks.map((s) => (
-              <text
-                key={s}
-                x={x(s)}
-                y={height - 4}
-                textAnchor={s === 0 ? "start" : "middle"}
-                className="fill-meta text-2xs"
-              >
-                {hoursMinutes(s)}
-              </text>
             ))}
+            <g clipPath={`url(#${clipId})`}>
+              <PauseMarks marks={pauses} x={x} top={0} bottom={height - AXIS} span={domain} />
+              {band && (
+                <SelectionBand left={band[0]} right={band[1]} top={0} bottom={height - AXIS} />
+              )}
+              {select.edge !== null && (
+                <EdgeMark x={clampX(select.edge)} top={0} bottom={height - AXIS} />
+              )}
+              {at !== null && (
+                <line
+                  x1={x(data.t[at] ?? 0)}
+                  x2={x(data.t[at] ?? 0)}
+                  y1={0}
+                  y2={height - AXIS}
+                  stroke="var(--meta)"
+                  strokeWidth={1}
+                  aria-hidden
+                />
+              )}
+            </g>
+            {/* The names last, so a pause band at the plot's edge never greys them. */}
+            {visible.map((c, row) => (
+              <StripLabel key={c} row={row} text={t(c)} />
+            ))}
+            <TimeAxis
+              domain={domain}
+              plot={plot}
+              x={x}
+              y={height - 4}
+              stamp={stamp}
+              ends={shown ? [shown.from, shown.to] : null}
+            />
           </svg>
         )}
       </div>
+      {zoom.zoomable && (
+        <>
+          <ZoomToolbar
+            status={status}
+            armed={armed}
+            onArm={onArm}
+            canIn={zoom.canIn}
+            canOut={zoom.canOut}
+            canEarlier={zoom.canEarlier}
+            canLater={zoom.canLater}
+            onIn={() => changeSpan(zoom.zoomedIn(anchor))}
+            onOut={() => changeSpan(zoom.zoomedOut(anchor))}
+            onEarlier={() => changeSpan(zoom.shifted(-1))}
+            onLater={() => changeSpan(zoom.shifted(1))}
+            onWhole={() => changeSpan(null)}
+          />
+          <p className="text-meta text-xs leading-relaxed">{t("zoomHint")}</p>
+        </>
+      )}
     </div>
   );
 }

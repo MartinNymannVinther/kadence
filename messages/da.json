@@ -722,7 +722,8 @@
     "alreadyMember": "Personen er allerede med på holdet.",
     "youthWeight": "Vægt er slået fra for ryttere under 19. En træner kan slå det til under Indstillinger → Holdet.",
     "not_connected": "Der er ingen forbindelse at afbryde. Genindlæs siden.",
-    "not_a_rider": "Kun en rytter kan forbinde sin egen enhed."
+    "not_a_rider": "Kun en rytter kan forbinde sin egen enhed.",
+    "flagGone": "Advarslen er ikke aktiv længere. Genindlæs siden."
   },
   "calendar": {
     "title": "Kalender",
@@ -1479,6 +1480,7 @@
     "riderTitle": "Advarsler",
     "noFlags": "Ingen advarsler i denne uge.",
     "allCalm": "Ingen advarsler i denne uge. Holdet ser ud til at være i balance.",
+    "allResolved": "Alle advarsler i denne uge er afklaret.",
     "othersCalm": "{count, plural, one {# rytter mere har ingen advarsler.} other {# ryttere mere har ingen advarsler.}}",
     "modelNote": "Trivselszonerne følger Kolding Talents trivselsmodel fra Team Danmarks forældreguide: gul zone i en periode betyder en snak mellem rytter, forælder og træner inden for 14 dage, og rød zone betyder, at der skal hjælp fra fagfolk ind over. Kadence stiller aldrig en diagnose.",
     "basis": "{category} {year}. år",
@@ -1516,7 +1518,17 @@
       "low_average": "lave svar generelt",
       "short_sleep": "under 6 timers søvn"
     },
-    "guideLink": "Råd i trænerguiden"
+    "guideLink": "Råd i trænerguiden",
+    "resolve": {
+      "button": "Afklaret",
+      "label": "Markér som afklaret",
+      "done": "Markeret som afklaret",
+      "count": "{count, plural, one {# punkt afklaret denne uge} other {# punkter afklaret denne uge}}",
+      "show": "Vis",
+      "hide": "Skjul",
+      "undo": "Fortryd",
+      "weekNote": "En afklaring gælder ugen ud, medmindre tallene bliver tydeligt værre. Dukker det samme op i næste uge, er det en ny advarsel. Mandagsoverblikket og tipsene ser kun det, der ikke er afklaret; forslaget til ugen ser alle advarsler, fordi det planlægger belastning."
+    }
   },
   "wellbeing": {
     "title": "Trivsel",
@@ -1690,11 +1702,29 @@
       "bpm": "{bpm} slag/min",
       "rpm": "{rpm} omdr./min",
       "m": "{m} m",
-      "hint": "Peg på kurverne, eller brug piletasterne, for at læse et bestemt tidspunkt.",
+      "hint": "Peg eller tryk på kurverne, eller brug piletasterne, for at læse et bestemt tidspunkt.",
+      "hintDrag": "Træk hen over et stykke for at zoome ind på det.",
+      "hintTouch": "Tryk på “{select}” under kurverne for at zoome ind på et stykke.",
       "label": "Turen undervejs: {channels}",
+      "labelZoomed": "Turen undervejs: {channels} — viser {from}–{to} af {total}",
       "none": "Filen havde ingen målinger undervejs.",
       "speed": "Fart",
-      "kmh": "{kmh} km/t"
+      "kmh": "{kmh} km/t",
+      "select": "Vælg et område",
+      "selectHint": "Tryk to steder på kurverne, eller træk sidelæns, for at vælge et område.",
+      "selecting": "Vælger {from}–{to} · slip for at zoome ind",
+      "edgeSet": "Start sat ved {time} · tryk, hvor området skal slutte · Esc fortryder",
+      "edgeSetTouch": "Start sat ved {time} · tryk, hvor området skal slutte · slå “{select}” fra for at fortryde",
+      "showing": "Viser {from}–{to} af {total}",
+      "wholeStatus": "Hele turen · {total}",
+      "window": "Udsnit",
+      "whole": "Vis hele turen",
+      "zoomIn": "Zoom ind",
+      "zoomOut": "Zoom ud",
+      "earlier": "Tidligere",
+      "later": "Senere",
+      "zoomTools": "Zoom på kurverne",
+      "zoomHint": "Med tastaturet: piletasterne læser, Enter sætter start og slut på et område, + og − zoomer, Shift + piletaster flytter udsnittet, Esc viser hele turen."
     },
     "zones": {
       "power": "Efter watt",

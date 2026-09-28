@@ -1,4 +1,4 @@
-import type { Streams } from "./streams-chart";
+import type { Streams } from "./streams-data";
 
 /**
  * Pauses in a ride: a stretch of at least `MIN_PAUSE_SECONDS` standing
