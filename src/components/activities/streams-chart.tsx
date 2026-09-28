@@ -7,6 +7,7 @@ import { areaPath, linePath, linearScale, niceTicks } from "@/components/charts/
 import { useHoverIndex } from "@/components/charts/use-hover-index";
 import { useWidth } from "@/components/charts/use-width";
 import { clockText } from "@/components/training/duration";
+import { PauseMarks, type PauseMark } from "./pause-marks";
 
 export type Streams = {
   t: number[];
@@ -77,9 +78,12 @@ const present = (values: (number | null)[]) => values.some((v) => typeof v === "
 export function StreamsChart({
   streams,
   onIndex,
+  pauses = [],
 }: {
   streams: Streams;
   onIndex?: (index: number | null) => void;
+  /** Pauses on this chart's clock: a band while shown, a seam once hidden. */
+  pauses?: PauseMark[];
 }) {
   const t = useTranslations("activities.streams");
   const locale = useLocale();
@@ -217,6 +221,7 @@ export function StreamsChart({
                 </g>
               );
             })}
+            <PauseMarks marks={pauses} x={x} top={0} bottom={height - AXIS} />
             {at !== null && (
               <line
                 x1={x(data.t[at] ?? 0)}

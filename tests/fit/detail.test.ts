@@ -161,10 +161,10 @@ describe("the demo's sample ride", () => {
     expect(summary.laps).toHaveLength(8);
     expect(summary.climbs).toHaveLength(5);
     expect(summary.distanceM).toBeGreaterThan(71_000);
-    expect(summary.elapsedSeconds - summary.movingSeconds).toBeGreaterThanOrEqual(200);
-    // Only the four-minute stop has no position.
+    expect(summary.elapsedSeconds - summary.movingSeconds).toBeGreaterThanOrEqual(18 * 60 - 60);
+    // Only the coffee stop has no position.
     const gaps = summary.streams.lat.filter((v) => v === null).length;
     expect(gaps).toBeGreaterThan(0);
-    expect(gaps).toBeLessThanOrEqual(240 / 5);
+    expect(gaps).toBeLessThanOrEqual((18 * 60) / 5);
   });
 });

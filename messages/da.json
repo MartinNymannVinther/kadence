@@ -1760,7 +1760,14 @@
       "min": "{n} min",
       "h": "{n} t"
     },
-    "sourceFormat": "Fra en {format}-fil"
+    "sourceFormat": "Fra en {format}-fil",
+    "pauses": {
+      "hide": "Skjul pauser ({count, plural, one {# pause} other {# pauser}})",
+      "soda": "Kort stop, {time}",
+      "coffee": "Kaffepause, {time}",
+      "lunch": "Frokostpause, {time}",
+      "note": "Pauser på mindst 5 minutter. At skjule dem ændrer kun visningen: bedste watt og wattkurven regnes altid på den rigtige tid, hvor en pause tæller som 0 W, så en pause midt i et forsøg aldrig kan give en bedre værdi."
+    }
   },
   "season": {
     "title": "Sæson",

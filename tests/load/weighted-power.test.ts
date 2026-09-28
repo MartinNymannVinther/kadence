@@ -63,3 +63,19 @@ describe("best efforts", () => {
     ]);
   });
 });
+
+describe("a pause inside an effort", () => {
+  it("can only lower the best average, never raise it: a paused second counts as 0 W", async () => {
+    const { bestMeanPower } = await import("@/modules/load");
+    const steady = Array.from({ length: 1200 }, () => 300);
+    // The same 20 minutes at 300 W with a 10-minute coffee in the middle,
+    // the device paused (no samples), as the timeline gives it: nulls.
+    const withCoffee = [
+      ...Array.from({ length: 600 }, () => 300),
+      ...Array.from({ length: 600 }, () => null),
+      ...Array.from({ length: 600 }, () => 300),
+    ];
+    expect(bestMeanPower(steady, 1200)).toBe(300);
+    expect(bestMeanPower(withCoffee, 1200)).toBeLessThan(300);
+  });
+});

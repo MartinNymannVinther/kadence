@@ -13,7 +13,7 @@ import {
 /**
  * A made-up ride as a real FIT file, for the demo: a 72 km loop through
  * rolling Danish country with five hills, the head unit's automatic lap
- * every 10 km, a sprint for a town sign, a short stop, power, pulse that
+ * every 10 km, a sprint for a town sign, a coffee stop, power, pulse that
  * lags and drifts as pulse does, and cadence. It goes through the same
  * decoder and import as a rider's own file, so the demo's activity page
  * shows what an upload really gives. Deterministic: every demo gets the
@@ -33,7 +33,7 @@ const HILLS = [
 ];
 const SPRINT_AT_M = 30_000;
 const STOP_AT_M = 45_000;
-const STOP_SECONDS = 240;
+const STOP_SECONDS = 18 * 60;
 
 function altitude(m: number): number {
   let alt = 25;

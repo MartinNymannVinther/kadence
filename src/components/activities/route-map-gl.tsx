@@ -11,6 +11,10 @@ import { RouteMap } from "./route-map";
 const HEIGHT = 360;
 const ROUTE = { light: "#4a6b53", dark: "#7fa588" };
 const HERE = "#c08a63";
+/** The pause symbols on the map: the same three as on the curves. */
+const STOP_SYMBOL = { soda: "🥤", coffee: "☕", lunch: "🍽️" } as const;
+
+export type MapStop = { lat: number; lon: number; kind: keyof typeof STOP_SYMBOL; label: string };
 
 let protocolAdded = false;
 
@@ -27,11 +31,13 @@ export function RouteMapGl({
   lon,
   at,
   km,
+  stops = [],
 }: {
   lat: (number | null)[];
   lon: (number | null)[];
   at: number | null;
   km: string;
+  stops?: MapStop[];
 }) {
   const t = useTranslations("activities.route");
   const { resolvedTheme } = useTheme();
@@ -139,6 +145,15 @@ export function RouteMapGl({
             "circle-stroke-width": 2.5,
           },
         });
+        for (const stop of stops) {
+          const element = document.createElement("div");
+          element.textContent = STOP_SYMBOL[stop.kind];
+          element.title = stop.label;
+          element.setAttribute("aria-label", stop.label);
+          element.className =
+            "flex size-7 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--card)] text-sm shadow-sm";
+          new maplibregl.Marker({ element }).setLngLat([stop.lon, stop.lat]).addTo(map);
+        }
         map.addSource("here", {
           type: "geojson",
           data: { type: "FeatureCollection", features: [] },
@@ -161,7 +176,7 @@ export function RouteMapGl({
       map?.remove();
       mapRef.current = null;
     };
-  }, [lines, dark, t]);
+  }, [lines, dark, t, stops]);
 
   useEffect(() => {
     const source = mapRef.current?.getSource("here") as GeoJSONSource | undefined;

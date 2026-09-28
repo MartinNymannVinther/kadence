@@ -1760,7 +1760,14 @@
       "min": "{n} min",
       "h": "{n} h"
     },
-    "sourceFormat": "From a {format} file"
+    "sourceFormat": "From a {format} file",
+    "pauses": {
+      "hide": "Hide pauses ({count, plural, one {# pause} other {# pauses}})",
+      "soda": "Short stop, {time}",
+      "coffee": "Coffee stop, {time}",
+      "lunch": "Lunch stop, {time}",
+      "note": "Pauses of at least 5 minutes. Hiding them changes only the view: best power and the power curve are always worked out on the real clock, where a pause counts as 0 W, so a pause in the middle of an effort can never give a better number."
+    }
   },
   "season": {
     "title": "Season",
