@@ -1789,6 +1789,36 @@
       "tooFew": "There are not two rides to compare",
       "tooFewHint": "You can only see riders whose training you have access to.",
       "note": "Riders are in the team's order, not by number. No ranking: it is the same ride seen from several saddles."
+    },
+    "plan": {
+      "title": "The plan against the ride: {title}",
+      "summary": "{hit} of {judged} steps hit the target.",
+      "nothingJudged": "No step has a number to hit.",
+      "aligned": {
+        "power": "The plan is laid where the power curve fits best, {time} into the ride.",
+        "hr": "The plan is laid where the pulse curve fits best, {time} into the ride.",
+        "start": "The plan is laid from the start of the ride."
+      },
+      "step": "Step",
+      "time": "Time",
+      "target": "Target",
+      "ridden": "Ridden",
+      "verdict": "Verdict",
+      "rep": "{n}/{of}",
+      "zone": "Z{zone}",
+      "wattRange": "{low}–{high} W",
+      "bpmRange": "{low}–{high} bpm",
+      "rpe": "RPE {rpe}",
+      "open": "Open",
+      "watt": "{w} W",
+      "bpm": "{bpm} bpm",
+      "mark": {
+        "hit": "Hit",
+        "under": "Under",
+        "over": "Over",
+        "none": "No target"
+      },
+      "note": "Averages over the step's seconds against the target at the rider's current thresholds. Under and over are numbers, not grades: a step over target in a VO2 set can be right, and one under can be wise."
     }
   },
   "season": {

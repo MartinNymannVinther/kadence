@@ -7,6 +7,7 @@ import { ActivitySummary } from "@/components/activities/activity-summary";
 import { BestPowers } from "@/components/activities/best-powers";
 import { ClimbsList } from "@/components/activities/climbs-list";
 import { LapsTable } from "@/components/activities/laps-table";
+import { PlanVsRideTable } from "@/components/activities/plan-vs-ride-table";
 import { PowerCurve } from "@/components/activities/power-curve";
 import { RideView } from "@/components/activities/ride-view";
 import type { Streams } from "@/components/activities/streams-chart";
@@ -23,6 +24,8 @@ import { mapAvailable } from "@/core/map/file";
 import { mondayOf } from "@/core/dates";
 import { Link, redirect } from "@/i18n/navigation";
 import type { ClimbSummary, LapSummary } from "@/modules/fit";
+import { planVsRide } from "@/modules/load";
+import { bikeStructureSchema } from "@/modules/workouts/structure";
 import { whoAmI } from "@/modules/team/access";
 import { getRider } from "@/modules/team/riders";
 import { getActivityFileName } from "@/modules/devices/import";
@@ -98,6 +101,11 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
   }).format(activity.startedAt);
   const fromFile = activity.source !== "manual";
   const laps = (Array.isArray(activity.laps) ? activity.laps : []) as LapSummary[];
+  const plan = session?.sport === "bike" ? bikeStructureSchema.safeParse(session.structure) : null;
+  const planResult =
+    plan?.success && streams && rider
+      ? planVsRide(plan.data, streams, { ftp: rider.ftpWatts, thresholdHr: rider.thresholdHr })
+      : null;
   const climbs = (Array.isArray(activity.climbs) ? activity.climbs : []) as ClimbSummary[];
 
   return (
@@ -156,6 +164,15 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
             <p className="text-meta text-2sm">{t("noStreams")}</p>
           </section>
         ))}
+
+      {planResult && session && (
+        <section aria-labelledby="activity-plan" className="flex flex-col gap-3">
+          <h2 id="activity-plan" className="text-lg font-semibold">
+            {t("plan.title", { title: session.title })}
+          </h2>
+          <PlanVsRideTable result={planResult} />
+        </section>
+      )}
 
       <TogetherSection activityId={activity.id} companions={companions} />
 

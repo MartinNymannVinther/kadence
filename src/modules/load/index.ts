@@ -39,6 +39,14 @@ export {
 } from "./weighted-power";
 export { DRIFT_MIN_SECONDS, heartRateDrift } from "./drift";
 export {
+  expandPlan,
+  planVsRide,
+  type PlanVsRide,
+  type PlannedStep,
+  type StepResult,
+  type Verdict,
+} from "./plan-vs-ride";
+export {
   PERIOD_DAYS,
   PERIODS,
   bestCurve,

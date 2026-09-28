@@ -131,10 +131,11 @@ describe("importing a FIT file", () => {
   });
 
   it("names the session it fulfilled, for the activity's page", async () => {
-    expect(await getActivitySession(COACH, activityId)).toEqual({
+    expect(await getActivitySession(COACH, activityId)).toMatchObject({
       id: "i_session",
       title: "Grundtur",
       onDate: DAY,
+      sport: "bike",
     });
     expect(await getActivitySession(MIKKEL, activityId)).toBeNull();
   });

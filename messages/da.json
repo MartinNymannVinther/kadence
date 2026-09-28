@@ -1789,6 +1789,36 @@
       "tooFew": "Der er ikke to ture at sammenligne",
       "tooFewHint": "Du kan kun se ryttere, hvis træning du har adgang til.",
       "note": "Rytterne står i holdets rækkefølge, ikke efter tal. Ingen rangliste: det er den samme tur set fra flere sadler."
+    },
+    "plan": {
+      "title": "Planen mod turen: {title}",
+      "summary": "{hit} af {judged} trin ramte målet.",
+      "nothingJudged": "Ingen trin har et tal at ramme.",
+      "aligned": {
+        "power": "Planen er lagt, hvor watt-kurven passer bedst, {time} inde i turen.",
+        "hr": "Planen er lagt, hvor pulskurven passer bedst, {time} inde i turen.",
+        "start": "Planen er lagt fra turens start."
+      },
+      "step": "Trin",
+      "time": "Tid",
+      "target": "Mål",
+      "ridden": "Kørt",
+      "verdict": "Dom",
+      "rep": "{n}/{of}",
+      "zone": "Z{zone}",
+      "wattRange": "{low}–{high} W",
+      "bpmRange": "{low}–{high} slag/min",
+      "rpe": "RPE {rpe}",
+      "open": "Frit",
+      "watt": "{w} W",
+      "bpm": "{bpm} slag/min",
+      "mark": {
+        "hit": "Ramt",
+        "under": "Under",
+        "over": "Over",
+        "none": "Intet mål"
+      },
+      "note": "Gennemsnit over trinnets sekunder mod målet ved rytterens nuværende tærskler. Under og over er tal, ikke karakterer: et trin over målet i en VO2-serie kan være rigtigt, og et under kan være klogt."
     }
   },
   "season": {

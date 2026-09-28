@@ -55,17 +55,25 @@ export async function getActivity(ctx: OrgContext, id: string): Promise<Activity
   });
 }
 
-/** The planned session an activity fulfilled, if any, for the link back to it. */
+/** The planned session an activity fulfilled, if any, for the link back to it and the plan against the ride. */
 export async function getActivitySession(
   ctx: OrgContext,
   activityId: string,
-): Promise<{ id: string; title: string; onDate: string } | null> {
+): Promise<{
+  id: string;
+  title: string;
+  onDate: string;
+  sport: string;
+  structure: unknown;
+} | null> {
   return withOrgContext(ctx, async (tx) => {
     const [row] = await tx
       .select({
         id: plannedSessions.id,
         title: plannedSessions.title,
         onDate: plannedSessions.onDate,
+        sport: plannedSessions.sport,
+        structure: plannedSessions.structure,
       })
       .from(plannedSessions)
       .where(eq(plannedSessions.activityId, activityId));
