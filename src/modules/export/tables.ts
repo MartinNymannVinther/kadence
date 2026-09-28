@@ -41,6 +41,8 @@ export const EXPORT_TABLES: ExportTable[] = [
   { table: "comments", sheet: "Kommentarer", orderBy: "rider_id, created_at" },
   { table: "season_plans", sheet: "Sæsonplaner", orderBy: "rider_id, season_start_year" },
   { table: "workout_templates", sheet: "Skabeloner", orderBy: "sport, name" },
+  { table: "training_blocks", sheet: "Blokke", orderBy: "name" },
+  { table: "training_block_items", sheet: "Blokkens pas", orderBy: "block_id, day, sort" },
   { table: "team_settings", sheet: "Indstillinger" },
   { table: "audit_log", sheet: "Revisionsspor", orderBy: "created_at" },
 ];

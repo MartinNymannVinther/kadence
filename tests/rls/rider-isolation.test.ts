@@ -115,6 +115,7 @@ beforeAll(async () => {
       ends_on: DAY,
     });
   }
+  await seed("training_blocks", { id: "blk", name: "Blok", weeks: 1 });
   await seed("device_links", {
     rider_id: "r1",
     provider: "wahoo",
@@ -183,6 +184,7 @@ describe("a rider", () => {
     expect(await count(R2, "calendar_events", "rider_id is null")).toBe(1);
     expect(await count(R2, "calendar_events", "rider_id = 'r1'")).toBe(0);
     expect(await count(R2, "workout_templates")).toBe(1);
+    expect(await count(R2, "training_blocks")).toBe(1);
   });
 
   it("writes their own data and nobody else's", async () => {

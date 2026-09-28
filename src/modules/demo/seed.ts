@@ -8,6 +8,7 @@ import { importFit } from "@/modules/devices/import";
 import { addComment } from "@/modules/training/comments";
 import { completeSession } from "@/modules/training/complete";
 import { installDcuProgrammes } from "@/modules/training/dcu-library";
+import { createBlock } from "@/modules/training/blocks";
 import { addDcuWinterGoal } from "@/modules/training/goals";
 import { createEvent } from "@/modules/training/events";
 import { scheduleTemplate } from "@/modules/training/group";
@@ -105,6 +106,31 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
     { day: 5, template: byText(TEMPLATES[0]!.text) },
     { day: 6, template: byText(TEMPLATES[3]!.text) },
   ];
+  // The same week as a block in the library: four weeks, ready to lay in.
+  const blockItems = Array.from({ length: 4 }, (_, w) => [
+    ...week.map((slot, i) => ({
+      day: w * 7 + slot.day,
+      templateId: w % 2 === 1 && i === 0 ? byText(TEMPLATES[2]!.text) : slot.template,
+    })),
+    ...(strength
+      ? [
+          { day: w * 7, templateId: strength.id },
+          { day: w * 7 + 3, templateId: strength.id },
+        ]
+      : []),
+  ]).flat();
+  await createBlock(ctx, {
+    name: pick({ da: "Vinterblok, 4 uger", en: "Winter block, 4 weeks" }, l),
+    description: pick(
+      {
+        da: "To styrkepas, en VO2- eller AT-dag, en tempodag og to grundture om ugen.",
+        en: "Two strength sessions, a VO2 or AT day, a tempo day and two endurance rides a week.",
+      },
+      l,
+    ),
+    weeks: 4,
+    items: blockItems,
+  });
   const firstMonday = addDaysIso(mondayOf(today), -7 * WEEKS_BACK);
   for (let w = 0; w <= WEEKS_BACK + 1; w++) {
     const monday = addDaysIso(firstMonday, 7 * w);

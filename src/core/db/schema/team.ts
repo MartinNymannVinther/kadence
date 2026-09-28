@@ -259,6 +259,53 @@ export const workoutTemplates = pgTable(
   ],
 );
 
+/**
+ * A training block (ADR 0025): a few weeks of sessions from the library,
+ * laid out day by day, to be put into one or more riders' calendars from
+ * a Monday. The team's, like its templates: everyone reads, coaches keep.
+ */
+export const trainingBlocks = pgTable(
+  "training_blocks",
+  {
+    id: domainId("id"),
+    orgId: tenant(),
+    name: text("name").notNull(),
+    description: text("description").notNull().default(""),
+    weeks: smallint("weeks").notNull(),
+    archived: boolean("archived").notNull().default(false),
+    createdBy: text("created_by").references(() => users.id, { onDelete: "set null" }),
+    ...timestamps,
+  },
+  (t) => [
+    index("training_blocks_org_idx").on(t.orgId, t.archived),
+    check("training_blocks_weeks", sql`${t.weeks} between 1 and 12`),
+  ],
+);
+
+/** One session of a block: a template on a day (0 is the first Monday). */
+export const trainingBlockItems = pgTable(
+  "training_block_items",
+  {
+    id: domainId("id"),
+    orgId: tenant(),
+    blockId: text("block_id")
+      .notNull()
+      .references(() => trainingBlocks.id, { onDelete: "cascade" }),
+    templateId: text("template_id")
+      .notNull()
+      .references(() => workoutTemplates.id, { onDelete: "cascade" }),
+    day: smallint("day").notNull(),
+    sort: smallint("sort").notNull().default(0),
+  },
+  (t) => [
+    index("training_block_items_block_idx").on(t.orgId, t.blockId, t.day),
+    check("training_block_items_day", sql`${t.day} between 0 and 83`),
+  ],
+);
+
+export type TrainingBlockRow = typeof trainingBlocks.$inferSelect;
+export type TrainingBlockItemRow = typeof trainingBlockItems.$inferSelect;
+
 export type TeamSettingsRow = typeof teamSettings.$inferSelect;
 export type RiderRow = typeof riders.$inferSelect;
 export type GuardianRow = typeof guardians.$inferSelect;

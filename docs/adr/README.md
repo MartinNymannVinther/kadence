@@ -44,3 +44,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0022](0022-activity-files-in-every-format.md)   | Activity files in every common format                                               | → 0018       |
 | [0023](0023-a-map-served-by-kadence.md)          | The map behind a route is served by Kadence itself                                  | → 0022       |
 | [0024](0024-process-goals.md)                    | Process goals, counted from what was done                                           | → 0013       |
+| [0025](0025-training-blocks.md)                  | Training blocks, previewed before they are applied                                  | → 0014       |

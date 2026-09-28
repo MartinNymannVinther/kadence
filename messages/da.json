@@ -927,6 +927,37 @@
     "dcu": {
       "install": "Hent DCU's styrkeprogrammer",
       "done": "DCU's programmer er i biblioteket: {installed} nye, {updated} opdateret."
+    },
+    "blocks": {
+      "title": "Blokke",
+      "subtitle": "Flere ugers pas fra biblioteket, lagt ind fra en mandag hos en eller flere ryttere.",
+      "new": "Ny blok",
+      "newBody": "Læg pas fra biblioteket på dagene, uge for uge. Blokken kommer først i kalenderen, når den lægges ind.",
+      "editBody": "Ret blokken. Det, der allerede ligger i kalenderen, ændres ikke.",
+      "coachOnly": "Kun trænere kan lave blokke.",
+      "empty": "Ingen blokke endnu.",
+      "meta": "{weeks, plural, one {# uge} other {# uger}} · {sessions, plural, one {# pas} other {# pas}} · ca. {hours} t på cyklen",
+      "edit": "Ret",
+      "apply": "Læg ind",
+      "name": "Navn",
+      "description": "Beskrivelse",
+      "weeks": "Uger",
+      "weekCount": "{n, plural, one {# uge} other {# uger}}",
+      "week": "Uge {n}",
+      "weekHours": "{hours} på cyklen",
+      "add": "+ Tilføj pas",
+      "addTo": "Tilføj pas {day} i uge {week}",
+      "remove": "Fjern {name}",
+      "applyTitle": "Læg blokken ind",
+      "applyBody": "{name}, {weeks, plural, one {# uge} other {# uger}}: vælg ryttere og den mandag, blokken starter.",
+      "startMonday": "Starter mandag",
+      "snapped": "Blokken starter mandag {date}.",
+      "preview": "Se, hvad det giver",
+      "confirm": "Læg ind i kalenderen",
+      "applied": "{count, plural, one {Blokken ligger nu hos # rytter} other {Blokken ligger nu hos # ryttere}}.",
+      "weekLine": "Uge {n} ({date}): {hours} t på cyklen, {strength, plural, =0 {ingen styrkepas} one {# styrkepas} other {# styrkepas}}",
+      "corridor": "DCU {low}–{high} t",
+      "previewNote": "Værnene siger til, de forbyder intet. Du kan lægge blokken ind alligevel og rette bagefter i kalenderen."
     }
   },
   "riders": {

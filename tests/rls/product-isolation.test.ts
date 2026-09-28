@@ -52,6 +52,14 @@ const TABLES: Array<{ table: string; row: (s: string) => Record<string, unknown>
     row: (s) => ({ id: `tpl_${s}`, name: `Skabelon ${s}`, sport: "bike", structure: {} }),
   },
   {
+    table: "training_blocks",
+    row: (s) => ({ id: `blk_${s}`, name: `Blok ${s}`, weeks: 2 }),
+  },
+  {
+    table: "training_block_items",
+    row: (s) => ({ block_id: `blk_${s}`, template_id: `tpl_${s}`, day: 0 }),
+  },
+  {
     table: "activities",
     row: (s) => ({
       id: `act_${s}`,
@@ -157,7 +165,13 @@ describe.each(TABLES.map((spec) => spec.table))("product table %s", (table) => {
     // Team-wide tables follow the context alone (the app sets it only
     // after checking membership); everything about a rider asks who the
     // caller is, and a stranger is nobody.
-    const teamWide = ["team_settings", "workout_templates", "calendar_events"];
+    const teamWide = [
+      "team_settings",
+      "workout_templates",
+      "calendar_events",
+      "training_blocks",
+      "training_block_items",
+    ];
     const foundation = ["ai_calls", "workspace_llm_settings"];
     if (!teamWide.includes(table) && !foundation.includes(table)) expect(rows.rows).toEqual([]);
   });

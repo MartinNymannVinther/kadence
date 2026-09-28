@@ -927,6 +927,37 @@
     "dcu": {
       "install": "Fetch DCU's strength programmes",
       "done": "DCU's programmes are in the library: {installed} new, {updated} updated."
+    },
+    "blocks": {
+      "title": "Blocks",
+      "subtitle": "Several weeks of sessions from the library, put into one or more riders' calendars from a Monday.",
+      "new": "New block",
+      "newBody": "Put sessions from the library on the days, week by week. The block reaches a calendar only when it is applied.",
+      "editBody": "Change the block. What is already in a calendar does not change.",
+      "coachOnly": "Only coaches make blocks.",
+      "empty": "No blocks yet.",
+      "meta": "{weeks, plural, one {# week} other {# weeks}} · {sessions, plural, one {# session} other {# sessions}} · about {hours} h on the bike",
+      "edit": "Edit",
+      "apply": "Apply",
+      "name": "Name",
+      "description": "Description",
+      "weeks": "Weeks",
+      "weekCount": "{n, plural, one {# week} other {# weeks}}",
+      "week": "Week {n}",
+      "weekHours": "{hours} on the bike",
+      "add": "+ Add session",
+      "addTo": "Add a session on {day} in week {week}",
+      "remove": "Remove {name}",
+      "applyTitle": "Apply the block",
+      "applyBody": "{name}, {weeks, plural, one {# week} other {# weeks}}: choose riders and the Monday the block starts.",
+      "startMonday": "Starts Monday",
+      "snapped": "The block starts Monday {date}.",
+      "preview": "See what it comes to",
+      "confirm": "Put it in the calendar",
+      "applied": "{count, plural, one {The block is now with # rider} other {The block is now with # riders}}.",
+      "weekLine": "Week {n} ({date}): {hours} h on the bike, {strength, plural, =0 {no strength sessions} one {# strength session} other {# strength sessions}}",
+      "corridor": "DCU {low}–{high} h",
+      "previewNote": "The guardrails speak up; they forbid nothing. You can apply the block anyway and adjust in the calendar."
     }
   },
   "riders": {
