@@ -4,3 +4,6 @@ pnpm-lock.yaml
 drizzle/meta
 coverage
 poc
+public/maplibre
+.claude
+data

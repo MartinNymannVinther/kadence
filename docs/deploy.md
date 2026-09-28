@@ -222,6 +222,29 @@ who sends them the way they talk to their colleague anyway. There is no
 SMTP setting, no scheduled job and no reminder; an installation needs
 nothing beyond what section 2 lists.
 
+## 6c. The map behind routes
+
+A ride's route is drawn on a map of Denmark that Kadence serves itself
+(ADR 0023): OpenStreetMap data in one PMTiles file, read by the browser in
+small byte ranges from `/api/map/tiles`. No rider's position reaches a map
+service. Without the file, routes are drawn on plain paper and nothing
+else changes.
+
+Fetch it once, on the server, into the `kadence-map` volume (about
+500 MB; only Denmark is downloaded, from Protomaps' daily build):
+
+```
+scripts/fetch-map.sh compose
+```
+
+Run it again now and then to bring roads up to date; the app reads the
+new file on the next request. For `pnpm dev`, `scripts/fetch-map.sh`
+without an argument puts the file in `./data/map` and names the
+`MAP_FILE` line for `.env`.
+
+The map shows © OpenStreetMap contributors, as the data's licence (ODbL)
+asks.
+
 ## 7. Nightly encrypted backups (EU object storage)
 
 Per the family's dogmas: nightly encrypted dumps to EU-owned object storage

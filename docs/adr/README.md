@@ -42,3 +42,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0020](0020-polar-as-the-third-device.md)        | Polar as the third device                                                           | → 0018       |
 | [0021](0021-coach-guide-and-tips.md)             | A coach guide in Kadence's own words, and tips that never enforce                   | → 0013, 0014 |
 | [0022](0022-activity-files-in-every-format.md)   | Activity files in every common format                                               | → 0018       |
+| [0023](0023-a-map-served-by-kadence.md)          | The map behind a route is served by Kadence itself                                  | → 0022       |

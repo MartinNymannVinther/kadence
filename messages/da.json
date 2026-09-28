@@ -1716,7 +1716,13 @@
       "start": "Start",
       "finish": "Slut",
       "none": "Filen havde ingen GPS-positioner.",
-      "note": "Tegnet ud fra GPS uden kort, så ingen position sendes videre til en korttjeneste."
+      "note": "Tegnet ud fra GPS uden kort, så ingen position sendes videre til en korttjeneste.",
+      "mapLabel": "Ruten på et kort, {km} km",
+      "gestureWindows": "Hold Ctrl nede, og rul for at zoome på kortet",
+      "gestureMac": "Hold ⌘ nede, og rul for at zoome på kortet",
+      "gestureMobile": "Brug to fingre for at flytte kortet",
+      "zoomIn": "Zoom ind",
+      "zoomOut": "Zoom ud"
     },
     "laps": {
       "caption": "{count} omgange fra enheden",

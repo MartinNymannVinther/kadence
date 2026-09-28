@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { RouteMap } from "./route-map";
+import { RouteMapGl } from "./route-map-gl";
 import { StreamsChart, type Streams } from "./streams-chart";
 
 /**
@@ -13,10 +14,13 @@ export function RideView({
   streams,
   titles,
   km,
+  withMap,
 }: {
   streams: Streams;
   titles: { route: string; streams: string };
   km: string;
+  /** The installation has a map file (ADR 0023): the route goes on a map. */
+  withMap: boolean;
 }) {
   const [at, setAt] = useState<number | null>(null);
   const hasRoute =
@@ -30,7 +34,11 @@ export function RideView({
           <h2 id="activity-route" className="text-lg font-semibold">
             {titles.route}
           </h2>
-          <RouteMap lat={streams.lat ?? []} lon={streams.lon ?? []} at={at} km={km} />
+          {withMap ? (
+            <RouteMapGl lat={streams.lat ?? []} lon={streams.lon ?? []} at={at} km={km} />
+          ) : (
+            <RouteMap lat={streams.lat ?? []} lon={streams.lon ?? []} at={at} km={km} />
+          )}
         </section>
       )}
       <section aria-labelledby="activity-streams" className="flex flex-col gap-3">

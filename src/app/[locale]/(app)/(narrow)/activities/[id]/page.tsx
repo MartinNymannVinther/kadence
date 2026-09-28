@@ -18,6 +18,7 @@ import { dayLong } from "@/components/training/day-label";
 import { SportIcon } from "@/components/training/sport-icon";
 import { EmptyState } from "@/components/ui/empty-state";
 import { getOrgContext } from "@/core/auth/session";
+import { mapAvailable } from "@/core/map/file";
 import { mondayOf } from "@/core/dates";
 import { Link, redirect } from "@/i18n/navigation";
 import type { ClimbSummary, LapSummary } from "@/modules/fit";
@@ -65,11 +66,12 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
       </div>
     );
   }
-  const [rider, session, comments, fileName] = await Promise.all([
+  const [rider, session, comments, fileName, withMap] = await Promise.all([
     getRider(ctx, activity.riderId),
     getActivitySession(ctx, activity.id),
     listComments(ctx, { activityId: activity.id }),
     activity.source === "fit" ? getActivityFileName(ctx, activity.id) : null,
+    mapAvailable(),
   ]);
   const format = fileName ? formatOfName(fileName) : null;
   const canWrite = me.isCoach || me.rider?.id === activity.riderId;
@@ -135,6 +137,7 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
             streams={streams}
             titles={{ route: t("routeTitle"), streams: t("streamsTitle") }}
             km={num((activity.distanceM ?? 0) / 1000, locale, 1)}
+            withMap={withMap}
           />
         ) : (
           <section aria-labelledby="activity-streams" className="flex flex-col gap-3">

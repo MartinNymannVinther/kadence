@@ -22,6 +22,7 @@ const DEV_CSP =
   "style-src 'self' 'unsafe-inline'; " +
   "img-src 'self' data: blob:; " +
   "font-src 'self'; " +
+  "worker-src 'self'; " +
   "connect-src 'self' ws: wss:; " +
   "object-src 'none'; " +
   "base-uri 'none'; " +
@@ -34,6 +35,7 @@ const PROD_CSP =
   "style-src 'self' 'unsafe-inline'; " +
   "img-src 'self' data: blob:; " +
   "font-src 'self'; " +
+  "worker-src 'self'; " +
   "connect-src 'self'; " +
   "object-src 'none'; " +
   "base-uri 'none'; " +

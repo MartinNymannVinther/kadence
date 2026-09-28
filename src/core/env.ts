@@ -105,6 +105,11 @@ export const EnvSchema = z
     POLAR_CLIENT_ID: z.string().min(1).optional(),
     POLAR_CLIENT_SECRET: z.string().min(1).optional(),
     POLAR_WEBHOOK_SECRET: z.string().min(1).optional(),
+    // The map behind a ride's route: a PMTiles file of OpenStreetMap data
+    // on this server (scripts/fetch-map.sh, ADR 0023). Served by Kadence
+    // itself, so no rider's position reaches a map service. Without it the
+    // route is drawn on plain paper, as before.
+    MAP_FILE: z.string().min(1).optional(),
   })
   .superRefine((value, ctx) => {
     // `next build` runs with NODE_ENV=production and placeholder values

@@ -63,6 +63,10 @@ const migration = journal.entries.at(-1)?.tag ?? "unknown";
  * img-src allows data: for the TOTP enrolment QR code, which is drawn to
  * a data URL, and blob: for PDFs opened in a tab.
  *
+ * worker-src is 'self', named for the map behind a ride's route
+ * (ADR 0023): MapLibre's tile worker is a file Kadence serves itself from
+ * public/maplibre, and the tiles come from its own /api/map/tiles.
+ *
  * Three directives are relaxed outside production, and all three are
  * about `next dev` on http://localhost rather than about the policy:
  *
@@ -93,6 +97,7 @@ export function contentSecurityPolicy(production: boolean): string {
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob:",
     "font-src 'self'",
+    "worker-src 'self'",
     production ? "connect-src 'self'" : "connect-src 'self' ws: wss:",
     "object-src 'none'",
     "base-uri 'none'",

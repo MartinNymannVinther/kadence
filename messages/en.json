@@ -1716,7 +1716,13 @@
       "start": "Start",
       "finish": "Finish",
       "none": "The file had no GPS positions.",
-      "note": "Drawn from GPS without a map, so no position is sent on to a map service."
+      "note": "Drawn from GPS without a map, so no position is sent on to a map service.",
+      "mapLabel": "The route on a map, {km} km",
+      "gestureWindows": "Hold Ctrl and scroll to zoom the map",
+      "gestureMac": "Hold ⌘ and scroll to zoom the map",
+      "gestureMobile": "Use two fingers to move the map",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out"
     },
     "laps": {
       "caption": "{count} laps from the device",

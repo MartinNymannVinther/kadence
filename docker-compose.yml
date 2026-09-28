@@ -95,6 +95,12 @@ services:
       POLAR_CLIENT_ID: ${POLAR_CLIENT_ID:-}
       POLAR_CLIENT_SECRET: ${POLAR_CLIENT_SECRET:-}
       POLAR_WEBHOOK_SECRET: ${POLAR_WEBHOOK_SECRET:-}
+      # The map behind routes, served by Kadence itself (ADR 0023). Empty
+      # until `docker compose --profile map run --rm map` has fetched it;
+      # without it routes are drawn on plain paper.
+      MAP_FILE: /data/map/denmark.pmtiles
+    volumes:
+      - kadence-map:/data/map:ro
     # No published port. Coolify's proxy reaches the app over the compose
     # network and terminates TLS in front of it; binding 0.0.0.0:3000 as
     # well would put the same app on the VPS's public address in cleartext,
@@ -108,5 +114,22 @@ services:
       migrate:
         condition: service_completed_successfully
 
+  # Fetches the map of Denmark into the kadence-map volume: the
+  # OpenStreetMap basemap Protomaps builds daily, cut to Denmark with
+  # Protomaps' own tool. Not part of `up`; scripts/fetch-map.sh runs it
+  # with the newest build, and again to refresh the map (docs/deploy.md).
+  map:
+    image: protomaps/go-pmtiles:latest
+    profiles: ["map"]
+    command:
+      - extract
+      - https://build.protomaps.com/${MAP_BUILD:-missing}.pmtiles
+      - /data/map/denmark.pmtiles
+      - --bbox=7.7,54.5,15.4,57.9
+      - --maxzoom=14
+    volumes:
+      - kadence-map:/data/map
+
 volumes:
   kadence-pgdata:
+  kadence-map:

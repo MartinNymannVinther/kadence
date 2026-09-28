@@ -44,3 +44,6 @@ next-env.d.ts
 # patches passed around by hand
 *.patch
 *.bundle
+
+# the map behind routes: fetched, never committed (scripts/fetch-map.sh)
+/data/map/
