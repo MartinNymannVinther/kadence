@@ -14,7 +14,7 @@ const HERE = "#c08a63";
 /** The pause symbols on the map: the same three as on the curves. */
 const STOP_SYMBOL = { soda: "🥤", coffee: "☕", lunch: "🍽️" } as const;
 
-export type MapStop = { lat: number; lon: number; kind: keyof typeof STOP_SYMBOL; label: string };
+export type MapStop = { lat: number; lon: number; kind: string; label: string };
 
 let protocolAdded = false;
 
@@ -147,7 +147,7 @@ export function RouteMapGl({
         });
         for (const stop of stops) {
           const element = document.createElement("div");
-          element.textContent = STOP_SYMBOL[stop.kind];
+          element.textContent = STOP_SYMBOL[stop.kind as keyof typeof STOP_SYMBOL] ?? "•";
           element.title = stop.label;
           element.setAttribute("aria-label", stop.label);
           element.className =

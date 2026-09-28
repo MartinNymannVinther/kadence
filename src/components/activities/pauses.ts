@@ -3,9 +3,10 @@ import type { Streams } from "./streams-chart";
 /**
  * Pauses in a ride: a stretch of at least `MIN_PAUSE_SECONDS` standing
  * still — no speed to speak of, no power, no pedalling — or with nothing
- * recorded at all (the device paused). Each gets a kind for its symbol: a
- * soda for a short stop, a coffee from a quarter of an hour, lunch from
- * half an hour.
+ * recorded at all (the device paused). A traffic light counts; hiding
+ * pauses hides them all. Only a longer stop gets a symbol, from
+ * `SYMBOL_MIN_SECONDS`: a soda for a short stop, a coffee from a quarter
+ * of an hour, lunch from half an hour; a shorter one is just a stop.
  *
  * For the view only. Hiding pauses moves the curves together; it changes
  * no number. Best efforts and the power curve are computed on the ride's
@@ -16,16 +17,21 @@ import type { Streams } from "./streams-chart";
  * Pure, so it is tested alone.
  */
 
-export const MIN_PAUSE_SECONDS = 5 * 60;
+export const MIN_PAUSE_SECONDS = 30;
+export const SYMBOL_MIN_SECONDS = 5 * 60;
 /** m/s, the timeline's own walking-pace line (src/modules/fit/timeline.ts). */
 const STILL_SPEED = 0.5;
 
-export type PauseKind = "soda" | "coffee" | "lunch";
+export type PauseKind = "stop" | "soda" | "coffee" | "lunch";
 export type Pause = { start: number; end: number; seconds: number; kind: PauseKind };
 
 export function pauseKind(seconds: number): PauseKind {
+  if (seconds < SYMBOL_MIN_SECONDS) return "stop";
   return seconds >= 30 * 60 ? "lunch" : seconds >= 15 * 60 ? "coffee" : "soda";
 }
+
+/** Whether a pause of this kind is drawn with a symbol, on the curves and on the map. */
+export const hasSymbol = (kind: PauseKind) => kind !== "stop";
 
 const low = (v: number | null | undefined, limit: number) =>
   v === null || v === undefined || v <= limit;

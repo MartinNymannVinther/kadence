@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { clockText } from "@/components/training/duration";
 import type { PauseMark } from "./pause-marks";
-import { findPauses, withoutPauses } from "./pauses";
+import { findPauses, hasSymbol, withoutPauses } from "./pauses";
 import { RouteMap } from "./route-map";
 import { RouteMapGl } from "./route-map-gl";
 import { StreamsChart, type Streams } from "./streams-chart";
@@ -59,6 +59,8 @@ export function RideView({
   const stops = useMemo(
     () =>
       pauses.flatMap((p) => {
+        // Only a longer stop goes on the map; a traffic light would litter it.
+        if (!hasSymbol(p.kind)) return [];
         // Where the rider stopped: the last fix before the pause, since a
         // device that paused recorded nothing during it.
         let i = p.start;

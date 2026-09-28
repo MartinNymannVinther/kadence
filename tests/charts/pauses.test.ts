@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
   findPauses,
+  hasSymbol,
   MIN_PAUSE_SECONDS,
   pauseKind,
+  SYMBOL_MIN_SECONDS,
   withoutPauses,
 } from "@/components/activities/pauses";
 import type { Streams } from "@/components/activities/streams-chart";
@@ -26,19 +28,22 @@ function ride(samples: number, stops: Array<[number, number, "still" | "gap"]>):
 }
 
 describe("pauses", () => {
-  it("finds a stop of five minutes or more, standing or unrecorded, and names it by length", () => {
+  it("finds every stop of half a minute or more, standing or unrecorded, and names the longer by length", () => {
     const streams = ride(1000, [
       [100, 160, "still"], // 5 min
       [300, 480, "gap"], // 15 min
       [600, 960, "still"], // 30 min
-      [980, 990, "still"], // 50 s: not a pause
+      [970, 980, "still"], // 50 s: a red light, a pause without a symbol
+      [985, 988, "still"], // 15 s: not a pause
     ]);
     const pauses = findPauses(streams);
     expect(pauses.map((p) => [p.seconds, p.kind])).toEqual([
       [300, "soda"],
       [900, "coffee"],
       [1800, "lunch"],
+      [50, "stop"],
     ]);
+    expect(pauses.map((p) => hasSymbol(p.kind))).toEqual([true, true, true, false]);
   });
 
   it("does not call standing at the start or end of a ride a pause", () => {
@@ -63,8 +68,10 @@ describe("pauses", () => {
     expect(view.streams.power!.every((w) => w === 200)).toBe(true);
   });
 
-  it("names the three lengths at their thresholds", () => {
-    expect(MIN_PAUSE_SECONDS).toBe(300);
+  it("names the lengths at their thresholds", () => {
+    expect(MIN_PAUSE_SECONDS).toBe(30);
+    expect(SYMBOL_MIN_SECONDS).toBe(300);
+    expect(pauseKind(60)).toBe("stop");
     expect(pauseKind(300)).toBe("soda");
     expect(pauseKind(15 * 60)).toBe("coffee");
     expect(pauseKind(30 * 60)).toBe("lunch");

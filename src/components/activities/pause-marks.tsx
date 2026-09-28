@@ -1,15 +1,16 @@
 import { Coffee, CupSoda, UtensilsCrossed } from "lucide-react";
-import type { PauseKind } from "./pauses";
+import { hasSymbol, type PauseKind } from "./pauses";
 
 export type PauseMark = { from: number; to: number; kind: PauseKind; label: string };
 
-const ICON = { soda: CupSoda, coffee: Coffee, lunch: UtensilsCrossed } as const;
+const ICON = { stop: null, soda: CupSoda, coffee: Coffee, lunch: UtensilsCrossed } as const;
 const SIZE = 16;
 
 /**
- * Where the rider stopped, on the curves: a pale band over the pause with
- * its symbol — a soda, a coffee, lunch — or, with pauses hidden, a dashed
- * seam where the curves were joined. The symbol's title says how long.
+ * Where the rider stopped, on the curves: a pale band over the pause — or,
+ * with pauses hidden, a dashed seam where the curves were joined — and,
+ * for a longer stop, its symbol: a soda, a coffee, lunch. A traffic light
+ * is a band or a seam without one. The title says how long.
  */
 export function PauseMarks({
   marks,
@@ -51,22 +52,26 @@ export function PauseMarks({
                 strokeDasharray="3 3"
               />
             )}
-            <circle
-              cx={centre}
-              cy={top + SIZE / 2 + 1}
-              r={SIZE / 2 + 3}
-              fill="var(--card)"
-              stroke="var(--border)"
-            />
-            <Icon
-              x={centre - SIZE / 2 + 2}
-              y={top + 3}
-              width={SIZE - 4}
-              height={SIZE - 4}
-              color="var(--chart-4)"
-              strokeWidth={2.25}
-              aria-hidden
-            />
+            {Icon && hasSymbol(mark.kind) && (
+              <>
+                <circle
+                  cx={centre}
+                  cy={top + SIZE / 2 + 1}
+                  r={SIZE / 2 + 3}
+                  fill="var(--card)"
+                  stroke="var(--border)"
+                />
+                <Icon
+                  x={centre - SIZE / 2 + 2}
+                  y={top + 3}
+                  width={SIZE - 4}
+                  height={SIZE - 4}
+                  color="var(--chart-4)"
+                  strokeWidth={2.25}
+                  aria-hidden
+                />
+              </>
+            )}
           </g>
         );
       })}
