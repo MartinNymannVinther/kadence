@@ -1,11 +1,6 @@
 import { todayInCopenhagen } from "@/core/dates";
-import {
-  decodeFit,
-  FitError,
-  summarizeActivity,
-  type ClimbSummary,
-  type LapSummary,
-} from "@/modules/fit";
+import { decodeActivityFile, type ActivityFormat } from "@/modules/files";
+import { FitError, summarizeActivity, type ClimbSummary, type LapSummary } from "@/modules/fit";
 import {
   activityLoad,
   heartRateDrift,
@@ -15,8 +10,9 @@ import {
 } from "@/modules/load";
 
 /**
- * A FIT file turned into the values of an `activities` row: decoded by
- * Kadence's own decoder (which refuses rather than guesses, and throws a
+ * An activity file turned into the values of an `activities` row: FIT,
+ * TCX or GPX, bare or in an archive (src/modules/files), decoded by
+ * Kadence's own readers (which refuse rather than guess, and throw a
  * `FitError` with a code the upload can name), summarised, and given a
  * load by the best method the rider's thresholds allow (ADR 0016). Pure:
  * the upload, Wahoo, Garmin and Polar all come through here.
@@ -49,6 +45,9 @@ export type ActivityValues = {
   load: number | null;
   loadMethod: "power" | "hr" | "rpe" | "none";
   crcOk: boolean;
+  format: ActivityFormat;
+  /** The ride's own name, where the file carries one (a GPX track's). */
+  title?: string;
 };
 
 const int = (value: number | undefined) =>
@@ -65,7 +64,7 @@ const within = (value: number | undefined, max: number) =>
   value !== undefined && Number.isFinite(value) && value >= 0 && value <= max ? value : undefined;
 
 export function activityFromFit(bytes: Uint8Array, rider: RiderThresholds): ActivityValues {
-  const fit = decodeFit(bytes);
+  const { fit, format, title } = decodeActivityFile(bytes);
   const summary = summarizeActivity(fit);
   const year = summary.startedAt.getUTCFullYear();
   if (!Number.isFinite(summary.startedAt.getTime()) || year < 1990 || year > 2100)
@@ -109,5 +108,7 @@ export function activityFromFit(bytes: Uint8Array, rider: RiderThresholds): Acti
     load: load.method === "none" ? null : load.load,
     loadMethod: load.method,
     crcOk: fit.crcOk,
+    format,
+    title,
   };
 }

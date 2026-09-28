@@ -8,6 +8,7 @@ import { listSessions } from "@/modules/training/sessions";
 import { adminPool } from "../helpers/db";
 import { insertSql, seedPerson } from "../helpers/rows";
 import { encodeRide, steadyHour } from "../fit/fixtures";
+import { bytesOf, gpx, zip } from "../files/fixtures";
 
 /**
  * A ride coming in as a FIT file: decoded, given a load from power at the
@@ -113,6 +114,22 @@ describe("importing a FIT file", () => {
     expect(row.rows[0]).toMatchObject({ max_speed: 10, laps: [], load_method: "power" });
   });
 
+  it("takes a GPX file, and a zip, through the same import, keeping the original", async () => {
+    const result = await importFit(IDA, "i_ida", "Hørsholm.gpx", bytesOf(gpx(900)));
+    const row = await admin.query(
+      "select title, source, distance_m from activities where id = $1",
+      [result.activityId],
+    );
+    expect(row.rows[0]).toMatchObject({ title: "Hørsholm & omegn", source: "fit" });
+    expect(row.rows[0].distance_m).toBeGreaterThan(8500);
+    expect((await getActivityFile(IDA, result.activityId))!.fileName).toBe("Hørsholm.gpx");
+    // The same ride again, zipped: the same start by the same rider.
+    await expect(
+      importFit(IDA, "i_ida", "again.zip", zip([{ name: "a.gpx", bytes: bytesOf(gpx(900)) }])),
+    ).rejects.toMatchObject({ code: "conflict" });
+    await deleteActivity(IDA, result.activityId);
+  });
+
   it("names the session it fulfilled, for the activity's page", async () => {
     expect(await getActivitySession(COACH, activityId)).toEqual({
       id: "i_session",
@@ -136,10 +153,10 @@ describe("importing a FIT file", () => {
     });
   });
 
-  it("refuses what is not a FIT file, with the decoder's reason", async () => {
+  it("refuses what is no activity file, with the decoder's reason", async () => {
     await expect(
       importFit(IDA, "i_ida", "x.fit", new TextEncoder().encode("not a fit file at all")),
-    ).rejects.toMatchObject({ code: "invalid", detail: "not_fit" });
+    ).rejects.toMatchObject({ code: "invalid", detail: "unknown_format" });
   });
 
   it("refuses a teammate's upload in another rider's name", async () => {

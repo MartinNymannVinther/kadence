@@ -3,6 +3,7 @@ import { and, eq, inArray, isNull } from "drizzle-orm";
 import { Refused } from "@/core/action";
 import { activities, activityFiles, plannedSessions, riders } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
+import { baseName } from "@/modules/files";
 import { FitError } from "@/modules/fit";
 import { matchActivity } from "@/modules/load";
 import { requireWriteFor } from "@/modules/team/access";
@@ -77,14 +78,14 @@ export async function importFitIn(
     );
   if (sameStart) throw new Refused("conflict", "duplicate");
 
-  const { crcOk, ...row } = values;
+  const { crcOk, format: _format, title, ...row } = values;
   const [activity] = await tx
     .insert(activities)
     .values({
       orgId: ctx.orgId,
       riderId,
       ...row,
-      title: fileName.replace(/\.fit$/i, "").slice(0, 120),
+      title: (title || baseName(fileName)).slice(0, 120),
       source: origin.source,
       externalId: origin.externalId ?? null,
       createdBy: ctx.userId,
@@ -149,6 +150,17 @@ export async function getActivityFile(ctx: OrgContext, activityId: string) {
       .from(activityFiles)
       .where(eq(activityFiles.activityId, activityId));
     return row ?? null;
+  });
+}
+
+/** The stored file's name, for the page to say what format the ride came in. */
+export async function getActivityFileName(ctx: OrgContext, activityId: string) {
+  return withOrgContext(ctx, async (tx) => {
+    const [row] = await tx
+      .select({ fileName: activityFiles.fileName })
+      .from(activityFiles)
+      .where(eq(activityFiles.activityId, activityId));
+    return row?.fileName ?? null;
   });
 }
 

@@ -100,7 +100,7 @@ export function FitUpload({ riderId, compact = false }: { riderId: string; compa
         <input
           id={inputId}
           type="file"
-          accept=".fit,.FIT,application/vnd.ant.fit,application/octet-stream"
+          accept=".fit,.FIT,.tcx,.TCX,.gpx,.GPX,.gz,.zip,application/vnd.ant.fit,application/gpx+xml,application/vnd.garmin.tcx+xml,application/gzip,application/zip,application/octet-stream"
           multiple
           disabled={busy}
           className="sr-only"

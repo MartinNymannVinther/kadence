@@ -14,9 +14,20 @@
  * - `corrupt`: every byte is there, but the messages break the protocol —
  *   data before its definition, an unknown byte order, no file_id.
  * - `empty`: decoded, but without a single timestamped record to summarize.
+ * - `unknown_format`: neither FIT, TCX, GPX nor an archive holding one
+ *   (src/modules/files).
+ * - `no_activity`: an archive with no activity file in it.
  */
 export type FitErrorCode =
-  "not_fit" | "truncated" | "bad_crc" | "too_large" | "unsupported" | "corrupt" | "empty";
+  | "not_fit"
+  | "truncated"
+  | "bad_crc"
+  | "too_large"
+  | "unsupported"
+  | "corrupt"
+  | "empty"
+  | "unknown_format"
+  | "no_activity";
 
 export class FitError extends Error {
   readonly code: FitErrorCode;

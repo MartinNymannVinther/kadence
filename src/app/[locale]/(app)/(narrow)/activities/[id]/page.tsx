@@ -23,6 +23,8 @@ import { Link, redirect } from "@/i18n/navigation";
 import type { ClimbSummary, LapSummary } from "@/modules/fit";
 import { whoAmI } from "@/modules/team/access";
 import { getRider } from "@/modules/team/riders";
+import { getActivityFileName } from "@/modules/devices/import";
+import { formatOfName } from "@/modules/files";
 import { getActivity, getActivitySession } from "@/modules/training/activities";
 import { listComments } from "@/modules/training/comments";
 
@@ -63,11 +65,13 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
       </div>
     );
   }
-  const [rider, session, comments] = await Promise.all([
+  const [rider, session, comments, fileName] = await Promise.all([
     getRider(ctx, activity.riderId),
     getActivitySession(ctx, activity.id),
     listComments(ctx, { activityId: activity.id }),
+    activity.source === "fit" ? getActivityFileName(ctx, activity.id) : null,
   ]);
+  const format = fileName ? formatOfName(fileName) : null;
   const canWrite = me.isCoach || me.rider?.id === activity.riderId;
   const back = calendarHref({
     week: mondayOf(activity.onDate),
@@ -106,7 +110,9 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
           {activity.title || sports(activity.sport as "bike")}
         </h1>
         <p className="text-meta text-2sm">
-          {t(`source.${activity.source}` as "source.fit")}
+          {format === "fit" || format === "tcx" || format === "gpx"
+            ? t("sourceFormat", { format: format.toUpperCase() })
+            : t(`source.${activity.source}` as "source.fit")}
           {session && (
             <>
               {" · "}

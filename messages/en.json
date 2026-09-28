@@ -1589,7 +1589,7 @@
     "missingHint": "It may have been deleted, or you may not have access to it.",
     "startedAt": "started {time}",
     "source": {
-      "fit": "From a FIT file",
+      "fit": "From an uploaded file",
       "wahoo": "From Wahoo",
       "garmin": "From Garmin",
       "polar": "From Polar",
@@ -1676,17 +1676,17 @@
     },
     "upload": {
       "title": "Upload a ride",
-      "body": "FIT files from your bike computer, your watch or your trainer. It always works, without Wahoo, Garmin and Polar too.",
+      "body": "Files from your bike computer, your watch, your trainer or an app: FIT, TCX and GPX, also packed as .gz or .zip (such as Garmin Connect's or Strava's export). It always works, without Wahoo, Garmin and Polar too.",
       "drop": "Drag files here, or tap to choose",
       "busy": "Uploading …",
-      "hint": ".fit, at most 25 MB per file",
+      "hint": ".fit, .tcx, .gpx, .gz or .zip, at most 25 MB per file",
       "matched": "Uploaded and placed on the session “{title}”.",
       "unmatched": "Uploaded. It did not match a planned session, so it stands on its own in the calendar.",
       "open": "See the ride",
       "error": {
         "duplicate": "That ride is already uploaded.",
         "conflict": "That ride is already uploaded.",
-        "not_fit": "That is not a FIT file.",
+        "not_fit": "The file looks like a FIT file but cannot be read.",
         "truncated": "The file is not complete. Fetch it from the device again and retry.",
         "bad_crc": "The file is damaged.",
         "too_large": "The file is too large. It may be at most 25 MB.",
@@ -1698,7 +1698,9 @@
         "unauthorized": "You are no longer signed in.",
         "rateLimited": "You have uploaded many files just now. Try again in a moment.",
         "invalid": "Choose at least one file.",
-        "generic": "Something went wrong with the file. Try again."
+        "generic": "Something went wrong with the file. Try again.",
+        "unknown_format": "Kadence does not know that file format. Use FIT, TCX or GPX, packed as .gz or .zip if you like.",
+        "no_activity": "The zip file has no .fit, .tcx or .gpx file in it."
       }
     },
     "routeTitle": "The route",
@@ -1742,7 +1744,8 @@
       "s": "{n} s",
       "min": "{n} min",
       "h": "{n} h"
-    }
+    },
+    "sourceFormat": "From a {format} file"
   },
   "season": {
     "title": "Season",
