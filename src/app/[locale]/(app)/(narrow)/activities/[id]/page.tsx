@@ -10,6 +10,7 @@ import { LapsTable } from "@/components/activities/laps-table";
 import { PowerCurve } from "@/components/activities/power-curve";
 import { RideView } from "@/components/activities/ride-view";
 import type { Streams } from "@/components/activities/streams-chart";
+import { TogetherSection } from "@/components/activities/together-section";
 import { ZoneTime } from "@/components/activities/zone-time";
 import { calendarHref } from "@/components/calendar/href";
 import { num } from "@/components/charts/format";
@@ -27,6 +28,7 @@ import { getRider } from "@/modules/team/riders";
 import { getActivityFileName } from "@/modules/devices/import";
 import { formatOfName } from "@/modules/files";
 import { getActivity, getActivitySession } from "@/modules/training/activities";
+import { listCompanions } from "@/modules/training/companions";
 import { getRiderRecords } from "@/modules/training/records";
 import { listComments } from "@/modules/training/comments";
 
@@ -67,16 +69,19 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
       </div>
     );
   }
-  const [rider, session, comments, fileName, withMap, riderRecords] = await Promise.all([
-    getRider(ctx, activity.riderId),
-    getActivitySession(ctx, activity.id),
-    listComments(ctx, { activityId: activity.id }),
-    activity.source === "fit" ? getActivityFileName(ctx, activity.id) : null,
-    mapAvailable(),
-    activity.avgPower !== null && activity.avgPower > 0
-      ? getRiderRecords(ctx, activity.riderId, { activityId: activity.id })
-      : null,
-  ]);
+  const [rider, session, comments, fileName, withMap, riderRecords, companions] = await Promise.all(
+    [
+      getRider(ctx, activity.riderId),
+      getActivitySession(ctx, activity.id),
+      listComments(ctx, { activityId: activity.id }),
+      activity.source === "fit" ? getActivityFileName(ctx, activity.id) : null,
+      mapAvailable(),
+      activity.avgPower !== null && activity.avgPower > 0
+        ? getRiderRecords(ctx, activity.riderId, { activityId: activity.id })
+        : null,
+      activity.sport === "bike" ? listCompanions(ctx, activity) : [],
+    ],
+  );
   const format = fileName ? formatOfName(fileName) : null;
   const canWrite = me.isCoach || me.rider?.id === activity.riderId;
   const back = calendarHref({
@@ -151,6 +156,8 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
             <p className="text-meta text-2sm">{t("noStreams")}</p>
           </section>
         ))}
+
+      <TogetherSection activityId={activity.id} companions={companions} />
 
       {laps.length > 0 && (
         <section aria-labelledby="activity-laps" className="flex flex-col gap-3">

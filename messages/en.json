@@ -1773,6 +1773,22 @@
       "coffee": "Coffee stop, {time}",
       "lunch": "Lunch stop, {time}",
       "note": "Pauses of at least 5 minutes. Hiding them changes only the view: best power and the power curve are always worked out on the real clock, where a pause counts as 0 W, so a pause in the middle of an effort can never give a better number."
+    },
+    "together": {
+      "title": "Ridden together",
+      "body": "{count, plural, one {One teammate rode the same ride} other {# teammates rode the same ride}}: same day, same start, same distance.",
+      "compare": "Lay the rides over each other",
+      "pageTitle": "The rides over each other",
+      "back": "Back to the ride",
+      "rider": "Rider",
+      "hint": "Point at the curves, or use the arrow keys, to read every rider at one place on the ride.",
+      "atKm": "km {km}",
+      "chartLabel": "{count} riders' watt, pulse, speed and height over the same ride",
+      "byDistance": "The curves line up by distance: the same hill is the same place on every line.",
+      "byTime": "The curves line up by time from the start, because at least one ride has no speed.",
+      "tooFew": "There are not two rides to compare",
+      "tooFewHint": "You can only see riders whose training you have access to.",
+      "note": "Riders are in the team's order, not by number. No ranking: it is the same ride seen from several saddles."
     }
   },
   "season": {

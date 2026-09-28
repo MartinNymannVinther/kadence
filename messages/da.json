@@ -1773,6 +1773,22 @@
       "coffee": "Kaffepause, {time}",
       "lunch": "Frokostpause, {time}",
       "note": "Pauser på mindst 5 minutter. At skjule dem ændrer kun visningen: bedste watt og wattkurven regnes altid på den rigtige tid, hvor en pause tæller som 0 W, så en pause midt i et forsøg aldrig kan give en bedre værdi."
+    },
+    "together": {
+      "title": "Kørt sammen",
+      "body": "{count, plural, one {Én holdkammerat kørte den samme tur} other {# holdkammerater kørte den samme tur}}: samme dag, samme start, samme distance.",
+      "compare": "Læg turene oven på hinanden",
+      "pageTitle": "Turene oven på hinanden",
+      "back": "Tilbage til turen",
+      "rider": "Rytter",
+      "hint": "Peg på kurverne, eller brug piletasterne, for at læse alle ryttere ét sted på turen.",
+      "atKm": "km {km}",
+      "chartLabel": "{count} rytteres watt, puls, fart og højde over samme tur",
+      "byDistance": "Kurverne ligger efter distance: samme bakke er samme sted på alle linjer.",
+      "byTime": "Kurverne ligger efter tid fra start, fordi mindst én tur ikke har fart.",
+      "tooFew": "Der er ikke to ture at sammenligne",
+      "tooFewHint": "Du kan kun se ryttere, hvis træning du har adgang til.",
+      "note": "Rytterne står i holdets rækkefølge, ikke efter tal. Ingen rangliste: det er den samme tur set fra flere sadler."
     }
   },
   "season": {
