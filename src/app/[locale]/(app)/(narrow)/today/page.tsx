@@ -7,6 +7,7 @@ import { toCard, toEventCard } from "@/components/calendar/to-card";
 import { SessionSheet } from "@/components/session/session-sheet";
 import { SessionView } from "@/components/session/session-view";
 import { FitUpload } from "@/components/activities/fit-upload";
+import { RecordsCard } from "@/components/activities/records-card";
 import { LoadPanel } from "@/components/load/load-panel";
 import { AttentionSection } from "@/components/today/attention-section";
 import { CheckinSection } from "@/components/today/checkin-section";
@@ -28,6 +29,7 @@ import { whoAmI } from "@/modules/team/access";
 import { getRiders } from "@/modules/team/riders";
 import { getTeamSettings } from "@/modules/team/settings";
 import { listEvents } from "@/modules/training/events";
+import { getRiderRecords } from "@/modules/training/records";
 import { listSessions } from "@/modules/training/sessions";
 import { weekDates, weekFrom } from "@/modules/training/week";
 import { getCheckin, listCheckins } from "@/modules/wellbeing/checkins";
@@ -49,15 +51,17 @@ async function weekOf(ctx: OrgContext, riderId: string, from: string, to: string
 
 /** The rider's own extras for today: the check-in, two weeks of zones and their load. */
 async function riderDay(ctx: OrgContext, riderId: string, today: string) {
-  const [checkin, recent, insights] = await Promise.all([
+  const [checkin, recent, insights, records] = await Promise.all([
     getCheckin(ctx, riderId, today),
     listCheckins(ctx, { from: addDaysIso(today, -13), to: today, riderIds: [riderId] }),
     getInsights(ctx, { riderIds: [riderId], today }),
+    getRiderRecords(ctx, riderId, { today }),
   ]);
   return {
     checkin: checkinValues(checkin),
     days: zoneDays(recent, today),
     insight: insights[0] ?? null,
+    records,
   };
 }
 
@@ -197,6 +201,14 @@ export default async function TodayPage({
                 <p className="text-meta text-2sm leading-relaxed">{t("rider.formBody")}</p>
               </div>
               <LoadPanel insight={mine.insight} />
+            </section>
+          )}
+          {mine && (
+            <section aria-labelledby="rider-records" className="flex flex-col gap-3">
+              <h2 id="rider-records" className="text-lg font-semibold">
+                {t("rider.records")}
+              </h2>
+              <RecordsCard byPeriod={mine.records.byPeriod} />
             </section>
           )}
         </>

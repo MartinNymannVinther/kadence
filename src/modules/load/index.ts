@@ -39,6 +39,19 @@ export {
 } from "./weighted-power";
 export { DRIFT_MIN_SECONDS, heartRateDrift } from "./drift";
 export {
+  PERIOD_DAYS,
+  PERIODS,
+  bestCurve,
+  inPeriod,
+  records,
+  recordsSetBy,
+  type Period,
+  type PowerRecord,
+  type RecordSource,
+  type Records,
+  type RideRecord,
+} from "./records";
+export {
   DEFAULT_DAYS as FORECAST_DEFAULT_DAYS,
   MAX_DAYS as FORECAST_MAX_DAYS,
   forecastForm,

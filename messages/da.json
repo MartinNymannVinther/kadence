@@ -669,7 +669,8 @@
       "upload": "Upload tur",
       "uploadBody": "FIT-filer fra cykelcomputeren, uret eller hometraineren. Turen lander på dagens pas af sig selv.",
       "form": "Min form",
-      "formBody": "Sådan ser din træning ud de seneste 90 dage."
+      "formBody": "Sådan ser din træning ud de seneste 90 dage.",
+      "records": "Dine rekorder"
     },
     "week": {
       "nothing": "Intet planlagt"
@@ -1053,7 +1054,8 @@
       "form": "Form og timer",
       "upload": "Upload tur",
       "uploadBody": "En tur fra rytterens FIT-fil, hvis rytteren ikke selv har hentet den.",
-      "profile": "Profil og tærskler"
+      "profile": "Profil og tærskler",
+      "records": "Rekorder"
     },
     "erase": {
       "title": "Slet rytteren og alle data",
@@ -1758,7 +1760,11 @@
       "readout": "{duration}: {w} W",
       "s": "{n} sek.",
       "min": "{n} min",
-      "h": "{n} t"
+      "h": "{n} t",
+      "compare": "Hold turen op mod dine bedste",
+      "readoutBest": "bedste {w} W",
+      "record": "Rekord!",
+      "recordsSet": "{count, plural, one {Turen satte rekord på # varighed} other {Turen satte rekord på # varigheder}}: {durations}"
     },
     "sourceFormat": "Fra en {format}-fil",
     "pauses": {
@@ -2314,5 +2320,23 @@
     "strengthWinter": "Styrkesæsonen er i gang: 2–3 pas om ugen med mindst 48 timer imellem, og mindst 30 pas over vinteren for U17 og U19.",
     "weightOn": "Holdet registrerer vægt for ryttere under 19. Kommenter aldrig vægt eller mad, og tal aldrig om en rytters vægt, hvor andre hører det.",
     "heat": "Sommervarme: drik løbende, tænk salt med på lange ture, og flyt de hårde pas til morgen eller aften."
+  },
+  "records": {
+    "period": {
+      "month": "Seneste måned",
+      "halfYear": "Seneste halve år",
+      "year": "Seneste år",
+      "all": "Altid"
+    },
+    "periodLabel": "Periode",
+    "longestKm": "Længste tur",
+    "mostClimbing": "Flest højdemeter",
+    "longestHours": "Længste tid",
+    "watt": "{w} W",
+    "km": "{km} km",
+    "m": "{m} hm",
+    "h": "{h} t",
+    "none": "Ingen ture med tal i perioden endnu.",
+    "note": "Dine egne bedste, aldrig sammenlignet med andre. Tryk på en tur for at se, hvor rekorden blev sat."
   }
 }

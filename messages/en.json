@@ -669,7 +669,8 @@
       "upload": "Upload a ride",
       "uploadBody": "FIT files from your bike computer, watch or trainer. The ride lands on the day's session by itself.",
       "form": "My form",
-      "formBody": "What your training looks like over the last 90 days."
+      "formBody": "What your training looks like over the last 90 days.",
+      "records": "Your records"
     },
     "week": {
       "nothing": "Nothing planned"
@@ -1053,7 +1054,8 @@
       "form": "Form and hours",
       "upload": "Upload a ride",
       "uploadBody": "A ride from the rider's FIT file, if the rider has not uploaded it themselves.",
-      "profile": "Profile and thresholds"
+      "profile": "Profile and thresholds",
+      "records": "Records"
     },
     "erase": {
       "title": "Delete the rider and all data",
@@ -1758,7 +1760,11 @@
       "readout": "{duration}: {w} W",
       "s": "{n} s",
       "min": "{n} min",
-      "h": "{n} h"
+      "h": "{n} h",
+      "compare": "Hold the ride against your bests",
+      "readoutBest": "best {w} W",
+      "record": "Record!",
+      "recordsSet": "{count, plural, one {This ride set a record on # duration} other {This ride set records on # durations}}: {durations}"
     },
     "sourceFormat": "From a {format} file",
     "pauses": {
@@ -2314,5 +2320,23 @@
     "strengthWinter": "The strength season has started: 2–3 sessions a week with at least 48 hours between them, and at least 30 sessions over the winter for U17 and U19.",
     "weightOn": "The team records weight for riders under 19. Never comment on weight or food, and never talk about a rider's weight where others can hear.",
     "heat": "Summer heat: drink steadily, think of salt on long rides, and move the hard sessions to the morning or evening."
+  },
+  "records": {
+    "period": {
+      "month": "Last month",
+      "halfYear": "Last half year",
+      "year": "Last year",
+      "all": "Ever"
+    },
+    "periodLabel": "Period",
+    "longestKm": "Longest ride",
+    "mostClimbing": "Most climbing",
+    "longestHours": "Longest time",
+    "watt": "{w} W",
+    "km": "{km} km",
+    "m": "{m} m up",
+    "h": "{h} h",
+    "none": "No rides with numbers in the period yet.",
+    "note": "Your own bests, never compared with anyone else. Tap a ride to see where the record was set."
   }
 }

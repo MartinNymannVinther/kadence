@@ -27,6 +27,7 @@ import { getRider } from "@/modules/team/riders";
 import { getActivityFileName } from "@/modules/devices/import";
 import { formatOfName } from "@/modules/files";
 import { getActivity, getActivitySession } from "@/modules/training/activities";
+import { getRiderRecords } from "@/modules/training/records";
 import { listComments } from "@/modules/training/comments";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -66,12 +67,15 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
       </div>
     );
   }
-  const [rider, session, comments, fileName, withMap] = await Promise.all([
+  const [rider, session, comments, fileName, withMap, riderRecords] = await Promise.all([
     getRider(ctx, activity.riderId),
     getActivitySession(ctx, activity.id),
     listComments(ctx, { activityId: activity.id }),
     activity.source === "fit" ? getActivityFileName(ctx, activity.id) : null,
     mapAvailable(),
+    activity.avgPower !== null && activity.avgPower > 0
+      ? getRiderRecords(ctx, activity.riderId, { activityId: activity.id })
+      : null,
   ]);
   const format = fileName ? formatOfName(fileName) : null;
   const canWrite = me.isCoach || me.rider?.id === activity.riderId;
@@ -190,7 +194,14 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
           {Object.keys(best).length > BEST_TILES && (
             <>
               <h3 className="mt-2 text-sm font-semibold">{t("curveTitle")}</h3>
-              <PowerCurve best={best} />
+              <PowerCurve
+                best={best}
+                compare={
+                  riderRecords
+                    ? { curves: riderRecords.curves, setBy: riderRecords.setBy }
+                    : undefined
+                }
+              />
               <p className="text-meta text-xs leading-relaxed">{t("curveNote")}</p>
             </>
           )}

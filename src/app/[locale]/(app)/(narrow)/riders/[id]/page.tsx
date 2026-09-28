@@ -3,6 +3,7 @@ import { CalendarDays, CalendarRange, ChevronLeft } from "lucide-react";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { FitUpload } from "@/components/activities/fit-upload";
+import { RecordsCard } from "@/components/activities/records-card";
 import { LoadPanel } from "@/components/load/load-panel";
 import { buttonVariants } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -30,6 +31,7 @@ import { whoAmI } from "@/modules/team/access";
 import { listGuardians } from "@/modules/team/guardians";
 import { getRider } from "@/modules/team/riders";
 import { getTeamSettings } from "@/modules/team/settings";
+import { getRiderRecords } from "@/modules/training/records";
 import { listCheckins } from "@/modules/wellbeing/checkins";
 import { isYouth, listMeasurements } from "@/modules/wellbeing/measurements";
 
@@ -69,14 +71,16 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
   const rider = await getRider(ctx, id);
   if (!rider) notFound();
   const today = todayInCopenhagen();
-  const [guardians, invitations, insights, checkins, measurements, settings] = await Promise.all([
-    listGuardians(ctx, rider.id),
-    listPendingInvitations(ctx.orgId),
-    getInsights(ctx, { riderIds: [rider.id], today }),
-    listCheckins(ctx, { from: addDaysIso(today, -13), to: today, riderIds: [rider.id] }),
-    listMeasurements(ctx, rider.id),
-    getTeamSettings(ctx),
-  ]);
+  const [guardians, invitations, insights, checkins, measurements, settings, riderRecords] =
+    await Promise.all([
+      listGuardians(ctx, rider.id),
+      listPendingInvitations(ctx.orgId),
+      getInsights(ctx, { riderIds: [rider.id], today }),
+      listCheckins(ctx, { from: addDaysIso(today, -13), to: today, riderIds: [rider.id] }),
+      listMeasurements(ctx, rider.id),
+      getTeamSettings(ctx),
+      getRiderRecords(ctx, rider.id, { today }),
+    ]);
   const insight = insights[0] ?? null;
   const shownMeasurements: MeasurementRow[] = measurements.flatMap((m) =>
     m.kind === "height_cm" || m.kind === "weight_kg"
@@ -140,6 +144,12 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
             <LoadPanel insight={insight} firstName={insight.name.split(" ")[0] ?? null} />
           </section>
         )}
+        <section aria-labelledby="rider-records" className="flex flex-col gap-3">
+          <h2 id="rider-records" className="text-lg font-semibold">
+            {t("sections.records")}
+          </h2>
+          <RecordsCard byPeriod={riderRecords.byPeriod} />
+        </section>
         <MeasurementsCard
           riderId={rider.id}
           today={today}

@@ -26,6 +26,16 @@ export function dayMonth(iso: string, locale: string): string {
   }).format(at(iso));
 }
 
+/** "28. sep. 2026" / "28 Sep 2026": a day that may lie in another year. */
+export function dayMonthYear(iso: string, locale: string): string {
+  return new Intl.DateTimeFormat(intlLocale(locale), {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(at(iso));
+}
+
 export function dayLong(iso: string, locale: string): string {
   return new Intl.DateTimeFormat(intlLocale(locale), {
     weekday: "long",
