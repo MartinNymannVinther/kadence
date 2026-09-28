@@ -44,6 +44,7 @@ export function TeamGrid({
 }) {
   const t = useTranslations("calendar.team");
   const actions = useTranslations("calendar.actions");
+  const labels = useTranslations("calendar.week");
   const locale = useLocale();
   const { sessions, move, landed, announcement } = useWeekSessions(initial);
   const drag = useSessionDrag(move);
@@ -88,15 +89,24 @@ export function TeamGrid({
       </p>
       <div
         ref={scroller}
-        className="border-border bg-card overflow-x-auto rounded-xl border shadow-[var(--surface-shadow)]"
+        className="border-border bg-card overflow-x-auto overscroll-x-contain rounded-xl border shadow-[var(--surface-shadow)]"
       >
-        <table className="w-full min-w-[46rem] border-collapse text-sm">
+        {/* Fixed layout: the columns come from <colgroup>, never from a chip's text.
+            The floor is names (8rem) + 7 × 6.5rem + hours (6rem); below it the grid scrolls sideways. */}
+        <table className="w-full table-fixed min-w-[59.5rem] border-collapse text-sm">
           <caption className="sr-only">{t("caption")}</caption>
+          <colgroup>
+            <col className="w-28 sm:w-32" />
+            {days.map((date) => (
+              <col key={date} />
+            ))}
+            <col className="w-24" />
+          </colgroup>
           <thead>
             <tr className="border-border border-b">
               <th
                 scope="col"
-                className="bg-card text-label sticky left-0 z-10 w-32 min-w-28 px-3 py-2 text-left text-xs font-medium"
+                className="bg-card text-label sticky left-0 z-10 px-2 py-2 text-left align-top text-xs font-medium shadow-[inset_-1px_0_0_var(--border)] sm:px-3"
               >
                 {t("rider")}
               </th>
@@ -106,12 +116,27 @@ export function TeamGrid({
                   scope="col"
                   aria-current={date === today ? "date" : undefined}
                   className={cn(
-                    "px-1.5 py-2 text-left align-top text-xs font-medium",
-                    date === today ? "bg-accent/50 text-accent-foreground" : "text-label",
+                    "px-1.5 py-2 text-left align-top text-xs",
+                    date === today && "bg-accent/50",
                   )}
                 >
-                  <span className="block first-letter:uppercase">{weekdayShort(date, locale)}</span>
-                  <span className="text-meta block font-normal">{dayMonth(date, locale)}</span>
+                  <span
+                    className={cn(
+                      "block font-semibold first-letter:uppercase",
+                      date === today && "text-primary",
+                    )}
+                  >
+                    {weekdayShort(date, locale)}
+                  </span>
+                  <span className="text-meta block font-normal">
+                    {dayMonth(date, locale)}
+                    {date === today && (
+                      <>
+                        {" "}
+                        <span className="text-primary font-semibold">{labels("today")}</span>
+                      </>
+                    )}
+                  </span>
                   <span className="mt-1 flex flex-col gap-1">
                     {teamEvents
                       .filter((e) => on(date, e))
@@ -121,7 +146,10 @@ export function TeamGrid({
                   </span>
                 </th>
               ))}
-              <th scope="col" className="text-label w-20 px-2 py-2 text-right text-xs font-medium">
+              <th
+                scope="col"
+                className="text-label py-2 pr-3 pl-1 text-right align-top text-xs font-medium whitespace-nowrap"
+              >
                 {t("week")}
               </th>
             </tr>
@@ -139,11 +167,12 @@ export function TeamGrid({
                 <tr key={rider.id} className="border-hairline border-b last:border-b-0">
                   <th
                     scope="row"
-                    className="bg-card sticky left-0 z-10 w-32 max-w-32 min-w-28 px-3 py-2 text-left align-top font-medium"
+                    className="bg-card sticky left-0 z-10 px-2 py-2 text-left align-top font-medium shadow-[inset_-1px_0_0_var(--border)] sm:px-3"
                   >
                     <Link
                       href={calendarHref({ week: query.week, rider: rider.id })}
-                      className="focus-ring hover:text-primary line-clamp-2 text-2sm break-words"
+                      title={rider.name}
+                      className="focus-ring hover:text-primary line-clamp-2 text-2sm break-words max-sm:min-h-11"
                     >
                       {rider.name}
                     </Link>
@@ -153,8 +182,8 @@ export function TeamGrid({
                       key={date}
                       {...drag.target(rider.id, date)}
                       className={cn(
-                        "min-w-24 px-1 py-1.5 align-top",
-                        date === today && "bg-accent/25",
+                        "px-1 py-1.5 align-top",
+                        date === today && "bg-accent/40",
                         drag.isOver(rider.id, date) &&
                           "outline-primary/70 outline-2 -outline-offset-2 outline-dashed",
                       )}
@@ -181,7 +210,7 @@ export function TeamGrid({
                       </div>
                     </td>
                   ))}
-                  <td className="text-meta px-2 py-2 text-right align-top text-xs tabular-nums">
+                  <td className="py-2 pr-3 pl-1 text-right align-top text-xs font-medium whitespace-nowrap tabular-nums">
                     {t("hours", {
                       done: hoursText(done, locale),
                       planned: hoursText(planned, locale),

@@ -785,8 +785,8 @@
     "team": {
       "caption": "The team's week: a row per rider and a column per day",
       "rider": "Rider",
-      "week": "Week",
-      "hours": "{done} / {planned} h"
+      "week": "Hours",
+      "hours": "{done} of {planned} h"
     },
     "menu": {
       "label": "Actions for {title}",

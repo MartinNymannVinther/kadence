@@ -785,8 +785,8 @@
     "team": {
       "caption": "Holdets uge: en række pr. rytter og en kolonne pr. dag",
       "rider": "Rytter",
-      "week": "Ugen",
-      "hours": "{done} / {planned} t"
+      "week": "Timer",
+      "hours": "{done} af {planned} t"
     },
     "menu": {
       "label": "Handlinger for {title}",
