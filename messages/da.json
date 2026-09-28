@@ -670,7 +670,8 @@
       "uploadBody": "FIT-filer fra cykelcomputeren, uret eller hometraineren. Turen lander på dagens pas af sig selv.",
       "form": "Min form",
       "formBody": "Sådan ser din træning ud de seneste 90 dage.",
-      "records": "Dine rekorder"
+      "records": "Dine rekorder",
+      "goals": "Dine mål"
     },
     "week": {
       "nothing": "Intet planlagt"
@@ -1055,7 +1056,8 @@
       "upload": "Upload tur",
       "uploadBody": "En tur fra rytterens FIT-fil, hvis rytteren ikke selv har hentet den.",
       "profile": "Profil og tærskler",
-      "records": "Rekorder"
+      "records": "Rekorder",
+      "goals": "Procesmål"
     },
     "erase": {
       "title": "Slet rytteren og alle data",
@@ -2384,5 +2386,35 @@
     "h": "{h} t",
     "none": "Ingen ture med tal i perioden endnu.",
     "note": "Dine egne bedste, aldrig sammenlignet med andre. Tryk på en tur for at se, hvor rekorden blev sat."
+  },
+  "goals": {
+    "empty": "Ingen mål endnu.",
+    "count": "{n}",
+    "hours": "{n} t",
+    "reached": "nået",
+    "over": "perioden er slut",
+    "oneMore": "Én mere",
+    "oneLess": "Én mindre",
+    "deleteTitle": "Slet målet?",
+    "deleteBody": "Målet forsvinder. Det, der er gjort, står stadig i kalenderen.",
+    "dcuTitle": "DCU: 30 styrkepas i vinter",
+    "addDcu": "Tilføj DCU's vintermål ({target} styrkepas)",
+    "addOwn": "Nyt mål",
+    "dcuBody": "DCU anbefaler mindst 30 styrkepas fra 1. november til 15. marts for U17 og U19. Målet lægges kun ind, når du trykker.",
+    "field": {
+      "title": "Titel",
+      "kind": "Tælles som",
+      "target": "Mål",
+      "from": "Fra",
+      "to": "Til"
+    },
+    "kind": {
+      "strength_sessions": "Styrkepas",
+      "bike_sessions": "Ture på cyklen",
+      "bike_hours": "Timer på cyklen",
+      "long_rides": "Lange ture (mindst 3 timer)",
+      "manual": "Tælles i hånden"
+    },
+    "note": "Procesmål: ting, der bliver gjort, aldrig tal, der bliver vundet. Fremgangen tælles fra kalenderen, hver gang siden vises."
   }
 }

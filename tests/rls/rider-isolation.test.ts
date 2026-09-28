@@ -83,6 +83,14 @@ beforeAll(async () => {
       kind: "height_cm",
       value: 175,
     });
+    await seed("rider_goals", {
+      rider_id: r,
+      title: "Mål",
+      kind: "manual",
+      target: 10,
+      starts_on: DAY,
+      ends_on: DAY,
+    });
     await seed("activities", {
       id: `act_${r}`,
       rider_id: r,
@@ -163,6 +171,7 @@ describe("a rider", () => {
       "planned_sessions",
       "comments",
       "rider_measurements",
+      "rider_goals",
     ]) {
       expect(await count(R1, table, "rider_id <> 'r1'")).toBe(0);
     }
@@ -256,6 +265,7 @@ describe("a parent", () => {
     expect(await count(PARENT, "riders", "id = 'r1'")).toBe(1);
     expect(await count(PARENT, "planned_sessions", "rider_id = 'r1'")).toBe(1);
     expect(await count(PARENT, "activities", "rider_id = 'r1'")).toBe(1);
+    expect(await count(PARENT, "rider_goals", "rider_id = 'r1'")).toBe(1);
     expect(await count(PARENT, "comments", "rider_id = 'r1'")).toBe(1);
     expect(await count(PARENT, "calendar_events", "rider_id = 'r1'")).toBe(1);
     for (const table of ["riders", "planned_sessions", "checkins", "activities"]) {

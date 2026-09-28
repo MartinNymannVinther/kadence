@@ -33,6 +33,17 @@ const TABLES: Array<{ table: string; row: (s: string) => Record<string, unknown>
     row: (s) => ({ rider_id: `rider_${s}`, measured_on: DAY, kind: "height_cm", value: 178 }),
   },
   {
+    table: "rider_goals",
+    row: (s) => ({
+      rider_id: `rider_${s}`,
+      title: "30 styrkepas",
+      kind: "strength_sessions",
+      target: 30,
+      starts_on: DAY,
+      ends_on: DAY,
+    }),
+  },
+  {
     table: "season_plans",
     row: (s) => ({ rider_id: `rider_${s}`, season_start_year: 2026, basis: "U19-1", months: [] }),
   },

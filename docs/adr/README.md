@@ -43,3 +43,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0021](0021-coach-guide-and-tips.md)             | A coach guide in Kadence's own words, and tips that never enforce                   | → 0013, 0014 |
 | [0022](0022-activity-files-in-every-format.md)   | Activity files in every common format                                               | → 0018       |
 | [0023](0023-a-map-served-by-kadence.md)          | The map behind a route is served by Kadence itself                                  | → 0022       |
+| [0024](0024-process-goals.md)                    | Process goals, counted from what was done                                           | → 0013       |

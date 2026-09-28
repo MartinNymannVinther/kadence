@@ -78,6 +78,13 @@
       "when": 1790542470712,
       "tag": "0010_polar_devices",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1790580368700,
+      "tag": "0011_rider_goals",
+      "breakpoints": true
     }
   ]
 }

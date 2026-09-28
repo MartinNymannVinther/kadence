@@ -7,6 +7,7 @@ import { toCard, toEventCard } from "@/components/calendar/to-card";
 import { SessionSheet } from "@/components/session/session-sheet";
 import { SessionView } from "@/components/session/session-view";
 import { FitUpload } from "@/components/activities/fit-upload";
+import { GoalsCard, type GoalView } from "@/components/activities/goals-card";
 import { RecordsCard } from "@/components/activities/records-card";
 import { LoadPanel } from "@/components/load/load-panel";
 import { AttentionSection } from "@/components/today/attention-section";
@@ -26,9 +27,10 @@ import type { OrgContext } from "@/core/db/tenant";
 import { redirect } from "@/i18n/navigation";
 import { getInsights } from "@/modules/insight/service";
 import { whoAmI } from "@/modules/team/access";
-import { getRiders } from "@/modules/team/riders";
+import { getRider, getRiders } from "@/modules/team/riders";
 import { getTeamSettings } from "@/modules/team/settings";
 import { listEvents } from "@/modules/training/events";
+import { dcuProposalFor, listGoals } from "@/modules/training/goals";
 import { getRiderRecords } from "@/modules/training/records";
 import { listSessions } from "@/modules/training/sessions";
 import { weekDates, weekFrom } from "@/modules/training/week";
@@ -51,17 +53,21 @@ async function weekOf(ctx: OrgContext, riderId: string, from: string, to: string
 
 /** The rider's own extras for today: the check-in, two weeks of zones and their load. */
 async function riderDay(ctx: OrgContext, riderId: string, today: string) {
-  const [checkin, recent, insights, records] = await Promise.all([
+  const [checkin, recent, insights, records, goals, rider] = await Promise.all([
     getCheckin(ctx, riderId, today),
     listCheckins(ctx, { from: addDaysIso(today, -13), to: today, riderIds: [riderId] }),
     getInsights(ctx, { riderIds: [riderId], today }),
     getRiderRecords(ctx, riderId, { today }),
+    listGoals(ctx, riderId, today),
+    getRider(ctx, riderId),
   ]);
   return {
     checkin: checkinValues(checkin),
     days: zoneDays(recent, today),
     insight: insights[0] ?? null,
     records,
+    goals,
+    dcuProposal: rider ? dcuProposalFor(rider, goals, today) : null,
   };
 }
 
@@ -201,6 +207,20 @@ export default async function TodayPage({
                 <p className="text-meta text-2sm leading-relaxed">{t("rider.formBody")}</p>
               </div>
               <LoadPanel insight={mine.insight} />
+            </section>
+          )}
+          {mine && (
+            <section aria-labelledby="rider-goals" className="flex flex-col gap-3">
+              <h2 id="rider-goals" className="text-lg font-semibold">
+                {t("rider.goals")}
+              </h2>
+              <GoalsCard
+                riderId={me.rider.id}
+                goals={mine.goals.map((g) => ({ ...g, kind: g.kind as GoalView["kind"] }))}
+                today={today}
+                dcuProposal={mine.dcuProposal}
+                canWrite
+              />
             </section>
           )}
           {mine && (

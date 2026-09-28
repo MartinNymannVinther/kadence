@@ -151,6 +151,53 @@ export const riderMeasurements = pgTable(
 );
 
 /**
+ * A process goal for one rider (ADR 0013, process before results; ADR
+ * 0024): "30 strength sessions this winter", "12 rides over three hours",
+ * "80 hours on the bike by March" — a count or a sum over a period, read
+ * off the rider's sessions and rides by `kind`, or kept by hand
+ * (`manual`, with `progress` bumped by the rider or the coach). Never a
+ * result: no watt, no place, no weight.
+ */
+export const riderGoals = pgTable(
+  "rider_goals",
+  {
+    id: domainId("id"),
+    orgId: tenant(),
+    riderId: text("rider_id")
+      .notNull()
+      .references(() => riders.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    /** strength_sessions | bike_sessions | bike_hours | long_rides | manual */
+    kind: text("kind").notNull(),
+    target: numeric("target", { precision: 7, scale: 1, mode: "number" }).notNull(),
+    startsOn: date("starts_on").notNull(),
+    endsOn: date("ends_on").notNull(),
+    /** For long_rides: a ride counts from this many hours. */
+    minHours: numeric("min_hours", { precision: 4, scale: 1, mode: "number" }),
+    /** For manual: how far along, kept by hand. */
+    progress: smallint("progress").notNull().default(0),
+    /** dcu | own — a DCU goal is the one Kadence proposed. */
+    source: text("source").notNull().default("own"),
+    note: text("note").notNull().default(""),
+    createdBy: text("created_by").references(() => users.id, { onDelete: "set null" }),
+    ...timestamps,
+  },
+  (t) => [
+    index("rider_goals_rider_idx").on(t.orgId, t.riderId, t.endsOn),
+    check(
+      "rider_goals_kind",
+      sql`${t.kind} in ('strength_sessions','bike_sessions','bike_hours','long_rides','manual')`,
+    ),
+    check("rider_goals_source", sql`${t.source} in ('dcu','own')`),
+    check("rider_goals_target", sql`${t.target} > 0`),
+    check("rider_goals_dates", sql`${t.endsOn} >= ${t.startsOn}`),
+    check("rider_goals_progress", sql`${t.progress} >= 0`),
+  ],
+);
+
+export type RiderGoalRow = typeof riderGoals.$inferSelect;
+
+/**
  * A season plan for one rider: twelve months of planned hours and a phase
  * each, from October (ADR 0015). Filled from DCU's recommendation for the rider's
  * class and year in it (src/modules/dcu), then the coach's to change;

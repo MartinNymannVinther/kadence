@@ -8,6 +8,7 @@ import { importFit } from "@/modules/devices/import";
 import { addComment } from "@/modules/training/comments";
 import { completeSession } from "@/modules/training/complete";
 import { installDcuProgrammes } from "@/modules/training/dcu-library";
+import { addDcuWinterGoal } from "@/modules/training/goals";
 import { createEvent } from "@/modules/training/events";
 import { scheduleTemplate } from "@/modules/training/group";
 import { listSessions } from "@/modules/training/sessions";
@@ -88,6 +89,11 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
       thresholdsOn: addDaysIso(today, -40),
     });
     await createSeasonPlan(ctx, id, season).catch(() => undefined);
+    await addDcuWinterGoal(
+      ctx,
+      id,
+      pick({ da: "DCU: 30 styrkepas i vinter", en: "DCU: 30 strength sessions this winter" }, l),
+    );
     riderIds.push(id);
   }
 

@@ -3,6 +3,7 @@ import { CalendarDays, CalendarRange, ChevronLeft } from "lucide-react";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { FitUpload } from "@/components/activities/fit-upload";
+import { GoalsCard, type GoalView } from "@/components/activities/goals-card";
 import { RecordsCard } from "@/components/activities/records-card";
 import { LoadPanel } from "@/components/load/load-panel";
 import { buttonVariants } from "@/components/ui/button";
@@ -31,6 +32,7 @@ import { whoAmI } from "@/modules/team/access";
 import { listGuardians } from "@/modules/team/guardians";
 import { getRider } from "@/modules/team/riders";
 import { getTeamSettings } from "@/modules/team/settings";
+import { dcuProposalFor, listGoals } from "@/modules/training/goals";
 import { getRiderRecords } from "@/modules/training/records";
 import { listCheckins } from "@/modules/wellbeing/checkins";
 import { isYouth, listMeasurements } from "@/modules/wellbeing/measurements";
@@ -71,7 +73,7 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
   const rider = await getRider(ctx, id);
   if (!rider) notFound();
   const today = todayInCopenhagen();
-  const [guardians, invitations, insights, checkins, measurements, settings, riderRecords] =
+  const [guardians, invitations, insights, checkins, measurements, settings, riderRecords, goals] =
     await Promise.all([
       listGuardians(ctx, rider.id),
       listPendingInvitations(ctx.orgId),
@@ -80,6 +82,7 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
       listMeasurements(ctx, rider.id),
       getTeamSettings(ctx),
       getRiderRecords(ctx, rider.id, { today }),
+      listGoals(ctx, rider.id, today),
     ]);
   const insight = insights[0] ?? null;
   const shownMeasurements: MeasurementRow[] = measurements.flatMap((m) =>
@@ -144,6 +147,18 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
             <LoadPanel insight={insight} firstName={insight.name.split(" ")[0] ?? null} />
           </section>
         )}
+        <section aria-labelledby="rider-goals" className="flex flex-col gap-3">
+          <h2 id="rider-goals" className="text-lg font-semibold">
+            {t("sections.goals")}
+          </h2>
+          <GoalsCard
+            riderId={rider.id}
+            goals={goals.map((g) => ({ ...g, kind: g.kind as GoalView["kind"] }))}
+            today={today}
+            dcuProposal={dcuProposalFor(rider, goals, today)}
+            canWrite
+          />
+        </section>
         <section aria-labelledby="rider-records" className="flex flex-col gap-3">
           <h2 id="rider-records" className="text-lg font-semibold">
             {t("sections.records")}

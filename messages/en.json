@@ -670,7 +670,8 @@
       "uploadBody": "FIT files from your bike computer, watch or trainer. The ride lands on the day's session by itself.",
       "form": "My form",
       "formBody": "What your training looks like over the last 90 days.",
-      "records": "Your records"
+      "records": "Your records",
+      "goals": "Your goals"
     },
     "week": {
       "nothing": "Nothing planned"
@@ -1055,7 +1056,8 @@
       "upload": "Upload a ride",
       "uploadBody": "A ride from the rider's FIT file, if the rider has not uploaded it themselves.",
       "profile": "Profile and thresholds",
-      "records": "Records"
+      "records": "Records",
+      "goals": "Process goals"
     },
     "erase": {
       "title": "Delete the rider and all data",
@@ -2384,5 +2386,35 @@
     "h": "{h} h",
     "none": "No rides with numbers in the period yet.",
     "note": "Your own bests, never compared with anyone else. Tap a ride to see where the record was set."
+  },
+  "goals": {
+    "empty": "No goals yet.",
+    "count": "{n}",
+    "hours": "{n} h",
+    "reached": "reached",
+    "over": "the period is over",
+    "oneMore": "One more",
+    "oneLess": "One less",
+    "deleteTitle": "Delete the goal?",
+    "deleteBody": "The goal goes away. What was done stays in the calendar.",
+    "dcuTitle": "DCU: 30 strength sessions this winter",
+    "addDcu": "Add DCU's winter goal ({target} strength sessions)",
+    "addOwn": "New goal",
+    "dcuBody": "DCU recommends at least 30 strength sessions from 1 November to 15 March for U17 and U19. The goal is added only when you press.",
+    "field": {
+      "title": "Title",
+      "kind": "Counted as",
+      "target": "Target",
+      "from": "From",
+      "to": "To"
+    },
+    "kind": {
+      "strength_sessions": "Strength sessions",
+      "bike_sessions": "Rides",
+      "bike_hours": "Hours on the bike",
+      "long_rides": "Long rides (at least 3 hours)",
+      "manual": "Counted by hand"
+    },
+    "note": "Process goals: things done, never numbers won. Progress is counted from the calendar every time the page is shown."
   }
 }
