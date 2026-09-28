@@ -1805,7 +1805,7 @@
       "soda": "Kort stop, {time}",
       "coffee": "Kaffepause, {time}",
       "lunch": "Frokostpause, {time}",
-      "note": "Et stop på mindst et halvt minut er en pause, også for rødt lys; at skjule dem samler kurverne. Kun stop på mindst 5 minutter får et symbol, på kurverne og på kortet. Bedste watt og wattkurven regnes altid på den rigtige tid, hvor en pause tæller som 0 W, så en pause midt i et forsøg aldrig kan give en bedre værdi.",
+      "note": "Et stop på mindst 15 sekunder er en pause, også for rødt lys; at skjule dem samler kurverne. Kun stop på mindst 5 minutter får et symbol, på kurverne og på kortet. Bedste watt og wattkurven regnes altid på den rigtige tid, hvor en pause tæller som 0 W, så en pause midt i et forsøg aldrig kan give en bedre værdi.",
       "stop": "Stop, {time}"
     },
     "together": {

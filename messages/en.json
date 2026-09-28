@@ -1805,7 +1805,7 @@
       "soda": "Short stop, {time}",
       "coffee": "Coffee stop, {time}",
       "lunch": "Lunch stop, {time}",
-      "note": "A stop of at least half a minute is a pause, a red light too; hiding them joins the curves. Only stops of at least 5 minutes get a symbol, on the curves and on the map. Best power and the power curve are always worked out on the real clock, where a pause counts as 0 W, so a pause in the middle of an effort can never give a better number.",
+      "note": "A stop of at least 15 seconds is a pause, a red light too; hiding them joins the curves. Only stops of at least 5 minutes get a symbol, on the curves and on the map. Best power and the power curve are always worked out on the real clock, where a pause counts as 0 W, so a pause in the middle of an effort can never give a better number.",
       "stop": "Stop, {time}"
     },
     "together": {

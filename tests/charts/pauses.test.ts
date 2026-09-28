@@ -28,13 +28,13 @@ function ride(samples: number, stops: Array<[number, number, "still" | "gap"]>):
 }
 
 describe("pauses", () => {
-  it("finds every stop of half a minute or more, standing or unrecorded, and names the longer by length", () => {
+  it("finds every stop of a quarter minute or more, standing or unrecorded, and names the longer by length", () => {
     const streams = ride(1000, [
       [100, 160, "still"], // 5 min
       [300, 480, "gap"], // 15 min
       [600, 960, "still"], // 30 min
       [970, 980, "still"], // 50 s: a red light, a pause without a symbol
-      [985, 988, "still"], // 15 s: not a pause
+      [985, 987, "still"], // 10 s: not a pause
     ]);
     const pauses = findPauses(streams);
     expect(pauses.map((p) => [p.seconds, p.kind])).toEqual([
@@ -69,7 +69,7 @@ describe("pauses", () => {
   });
 
   it("names the lengths at their thresholds", () => {
-    expect(MIN_PAUSE_SECONDS).toBe(30);
+    expect(MIN_PAUSE_SECONDS).toBe(15);
     expect(SYMBOL_MIN_SECONDS).toBe(300);
     expect(pauseKind(60)).toBe("stop");
     expect(pauseKind(300)).toBe("soda");

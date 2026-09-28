@@ -3,8 +3,9 @@ import type { Streams } from "./streams-chart";
 /**
  * Pauses in a ride: a stretch of at least `MIN_PAUSE_SECONDS` standing
  * still — no speed to speak of, no power, no pedalling — or with nothing
- * recorded at all (the device paused). A traffic light counts; hiding
- * pauses hides them all. Only a longer stop gets a symbol, from
+ * recorded at all (the device paused). A traffic light counts, and so
+ * does a head unit's auto-pause of a few seconds; hiding pauses hides
+ * them all, so the curves run unbroken. Only a longer stop gets a symbol, from
  * `SYMBOL_MIN_SECONDS`: a soda for a short stop, a coffee from a quarter
  * of an hour, lunch from half an hour; a shorter one is just a stop.
  *
@@ -17,7 +18,7 @@ import type { Streams } from "./streams-chart";
  * Pure, so it is tested alone.
  */
 
-export const MIN_PAUSE_SECONDS = 30;
+export const MIN_PAUSE_SECONDS = 15;
 export const SYMBOL_MIN_SECONDS = 5 * 60;
 /** m/s, the timeline's own walking-pace line (src/modules/fit/timeline.ts). */
 const STILL_SPEED = 0.5;
