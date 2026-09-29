@@ -19,12 +19,14 @@ export function MobileHeader({
   organization,
   attention = 0,
   isCoach = false,
+  rides = false,
 }: {
   userName: string;
   userEmail: string;
   organization: string;
   attention?: number;
   isCoach?: boolean;
+  rides?: boolean;
 }) {
   const t = useTranslations("app.nav");
   const tOrg = useTranslations("app.orgSwitcher");
@@ -45,7 +47,7 @@ export function MobileHeader({
               <div className="px-4 pt-5 pb-3">
                 <WordmarkLockup organization={organization} />
               </div>
-              <SidebarNav onNavigate={() => setOpen(false)} isCoach={isCoach} />
+              <SidebarNav onNavigate={() => setOpen(false)} isCoach={isCoach} rides={rides} />
               <div className="flex flex-col gap-1.5 px-3 pt-1 pb-3">
                 <OrgSwitcher
                   triggerClassName="text-sidebar-foreground hover:bg-sidebar-hover h-auto w-full justify-between rounded-[9px] px-3 py-2.5 text-sm font-normal"

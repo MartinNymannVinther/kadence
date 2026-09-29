@@ -73,7 +73,7 @@ describe("security headers", () => {
       "X-Content-Type-Options": "nosniff",
       "Referrer-Policy": "strict-origin-when-cross-origin",
       "Permissions-Policy":
-        "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=(), publickey-credentials-get=(self), publickey-credentials-create=(self)",
+        "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=(), publickey-credentials-get=(self), publickey-credentials-create=(self), bluetooth=(self), screen-wake-lock=(self)",
       "X-Frame-Options": "DENY",
       "Cross-Origin-Opener-Policy": "same-origin",
       "Cross-Origin-Resource-Policy": "same-origin",
@@ -137,6 +137,14 @@ describe("security headers", () => {
     const policy = map(securityHeaders(true))["Permissions-Policy"]!;
     expect(policy).toContain("publickey-credentials-get=(self)");
     expect(policy).toContain("publickey-credentials-create=(self)");
+  });
+
+  it("still names the two permissions Rulle needs, for Kadence's own pages only", () => {
+    // The trainer is reached over Web Bluetooth and the screen in front of
+    // the bike kept awake (ADR 0032); a blanket deny would end both.
+    const policy = map(securityHeaders(true))["Permissions-Policy"]!;
+    expect(policy).toContain("bluetooth=(self)");
+    expect(policy).toContain("screen-wake-lock=(self)");
   });
 
   it("has not drifted from the file the deployment reads", async () => {

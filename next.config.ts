@@ -115,7 +115,10 @@ export function contentSecurityPolicy(production: boolean): string {
  *
  * Permissions-Policy names the two WebAuthn permissions as `self` on
  * purpose. Passkeys are how people sign in here, and a later blanket deny
- * added to that list would switch off the login without saying so.
+ * added to that list would switch off the login without saying so. The
+ * same goes for Bluetooth and the screen wake lock: Rulle talks to the
+ * trainer over Web Bluetooth and keeps the screen in front of the bike
+ * awake (ADR 0032), for Kadence's own pages and nobody else's.
  *
  * HSTS is production-only. A browser that is told localhost speaks HTTPS
  * believes it for two years, and no developer should have to find that
@@ -137,6 +140,8 @@ export function securityHeaders(production: boolean): Array<{ key: string; value
         "interest-cohort=()",
         "publickey-credentials-get=(self)",
         "publickey-credentials-create=(self)",
+        "bluetooth=(self)",
+        "screen-wake-lock=(self)",
       ].join(", "),
     },
     { key: "X-Frame-Options", value: "DENY" },

@@ -184,7 +184,8 @@
       "riders": "Ryttere",
       "library": "Bibliotek",
       "season": "Sæson",
-      "parents": "Forældre"
+      "parents": "Forældre",
+      "rulle": "Rulle"
     },
     "orgSwitcher": {
       "label": "Arbejdsrum",
@@ -711,6 +712,7 @@
       "done": "Udført",
       "doneTitle": "Godt gået! Hvordan gik det?",
       "open": "Se hele passet",
+      "indoors": "Kør indendørs",
       "comments": "{count, plural, one {# kommentar} other {# kommentarer}}",
       "upload": "Upload tur",
       "uploadBody": "FIT-filer fra cykelcomputeren, uret eller hometraineren. Turen lander på dagens pas af sig selv.",
@@ -1161,6 +1163,8 @@
   },
   "session": {
     "notFound": "Passet findes ikke",
+    "indoors": "Kør indendørs i Rulle",
+    "tryIndoors": "Prøv passet i Rulle",
     "notFoundHint": "Det er måske slettet, eller også har du ikke adgang til det.",
     "km": "{km} km",
     "group": "Holdpas",
@@ -2630,5 +2634,154 @@
       "manual": "Tælles i hånden"
     },
     "note": "Procesmål: ting, der bliver gjort, aldrig tal, der bliver vundet. Fremgangen tælles fra kalenderen, hver gang siden vises."
+  },
+  "rulle": {
+    "title": "Rulle",
+    "tagline": "Dagens pas på hometraineren, når du ikke kan komme ud.",
+    "back": "Til Kadence",
+    "start": "Start",
+    "session": {
+      "heading": "Pas",
+      "freeTitle": "Fri tur",
+      "freeBody": "Uden pas kører du, som du vil, så længe du vil, og turen gemmes som en almindelig tur.",
+      "blocks": "{count, plural, one {# blok} other {# blokke}}",
+      "pick": "Vælg",
+      "free": "Kør frit",
+      "none": "Du har ikke noget cykelpas med intervaller i dag. Kør frit, eller åbn et pas i kalenderen og tryk “Kør indendørs”.",
+      "missing": "Det pas kan ikke køres her: det findes ikke, eller det har ingen intervaller.",
+      "done": "Passet er allerede gjort. Kører du det igen, gemmes turen for sig selv.",
+      "otherDay": "Passet ligger {day}. Turen lander på den dag, du kører den.",
+      "noFtp": "Der er ingen FTP på dig endnu, så passet køres frit: du rammer zonerne efter følelsen og pulsen. Din træner kan sætte den.",
+      "trial": "Du prøver passet med rytterens watt. En prøvetur gemmes ikke."
+    },
+    "devices": {
+      "heading": "Hometrainer og puls",
+      "body": "Ét tryk, og vælg din trainer i listen. En smart trainer styrer selv modstanden, så du bare skal træde.",
+      "trainer": "Forbind hometrainer",
+      "otherTrainer": "Vælg en anden trainer",
+      "strap": "Forbind pulsbælte",
+      "connecting": "Forbinder …",
+      "erg": "{name} styrer watt (ERG).",
+      "measures": "{name} måler watt. Du rammer selv tallene.",
+      "pulse": "Puls fra {name}.",
+      "unnamed": "Enheden",
+      "reconnecting": "Forbinder igen …",
+      "lost": "Forbindelsen til traineren er væk.",
+      "again": "Forbind igen",
+      "noBluetooth": "Denne browser kan ikke tale med en hometrainer. Brug Chrome eller Edge på en computer eller en Android-telefon; på iPhone kan appen Bluefy.",
+      "without": "Du kan også køre uden: så følger du uret, og bagefter siger du, hvor længe og hvor hårdt.",
+      "error": {
+        "unsupported": "Browseren gav ikke lov til Bluetooth her.",
+        "no_service": "Den enhed er ikke en hometrainer, Kadence kan tale med.",
+        "failed": "Forbindelsen mislykkedes. Tjek, at traineren er tændt og ikke er forbundet til en anden app."
+      }
+    },
+    "route": {
+      "heading": "Rute",
+      "loading": "Henter ruten …",
+      "facts": "{km} km · {climb} højdemeter",
+      "own": "Kør din egen rute (GPX)",
+      "ownHint": "En GPX-fil med højder fra fx Komoot eller Strava. Den læses her i browseren og sendes ingen steder.",
+      "bundled": "Tilbage til {name}",
+      "error": {
+        "not_gpx": "Det er ikke en GPX-fil.",
+        "no_points": "Filen har ingen punkter.",
+        "no_elevation": "Filen har ingen højder, og uden dem er der ingen bakker at køre.",
+        "too_large": "Filen er for stor.",
+        "too_short": "Ruten er for kort.",
+        "corrupt": "Filen kan ikke læses.",
+        "fetch": "Ruten kunne ikke hentes."
+      }
+    },
+    "credits": {
+      "osm": "Veje © OpenStreetMap-bidragydere (ODbL)",
+      "eudem": "Højder: EU-DEM (Copernicus)"
+    },
+    "ride": {
+      "watt": "Watt",
+      "target": "Mål <big>{watts}</big> W",
+      "free": "Frit",
+      "pulseTarget": "Puls {low}–{high}",
+      "on": "På mål",
+      "under": "Op",
+      "over": "Ned",
+      "block": "Tilbage af blokken",
+      "next": "Så: {what}",
+      "last": "Sidste blok",
+      "ridden": "Kørt",
+      "freeRide": "Fri tur",
+      "cadence": "Kadence",
+      "cadenceTarget": "Mål {rpm}",
+      "pulse": "Puls",
+      "blockOf": "Blok {index} af {count}",
+      "paused": "Pause",
+      "autoPaused": "Pause: træd for at køre videre",
+      "intensityLabel": "Intensitet",
+      "intensity": "{pct} %",
+      "easier": "Lettere",
+      "harder": "Hårdere",
+      "erg": "ERG",
+      "ergOn": "Traineren holder watt. Tryk for at styre selv.",
+      "ergOff": "Du styrer selv. Tryk for at lade traineren holde watt.",
+      "pause": "Pause",
+      "resume": "Kør videre",
+      "skip": "Næste blok",
+      "soundOn": "Slå lyd til",
+      "soundOff": "Slå lyd fra",
+      "fullscreen": "Fuld skærm",
+      "end": "Afslut",
+      "elapsed": "{time} kørt",
+      "left": "{time} tilbage",
+      "countdown": "Gør klar",
+      "profile": "Hele passet: {duration}. {elapsed} kørt.",
+      "routeProfile": "Ruten: {km} km. Omgang {lap}, {along} km inde."
+    },
+    "end": {
+      "title": "Afslut turen?",
+      "body": "Turen gemmes i Kadence, som den er nu.",
+      "trialBody": "En prøvetur gemmes ikke.",
+      "confirm": "Afslut",
+      "cancel": "Kør videre"
+    },
+    "done": {
+      "title": "Godt kørt",
+      "time": "Tid",
+      "avgPower": "Gns. watt",
+      "work": "Arbejde",
+      "kj": "{kj} kJ",
+      "avgHr": "Gns. puls",
+      "saving": "Gemmer turen …",
+      "saved": "Turen er gemt i Kadence.",
+      "already": "Turen var allerede gemt.",
+      "landed": "Den landede på passet “{title}”.",
+      "unmatched": "Den passede ikke til et planlagt pas, så den står for sig selv i kalenderen.",
+      "open": "Se turen",
+      "offline": "Turen er ikke gemt endnu: der er ingen forbindelse til Kadence. Den venter her i browseren og sendes, så snart der er.",
+      "failed": "Turen kunne ikke gemmes. Hent FIT-filen, så den ikke går tabt, og prøv igen.",
+      "retry": "Prøv igen",
+      "trial": "Prøveturen er ikke gemt.",
+      "unmeasured": "Uden sensorer er der ingen målinger at gemme. Sig, hvor længe og hvor hårdt, så tæller passet med.",
+      "unmeasuredFree": "Uden sensorer og uden pas er der ikke noget at gemme.",
+      "feedback": "Din vurdering",
+      "thanks": "Tak. Din træner kan se det.",
+      "download": "Hent FIT-filen",
+      "today": "Til i dag",
+      "error": {
+        "invalid": "Filen kunne ikke læses.",
+        "duplicate": "Turen er allerede gemt.",
+        "rateLimited": "Du har gemt mange ture den sidste time. Prøv igen om lidt.",
+        "not_rider": "Kun en rytter kan gemme en tur.",
+        "notFound": "Passet findes ikke længere. Hent FIT-filen, og upload den på “I dag”.",
+        "too_large": "Turen er for stor til at gemme herfra. Hent FIT-filen, og upload den på “I dag”."
+      }
+    },
+    "kept": {
+      "waiting": "En tur fra {when} venter på at blive gemt.",
+      "unfinished": "Du har en tur fra {when}, der ikke blev afsluttet: {duration}.",
+      "save": "Gem den",
+      "discard": "Kassér",
+      "discardTitle": "Kassér turen?",
+      "discardBody": "Turen findes kun her i browseren. Kasserer du den, er den væk."
+    }
   }
 }

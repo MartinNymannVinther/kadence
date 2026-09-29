@@ -184,7 +184,8 @@
       "riders": "Riders",
       "library": "Library",
       "season": "Season",
-      "parents": "Parents"
+      "parents": "Parents",
+      "rulle": "Rulle"
     },
     "orgSwitcher": {
       "label": "Workspace",
@@ -711,6 +712,7 @@
       "done": "Done",
       "doneTitle": "Well done! How did it go?",
       "open": "See the whole session",
+      "indoors": "Ride indoors",
       "comments": "{count, plural, one {# comment} other {# comments}}",
       "upload": "Upload a ride",
       "uploadBody": "FIT files from your bike computer, watch or trainer. The ride lands on the day's session by itself.",
@@ -1161,6 +1163,8 @@
   },
   "session": {
     "notFound": "The session does not exist",
+    "indoors": "Ride indoors in Rulle",
+    "tryIndoors": "Try the session in Rulle",
     "notFoundHint": "It may have been deleted, or you do not have access to it.",
     "km": "{km} km",
     "group": "Group session",
@@ -2630,5 +2634,154 @@
       "manual": "Counted by hand"
     },
     "note": "Process goals: things done, never numbers won. Progress is counted from the calendar every time the page is shown."
+  },
+  "rulle": {
+    "title": "Rulle",
+    "tagline": "Today's session on the trainer, when you can't get outside.",
+    "back": "Back to Kadence",
+    "start": "Start",
+    "session": {
+      "heading": "Session",
+      "freeTitle": "Free ride",
+      "freeBody": "Without a session you ride as you like, for as long as you like, and the ride is saved like any other.",
+      "blocks": "{count, plural, one {# block} other {# blocks}}",
+      "pick": "Choose",
+      "free": "Ride freely",
+      "none": "You have no bike session with intervals today. Ride freely, or open a session in the calendar and press “Ride indoors”.",
+      "missing": "That session can't be ridden here: it doesn't exist, or it has no intervals.",
+      "done": "The session is already done. If you ride it again, the ride is saved on its own.",
+      "otherDay": "The session is on {day}. The ride lands on the day you ride it.",
+      "noFtp": "You have no FTP yet, so the session is ridden freely: you hit the zones by feel and heart rate. Your coach can set it.",
+      "trial": "You're trying the session with the rider's watts. A trial ride is not saved."
+    },
+    "devices": {
+      "heading": "Trainer and heart rate",
+      "body": "One press, and pick your trainer from the list. A smart trainer sets the resistance itself, so all you do is pedal.",
+      "trainer": "Connect trainer",
+      "otherTrainer": "Choose another trainer",
+      "strap": "Connect heart-rate strap",
+      "connecting": "Connecting …",
+      "erg": "{name} holds the watts (ERG).",
+      "measures": "{name} measures watts. You hit the numbers yourself.",
+      "pulse": "Heart rate from {name}.",
+      "unnamed": "The device",
+      "reconnecting": "Reconnecting …",
+      "lost": "The connection to the trainer is lost.",
+      "again": "Connect again",
+      "noBluetooth": "This browser can't talk to a trainer. Use Chrome or Edge on a computer or an Android phone; on an iPhone, the Bluefy app can.",
+      "without": "You can also ride without one: you follow the clock, and afterwards you say how long and how hard.",
+      "error": {
+        "unsupported": "The browser did not allow Bluetooth here.",
+        "no_service": "That device isn't a trainer Kadence can talk to.",
+        "failed": "Connecting failed. Check that the trainer is on and not connected to another app."
+      }
+    },
+    "route": {
+      "heading": "Route",
+      "loading": "Loading the route …",
+      "facts": "{km} km · {climb} m of climbing",
+      "own": "Ride your own route (GPX)",
+      "ownHint": "A GPX file with elevation from, say, Komoot or Strava. It is read here in the browser and sent nowhere.",
+      "bundled": "Back to {name}",
+      "error": {
+        "not_gpx": "That isn't a GPX file.",
+        "no_points": "The file has no points.",
+        "no_elevation": "The file has no elevation, and without it there are no hills to ride.",
+        "too_large": "The file is too large.",
+        "too_short": "The route is too short.",
+        "corrupt": "The file can't be read.",
+        "fetch": "The route couldn't be loaded."
+      }
+    },
+    "credits": {
+      "osm": "Roads © OpenStreetMap contributors (ODbL)",
+      "eudem": "Elevation: EU-DEM (Copernicus)"
+    },
+    "ride": {
+      "watt": "Watts",
+      "target": "Target <big>{watts}</big> W",
+      "free": "Free",
+      "pulseTarget": "Heart rate {low}–{high}",
+      "on": "On target",
+      "under": "Up",
+      "over": "Down",
+      "block": "Left of the block",
+      "next": "Then: {what}",
+      "last": "Last block",
+      "ridden": "Ridden",
+      "freeRide": "Free ride",
+      "cadence": "Cadence",
+      "cadenceTarget": "Target {rpm}",
+      "pulse": "Heart rate",
+      "blockOf": "Block {index} of {count}",
+      "paused": "Paused",
+      "autoPaused": "Paused: pedal to go on",
+      "intensityLabel": "Intensity",
+      "intensity": "{pct} %",
+      "easier": "Easier",
+      "harder": "Harder",
+      "erg": "ERG",
+      "ergOn": "The trainer holds the watts. Press to control them yourself.",
+      "ergOff": "You're in control. Press to let the trainer hold the watts.",
+      "pause": "Pause",
+      "resume": "Go on",
+      "skip": "Next block",
+      "soundOn": "Turn sound on",
+      "soundOff": "Turn sound off",
+      "fullscreen": "Full screen",
+      "end": "End",
+      "elapsed": "{time} ridden",
+      "left": "{time} left",
+      "countdown": "Get ready",
+      "profile": "The whole session: {duration}. {elapsed} ridden.",
+      "routeProfile": "The route: {km} km. Lap {lap}, {along} km in."
+    },
+    "end": {
+      "title": "End the ride?",
+      "body": "The ride is saved in Kadence as it is now.",
+      "trialBody": "A trial ride is not saved.",
+      "confirm": "End",
+      "cancel": "Keep riding"
+    },
+    "done": {
+      "title": "Well ridden",
+      "time": "Time",
+      "avgPower": "Avg. watts",
+      "work": "Work",
+      "kj": "{kj} kJ",
+      "avgHr": "Avg. heart rate",
+      "saving": "Saving the ride …",
+      "saved": "The ride is saved in Kadence.",
+      "already": "The ride was already saved.",
+      "landed": "It landed on the session “{title}”.",
+      "unmatched": "It didn't match a planned session, so it stands on its own in the calendar.",
+      "open": "See the ride",
+      "offline": "The ride isn't saved yet: there's no connection to Kadence. It waits here in the browser and is sent as soon as there is.",
+      "failed": "The ride couldn't be saved. Download the FIT file so it isn't lost, and try again.",
+      "retry": "Try again",
+      "trial": "The trial ride is not saved.",
+      "unmeasured": "Without sensors there are no measurements to save. Say how long and how hard, and the session counts.",
+      "unmeasuredFree": "Without sensors and without a session there is nothing to save.",
+      "feedback": "Your rating",
+      "thanks": "Thanks. Your coach can see it.",
+      "download": "Download the FIT file",
+      "today": "Back to today",
+      "error": {
+        "invalid": "The file couldn't be read.",
+        "duplicate": "The ride is already saved.",
+        "rateLimited": "You've saved many rides in the last hour. Try again in a little while.",
+        "not_rider": "Only a rider can save a ride.",
+        "notFound": "The session no longer exists. Download the FIT file and upload it on “Today”.",
+        "too_large": "The ride is too large to save from here. Download the FIT file and upload it on “Today”."
+      }
+    },
+    "kept": {
+      "waiting": "A ride from {when} is waiting to be saved.",
+      "unfinished": "You have a ride from {when} that was never ended: {duration}.",
+      "save": "Save it",
+      "discard": "Discard",
+      "discardTitle": "Discard the ride?",
+      "discardBody": "The ride exists only here in the browser. If you discard it, it's gone."
+    }
   }
 }

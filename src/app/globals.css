@@ -226,6 +226,13 @@
   --text-xs: 0.72rem;
   --text-2sm: 0.8125rem;
   --text-reading: 0.9375rem;
+  /* Rulle's screen stands two metres in front of the bike (ADR 0032), so
+     its numbers are sized by the screen, not by the scale above.
+     ride-label: what a number is · ride-value: the numbers beside the main
+     ones · ride-hero: the watts now and the time left of the block. */
+  --text-ride-label: clamp(0.95rem, 2.3vmin, 1.8rem);
+  --text-ride-value: clamp(1.9rem, 6.5vmin, 5.5rem);
+  --text-ride-hero: clamp(2.8rem, 11vmin, 9.5rem);
   /* The sticky note's corner (ADR 0016) — the one radius below sm. */
   --radius-xs: 0.3rem;
   --radius-sm: calc(var(--radius) * 0.6);

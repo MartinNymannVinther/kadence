@@ -1,5 +1,10 @@
+import { Bike } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Badge } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button";
+import { withQuery } from "@/components/calendar/href";
+import { Link } from "@/i18n/navigation";
+import { cn } from "@/lib/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 import { SessionMenu } from "@/components/calendar/session-menu";
 import { toCard } from "@/components/calendar/to-card";
@@ -31,7 +36,8 @@ import { SendToDeviceButton } from "./send-to-device-button";
  * database decides whether the caller may see it at all; a parent sees
  * everything and writes nothing (ADR 0011, 0012). A bike session with
  * steps can be taken to a trainer or head unit as a file, and sent to the
- * rider's connected Wahoo or Garmin by the rider or a coach.
+ * rider's connected Wahoo or Garmin by the rider or a coach; the rider can
+ * ride it indoors in Rulle, and a coach try it there (ADR 0032).
  */
 export async function SessionView({
   ctx,
@@ -56,7 +62,8 @@ export async function SessionView({
     return <EmptyState variant="inline" title={t("notFound")} hint={t("notFoundHint")} />;
   }
 
-  const canWrite = me.isCoach || me.rider?.id === session.riderId;
+  const ownSession = me.rider?.id === session.riderId;
+  const canWrite = me.isCoach || ownSession;
   const [rider, comments, activity, team] = await Promise.all([
     getRider(ctx, session.riderId),
     listComments(ctx, { plannedSessionId: session.id }),
@@ -127,6 +134,15 @@ export async function SessionView({
         />
         {exportable && (
           <div className="flex flex-col items-start gap-2">
+            {(ownSession || me.isCoach) && !card.activity && (
+              <Link
+                href={withQuery("/rulle", { session: card.id })}
+                className={cn(buttonVariants({ variant: "outline" }), "max-sm:h-11")}
+              >
+                <Bike data-icon="inline-start" />
+                {ownSession ? t("indoors") : t("tryIndoors")}
+              </Link>
+            )}
             <ExportMenu sessionId={card.id} />
             <SendToDeviceButton
               sessions={[{ id: card.id, title: card.title, onDate: card.onDate }]}

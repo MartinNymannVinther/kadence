@@ -18,6 +18,7 @@ export async function AppSidebar({
   organization,
   attention = 0,
   isCoach = false,
+  rides = false,
   toggle,
 }: {
   userName: string;
@@ -26,6 +27,8 @@ export async function AppSidebar({
   /** Items waiting for the installation's owner; zero for everyone else. */
   attention?: number;
   isCoach?: boolean;
+  /** A rider or a coach: Rulle is in the navigation. */
+  rides?: boolean;
   /** The control that folds the rail away; rendered next to the lockup. */
   toggle?: React.ReactNode;
 }) {
@@ -46,7 +49,7 @@ export async function AppSidebar({
         </Link>
         {toggle}
       </div>
-      <SidebarNav isCoach={isCoach} />
+      <SidebarNav isCoach={isCoach} rides={rides} />
       <div className="flex flex-col gap-1.5 px-3 pt-1 pb-3">
         <OrgSwitcher
           triggerClassName="text-sidebar-foreground hover:bg-sidebar-hover h-auto w-full justify-between rounded-[9px] px-3 py-2.5 text-sm font-normal"

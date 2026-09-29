@@ -7,18 +7,21 @@ import { cn } from "@/lib/utils";
 
 /**
  * The app navigation. Text only, per the 2a handoff, in the rhythm a
- * week is lived in: today, the calendar, the season, the team (coaches
- * only), the library, the parents' page, and help. Rendered in the desktop sidebar and inside the
- * mobile sheet, where `onNavigate` lets the sheet close itself.
+ * week is lived in: today, the calendar, Rulle for the days indoors
+ * (riders and coaches, ADR 0032), the season, the team (coaches only),
+ * the library, the parents' page, and help. Rendered in the desktop
+ * sidebar and inside the mobile sheet, where `onNavigate` lets the sheet
+ * close itself.
  */
 const ITEMS = [
-  { href: "/today", key: "today", coach: false },
-  { href: "/calendar", key: "calendar", coach: false },
-  { href: "/season", key: "season", coach: false },
-  { href: "/riders", key: "riders", coach: true },
-  { href: "/library", key: "library", coach: false },
-  { href: "/parents", key: "parents", coach: false },
-  { href: "/help", key: "help", coach: false },
+  { href: "/today", key: "today", coach: false, rides: false },
+  { href: "/calendar", key: "calendar", coach: false, rides: false },
+  { href: "/rulle", key: "rulle", coach: false, rides: true },
+  { href: "/season", key: "season", coach: false, rides: false },
+  { href: "/riders", key: "riders", coach: true, rides: false },
+  { href: "/library", key: "library", coach: false, rides: false },
+  { href: "/parents", key: "parents", coach: false, rides: false },
+  { href: "/help", key: "help", coach: false, rides: false },
 ] as const;
 
 export function navItemClass(active: boolean): string {
@@ -33,17 +36,20 @@ export function navItemClass(active: boolean): string {
 export function SidebarNav({
   onNavigate,
   isCoach = false,
+  rides = false,
 }: {
   onNavigate?: () => void;
   /** The team's list of riders is the coaches' page (ADR 0010). */
   isCoach?: boolean;
+  /** Rulle is for those who ride, and for coaches trying a session. */
+  rides?: boolean;
 }) {
   const t = useTranslations("app.nav");
   const pathname = usePathname();
 
   return (
     <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-2">
-      {ITEMS.filter((item) => isCoach || !item.coach).map((item) => {
+      {ITEMS.filter((item) => (isCoach || !item.coach) && (rides || !item.rides)).map((item) => {
         const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
         return (
           <Link

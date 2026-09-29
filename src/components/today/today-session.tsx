@@ -1,17 +1,21 @@
-import { MessageSquare } from "lucide-react";
+import { Bike, MessageSquare } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { ComplianceMark, colourOf, COLOUR_STYLE } from "@/components/training/compliance-mark";
 import { durationText } from "@/components/training/duration";
 import { SportIcon } from "@/components/training/sport-icon";
+import { buttonVariants } from "@/components/ui/button";
 import type { CalendarCard } from "@/components/calendar/types";
+import { withQuery } from "@/components/calendar/href";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+import { rideableStructure } from "@/modules/rulle/rideable";
 import { CompleteDialog } from "./complete-dialog";
 
 /**
  * A session on today's page, large: what it is, how long, how it went —
- * and for the rider, until it is done, the big "Udført". The title opens
- * the whole session with its steps and comments.
+ * and for the rider, until it is done, the big "Udført". A bike session
+ * with steps can be ridden indoors in Rulle on the day (ADR 0032). The
+ * title opens the whole session with its steps and comments.
  */
 export function TodaySession({
   session,
@@ -67,6 +71,18 @@ export function TodaySession({
       )}
       <div className="flex flex-wrap items-center gap-2">
         {canComplete && !done && <CompleteDialog session={session} />}
+        {canComplete &&
+          !done &&
+          session.onDate === today &&
+          rideableStructure(session.sport, session.structure) && (
+            <Link
+              href={withQuery("/rulle", { session: session.id })}
+              className={cn(buttonVariants({ variant: "outline", size: "lg" }), "w-full sm:w-auto")}
+            >
+              <Bike data-icon="inline-start" />
+              {t("indoors")}
+            </Link>
+          )}
         <Link
           href={href}
           scroll={false}

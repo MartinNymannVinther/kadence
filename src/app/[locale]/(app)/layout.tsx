@@ -42,7 +42,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const attention = (await ownerAccessSummary())?.pending ?? 0;
   const t = await getTranslations("app.nav");
   const demo = context ? await isDemoWorkspace(context.orgId) : false;
-  const isCoach = context ? Boolean((await whoAmI(context.orgId, context.userId))?.isCoach) : false;
+  const me = context ? await whoAmI(context.orgId, context.userId) : null;
+  const isCoach = Boolean(me?.isCoach);
+  // Rulle is for riding, and for a coach trying a session on the trainer (ADR 0032).
+  const rides = Boolean(me?.isCoach || me?.rider);
 
   // Read on the server so the first paint is already the layout this
   // person left behind, rather than a rail that appears and vanishes.
@@ -67,6 +70,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             organization={organization?.name ?? ""}
             attention={attention}
             isCoach={isCoach}
+            rides={rides}
             toggle={<SidebarToggle placement="sidebar" />}
           />
         }
@@ -78,6 +82,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           organization={organization?.name ?? ""}
           attention={attention}
           isCoach={isCoach}
+          rides={rides}
         />
         {children}
       </SidebarShell>

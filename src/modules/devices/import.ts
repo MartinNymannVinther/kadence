@@ -52,6 +52,12 @@ export type ImportSource = {
    * type, ADR 0030): the sport where the file can only guess, a GPX.
    */
   sportHint?: "bike" | "other";
+  /**
+   * The planned session the ride was ridden for, in Rulle (ADR 0032): the
+   * ride lands on it when it is this rider's, still open and on the ride's
+   * day; otherwise the usual match decides, as for any file.
+   */
+  sessionId?: string;
 };
 
 export async function importFitIn(
@@ -146,10 +152,12 @@ export async function importFitIn(
         isNull(plannedSessions.activityId),
       ),
     );
-  const sessionId = matchActivity(
-    { sport: values.sport, onDate: values.onDate, minutes: values.movingSeconds / 60 },
-    open.map((s) => ({ ...s, sport: s.sport as "bike" | "strength" | "other" })),
-  );
+  const sessionId =
+    open.find((s) => s.id === origin.sessionId && s.sport === values.sport)?.id ??
+    matchActivity(
+      { sport: values.sport, onDate: values.onDate, minutes: values.movingSeconds / 60 },
+      open.map((s) => ({ ...s, sport: s.sport as "bike" | "strength" | "other" })),
+    );
   if (sessionId)
     await tx
       .update(plannedSessions)
