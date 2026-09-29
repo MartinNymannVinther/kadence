@@ -44,7 +44,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const demo = context ? await isDemoWorkspace(context.orgId) : false;
   const me = context ? await whoAmI(context.orgId, context.userId) : null;
   const isCoach = Boolean(me?.isCoach);
-  // Rulle is for riding, and for a coach trying a session on the trainer (ADR 0032).
+  // Rulle is for riding, and for a coach trying a session on the trainer (ADR 0033).
   const rides = Boolean(me?.isCoach || me?.rider);
 
   // Read on the server so the first paint is already the layout this

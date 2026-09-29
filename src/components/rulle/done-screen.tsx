@@ -22,7 +22,7 @@ const RETRY_MS = 30_000;
 /**
  * After the ride: what it came to, and where it went. A ride with
  * something measured is saved at once as a FIT file through Kadence's
- * ordinary import (ADR 0032) and lands on its session; without a
+ * ordinary import (ADR 0033) and lands on its session; without a
  * connection it waits in the browser and goes when the connection is
  * back. Then the rider says how hard it was — the one thing no sensor
  * knows. A ride with nothing measured is no file: the session is ticked

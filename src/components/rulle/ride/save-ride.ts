@@ -2,7 +2,7 @@ import { endRecording, rideToFit, type Recording } from "@/modules/rulle";
 import type { RideMeta } from "./ride-store";
 
 /**
- * Sends a finished ride to Kadence (POST /api/rulle/ride, ADR 0032) as
+ * Sends a finished ride to Kadence (POST /api/rulle/ride, ADR 0033) as
  * the FIT file written from its recording, and says how it went: saved
  * (or saved already), refused with Kadence's word for why, or not sent at
  * all because the connection is not there — the one case worth trying

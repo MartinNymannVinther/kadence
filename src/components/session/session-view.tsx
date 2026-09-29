@@ -37,7 +37,7 @@ import { SendToDeviceButton } from "./send-to-device-button";
  * everything and writes nothing (ADR 0011, 0012). A bike session with
  * steps can be taken to a trainer or head unit as a file, and sent to the
  * rider's connected Wahoo or Garmin by the rider or a coach; the rider can
- * ride it indoors in Rulle, and a coach try it there (ADR 0032).
+ * ride it indoors in Rulle, and a coach try it there (ADR 0033).
  */
 export async function SessionView({
   ctx,

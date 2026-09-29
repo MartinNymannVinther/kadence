@@ -18,7 +18,7 @@ import { useDevices } from "./use-devices";
 type Phase = "ready" | "counting" | "riding" | "done";
 
 /**
- * Rulle, from the first screen to the last (ADR 0032): the session and
+ * Rulle, from the first screen to the last (ADR 0033): the session and
  * its devices before the ride, the ride itself, and what became of it.
  * The server has chosen the session and the thresholds; everything else —
  * Bluetooth, the route, the clock, the recording — lives here, in the

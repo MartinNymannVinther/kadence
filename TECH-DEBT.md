@@ -196,6 +196,28 @@ been lost for real, and shaped by what the coach needed that day.
 A rider on a club team and a national squad at once needs two accounts
 (ADR 0010). Whether real riders need more is for the first winter to say.
 
+### Rulle has never met a real trainer
+
+Rulle (ADR 0033) speaks FTMS, Cycling Power and Heart Rate as the
+specifications lay them out, and is tested against those byte layouts
+and against a fake trainer in the page, in Chromium. No Wahoo, Tacx,
+Elite or Saris has been connected yet. Known from reading, not from a
+ride: some trainers want to be started before they take a target, some
+send their Indoor Bike Data in two halves, and some drop control when
+another app connects — each handled, none seen. The first real ride says
+whether the watts hold, whether the ride saves on a phone with a
+connection that comes and goes, and whether the landscape keeps up on
+the laptop a family actually has in front of the bike. The two metres
+the numbers are sized for are measured on paper; a rider on a real
+trainer says whether they read.
+
+### A team's own routes
+
+Every rider rides the route from Vejle or a GPX of their own on the
+device. A coach who wants the team on the same local loop hands out a
+file. A route shared through Kadence is a table with RLS, audit and
+isolation tests (ADR 0033), and waits until a coach asks for it.
+
 ## Paid
 
 ### A rider cannot yet have their own trail erased

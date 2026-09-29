@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 /**
  * The app navigation. Text only, per the 2a handoff, in the rhythm a
  * week is lived in: today, the calendar, Rulle for the days indoors
- * (riders and coaches, ADR 0032), the season, the team (coaches only),
+ * (riders and coaches, ADR 0033), the season, the team (coaches only),
  * the library, the parents' page, and help. Rendered in the desktop
  * sidebar and inside the mobile sheet, where `onNavigate` lets the sheet
  * close itself.

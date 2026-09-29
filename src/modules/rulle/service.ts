@@ -8,7 +8,7 @@ import type { BikeStructure } from "@/modules/workouts/structure";
 import { rideableStructure } from "./rideable";
 
 /**
- * What Rulle's page starts from (ADR 0032): the session to ride and the
+ * What Rulle's page starts from (ADR 0033): the session to ride and the
  * thresholds its watts come from. A rider opening /rulle gets today's
  * first bike session with steps that is not yet done; one arriving from
  * a session's "Kør indendørs" gets that session. Nothing here is Rulle's

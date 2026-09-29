@@ -53,7 +53,7 @@ export type ImportSource = {
    */
   sportHint?: "bike" | "other";
   /**
-   * The planned session the ride was ridden for, in Rulle (ADR 0032): the
+   * The planned session the ride was ridden for, in Rulle (ADR 0033): the
    * ride lands on it when it is this rider's, still open and on the ride's
    * day; otherwise the usual match decides, as for any file.
    */

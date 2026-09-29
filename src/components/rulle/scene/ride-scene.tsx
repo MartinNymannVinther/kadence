@@ -6,7 +6,7 @@ import { Sky } from "./sky";
 import { World, type Moment } from "./world";
 
 /**
- * The landscape behind the ride (ADR 0032), drawn with three.js into a
+ * The landscape behind the ride (ADR 0033), drawn with three.js into a
  * canvas that fills the screen. Loaded only on Rulle's ride screen. The
  * quiet sky lies behind the canvas the whole time: it is what shows while
  * the landscape is built, and all that shows where WebGL is missing or

@@ -21,7 +21,7 @@ import { totals, type Recording } from "./recording";
  * A ride from Rulle as a FIT activity file, written with Kadence's own
  * FitWriter: what a bike computer on a trainer writes, so the ride goes
  * through the same decoder, the same summary, the same load and the same
- * plan-against-ride as any other (ADR 0032), and opens in anything else
+ * plan-against-ride as any other (ADR 0033), and opens in anything else
  * that reads FIT when the rider takes it with them.
  *
  * - `file_id`: an activity by "development" (255: software, not a device

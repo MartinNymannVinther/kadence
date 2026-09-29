@@ -10,7 +10,7 @@ import { Scenery } from "./scenery";
 import { Terrain } from "./terrain";
 
 /**
- * The landscape of a ride (ADR 0032), put together: the ground made from
+ * The landscape of a ride (ADR 0033), put together: the ground made from
  * the route, the road, what stands by it and on the land, the sky, the
  * rider, and the camera that follows. Given where the rider is along the
  * course, how fast and at what cadence, it draws one frame. It knows

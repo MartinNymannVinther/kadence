@@ -13,7 +13,7 @@ import { adminPool } from "../helpers/db";
 import { insertSql, seedPerson } from "../helpers/rows";
 
 /**
- * A ride from Rulle comes in through POST /api/rulle/ride (ADR 0032): the
+ * A ride from Rulle comes in through POST /api/rulle/ride (ADR 0033): the
  * rider's own FIT file, imported like any other and landed on the session
  * it was ridden for. Who is signed in is set by the test. Only the rider
  * saves; a coach's trial, a parent, another rider's session and another

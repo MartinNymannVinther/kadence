@@ -14,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /**
- * Rulle, the indoor part of Kadence (ADR 0032): today's session on the
+ * Rulle, the indoor part of Kadence (ADR 0033): today's session on the
  * trainer. The server picks the session — the one asked for with
  * `?session=`, or the rider's first open bike session today — and the
  * thresholds its watts come from; the ride itself happens in the browser.

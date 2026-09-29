@@ -36,7 +36,7 @@ const RideScene = dynamic(() => import("./scene/ride-scene"), {
 });
 
 /**
- * The ride, on a screen two metres from the saddle (ADR 0032): the
+ * The ride, on a screen two metres from the saddle (ADR 0033): the
  * landscape behind everything, the strip of controls on top, and across
  * the bottom the three numbers and the session's bar — the part a rider
  * reads, and so the part that is large. A countdown before the first

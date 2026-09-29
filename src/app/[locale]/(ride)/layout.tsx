@@ -3,7 +3,7 @@ import { getSession } from "@/core/auth/session";
 import { redirect } from "@/i18n/navigation";
 
 /**
- * Rulle's frame (ADR 0032): the whole screen, with no sidebar and no
+ * Rulle's frame (ADR 0033): the whole screen, with no sidebar and no
  * header, for a screen that stands in front of a bike. Signed in like
  * the rest of Kadence — the same session and the same workspace — and the
  * pages inside ask the database the same questions every page does.

@@ -118,7 +118,7 @@ export function contentSecurityPolicy(production: boolean): string {
  * added to that list would switch off the login without saying so. The
  * same goes for Bluetooth and the screen wake lock: Rulle talks to the
  * trainer over Web Bluetooth and keeps the screen in front of the bike
- * awake (ADR 0032), for Kadence's own pages and nobody else's.
+ * awake (ADR 0033), for Kadence's own pages and nobody else's.
  *
  * HSTS is production-only. A browser that is told localhost speaks HTTPS
  * believes it for two years, and no developer should have to find that

@@ -39,7 +39,8 @@ strength programmes; the season plan from DCU's hours; load, form and the
 guardrails; the daily check-in; FIT files through Kadence's own decoder;
 Wahoo, Garmin and Polar behind keys; an upload key per rider, a bike
 computer read as a folder, a share from the phone and a Strava archive in
-one move; sessions onto a Garmin by cable; the parents' page;
+one move; sessions onto a Garmin by cable; Rulle, the session on the
+trainer indoors; the parents' page;
 three AI proposals; the
 demo; export and erasure. Nothing here has run a real team yet. Dogma
 seven is what 1.0 waits for — one real winter — and
@@ -69,6 +70,16 @@ is always beside it.
 **Load without a power meter.** Power when there is power, pulse when
 there is pulse, how hard it felt when there is neither — on one scale,
 so fitness, fatigue and form mean something for every rider.
+
+**Rulle, for the days indoors.** When nobody should be out on a bike,
+the rider opens today's session in Rulle, connects the trainer over
+Bluetooth, and pedals: a smart trainer holds each block's watts. The
+session is a bar the rider rides across, the numbers are sized to be
+read from the saddle, and a quiet low-poly landscape made from a real
+Danish road — Vejle, Munkebjerg and Kiddesvej, or a GPX of the rider's
+own — rolls past behind them. The ride lands on the session as an
+ordinary FIT file. No other riders, no races: an emergency that should
+feel good.
 
 **Guardrails and wellbeing.** The week against DCU's corridor, the
 longest ride for the class, the ramp, strength too close together, sleep,

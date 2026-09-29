@@ -33,7 +33,7 @@ import type { Sensors, SensorsNow } from "./sensors";
 import { PowerTrace } from "./trace";
 
 /**
- * A ride while it is ridden (ADR 0032): the session's clock and blocks,
+ * A ride while it is ridden (ADR 0033): the session's clock and blocks,
  * the trainer's target, the rider's place on the course, and the
  * recording. No React and no browser in it; the page calls `tick` a few
  * times a second and draws what `live` says.

@@ -22,7 +22,7 @@ const NO_STORE = { "Cache-Control": "no-store" };
 const answer = (body: object, status: number) => Response.json(body, { status, headers: NO_STORE });
 
 /**
- * A ride from Rulle (ADR 0032): the FIT file the browser wrote, as the
+ * A ride from Rulle (ADR 0033): the FIT file the browser wrote, as the
  * request's body, for the rider who rode it. It goes through the same
  * import as any upload — decoded by Kadence's own reader, summarised,
  * given its load — and lands on the session it was ridden for

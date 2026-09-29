@@ -13,7 +13,7 @@ import type { Live } from "./ride/engine";
  * The three numbers read from the saddle, two metres from the screen:
  * the watts now against the block's, the time left of the block and what
  * comes next, and the legs and the heart. Sized by the screen
- * (`text-ride-*`, ADR 0032). On target is said three ways at once — the
+ * (`text-ride-*`, ADR 0033). On target is said three ways at once — the
  * tile's tone, an arrow and a word — so it never rests on colour alone.
  */
 

@@ -14,7 +14,7 @@ import { CompleteDialog } from "./complete-dialog";
 /**
  * A session on today's page, large: what it is, how long, how it went —
  * and for the rider, until it is done, the big "Udført". A bike session
- * with steps can be ridden indoors in Rulle on the day (ADR 0032). The
+ * with steps can be ridden indoors in Rulle on the day (ADR 0033). The
  * title opens the whole session with its steps and comments.
  */
 export function TodaySession({

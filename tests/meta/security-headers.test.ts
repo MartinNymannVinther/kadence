@@ -141,7 +141,7 @@ describe("security headers", () => {
 
   it("still names the two permissions Rulle needs, for Kadence's own pages only", () => {
     // The trainer is reached over Web Bluetooth and the screen in front of
-    // the bike kept awake (ADR 0032); a blanket deny would end both.
+    // the bike kept awake (ADR 0033); a blanket deny would end both.
     const policy = map(securityHeaders(true))["Permissions-Policy"]!;
     expect(policy).toContain("bluetooth=(self)");
     expect(policy).toContain("screen-wake-lock=(self)");

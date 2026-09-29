@@ -1,5 +1,5 @@
 /**
- * Rulle, the indoor part of Kadence (ADR 0032): today's session on a
+ * Rulle, the indoor part of Kadence (ADR 0033): today's session on a
  * trainer, ridden through a landscape. This is the logic that needs no
  * browser and no database, tested on its own:
  *

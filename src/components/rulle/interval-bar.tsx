@@ -14,7 +14,7 @@ const MAX_CEILING = 200;
 
 /**
  * The session as the rider rides it, and the centre of Rulle's screen
- * (ADR 0032): every block from the first to the last, as wide as it is
+ * (ADR 0033): every block from the first to the last, as wide as it is
  * long and as tall as it is hard, in the zone colours of the workout
  * builder's profile. A line moves across it; what is ridden is quieter
  * than what is ahead; the block under way is outlined; and the watts

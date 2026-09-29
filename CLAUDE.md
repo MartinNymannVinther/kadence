@@ -137,6 +137,12 @@ codebase to:
   signed in: shown once, stored as a hash, good for files only, and the
   ride is imported as the rider. Kadence never asks for a Garmin password
   and never logs in to a provider as the rider.
+- Rulle (ADR 0033), the indoor part, under `/rulle`: the browser talks to
+  the trainer over Web Bluetooth (FTMS, Cycling Power, Heart Rate; pure
+  parsers in `src/modules/rulle/ble`), holds each block's watts in ERG,
+  and saves the ride as an ordinary FIT file through the import. A route
+  is a GPX file read in the browser; the landscape is three.js, loaded
+  only on the ride screen. No table of its own.
 - Deployment: Docker Compose run via Coolify on an EU VPS (Hetzner
   initially; the provider must stay replaceable). Nightly encrypted
   backups to EU object storage. No Vercel, no Neon, no US cloud.
@@ -258,6 +264,9 @@ codebase to:
 - Wave 4 (done): parents and AI — the parents' page and guide, sharing,
   the three AI proposals (ADR 0017), the demo, export, erasure, help,
   the docs.
+- Rulle (done): the session on the trainer indoors (ADR 0033) — Web
+  Bluetooth and ERG, the interval bar read at two metres, a Danish route
+  from GPX, the landscape, the ride saved as FIT onto its session.
 - Before 1.0: dogma seven — one real winter with one real team
   (docs/launch.md).
 - Later, each as its own decision: a rider on two teams (club and

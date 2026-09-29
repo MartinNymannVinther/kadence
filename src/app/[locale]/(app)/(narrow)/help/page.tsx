@@ -21,6 +21,7 @@ const HOW_TO = [
   "checkin",
   "devices",
   "toDevice",
+  "rulle",
   "keys",
   "strava",
   "parents",
@@ -33,7 +34,7 @@ const HOW_TO = [
  * How the tool works, in the rhythm a season lives in: who may do what,
  * the calendar, sessions and templates, "done" and RPE, the comments, the
  * season plan and DCU, the load, the warnings, the check-in, uploads and
- * devices, upload keys, a Strava archive, the parents, the AI, then the way out. Each wave
+ * devices, Rulle on the trainer, upload keys, a Strava archive, the parents, the AI, then the way out. Each wave
  * adds the part it built. Every section can be linked to: `/help#help-keys`.
  */
 export default async function HelpPage() {
