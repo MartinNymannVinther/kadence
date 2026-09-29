@@ -59,3 +59,23 @@ export {
   type RideTotals,
 } from "./recording";
 export { rideToFit, type RideFitOptions } from "./ride-fit";
+export { CHARACTERISTIC, SERVICE } from "./ble/uuids";
+export {
+  control,
+  parseControlResponse,
+  parseFeatures,
+  parseIndoorBikeData,
+  parsePowerRange,
+  parseStatus,
+  type ControlResult,
+  type IndoorBikeData,
+  type MachineFeatures,
+  type PowerRange,
+} from "./ble/ftms";
+export {
+  CADENCE_STALE_SECONDS,
+  CrankCadence,
+  parsePowerMeasurement,
+  type PowerMeasurement,
+} from "./ble/cycling-power";
+export { parseHeartRate } from "./ble/heart-rate";
