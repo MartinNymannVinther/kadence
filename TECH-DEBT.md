@@ -158,6 +158,16 @@ Gadgetbridge and an app on a Hammerhead Karoo are each possible and each
 unwritten. The winter's team says what the families actually have
 (docs/upload-keys.md, section 6).
 
+### A real Strava archive has not been tried
+
+The archive import (ADR 0030) is tested against archives laid out the
+way others describe Strava's: `activities.csv` with its English column
+names, an `activities/` folder of `.fit.gz`, GPX and TCX. Strava's own
+help does not describe the layout, and no rider's real archive has been
+dropped on it yet. The winter's first rider with a Strava history says
+whether the names and types come through; if the list cannot be read,
+the rides come in without their names.
+
 ### The rides a key brought have no page
 
 A ride remembers which upload key it came with (ADR 0029), and the day a

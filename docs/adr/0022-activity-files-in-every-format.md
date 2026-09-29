@@ -1,6 +1,6 @@
 # ADR 0022: Activity files in every common format
 
-Status: accepted · Date: 2026-09-28 · Builds on 0018
+Status: accepted · Date: 2026-09-28 · Builds on 0018 · Amended by 0030 (a whole Strava archive is read, in the browser)
 
 ## Context
 

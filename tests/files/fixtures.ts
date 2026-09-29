@@ -53,13 +53,20 @@ export function tcx(sport = "Biking"): string {
 
 export const bytesOf = (text: string) => new TextEncoder().encode(text);
 
-/** A zip of the given entries, stored or deflated, as a zip tool writes one. */
+/**
+ * A zip of the given entries, stored or deflated, as a zip tool writes one.
+ * `zip64` writes the sizes and offsets the way an archive past 4 GB must
+ * (the 32-bit fields full, the values in the extra field and a zip64 end
+ * record); `comment` trails the end record, as a zip may.
+ */
 export function zip(
   entries: Array<{ name: string; bytes: Uint8Array; deflate?: boolean }>,
+  options: { zip64?: boolean; comment?: string } = {},
 ): Uint8Array {
   const locals: Buffer[] = [];
   const centrals: Buffer[] = [];
   let offset = 0;
+  const FULL = 0xffffffff;
   for (const entry of entries) {
     const name = Buffer.from(entry.name);
     const data = entry.deflate ? deflateRawSync(entry.bytes) : Buffer.from(entry.bytes);
@@ -72,26 +79,54 @@ export function zip(
     local.writeUInt32LE(data.length, 18);
     local.writeUInt32LE(entry.bytes.length, 22);
     local.writeUInt16LE(name.length, 26);
+    const extra = Buffer.alloc(options.zip64 ? 28 : 0);
+    if (options.zip64) {
+      extra.writeUInt16LE(0x0001, 0);
+      extra.writeUInt16LE(24, 2);
+      extra.writeBigUInt64LE(BigInt(entry.bytes.length), 4);
+      extra.writeBigUInt64LE(BigInt(data.length), 12);
+      extra.writeBigUInt64LE(BigInt(offset), 20);
+    }
     const central = Buffer.alloc(46);
     central.writeUInt32LE(0x02014b50, 0);
-    central.writeUInt16LE(20, 4);
-    central.writeUInt16LE(20, 6);
+    central.writeUInt16LE(45, 4);
+    central.writeUInt16LE(options.zip64 ? 45 : 20, 6);
     central.writeUInt16LE(entry.deflate ? 8 : 0, 10);
     central.writeUInt32LE(crc, 16);
-    central.writeUInt32LE(data.length, 20);
-    central.writeUInt32LE(entry.bytes.length, 24);
+    central.writeUInt32LE(options.zip64 ? FULL : data.length, 20);
+    central.writeUInt32LE(options.zip64 ? FULL : entry.bytes.length, 24);
     central.writeUInt16LE(name.length, 28);
-    central.writeUInt32LE(offset, 42);
+    central.writeUInt16LE(extra.length, 30);
+    central.writeUInt32LE(options.zip64 ? FULL : offset, 42);
     locals.push(local, name, data);
-    centrals.push(central, name);
+    centrals.push(central, name, extra);
     offset += local.length + name.length + data.length;
   }
   const directory = Buffer.concat(centrals);
+  const tail: Buffer[] = [];
+  if (options.zip64) {
+    const record = Buffer.alloc(56);
+    record.writeUInt32LE(0x06064b50, 0);
+    record.writeBigUInt64LE(44n, 4);
+    record.writeUInt16LE(45, 12);
+    record.writeUInt16LE(45, 14);
+    record.writeBigUInt64LE(BigInt(entries.length), 24);
+    record.writeBigUInt64LE(BigInt(entries.length), 32);
+    record.writeBigUInt64LE(BigInt(directory.length), 40);
+    record.writeBigUInt64LE(BigInt(offset), 48);
+    const locator = Buffer.alloc(20);
+    locator.writeUInt32LE(0x07064b50, 0);
+    locator.writeBigUInt64LE(BigInt(offset + directory.length), 8);
+    locator.writeUInt32LE(1, 16);
+    tail.push(record, locator);
+  }
+  const comment = Buffer.from(options.comment ?? "");
   const end = Buffer.alloc(22);
   end.writeUInt32LE(0x06054b50, 0);
-  end.writeUInt16LE(entries.length, 8);
-  end.writeUInt16LE(entries.length, 10);
-  end.writeUInt32LE(directory.length, 12);
-  end.writeUInt32LE(offset, 16);
-  return new Uint8Array(Buffer.concat([...locals, directory, end]));
+  end.writeUInt16LE(options.zip64 ? 0xffff : entries.length, 8);
+  end.writeUInt16LE(options.zip64 ? 0xffff : entries.length, 10);
+  end.writeUInt32LE(options.zip64 ? FULL : directory.length, 12);
+  end.writeUInt32LE(options.zip64 ? FULL : offset, 16);
+  end.writeUInt16LE(comment.length, 20);
+  return new Uint8Array(Buffer.concat([...locals, directory, ...tail, end, comment]));
 }

@@ -1,6 +1,6 @@
 # ADR 0027: Strava stays a file source
 
-Status: accepted · Date: 2026-09-28 · Builds on 0018, 0022
+Status: accepted · Date: 2026-09-28 · Builds on 0018, 0022 · Its two slices built in 0030
 
 ## Context
 

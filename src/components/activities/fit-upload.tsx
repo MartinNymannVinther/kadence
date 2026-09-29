@@ -6,6 +6,9 @@ import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { DeviceFolderButton, type FolderStatus } from "./device-folder-button";
+import { planArchive } from "./import-archive";
+import { recogniseZip, type ArchiveSource } from "./read-archive";
+import { StravaArchivePanel, type ArchiveState } from "./strava-archive-panel";
 
 type FileResult = {
   name: string;
@@ -30,9 +33,10 @@ const QUIET: FolderStatus = { doing: "nothing", said: null };
  * one answers on its own line — imported and matched to the session it
  * fulfilled, already there, or the decoder's reason in plain words.
  * Beside it, "Hent fra enheden" reads a plugged-in bike computer's folder
- * and sends the rides that are new (ADR 0029). Posts to
- * /api/activities/upload, a route because a ride can be larger than a
- * server action takes.
+ * and sends the rides that are new (ADR 0029). A Strava archive, dropped
+ * here as the zip Strava sends or picked as the folder it unpacks to, goes
+ * to its own import instead (ADR 0030). Posts to /api/activities/upload,
+ * a route because a ride can be larger than a server action takes.
  */
 export function FitUpload({ riderId, compact = false }: { riderId: string; compact?: boolean }) {
   const t = useTranslations("activities.upload");
@@ -42,17 +46,42 @@ export function FitUpload({ riderId, compact = false }: { riderId: string; compa
   const [busy, setBusy] = useState(false);
   const [folder, setFolder] = useState<FolderStatus>(QUIET);
   const [results, setResults] = useState<FileResult[]>([]);
+  const [archive, setArchive] = useState<ArchiveState | null>(null);
+  const [archiveRunning, setArchiveRunning] = useState(false);
   // The folder's rides arrive after a wait, from a press made renders ago:
   // whether files are on their way is asked of the moment, not of then.
   const sending = useRef(false);
-  const held = busy || folder.doing !== "nothing";
+  const held = busy || folder.doing !== "nothing" || archiveRunning || archive?.step === "reading";
+
+  async function openArchive(source: ArchiveSource) {
+    setResults([]);
+    setFolder(QUIET);
+    setArchive({ step: "reading" });
+    const plan = await planArchive(source).catch(() => null);
+    setArchive(plan ? { step: "ready", source, plan } : { step: "unreadable" });
+  }
+
+  /** What the rider dropped or picked: a Strava archive goes to its own import, the rest is uploaded. */
+  async function receive(list: FileList | File[]) {
+    const files = Array.from(list);
+    const zip = files.find((f) => /\.zip$/i.test(f.name) || /zip/i.test(f.type));
+    const kind = zip ? await recogniseZip(zip) : null;
+    if (!kind) return send(files, "hand");
+    if ("cannotOpen" in kind) {
+      setResults([]);
+      setArchive({ step: "cannotOpen" });
+    } else await openArchive(kind.strava);
+  }
 
   async function send(list: FileList | File[], from: "hand" | "device") {
     const files = Array.from(list).slice(0, from === "device" ? MAX_FROM_DEVICE : MAX_PICKED);
     if (files.length === 0 || sending.current) return;
     sending.current = true;
-    // What the folder held is about the files before these.
-    if (from === "hand") setFolder(QUIET);
+    // What the folder or the archive held is about the files before these.
+    if (from === "hand") {
+      setFolder(QUIET);
+      setArchive(null);
+    }
     setBusy(true);
     setResults([]);
     const answered: FileResult[] = [];
@@ -101,7 +130,7 @@ export function FitUpload({ riderId, compact = false }: { riderId: string; compa
         onDrop={(e) => {
           e.preventDefault();
           setOver(false);
-          if (!held) void send(e.dataTransfer.files, "hand");
+          if (!held) void receive(e.dataTransfer.files);
         }}
         className={cn(
           "border-input bg-secondary/40 has-focus-visible:outline-ring flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-dashed px-4 text-center transition-colors duration-[120ms] has-focus-visible:outline-2",
@@ -121,7 +150,7 @@ export function FitUpload({ riderId, compact = false }: { riderId: string; compa
           disabled={held}
           className="sr-only"
           onChange={(e) => {
-            if (e.target.files) void send(e.target.files, "hand");
+            if (e.target.files) void receive(e.target.files);
             e.target.value = "";
           }}
         />
@@ -129,12 +158,22 @@ export function FitUpload({ riderId, compact = false }: { riderId: string; compa
 
       <DeviceFolderButton
         riderId={riderId}
-        disabled={busy}
+        disabled={busy || archiveRunning}
         max={MAX_FROM_DEVICE}
         status={folder}
         onStatus={setFolder}
         onFresh={(files) => void send(files, "device")}
+        onArchive={(source) => void openArchive(source)}
       />
+
+      {archive && (
+        <StravaArchivePanel
+          riderId={riderId}
+          state={archive}
+          onRunning={setArchiveRunning}
+          onClose={() => setArchive(null)}
+        />
+      )}
 
       {results.length > 0 && (
         <ul

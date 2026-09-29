@@ -1,6 +1,6 @@
 # ADR 0019: Hardening after the first security review
 
-Status: accepted · Date: 2026-09-27 · Amends 0011 · Amended by 0029 (the hour's files are counted when they are kept)
+Status: accepted · Date: 2026-09-27 · Amends 0011 · Amended by 0029 (the hour's files are counted when they are kept), 0030 (a day's budget for a Strava archive)
 
 ## Context
 

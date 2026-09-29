@@ -4,6 +4,8 @@ import { useId, useRef, useSyncExternalStore } from "react";
 import { FolderInput } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { stravaPrefix } from "@/modules/files/strava-archive";
+import { openFolder, type ArchiveSource } from "./read-archive";
 import {
   filesOfInput,
   findFresh,
@@ -32,7 +34,8 @@ const onServer = (): FolderSupport => null;
  * What was found is said in words before anything is sent — how many are
  * new, how many were here already — so a press that brings nothing in is
  * not mistaken for one that failed. The button is there only where the
- * browser can hand over a folder.
+ * browser can hand over a folder. A folder that is an unpacked Strava
+ * archive goes to the archive's own import instead (ADR 0030).
  */
 export function DeviceFolderButton({
   riderId,
@@ -41,6 +44,7 @@ export function DeviceFolderButton({
   status,
   onStatus,
   onFresh,
+  onArchive,
 }: {
   riderId: string;
   disabled: boolean;
@@ -49,6 +53,7 @@ export function DeviceFolderButton({
   status: FolderStatus;
   onStatus: (next: FolderStatus) => void;
   onFresh: (files: File[]) => void;
+  onArchive?: (source: ArchiveSource) => void;
 }) {
   const t = useTranslations("activities.upload.device");
   const inputId = useId();
@@ -76,6 +81,11 @@ export function DeviceFolderButton({
   }
 
   async function take(files: FolderFile[]) {
+    if (onArchive && stravaPrefix(files.map((f) => f.path)) !== null) {
+      onStatus({ doing: "nothing", said: null });
+      onArchive(openFolder(files));
+      return;
+    }
     onStatus({ doing: "checking", said: null });
     try {
       const found = await findFresh(riderId, files);

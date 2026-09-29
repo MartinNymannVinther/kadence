@@ -131,6 +131,8 @@ Two cheap slices that make (a) better:
 
 Cost: a day or two. Risk: none from Strava; §6.6 protects it.
 
+Both were built on 2026-09-29: ADR 0030.
+
 ### (b) A Strava adapter that shows rides only to the rider
 
 Shape: a fourth `DeviceProvider` behind `STRAVA_CLIENT_ID`/`STRAVA_CLIENT_SECRET`, OAuth with `activity:read_all`, one webhook subscription per installation, a streams-to-ride converter (no FIT), rotating refresh tokens sealed with `secret-box`, and a new visibility class on activities (`source = 'strava'`) that RLS hides from coaches and guardians.

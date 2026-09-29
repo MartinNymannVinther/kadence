@@ -3,7 +3,6 @@
 import {
   hasRideName,
   isWalkable,
-  MAX_FOLDER_FILES,
   pickRideFiles,
   type FolderEntry,
 } from "@/modules/files/device-folder";
@@ -25,6 +24,13 @@ import {
 
 export type FolderFile = FolderEntry & { file: File };
 
+/**
+ * Files looked at in one folder, at most: a device's drive holds far
+ * fewer, and a Strava archive unpacked (ADR 0030) holds one per activity.
+ */
+const MAX_WALKED = 20_000;
+/** A Strava archive's list of activities, kept beside the rides so the archive can be told. */
+const isArchiveList = (name: string) => name.toLowerCase() === "activities.csv";
 export type FolderSupport = "picker" | "input" | null;
 
 /** The rider said no to the browser's question, or the browser may not ask. */
@@ -47,11 +53,11 @@ export function folderSupport(): FolderSupport {
 
 async function walk(dir: DirectoryHandle, prefix: string, depth: number, out: FolderFile[]) {
   for await (const handle of dir.values()) {
-    if (out.length >= MAX_FOLDER_FILES * 2) return;
+    if (out.length >= MAX_WALKED) return;
     if (handle.kind === "directory") {
       if (isWalkable(handle.name, depth))
         await walk(handle, `${prefix}${handle.name}/`, depth + 1, out);
-    } else if (hasRideName(handle.name)) {
+    } else if (hasRideName(handle.name) || (depth <= 1 && isArchiveList(handle.name))) {
       const file = await handle.getFile();
       out.push({
         path: `${prefix}${handle.name}`,
@@ -88,7 +94,7 @@ export async function pickFolder(): Promise<FolderFile[] | null> {
 /** The same from a file input that was given a directory. */
 export function filesOfInput(list: FileList): FolderFile[] {
   return Array.from(list)
-    .filter((file) => hasRideName(file.name))
+    .filter((file) => hasRideName(file.name) || isArchiveList(file.name))
     .map((file) => ({
       path: file.webkitRelativePath || file.name,
       size: file.size,

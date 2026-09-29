@@ -644,6 +644,10 @@
         "title": "Upload-nøgler",
         "body": "En upload-nøgle lader et program aflevere ture til Kadence af sig selv, uden at du er logget ind. Opret en under Indstillinger → Enheder, giv den et navn, og kopiér den med det samme: den vises kun den ene gang. Programmet sender turens fil til adressen, der står ved nøglen, med nøglen i feltet Authorization, skrevet som Bearer og derefter nøglen. Turen lander på dagens pas, præcis som når du selv uploader. Nøglen kan kun lægge ture ind hos dig. Den kan ikke læse noget, og du eller din træner kan fjerne den når som helst. Giv den kun til det program, der skal bruge den."
       },
+      "strava": {
+        "title": "Fra Strava til Kadence",
+        "body": "Kadence kan ikke forbindes med Strava, fordi Stravas vilkår kun tillader, at dine ture vises for dig selv og ikke for din træner. Men du kan tage dine ture med. Hele din historik: log ind på strava.com på en computer (det kan ikke gøres i appen), vælg Settings → My Account, tryk Get Started under Download your account og derefter Request download, og vent på mailen fra Strava; det kan tage nogle timer. Læg zip-filen i upload-feltet under I dag, som den er. Kadence viser, hvad arkivet indeholder, og henter så cykelturene, eller alle aktiviteter, hvis du vælger det: med de navne, du gav dem på Strava, nyeste først, og uden de ture, der allerede er her. Op til 500 ture om dagen; er der flere, fortsætter det, hvor det slap, når du lægger arkivet ind igen næste dag. Har du pakket arkivet ud, kan du i stedet vælge mappen med “Hent fra enheden”. En træner kan gøre det samme på rytterens side. En enkelt tur: åbn den på strava.com, vælg ••• → Export Original, og upload filen. Nye ture kommer lettest direkte fra cykelcomputeren; se Upload og enheder."
+      },
       "parentsPage": {
         "title": "Forældresiden",
         "body": "Under Forældre ser en forælder sit barns uge, formen med ord, det næste løb eller eksamen og, hvis barnet deler det, hvordan det går. Siden har også Forældreguiden: Team Danmarks og Kolding Talents ti temaer og ni råd, skrevet kort med Kadences egne ord og med links til originalerne."
@@ -1766,11 +1770,38 @@
       "body": "Filer fra din cykelcomputer, dit ur, din hometrainer eller en app: FIT, TCX og GPX, også pakket som .gz eller .zip (fx Garmin Connects eksport eller Stravas). Det virker altid, også uden Wahoo, Garmin og Polar.",
       "drop": "Træk filer hertil, eller tryk for at vælge",
       "busy": "Henter …",
-      "hint": ".fit, .tcx, .gpx, .gz eller .zip, højst 25 MB pr. fil",
+      "hint": ".fit, .tcx, .gpx, .gz eller .zip, højst 25 MB pr. fil. Dit Strava-arkiv kan lægges ind, som det er.",
       "matched": "Hentet og sat på passet “{title}”.",
       "unmatched": "Hentet. Den passede ikke til et planlagt pas, så den står for sig selv i kalenderen.",
       "open": "Se turen",
       "results": "Resultat for hver fil",
+      "archive": {
+        "title": "Dit Strava-arkiv",
+        "reading": "Læser arkivet …",
+        "found": "{count, plural, one {Arkivet har # aktivitet med en fil.} other {Arkivet har # aktiviteter med en fil.}}",
+        "others": "{count, plural, one {# af dem er ikke en cykeltur, fx et løb eller en gåtur.} other {# af dem er ikke cykelture, fx løb og gåture.}}",
+        "noNames": "Arkivets liste kunne ikke læses, så turene får ikke deres navne fra Strava. De kommer ind alligevel.",
+        "how": "Nyeste ture kommer først, og ture, der allerede er her, springes over. Op til 500 ture om dagen. Hold siden åben, mens det kører.",
+        "bikeOnly": "Hent cykelturene",
+        "all": "Hent alle aktiviteter",
+        "checking": "Ser efter nye ture … {done} af {total}",
+        "sending": "Henter ture … {done} af {total}",
+        "progress": "Hvor langt importen er nået",
+        "stop": "Stop",
+        "empty": "Arkivet har ingen aktiviteter med en fil.",
+        "imported": "{count, plural, one {# tur er hentet.} other {# ture er hentet.}}",
+        "known": "{count} var her allerede.",
+        "skipped": "{count, plural, one {# aktivitet var ikke en cykeltur og blev sprunget over.} other {# aktiviteter var ikke cykelture og blev sprunget over.}}",
+        "unreadableFiles": "{count, plural, one {# fil kunne ikke læses.} other {# filer kunne ikke læses.}}",
+        "nothing": "Der var ingen nye ture i arkivet.",
+        "limit": "Dagens grænse er nået. {count, plural, one {Den sidste tur} other {De sidste # ture}} kan hentes om {hours, plural, one {# time} other {# timer}}: læg arkivet ind igen, så fortsætter det, hvor det slap.",
+        "signedOut": "Du er ikke logget ind længere. Log ind, og læg arkivet ind igen; det fortsætter, hvor det slap.",
+        "failed": "Noget gik galt undervejs, og {count, plural, one {# tur} other {# ture}} mangler. Læg arkivet ind igen; det fortsætter, hvor det slap.",
+        "cancelled": "Stoppet. {count, plural, one {# tur} other {# ture}} mangler; læg arkivet ind igen, når du vil fortsætte.",
+        "cannotOpen": "Din browser kan ikke åbne zip-filen. Pak arkivet ud, og vælg mappen med “Hent fra enheden”.",
+        "unreadable": "Arkivet kunne ikke læses. Hent det igen fra Strava, eller pak det ud, og vælg mappen med “Hent fra enheden”.",
+        "help": "Sådan får du dit arkiv fra Strava"
+      },
       "device": {
         "button": "Hent fra enheden",
         "hint": "Sæt cykelcomputeren til med kabel, og vælg den, når browseren beder om en mappe. Kun de ture, der ikke er her i forvejen, bliver hentet.",
@@ -1803,7 +1834,8 @@
         "invalid": "Vælg mindst én fil.",
         "generic": "Noget gik galt med filen. Prøv igen.",
         "unknown_format": "Kadence kender ikke det filformat. Brug FIT, TCX eller GPX, gerne pakket som .gz eller .zip.",
-        "no_activity": "Zip-filen har ingen .fit-, .tcx- eller .gpx-fil i sig."
+        "no_activity": "Zip-filen har ingen .fit-, .tcx- eller .gpx-fil i sig.",
+        "not_bike": "Ikke en cykeltur, så den blev sprunget over."
       }
     },
     "routeTitle": "Ruten",

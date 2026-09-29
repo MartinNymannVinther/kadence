@@ -644,6 +644,10 @@
         "title": "Upload keys",
         "body": "An upload key lets a program hand rides to Kadence by itself, without you being signed in. Create one under Settings → Devices, give it a name, and copy it right away: it is shown that one time only. The program sends the ride's file to the address shown with the key, with the key in the Authorization field, written as Bearer and then the key. The ride lands on the day's session, exactly as when you upload it yourself. The key can only add rides for you. It cannot read anything, and you or your coach can remove it at any time. Give it only to the program that is to use it."
       },
+      "strava": {
+        "title": "From Strava to Kadence",
+        "body": "Kadence cannot be connected to Strava, because Strava's terms allow your rides to be shown to you alone and not to your coach. But you can bring your rides along. Your whole history: sign in on strava.com on a computer (the app cannot do it), choose Settings → My Account, press Get Started under Download your account and then Request download, and wait for Strava's e-mail; it can take a few hours. Put the zip file in the upload field under Today, as it is. Kadence shows what the archive holds, and then fetches the rides, or every activity if you choose so: with the names you gave them on Strava, newest first, and without the rides that are here already. Up to 500 rides a day; if there are more, it goes on where it stopped when you add the archive again the next day. If you have unpacked the archive, you can pick the folder with “Fetch from the device” instead. A coach can do the same on the rider's page. A single ride: open it on strava.com, choose ••• → Export Original, and upload the file. New rides come most easily straight from the bike computer; see Uploads and devices."
+      },
       "parentsPage": {
         "title": "The parents' page",
         "body": "Under Parents a parent sees their child's week, the form in words, the next race or exam and, if the child shares it, how things are going. The page also has the parents' guide: Team Danmark's and Kolding Talent's ten themes and nine pieces of advice, written briefly in Kadence's own words with links to the originals."
@@ -1766,11 +1770,38 @@
       "body": "Files from your bike computer, your watch, your trainer or an app: FIT, TCX and GPX, also packed as .gz or .zip (such as Garmin Connect's or Strava's export). It always works, without Wahoo, Garmin and Polar too.",
       "drop": "Drag files here, or tap to choose",
       "busy": "Uploading …",
-      "hint": ".fit, .tcx, .gpx, .gz or .zip, at most 25 MB per file",
+      "hint": ".fit, .tcx, .gpx, .gz or .zip, at most 25 MB per file. Your Strava archive can go in as it is.",
       "matched": "Uploaded and placed on the session “{title}”.",
       "unmatched": "Uploaded. It did not match a planned session, so it stands on its own in the calendar.",
       "open": "See the ride",
       "results": "Result for each file",
+      "archive": {
+        "title": "Your Strava archive",
+        "reading": "Reading the archive …",
+        "found": "{count, plural, one {The archive has # activity with a file.} other {The archive has # activities with a file.}}",
+        "others": "{count, plural, one {# of them is not a ride, such as a run or a walk.} other {# of them are not rides, such as runs and walks.}}",
+        "noNames": "The archive's list could not be read, so the rides do not get their names from Strava. They come in all the same.",
+        "how": "The newest rides come first, and rides that are here already are skipped. Up to 500 rides a day. Keep the page open while it runs.",
+        "bikeOnly": "Fetch the rides",
+        "all": "Fetch every activity",
+        "checking": "Looking for new rides … {done} of {total}",
+        "sending": "Fetching rides … {done} of {total}",
+        "progress": "How far the import has come",
+        "stop": "Stop",
+        "empty": "The archive has no activities with a file.",
+        "imported": "{count, plural, one {# ride is fetched.} other {# rides are fetched.}}",
+        "known": "{count, plural, one {# was here already.} other {# were here already.}}",
+        "skipped": "{count, plural, one {# activity was not a ride and was skipped.} other {# activities were not rides and were skipped.}}",
+        "unreadableFiles": "{count, plural, one {# file could not be read.} other {# files could not be read.}}",
+        "nothing": "There were no new rides in the archive.",
+        "limit": "Today's limit is reached. {count, plural, one {The last ride} other {The last # rides}} can be fetched in {hours, plural, one {# hour} other {# hours}}: add the archive again, and it goes on where it stopped.",
+        "signedOut": "You are no longer signed in. Sign in, and add the archive again; it goes on where it stopped.",
+        "failed": "Something went wrong on the way, and {count, plural, one {# ride is} other {# rides are}} missing. Add the archive again; it goes on where it stopped.",
+        "cancelled": "Stopped. {count, plural, one {# ride is} other {# rides are}} missing; add the archive again when you want to go on.",
+        "cannotOpen": "Your browser cannot open the zip file. Unpack the archive, and pick the folder with “Fetch from the device”.",
+        "unreadable": "The archive could not be read. Download it again from Strava, or unpack it and pick the folder with “Fetch from the device”.",
+        "help": "How to get your archive from Strava"
+      },
       "device": {
         "button": "Fetch from the device",
         "hint": "Plug the bike computer in with a cable, and pick it when the browser asks for a folder. Only the rides that are not here already are fetched.",
@@ -1803,7 +1834,8 @@
         "invalid": "Choose at least one file.",
         "generic": "Something went wrong with the file. Try again.",
         "unknown_format": "Kadence does not know that file format. Use FIT, TCX or GPX, packed as .gz or .zip if you like.",
-        "no_activity": "The zip file has no .fit, .tcx or .gpx file in it."
+        "no_activity": "The zip file has no .fit, .tcx or .gpx file in it.",
+        "not_bike": "Not a ride, so it was skipped."
       }
     },
     "routeTitle": "The route",

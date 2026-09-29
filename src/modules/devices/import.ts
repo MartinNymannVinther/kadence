@@ -39,6 +39,14 @@ export type ImportSource = {
   unnamed?: boolean;
   /** The upload key the file came in with, kept on the ride (ADR 0029). */
   uploadKeyId?: string | null;
+  /**
+   * What the rider called the ride where it came from, a Strava archive's
+   * `activities.csv` (ADR 0030): it wins over a name inside the file and
+   * over the file's own name, because it is the name the rider last gave.
+   */
+  title?: string;
+  /** Only a ride on the bike is kept; anything else is refused as `not_bike` before a row is written. */
+  onlySport?: "bike";
 };
 
 export async function importFitIn(
@@ -74,6 +82,8 @@ export async function importFitIn(
     if (error instanceof FitError) throw new Refused("invalid", error.code);
     throw error;
   }
+  if (origin.onlySport && values.sport !== origin.onlySport)
+    throw new Refused("invalid", "not_bike");
 
   // The same ride twice — a byte added to dodge the hash, or the upload of
   // a ride Wahoo already sent — is the same start by the same rider.
@@ -96,7 +106,7 @@ export async function importFitIn(
       orgId: ctx.orgId,
       riderId,
       ...row,
-      title: (title || (origin.unnamed ? "" : baseName(fileName))).slice(0, 120),
+      title: (origin.title || title || (origin.unnamed ? "" : baseName(fileName))).slice(0, 120),
       source: origin.source,
       externalId: origin.externalId ?? null,
       uploadKeyId: origin.uploadKeyId ?? null,
