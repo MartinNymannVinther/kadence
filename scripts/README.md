@@ -72,6 +72,19 @@ what went wrong when it cannot. `pnpm db:migrate` is this script followed
 by `ensure-roles.ts`; the container runs it before the application
 starts.
 
+## send-rides.sh
+
+Not a maintenance script but a helper for a rider's own computer: sends
+the ride files in a folder, a bike computer's drive for one, to Kadence
+with the rider's upload key, newest first, and only the ones it has not
+sent before (`--all` sends everything). It needs a shell and curl and
+nothing from this repository, so it can be copied out on its own.
+[docs/upload-keys.md](../docs/upload-keys.md) has the how and the why.
+
+```
+KADENCE_URL=https://kadence.example sh scripts/send-rides.sh /Volumes/GARMIN
+```
+
 ## backup-kadence.sh
 
 Nightly encrypted dump of the database to EU object storage. Runs on the

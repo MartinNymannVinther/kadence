@@ -48,3 +48,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0026](0026-resolved-flags.md)                   | A coach's "afklaret" on a guardrail flag, one week at a time                        | → 0011, 0017 |
 | [0027](0027-strava-stays-a-file-source.md)       | Strava stays a file source                                                          | → 0018, 0022 |
 | [0028](0028-zoom-on-the-curves.md)               | Zoom on the ride's curves: a drag or two taps, and no number changes                | → 0022       |
+| [0029](0029-an-upload-key-per-rider.md)          | An upload key per rider: a ride handed over with nobody signed in                   | → 0018, 0019 |

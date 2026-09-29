@@ -37,7 +37,9 @@ sees only what the rider shares; coaches, riders and parents by
 invitation; the calendar, the workout builder and the library with DCU's
 strength programmes; the season plan from DCU's hours; load, form and the
 guardrails; the daily check-in; FIT files through Kadence's own decoder;
-Wahoo, Garmin and Polar behind keys; the parents' page; three AI proposals; the
+Wahoo, Garmin and Polar behind keys; an upload key per rider, a bike
+computer read as a folder and a share from the phone; the parents' page;
+three AI proposals; the
 demo; export and erasure. Nothing here has run a real team yet. Dogma
 seven is what 1.0 waits for — one real winter — and
 [docs/launch.md](docs/launch.md) is the road to it.
@@ -155,7 +157,10 @@ Compose on an EU VPS, with Coolify doing the plumbing.
 [docs/devices-setup.md](docs/devices-setup.md) is the step-by-step guide to
 letting riders connect Garmin, Wahoo or Polar so rides come in by
 themselves: the developer programmes, the callback and webhook addresses,
-and the keys. Which third parties can
+and the keys.
+[docs/upload-keys.md](docs/upload-keys.md) is the way in that needs
+nobody's keys: a rider's upload key for a script or an app, the bike
+computer on a cable, a share from the phone. Which third parties can
 see data, and what, is listed in
 [docs/subprocessors.md](docs/subprocessors.md) — today that is the
 hosting provider and the AI provider you choose. With `LLM_PROVIDER=ollama`

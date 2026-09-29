@@ -3,6 +3,7 @@ import { CalendarDays, CalendarRange, ChevronLeft } from "lucide-react";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { FitUpload } from "@/components/activities/fit-upload";
+import { UploadKeysCard } from "@/components/devices/upload-keys-card";
 import { GoalsCard, type GoalView } from "@/components/activities/goals-card";
 import { RecordsCard } from "@/components/activities/records-card";
 import { LoadPanel } from "@/components/load/load-panel";
@@ -24,9 +25,11 @@ import { MeasurementsCard, type MeasurementRow } from "@/components/wellbeing/me
 import { zoneDays } from "@/components/wellbeing/zone-days";
 import { getOrgContext } from "@/core/auth/session";
 import { addDaysIso, todayInCopenhagen } from "@/core/dates";
+import { env } from "@/core/env";
 import { listPendingInvitations } from "@/core/team/service";
 import { Link, redirect } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+import { listUploadKeys, MAX_KEYS_PER_RIDER } from "@/modules/devices/upload-keys";
 import { getInsights } from "@/modules/insight/service";
 import { whoAmI } from "@/modules/team/access";
 import { listGuardians } from "@/modules/team/guardians";
@@ -51,8 +54,8 @@ export async function generateMetadata({
 /**
  * One rider, for a coach: the week's warnings and the last two weeks of
  * check-ins, the load chart and the weeks' hours against DCU, height
- * through the growth spurt, a ride uploaded on the rider's behalf; then
- * the profile, the thresholds the zones are worked out from, the rider's
+ * through the growth spurt, a ride uploaded on the rider's behalf and the
+ * rider's upload keys, if they have any; then the profile, the thresholds the zones are worked out from, the rider's
  * own account and invitation, the parents and where their links stand,
  * the way to archive the rider — and, apart, to erase them.
  */
@@ -73,17 +76,27 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
   const rider = await getRider(ctx, id);
   if (!rider) notFound();
   const today = todayInCopenhagen();
-  const [guardians, invitations, insights, checkins, measurements, settings, riderRecords, goals] =
-    await Promise.all([
-      listGuardians(ctx, rider.id),
-      listPendingInvitations(ctx.orgId),
-      getInsights(ctx, { riderIds: [rider.id], today }),
-      listCheckins(ctx, { from: addDaysIso(today, -13), to: today, riderIds: [rider.id] }),
-      listMeasurements(ctx, rider.id),
-      getTeamSettings(ctx),
-      getRiderRecords(ctx, rider.id, { today }),
-      listGoals(ctx, rider.id, today),
-    ]);
+  const [
+    guardians,
+    invitations,
+    insights,
+    checkins,
+    measurements,
+    settings,
+    riderRecords,
+    goals,
+    uploadKeys,
+  ] = await Promise.all([
+    listGuardians(ctx, rider.id),
+    listPendingInvitations(ctx.orgId),
+    getInsights(ctx, { riderIds: [rider.id], today }),
+    listCheckins(ctx, { from: addDaysIso(today, -13), to: today, riderIds: [rider.id] }),
+    listMeasurements(ctx, rider.id),
+    getTeamSettings(ctx),
+    getRiderRecords(ctx, rider.id, { today }),
+    listGoals(ctx, rider.id, today),
+    listUploadKeys(ctx, rider.id),
+  ]);
   const insight = insights[0] ?? null;
   const shownMeasurements: MeasurementRow[] = measurements.flatMap((m) =>
     m.kind === "height_cm" || m.kind === "weight_kg"
@@ -180,6 +193,18 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
           </div>
           <FitUpload riderId={rider.id} compact />
         </section>
+        {uploadKeys.length > 0 && (
+          <UploadKeysCard
+            own={false}
+            max={MAX_KEYS_PER_RIDER}
+            endpoint={new URL("/api/ingest", env.BETTER_AUTH_URL).toString()}
+            keys={uploadKeys.map((key) => ({
+              ...key,
+              createdAt: key.createdAt.toISOString(),
+              lastUsedAt: key.lastUsedAt?.toISOString() ?? null,
+            }))}
+          />
+        )}
       </div>
       <h2 className="mt-3 text-lg font-semibold">{t("sections.profile")}</h2>
       <div className="grid max-w-3xl gap-5">

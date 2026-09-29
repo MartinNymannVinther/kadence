@@ -19,6 +19,7 @@ export async function TogetherSection({
   companions: Companion[];
 }) {
   const t = await getTranslations("activities.together");
+  const sports = await getTranslations("training.sport");
   if (companions.length === 0) return null;
   const ids = [activityId, ...companions.map((c) => c.activity.id)].join(",");
   return (
@@ -37,7 +38,9 @@ export async function TogetherSection({
               className="focus-ring border-border bg-card hover:border-primary flex min-h-11 items-center gap-2 rounded-md border px-3 text-2sm sm:min-h-9"
             >
               {c.riderName}
-              <span className="text-meta text-xs">{c.activity.title}</span>
+              <span className="text-meta text-xs">
+                {c.activity.title || sports(c.activity.sport as "bike")}
+              </span>
             </Link>
           </li>
         ))}

@@ -640,6 +640,10 @@
         "title": "Upload og enheder",
         "body": "Upload en FIT-fil fra cykelcomputeren, uret eller hometraineren under I dag, i kalenderen eller på rytterens side. Kadence læser filen selv, også uden internet, og sætter turen på dagens pas, hvis det passer. Hver tur har sin egen side med kurver, tid i zoner og bedste watt. Wahoo, Garmin og Polar kan forbindes under Indstillinger → Enheder, så ture kommer ind af sig selv, og pas kan sendes til en Wahoo eller Garmin. Wahoo og Garmin er amerikanske firmaer, Polar er finsk, og det er rytterens eget valg. Et cykelpas kan også hentes som .zwo, .erg, .mrc eller .fit."
       },
+      "keys": {
+        "title": "Upload-nøgler",
+        "body": "En upload-nøgle lader et program aflevere ture til Kadence af sig selv, uden at du er logget ind. Opret en under Indstillinger → Enheder, giv den et navn, og kopiér den med det samme: den vises kun den ene gang. Programmet sender turens fil til adressen, der står ved nøglen, med nøglen i feltet Authorization, skrevet som Bearer og derefter nøglen. Turen lander på dagens pas, præcis som når du selv uploader. Nøglen kan kun lægge ture ind hos dig. Den kan ikke læse noget, og du eller din træner kan fjerne den når som helst. Giv den kun til det program, der skal bruge den."
+      },
       "parentsPage": {
         "title": "Forældresiden",
         "body": "Under Forældre ser en forælder sit barns uge, formen med ord, det næste løb eller eksamen og, hvis barnet deler det, hvordan det går. Siden har også Forældreguiden: Team Danmarks og Kolding Talents ti temaer og ni råd, skrevet kort med Kadences egne ord og med links til originalerne."
@@ -708,6 +712,13 @@
         "body": "Læg pas i kalenderen til én rytter eller hele holdet på én gang.",
         "action": "Åbn kalenderen"
       }
+    },
+    "shared": {
+      "imported": "{count, plural, one {# tur er hentet} other {# ture er hentet}} og står i kalenderen.",
+      "duplicate": "Den tur er allerede hentet.",
+      "not_a_rider": "Kun en rytter kan dele en tur til Kadence. En træner uploader turen på rytterens side.",
+      "rate_limited": "Du har hentet mange filer lige nu. Prøv igen om lidt.",
+      "no_file": "Der kom ingen fil med. Del en .fit-, .tcx- eller .gpx-fil."
     }
   },
   "errors": {
@@ -723,6 +734,8 @@
     "youthWeight": "Vægt er slået fra for ryttere under 19. En træner kan slå det til under Indstillinger → Holdet.",
     "not_connected": "Der er ingen forbindelse at afbryde. Genindlæs siden.",
     "not_a_rider": "Kun en rytter kan forbinde sin egen enhed.",
+    "too_many_keys": "Du har allerede så mange nøgler, som du kan have. Fjern en, før du opretter en ny.",
+    "too_many_keys_made": "Du har oprettet mange nøgler lige nu. Prøv igen om en time.",
     "flagGone": "Advarslen er ikke aktiv længere. Genindlæs siden."
   },
   "calendar": {
@@ -1757,6 +1770,22 @@
       "matched": "Hentet og sat på passet “{title}”.",
       "unmatched": "Hentet. Den passede ikke til et planlagt pas, så den står for sig selv i kalenderen.",
       "open": "Se turen",
+      "results": "Resultat for hver fil",
+      "device": {
+        "button": "Hent fra enheden",
+        "hint": "Sæt cykelcomputeren til med kabel, og vælg den, når browseren beder om en mappe. Kun de ture, der ikke er her i forvejen, bliver hentet.",
+        "reading": "Læser mappen …",
+        "checking": "Ser efter nye ture …",
+        "none": "Der er ingen ture i den mappe.",
+        "allKnown": "Ingen nye ture. {known, plural, one {Den ene tur i mappen} other {Alle # ture i mappen}} var her allerede.",
+        "found": "{fresh, plural, one {# ny tur} other {# nye ture}} bliver hentet.",
+        "known": "{known} var her allerede.",
+        "more": "{left, plural, one {# tur} other {# ture}} mere venter i mappen og kan hentes om en time.",
+        "denied": "Kadence fik ikke lov til at læse mappen. Prøv igen, og sig ja, når browseren spørger.",
+        "unchecked": "Kadence kunne ikke se på forhånd, hvilke ture der er her i forvejen. {count, plural, one {# tur} other {# ture}} bliver sendt, og dem, der er her allerede, bliver sprunget over.",
+        "unreadable": "{count, plural, one {# fil} other {# filer}} kunne ikke læses fra enheden og er sprunget over.",
+        "failed": "Mappen kunne ikke læses. Prøv igen, eller vælg filerne selv."
+      },
       "error": {
         "duplicate": "Den tur er allerede hentet.",
         "conflict": "Den tur er allerede hentet.",
@@ -2112,6 +2141,43 @@
     "disconnectTitle": "Afbryd {name}?",
     "disconnectBody": "Kadence sletter nøglerne til din {name}-konto og beder {name} om at glemme forbindelsen. Ture, der allerede er hentet, bliver.",
     "disconnected": "{name} er afbrudt.",
+    "keys": {
+      "title": "Upload-nøgler",
+      "body": "En upload-nøgle lader et program, fx et script på familiens computer eller en app på telefonen, aflevere dine ture til Kadence, uden at du er logget ind. Nøglen kan kun én ting: lægge ture ind hos dig. Den kan ikke læse noget.",
+      "coachBody": "Rytteren opretter selv sine upload-nøgler under Indstillinger → Enheder. Du kan se, hvornår en nøgle sidst blev brugt, og fjerne den, hvis den er kommet i forkerte hænder.",
+      "empty": "Du har ingen nøgler endnu.",
+      "limit": "Du kan have {max} nøgler. Fjern en, før du opretter en ny.",
+      "endsIn": "Slutter på …{hint}",
+      "created": "Oprettet {date}",
+      "lastUsed": "Senest brugt {when}",
+      "neverUsed": "Ikke brugt endnu",
+      "address": "Et program sender filerne til",
+      "lastError": {
+        "invalid_file": "Den seneste fil kunne ikke læses. Upload den selv, hvis turen mangler.",
+        "unknown": "Noget gik galt med den seneste fil. Upload den selv, hvis turen mangler."
+      },
+      "remove": "Fjern",
+      "removeTitle": "Fjern nøglen “{name}”?",
+      "removeBody": "Det program, der bruger nøglen, kan ikke længere aflevere ture. Ture, der allerede er hentet, bliver.",
+      "removed": "Nøglen er fjernet.",
+      "guide": "Sådan bruger du en nøgle",
+      "create": {
+        "button": "Ny nøgle",
+        "title": "Ny upload-nøgle",
+        "body": "Giv nøglen et navn, så du kan kende den igen.",
+        "name": "Hvor skal den bruges?",
+        "placeholder": "Fx Fars computer",
+        "submit": "Opret nøgle",
+        "made": "Nøglen er oprettet.",
+        "issuedTitle": "Her er din nøgle",
+        "issuedBody": "Kopiér den nu. Kadence gemmer den ikke og kan ikke vise den igen.",
+        "key": "Nøgle",
+        "address": "Adressen, filerne sendes til",
+        "copy": "Kopiér",
+        "copied": "Kopieret",
+        "done": "Færdig"
+      }
+    },
     "uploadInstead": "Uden Wahoo, Garmin og Polar kan du altid uploade dine ture som FIT-filer.",
     "uploadLink": "Upload tur",
     "usTitle": "Wahoo og Garmin er amerikanske firmaer, Polar er finsk",

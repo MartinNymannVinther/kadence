@@ -19,6 +19,7 @@ const HOW_TO = [
   "warnings",
   "checkin",
   "devices",
+  "keys",
   "parents",
   "parentsPage",
   "ai",
@@ -29,8 +30,8 @@ const HOW_TO = [
  * How the tool works, in the rhythm a season lives in: who may do what,
  * the calendar, sessions and templates, "done" and RPE, the comments, the
  * season plan and DCU, the load, the warnings, the check-in, uploads and
- * devices, the parents, the AI, then the way out. Each wave adds the part
- * it built.
+ * devices, upload keys, the parents, the AI, then the way out. Each wave
+ * adds the part it built. Every section can be linked to: `/help#help-keys`.
  */
 export default async function HelpPage() {
   const t = await getTranslations("help");
@@ -55,7 +56,7 @@ export default async function HelpPage() {
 
       <h2 className="mt-10 text-xl font-semibold">{t("howToTitle")}</h2>
       {HOW_TO.map((key) => (
-        <section key={key}>
+        <section key={key} id={`help-${key}`} className="scroll-mt-20">
           <h3 className="text-primary mt-5 text-reading font-semibold">
             {t(`howTo.${key}.title`)}
           </h3>

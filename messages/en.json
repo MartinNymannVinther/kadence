@@ -640,6 +640,10 @@
         "title": "Uploads and devices",
         "body": "Upload a FIT file from the bike computer, watch or trainer under Today, in the calendar or on the rider's page. Kadence reads the file itself, offline too, and puts the ride on the day's session when it fits. Every ride has its own page with curves, time in zones and best power. Wahoo, Garmin and Polar can be connected under Settings → Devices, so rides come in by themselves, and sessions can be sent to a Wahoo or Garmin. Wahoo and Garmin are US companies, Polar is Finnish, and it is the rider's own choice. A bike session can also be downloaded as .zwo, .erg, .mrc or .fit."
       },
+      "keys": {
+        "title": "Upload keys",
+        "body": "An upload key lets a program hand rides to Kadence by itself, without you being signed in. Create one under Settings → Devices, give it a name, and copy it right away: it is shown that one time only. The program sends the ride's file to the address shown with the key, with the key in the Authorization field, written as Bearer and then the key. The ride lands on the day's session, exactly as when you upload it yourself. The key can only add rides for you. It cannot read anything, and you or your coach can remove it at any time. Give it only to the program that is to use it."
+      },
       "parentsPage": {
         "title": "The parents' page",
         "body": "Under Parents a parent sees their child's week, the form in words, the next race or exam and, if the child shares it, how things are going. The page also has the parents' guide: Team Danmark's and Kolding Talent's ten themes and nine pieces of advice, written briefly in Kadence's own words with links to the originals."
@@ -708,6 +712,13 @@
         "body": "Put sessions in the calendar for one rider or the whole team at once.",
         "action": "Open the calendar"
       }
+    },
+    "shared": {
+      "imported": "{count, plural, one {# ride is uploaded and is} other {# rides are uploaded and are}} in the calendar.",
+      "duplicate": "That ride is already uploaded.",
+      "not_a_rider": "Only a rider can share a ride to Kadence. A coach uploads the ride on the rider's page.",
+      "rate_limited": "You have uploaded many files just now. Try again in a moment.",
+      "no_file": "No file came along. Share a .fit, .tcx or .gpx file."
     }
   },
   "errors": {
@@ -723,6 +734,8 @@
     "youthWeight": "Weight is turned off for riders under 19. A coach can turn it on under Settings → Team.",
     "not_connected": "There is no connection to end. Reload the page.",
     "not_a_rider": "Only a rider can connect their own device.",
+    "too_many_keys": "You already have as many keys as you can have. Remove one before you create a new one.",
+    "too_many_keys_made": "You have created many keys just now. Try again in an hour.",
     "flagGone": "That warning is no longer active. Reload the page."
   },
   "calendar": {
@@ -1757,6 +1770,22 @@
       "matched": "Uploaded and placed on the session “{title}”.",
       "unmatched": "Uploaded. It did not match a planned session, so it stands on its own in the calendar.",
       "open": "See the ride",
+      "results": "Result for each file",
+      "device": {
+        "button": "Fetch from the device",
+        "hint": "Plug the bike computer in with a cable, and pick it when the browser asks for a folder. Only the rides that are not here already are fetched.",
+        "reading": "Reading the folder …",
+        "checking": "Looking for new rides …",
+        "none": "There are no rides in that folder.",
+        "allKnown": "No new rides. {known, plural, one {The one ride in the folder was} other {All # rides in the folder were}} here already.",
+        "found": "{fresh, plural, one {# new ride is} other {# new rides are}} being fetched.",
+        "known": "{known, plural, one {# was} other {# were}} here already.",
+        "more": "{left, plural, one {# more ride waits} other {# more rides wait}} in the folder and can be fetched in an hour.",
+        "denied": "Kadence was not allowed to read the folder. Try again, and say yes when the browser asks.",
+        "unchecked": "Kadence could not check beforehand which rides are here already. {count, plural, one {# ride is} other {# rides are}} being sent, and the ones already here are skipped.",
+        "unreadable": "{count, plural, one {# file could not be read from the device and was skipped} other {# files could not be read from the device and were skipped}}.",
+        "failed": "The folder could not be read. Try again, or pick the files yourself."
+      },
       "error": {
         "duplicate": "That ride is already uploaded.",
         "conflict": "That ride is already uploaded.",
@@ -2112,6 +2141,43 @@
     "disconnectTitle": "Disconnect {name}?",
     "disconnectBody": "Kadence deletes the keys to your {name} account and asks {name} to forget the connection. Rides already fetched stay.",
     "disconnected": "{name} is disconnected.",
+    "keys": {
+      "title": "Upload keys",
+      "body": "An upload key lets a program, such as a script on the family's computer or an app on the phone, hand your rides to Kadence without you being signed in. The key can do one thing only: add rides for you. It cannot read anything.",
+      "coachBody": "The rider creates their own upload keys under Settings → Devices. You can see when a key was last used, and remove it if it has ended up in the wrong hands.",
+      "empty": "You have no keys yet.",
+      "limit": "You can have {max} keys. Remove one before you create a new one.",
+      "endsIn": "Ends in …{hint}",
+      "created": "Created {date}",
+      "lastUsed": "Last used {when}",
+      "neverUsed": "Not used yet",
+      "address": "A program sends the files to",
+      "lastError": {
+        "invalid_file": "The latest file could not be read. Upload it yourself if the ride is missing.",
+        "unknown": "Something went wrong with the latest file. Upload it yourself if the ride is missing."
+      },
+      "remove": "Remove",
+      "removeTitle": "Remove the key “{name}”?",
+      "removeBody": "The program that uses the key can no longer hand over rides. Rides that are already here stay.",
+      "removed": "The key is removed.",
+      "guide": "How to use a key",
+      "create": {
+        "button": "New key",
+        "title": "New upload key",
+        "body": "Give the key a name, so you can tell it from the others.",
+        "name": "Where will it be used?",
+        "placeholder": "E.g. Dad's computer",
+        "submit": "Create key",
+        "made": "The key is created.",
+        "issuedTitle": "Here is your key",
+        "issuedBody": "Copy it now. Kadence does not keep it and cannot show it again.",
+        "key": "Key",
+        "address": "The address the files are sent to",
+        "copy": "Copy",
+        "copied": "Copied",
+        "done": "Done"
+      }
+    },
     "uploadInstead": "Without Wahoo, Garmin and Polar you can always upload your rides as FIT files.",
     "uploadLink": "Upload a ride",
     "usTitle": "Wahoo and Garmin are US companies, Polar is Finnish",

@@ -1,7 +1,11 @@
 import { requireOrgContext } from "@/core/auth/guard";
 import { Refused } from "@/core/action";
-import { rateLimit } from "@/core/rate-limit";
+import { peekRateLimit, rateLimit } from "@/core/rate-limit";
+import { fromAnotherSite } from "@/core/same-site";
+import { loggable } from "@/modules/devices/http";
 import { importFit, MAX_UPLOAD_BYTES } from "@/modules/devices/import";
+import { STORED_FILES_PER_HOUR, storedFilesKey } from "@/modules/devices/ingest";
+import { storedName } from "@/modules/devices/ingest-request";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -11,7 +15,9 @@ export const dynamic = "force-dynamic";
  * `riderId` and up to three `file`s. A route rather than a server action,
  * because a ride can be larger than an action's body limit. Each file is
  * answered on its own — imported, a duplicate, or refused with the
- * decoder's reason — so one bad file does not sink the others.
+ * decoder's reason — so one bad file does not sink the others. Requests
+ * are counted as they come; files are counted when they are kept, so a
+ * ride that is already here never uses the hour up (ADR 0019, 0029).
  */
 const MAX_FILES = 3;
 /** The whole request, files and form overhead: counted as it arrives, not trusted from a header. */
@@ -44,6 +50,7 @@ async function readCapped(request: Request, max: number): Promise<Uint8Array | n
 }
 
 export async function POST(request: Request) {
+  if (fromAnotherSite(request)) return Response.json({ error: "forbidden" }, { status: 403 });
   const ctx = await requireOrgContext();
   if (!ctx) return Response.json({ error: "unauthorized" }, { status: 401 });
   const limit = rateLimit(`upload:${ctx.userId}`, 30, HOUR);
@@ -72,25 +79,34 @@ export async function POST(request: Request) {
 
   const results = [];
   for (const file of files) {
+    // A browser that was handed a folder sends the file under its path.
+    const name = file.name.split(/[\\/]/).pop() || file.name;
     if (file.size > MAX_UPLOAD_BYTES) {
-      results.push({ name: file.name, ok: false, error: "too_large" });
+      results.push({ name, ok: false, error: "too_large" });
       continue;
     }
-    // Stored files count, not requests: at most 60 an hour per person.
-    if (!rateLimit(`upload-files:${ctx.userId}`, 60, HOUR).allowed) {
-      results.push({ name: file.name, ok: false, error: "rateLimited" });
+    // Stored files count, not tries: at most sixty an hour per person,
+    // whichever door they come in by.
+    const stored = storedFilesKey(ctx.userId);
+    if (!peekRateLimit(stored, STORED_FILES_PER_HOUR).allowed) {
+      results.push({ name, ok: false, error: "rateLimited" });
       continue;
     }
     try {
       const bytes = new Uint8Array(await file.arrayBuffer());
-      const imported = await importFit(ctx, riderId, file.name, bytes);
-      results.push({ name: file.name, ok: true, ...imported });
+      const kept = storedName(name, bytes);
+      const imported = await importFit(ctx, riderId, kept.name, bytes, {
+        source: "fit",
+        unnamed: !kept.own,
+      });
+      rateLimit(stored, STORED_FILES_PER_HOUR, HOUR);
+      results.push({ name, ok: true, ...imported });
     } catch (error) {
       if (error instanceof Refused)
-        results.push({ name: file.name, ok: false, error: error.detail ?? error.code });
+        results.push({ name, ok: false, error: error.detail ?? error.code });
       else {
-        console.error("upload: import failed", error);
-        results.push({ name: file.name, ok: false, error: "generic" });
+        console.error("upload: import failed", loggable(error));
+        results.push({ name, ok: false, error: "generic" });
       }
     }
   }

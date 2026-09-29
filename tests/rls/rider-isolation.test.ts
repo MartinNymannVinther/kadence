@@ -24,6 +24,17 @@ const OTHER = { orgId: ORG, userId: "user_riders_other" };
 
 const DAY = "2026-11-02";
 const THIS_YEAR = new Date().getFullYear();
+/** The hash of an upload key: 64 hex digits, never the key. */
+const KEY_HASH = "a1".repeat(32);
+const keyRow = (riderId: string, hash: string, madeBy: string) =>
+  insertSql("upload_keys", {
+    org_id: ORG,
+    rider_id: riderId,
+    name: "Telefon",
+    key_hash: hash,
+    hint: "wxyz",
+    created_by: madeBy,
+  });
 
 let admin: Pool;
 let app: Client;
@@ -126,6 +137,14 @@ beforeAll(async () => {
     external_user_id: "w_r1",
     access_token_sealed: "sealed",
   });
+  await seed("upload_keys", {
+    id: "key_r1",
+    rider_id: "r1",
+    name: "Fars computer",
+    key_hash: KEY_HASH,
+    hint: "abcd",
+    created_by: R1.userId,
+  });
   await seed("calendar_events", { kind: "race", title: "Holdløb", starts_on: DAY, ends_on: DAY });
   await seed("workout_templates", { name: "Styrke", sport: "strength", structure: {} });
 });
@@ -164,6 +183,20 @@ describe("the coach", () => {
       access_token_sealed: "x",
     });
     expect(await expectSqlError(asApp(app, COACH, (c) => c.query(q.text, q.values)))).toBe("42501");
+  });
+
+  it("sees that a rider has an upload key and can remove it, but cannot make or change one", async () => {
+    expect(await count(COACH, "upload_keys")).toBe(1);
+    const q = keyRow("r2", "b2".repeat(32), COACH.userId);
+    expect(await expectSqlError(asApp(app, COACH, (c) => c.query(q.text, q.values)))).toBe("42501");
+    const renamed = await asApp(app, COACH, (c) =>
+      c.query(`update upload_keys set name = 'x' where id = 'key_r1'`),
+    );
+    expect(renamed.rowCount).toBe(0);
+    const removed = await asApp(app, COACH, (c) =>
+      c.query(`delete from upload_keys where id = 'key_r1'`),
+    );
+    expect(removed.rowCount).toBe(1);
   });
 
   it("reads the audit trail, which nobody else does", async () => {
@@ -242,6 +275,65 @@ describe("a rider", () => {
       c.query(`delete from flag_resolutions where rider_id = 'r1'`),
     );
     expect(del.rowCount).toBe(0);
+  });
+
+  it("makes, renames and removes their own upload key, and no teammate's", async () => {
+    expect(await count(R1, "upload_keys")).toBe(1);
+    expect(await count(R2, "upload_keys")).toBe(0);
+    const own = keyRow("r1", "c3".repeat(32), R1.userId);
+    expect((await asApp(app, R1, (c) => c.query(own.text, own.values))).rowCount).toBe(1);
+    const theirs = keyRow("r2", "d4".repeat(32), R1.userId);
+    expect(await expectSqlError(asApp(app, R1, (c) => c.query(theirs.text, theirs.values)))).toBe(
+      "42501",
+    );
+    // A key is made in the maker's own name, never in a teammate's.
+    const forged = keyRow("r1", "d5".repeat(32), R2.userId);
+    expect(await expectSqlError(asApp(app, R1, (c) => c.query(forged.text, forged.values)))).toBe(
+      "42501",
+    );
+    const renamed = await asApp(app, R1, (c) =>
+      c.query(`update upload_keys set name = 'Mors computer' where id = 'key_r1'`),
+    );
+    expect(renamed.rowCount).toBe(1);
+    const reached = await asApp(app, R2, (c) =>
+      c.query(`delete from upload_keys where id = 'key_r1'`),
+    );
+    expect(reached.rowCount).toBe(0);
+    const removed = await asApp(app, R1, (c) =>
+      c.query(`delete from upload_keys where id = 'key_r1'`),
+    );
+    expect(removed.rowCount).toBe(1);
+  });
+
+  it("never reads a key's hash, their own included: the application is not granted it", async () => {
+    for (const who of [R1, COACH]) {
+      expect(
+        await expectSqlError(asApp(app, who, (c) => c.query(`select key_hash from upload_keys`))),
+      ).toBe("42501");
+      expect(
+        await expectSqlError(asApp(app, who, (c) => c.query(`select * from upload_keys`))),
+      ).toBe("42501");
+    }
+    const found = await asApp(app, R1, (c) =>
+      c.query(`select id from upload_keys where id = 'key_r1'`),
+    );
+    expect(found.rowCount).toBe(1);
+  });
+
+  it("cannot turn a key into another key, or hand it to a teammate", async () => {
+    for (const change of [
+      `key_hash = '${"e5".repeat(32)}'`,
+      "hint = 'zzzz'",
+      "rider_id = 'r2'",
+      "id = 'key_other'",
+      `created_by = '${R2.userId}'`,
+      "created_at = now() - interval '1 year'",
+    ]) {
+      const code = await expectSqlError(
+        asApp(app, R1, (c) => c.query(`update upload_keys set ${change} where id = 'key_r1'`)),
+      );
+      expect(code, change).toBe("42501");
+    }
   });
 
   it("cannot add a rider, change the template library or the team's calendar", async () => {
@@ -399,8 +491,13 @@ describe("a parent", () => {
     await admin.query(`update guardians set confirmed_as_adult = false where id = 'g_adult'`);
   });
 
-  it("cannot see the rider's device connection", async () => {
+  it("cannot see the rider's device connection or upload keys", async () => {
     expect(await count(PARENT, "device_links")).toBe(0);
+    expect(await count(PARENT, "upload_keys")).toBe(0);
+    const q = keyRow("r1", "f6".repeat(32), PARENT.userId);
+    expect(await expectSqlError(asApp(app, PARENT, (c) => c.query(q.text, q.values)))).toBe(
+      "42501",
+    );
   });
 });
 
@@ -456,6 +553,8 @@ describe("a member who is neither rider nor parent", () => {
       "comments",
       "guardians",
       "flag_resolutions",
+      "device_links",
+      "upload_keys",
     ]) {
       expect(await count(OTHER, table)).toBe(0);
     }

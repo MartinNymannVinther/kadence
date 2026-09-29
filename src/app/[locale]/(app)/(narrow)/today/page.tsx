@@ -16,6 +16,7 @@ import { CoachTips } from "@/components/coach/coach-tips";
 import { teamTips } from "@/components/coach/team-tips";
 import { CoachToday } from "@/components/today/coach-today";
 import { GettingStarted } from "@/components/today/getting-started";
+import { SharedNotice } from "@/components/today/shared-notice";
 import { TodaySession } from "@/components/today/today-session";
 import { WeekGlance } from "@/components/today/week-glance";
 import { checkinValues } from "@/components/wellbeing/checkin-values";
@@ -77,7 +78,8 @@ async function riderDay(ctx: OrgContext, riderId: string, today: string) {
  * upload and their form; a coach sees who needs attention, the team's day
  * and the week's team events — or, on an empty team, the three steps to
  * start; a parent sees each confirmed child's week. One person can be more
- * than one of these, and sees each part.
+ * than one of these, and sees each part. A ride shared to Kadence from the
+ * phone lands here with what became of it (`?shared=`, ADR 0029).
  */
 export default async function TodayPage({
   searchParams,
@@ -94,6 +96,7 @@ export default async function TodayPage({
   const me = await whoAmI(ctx.orgId, ctx.userId);
   const search = await searchParams;
   const openSession = typeof search.session === "string" ? search.session : undefined;
+  const word = (key: string) => (typeof search[key] === "string" ? search[key] : undefined);
   const today = todayInCopenhagen();
   const tomorrow = addDaysIso(today, 1);
   const monday = weekFrom(undefined, today);
@@ -140,6 +143,8 @@ export default async function TodayPage({
         title={t("title")}
         subtitle={<span className="first-letter:uppercase">{dayLong(today, locale)}</span>}
       />
+
+      <SharedNotice shared={word("shared")} count={word("count")} reason={word("reason")} />
 
       {nothing && <EmptyState title={t("none.title")} hint={t("none.body")} />}
 

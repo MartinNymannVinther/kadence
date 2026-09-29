@@ -1,10 +1,11 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { CircleCheck, CircleX, Copy, Upload } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+import { DeviceFolderButton, type FolderStatus } from "./device-folder-button";
 
 type FileResult = {
   name: string;
@@ -15,16 +16,23 @@ type FileResult = {
   error?: string;
 };
 
-/** The route takes five files at a time; more are sent in turns. */
+/** The route takes three files at a time; more are sent in turns. */
 const BATCH = 3;
+/** Files picked by hand in one go. */
+const MAX_PICKED = 20;
+/** Rides from a device's folder in one go: what the server keeps in an hour (ADR 0019). */
+const MAX_FROM_DEVICE = 60;
+const QUIET: FolderStatus = { doing: "nothing", said: null };
 
 /**
  * A ride from a FIT file, the way that always works — offline, without
  * Wahoo or Garmin (dogma 2): drop the files here or pick them, and each
  * one answers on its own line — imported and matched to the session it
  * fulfilled, already there, or the decoder's reason in plain words.
- * Posts to /api/activities/upload, a route because a ride can be larger
- * than a server action takes.
+ * Beside it, "Hent fra enheden" reads a plugged-in bike computer's folder
+ * and sends the rides that are new (ADR 0029). Posts to
+ * /api/activities/upload, a route because a ride can be larger than a
+ * server action takes.
  */
 export function FitUpload({ riderId, compact = false }: { riderId: string; compact?: boolean }) {
   const t = useTranslations("activities.upload");
@@ -32,36 +40,44 @@ export function FitUpload({ riderId, compact = false }: { riderId: string; compa
   const inputId = useId();
   const [over, setOver] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [folder, setFolder] = useState<FolderStatus>(QUIET);
   const [results, setResults] = useState<FileResult[]>([]);
+  // The folder's rides arrive after a wait, from a press made renders ago:
+  // whether files are on their way is asked of the moment, not of then.
+  const sending = useRef(false);
+  const held = busy || folder.doing !== "nothing";
 
-  async function send(list: FileList | File[]) {
-    const files = Array.from(list).slice(0, 20);
-    if (files.length === 0 || busy) return;
+  async function send(list: FileList | File[], from: "hand" | "device") {
+    const files = Array.from(list).slice(0, from === "device" ? MAX_FROM_DEVICE : MAX_PICKED);
+    if (files.length === 0 || sending.current) return;
+    sending.current = true;
+    // What the folder held is about the files before these.
+    if (from === "hand") setFolder(QUIET);
     setBusy(true);
     setResults([]);
     const answered: FileResult[] = [];
-    for (let i = 0; i < files.length; i += BATCH) {
-      const form = new FormData();
-      form.set("riderId", riderId);
-      for (const file of files.slice(i, i + BATCH)) form.append("file", file);
-      try {
-        const response = await fetch("/api/activities/upload", { method: "POST", body: form });
-        const data = (await response.json()) as { results?: FileResult[]; error?: string };
-        if (data.results) answered.push(...data.results);
-        else
-          answered.push(
-            ...files
-              .slice(i, i + BATCH)
-              .map((f) => ({ name: f.name, ok: false, error: data.error ?? "generic" })),
-          );
-      } catch {
-        answered.push(
-          ...files.slice(i, i + BATCH).map((f) => ({ name: f.name, ok: false, error: "generic" })),
-        );
+    try {
+      for (let i = 0; i < files.length; i += BATCH) {
+        const batch = files.slice(i, i + BATCH);
+        const refused = (error: string) => batch.map((f) => ({ name: f.name, ok: false, error }));
+        const form = new FormData();
+        form.set("riderId", riderId);
+        // Under its own name: a file from a folder would otherwise travel
+        // under its path on the device.
+        for (const file of batch) form.append("file", file, file.name);
+        try {
+          const response = await fetch("/api/activities/upload", { method: "POST", body: form });
+          const data = (await response.json()) as { results?: FileResult[]; error?: string };
+          answered.push(...(data.results ?? refused(data.error ?? "generic")));
+        } catch {
+          answered.push(...refused("generic"));
+        }
+        setResults([...answered]);
       }
-      setResults([...answered]);
+    } finally {
+      sending.current = false;
+      setBusy(false);
     }
-    setBusy(false);
     if (answered.some((r) => r.ok)) router.refresh();
   }
 
@@ -85,13 +101,13 @@ export function FitUpload({ riderId, compact = false }: { riderId: string; compa
         onDrop={(e) => {
           e.preventDefault();
           setOver(false);
-          void send(e.dataTransfer.files);
+          if (!held) void send(e.dataTransfer.files, "hand");
         }}
         className={cn(
           "border-input bg-secondary/40 has-focus-visible:outline-ring flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-dashed px-4 text-center transition-colors duration-[120ms] has-focus-visible:outline-2",
           compact ? "min-h-24 py-4" : "min-h-32 py-6",
-          over && "border-primary bg-accent/60",
-          busy && "opacity-60",
+          over && !held && "border-primary bg-accent/60",
+          held && "cursor-default opacity-60",
         )}
       >
         <Upload aria-hidden className="text-primary size-5" />
@@ -102,17 +118,35 @@ export function FitUpload({ riderId, compact = false }: { riderId: string; compa
           type="file"
           accept=".fit,.FIT,.tcx,.TCX,.gpx,.GPX,.gz,.zip,application/vnd.ant.fit,application/gpx+xml,application/vnd.garmin.tcx+xml,application/gzip,application/zip,application/octet-stream"
           multiple
-          disabled={busy}
+          disabled={held}
           className="sr-only"
           onChange={(e) => {
-            if (e.target.files) void send(e.target.files);
+            if (e.target.files) void send(e.target.files, "hand");
             e.target.value = "";
           }}
         />
       </label>
 
+      <DeviceFolderButton
+        riderId={riderId}
+        disabled={busy}
+        max={MAX_FROM_DEVICE}
+        status={folder}
+        onStatus={setFolder}
+        onFresh={(files) => void send(files, "device")}
+      />
+
       {results.length > 0 && (
-        <ul aria-live="polite" className="flex flex-col gap-2">
+        <ul
+          aria-live="polite"
+          aria-label={t("results")}
+          // A list that scrolls is reached by the keyboard too.
+          tabIndex={results.length > 6 ? 0 : undefined}
+          className={cn(
+            "flex flex-col gap-2",
+            results.length > 6 && "focus-ring max-h-96 overflow-y-auto rounded-lg pr-1",
+          )}
+        >
           {results.map((r, i) => {
             const duplicate = r.error === "duplicate";
             const Icon = r.ok ? CircleCheck : duplicate ? Copy : CircleX;

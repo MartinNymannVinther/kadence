@@ -18,6 +18,7 @@ import { PeriodSelect } from "./period-select";
 export function RecordsCard({ byPeriod }: { byPeriod: Record<Period, Records> }) {
   const t = useTranslations("records");
   const best = useTranslations("activities.best");
+  const sports = useTranslations("training.sport");
   const locale = useLocale();
   const [period, setPeriod] = useState<Period>("year");
   const r = byPeriod[period];
@@ -64,7 +65,8 @@ export function RecordsCard({ byPeriod }: { byPeriod: Record<Period, Records> })
                 href={`/activities/${row.holder!.activityId}`}
                 className="focus-ring text-primary ml-auto min-w-0 truncate text-right text-xs font-medium hover:underline"
               >
-                {dayMonthYear(row.holder!.onDate, locale)} · {row.holder!.title}
+                {/* A ride that came without a name goes by its sport; records are rides on the bike. */}
+                {dayMonthYear(row.holder!.onDate, locale)} · {row.holder!.title || sports("bike")}
               </Link>
             </li>
           ))}

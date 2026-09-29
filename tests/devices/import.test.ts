@@ -1,7 +1,14 @@
+import { createHash } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { Pool } from "pg";
 import { SPORT } from "@/modules/fit";
-import { deleteActivity, getActivityFile, importFit } from "@/modules/devices/import";
+import {
+  deleteActivity,
+  getActivityFile,
+  importFit,
+  knownFileHashes,
+  MAX_KNOWN_HASHES,
+} from "@/modules/devices/import";
 import { rereadActivityDetails } from "@/modules/devices/reread";
 import { getActivitySession } from "@/modules/training/activities";
 import { listSessions } from "@/modules/training/sessions";
@@ -170,5 +177,54 @@ describe("importing a FIT file", () => {
     await deleteActivity(IDA, activityId);
     const [session] = await listSessions(COACH, { from: DAY, to: DAY, riderIds: ["i_ida"] });
     expect(session!.activity).toBeNull();
+  });
+});
+
+describe("which files Kadence already has", () => {
+  const sha = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
+  const other = encodeRide(steadyHour().map((sample) => ({ ...sample, s: sample.s + 86_400 })));
+  let activityId: string;
+
+  beforeAll(async () => {
+    activityId = (await importFit(IDA, "i_ida", "morgen.fit", ride)).activityId;
+  });
+
+  afterAll(async () => {
+    await deleteActivity(IDA, activityId);
+  });
+
+  it("names the ones it holds for the rider, and only those", async () => {
+    const asked = [sha(ride), sha(other)];
+    expect(await knownFileHashes(IDA, "i_ida", asked)).toEqual([sha(ride)]);
+    expect(await knownFileHashes(COACH, "i_ida", asked)).toEqual([sha(ride)]);
+    // The same file is not Mikkel's, and nothing of Ida's is said about him.
+    expect(await knownFileHashes(MIKKEL, "i_mikkel", asked)).toEqual([]);
+  });
+
+  it("answers only someone who may write for the rider", async () => {
+    await expect(knownFileHashes(MIKKEL, "i_ida", [sha(ride)])).rejects.toMatchObject({
+      code: "forbidden",
+    });
+    await expect(knownFileHashes(COACH, "no_such_rider", [sha(ride)])).rejects.toMatchObject({
+      code: "notFound",
+    });
+  });
+
+  it("passes over what is no hash, and refuses more than it answers at once", async () => {
+    expect(
+      await knownFileHashes(IDA, "i_ida", ["", "x", sha(ride).toUpperCase(), `${sha(ride)}0`]),
+    ).toEqual([]);
+    expect(await knownFileHashes(IDA, "i_ida", [sha(ride), sha(ride)])).toEqual([sha(ride)]);
+    const many = Array.from({ length: MAX_KNOWN_HASHES + 1 }, (_, i) =>
+      i.toString(16).padStart(64, "0"),
+    );
+    await expect(knownFileHashes(IDA, "i_ida", many)).rejects.toMatchObject({ code: "invalid" });
+  });
+
+  it("recognises the file before it reads it, so a ride sent again costs a lookup", async () => {
+    await expect(importFit(IDA, "i_ida", "igen.fit", ride)).rejects.toMatchObject({
+      code: "conflict",
+      detail: "duplicate",
+    });
   });
 });

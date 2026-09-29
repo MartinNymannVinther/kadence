@@ -132,7 +132,11 @@ codebase to:
 - Devices: FIT files are decoded by Kadence's own decoder
   (`src/modules/fit`, no dependency). Wahoo and Garmin are adapters in
   `src/modules/devices` behind environment keys; without keys they say
-  so. Tokens are sealed with `src/core/crypto/secret-box`.
+  so. Tokens are sealed with `src/core/crypto/secret-box`. A rider's
+  upload key (ADR 0029) hands a ride file to `/api/ingest` with nobody
+  signed in: shown once, stored as a hash, good for files only, and the
+  ride is imported as the rider. Kadence never asks for a Garmin password
+  and never logs in to a provider as the rider.
 - Deployment: Docker Compose run via Coolify on an EU VPS (Hetzner
   initially; the provider must stay replaceable). Nightly encrypted
   backups to EU object storage. No Vercel, no Neon, no US cloud.

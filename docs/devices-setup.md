@@ -6,6 +6,10 @@ None of it is required: without these keys the devices page says "not set
 up here", and FIT upload, the calendar and everything else work as before
 (dogma 2). Each provider is independent; set up one, two or all three.
 
+A way in that needs no keys at all — a rider's upload key, the bike
+computer on a cable, a share from the phone — is in
+[upload-keys.md](upload-keys.md).
+
 What the code does is described in `src/modules/devices` and ADR
 [0018](adr/0018-devices-act-as-the-rider.md) and
 [0020](adr/0020-polar-as-the-third-device.md); what flows to whom is in

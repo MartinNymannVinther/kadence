@@ -46,6 +46,20 @@ export function rateLimit(key: string, limit: number, windowMs: number): RateLim
 }
 
 /**
+ * Whether one more would be allowed, without counting it. For a limit on
+ * what was done rather than on what was tried — stored files, where the
+ * same ride sent twice must not use up the hour: ask first, do the work,
+ * and count with `rateLimit` only what was kept.
+ */
+export function peekRateLimit(key: string, limit: number): RateLimit {
+  const now = Date.now();
+  const bucket = buckets.get(key);
+  if (!bucket || bucket.resetAt <= now || bucket.count < limit)
+    return { allowed: true, retryAfterSeconds: 0 };
+  return { allowed: false, retryAfterSeconds: Math.ceil((bucket.resetAt - now) / 1000) };
+}
+
+/**
  * The caller's address, read from the right.
  *
  * X-Forwarded-For is a list a proxy *appends* to, so the leftmost entry is

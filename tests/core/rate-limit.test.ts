@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { callerKey, rateLimit, resetRateLimits } from "@/core/rate-limit";
+import { callerKey, peekRateLimit, rateLimit, resetRateLimits } from "@/core/rate-limit";
 
 /**
  * The limiter guarding the public endpoints. It is in memory on purpose;
@@ -27,6 +27,24 @@ describe("rateLimit", () => {
     expect(rateLimit("c", 1, 20).allowed).toBe(false);
     await new Promise((resolve) => setTimeout(resolve, 30));
     expect(rateLimit("c", 1, 20).allowed).toBe(true);
+  });
+});
+
+describe("peekRateLimit", () => {
+  it("answers without counting, so asking is free", () => {
+    for (let i = 0; i < 20; i++) expect(peekRateLimit("p", 2).allowed).toBe(true);
+    expect(rateLimit("p", 2, 60_000).allowed).toBe(true);
+    expect(rateLimit("p", 2, 60_000).allowed).toBe(true);
+    const full = peekRateLimit("p", 2);
+    expect(full.allowed).toBe(false);
+    expect(full.retryAfterSeconds).toBeGreaterThan(0);
+  });
+
+  it("opens again once the window has passed", async () => {
+    rateLimit("q", 1, 20);
+    expect(peekRateLimit("q", 1).allowed).toBe(false);
+    await new Promise((resolve) => setTimeout(resolve, 30));
+    expect(peekRateLimit("q", 1).allowed).toBe(true);
   });
 });
 

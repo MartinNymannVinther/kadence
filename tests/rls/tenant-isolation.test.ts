@@ -367,6 +367,15 @@ describe("rls coverage (guards future tables)", () => {
     // append-only guard would otherwise keep forever. Checks itself that
     // the caller coaches the team, like delete_workspace.
     "erase_rider",
+    // Whose upload key a hash is, for a ride file that arrives with a key
+    // and nobody signed in (drizzle/0014, docs/adr/0029). It is
+    // device_link_owner's question asked of a key: the key's id, the team,
+    // the rider and the rider's account for one exact hash and nothing
+    // else — nothing for a rider without an account, one who is archived
+    // or one who is no longer a member — and it cannot enumerate without
+    // the key, which only its holder has. Everything after it runs as the
+    // rider, under the ordinary policies.
+    "upload_key_owner",
   ];
 
   it("only the named definer functions can be called by a runtime role", async () => {

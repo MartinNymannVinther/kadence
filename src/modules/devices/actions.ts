@@ -6,6 +6,7 @@ import { disconnect } from "./disconnect";
 import { deleteActivity } from "./import";
 import { PROVIDER_IDS } from "./providers";
 import { pushSession } from "./push";
+import { createUploadKey, removeUploadKey } from "./upload-keys";
 
 /**
  * The devices' server actions. Each resolves the caller's team, validates
@@ -29,6 +30,29 @@ export async function disconnectAction(raw: unknown) {
   return runAction(raw, z.object({ provider }), (ctx, input) => disconnect(ctx, input.provider), [
     "/settings/devices",
   ]);
+}
+
+/**
+ * Makes an upload key for the caller's own rider (ADR 0029). The key is
+ * in the answer, this once; Kadence keeps only its hash.
+ */
+export async function createUploadKeyAction(raw: unknown) {
+  return runAction(
+    raw,
+    z.object({ name: z.string().trim().min(1).max(60) }),
+    (ctx, input) => createUploadKey(ctx, input.name),
+    ["/settings/devices"],
+  );
+}
+
+/** Removes an upload key: the rider's own, or a rider's for a coach. */
+export async function removeUploadKeyAction(raw: unknown) {
+  return runAction(
+    raw,
+    z.object({ keyId: id }),
+    (ctx, input) => removeUploadKey(ctx, input.keyId),
+    ["/settings/devices", "/riders"],
+  );
 }
 
 /** Deletes a ride or session that was done, and its file: the rider's or a coach's. */

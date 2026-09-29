@@ -92,7 +92,10 @@ adgang til rytterdata, er det et fravalg pr. hold, og det står i
 
 - **FIT-upload** (altid, også offline): rytteren trækker filen ind, og
   Kadence læser varighed, distance, watt, puls, tid i zoner og bedste
-  præstationer.
+  præstationer. Siden ADR 0029 også uden at trække: cykelcomputeren på
+  et kabel læst som mappe ("Hent fra enheden"), en fil delt fra
+  telefonen, og en personlig upload-nøgle, som et program kan aflevere
+  ture med, uden at rytteren er logget ind (docs/upload-keys.md).
 - **Wahoo Cloud API:** OAuth, nye ture kommer ind automatisk, og planlagte
   pas skubbes ud til ELEMNT/KICKR.
 - **Garmin Connect (Activity + Training API):** samme mønster. Adapteren

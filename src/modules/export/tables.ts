@@ -56,6 +56,9 @@ export const EXPORT_TABLES: ExportTable[] = [
  *   `streams` is left out of the sheet for the same reason.
  * - `device_links`: sealed tokens for Wahoo and Garmin — credentials, not
  *   data a team owns.
+ * - `upload_keys`: the hashes of riders' upload keys (ADR 0029) —
+ *   credentials again. That a key was made, used and removed is in the
+ *   audit trail, without the hash.
  * - `ai_calls`: a counter for rate limiting, not something a workspace owns.
  * - `workspace_llm_settings`: the model choice, which holds an encrypted
  *   key; a workspace that leaves gets its data, not its secrets.

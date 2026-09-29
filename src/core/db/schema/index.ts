@@ -9,5 +9,6 @@
 export * from "./foundation";
 export * from "./team";
 export * from "./training";
+export * from "./upload";
 export * from "./ai";
 export * from "./demo";

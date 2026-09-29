@@ -135,6 +135,11 @@ export const activities = pgTable(
     /** fit | wahoo | garmin | polar | manual */
     source: text("source").notNull(),
     externalId: text("external_id"),
+    /**
+     * The upload key a ride came in with (ADR 0029), kept after the key is
+     * gone: what tells a rider which rides a key that went astray added.
+     */
+    uploadKeyId: text("upload_key_id"),
     note: text("note").notNull().default(""),
     createdBy: text("created_by").references(() => users.id, { onDelete: "set null" }),
     ...timestamps,

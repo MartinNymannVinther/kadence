@@ -3,10 +3,13 @@ import { CircleCheck, CircleX, ExternalLink } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { DeviceCard } from "@/components/devices/device-card";
 import { connectErrorKey } from "@/components/devices/device-words";
+import { UploadKeysCard } from "@/components/devices/upload-keys-card";
 import { getOrgContext } from "@/core/auth/session";
+import { env } from "@/core/env";
 import { Link, redirect } from "@/i18n/navigation";
 import { listDeviceLinks } from "@/modules/devices/links";
 import { isProviderId } from "@/modules/devices/providers";
+import { listUploadKeys, MAX_KEYS_PER_RIDER } from "@/modules/devices/upload-keys";
 import { whoAmI } from "@/modules/team/access";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -25,6 +28,8 @@ const SUBPROCESSORS =
  * connect, and the page says what flows.
  * Coaches and parents do not connect anyone's device; they are told so.
  * The OAuth round trip lands back here with `?connected=` or `?error=`.
+ * Below the providers, the rider's upload keys (ADR 0029): what a helper
+ * hands rides over with, whatever the installation has keys for.
  */
 export default async function DevicesPage({
   searchParams,
@@ -57,7 +62,7 @@ export default async function DevicesPage({
     );
   }
 
-  const links = await listDeviceLinks(ctx);
+  const [links, keys] = await Promise.all([listDeviceLinks(ctx), listUploadKeys(ctx)]);
 
   return (
     <div className="flex max-w-2xl flex-col gap-5">
@@ -93,6 +98,17 @@ export default async function DevicesPage({
           />
         ))}
       </div>
+
+      <UploadKeysCard
+        own
+        max={MAX_KEYS_PER_RIDER}
+        endpoint={new URL("/api/ingest", env.BETTER_AUTH_URL).toString()}
+        keys={keys.map((key) => ({
+          ...key,
+          createdAt: key.createdAt.toISOString(),
+          lastUsedAt: key.lastUsedAt?.toISOString() ?? null,
+        }))}
+      />
 
       <p className="text-meta text-2sm leading-relaxed">
         {t("uploadInstead")}{" "}

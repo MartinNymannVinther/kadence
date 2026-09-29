@@ -29,7 +29,8 @@ confirming a guardian as anyone but the rider; authentication bypass;
 audit-log tampering or a non-coach reading it; an invitation link that
 admits somebody it should not or links them to the wrong rider; a FIT file
 or a device webhook that crashes the decoder, reaches another rider's
-data or writes where it should not; a prompt that reaches the model as
+data or writes where it should not; an upload key that reads anything,
+writes for anyone but its rider, or works after it was removed; a prompt that reaches the model as
 instructions rather than data; and injection of any kind. The RLS test suite in `tests/rls/` is
 the executable specification of the isolation model.
 

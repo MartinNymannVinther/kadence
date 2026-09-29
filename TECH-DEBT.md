@@ -54,7 +54,25 @@ docs on approval" in the code. Garmin does not sign its pings (what a
 forged one can do is written at `verifyWebhook`), a ride whose download
 fails is not retried by the provider (the rider sees it in the link's
 last error and can upload the file), and two refreshes of one link at
-once are not serialised. All of it waits for developer access.
+once are not serialised. All of it waits for developer access. Garmin
+has taken no new partners since March 2026
+(docs/research/garmin-without-partner-access.md), and a coach reported
+in June 2026 that Wahoo no longer passes on heart rate for riders under
+16; that report is not confirmed with Wahoo and should be asked about in
+the application.
+
+### The limiter trusts a forwarded address when nothing is in front
+
+`src/core/rate-limit.ts` reads the caller's address from the right of
+X-Forwarded-For, `TRUSTED_PROXY_HOPS` from the end, and treats 0 as 1. An
+installation with no proxy in front, which 0 is there to say, therefore
+believes the one entry the caller sent: a bucket of the caller's
+choosing on every public route, the upload key's door included (the
+review of ADR 0029 found it). The entries are not checked to be
+addresses either. The fix is small — at 0 read neither header, and take
+only what parses as an address — but the file is the family's, and is
+better changed once for all siblings. Kadence's own deployment has
+Traefik in front and is not affected.
 
 ### Members can read each other's addresses in the database
 
@@ -118,6 +136,34 @@ rider turns 18, because Kadence only stores the birth year (DCU's classes
 go by year). Up to a year early, never late (ADR 0011).
 
 ## Waiting for real use
+
+### A phone, a cable and a share sheet
+
+"Hent fra enheden" and the share target (ADR 0029) are tested against a
+folder on a computer and against the routes, in Chrome and in WebKit.
+Nobody has yet plugged a Garmin Edge into an Android phone or an iPhone
+and pressed the button, or shared a file to the installed app on a
+phone. What is known from reading: the older Edges (130, 530, 830, 1030)
+are plain storage; the newer ones (540, 840, 1040, 1050) speak MTP,
+which phones do not read reliably; Safari has no share targets. The
+winter's team has the devices, and says which of this is worth more
+work.
+
+### Nothing brings a file by itself yet
+
+An upload key is a door. What uses it today is `scripts/send-rides.sh`,
+a shell script for a Mac or a Linux machine, run by hand. A Windows
+script, something that runs when the device is plugged in, a target in
+Gadgetbridge and an app on a Hammerhead Karoo are each possible and each
+unwritten. The winter's team says what the families actually have
+(docs/upload-keys.md, section 6).
+
+### The rides a key brought have no page
+
+A ride remembers which upload key it came with (ADR 0029), and the day a
+key has gone astray a coach finds its rides in the export and the audit
+trail. Nothing in the app lists them. The page is built when a key has
+been lost for real, and shaped by what the coach needed that day.
 
 ### One team per rider
 

@@ -31,6 +31,14 @@ export type ImportResult = {
 export type ImportSource = {
   source: "fit" | "wahoo" | "garmin" | "polar";
   externalId?: string | null;
+  /**
+   * The file came without a name of its own (src/modules/devices/ingest.ts):
+   * the title stays empty, and the pages name the sport in the reader's
+   * language instead of a word Kadence made up.
+   */
+  unnamed?: boolean;
+  /** The upload key the file came in with, kept on the ride (ADR 0029). */
+  uploadKeyId?: string | null;
 };
 
 export async function importFitIn(
@@ -49,6 +57,16 @@ export async function importFitIn(
     .where(eq(riders.id, riderId));
   if (!rider) throw new Refused("notFound");
 
+  // The file Kadence already has is recognised before it is decoded: a
+  // helper that sends a whole folder again costs a hash and a lookup per
+  // file, not a decode.
+  const sha256 = createHash("sha256").update(bytes).digest("hex");
+  const [seen] = await tx
+    .select({ id: activityFiles.id })
+    .from(activityFiles)
+    .where(and(eq(activityFiles.riderId, riderId), eq(activityFiles.sha256, sha256)));
+  if (seen) throw new Refused("conflict", "duplicate");
+
   let values;
   try {
     values = activityFromFit(bytes, rider);
@@ -56,13 +74,6 @@ export async function importFitIn(
     if (error instanceof FitError) throw new Refused("invalid", error.code);
     throw error;
   }
-
-  const sha256 = createHash("sha256").update(bytes).digest("hex");
-  const [seen] = await tx
-    .select({ id: activityFiles.id })
-    .from(activityFiles)
-    .where(and(eq(activityFiles.riderId, riderId), eq(activityFiles.sha256, sha256)));
-  if (seen) throw new Refused("conflict", "duplicate");
 
   // The same ride twice — a byte added to dodge the hash, or the upload of
   // a ride Wahoo already sent — is the same start by the same rider.
@@ -85,9 +96,10 @@ export async function importFitIn(
       orgId: ctx.orgId,
       riderId,
       ...row,
-      title: (title || baseName(fileName)).slice(0, 120),
+      title: (title || (origin.unnamed ? "" : baseName(fileName))).slice(0, 120),
       source: origin.source,
       externalId: origin.externalId ?? null,
+      uploadKeyId: origin.uploadKeyId ?? null,
       createdBy: ctx.userId,
     })
     .onConflictDoNothing()
@@ -140,6 +152,33 @@ export async function importFit(
   origin?: ImportSource,
 ): Promise<ImportResult> {
   return withOrgContext(ctx, (tx) => importFitIn(tx, ctx, riderId, fileName, bytes, origin));
+}
+
+/** At most this many hashes are asked about at once. */
+export const MAX_KNOWN_HASHES = 500;
+
+/**
+ * Which of these files Kadence already holds for the rider, by sha256:
+ * what lets a folder from a device, or a helper sending everything again,
+ * leave out the rides that are there. Answered only to someone who may
+ * write for the rider, the same people who could find out by uploading.
+ */
+export async function knownFileHashes(
+  ctx: OrgContext,
+  riderId: string,
+  hashes: string[],
+): Promise<string[]> {
+  const asked = [...new Set(hashes)].filter((h) => /^[0-9a-f]{64}$/.test(h));
+  if (asked.length > MAX_KNOWN_HASHES) throw new Refused("invalid");
+  return withOrgContext(ctx, async (tx) => {
+    await requireWriteFor(tx, ctx, riderId);
+    if (asked.length === 0) return [];
+    const rows = await tx
+      .select({ sha256: activityFiles.sha256 })
+      .from(activityFiles)
+      .where(and(eq(activityFiles.riderId, riderId), inArray(activityFiles.sha256, asked)));
+    return rows.map((r) => r.sha256);
+  });
 }
 
 /** The original file, for the rider's own download. */

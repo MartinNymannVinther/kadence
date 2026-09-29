@@ -41,6 +41,7 @@ export default async function ComparePage({
   const t = await getTranslations("activities.together");
   const summary = await getTranslations("activities.summary");
   const duration = await getTranslations("training.duration");
+  const sports = await getTranslations("training.sport");
   const { id } = await params;
   const ids = [
     ...new Set([id, ...((await searchParams).with ?? "").split(",").filter(Boolean)]),
@@ -67,7 +68,8 @@ export default async function ComparePage({
         </h1>
         {first && (
           <p className="text-meta text-2sm first-letter:uppercase">
-            {dayLong(first.activity.onDate, locale)} · {first.activity.title}
+            {dayLong(first.activity.onDate, locale)} ·{" "}
+            {first.activity.title || sports(first.activity.sport as "bike")}
           </p>
         )}
       </header>

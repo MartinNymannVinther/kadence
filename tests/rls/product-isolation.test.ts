@@ -120,6 +120,17 @@ const TABLES: Array<{ table: string; row: (s: string) => Record<string, unknown>
       access_token_sealed: "sealed",
     }),
   },
+  {
+    table: "upload_keys",
+    row: (s) => ({
+      rider_id: `rider_${s}`,
+      name: `Nøgle ${s}`,
+      // A hash is 64 hex digits, and no two keys share one.
+      key_hash: s.charCodeAt(0).toString(16).padStart(64, "0"),
+      hint: "abcd",
+      created_by: `user_prod_${s === "x" ? "a" : s}`,
+    }),
+  },
   { table: "ai_calls", row: () => ({ kind: "week_draft" }) },
   { table: "workspace_llm_settings", row: (s) => ({ provider: "ollama", model: `model-${s}` }) },
 ];
