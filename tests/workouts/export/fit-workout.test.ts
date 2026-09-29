@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { decodeFit, FILE_TYPE, INTENSITY, SPORT, WKT_DURATION, WKT_TARGET } from "@/modules/fit";
-import { toFitWorkout } from "@/modules/workouts/export";
+import { toFitWorkout, versionSerial } from "@/modules/workouts/export";
 import { mixed, threshold } from "./fixtures";
 
 const createdAt = new Date(Date.UTC(2026, 8, 27, 12, 0, 0));
@@ -104,5 +104,97 @@ describe("a FIT workout", () => {
     );
     expect(once.workoutSteps).toHaveLength(2);
     expect(once.workout?.numValidSteps).toBe(2);
+  });
+});
+
+describe("a FIT workout on a bike computer (ADR 0031)", () => {
+  const onDevice = decodeFit(
+    toFitWorkout(threshold, {}, "29.09 Tærskel 3×10", createdAt, {
+      serial: versionSerial("ses_1", 1_000),
+      description: "Hold kadencen høj i blokkene.",
+    }),
+    { strictCrc: true },
+  );
+
+  it("is this version of the session: a serial of its own, never none", () => {
+    expect(onDevice.crcOk).toBe(true);
+    expect(onDevice.serialNumber).toBe(versionSerial("ses_1", 1_000));
+    expect(versionSerial("ses_1", 1_000)).not.toBe(versionSerial("ses_1", 2_000));
+    expect(versionSerial("ses_1", 1_000)).not.toBe(versionSerial("ses_2", 1_000));
+    for (let version = 0; version < 500; version++)
+      expect(versionSerial("s", version)).toBeGreaterThan(0);
+    // Without a version the field says none, as before.
+    expect(decodeFit(toFitWorkout(threshold, {}, "x", createdAt)).serialNumber).toBeUndefined();
+  });
+
+  it("carries the session's description, and none when there is none", () => {
+    expect(onDevice.workout?.description).toBe("Hold kadencen høj i blokkene.");
+    expect(onDevice.workout?.name).toBe("29.09 Tærskel 3×10");
+    const bare = decodeFit(toFitWorkout(threshold, {}, "x", createdAt, { description: "  " }));
+    expect(bare.workout?.description).toBeUndefined();
+  });
+
+  it("names every step: the coach's label, or else its target in short", () => {
+    expect(onDevice.workoutSteps.map((s) => s.name)).toEqual(["Z2", "Z4", "Z1", undefined, "Z1"]);
+    const steps = decodeFit(
+      toFitWorkout(mixed, { thresholdHr: null }, "Mixed", createdAt),
+    ).workoutSteps;
+    expect(steps.map((s) => s.name)).toEqual([
+      "Tempo & <cadence>",
+      "81-89% LTHR",
+      "RPE 9",
+      undefined,
+    ]);
+  });
+
+  it("says in the notes what the device cannot hold: how hard, and a pulse without a threshold", () => {
+    const unknown = decodeFit(toFitWorkout(mixed, { thresholdHr: null }, "Mixed", createdAt));
+    expect(unknown.workoutSteps.map((s) => s.notes)).toEqual([
+      undefined,
+      "81-89% LTHR",
+      "RPE 9/10",
+      undefined,
+    ]);
+    const known = decodeFit(toFitWorkout(mixed, { thresholdHr: 180 }, "Mixed", createdAt));
+    expect(known.workoutSteps[1]!.notes).toBeUndefined();
+  });
+
+  it("rides a cadence range beside power, and makes it the target where there is nothing else", () => {
+    const [, on, off] = onDevice.workoutSteps;
+    expect(on).toMatchObject({
+      targetType: WKT_TARGET.power,
+      secondaryTargetType: WKT_TARGET.cadence,
+      secondaryTargetValue: 0,
+      secondaryCustomTargetLow: 85,
+      secondaryCustomTargetHigh: 95,
+    });
+    expect(off!.secondaryTargetType).toBeUndefined();
+
+    const spin = decodeFit(
+      toFitWorkout(
+        {
+          kind: "bike",
+          steps: [
+            {
+              kind: "step",
+              intent: "work",
+              seconds: 120,
+              target: { kind: "rpe", value: 6 },
+              cadenceLow: 110,
+            },
+          ],
+        },
+        {},
+        "Spin",
+        createdAt,
+      ),
+    ).workoutSteps[0];
+    expect(spin).toMatchObject({
+      targetType: WKT_TARGET.cadence,
+      targetValue: 0,
+      customTargetLow: 110,
+      customTargetHigh: 110,
+      notes: "RPE 6/10",
+    });
   });
 });

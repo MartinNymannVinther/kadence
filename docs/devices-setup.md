@@ -10,6 +10,10 @@ A way in that needs no keys at all — a rider's upload key, the bike
 computer on a cable, a share from the phone — is in
 [upload-keys.md](upload-keys.md).
 
+Sessions onto a Garmin need no keys either: a bike session goes into
+the device's `Garmin/NewFiles` folder by cable, written by Chrome or
+copied by hand (ADR 0031, and the help's "Pas på cykelcomputeren").
+
 What the code does is described in `src/modules/devices` and ADR
 [0018](adr/0018-devices-act-as-the-rider.md) and
 [0020](adr/0020-polar-as-the-third-device.md); what flows to whom is in

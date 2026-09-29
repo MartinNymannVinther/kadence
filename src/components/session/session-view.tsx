@@ -22,6 +22,7 @@ import { CompleteForm } from "./complete-form";
 import { DoneSummary } from "./done-summary";
 import { ExportMenu } from "./export-menu";
 import { PushButtons } from "./push-buttons";
+import { SendToDeviceButton } from "./send-to-device-button";
 
 /**
  * One planned session, whole: what it is, how to ride it for this rider,
@@ -127,6 +128,9 @@ export async function SessionView({
         {exportable && (
           <div className="flex flex-col items-start gap-2">
             <ExportMenu sessionId={card.id} />
+            <SendToDeviceButton
+              sessions={[{ id: card.id, title: card.title, onDate: card.onDate }]}
+            />
             {pushTo.length > 0 && <PushButtons sessionId={card.id} providers={pushTo} />}
           </div>
         )}

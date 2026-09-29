@@ -7,6 +7,7 @@ import { toCard, toEventCard } from "@/components/calendar/to-card";
 import { SessionSheet } from "@/components/session/session-sheet";
 import { SessionView } from "@/components/session/session-view";
 import { FitUpload } from "@/components/activities/fit-upload";
+import { SendToDeviceButton } from "@/components/session/send-to-device-button";
 import { GoalsCard, type GoalView } from "@/components/activities/goals-card";
 import { RecordsCard } from "@/components/activities/records-card";
 import { LoadPanel } from "@/components/load/load-panel";
@@ -34,6 +35,7 @@ import { listEvents } from "@/modules/training/events";
 import { dcuProposalFor, listGoals } from "@/modules/training/goals";
 import { getRiderRecords } from "@/modules/training/records";
 import { listSessions } from "@/modules/training/sessions";
+import { readStructure } from "@/modules/workouts/structure";
 import { weekDates, weekFrom } from "@/modules/training/week";
 import { getCheckin, listCheckins } from "@/modules/wellbeing/checkins";
 
@@ -44,12 +46,21 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const hrefFor = (sessionId: string) => withQuery("/today", { session: sessionId });
 
-async function weekOf(ctx: OrgContext, riderId: string, from: string, to: string) {
+async function weekOf(ctx: OrgContext, riderId: string, from: string, to: string, today: string) {
   const [sessions, events] = await Promise.all([
     listSessions(ctx, { from, to, riderIds: [riderId] }),
     listEvents(ctx, { from, to, riderIds: [riderId] }),
   ]);
-  return { sessions: sessions.map(toCard), events: events.map(toEventCard) };
+  // The next seven days' bike sessions with steps: what a bike computer can ride (ADR 0031).
+  const lastDay = addDaysIso(today, 6);
+  const toDevice = sessions
+    .filter((s) => s.onDate >= today && s.onDate <= lastDay && s.sport === "bike")
+    .filter((s) => {
+      const structure = readStructure(s.structure, "bike");
+      return structure.kind === "bike" && structure.steps.length > 0;
+    })
+    .map((s) => ({ id: s.id, title: s.title, onDate: s.onDate }));
+  return { sessions: sessions.map(toCard), events: events.map(toEventCard), toDevice };
 }
 
 /** The rider's own extras for today: the check-in, two weeks of zones and their load. */
@@ -105,7 +116,9 @@ export default async function TodayPage({
 
   const riders = me?.isCoach ? await getRiders(ctx) : [];
   const soloRider = me?.rider && riders.length === 1 && riders[0]?.id === me.rider.id;
-  const own = me?.rider ? await weekOf(ctx, me.rider.id, monday, maxIso([sunday, tomorrow])) : null;
+  const own = me?.rider
+    ? await weekOf(ctx, me.rider.id, monday, maxIso([sunday, addDaysIso(today, 6)]), today)
+    : null;
   const team =
     me?.isCoach && riders.length > 0 && !soloRider
       ? await Promise.all([
@@ -116,7 +129,7 @@ export default async function TodayPage({
   const children = await Promise.all(
     (me?.children ?? [])
       .filter((c) => c.confirmed)
-      .map(async (c) => ({ ...c, week: await weekOf(ctx, c.riderId, monday, sunday) })),
+      .map(async (c) => ({ ...c, week: await weekOf(ctx, c.riderId, monday, sunday, today) })),
   );
   const waiting = (me?.children ?? []).some((c) => !c.confirmed);
   // Confirmed, but the rider does not share training: the database hides the row (ADR 0011).
@@ -193,6 +206,7 @@ export default async function TodayPage({
               events={own.events}
               hrefFor={hrefFor}
             />
+            <SendToDeviceButton sessions={own.toDevice} week />
           </section>
           <section aria-labelledby="rider-upload" className="flex flex-col gap-3">
             <div className="flex flex-col gap-1">

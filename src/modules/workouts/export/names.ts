@@ -28,6 +28,22 @@ export function asciiText(text: string): string {
     .trim();
 }
 
+/**
+ * The day first, as a bike computer shows a workout: "29.09", and
+ * "29.09-2" for the day's second session. A Garmin shows the first 15
+ * characters of a workout's name, and two workouts that begin alike
+ * overwrite each other, so the day and its number come before the title.
+ */
+export function dayLabel(onDate: string, index = 1): string {
+  const [, month, day] = onDate.split("-");
+  return `${day}.${month}${index > 1 ? `-${index}` : ""}`;
+}
+
+/** A file name that sorts by day and never meets another session's: "2026-09-29-tempo-3x8". */
+export function datedFileBase(onDate: string, index: number, title: string): string {
+  return `${onDate}${index > 1 ? `-${index}` : ""}-${slugify(title)}`;
+}
+
 /** A lower-case, hyphenated ASCII slug of at most 60 characters, `fallback` when nothing is left. */
 export function slugify(name: string, fallback = "workout"): string {
   const slug = asciiText(name)

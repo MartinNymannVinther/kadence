@@ -141,6 +141,7 @@ export function decodeFit(bytes: Uint8Array, options: DecodeOptions = {}): FitFi
     fileType: fileId.fileType,
     manufacturer: fileId.manufacturer,
     product: fileId.product,
+    serialNumber: fileId.serialNumber,
     timeCreated: fileId.timeCreated,
     sport: session?.sport ?? sportMessage?.sport,
     subSport: session ? session.subSport : sportMessage?.subSport,

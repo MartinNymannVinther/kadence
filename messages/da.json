@@ -640,6 +640,10 @@
         "title": "Upload og enheder",
         "body": "Upload en FIT-fil fra cykelcomputeren, uret eller hometraineren under I dag, i kalenderen eller på rytterens side. Kadence læser filen selv, også uden internet, og sætter turen på dagens pas, hvis det passer. Hver tur har sin egen side med kurver, tid i zoner og bedste watt. Wahoo, Garmin og Polar kan forbindes under Indstillinger → Enheder, så ture kommer ind af sig selv, og pas kan sendes til en Wahoo eller Garmin. Wahoo og Garmin er amerikanske firmaer, Polar er finsk, og det er rytterens eget valg. Et cykelpas kan også hentes som .zwo, .erg, .mrc eller .fit."
       },
+      "toDevice": {
+        "title": "Pas på cykelcomputeren",
+        "body": "Et cykelpas med trin kan lægges på en Garmin, så du kører det med mål og nedtælling på skærmen. Sæt cykelcomputeren til computeren med kabel, tryk Send til cykelcomputer på passet eller Send ugens pas på I dag, og vælg cykelcomputeren, når browseren spørger. Kadence lægger filerne i mappen Garmin/NewFiles; skub cykelcomputeren ud, så finder du passene under Træning. Det virker i Chrome og Edge på en computer og i Chrome på Android. I Safari og Firefox henter du filerne og lægger dem selv i Garmin/NewFiles. En Edge 540, 840, 1040 eller 1050 viser sig ikke som et drev på en Mac; brug Stifinder på en Windows-pc. Hvert pas hedder dagen først, fx 29.09 Tempo, så en uges pas ikke overskriver hinanden på cykelcomputeren. Et trin uden watt eller puls viser sit mål i ord, fx RPE 7. Kadence skriver intet andet på cykelcomputeren og sletter intet."
+      },
       "keys": {
         "title": "Upload-nøgler",
         "body": "En upload-nøgle lader et program aflevere ture til Kadence af sig selv, uden at du er logget ind. Opret en under Indstillinger → Enheder, giv den et navn, og kopiér den med det samme: den vises kun den ene gang. Programmet sender turens fil til adressen, der står ved nøglen, med nøglen i feltet Authorization, skrevet som Bearer og derefter nøglen. Turen lander på dagens pas, præcis som når du selv uploader. Nøglen kan kun lægge ture ind hos dig. Den kan ikke læse noget, og du eller din træner kan fjerne den når som helst. Giv den kun til det program, der skal bruge den."
@@ -1172,6 +1176,20 @@
     },
     "doneTitle": "Udført",
     "commentsTitle": "{count, plural, =0 {Kommentarer} one {# kommentar} other {# kommentarer}}",
+    "toDevice": {
+      "button": "Send til cykelcomputer",
+      "weekButton": "{count, plural, one {Send ugens pas til cykelcomputeren} other {Send ugens # pas til cykelcomputeren}}",
+      "working": "Lægger pas på cykelcomputeren …",
+      "hint": "Sæt cykelcomputeren til med kabel, og vælg den, når browseren spørger.",
+      "manualHint": "Din browser kan ikke skrive på cykelcomputeren. Du kan hente filerne og lægge dem over selv.",
+      "manual": "Hent {count, plural, one {filen} other {filerne}}, sæt cykelcomputeren til med kabel, og læg {count, plural, one {den} other {dem}} i mappen Garmin/NewFiles. Skub cykelcomputeren ud; så finder du {count, plural, one {passet} other {passene}} under Træning.",
+      "mtp": "En Edge 540, 840, 1040 eller 1050 viser sig ikke som et drev på en Mac. Brug Stifinder på en Windows-pc.",
+      "sent": "{count, plural, one {Passet ligger nu på cykelcomputeren.} other {# pas ligger nu på cykelcomputeren.}} Skub den ud; så finder du {count, plural, one {det} other {dem}} under Træning.",
+      "notGarmin": "Det ligner ikke en Garmin. Vælg selve cykelcomputeren, drevet der hedder GARMIN.",
+      "denied": "Kadence fik ikke lov til at skrive på cykelcomputeren. Prøv igen, og sig ja, når browseren spørger.",
+      "failed": "Passene kunne ikke lægges på cykelcomputeren. Prøv igen, eller hent filerne selv.",
+      "help": "Sådan kommer passene på cykelcomputeren"
+    },
     "export": {
       "button": "Hent til træner/enhed",
       "zwo": {

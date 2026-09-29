@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { decodeFit } from "@/modules/fit";
-import { exportWorkout, slugify } from "@/modules/workouts/export";
+import { datedFileBase, dayLabel, exportWorkout, slugify } from "@/modules/workouts/export";
 import { threshold } from "./fixtures";
 
 const name = "Tærskel 3×10 min / Z4!";
@@ -40,5 +40,27 @@ describe("exporting a workout", () => {
       expect(file.fileName).toBe("taerskel-3x10-min-z4.mrc");
       expect(file.body).toContain("MINUTES PERCENT");
     }
+  });
+
+  it("names a session's files by its day and its place in the day, the device's name by the day first", () => {
+    expect(dayLabel("2026-09-29")).toBe("29.09");
+    expect(dayLabel("2026-09-29", 2)).toBe("29.09-2");
+    expect(datedFileBase("2026-09-29", 1, name)).toBe("2026-09-29-taerskel-3x10-min-z4");
+    expect(datedFileBase("2026-09-29", 3, "")).toBe("2026-09-29-3-workout");
+
+    const day = { onDate: "2026-09-29", createdAt: new Date(0) };
+    const first = exportWorkout("fit", threshold, {}, "Tærskel", { ...day, serial: 7 });
+    expect(first.fileName).toBe("2026-09-29-taerskel.fit");
+    const fit = decodeFit(first.body as Uint8Array);
+    expect(fit.workout?.name).toBe("29.09 Tærskel");
+    expect(fit.serialNumber).toBe(7);
+
+    const second = exportWorkout("fit", threshold, {}, "Tærskel", { ...day, dayIndex: 2 });
+    expect(second.fileName).toBe("2026-09-29-2-taerskel.fit");
+    expect(decodeFit(second.body as Uint8Array).workout?.name).toBe("29.09-2 Tærskel");
+    // A trainer file is named by its day too; what it says inside is the title.
+    const zwo = exportWorkout("zwo", threshold, {}, "Tærskel", day);
+    expect(zwo.fileName).toBe("2026-09-29-taerskel.zwo");
+    expect(zwo.body).toContain("<name>Tærskel</name>");
   });
 });

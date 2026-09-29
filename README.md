@@ -39,7 +39,7 @@ strength programmes; the season plan from DCU's hours; load, form and the
 guardrails; the daily check-in; FIT files through Kadence's own decoder;
 Wahoo, Garmin and Polar behind keys; an upload key per rider, a bike
 computer read as a folder, a share from the phone and a Strava archive in
-one move; the parents' page;
+one move; sessions onto a Garmin by cable; the parents' page;
 three AI proposals; the
 demo; export and erasure. Nothing here has run a real team yet. Dogma
 seven is what 1.0 waits for — one real winter — and

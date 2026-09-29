@@ -94,7 +94,14 @@ export const ACTIVITY = { totalTimerTime: 0, numSessions: 1, localTimestamp: 5 }
 
 export const SPORT_MESG = { sport: 0, subSport: 1, name: 3 };
 
-export const WORKOUT = { sport: 4, capabilities: 5, numValidSteps: 6, name: 8, subSport: 11 };
+export const WORKOUT = {
+  sport: 4,
+  capabilities: 5,
+  numValidSteps: 6,
+  name: 8,
+  subSport: 11,
+  description: 17, // string
+};
 
 export const WORKOUT_STEP = {
   name: 0, // string
@@ -106,6 +113,10 @@ export const WORKOUT_STEP = {
   customTargetHigh: 6, // uint32
   intensity: 7, // enum intensity
   notes: 8, // string
+  secondaryTargetType: 19, // enum wkt_step_target: a second thing to hold, cadence beside power
+  secondaryTargetValue: 20, // uint32: 0 = custom range
+  secondaryCustomTargetLow: 21, // uint32
+  secondaryCustomTargetHigh: 22, // uint32
 };
 
 /** Enum `file`: what a FIT file holds. */
@@ -122,7 +133,7 @@ export const MANUFACTURER = { garmin: 1, development: 255 } as const;
 export const WKT_DURATION = { time: 0, open: 5, repeatUntilStepsCmplt: 6 } as const;
 
 /** Enum `wkt_step_target`. */
-export const WKT_TARGET = { heartRate: 1, open: 2, power: 4 } as const;
+export const WKT_TARGET = { heartRate: 1, open: 2, cadence: 3, power: 4 } as const;
 
 /** Enum `intensity`. */
 export const INTENSITY = { active: 0, rest: 1, warmup: 2, cooldown: 3 } as const;

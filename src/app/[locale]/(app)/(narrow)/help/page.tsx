@@ -19,6 +19,7 @@ const HOW_TO = [
   "warnings",
   "checkin",
   "devices",
+  "toDevice",
   "keys",
   "strava",
   "parents",

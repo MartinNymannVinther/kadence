@@ -67,6 +67,7 @@ export interface FileIdInfo {
   fileType?: number;
   manufacturer?: number;
   product?: number;
+  serialNumber?: number;
   timeCreated?: number;
 }
 
@@ -75,6 +76,7 @@ export function toFileId(fields: Fields): FileIdInfo {
     fileType: num(fields, FILE_ID.type),
     manufacturer: num(fields, FILE_ID.manufacturer),
     product: num(fields, FILE_ID.product),
+    serialNumber: num(fields, FILE_ID.serialNumber),
     timeCreated: time(fields, FILE_ID.timeCreated),
   };
 }
@@ -170,6 +172,7 @@ export function toWorkout(fields: Fields): FitWorkout {
     sport: num(fields, WORKOUT.sport),
     subSport: num(fields, WORKOUT.subSport),
     numValidSteps: num(fields, WORKOUT.numValidSteps),
+    description: text(fields, WORKOUT.description),
   };
 }
 
@@ -185,5 +188,9 @@ export function toWorkoutStep(fields: Fields): FitWorkoutStep {
     customTargetHigh: num(fields, WORKOUT_STEP.customTargetHigh),
     intensity: num(fields, WORKOUT_STEP.intensity),
     notes: text(fields, WORKOUT_STEP.notes),
+    secondaryTargetType: num(fields, WORKOUT_STEP.secondaryTargetType),
+    secondaryTargetValue: num(fields, WORKOUT_STEP.secondaryTargetValue),
+    secondaryCustomTargetLow: num(fields, WORKOUT_STEP.secondaryCustomTargetLow),
+    secondaryCustomTargetHigh: num(fields, WORKOUT_STEP.secondaryCustomTargetHigh),
   };
 }

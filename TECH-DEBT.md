@@ -158,6 +158,17 @@ Gadgetbridge and an app on a Hammerhead Karoo are each possible and each
 unwritten. The winter's team says what the families actually have
 (docs/upload-keys.md, section 6).
 
+### A session on a real Edge has not been ridden
+
+Sessions go onto a Garmin through `Garmin/NewFiles` (ADR 0031), written
+by Chrome through the File System Access API or copied by hand. It is
+tested against the browser's own private file system laid out as a
+Garmin drive, and the FIT file against Garmin's profile. Nobody has yet
+plugged an Edge in, sent a week to it and ridden a session: whether the
+Edge takes the files in, keeps the day's two sessions apart, replaces a
+changed one, and shows the step names, the notes and the cadence as the
+profile says. The winter's first Edge 530 or 830 says.
+
 ### A real Strava archive has not been tried
 
 The archive import (ADR 0030) is tested against archives laid out the

@@ -80,6 +80,7 @@ export interface FitWorkout {
   sport?: number;
   subSport?: number;
   numValidSteps?: number;
+  description?: string;
 }
 
 /** A workout step as written: FIT's raw duration and target values, read with `profile.ts`. */
@@ -94,6 +95,10 @@ export interface FitWorkoutStep {
   customTargetHigh?: number;
   intensity?: number;
   notes?: string;
+  secondaryTargetType?: number;
+  secondaryTargetValue?: number;
+  secondaryCustomTargetLow?: number;
+  secondaryCustomTargetHigh?: number;
 }
 
 export interface FitFile {
@@ -105,6 +110,8 @@ export interface FitFile {
   fileType: number;
   manufacturer?: number;
   product?: number;
+  /** Which file this is, to a device: none when the writer gave none. */
+  serialNumber?: number;
   timeCreated?: number;
   /** The first session's sport, or the sport message's when no session names one. */
   sport?: number;

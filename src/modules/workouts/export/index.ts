@@ -2,7 +2,7 @@ import type { BikeStructure } from "@/modules/workouts/structure";
 import { toErg } from "./erg";
 import { toFitWorkout } from "./fit-workout";
 import { toMrc } from "./mrc";
-import { slugify } from "./names";
+import { datedFileBase, dayLabel, slugify } from "./names";
 import { toZwo } from "./zwo";
 
 /**
@@ -13,6 +13,11 @@ import { toZwo } from "./zwo";
  *
  * ERG is in watts and needs the rider's FTP; without one the export is MRC,
  * the same file in percent, and `format` says which was written.
+ *
+ * With the session's day, the file is named by it ("2026-09-29-tempo.fit")
+ * and a FIT workout's name begins with it ("29.09 Tempo"), so a week of
+ * files neither overwrites itself in a folder nor on a Garmin, which tells
+ * workouts apart by their first 15 characters (ADR 0031).
  */
 
 export const WORKOUT_FORMATS = ["zwo", "erg", "mrc", "fit"] as const;
@@ -27,6 +32,11 @@ export interface ExportOptions {
   description?: string;
   /** The FIT file's creation time; now unless given. */
   createdAt?: Date;
+  /** The session's day, YYYY-MM-DD, and which of the rider's bike sessions that day it is (1 for the first). */
+  onDate?: string;
+  dayIndex?: number;
+  /** This version of the session, for the FIT file's serial number (`versionSerial`). */
+  serial?: number;
 }
 
 export interface WorkoutFile {
@@ -58,7 +68,10 @@ export function exportWorkout(
 ): WorkoutFile {
   const ftp = usableFtp(rider.ftp);
   const written: WorkoutFormat = format === "erg" && ftp === null ? "mrc" : format;
-  const fileName = `${slugify(name)}.${written}`;
+  const base = options.onDate
+    ? datedFileBase(options.onDate, options.dayIndex ?? 1, name)
+    : slugify(name);
+  const fileName = `${base}.${written}`;
   const description = options.description ?? name;
 
   let body: string | Uint8Array;
@@ -73,16 +86,22 @@ export function exportWorkout(
       body = toMrc(structure, { fileName, description });
       break;
     case "fit":
-      body = toFitWorkout(structure, rider, name, options.createdAt);
+      body = toFitWorkout(
+        structure,
+        rider,
+        options.onDate ? `${dayLabel(options.onDate, options.dayIndex ?? 1)} ${name}` : name,
+        options.createdAt,
+        { serial: options.serial, description: options.description },
+      );
       break;
   }
   return { format: written, fileName, mime: MIME[written], body };
 }
 
 export { toErg } from "./erg";
-export { toFitWorkout } from "./fit-workout";
+export { toFitWorkout, versionSerial } from "./fit-workout";
 export { toMrc } from "./mrc";
-export { asciiText, slugify } from "./names";
+export { asciiText, datedFileBase, dayLabel, slugify } from "./names";
 export { cadenceOf, powerBand, powerPct, zoneMidpointPct, zoneOfHrPct } from "./targets";
 export { toZwo, xml } from "./zwo";
 export { FREE_STEP_PCT } from "./course";
