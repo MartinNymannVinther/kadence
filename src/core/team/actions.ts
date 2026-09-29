@@ -7,6 +7,7 @@ import { requireOrgContext } from "@/core/auth/guard";
 import { getSession } from "@/core/auth/session";
 import { fail, ok, type Result } from "@/core/result";
 import { registerInvited, type JoinRegisterResult } from "./register";
+import { createResetLink } from "./reset-link";
 import {
   acceptTeamInvitation,
   cancelInvitation,
@@ -69,6 +70,20 @@ export async function updateMemberRoleAction(raw: unknown): Promise<Result<boole
   const done = await updateMemberRole(await headers(), parsed.data.memberId, parsed.data.role);
   revalidatePath(MEMBERS_PATH);
   return done ? ok(true) : fail("generic");
+}
+
+/** A coach's one-time link for a member who forgot the password (ADR 0032), to pass on by hand. */
+export async function createResetLinkAction(
+  raw: unknown,
+): Promise<Result<{ url: string; expiresAt: string }>> {
+  const ctx = await requireOrgContext();
+  if (!ctx) return fail("unauthorized");
+  const parsed = z.object({ userId: z.string().min(1).max(200) }).safeParse(raw);
+  if (!parsed.success) return fail("invalid");
+  const made = await createResetLink(ctx, parsed.data.userId);
+  if (made === "rateLimited") return fail("conflict", "too_many_reset_links");
+  if (typeof made === "string") return fail(made);
+  return ok({ url: made.url, expiresAt: made.expiresAt.toISOString() });
 }
 
 export async function leaveWorkspaceAction(): Promise<Result<boolean>> {

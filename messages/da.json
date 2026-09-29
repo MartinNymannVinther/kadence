@@ -77,7 +77,23 @@
     "cta": "Til forsiden"
   },
   "auth": {
+    "reset": {
+      "title": "Vælg en ny adgangskode",
+      "body": "Linket er fra en træner på dit hold. Det virker én gang, og du bliver logget ud alle andre steder.",
+      "password": "Ny adgangskode",
+      "repeat": "Gentag adgangskoden",
+      "submit": "Gem adgangskoden",
+      "tooShort": "Adgangskoden skal være mindst 12 tegn.",
+      "mismatch": "De to adgangskoder er ikke ens.",
+      "invalid": "Linket er brugt eller udløbet. Bed en træner på dit hold om et nyt.",
+      "failed": "Adgangskoden kunne ikke gemmes. Prøv igen.",
+      "missing": "Linket er ikke helt. Bed en træner på dit hold om et nyt.",
+      "done": "Din adgangskode er skiftet, og du er logget ud alle andre steder.",
+      "login": "Log ind"
+    },
     "login": {
+      "forgot": "Glemt adgangskode?",
+      "forgotBody": "Kadence sender ingen mails. Bed en træner på dit hold om et link til at vælge en ny adgangskode. Har du en passkey, kan du logge ind med den i stedet. Er du holdets ejer, kan den, der driver Kadence, hjælpe dig.",
       "title": "Log ind",
       "subtitle": "Velkommen tilbage.",
       "email": "E-mail",
@@ -182,6 +198,11 @@
       "switch": "Skift arbejdsrum"
     },
     "security": {
+      "resets": {
+        "title": "Links til ny adgangskode",
+        "body": "Når en træner laver et link til at nulstille din adgangskode, står det her. Har du ikke bedt om det, så sig det til en træner.",
+        "item": "{name} lavede et link {date}"
+      },
       "title": "Sikkerhed",
       "subtitle": "Passkeys og totrinsbekræftelse for din konto.",
       "passkeys": {
@@ -309,6 +330,15 @@
       "errorInvalid": "Tjek e-mail og navnet på arbejdsrummet."
     },
     "workspace": {
+      "resetLink": {
+        "button": "Link til ny adgangskode",
+        "title": "Link til ny adgangskode til {name}",
+        "body": "Send linket til {name} selv, fx på SMS. Det virker én gang og kun indtil kl. {until}. Kadence sender ingen mails.",
+        "copy": "Kopiér",
+        "copied": "Kopieret",
+        "seen": "{name} kan se på sin sikkerhedsside, at du har lavet linket, og bliver logget ud alle andre steder, når det bruges.",
+        "done": "Færdig"
+      },
       "title": "Arbejdsrum",
       "subtitle": "Hvem der er med, og vejen ud igen.",
       "createdOn": "Oprettet {date}",
@@ -596,6 +626,10 @@
         "title": "Hvem må hvad",
         "body": "Trænere er arbejdsrummets ejere og administratorer: de planlægger for alle holdets ryttere. En rytter ser og skriver sine egne data og ingen andres. En forælder ser sit eget barns træning, når rytteren har bekræftet forbindelsen, og check-ins kun hvis rytteren deler dem. Det håndhæves i databasen, ikke kun i skærmbillederne."
       },
+      "password": {
+        "title": "Glemt adgangskode",
+        "body": "Kadence sender ingen mails, så vejen tilbage går gennem en træner. En træner åbner Indstillinger → Arbejdsrum, trykker Link til ny adgangskode ved personen og sender linket selv, fx på SMS. Linket virker én gang og kun den næste time; den, der bruger det, vælger en ny adgangskode og bliver logget ud alle andre steder. Personen kan altid se på sin sikkerhedsside, at et link er lavet, og af hvem. En træner kan lave links til ryttere, forældre og andre trænere på holdet, men ikke til holdets ejer; en ejer, der har glemt sin adgangskode, logger ind med sin passkey eller får hjælp af den, der driver Kadence. Har du slået totrinsbekræftelse til, skal du stadig bruge koden fra din app."
+      },
       "data": {
         "title": "Jeres data",
         "body": "Alt kan hentes ud som regneark og JSON under Indstillinger → Data. Arbejdsrummet kan slettes helt igen, revisionsspor inklusive."
@@ -730,6 +764,7 @@
     }
   },
   "errors": {
+    "too_many_reset_links": "Du har lavet mange links lige nu. Prøv igen om en time.",
     "unauthorized": "Du er ikke logget ind længere.",
     "forbidden": "Det må du ikke her. Spørg en træner på holdet.",
     "invalid": "Noget i formularen er ikke gyldigt.",

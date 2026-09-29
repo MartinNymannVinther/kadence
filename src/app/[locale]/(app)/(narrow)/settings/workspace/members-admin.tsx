@@ -28,6 +28,7 @@ import {
 import type { PendingInvitation } from "@/core/team/service";
 import type { Member } from "@/modules/export/workspace";
 import { useRouter } from "@/i18n/navigation";
+import { ResetLinkButton } from "./reset-link-button";
 
 /**
  * The team: who is in the workspace, the links waiting to be used, and
@@ -143,6 +144,7 @@ export function MembersAdmin({
                     </TableCell>
                     {canManage && (
                       <TableCell className="text-right">
+                        {editable && <ResetLinkButton userId={member.userId} name={member.name} />}
                         {editable && (
                           <ConfirmButton
                             title={t("removeTitle", { name: member.name })}

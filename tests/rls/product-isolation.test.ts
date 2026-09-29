@@ -131,6 +131,14 @@ const TABLES: Array<{ table: string; row: (s: string) => Record<string, unknown>
       created_by: `user_prod_${s === "x" ? "a" : s}`,
     }),
   },
+  {
+    table: "password_resets",
+    row: (s) => ({
+      user_id: `user_prod_${s === "x" ? "a" : s}`,
+      created_by: `user_prod_${s === "x" ? "a" : s}`,
+      expires_at: `${DAY}T09:00:00Z`,
+    }),
+  },
   { table: "ai_calls", row: () => ({ kind: "week_draft" }) },
   { table: "workspace_llm_settings", row: (s) => ({ provider: "ollama", model: `model-${s}` }) },
 ];
@@ -192,10 +200,13 @@ describe.each(TABLES.map((spec) => spec.table))("product table %s", (table) => {
   });
 
   it("refuses to update the other team's row", async () => {
+    // No row matches under the policies; a table the application may not
+    // update at all (password_resets) says so outright, which is the same no.
     const result = await asApp(app, A, (c) =>
       c.query(`update "${table}" set org_id = org_id where org_id = $1`, [B.orgId]),
-    );
+    ).catch((error: { code?: string }) => ({ rowCount: 0, code: error.code }));
     expect(result.rowCount).toBe(0);
+    if ("code" in result) expect(result.code).toBe("42501");
   });
 
   it("refuses to insert a row for the other team", async () => {

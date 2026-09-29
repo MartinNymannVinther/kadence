@@ -5,6 +5,7 @@ export type SemanticAuditEvent = {
   action:
     | "auth.login"
     | "auth.logout"
+    | "auth.password_reset"
     | "access.requested"
     | "access.approved"
     | "access.declined"

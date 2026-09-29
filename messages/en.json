@@ -77,7 +77,23 @@
     "cta": "To the front page"
   },
   "auth": {
+    "reset": {
+      "title": "Choose a new password",
+      "body": "The link is from a coach on your team. It works once, and you are signed out everywhere else.",
+      "password": "New password",
+      "repeat": "Repeat the password",
+      "submit": "Save the password",
+      "tooShort": "The password must be at least 12 characters.",
+      "mismatch": "The two passwords are not the same.",
+      "invalid": "The link is used or has expired. Ask a coach on your team for a new one.",
+      "failed": "The password could not be saved. Try again.",
+      "missing": "The link is not whole. Ask a coach on your team for a new one.",
+      "done": "Your password is changed, and you are signed out everywhere else.",
+      "login": "Sign in"
+    },
     "login": {
+      "forgot": "Forgot your password?",
+      "forgotBody": "Kadence sends no e-mail. Ask a coach on your team for a link to choose a new password. If you have a passkey, you can sign in with it instead. If you are the team's owner, whoever runs Kadence can help you.",
       "title": "Sign in",
       "subtitle": "Welcome back.",
       "email": "Email",
@@ -182,6 +198,11 @@
       "switch": "Switch workspace"
     },
     "security": {
+      "resets": {
+        "title": "Links for a new password",
+        "body": "When a coach makes a link to reset your password, it shows here. If you did not ask for it, tell a coach.",
+        "item": "{name} made a link {date}"
+      },
       "title": "Security",
       "subtitle": "Passkeys and two-factor authentication for your account.",
       "passkeys": {
@@ -309,6 +330,15 @@
       "errorInvalid": "Check the email and the workspace name."
     },
     "workspace": {
+      "resetLink": {
+        "button": "Link for a new password",
+        "title": "Link for a new password for {name}",
+        "body": "Send the link to {name} yourself, by text message for instance. It works once and only until {until}. Kadence sends no e-mail.",
+        "copy": "Copy",
+        "copied": "Copied",
+        "seen": "{name} can see on their security page that you made the link, and is signed out everywhere else when it is used.",
+        "done": "Done"
+      },
       "title": "Workspace",
       "subtitle": "Who is in it, and the way out again.",
       "createdOn": "Created {date}",
@@ -596,6 +626,10 @@
         "title": "Who may do what",
         "body": "Coaches are the workspace's owners and admins: they plan for every rider on the team. A rider sees and writes their own data and nobody else's. A parent sees their own child's training once the rider has confirmed the link, and check-ins only if the rider shares them. The database enforces it, not just the screens."
       },
+      "password": {
+        "title": "Forgotten password",
+        "body": "Kadence sends no e-mail, so the way back in goes through a coach. A coach opens Settings → Workspace, presses Link for a new password by the person, and sends the link on themselves, by text message for instance. The link works once and only for the next hour; whoever uses it chooses a new password and is signed out everywhere else. The person can always see on their security page that a link was made, and by whom. A coach can make links for riders, parents and other coaches on the team, but not for the team's owner; an owner who forgot the password signs in with their passkey or gets help from whoever runs Kadence. If you have turned on two-step verification, you still need the code from your app."
+      },
       "data": {
         "title": "Your data",
         "body": "Everything can be downloaded as a spreadsheet and JSON under Settings → Data. The workspace can be deleted completely, audit trail included."
@@ -730,6 +764,7 @@
     }
   },
   "errors": {
+    "too_many_reset_links": "You have made many links just now. Try again in an hour.",
     "unauthorized": "You are no longer signed in.",
     "forbidden": "You may not do that here. Ask a coach on the team.",
     "invalid": "Something in the form is not valid.",

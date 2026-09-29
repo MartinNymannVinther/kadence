@@ -64,6 +64,20 @@ export const auth = betterAuth({
     // so verification is intentionally off (recorded in ADR 0001).
     minPasswordLength: 12,
     requireEmailVerification: false,
+    // A link a coach made (ADR 0032) is the way back in: using it signs the
+    // person out everywhere else, and the audit trail keeps that it was
+    // used. Asking for a link by e-mail stays closed, since there is no
+    // sendResetPassword.
+    revokeSessionsOnPasswordReset: true,
+    onPasswordReset: async ({ user }) => {
+      await recordAuthEvent({
+        action: "auth.password_reset",
+        actorUserId: user.id,
+        orgId: await getDefaultOrganizationId(user.id),
+        entityType: "users",
+        entityId: user.id,
+      });
+    },
   },
   rateLimit: {
     // On in every environment, stored in Postgres (no extra infrastructure).
@@ -74,6 +88,7 @@ export const auth = betterAuth({
     max: 100,
     customRules: {
       "/sign-in/email": { window: 60, max: 10 },
+      "/reset-password": { window: 60, max: 10 },
       "/sign-up/email": { window: 60, max: 10 },
       "/two-factor/verify-totp": { window: 60, max: 10 },
     },

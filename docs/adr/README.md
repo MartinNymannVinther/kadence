@@ -51,3 +51,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0029](0029-an-upload-key-per-rider.md)          | An upload key per rider: a ride handed over with nobody signed in                          | → 0018, 0019       |
 | [0030](0030-a-strava-archive-in-one-move.md)     | A Strava archive in one move: read in the browser, the rides only, their names kept        | → 0019, 0022, 0027 |
 | [0031](0031-sessions-onto-a-garmin-by-cable.md)  | Sessions onto a Garmin by cable: the day first, a serial per version, into Garmin/NewFiles | → 0018             |
+| [0032](0032-a-way-back-in.md)                    | A way back in: a one-time link a coach makes, for a member who forgot the password         | → 0010, 0019       |

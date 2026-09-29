@@ -96,6 +96,12 @@ export function LoginForm({ signupOpen }: { signupOpen: boolean }) {
               />
             </Field>
           </FieldGroup>
+          <details className="text-sm">
+            <summary className="focus-ring text-primary w-fit cursor-pointer font-medium">
+              {t("forgot")}
+            </summary>
+            <p className="text-muted-foreground mt-1.5 leading-relaxed">{t("forgotBody")}</p>
+          </details>
           {error ? (
             <p role="alert" className="text-destructive text-sm">
               {error}

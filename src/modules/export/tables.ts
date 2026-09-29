@@ -59,6 +59,9 @@ export const EXPORT_TABLES: ExportTable[] = [
  * - `upload_keys`: the hashes of riders' upload keys (ADR 0029) —
  *   credentials again. That a key was made, used and removed is in the
  *   audit trail, without the hash.
+ * - `password_resets`: the record that a coach made a link for a new
+ *   password (ADR 0032). It is about accounts, not training, and the audit
+ *   trail, which is exported, holds every one of them.
  * - `ai_calls`: a counter for rate limiting, not something a workspace owns.
  * - `workspace_llm_settings`: the model choice, which holds an encrypted
  *   key; a workspace that leaves gets its data, not its secrets.
