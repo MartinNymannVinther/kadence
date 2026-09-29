@@ -60,6 +60,27 @@ describe("GPX", () => {
       summarizeActivity(decodeActivityFile(bytesOf(gpx(60, { type: "running" }))).fit).sport,
     ).toBe("other");
   });
+
+  it("takes Strava's numbers for a run and a hike, and a Danish or German word, for what they are", () => {
+    const sportOf = (type: string) =>
+      summarizeActivity(decodeActivityFile(bytesOf(gpx(60, { type }))).fit).sport;
+    for (const type of ["9", "4", " 9 ", "Løb", "Gåtur", "Lauf", "Wanderung"])
+      expect(sportOf(type), type).toBe("other");
+    // Strava's other numbers are not documented: the archive's list says what those were.
+    for (const type of ["1", "cycling", "Radfahrt"]) expect(sportOf(type), type).toBe("bike");
+  });
+
+  it("is what the list it came with says, where the file can only guess", () => {
+    const walk = bytesOf(gpx(60, { type: "10" }));
+    expect(activityFromFit(walk, rider).sport).toBe("bike");
+    expect(activityFromFit(walk, rider, "other").sport).toBe("other");
+    expect(activityFromFit(bytesOf(gpx(60, { type: "running" })), rider, "bike").sport).toBe(
+      "bike",
+    );
+    // A FIT or TCX file says its own sport, whatever the list says.
+    expect(activityFromFit(bytesOf(tcx()), rider, "other").sport).toBe("bike");
+    expect(activityFromFit(bytesOf(tcx("Running")), rider, "bike").sport).toBe("other");
+  });
 });
 
 describe("TCX", () => {

@@ -23,7 +23,21 @@ import { scanXml } from "./xml";
  * nothing is taken for a bike ride, which is what Kadence is for.
  */
 
-const NOT_BIKE = /run|walk|hik|swim|ski|row|padd|yoga|strength|workout/i;
+/** A track's type in words: English as most exporters write it, then Danish and German. */
+const NOT_BIKE =
+  /run|walk|hik|swim|ski|row|padd|yoga|strength|workout|løb|gåtur|vandre|svøm|lauf|wander|spazier|schwimm/i;
+/**
+ * Strava writes the type as a number. Two are known to be no ride: 4, a
+ * hike (communityhub.strava.com/developers-api-7/gpx-trk-type-2404,
+ * 2023-04-06) and 9, a run (communityhub.strava.com/developers-api-7/
+ * allow-import-of-activity-type-on-gpx-3074). Strava does not document
+ * the others; the archive's own list says what those were
+ * (src/modules/files/strava-archive.ts, ADR 0030).
+ */
+const STRAVA_NOT_BIKE = new Set(["4", "9"]);
+
+const saysNotBike = (type: string | undefined) =>
+  type !== undefined && (NOT_BIKE.test(type) || STRAVA_NOT_BIKE.has(type.trim()));
 
 const num = (text: string) => {
   const value = Number(text);
@@ -87,7 +101,7 @@ export function readGpx(xml: string): FitFile & { title?: string } {
     protocolVersion: 0,
     profileVersion: 0,
     fileType: FILE_TYPE.activity,
-    sport: type && NOT_BIKE.test(type) ? undefined : SPORT.cycling,
+    sport: saysNotBike(type) ? undefined : SPORT.cycling,
     records,
     laps: [],
     sessions: [],

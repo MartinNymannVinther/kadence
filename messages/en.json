@@ -684,7 +684,7 @@
       },
       "strava": {
         "title": "From Strava to Kadence",
-        "body": "Kadence cannot be connected to Strava, because Strava's terms allow your rides to be shown to you alone and not to your coach. But you can bring your rides along. Your whole history: sign in on strava.com on a computer (the app cannot do it), choose Settings → My Account, press Get Started under Download your account and then Request download, and wait for Strava's e-mail; it can take a few hours. Put the zip file in the upload field under Today, as it is. Kadence shows what the archive holds, and then fetches the rides, or every activity if you choose so: with the names you gave them on Strava, newest first, and without the rides that are here already. Up to 500 rides a day; if there are more, it goes on where it stopped when you add the archive again the next day. If you have unpacked the archive, you can pick the folder with “Fetch from the device” instead. A coach can do the same on the rider's page. A single ride: open it on strava.com, choose ••• → Export Original, and upload the file. New rides come most easily straight from the bike computer; see Uploads and devices."
+        "body": "Kadence cannot be connected to Strava: Strava's rules for apps say an app may show your Strava rides to you alone, not to your coach. But you can bring your rides along. Your whole history: sign in on strava.com on a computer (the app cannot do it), choose Settings → My Account, press Get Started under Download your account and then Request download, and wait for Strava's e-mail; it can take a few hours. Put the zip file in the upload field under Today, as it is. Kadence shows what the archive holds, and then fetches the rides, or every activity if you choose so: with the names you gave them on Strava, newest first, and without the rides that are here already. Up to 500 rides a day; if there are more, it goes on where it stopped when you add the archive again the next day. If you have unpacked the archive, you can pick the folder with “Fetch from the device” instead. A coach can do the same on the rider's page. A single ride: open it on strava.com, choose ••• → Export Original, and upload the file. New rides come most easily straight from the bike computer; see Uploads and devices."
       },
       "parentsPage": {
         "title": "The parents' page",
@@ -1841,6 +1841,7 @@
         "sending": "Fetching rides … {done} of {total}",
         "progress": "How far the import has come",
         "stop": "Stop",
+        "stopping": "Stopping …",
         "empty": "The archive has no activities with a file.",
         "imported": "{count, plural, one {# ride is fetched.} other {# rides are fetched.}}",
         "known": "{count, plural, one {# was here already.} other {# were here already.}}",

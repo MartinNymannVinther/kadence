@@ -133,14 +133,15 @@ describe("when Kadence could not be asked", () => {
     }
   });
 
-  it("says so where the browser cannot hash, and asks nothing", async () => {
+  it("hashes without the browser's crypto.subtle, and asks all the same", async () => {
     const { fetched } = kadenceWith("monday");
-    // A page that is not served over https has no crypto.subtle.
+    // A page that is not served over https has no crypto.subtle; the
+    // rides Kadence has are still left out, not sent again every time.
     vi.stubGlobal("crypto", {});
     const found = await findFresh(RIDER, folder);
-    expect(names(found.fresh)).toEqual(["tuesday.fit", "monday.fit"]);
-    expect(found).toMatchObject({ known: 0, checked: false });
-    expect(fetched).not.toHaveBeenCalled();
+    expect(names(found.fresh)).toEqual(["tuesday.fit"]);
+    expect(found).toMatchObject({ known: 1, checked: true });
+    expect(fetched).toHaveBeenCalledTimes(1);
   });
 });
 

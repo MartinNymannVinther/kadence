@@ -8,10 +8,20 @@
  * The layout and the column names are Strava's, known from how others
  * describe the archive rather than from Strava's own documentation, so
  * they are read as hints: a CSV that cannot be read leaves the rides
- * without their names, never without the rides. The type is a hint too.
- * A type that is plainly something else (a run, a walk) is told apart
- * here; anything else is left to the file, which the import reads for
- * its sport (src/modules/devices/import.ts).
+ * without their names, never without the rides. Strava writes the list
+ * in the language the rider's account is set to — a German account's
+ * says "Dateiname" for "Filename" (the header mapping in
+ * github.com/martin-ueding/geo-activity-playground,
+ * src/geo_activity_playground/features/strava/strava-csv-mapping.json,
+ * read 2026-09-29) — so the columns are found by their names where they
+ * are known, by what they hold where they are not (the file column is
+ * the one of `activities/…` paths), and by where Strava puts them (name
+ * third, type fourth) when the rest is the layout Strava writes.
+ *
+ * The type is a hint too, read in the languages a rider here is likely
+ * to have: a type that is plainly something else (a run, a walk, "Løb",
+ * "Gåtur") is told apart here; anything else is left to the file, which
+ * the import reads for its sport (src/modules/devices/import.ts).
  *
  * Pure: no DOM, no database.
  */
@@ -36,9 +46,11 @@ const RIDE_FILE = /\.(fit|tcx|gpx)(\.gz)?$/i;
 const MAX_TITLE = 120;
 export const MAX_CSV_ROWS = 100_000;
 
-const BIKE = /ride|bike|cycl|velomobile|handcycle/i;
+// English first, then the Scandinavian languages, German, Dutch and French.
+const BIKE =
+  /ride|bike|cycl|velomobile|handcycle|gravel|cykel|cykl|sykkel|sykl|radfahrt|fahrrad|rennrad|fiets|vélo|velo/i;
 const NOT_BIKE =
-  /run|walk|hike|swim|weight|workout|yoga|ski|snowboard|skate|row|kayak|canoe|paddl|golf|soccer|football|tennis|climb|crossfit|elliptical|stair|pilates|badminton|padel|squash|pickleball|surf|sail|hockey|wheelchair/i;
+  /run|walk|hike|swim|weight|workout|yoga|ski|snowboard|skate|row|kayak|canoe|paddl|golf|soccer|football|tennis|climb|crossfit|elliptical|stair|pilates|badminton|padel|squash|pickleball|surf|sail|hockey|wheelchair|løb|løp|löp|gåtur|vandre|vandring|fottur|promenad|svøm|simning|styrke|vægt|træning|roning|kajak|kano|lauf|spazier|wander|schwimm|kraft|training|rudern|hardlo|wandel|zwem|course à pied|marche|randonn|natation/i;
 
 /**
  * Where the archive's own files sit: "" in Strava's zip, "export_123/"
@@ -100,17 +112,61 @@ export function cleanTitle(raw: string): string {
     .trim();
 }
 
-/** The CSV's rows by the file each names, lower case: "activities/123.fit.gz". */
+/** Column names as Strava writes them in English and in German; others are found without their names. */
+const FILE_COLUMN = ["filename", "file name", "dateiname"];
+const NAME_COLUMN = ["activity name", "name der aktivität"];
+const TYPE_COLUMN = ["activity type", "aktivitätsart"];
+/** Where Strava puts them: activity number, date, name, type, … */
+const NAME_AT = 2;
+const TYPE_AT = 3;
+const ACTIVITY_FILE = /^activities\/[^/]+\.(fit|tcx|gpx)(\.gz)?$/i;
+/** Rows looked at to tell a column by what it holds. */
+const SAMPLE = 50;
+
+/** The column whose cells are the activities' files, whatever it is called. */
+function fileColumnByContent(header: string[], rows: string[][]): number {
+  let best = -1;
+  let most = 0;
+  for (let column = 0; column < header.length; column++) {
+    let files = 0;
+    for (const row of rows.slice(0, SAMPLE))
+      if (ACTIVITY_FILE.test((row[column] ?? "").trim().replace(/\\/g, "/"))) files += 1;
+    if (files > most) [best, most] = [column, files];
+  }
+  return best;
+}
+
+/** Strava's own layout: the first column is the activity's number on every row that has one. */
+function isStravasLayout(header: string[], rows: string[][]): boolean {
+  const firsts = rows.slice(0, SAMPLE).flatMap((row) => (row[0]?.trim() ? [row[0].trim()] : []));
+  return header.length > TYPE_AT && firsts.length > 0 && firsts.every((id) => /^\d+$/.test(id));
+}
+
+/**
+ * The CSV's rows by the file each names, lower case: "activities/123.fit.gz".
+ * Its columns are found by their English or German names, else the file
+ * by what it holds and the name and the type by where Strava puts them.
+ */
 export function readActivitiesCsv(text: string): CsvIndex {
   const [header, ...rows] = parseCsv(text);
   const index: CsvIndex = new Map();
   if (!header) return index;
-  const column = (...names: string[]) =>
+  const column = (names: string[]) =>
     header.findIndex((h) => names.includes(h.trim().toLowerCase()));
-  const file = column("filename", "file name");
-  const name = column("activity name", "name");
-  const type = column("activity type", "type");
+  let file = column(FILE_COLUMN);
+  if (file < 0) file = fileColumnByContent(header, rows);
   if (file < 0) return index;
+  let name = column(NAME_COLUMN);
+  let type = column(TYPE_COLUMN);
+  if (file > TYPE_AT && isStravasLayout(header, rows)) {
+    // A list in another language: its third and fourth columns, not a
+    // later one that happens to be called "Type" in it.
+    if (name < 0) name = NAME_AT;
+    if (type < 0) type = TYPE_AT;
+  } else {
+    if (name < 0) name = column(["name"]);
+    if (type < 0) type = column(["type"]);
+  }
   for (const row of rows) {
     const path = (row[file] ?? "").trim().replace(/\\/g, "/").toLowerCase();
     if (!path) continue;

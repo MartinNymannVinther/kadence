@@ -172,12 +172,17 @@ profile says. The winter's first Edge 530 or 830 says.
 ### A real Strava archive has not been tried
 
 The archive import (ADR 0030) is tested against archives laid out the
-way others describe Strava's: `activities.csv` with its English column
-names, an `activities/` folder of `.fit.gz`, GPX and TCX. Strava's own
-help does not describe the layout, and no rider's real archive has been
-dropped on it yet. The winter's first rider with a Strava history says
-whether the names and types come through; if the list cannot be read,
-the rides come in without their names.
+way others describe Strava's: `activities.csv` with its English or
+German column names, or with names Kadence does not know found by what
+the columns hold and where they stand, an `activities/` folder of
+`.fit.gz`, GPX and TCX. Strava writes the list in the account's
+language; a German account's is seen in others' code, a Danish one is
+inferred from it, not seen, and neither are Strava's Danish type words
+beyond those on its website. Strava's own help does not describe the
+layout, and no rider's real archive has been dropped on it yet. The
+winter's first rider with a Strava history — best one with Strava in
+Danish — says whether the names and types come through; if the list
+cannot be read, the rides come in without their names.
 
 ### The rides a key brought have no page
 

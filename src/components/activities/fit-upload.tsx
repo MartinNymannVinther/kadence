@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { CircleCheck, CircleX, Copy, Upload } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
@@ -35,10 +35,21 @@ const QUIET: FolderStatus = { doing: "nothing", said: null };
  * Beside it, "Hent fra enheden" reads a plugged-in bike computer's folder
  * and sends the rides that are new (ADR 0029). A Strava archive, dropped
  * here as the zip Strava sends or picked as the folder it unpacks to, goes
- * to its own import instead (ADR 0030). Posts to /api/activities/upload,
- * a route because a ride can be larger than a server action takes.
+ * to its own import instead (ADR 0030), a panel of its own for each
+ * archive; when the panel is closed, focus goes back to the drop zone.
+ * `onBusy` tells a dialog around it that an archive's run is under way.
+ * Posts to /api/activities/upload, a route because a ride can be larger
+ * than a server action takes.
  */
-export function FitUpload({ riderId, compact = false }: { riderId: string; compact?: boolean }) {
+export function FitUpload({
+  riderId,
+  compact = false,
+  onBusy,
+}: {
+  riderId: string;
+  compact?: boolean;
+  onBusy?: (busy: boolean) => void;
+}) {
   const t = useTranslations("activities.upload");
   const router = useRouter();
   const inputId = useId();
@@ -47,15 +58,37 @@ export function FitUpload({ riderId, compact = false }: { riderId: string; compa
   const [folder, setFolder] = useState<FolderStatus>(QUIET);
   const [results, setResults] = useState<FileResult[]>([]);
   const [archive, setArchive] = useState<ArchiveState | null>(null);
+  // A new archive is a new panel: nothing of the last one's run is carried over.
+  const [archiveNumber, setArchiveNumber] = useState(0);
   const [archiveRunning, setArchiveRunning] = useState(false);
+  const input = useRef<HTMLInputElement>(null);
+  const refocus = useRef(false);
   // The folder's rides arrive after a wait, from a press made renders ago:
   // whether files are on their way is asked of the moment, not of then.
   const sending = useRef(false);
   const held = busy || folder.doing !== "nothing" || archiveRunning || archive?.step === "reading";
 
+  /** Said to the dialog around at once, in the same press, so no Escape slips in between. */
+  function archiveRuns(running: boolean) {
+    setArchiveRunning(running);
+    onBusy?.(running);
+  }
+
+  useEffect(() => {
+    if (archive !== null || !refocus.current) return;
+    refocus.current = false;
+    input.current?.focus();
+  }, [archive]);
+
+  function closeArchive() {
+    refocus.current = true;
+    setArchive(null);
+  }
+
   async function openArchive(source: ArchiveSource) {
     setResults([]);
     setFolder(QUIET);
+    setArchiveNumber((n) => n + 1);
     setArchive({ step: "reading" });
     const plan = await planArchive(source).catch(() => null);
     setArchive(plan ? { step: "ready", source, plan } : { step: "unreadable" });
@@ -69,6 +102,7 @@ export function FitUpload({ riderId, compact = false }: { riderId: string; compa
     if (!kind) return send(files, "hand");
     if ("cannotOpen" in kind) {
       setResults([]);
+      setArchiveNumber((n) => n + 1);
       setArchive({ step: "cannotOpen" });
     } else await openArchive(kind.strava);
   }
@@ -143,6 +177,7 @@ export function FitUpload({ riderId, compact = false }: { riderId: string; compa
         <span className="text-sm font-medium">{busy ? t("busy") : t("drop")}</span>
         <span className="text-meta text-xs">{t("hint")}</span>
         <input
+          ref={input}
           id={inputId}
           type="file"
           accept=".fit,.FIT,.tcx,.TCX,.gpx,.GPX,.gz,.zip,application/vnd.ant.fit,application/gpx+xml,application/vnd.garmin.tcx+xml,application/gzip,application/zip,application/octet-stream"
@@ -168,10 +203,11 @@ export function FitUpload({ riderId, compact = false }: { riderId: string; compa
 
       {archive && (
         <StravaArchivePanel
+          key={archiveNumber}
           riderId={riderId}
           state={archive}
-          onRunning={setArchiveRunning}
-          onClose={() => setArchive(null)}
+          onRunning={archiveRuns}
+          onClose={closeArchive}
         />
       )}
 

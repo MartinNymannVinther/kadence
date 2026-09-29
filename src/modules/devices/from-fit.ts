@@ -1,6 +1,12 @@
 import { todayInCopenhagen } from "@/core/dates";
 import { decodeActivityFile, type ActivityFormat } from "@/modules/files";
-import { FitError, summarizeActivity, type ClimbSummary, type LapSummary } from "@/modules/fit";
+import {
+  FitError,
+  SPORT,
+  summarizeActivity,
+  type ClimbSummary,
+  type LapSummary,
+} from "@/modules/fit";
 import {
   activityLoad,
   heartRateDrift,
@@ -63,8 +69,20 @@ const MAX_SPEED = 40;
 const within = (value: number | undefined, max: number) =>
   value !== undefined && Number.isFinite(value) && value >= 0 && value <= max ? value : undefined;
 
-export function activityFromFit(bytes: Uint8Array, rider: RiderThresholds): ActivityValues {
+/**
+ * `sportHint` is what the rider's own list said the activity was (a
+ * Strava archive's `activities.csv`, ADR 0030). It decides only where the
+ * file can do no more than guess — a GPX, whose type is a word or a
+ * number from the exporter, or nothing — never over a FIT or TCX file's
+ * own sport.
+ */
+export function activityFromFit(
+  bytes: Uint8Array,
+  rider: RiderThresholds,
+  sportHint?: "bike" | "other",
+): ActivityValues {
   const { fit, format, title } = decodeActivityFile(bytes);
+  if (sportHint && format === "gpx") fit.sport = sportHint === "bike" ? SPORT.cycling : undefined;
   const summary = summarizeActivity(fit);
   const year = summary.startedAt.getUTCFullYear();
   if (!Number.isFinite(summary.startedAt.getTime()) || year < 1990 || year > 2100)

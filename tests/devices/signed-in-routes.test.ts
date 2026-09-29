@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Pool } from "pg";
 import { resetRateLimits } from "@/core/rate-limit";
+import { signedInReads } from "@/modules/devices/in-flight";
 import { adminPool } from "../helpers/db";
 import { insertSql, seedPerson } from "../helpers/rows";
 import { encodeRide, steadyHour } from "../fit/fixtures";
@@ -260,5 +261,56 @@ describe("the upload", () => {
       [results[0]!.activityId],
     );
     expect(rows).toEqual([{ title: "2026-09-03-07-00-00", file_name: "2026-09-03-07-00-00.fit" }]);
+  });
+});
+
+describe("the upload's bodies", () => {
+  /** An upload whose body is read only when let go. */
+  function held(bytes: Uint8Array) {
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => (release = resolve));
+    const encoded = new Response(form([["holdt.fit", bytes]], { riderId: "rt_ida" }));
+    const stream = new ReadableStream<Uint8Array>(
+      {
+        async pull(controller) {
+          await gate;
+          controller.enqueue(new Uint8Array(await encoded.arrayBuffer()));
+          controller.close();
+        },
+      },
+      { highWaterMark: 0 },
+    );
+    const response = upload(
+      new Request(`${BASE}/api/activities/upload`, {
+        method: "POST",
+        headers: { "content-type": encoded.headers.get("content-type")! },
+        body: stream,
+        duplex: "half",
+      } as RequestInit),
+    );
+    return { response, release };
+  }
+
+  it("are read two at a time for a person, and a third is told to wait", async () => {
+    auth.session = IDA;
+    const day = (n: number) => encodeRide(steadyHour().map((s) => ({ ...s, s: s.s + n * 86_400 })));
+    const first = held(day(30));
+    const second = held(day(31));
+    for (let i = 0; i < 600 && signedInReads.count(IDA.userId) < 2; i++)
+      await new Promise((resolve) => setTimeout(resolve, 5));
+    expect(signedInReads.count(IDA.userId)).toBe(2);
+
+    const third = await upload(
+      post("/api/activities/upload", form([["c.fit", day(32)]], { riderId: "rt_ida" })),
+    );
+    expect(third.status).toBe(429);
+    expect(await third.json()).toEqual({ error: "busy" });
+    expect(third.headers.get("retry-after")).toBe("5");
+
+    first.release();
+    second.release();
+    expect((await first.response).status).toBe(200);
+    expect((await second.response).status).toBe(200);
+    expect(signedInReads.count(IDA.userId)).toBe(0);
   });
 });

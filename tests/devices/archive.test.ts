@@ -22,8 +22,9 @@ import { encodeRide, steadyHour } from "../fit/fixtures";
  * A Strava archive's rides kept (docs/adr/0030), through the route the
  * browser sends them to: each under the name the rider gave it on Strava,
  * only rides when only rides are asked for, a day's budget of its own
- * that leaves the hour's sixty alone, and the same refusals as every door
- * that stands on the session.
+ * that leaves the hour's sixty alone and is not spent on files Kadence
+ * has, and the same refusals as every door that stands on the session.
+ * How the door reads a body: tests/devices/archive-door.test.ts.
  */
 
 const auth = vi.hoisted(() => ({ session: null as { orgId: string; userId: string } | null }));
@@ -51,20 +52,23 @@ function nextRide() {
   );
 }
 
-type Part = { name: string; bytes: Uint8Array; title?: string };
+type Part = { name: string; bytes: Uint8Array; title?: string; kind?: string };
+
+/** The address the browser posts to: the rider and what to keep are in it. */
+const at = (params: Record<string, string>) => `${URL}?${new URLSearchParams(params)}`;
 
 function send(
   parts: Part[],
-  fields: Record<string, string> = { riderId: "ar_ida", only: "bike" },
+  params: Record<string, string> = { riderId: "ar_ida", only: "bike" },
   headers: Record<string, string> = {},
 ) {
   const form = new FormData();
-  for (const [key, value] of Object.entries(fields)) form.set(key, value);
   for (const part of parts) {
     form.append("file", new File([part.bytes as Uint8Array<ArrayBuffer>], part.name));
     form.append("title", part.title ?? "");
+    form.append("kind", part.kind ?? "unknown");
   }
-  return POST(new Request(URL, { method: "POST", headers, body: form }));
+  return POST(new Request(at(params), { method: "POST", headers, body: form }));
 }
 
 const stored = async (fileName: string) =>
@@ -295,5 +299,52 @@ describe("who may send an archive's rides", () => {
     expect((await send([])).status).toBe(400);
     const four = Array.from({ length: 4 }, (_, i) => ({ name: `${i}.fit`, bytes: nextRide() }));
     expect((await send(four)).status).toBe(400);
+  });
+});
+
+describe("the files Kadence has", () => {
+  it("are answered by their hash and cost nothing of the day's reads, however often they come", async () => {
+    const bytes = nextRide();
+    expect((await (await send([{ name: "l1.fit.gz", bytes }])).json()).results[0].ok).toBe(true);
+    for (let i = 0; i < ARCHIVE_READ_PER_DAY; i++)
+      rateLimit(archiveReadKey(IDA.userId, "ar_ida"), ARCHIVE_READ_PER_DAY, DAY);
+    for (let i = 0; i < 3; i++) {
+      const again = await (await send([{ name: "l1.fit.gz", bytes }])).json();
+      expect(again.results[0]).toMatchObject({ ok: false, error: "duplicate" });
+    }
+    // A file it has not got still meets the day's end.
+    const fresh = await (await send([{ name: "l2.fit.gz", bytes: nextRide() }])).json();
+    expect(fresh.results[0]).toMatchObject({ ok: false, error: "rateLimited" });
+  });
+});
+
+describe("what the archive's list says an activity was", () => {
+  // Strava's number for a walk is not one Kadence knows: the file says nothing it can read.
+  const walk = (date: string) =>
+    bytesOf(gpx(600, { type: "10" }).replaceAll("2026-08-11T", `${date}T`));
+
+  it("decides the sport of a GPX: a walk is no ride when the list says so", async () => {
+    const all = { riderId: "ar_ida", only: "all" };
+    const kept = await (
+      await send(
+        [{ name: "m1.gpx", bytes: walk("2026-08-13"), title: "Gåtur", kind: "other" }],
+        all,
+      )
+    ).json();
+    expect(kept.results[0].ok).toBe(true);
+    expect((await stored("m1.gpx"))[0]).toMatchObject({ sport: "other" });
+
+    const passed = await (
+      await send([{ name: "m2.gpx", bytes: walk("2026-08-14"), kind: "other" }])
+    ).json();
+    expect(passed.results[0]).toMatchObject({ ok: false, error: "not_bike" });
+  });
+
+  it("is only a hint: a word it does not know leaves the file to say", async () => {
+    const answer = await (
+      await send([{ name: "m3.gpx", bytes: walk("2026-08-15"), kind: "whatever" }])
+    ).json();
+    expect(answer.results[0].ok).toBe(true);
+    expect((await stored("m3.gpx"))[0]).toMatchObject({ sport: "bike" });
   });
 });

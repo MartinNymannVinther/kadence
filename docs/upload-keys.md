@@ -248,5 +248,5 @@ Nothing to switch on. The address riders are shown is built from
 address the limits count by (src/core/rate-limit.ts); set wrongly, every
 helper shares one bucket. A proxy that caps request bodies must allow
 25 MB and a little on `/api/ingest`, which takes one file, and 75 MB and
-a little on `/api/share` and `/api/activities/upload`, which take three
-in one form.
+a little on `/api/share`, `/api/activities/upload` and
+`/api/activities/archive`, which take three in one form.

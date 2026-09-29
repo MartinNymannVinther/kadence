@@ -6,6 +6,7 @@ import {
   pickRideFiles,
   type FolderEntry,
 } from "@/modules/files/device-folder";
+import { hashHex } from "@/modules/files/sha256";
 
 /**
  * A folder from a bike computer, read in the browser: the rides in it
@@ -103,9 +104,9 @@ export function filesOfInput(list: FileList): FolderFile[] {
     }));
 }
 
+/** The server's hash of the file; computed without crypto.subtle where the page has none (http). */
 async function sha256(file: File): Promise<string> {
-  const digest = await crypto.subtle.digest("SHA-256", await file.arrayBuffer());
-  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
+  return hashHex(new Uint8Array(await file.arrayBuffer()));
 }
 
 /** The server's cap on one question (src/modules/devices/import.ts). */
@@ -117,11 +118,11 @@ export type FolderFindings = {
   /** How many rides in the folder were here already. */
   known: number;
   /**
-   * Whether the server was asked which rides it has. Where the browser
-   * cannot hash — a page not served over https — or the server could not
+   * Whether the server was asked which rides it has. Where it could not
    * be asked, it was not: every ride counts as new, the server recognises
    * the ones it has when they arrive, and the page says so rather than
-   * calling them new.
+   * calling them new. A page not served over https hashes all the same,
+   * without the browser's crypto.subtle (src/modules/files/sha256.ts).
    */
   checked: boolean;
   /** Files that could not be read from the drive, and were passed over. */
@@ -137,7 +138,6 @@ export async function findFresh(riderId: string, files: FolderFile[]): Promise<F
     unreadable,
   });
   if (rides.length === 0) return { fresh: [], known: 0, checked: true, unreadable: 0 };
-  if (!globalThis.crypto?.subtle) return unchecked();
 
   const hashed: Array<{ file: File; hash: string }> = [];
   const seen = new Set<string>();

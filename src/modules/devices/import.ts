@@ -47,6 +47,11 @@ export type ImportSource = {
   title?: string;
   /** Only a ride on the bike is kept; anything else is refused as `not_bike` before a row is written. */
   onlySport?: "bike";
+  /**
+   * What the list the file came with says it was (a Strava archive's
+   * type, ADR 0030): the sport where the file can only guess, a GPX.
+   */
+  sportHint?: "bike" | "other";
 };
 
 export async function importFitIn(
@@ -77,7 +82,7 @@ export async function importFitIn(
 
   let values;
   try {
-    values = activityFromFit(bytes, rider);
+    values = activityFromFit(bytes, rider, origin.sportHint);
   } catch (error) {
     if (error instanceof FitError) throw new Refused("invalid", error.code);
     throw error;

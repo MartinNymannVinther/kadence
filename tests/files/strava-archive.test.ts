@@ -134,8 +134,76 @@ describe("the list of activities", () => {
       "Swim",
     ])
       expect(kindOf(type), type).toBe("other");
-    // A list in another language says nothing the import cannot read from the file itself.
-    for (const type of ["", "  ", "Cykeltur", "Radfahrt"])
-      expect(kindOf(type), type).toBe("unknown");
+    // Strava writes the types in the account's language.
+    for (const type of [
+      "Cykeltur",
+      "Elcykel",
+      "Cykling på grus",
+      "Virtuel cykeltur",
+      "Mountainbike",
+      "Radfahrt",
+      "E-Bike-Fahrt",
+      "Gravel-Fahrt",
+      "Sykkeltur",
+    ])
+      expect(kindOf(type), type).toBe("bike");
+    for (const type of [
+      "Løb",
+      "Gåtur",
+      "Vandretur",
+      "Svømning",
+      "Styrketræning",
+      "Roning",
+      "Lauf",
+      "Spaziergang",
+      "Wanderung",
+      "Krafttraining",
+      "Löpning",
+    ])
+      expect(kindOf(type), type).toBe("other");
+    // What it cannot tell, it leaves to the file.
+    for (const type of ["", "  ", "Sonstiges"]) expect(kindOf(type), type).toBe("unknown");
+  });
+
+  it("is read in the account's language: German by its names, any other by its layout", () => {
+    // A German account's columns (the mapping in geo-activity-playground's
+    // strava-csv-mapping.json): the name and the type are not the third and fourth here.
+    const german = [
+      "Aktivitäts-ID,Aktivitätsdatum,Aktivitätsbeschreibung,Name der Aktivität,Aktivitätsart,Dateiname",
+      "7,1. Sep. 2026,,Morgenrunde,Radfahrt,activities/7.fit.gz",
+      "8,2. Sep. 2026,,Mit dem Hund,Lauf,activities/8.gpx",
+    ].join("\n");
+    const byGerman = stravaRides(
+      ["activities/7.fit.gz", "activities/8.gpx"],
+      "",
+      readActivitiesCsv(german),
+    );
+    expect(byGerman.map((r) => [r.fileName, r.title, r.kind])).toEqual([
+      ["8.gpx", "Mit dem Hund", "other"],
+      ["7.fit.gz", "Morgenrunde", "bike"],
+    ]);
+
+    // Names Kadence does not know: the file column by what it holds, the
+    // name and the type where Strava puts them, not a later "Type".
+    const unknown = [
+      "Aktivitets-id,Aktivitetsdato,Aktivitetsnavn,Aktivitetstype,Beskrivelse,Tid,Filnavn,Type",
+      '101,"1. sep. 2026","Tur, med klubben",Cykeltur,,3600,activities/101.fit.gz,x',
+      "102,2. sep. 2026,Løb i skoven,Løb,,1800,activities/102.gpx,x",
+      "103,3. sep. 2026,Manuel,Cykeltur,,3600,,x",
+    ].join("\n");
+    const index = readActivitiesCsv(unknown);
+    expect([...index.entries()]).toEqual([
+      ["activities/101.fit.gz", { title: "Tur, med klubben", type: "Cykeltur" }],
+      ["activities/102.gpx", { title: "Løb i skoven", type: "Løb" }],
+    ]);
+    expect(
+      stravaRides(["activities/101.fit.gz", "activities/102.gpx"], "", index).map((r) => r.kind),
+    ).toEqual(["other", "bike"]);
+  });
+
+  it("keeps the files but not the names when the layout is not Strava's", () => {
+    // No activity numbers first: the file is still found by what it holds, but nothing is guessed.
+    const index = readActivitiesCsv("a,b,c,d,e\nx,y,z,w,activities/5.fit\n");
+    expect(index.get("activities/5.fit")).toEqual({ title: "", type: "" });
   });
 });

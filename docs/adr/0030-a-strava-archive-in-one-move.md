@@ -82,3 +82,50 @@ at zero.
   day's budget and nothing else.
 - **The archive's other contents are ignored**: photos, routes, kudos,
   gear. Kadence takes the rides and nothing about anyone else.
+
+## Amendment, 2026-09-29: after the review
+
+A review of the first version, in browsers and in the code, found the
+run too trusting of the page, the door too trusting of the caller, and
+the list too English. What changed:
+
+- **The list is read in the account's language.** Strava writes
+  `activities.csv` in the language the account is set to (a German
+  account's says "Dateiname" for "Filename"). The columns are found by
+  their English or German names, else the file column by what it holds
+  (`activities/…` paths) and the name and type by where Strava puts them
+  (third and fourth), when the first column is the activities' numbers.
+  Types are told apart in Danish, the other Scandinavian languages,
+  German, Dutch and French as well. The list's type is sent with each
+  ride and decides the sport of a GPX, whose own type is a guess; a FIT
+  or TCX file keeps its own. Strava's numbers 4 (a hike) and 9 (a run)
+  in a GPX are no ride; its other numbers are not documented.
+- **A page without `crypto.subtle` hashes all the same.** A browser
+  gives SubtleCrypto only to https and localhost, so a Kadence reached
+  over http on the local network hashed nothing and sent every ride
+  again on every drop. A plain SHA-256 (`src/modules/files/sha256.ts`)
+  answers the same bytes; "Hent fra enheden" uses it too.
+- **What Kadence has costs nothing, and what it refused is remembered.**
+  The door answers a file it holds by its hash before counting a read.
+  What it refuses — a ride it has from the device under another file, an
+  activity that is not a ride, a file it cannot read — is remembered in
+  the browser per rider, as the hash and the reason, for thirty days
+  (`src/components/activities/archive-memory.ts`), so a run that goes on
+  the next day does not spend the day's reads on it again.
+- **The door asks before it reads.** The rider and "only rides" are in
+  the address, and whether the caller may write for the rider is asked
+  before a byte of the body is read. At most two bodies are read at once
+  for a person, across the upload and the archive, each within a minute,
+  and thirty requests a minute; the browser keeps two seconds between
+  requests and waits when the door says it is busy.
+- **A run ends with its page.** Closing the panel, or leaving the page,
+  stops the run; the calendar's upload dialog stays open while a run is
+  under way. A new archive gets a new panel. A run stopped before
+  anything came in says only why, not that there was nothing new.
+
+Trade-offs accepted: the browser keeps a list of file hashes per rider
+on the device for thirty days, and a ride deleted in that time is not
+brought back from the archive in that browser until the thirty days
+have passed. The plain SHA-256 is slower than the browser's own, which
+is used wherever it exists. A rider with a fast line waits two seconds
+between requests: a day's 500 rides take about six minutes.

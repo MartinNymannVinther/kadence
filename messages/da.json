@@ -684,7 +684,7 @@
       },
       "strava": {
         "title": "Fra Strava til Kadence",
-        "body": "Kadence kan ikke forbindes med Strava, fordi Stravas vilkår kun tillader, at dine ture vises for dig selv og ikke for din træner. Men du kan tage dine ture med. Hele din historik: log ind på strava.com på en computer (det kan ikke gøres i appen), vælg Settings → My Account, tryk Get Started under Download your account og derefter Request download, og vent på mailen fra Strava; det kan tage nogle timer. Læg zip-filen i upload-feltet under I dag, som den er. Kadence viser, hvad arkivet indeholder, og henter så cykelturene, eller alle aktiviteter, hvis du vælger det: med de navne, du gav dem på Strava, nyeste først, og uden de ture, der allerede er her. Op til 500 ture om dagen; er der flere, fortsætter det, hvor det slap, når du lægger arkivet ind igen næste dag. Har du pakket arkivet ud, kan du i stedet vælge mappen med “Hent fra enheden”. En træner kan gøre det samme på rytterens side. En enkelt tur: åbn den på strava.com, vælg ••• → Export Original, og upload filen. Nye ture kommer lettest direkte fra cykelcomputeren; se Upload og enheder."
+        "body": "Kadence kan ikke kobles til Strava: Stravas regler for apps siger, at en app kun må vise dine Strava-ture til dig selv, ikke til din træner. Men du kan tage dine ture med. Hele din historik: log ind på strava.com på en computer (det kan ikke gøres i appen), vælg Indstillinger → Min konto (Settings → My Account), tryk Kom godt i gang (Get Started) under Download din konto (Download your account) og derefter Anmod om download (Request download), og vent på mailen fra Strava; det kan tage nogle timer. Læg zip-filen i upload-feltet under I dag, som den er. Kadence viser, hvad arkivet indeholder, og henter så cykelturene, eller alle aktiviteter, hvis du vælger det: med de navne, du gav dem på Strava, nyeste først, og uden de ture, der allerede er her. Op til 500 ture om dagen; er der flere, fortsætter det, hvor det slap, når du lægger arkivet ind igen næste dag. Har du pakket arkivet ud, kan du i stedet vælge mappen med “Hent fra enheden”. En træner kan gøre det samme på rytterens side. En enkelt tur: åbn den på strava.com, vælg ••• → Eksporter original (Export Original), og upload filen. Nye ture kommer lettest direkte fra cykelcomputeren; se Upload og enheder."
       },
       "parentsPage": {
         "title": "Forældresiden",
@@ -1841,6 +1841,7 @@
         "sending": "Henter ture … {done} af {total}",
         "progress": "Hvor langt importen er nået",
         "stop": "Stop",
+        "stopping": "Stopper …",
         "empty": "Arkivet har ingen aktiviteter med en fil.",
         "imported": "{count, plural, one {# tur er hentet.} other {# ture er hentet.}}",
         "known": "{count} var her allerede.",

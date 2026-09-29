@@ -5,6 +5,7 @@ import { uploadKeys } from "@/core/db/schema";
 import { withOrgContext } from "@/core/db/tenant";
 import { callerKey, peekRateLimit, rateLimit } from "@/core/rate-limit";
 import { loggable } from "./http";
+import { inFlight } from "./in-flight";
 import { importFitIn, knownFileHashes } from "./import";
 import { receive, storedName, type Received } from "./ingest-request";
 import { noteKeyUse, uploadKeyOwner, type KeyOwner } from "./upload-keys";
@@ -129,24 +130,11 @@ export async function handleIngestCheck(request: Request): Promise<Response> {
   }
 }
 
-const inFlight = new Map<string, number>();
-
-function enter(userId: string): boolean {
-  const now = inFlight.get(userId) ?? 0;
-  if (now >= IN_FLIGHT) return false;
-  inFlight.set(userId, now + 1);
-  return true;
-}
-
-function leave(userId: string) {
-  const left = (inFlight.get(userId) ?? 1) - 1;
-  if (left <= 0) inFlight.delete(userId);
-  else inFlight.set(userId, left);
-}
+const reading = inFlight(IN_FLIGHT);
 
 /** Only for tests: how many files are being read for a person right now. */
 export function readingNow(userId: string): number {
-  return inFlight.get(userId) ?? 0;
+  return reading.count(userId);
 }
 
 export async function handleIngest(request: Request): Promise<Response> {
@@ -158,7 +146,7 @@ export async function handleIngest(request: Request): Promise<Response> {
     return refuse(500, "generic");
   }
   if (owner instanceof Response) return owner;
-  if (!enter(owner.riderUserId)) return refuse(429, "busy", 5);
+  if (!reading.enter(owner.riderUserId)) return refuse(429, "busy", 5);
   try {
     const received = await receive(request);
     if ("status" in received) return refuse(received.status, received.reason);
@@ -169,7 +157,7 @@ export async function handleIngest(request: Request): Promise<Response> {
     console.error("ingest: failed", loggable(error));
     return refuse(500, "generic");
   } finally {
-    leave(owner.riderUserId);
+    reading.leave(owner.riderUserId);
   }
 }
 

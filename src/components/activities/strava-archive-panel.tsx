@@ -1,10 +1,11 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { Archive } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Link, useRouter } from "@/i18n/navigation";
+import { summarise } from "./archive-summary";
 import { importArchive, type ArchivePlan, type ArchiveProgress } from "./import-archive";
 import type { ArchiveSource } from "./read-archive";
 
@@ -19,6 +20,13 @@ export type ArchiveState =
  * words, before anything is sent — how many activities, how many are not
  * rides — then the run with its progress, then what came of it. The rider
  * chooses rides only or everything; a run that stops says how to go on.
+ *
+ * Only the sentence that changes is read aloud as it changes (the
+ * status); the buttons and the explanation around it are not. When the
+ * button pressed, or Stop, leaves the page as a run starts or ends, focus
+ * goes to the panel's heading rather than to nowhere. Stop lets the
+ * request on its way be answered, so what came in is counted; a panel
+ * that goes while its run is under way ends the run there and then.
  */
 export function StravaArchivePanel({
   riderId,
@@ -35,53 +43,82 @@ export function StravaArchivePanel({
   const common = useTranslations("common");
   const router = useRouter();
   const headingId = useId();
+  const section = useRef<HTMLElement>(null);
+  const heading = useRef<HTMLHeadingElement>(null);
   const [progress, setProgress] = useState<ArchiveProgress | null>(null);
-  const controller = useRef<AbortController | null>(null);
+  const [stopping, setStopping] = useState(false);
+  /** Stop, and the page going: see ImportOptions. Made for each run. */
+  const run = useRef<{ stop: AbortController; cutoff: AbortController } | null>(null);
+
+  // The dialog closed or another page opened: the run ends here, rather
+  // than going on with nobody seeing it and no Stop to press.
+  useEffect(
+    () => () => {
+      run.current?.stop.abort();
+      run.current?.cutoff.abort();
+    },
+    [],
+  );
+
+  const running = progress !== null && progress.phase !== "finished";
+  const finished = progress?.phase === "finished";
+
+  useEffect(() => {
+    if (!running && !finished) return;
+    const active = document.activeElement;
+    if (!active || active === document.body || section.current?.contains(active))
+      heading.current?.focus();
+  }, [running, finished]);
 
   async function start(onlyBike: boolean) {
     if (state.step !== "ready") return;
-    controller.current = new AbortController();
+    const current = { stop: new AbortController(), cutoff: new AbortController() };
+    run.current = current;
     onRunning(true);
     try {
       const final = await importArchive(riderId, state.source, state.plan, {
         onlyBike,
-        signal: controller.current.signal,
+        signal: current.stop.signal,
+        cutoff: current.cutoff.signal,
         onProgress: setProgress,
       });
       if (final.imported > 0) router.refresh();
     } finally {
-      controller.current = null;
+      run.current = null;
       onRunning(false);
     }
   }
 
-  const running = progress !== null && progress.phase !== "finished";
   const close = (
     <Button type="button" variant="outline" className="w-fit max-sm:h-11" onClick={onClose}>
       {common("close")}
     </Button>
   );
 
-  function body() {
-    if (state.step === "reading") return <p>{t("reading")}</p>;
-    if (state.step === "cannotOpen" || state.step === "unreadable")
+  /** The sentence that changes, and is read aloud when it does. */
+  function said() {
+    if (state.step !== "ready") return <p>{t(state.step)}</p>;
+    if (progress?.phase === "finished") return <SummaryText progress={progress} />;
+    if (running)
       return (
-        <>
-          <p>{t(state.step)}</p>
-          {close}
-        </>
+        <p>
+          {t(progress.phase === "checking" ? "checking" : "sending", {
+            done: progress.done,
+            total: progress.total,
+          })}
+        </p>
       );
-    const { plan } = state;
-    if (progress?.phase === "finished") return <Summary progress={progress} close={close} />;
+    const count = state.plan.rides.length;
+    return <p>{count === 0 ? t("empty") : t("found", { count })}</p>;
+  }
+
+  /** Everything around it: what to know, the progress bar and the buttons. */
+  function around() {
+    if (state.step === "reading") return null;
+    if (state.step !== "ready" || finished) return close;
     if (running)
       return (
         <>
-          <p>
-            {t(progress.phase === "checking" ? "checking" : "sending", {
-              done: progress.done,
-              total: progress.total,
-            })}
-          </p>
           <progress
             className="accent-primary h-2 w-full"
             value={progress.done}
@@ -92,22 +129,21 @@ export function StravaArchivePanel({
             type="button"
             variant="outline"
             className="w-fit max-sm:h-11"
-            onClick={() => controller.current?.abort()}
+            // Not disabled: a button that is keeps no focus.
+            aria-disabled={stopping}
+            onClick={() => {
+              setStopping(true);
+              run.current?.stop.abort();
+            }}
           >
-            {t("stop")}
+            {t(stopping ? "stopping" : "stop")}
           </Button>
         </>
       );
-    if (plan.rides.length === 0)
-      return (
-        <>
-          <p>{t("empty")}</p>
-          {close}
-        </>
-      );
+    const { plan } = state;
+    if (plan.rides.length === 0) return close;
     return (
       <>
-        <p>{t("found", { count: plan.rides.length })}</p>
         {plan.other > 0 && <p>{t("others", { count: plan.other })}</p>}
         {!plan.named && <p>{t("noNames")}</p>}
         <p className="text-meta">{t("how")}</p>
@@ -133,16 +169,24 @@ export function StravaArchivePanel({
 
   return (
     <section
+      ref={section}
       aria-labelledby={headingId}
       className="border-border bg-card flex flex-col gap-2.5 rounded-xl border p-4 text-2sm leading-relaxed"
     >
-      <h3 id={headingId} className="flex items-center gap-2 text-sm font-semibold">
+      <h3
+        id={headingId}
+        ref={heading}
+        // Reached by the keyboard only when a run starts or ends under it.
+        tabIndex={-1}
+        className="flex items-center gap-2 text-sm font-semibold outline-none"
+      >
         <Archive aria-hidden className="text-primary size-4 shrink-0" />
         {t("title")}
       </h3>
       <div role="status" className="flex flex-col gap-2.5">
-        {body()}
+        {said()}
       </div>
+      {around()}
       {!running && (
         <Link
           href="/help#help-strava"
@@ -155,38 +199,19 @@ export function StravaArchivePanel({
   );
 }
 
-function Summary({ progress, close }: { progress: ArchiveProgress; close: React.ReactNode }) {
+function SummaryText({ progress }: { progress: ArchiveProgress }) {
   const t = useTranslations("activities.upload.archive");
-  const lines = [
-    progress.imported > 0 ? t("imported", { count: progress.imported }) : "",
-    progress.known > 0 ? t("known", { count: progress.known }) : "",
-    progress.skipped > 0 ? t("skipped", { count: progress.skipped }) : "",
-    progress.unreadable > 0 ? t("unreadableFiles", { count: progress.unreadable }) : "",
-  ].filter(Boolean);
-  const hours = Math.max(1, Math.ceil(progress.retryAfterSeconds / 3600));
-  const outcome =
-    progress.outcome === "limit"
-      ? t("limit", { count: progress.left, hours })
-      : progress.outcome === "signedOut"
-        ? t("signedOut")
-        : progress.outcome === "failed"
-          ? t("failed", { count: progress.left })
-          : progress.outcome === "cancelled"
-            ? t("cancelled", { count: progress.left })
-            : "";
+  const { lines, outcome } = summarise(progress);
   return (
     <>
-      {lines.length > 0 ? (
+      {lines.length > 0 && (
         <ul className="flex flex-col gap-1">
           {lines.map((line) => (
-            <li key={line}>{line}</li>
+            <li key={line.key}>{t(line.key, line.values)}</li>
           ))}
         </ul>
-      ) : (
-        <p>{t("nothing")}</p>
       )}
-      {outcome && <p className="bg-muted rounded-lg px-3 py-2">{outcome}</p>}
-      {close}
+      {outcome && <p className="bg-muted rounded-lg px-3 py-2">{t(outcome.key, outcome.values)}</p>}
     </>
   );
 }

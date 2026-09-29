@@ -1,16 +1,24 @@
 import { requireOrgContext } from "@/core/auth/guard";
 import { Refused } from "@/core/action";
+import type { OrgContext } from "@/core/db/tenant";
 import { rateLimit } from "@/core/rate-limit";
 import { fromAnotherSite } from "@/core/same-site";
 import {
   ARCHIVE_FILES_PER_REQUEST,
   ARCHIVE_REQUESTS_PER_DAY,
+  ARCHIVE_REQUESTS_PER_MINUTE,
+  archiveMinuteKey,
+  archiveRequestsKey,
   DAY,
   keepArchiveFiles,
+  MINUTE,
+  requireArchiveWriter,
   type ArchiveFile,
 } from "@/modules/devices/archive";
-import { DeviceHttpError, loggable, readLimited } from "@/modules/devices/http";
+import { DeviceHttpError, loggable } from "@/modules/devices/http";
 import { MAX_UPLOAD_BYTES } from "@/modules/devices/import";
+import { BUSY_SECONDS, signedInReads } from "@/modules/devices/in-flight";
+import { readWithin } from "@/modules/devices/ingest-request";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -30,26 +38,62 @@ const refuse = (error: string, status: number, retryAfterSeconds = 0) =>
     },
   );
 
+const kindOf = (value: FormDataEntryValue | undefined) =>
+  value === "bike" || value === "other" ? value : undefined;
+
 /**
  * A few rides from a rider's Strava archive (ADR 0030): multipart form
- * data with `riderId`, `only` ("bike" or "all") and up to three `file`s,
- * each followed by its `title`, the name from the archive's list. Stands
- * on the session like the upload, refuses another site's pages like it,
- * and answers each file on its own; the day's budget is the archive's
- * own (src/modules/devices/archive.ts). The browser reads the archive and
- * sends only the rides Kadence does not have
- * (src/components/activities/import-archive.ts).
+ * data with up to three `file`s, each followed by its `title`, the name
+ * from the archive's list, and its `kind`, the list's word for what it
+ * was; the rider and whether only rides are kept are in the address,
+ * `?riderId=…&only=bike|all`, so that who may write for the rider is
+ * asked before a byte of the body is read. Stands on the session like the
+ * upload, refuses another site's pages like it, reads at most two bodies
+ * for a person at once and each within a minute, and answers each file on
+ * its own. The budgets are the archive's own (src/modules/devices/archive.ts):
+ * the day's, and a minute's that the browser keeps to
+ * (src/components/activities/import-archive.ts), which sends only the
+ * rides Kadence does not have.
  */
 export async function POST(request: Request) {
   if (fromAnotherSite(request)) return refuse("forbidden", 403);
   const ctx = await requireOrgContext();
   if (!ctx) return refuse("unauthorized", 401);
-  const asked = rateLimit(`archive:${ctx.userId}`, ARCHIVE_REQUESTS_PER_DAY, DAY);
+  const asked = rateLimit(archiveRequestsKey(ctx.userId), ARCHIVE_REQUESTS_PER_DAY, DAY);
   if (!asked.allowed) return refuse("rateLimited", 429, asked.retryAfterSeconds);
+  const minute = rateLimit(archiveMinuteKey(ctx.userId), ARCHIVE_REQUESTS_PER_MINUTE, MINUTE);
+  if (!minute.allowed) return refuse("busy", 429, minute.retryAfterSeconds);
 
+  const params = new URL(request.url).searchParams;
+  const riderId = params.get("riderId") ?? "";
+  const only = params.get("only") ?? "bike";
+  if (!riderId || riderId.length > 100 || (only !== "bike" && only !== "all"))
+    return refuse("invalid", 400);
+  try {
+    await requireArchiveWriter(ctx, riderId);
+  } catch (error) {
+    if (error instanceof Refused) return refuse(error.code, error.code === "notFound" ? 404 : 403);
+    console.error("archive: failed", loggable(error));
+    return refuse("generic", 500);
+  }
+
+  if (!signedInReads.enter(ctx.userId)) return refuse("busy", 429, BUSY_SECONDS);
+  try {
+    return await keep(request, ctx, riderId, only === "bike");
+  } finally {
+    signedInReads.leave(ctx.userId);
+  }
+}
+
+async function keep(
+  request: Request,
+  ctx: OrgContext,
+  riderId: string,
+  onlyBike: boolean,
+): Promise<Response> {
   let form: FormData;
   try {
-    const body = await readLimited(
+    const body = await readWithin(
       request.body,
       MAX_BODY_BYTES,
       request.headers.get("content-length"),
@@ -58,32 +102,27 @@ export async function POST(request: Request) {
       headers: { "content-type": request.headers.get("content-type") ?? "" },
     }).formData();
   } catch (error) {
-    const tooLarge = error instanceof DeviceHttpError && error.code === "too_large";
-    return refuse(tooLarge ? "too_large" : "invalid", tooLarge ? 413 : 400);
+    const code = error instanceof DeviceHttpError ? error.code : "invalid";
+    if (code === "too_large") return refuse("too_large", 413);
+    if (code === "timeout") return refuse("timeout", 408);
+    return refuse("invalid", 400);
   }
 
-  const riderId = String(form.get("riderId") ?? "");
-  const only = String(form.get("only") ?? "bike");
   const parts = form.getAll("file").filter((f): f is File => f instanceof File);
   const titles = form.getAll("title").map((t) => (typeof t === "string" ? t.slice(0, 500) : ""));
-  if (
-    !riderId ||
-    riderId.length > 100 ||
-    (only !== "bike" && only !== "all") ||
-    parts.length === 0 ||
-    parts.length > ARCHIVE_FILES_PER_REQUEST
-  )
-    return refuse("invalid", 400);
+  const kinds = form.getAll("kind");
+  if (parts.length === 0 || parts.length > ARCHIVE_FILES_PER_REQUEST) return refuse("invalid", 400);
 
   const files: ArchiveFile[] = await Promise.all(
     parts.map(async (part, i) => ({
       name: part.name,
       title: titles[i] ?? "",
+      kind: kindOf(kinds[i]),
       bytes: part.size > MAX_UPLOAD_BYTES ? null : new Uint8Array(await part.arrayBuffer()),
     })),
   );
   try {
-    const answer = await keepArchiveFiles(ctx, riderId, files, only === "bike");
+    const answer = await keepArchiveFiles(ctx, riderId, files, onlyBike);
     return Response.json(answer, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     if (error instanceof Refused) return refuse(error.code, error.code === "notFound" ? 404 : 403);
