@@ -38,7 +38,7 @@ export function TwoFactorForm() {
         <CardDescription>{t("subtitle")}</CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="flex flex-col items-center gap-4">
+        <form method="post" onSubmit={handleSubmit} className="flex flex-col items-center gap-4">
           <InputOTP maxLength={6} value={code} onChange={setCode} autoFocus>
             <InputOTPGroup>
               <InputOTPSlot index={0} />

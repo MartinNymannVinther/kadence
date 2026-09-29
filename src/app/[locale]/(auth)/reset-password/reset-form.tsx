@@ -63,7 +63,7 @@ export function ResetForm({ token }: { token: string }) {
             {t("login")}
           </Link>
         ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <form method="post" onSubmit={handleSubmit} className="flex flex-col gap-4">
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="password">{t("password")}</FieldLabel>

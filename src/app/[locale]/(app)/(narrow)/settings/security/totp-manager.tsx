@@ -111,7 +111,7 @@ export function TotpManager({ initialEnabled }: { initialEnabled: boolean }) {
                 ))}
               </div>
             </div>
-            <form onSubmit={handleVerify} className="flex flex-col gap-3">
+            <form method="post" onSubmit={handleVerify} className="flex flex-col gap-3">
               <Field>
                 <FieldLabel>{t("verifyLabel")}</FieldLabel>
                 <InputOTP maxLength={6} value={code} onChange={setCode}>
@@ -133,6 +133,7 @@ export function TotpManager({ initialEnabled }: { initialEnabled: boolean }) {
           </div>
         ) : (
           <form
+            method="post"
             onSubmit={enabled ? handleDisable : handleEnable}
             className="flex flex-wrap items-end gap-3"
           >

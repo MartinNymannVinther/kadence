@@ -73,7 +73,7 @@ export function AccessRequestForm() {
         <CardDescription>{t("subtitle")}</CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form method="post" onSubmit={handleSubmit} className="flex flex-col gap-4">
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="apply-name">{t("name")}</FieldLabel>

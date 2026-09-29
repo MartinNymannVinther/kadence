@@ -64,7 +64,7 @@ export function RegisterForm({ invitation }: { invitation?: InvitationPrefill })
         <CardDescription>{invitation ? t("invitedSubtitle") : t("subtitle")}</CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form method="post" onSubmit={handleSubmit} className="flex flex-col gap-4">
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="name">{t("name")}</FieldLabel>

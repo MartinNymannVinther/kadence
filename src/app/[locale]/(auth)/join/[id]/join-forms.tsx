@@ -70,7 +70,7 @@ export function JoinRegisterForm({
         <CardDescription>{intro}</CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form method="post" onSubmit={handleSubmit} className="flex flex-col gap-4">
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="join-name">{t("name")}</FieldLabel>
