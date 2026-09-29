@@ -31,4 +31,9 @@ regexes = [
   # was never deployed anywhere, and has since been replaced by a
   # self-describing low-entropy string. It remains in the git history.
   '''0123456789abcdef0123456789abcdef''',
+  # The names of DCU's strength programmes in the library
+  # (src/modules/dcu/strength.ts, and the demo that looks one up): an
+  # identifier a person wrote, not a credential, which the default
+  # generic-api-key rule reads as one because it follows `key:`.
+  '''dcu-strength-u(17|19|23)-2016''',
 ]
