@@ -12,7 +12,6 @@ import { Sensors } from "./ride/sensors";
 import { useKeptRide } from "./ride/use-kept-ride";
 import { useRide } from "./ride/use-ride";
 import { RideScreen } from "./ride-screen";
-import { Sky } from "./scene/sky";
 import { useCourse } from "./use-course";
 import { useDevices } from "./use-devices";
 
@@ -117,7 +116,7 @@ export function RulleApp({
           ride.start();
           setPhase("riding");
         }}
-        scene={<Sky />}
+        moment={ride.moment}
       />
     );
 

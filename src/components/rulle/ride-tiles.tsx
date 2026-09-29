@@ -37,7 +37,7 @@ function Tile({
   return (
     <section
       className={cn(
-        "border-border flex min-w-0 flex-col justify-between gap-1 rounded-xl border px-4 py-3 shadow-[var(--surface-shadow)] sm:px-5 lg:px-7 lg:py-5",
+        "border-border bg-card flex min-w-0 flex-col justify-between gap-1 rounded-xl border px-4 py-3 shadow-[var(--surface-shadow)] sm:px-5 lg:px-7 lg:py-5",
         className,
       )}
     >

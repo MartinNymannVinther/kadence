@@ -30,6 +30,7 @@ import {
   type Clock,
 } from "./clock";
 import type { Sensors, SensorsNow } from "./sensors";
+import { PowerTrace } from "./trace";
 
 /**
  * A ride while it is ridden (ADR 0032): the session's clock and blocks,
@@ -54,8 +55,6 @@ export const DRAWN_WATTS = 150;
 export const AUTO_PAUSE_SECONDS = 3;
 const RESUME_WATTS = 30;
 const RESUME_CADENCE = 20;
-/** The power line under the bar: one average per this many seconds of the plan. */
-export const TRACE_SECONDS = 5;
 export const INTENSITY = { min: 0.5, max: 1.2, step: 0.05 } as const;
 
 export type Status = "ready" | "riding" | "paused" | "finished";
@@ -95,7 +94,7 @@ export class RideEngine {
   intensity = 1;
   erg = true;
   recording: Recording | null = null;
-  readonly trace: (number | null)[] = [];
+  private readonly trace = new PowerTrace();
   private clock: Clock | null = null;
   private speed = 0;
   private distance = 0;
@@ -103,9 +102,6 @@ export class RideEngine {
   private lastSecond = -1;
   private blockIndex = -1;
   private idleSince: number | null = null;
-  private traceSlot = -1;
-  private traceSum = 0;
-  private traceCount = 0;
 
   constructor(
     private readonly timeline: SessionTimeline | null,
@@ -225,7 +221,7 @@ export class RideEngine {
       distance: this.distance,
       intensity: this.intensity,
       erg: this.erg,
-      trace: this.trace,
+      trace: this.trace.values,
     };
   }
 
@@ -246,7 +242,7 @@ export class RideEngine {
       distance: measured ? this.distance : null,
       altitude: measured ? courseAt(this.course, this.distance).ele : null,
     });
-    this.addTrace(second, live.power);
+    this.trace.add(second, live.power);
     this.watchIdle(now, live);
     if (!this.timeline || !current || this.status !== "riding") return;
     if (current.index !== this.blockIndex) {
@@ -289,18 +285,5 @@ export class RideEngine {
 
   private target(): number | null {
     return this.erg && this.status === "riding" ? this.blockWatts() : null;
-  }
-
-  private addTrace(second: number, power: number | null): void {
-    const slot = Math.floor(second / TRACE_SECONDS);
-    if (slot !== this.traceSlot) {
-      this.traceSlot = slot;
-      this.traceSum = 0;
-      this.traceCount = 0;
-    }
-    if (power === null) return;
-    this.traceSum += power;
-    this.traceCount += 1;
-    this.trace[slot] = Math.round(this.traceSum / this.traceCount);
   }
 }

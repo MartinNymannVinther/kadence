@@ -76,7 +76,14 @@ beforeAll(async () => {
   for (const p of [IDA, OLE, PARENT]) await seedPerson(admin, ORG, p.userId, "member");
   await seedPerson(admin, OTHER, BO.userId, "owner");
   const riders = [
-    { org_id: ORG, id: "rl_ida", user_id: IDA.userId, name: "Ida", birth_year: 2009, ftp_watts: 230 },
+    {
+      org_id: ORG,
+      id: "rl_ida",
+      user_id: IDA.userId,
+      name: "Ida",
+      birth_year: 2009,
+      ftp_watts: 230,
+    },
     { org_id: ORG, id: "rl_ole", user_id: OLE.userId, name: "Ole", birth_year: 2008 },
     { org_id: OTHER, id: "rl_bo", user_id: BO.userId, name: "Bo", birth_year: 2008 },
   ];
@@ -140,7 +147,10 @@ describe("who may save a ride from Rulle", () => {
       const response = await post(`?session=${other}`, ride());
       expect(response.status, other).toBe(404);
     }
-    const count = await row("select count(*)::int as n from activities where rider_id = 'rl_ida'", []);
+    const count = await row(
+      "select count(*)::int as n from activities where rider_id = 'rl_ida'",
+      [],
+    );
     expect(count.n).toBe(0);
   });
 });
@@ -151,8 +161,14 @@ describe("the rider's own ride", () => {
     const response = await post("?session=rl_ida_b", ride());
     expect(response.status).toBe(201);
     const body = await response.json();
-    expect(body).toMatchObject({ sessionId: "rl_ida_b", sessionTitle: "Grundtur", duplicate: false });
-    const session = await row("select activity_id from planned_sessions where id = $1", ["rl_ida_b"]);
+    expect(body).toMatchObject({
+      sessionId: "rl_ida_b",
+      sessionTitle: "Grundtur",
+      duplicate: false,
+    });
+    const session = await row("select activity_id from planned_sessions where id = $1", [
+      "rl_ida_b",
+    ]);
     expect(session.activity_id).toBe(body.activityId);
     const activity = await row(
       "select source, title, sport, load_method, moving_seconds, on_date::text as on_date from activities where id = $1",

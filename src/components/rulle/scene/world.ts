@@ -1,0 +1,146 @@
+import * as THREE from "three";
+import { courseAt, swayAt, type Course } from "@/modules/rulle";
+import { Atmosphere } from "./atmosphere";
+import { CameraRig } from "./camera-rig";
+import { Ground } from "./ground";
+import { RiderFigure } from "./rider";
+import { buildRoad } from "./road";
+import { Roadside } from "./roadside";
+import { Scenery } from "./scenery";
+import { Terrain } from "./terrain";
+
+/**
+ * The landscape of a ride (ADR 0032), put together: the ground made from
+ * the route, the road, what stands by it and on the land, the sky, the
+ * rider, and the camera that follows. Given where the rider is along the
+ * course, how fast and at what cadence, it draws one frame. It knows
+ * nothing about sessions or trainers.
+ */
+
+export type WorldOptions = {
+  /** Less motion on the screen: the camera only follows. */
+  calm: boolean;
+  /** A small or slow device: fewer trees and tufts, no antialiasing, fewer pixels. */
+  light: boolean;
+};
+
+export type Moment = { distance: number; speed: number; cadence: number };
+
+/**
+ * Metres behind the rider the camera rides, and ahead of the rider it
+ * looks: close enough ahead that the rider sits low in the open band
+ * between the numbers and the bar, with the horizon above.
+ */
+const BEHIND = 8.5;
+const AHEAD = 9;
+
+export class World {
+  private readonly renderer: THREE.WebGLRenderer;
+  private readonly scene = new THREE.Scene();
+  private readonly rig: CameraRig;
+  private readonly ground: Ground;
+  private readonly terrain: Terrain;
+  private readonly scenery: Scenery;
+  private readonly roadside: Roadside;
+  private readonly road: THREE.Group;
+  private readonly rider = new RiderFigure();
+  private readonly atmosphere: Atmosphere;
+  private crank = 0;
+  private frames = 0;
+
+  constructor(
+    canvas: HTMLCanvasElement,
+    private readonly course: Course,
+    options: WorldOptions,
+  ) {
+    this.renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: !options.light,
+      powerPreference: "high-performance",
+    });
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, options.light ? 1 : 1.5));
+    this.rig = new CameraRig(options.calm);
+    this.atmosphere = new Atmosphere(this.scene);
+    this.ground = new Ground(course);
+    this.scenery = new Scenery(this.ground, options.light ? 0.5 : 1);
+    this.terrain = new Terrain(this.ground, (key, cx, cz, added) => {
+      if (added) this.scenery.add(key, cx, cz);
+      else this.scenery.remove(key);
+    });
+    this.roadside = new Roadside(course, options.light ? 0.5 : 1);
+    this.road = buildRoad(course);
+    this.rider.group.rotation.order = "YXZ";
+    this.scene.add(
+      this.terrain.group,
+      this.scenery.group,
+      this.road,
+      this.roadside.group,
+      this.rider.group,
+    );
+    const start = courseAt(course, 0);
+    this.terrain.fill(start.x, -start.y);
+  }
+
+  resize(width: number, height: number, top: number, bottom: number): void {
+    this.renderer.setSize(width, height, false);
+    this.rig.layout(width, height, top, bottom);
+  }
+
+  frame(moment: Moment, seconds: number): void {
+    const { distance, speed, cadence } = moment;
+    const here = this.pointAt(distance, swayAt(distance));
+    const back = this.pointAt(distance - 2, swayAt(distance - 2));
+    const front = this.pointAt(distance + 2, swayAt(distance + 2));
+    const along = new THREE.Vector3().subVectors(front, back);
+    this.rider.group.position.copy(here);
+    this.rider.group.rotation.y = Math.atan2(-along.x, -along.z);
+    this.rider.group.rotation.x = Math.atan(courseAt(this.course, distance).grade);
+    this.crank += (cadence / 60) * 2 * Math.PI * seconds;
+    this.rider.animate(seconds, cadence, speed);
+
+    const behind = this.pointAt(distance - BEHIND, 0.4);
+    const ahead = this.pointAt(distance + AHEAD, swayAt(distance + AHEAD) * 0.5);
+    this.rig.follow(behind, ahead, this.turn(distance), speed, this.crank, seconds);
+    const eye = this.rig.camera.position;
+    this.atmosphere.follow(eye, seconds);
+    this.scenery.animate(seconds);
+    this.terrain.update(eye.x, eye.z, 1);
+    if (this.frames++ % 20 === 0) this.roadside.update(eye);
+    this.renderer.render(this.scene, this.rig.camera);
+  }
+
+  dispose(): void {
+    this.terrain.dispose();
+    this.scenery.dispose();
+    this.roadside.dispose();
+    this.road.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        child.geometry.dispose();
+        (child.material as THREE.Material).dispose();
+      }
+    });
+    this.rider.dispose();
+    this.atmosphere.dispose();
+    this.renderer.dispose();
+  }
+
+  /** A point on the road `offset` metres right of its middle, on the road's surface. */
+  private pointAt(distance: number, offset: number): THREE.Vector3 {
+    const p = courseAt(this.course, distance);
+    const q = courseAt(this.course, distance + 1);
+    const dx = q.x - p.x;
+    const dz = -(q.y - p.y);
+    const len = Math.hypot(dx, dz) || 1;
+    return new THREE.Vector3(p.x + (-dz / len) * offset, p.ele + 0.03, -p.y + (dx / len) * offset);
+  }
+
+  /** How much the road bends here: radians per metre, to the left positive. */
+  private turn(distance: number): number {
+    const a = courseAt(this.course, distance).heading;
+    const b = courseAt(this.course, distance + 20).heading;
+    let d = b - a;
+    while (d > Math.PI) d -= 2 * Math.PI;
+    while (d < -Math.PI) d += 2 * Math.PI;
+    return d / 20;
+  }
+}

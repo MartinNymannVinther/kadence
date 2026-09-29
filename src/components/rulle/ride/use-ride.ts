@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Course, SessionTimeline } from "@/modules/rulle";
 import type { TrainerLink } from "../bluetooth/trainer-link";
+import type { Moment } from "../scene/world";
 import type { Beeps } from "./beeps";
 import { RideEngine, type Live } from "./engine";
 import { keepRide, type RideMeta } from "./ride-store";
@@ -10,6 +11,8 @@ import type { Sensors } from "./sensors";
 
 /** The engine is ticked this often: the physics' steps and a second's work on time. */
 const TICK_MS = 100;
+/** The cadence the figure pedals at when nothing measures the legs. */
+const DRAWN_CADENCE = 85;
 /** The screen's numbers are drawn this often. */
 const DRAW_MS = 250;
 /** The ride is put aside in the browser this often. */
@@ -44,6 +47,24 @@ export function useRide(options: RideOptions) {
 
   const draw = useCallback(() => {
     if (engine.current) setLive(engine.current.live(Date.now()));
+  }, []);
+
+  /**
+   * Where the rider is, for the landscape, asked every frame: the figure
+   * pedals at the measured cadence, or at an easy one when the landscape
+   * moves and nothing measures the legs.
+   */
+  const moment = useCallback((now: number): Moment => {
+    const ride = engine.current;
+    if (!ride) return { distance: 0, speed: 0, cadence: 0 };
+    const at = ride.positionAt(now);
+    if (ride.status !== "riding") return { distance: at.distance, speed: 0, cadence: 0 };
+    const cadence = latest.current.sensors.now(now).cadence;
+    return {
+      distance: at.distance,
+      speed: at.speed,
+      cadence: cadence ?? (at.speed > 1 ? DRAWN_CADENCE : 0),
+    };
   }, []);
 
   const start = useCallback(() => {
@@ -100,6 +121,7 @@ export function useRide(options: RideOptions) {
   return {
     engine,
     live,
+    moment,
     start,
     pause: () => act((ride, now) => ride.pause(now)),
     resume: () => act((ride, now) => ride.resume(now)),

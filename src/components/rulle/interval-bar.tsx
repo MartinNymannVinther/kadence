@@ -5,7 +5,7 @@ import { durationText } from "@/components/training/duration";
 import { drawPct, zoneFill, zoneOfTarget } from "@/components/workouts/step-zone";
 import { cn } from "@/lib/utils";
 import type { SessionTimeline } from "@/modules/rulle";
-import { TRACE_SECONDS } from "./ride/engine";
+import { TRACE_SECONDS } from "./ride/trace";
 
 const HEIGHT = 100;
 /** The lowest top the drawing has, in percent of threshold power, as the builder's profile. */

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,9 +23,17 @@ import type { Beeps } from "./ride/beeps";
 import { INTENSITY } from "./ride/engine";
 import type { Ride } from "./ride/use-ride";
 import { useFullscreen, useWakeLock } from "./ride/use-screen";
+import { Sky } from "./scene/sky";
+import type { Moment } from "./scene/world";
 import type { Devices } from "./use-devices";
 
 const COUNTDOWN = 3;
+
+// three.js is loaded here and nowhere else in Kadence: only a ride needs it.
+const RideScene = dynamic(() => import("./scene/ride-scene"), {
+  ssr: false,
+  loading: () => <Sky />,
+});
 
 /**
  * The ride, on a screen two metres from the saddle (ADR 0032): the
@@ -44,7 +53,7 @@ export function RideScreen({
   beeps,
   counting,
   onGo,
-  scene,
+  moment,
 }: {
   title: string;
   trial: boolean;
@@ -57,7 +66,8 @@ export function RideScreen({
   /** The countdown runs, and then `onGo` starts the ride. */
   counting: boolean;
   onGo: () => void;
-  scene: React.ReactNode;
+  /** Where the rider is on the course, for the landscape. */
+  moment: (now: number) => Moment;
 }) {
   const t = useTranslations("rulle.ride");
   const endWords = useTranslations("rulle.end");
@@ -67,11 +77,28 @@ export function RideScreen({
   const fullscreen = useFullscreen();
   const live = ride.live;
   const go = useRef(onGo);
+  const topRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  // How much of the screen the strip and the panel cover: the landscape frames the rest.
+  const [cover, setCover] = useState({ top: 0, bottom: 0 });
+  const shown = live !== null;
   useWakeLock(true);
 
   useEffect(() => {
     go.current = onGo;
   });
+
+  useEffect(() => {
+    const measure = () =>
+      setCover({
+        top: topRef.current?.offsetHeight ?? 0,
+        bottom: panelRef.current?.offsetHeight ?? 0,
+      });
+    const observer = new ResizeObserver(measure);
+    for (const element of [topRef.current, panelRef.current])
+      if (element) observer.observe(element);
+    return () => observer.disconnect();
+  }, [shown]);
 
   useEffect(() => {
     if (!counting) return;
@@ -121,38 +148,46 @@ export function RideScreen({
 
   return (
     <div className="bg-background relative h-svh w-full overflow-hidden">
-      <div className="absolute inset-0">{scene}</div>
+      <div className="absolute inset-0">
+        <RideScene course={course} moment={moment} top={cover.top} bottom={cover.bottom} />
+      </div>
       <div className="relative z-10 flex h-full flex-col">
         {live && (
-          <RideControls
-            title={title}
-            live={live}
-            blockCount={timeline?.blocks.length ?? 0}
-            canErg={Boolean(devices.trainer?.info.erg)}
-            connection={connection === "connected" ? null : connection}
-            muted={muted}
-            fullscreen={fullscreen}
-            onReconnect={() => void devices.connectTrainer()}
-            onPause={ride.pause}
-            onResume={ride.resume}
-            onSkip={ride.skip}
-            onIntensity={ride.setIntensity}
-            onErg={ride.setErg}
-            onMute={toggleSound}
-            onFullscreen={fullscreen.toggle}
-            onEnd={() => setEnding(true)}
-          />
-        )}
-        <div className="flex-1" />
-        {live && (
-          <div className="bg-card/85 border-border flex flex-col gap-3 border-t p-3 sm:p-4 lg:gap-4 lg:p-6">
-            <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-4">
+          <div ref={topRef}>
+            <RideControls
+              title={title}
+              live={live}
+              blockCount={timeline?.blocks.length ?? 0}
+              canErg={Boolean(devices.trainer?.info.erg)}
+              connection={connection === "connected" ? null : connection}
+              muted={muted}
+              fullscreen={fullscreen}
+              onReconnect={() => void devices.connectTrainer()}
+              onPause={ride.pause}
+              onResume={ride.resume}
+              onSkip={ride.skip}
+              onIntensity={ride.setIntensity}
+              onErg={ride.setErg}
+              onMute={toggleSound}
+              onFullscreen={fullscreen.toggle}
+              onEnd={() => setEnding(true)}
+            />
+            <div className="grid grid-cols-2 gap-3 p-3 sm:px-4 lg:grid-cols-3 lg:gap-4 lg:px-6">
               <WattTile live={live} rider={rider} />
               <BlockTile live={live} />
               <div className="col-span-2 lg:col-span-1">
                 <BodyTile live={live} />
               </div>
             </div>
+          </div>
+        )}
+        {/* The road, between the numbers above and the bar below. */}
+        <div className="flex-1" />
+        {live && (
+          <div
+            ref={panelRef}
+            className="bg-card/90 border-border flex flex-col gap-2 border-t px-3 pt-3 pb-2 sm:px-4 lg:px-6 lg:pt-4"
+          >
             {timeline ? (
               <IntervalBar
                 timeline={timeline}
