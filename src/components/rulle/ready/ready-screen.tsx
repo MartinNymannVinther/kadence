@@ -4,11 +4,11 @@ import { ArrowLeft, Play } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
-import type { BundledRoute, SessionTimeline } from "@/modules/rulle";
-import type { RulleSession } from "@/modules/rulle/service";
+import type { SessionTimeline } from "@/modules/rulle";
 import type { KeptRide } from "../ride/ride-store";
 import type { useCourse } from "../use-course";
 import type { Devices } from "../use-devices";
+import type { Picked } from "./choices";
 import { DeviceCard } from "./device-card";
 import { KeptBanner } from "./kept-banner";
 import { RouteCard } from "./route-card";
@@ -18,11 +18,12 @@ import { SessionCard } from "./session-card";
  * Before the ride, on the page rather than the big screen: the session,
  * the trainer and the route, each in its card, and one Start. The route is
  * ready by itself and the session was chosen by the coach, so for most
- * rides the only thing to do here is to connect the trainer.
+ * rides the only thing to do here is to connect the trainer; a rider with
+ * nothing planned chooses a session and a route (ADR 0035).
  */
 export function ReadyScreen({
-  session,
-  sessions,
+  picked,
+  choices,
   timeline,
   today,
   trial,
@@ -30,15 +31,14 @@ export function ReadyScreen({
   missing,
   devices,
   course,
-  route,
   kept,
   onChoose,
   onStart,
   onSaveKept,
   onDiscardKept,
 }: {
-  session: RulleSession | null;
-  sessions: RulleSession[];
+  picked: Picked | null;
+  choices: { today: Picked[]; team: Picked[]; dcu: Picked[] };
   timeline: SessionTimeline | null;
   today: string;
   trial: boolean;
@@ -46,7 +46,6 @@ export function ReadyScreen({
   missing: boolean;
   devices: Devices;
   course: ReturnType<typeof useCourse>;
-  route: BundledRoute;
   kept: KeptRide | null;
   onChoose: (id: string | null) => void;
   onStart: () => void;
@@ -74,10 +73,12 @@ export function ReadyScreen({
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
         <SessionCard
-          session={session}
-          sessions={sessions}
+          picked={picked}
+          today={choices.today}
+          team={choices.team}
+          dcu={choices.dcu}
           timeline={timeline}
-          today={today}
+          todayDate={today}
           trial={trial}
           noFtp={noFtp}
           missing={missing}
@@ -87,10 +88,10 @@ export function ReadyScreen({
           <DeviceCard devices={devices} />
           <RouteCard
             state={course.state}
-            route={route}
-            bundledName={course.bundledName}
+            route={course.route}
+            routes={course.routes}
+            onChoose={course.chooseRoute}
             onFile={(file) => void course.loadFile(file)}
-            onBundled={() => void course.loadBundled()}
           />
         </div>
       </div>

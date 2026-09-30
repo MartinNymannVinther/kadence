@@ -23,6 +23,7 @@ export default function RideScene({
   top,
   bottom,
   words,
+  finish,
   onSeen,
   onSound,
 }: {
@@ -33,6 +34,8 @@ export default function RideScene({
   top: number;
   bottom: number;
   words: SceneWords;
+  /** A race's course: the finish arch where the lap ends. */
+  finish: boolean;
   onSeen: (key: keyof Seen, count: number) => void;
   onSound: (kind: "bell" | "cheer") => void;
 }) {
@@ -60,7 +63,11 @@ export default function RideScene({
       world = new World(
         canvas,
         course,
-        { calm, light: window.innerWidth < 700 || (navigator.hardwareConcurrency ?? 8) <= 4 },
+        {
+          calm,
+          light: window.innerWidth < 700 || (navigator.hardwareConcurrency ?? 8) <= 4,
+          finish,
+        },
         latest.current.words,
         {
           seen: (key, count) => latest.current.onSeen(key, count),
@@ -96,7 +103,7 @@ export default function RideScene({
       resize.current = () => {};
       world.dispose();
     };
-  }, [course]);
+  }, [course, finish]);
 
   return (
     <div className="relative h-full w-full">

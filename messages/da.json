@@ -681,7 +681,7 @@
       },
       "rulle": {
         "title": "Rulle: passet på hometraineren",
-        "body": "Kan du ikke komme ud, så kør dagens pas indendørs i Rulle: i menuen, eller \"Kør indendørs\" på passet. Forbind hometraineren med ét tryk. En smart trainer styrer selv watt i hver blok (ERG), så du bare skal træde; kan traineren kun måle, rammer du selv tallene. Et pulsbælte kan forbindes ved siden af. Skærmen viser watt mod mål, tiden tilbage af blokken og hele passet som en bjælke, du kører hen over, stort nok til at læse fra cyklen. Mellemrum holder pause, pil højre springer til næste blok, pil op og ned gør passet lettere eller hårdere. Holder du op med at træde, holder Rulle pause med dig. Når passet er slut, gemmes turen som en almindelig tur på passet, og du siger, hvor hårdt det var. Uden net venter turen i browseren. Rulle kræver Chrome eller Edge på en computer eller Android; på iPhone kan appen Bluefy. Undervejs sker der små ting en gang imellem – en el-ladcykel, en bil med sprinklervæske, en hund – og holder du pause længe nok, sætter du dig på en café. De tælles med i dagens små ting, når du er færdig; tallene og bjælken får lov at være i fred."
+        "body": "Kan du ikke komme ud, så kør dagens pas indendørs i Rulle: i menuen, eller \"Kør indendørs\" på passet. Forbind hometraineren med ét tryk. En smart trainer styrer selv watt i hver blok (ERG), så du bare skal træde; kan traineren kun måle, rammer du selv tallene. Et pulsbælte kan forbindes ved siden af. Skærmen viser watt mod mål, tiden tilbage af blokken og hele passet som en bjælke, du kører hen over, stort nok til at læse fra cyklen. Mellemrum holder pause, pil højre springer til næste blok, pil op og ned gør passet lettere eller hårdere. Holder du op med at træde, holder Rulle pause med dig. Når passet er slut, gemmes turen som en almindelig tur på passet, og du siger, hvor hårdt det var. Uden net venter turen i browseren. Rulle kræver Chrome eller Edge på en computer eller Android; på iPhone kan appen Bluefy. Undervejs sker der små ting en gang imellem – en el-ladcykel, en bil med sprinklervæske, en hund – og holder du pause længe nok, sætter du dig på en café. De tælles med i dagens små ting, når du er færdig; tallene og bjælken får lov at være i fred. Har du ikke noget pas i dag, kan du vælge et af holdets egne eller DCU's standardpas, og du kan vælge mellem ruterne – blandt dem DM-omgangen fra B&U DM 2026 i Vejle med mål på toppen. K viser og skjuler det lille kort over ruten."
       },
       "keys": {
         "title": "Upload-nøgler",
@@ -2651,12 +2651,25 @@
       "blocks": "{count, plural, one {# blok} other {# blokke}}",
       "pick": "Vælg",
       "free": "Kør frit",
-      "none": "Du har ikke noget cykelpas med intervaller i dag. Kør frit, eller åbn et pas i kalenderen og tryk “Kør indendørs”.",
+      "none": "Du har ikke noget cykelpas i dag. Vælg et af holdets pas eller DCU's standardpas – eller kør frit.",
       "missing": "Det pas kan ikke køres her: det findes ikke, eller det har ingen intervaller.",
       "done": "Passet er allerede gjort. Kører du det igen, gemmes turen for sig selv.",
       "otherDay": "Passet ligger {day}. Turen lander på den dag, du kører den.",
       "noFtp": "Der er ingen FTP på dig endnu, så passet køres frit: du rammer zonerne efter følelsen og pulsen. Din træner kan sætte den.",
-      "trial": "Du prøver passet med rytterens watt. En prøvetur gemmes ikke."
+      "trial": "Du prøver passet med rytterens watt. En prøvetur gemmes ikke.",
+      "fromTeam": "Pas fra holdets bibliotek",
+      "fromDcu": "Standardpas fra DCU",
+      "whenNote": "DCU sætter det: {when}. Det er en rettesnor, ikke en regel.",
+      "source": "Kilde: {source}. Opvarmning, pauser og nedkørsel er Kadences.",
+      "pickOther": "Vælg et andet pas",
+      "pickTitle": "Vælg pas",
+      "pickBody": "Dagens planlagte pas først, så holdets egne og DCU's standardpas. Et pas, du selv vælger, gemmes som en almindelig tur.",
+      "today": "I dag",
+      "team": "Holdets pas",
+      "dcu": "DCU's standardpas",
+      "dcuNote": "Bygget på DCU's intervalark og eksempeluger. Din træner kender din plan bedst.",
+      "when": "DCU: {when}",
+      "freeMeta": "Så længe du vil, uden intervaller"
     },
     "devices": {
       "heading": "Hometrainer og puls",
@@ -2686,7 +2699,6 @@
       "facts": "{km} km · {climb} højdemeter",
       "own": "Kør din egen rute (GPX)",
       "ownHint": "En GPX-fil med højder fra fx Komoot eller Strava. Den læses her i browseren og sendes ingen steder.",
-      "bundled": "Tilbage til {name}",
       "error": {
         "not_gpx": "Det er ikke en GPX-fil.",
         "no_points": "Filen har ingen punkter.",
@@ -2695,11 +2707,28 @@
         "too_short": "Ruten er for kort.",
         "corrupt": "Filen kan ikke læses.",
         "fetch": "Ruten kunne ikke hentes."
+      },
+      "pick": "Vælg rute",
+      "ownTitle": "Din egen rute"
+    },
+    "routes": {
+      "bu-dm-2026": {
+        "name": "B&U DM 2026 · Vejle",
+        "about": "DM-omgangen: ned ad Sleldevej og op ad Vardevej til målet på Vejledalen."
+      },
+      "vejle": {
+        "name": "Vejle Fjord og Kiddesvej",
+        "about": "Langs fjorden, op ad Munkebjerg og hjem over Kiddesvej."
+      },
+      "himmelbjerget": {
+        "name": "Himmelbjerget fra Ry",
+        "about": "Gennem skoven op til Himmelbjerget og hjem forbi Gammel Rye."
       }
     },
     "credits": {
       "osm": "Veje © OpenStreetMap-bidragydere (ODbL)",
-      "eudem": "Højder: EU-DEM (Copernicus)"
+      "eudem": "Højder: EU-DEM (Copernicus)",
+      "race": "Ruten: B&U DM 2026, Vejle Cykelklub"
     },
     "ride": {
       "watt": "Watt",
@@ -2738,14 +2767,18 @@
       "left": "{time} tilbage",
       "countdown": "Gør klar",
       "profile": "Hele passet: {duration}. {elapsed} kørt.",
-      "routeProfile": "Ruten: {km} km. Omgang {lap}, {along} km inde."
+      "routeProfile": "Ruten: {km} km. Omgang {lap}, {along} km inde.",
+      "map": "Kort over ruten",
+      "mapShow": "Vis kortet (K)",
+      "mapHide": "Skjul kortet (K)"
     },
     "scene": {
       "chalkName": "KOM SÅ {name}!",
       "chalkAnyone": "KOM SÅ!",
       "chalkTop": "SNART TOPPEN",
       "cafe": "CAFÉ",
-      "stand": "SODAVAND · 10 KR."
+      "stand": "SODAVAND · 10 KR.",
+      "finish": "MÅL"
     },
     "end": {
       "title": "Afslut turen?",
@@ -2789,6 +2822,7 @@
     "little": {
       "title": "Dagens små ting",
       "himmelbjerg": "{metres} højdemeter – det er {times, number} gange Himmelbjerget.",
+      "finish": "{count, plural, one {Over målstregen én gang.} other {Over målstregen # gange.}}",
       "cargoOvertaken": "{count, plural, one {Overhalet af en el-ladcykel. Den kører 25.} other {Overhalet af # el-ladcykler. De kører 25.}}",
       "cargoOvertook": "{count, plural, one {Du overhalede en el-ladcykel.} other {Du overhalede # el-ladcykler.}}",
       "car": "{count, plural, one {Døbt i sprinklervæske.} other {Døbt i sprinklervæske # gange.}}",

@@ -96,8 +96,12 @@ export function visitsOnLap(course: Course, lap: number): Visit[] {
   const clear: [number, number][] = [];
   if (chalk) clear.push([chalk.from - CLEAR, chalk.to + CLEAR / 3]);
   const visits: Visit[] = [];
-  // The cargo bike's own climb: on the first lap always, after that now and then.
-  const climb = steepestClimb(course, 300, 0.04, chalk);
+  // The cargo bike's own climb, well away from the chalk's: on the first
+  // lap always, after that now and then. A route with no real climb but
+  // the chalk's has it where the road rises a little.
+  const theirs = chalk ? { from: chalk.from - CLEAR, to: chalk.to + CLEAR } : null;
+  const climb =
+    steepestClimb(course, 300, 0.04, theirs) ?? steepestClimb(course, 300, 0.025, theirs);
   if (climb && (lap === 0 || hash(lap, seed, 71) < 0.5)) {
     visits.push({ kind: "cargo", at: climb.from + 40 });
     // The rest of the hill is the cargo bike's too.

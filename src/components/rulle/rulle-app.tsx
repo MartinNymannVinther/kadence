@@ -1,10 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
-import { buildTimeline, type BundledRoute, type Recording, type Seen } from "@/modules/rulle";
+import { useLocale, useTranslations } from "next-intl";
+import { buildTimeline, type Recording, type Seen } from "@/modules/rulle";
 import type { RulleSession, RulleStart } from "@/modules/rulle/service";
 import { DoneScreen } from "./done-screen";
+import { dcuPicks, pickOf, plannedPick, teamPicks } from "./ready/choices";
 import { ReadyScreen } from "./ready/ready-screen";
 import { Beeps } from "./ride/beeps";
 import { forgetRide, keepRide, localOffsetSeconds, type RideMeta } from "./ride/ride-store";
@@ -20,34 +21,38 @@ type Phase = "ready" | "counting" | "riding" | "done";
 /**
  * Rulle, from the first screen to the last (ADR 0033): the session and
  * its devices before the ride, the ride itself, and what became of it.
- * The server has chosen the session and the thresholds; everything else —
- * Bluetooth, the route, the clock, the recording — lives here, in the
+ * The server has chosen the session and the thresholds, and brought the
+ * team's library; everything else — the choice of session and route
+ * (ADR 0035), Bluetooth, the clock, the recording — lives here, in the
  * browser, and reaches Kadence only as the finished ride's FIT file.
  */
 export function RulleApp({
   start,
-  route,
   today,
   name,
 }: {
   start: RulleStart;
-  route: BundledRoute;
   today: string;
   /** The rider's first name, for the chalk on the climb. */
   name: string | null;
 }) {
   const t = useTranslations("rulle");
-  const sessions = useMemo(() => {
-    const all = [start.chosen, ...start.today].filter((s): s is RulleSession => s !== null);
-    return all.filter((s, i) => all.findIndex((x) => x.id === s.id) === i);
-  }, [start]);
+  const locale = useLocale();
+  const choices = useMemo(() => {
+    const planned = [start.chosen, ...start.today].filter((s): s is RulleSession => s !== null);
+    const today = planned
+      .filter((s, i) => planned.findIndex((x) => x.id === s.id) === i)
+      .map(plannedPick);
+    return { today, team: teamPicks(start.library), dcu: dcuPicks(locale) };
+  }, [start, locale]);
   const [chosenId, setChosenId] = useState<string | null>(start.chosen?.id ?? null);
-  const session = sessions.find((s) => s.id === chosenId) ?? null;
+  const picked = pickOf(chosenId, [...choices.today, ...choices.team, ...choices.dcu]);
+  const session = picked?.session ?? null;
   const riderOf = session?.riderId ?? start.riderId;
   const thresholds = riderOf ? (start.thresholds[riderOf] ?? null) : null;
   const timeline = useMemo(
-    () => (session ? buildTimeline(session.structure, thresholds ?? {}) : null),
-    [session, thresholds],
+    () => (picked ? buildTimeline(picked.structure, thresholds ?? {}) : null),
+    [picked, thresholds],
   );
   const trial = session ? session.riderId !== start.riderId : start.riderId === null;
   const keepFor = trial ? null : start.riderId;
@@ -55,8 +60,11 @@ export function RulleApp({
   const [sensors] = useState(() => new Sensors());
   const [beeps] = useState(() => new Beeps());
   const devices = useDevices(sensors);
-  const course = useCourse(route);
+  const course = useCourse();
   const courseReady = course.state.status === "ready" ? course.state.course : null;
+  // A race's course has its finish, where the lap ends: not a route of the rider's own.
+  const finish =
+    Boolean(course.route.finish) && course.state.status === "ready" && !course.state.own;
   const [phase, setPhase] = useState<Phase>("ready");
   const [finished, setFinished] = useState<{
     recording: Recording;
@@ -71,10 +79,10 @@ export function RulleApp({
   const meta: RideMeta = useMemo(
     () => ({
       sessionId: trial ? null : (session?.id ?? null),
-      title: session?.title ?? (courseReady?.name || t("session.freeTitle")),
+      title: picked?.title ?? (courseReady?.name || t("session.freeTitle")),
       localOffsetSeconds: localOffsetSeconds(),
     }),
-    [trial, session, courseReady, t],
+    [trial, session, picked, courseReady, t],
   );
 
   const ride = useRide({
@@ -127,21 +135,21 @@ export function RulleApp({
         }}
         moment={ride.moment}
         name={trial ? null : name}
+        finish={finish}
       />
     );
 
   return (
     <ReadyScreen
-      session={session}
-      sessions={sessions}
+      picked={picked}
+      choices={choices}
       timeline={timeline}
       today={today}
       trial={trial}
-      noFtp={Boolean(session) && !thresholds?.ftp}
+      noFtp={Boolean(picked) && !thresholds?.ftp}
       missing={start.missing}
       devices={devices}
       course={course}
-      route={route}
       kept={kept}
       onChoose={setChosenId}
       onStart={() => {

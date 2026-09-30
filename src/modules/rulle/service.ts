@@ -4,6 +4,7 @@ import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import type { Me } from "@/modules/team/access";
 import { getRider } from "@/modules/team/riders";
 import { getSession, listSessions, type CalendarSession } from "@/modules/training/sessions";
+import { listTemplates } from "@/modules/training/templates";
 import type { BikeStructure } from "@/modules/workouts/structure";
 import { rideableStructure } from "./rideable";
 
@@ -20,6 +21,10 @@ import { rideableStructure } from "./rideable";
  * session on the trainer — is a trial: ridden with the rider's watts,
  * never saved, since a coach's legs are not the rider's ride. The page
  * tells which it is by comparing the session's rider with `riderId`.
+ *
+ * With no session planned, a rider may choose one (ADR 0035): the team's
+ * own bike sessions from the library, read as any member reads it, or
+ * DCU's (`DCU_BIKE_SESSIONS`, which need nothing from the server).
  */
 
 export type RulleSession = {
@@ -35,6 +40,15 @@ export type RulleSession = {
 
 export type RiderThresholds = { ftp: number | null; thresholdHr: number | null };
 
+/** A bike session from the team's library, with steps to ride (ADR 0035). */
+export type RulleTemplate = {
+  id: string;
+  title: string;
+  description: string;
+  plannedMinutes: number;
+  structure: BikeStructure;
+};
+
 export type RulleStart = {
   /** The viewer's own rider row, when they ride. */
   riderId: string | null;
@@ -45,6 +59,8 @@ export type RulleStart = {
   thresholds: Record<string, RiderThresholds>;
   /** A session was asked for that cannot be ridden here: not found, or no steps. */
   missing: boolean;
+  /** The team's own bike sessions from the library, to choose when none is planned. */
+  library: RulleTemplate[];
 };
 
 function toRulleSession(session: CalendarSession): RulleSession | null {
@@ -84,12 +100,28 @@ export async function rulleStart(
     const rider = await getRider(ctx, id);
     if (rider) thresholds[id] = { ftp: rider.ftpWatts, thresholdHr: rider.thresholdHr };
   }
+  // The library every member of the team reads (ADR 0035): its bike sessions with steps.
+  const library = (await listTemplates(ctx)).flatMap((t): RulleTemplate[] => {
+    const structure = rideableStructure(t.sport, t.structure);
+    return structure
+      ? [
+          {
+            id: t.id,
+            title: t.name,
+            description: t.description,
+            plannedMinutes: t.plannedMinutes,
+            structure,
+          },
+        ]
+      : [];
+  });
   return {
     riderId,
     today: own,
     chosen,
     thresholds,
     missing: askedId !== null && askedRideable === null,
+    library,
   };
 }
 

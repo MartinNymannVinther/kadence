@@ -4,7 +4,6 @@ import { RulleApp } from "@/components/rulle/rulle-app";
 import { getOrgContext } from "@/core/auth/session";
 import { todayInCopenhagen } from "@/core/dates";
 import { redirect } from "@/i18n/navigation";
-import { bundledRoute, DEFAULT_ROUTE } from "@/modules/rulle";
 import { rulleStart } from "@/modules/rulle/service";
 import { whoAmI } from "@/modules/team/access";
 
@@ -37,5 +36,5 @@ export default async function RullePage({
   const start = await rulleStart(ctx, me, asked, today);
   // The first name, chalked on the steepest climb (ADR 0034): the rider's own screen only.
   const name = me?.rider?.name.trim().split(/\s+/)[0] || null;
-  return <RulleApp start={start} route={bundledRoute(DEFAULT_ROUTE)} today={today} name={name} />;
+  return <RulleApp start={start} today={today} name={name} />;
 }

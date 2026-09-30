@@ -23,11 +23,12 @@ export type SmallThingsHooks = {
 };
 
 /** Words the landscape shows, in the reader's language. */
-export type SceneWords = { name: string; top: string; cafe: string; stand: string };
+export type SceneWords = { name: string; top: string; cafe: string; stand: string; finish: string };
 
 export class SmallThings {
   readonly group = new THREE.Group();
-  private readonly material = new THREE.MeshLambertMaterial({
+  /** The flat-shaded, vertex-coloured material every small thing is drawn in. */
+  readonly material = new THREE.MeshLambertMaterial({
     vertexColors: true,
     flatShading: true,
   });

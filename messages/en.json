@@ -681,7 +681,7 @@
       },
       "rulle": {
         "title": "Rulle: the session on the trainer",
-        "body": "When you can't get outside, ride today's session indoors in Rulle: in the menu, or \"Ride indoors\" on the session. Connect the trainer with one press. A smart trainer sets the watts of each block itself (ERG), so all you do is pedal; a trainer that only measures leaves the numbers to you. A heart-rate strap can be connected beside it. The screen shows the watts against the target, the time left of the block and the whole session as a bar you ride across, large enough to read from the bike. Space pauses, the right arrow skips to the next block, up and down make the session easier or harder. Stop pedalling, and Rulle pauses with you. When the session is over, the ride is saved as an ordinary ride on the session, and you say how hard it was. Without a connection the ride waits in the browser. Rulle needs Chrome or Edge on a computer or Android; on an iPhone, the Bluefy app can. Now and then something small happens on the way – an electric cargo bike, a car with windscreen washer fluid, a dog – and pause long enough and you sit down at a café. They are counted in today's little things when you finish; the numbers and the bar are left in peace."
+        "body": "When you can't get outside, ride today's session indoors in Rulle: in the menu, or \"Ride indoors\" on the session. Connect the trainer with one press. A smart trainer sets the watts of each block itself (ERG), so all you do is pedal; a trainer that only measures leaves the numbers to you. A heart-rate strap can be connected beside it. The screen shows the watts against the target, the time left of the block and the whole session as a bar you ride across, large enough to read from the bike. Space pauses, the right arrow skips to the next block, up and down make the session easier or harder. Stop pedalling, and Rulle pauses with you. When the session is over, the ride is saved as an ordinary ride on the session, and you say how hard it was. Without a connection the ride waits in the browser. Rulle needs Chrome or Edge on a computer or Android; on an iPhone, the Bluefy app can. Now and then something small happens on the way – an electric cargo bike, a car with windscreen washer fluid, a dog – and pause long enough and you sit down at a café. They are counted in today's little things when you finish; the numbers and the bar are left in peace. With no session today, you can choose one of the team's own or DCU's standard sessions, and choose between the routes – among them the championship lap from B&U DM 2026 in Vejle, with its finish at the top. K shows and hides the little map of the route."
       },
       "keys": {
         "title": "Upload keys",
@@ -2651,12 +2651,25 @@
       "blocks": "{count, plural, one {# block} other {# blocks}}",
       "pick": "Choose",
       "free": "Ride freely",
-      "none": "You have no bike session with intervals today. Ride freely, or open a session in the calendar and press “Ride indoors”.",
+      "none": "You have no bike session today. Choose one of the team's or DCU's standard sessions – or ride freely.",
       "missing": "That session can't be ridden here: it doesn't exist, or it has no intervals.",
       "done": "The session is already done. If you ride it again, the ride is saved on its own.",
       "otherDay": "The session is on {day}. The ride lands on the day you ride it.",
       "noFtp": "You have no FTP yet, so the session is ridden freely: you hit the zones by feel and heart rate. Your coach can set it.",
-      "trial": "You're trying the session with the rider's watts. A trial ride is not saved."
+      "trial": "You're trying the session with the rider's watts. A trial ride is not saved.",
+      "fromTeam": "A session from the team's library",
+      "fromDcu": "A standard session from DCU",
+      "whenNote": "DCU puts it: {when}. A guide, not a rule.",
+      "source": "Source: {source}. The warm-up, pauses and cool-down are Kadence's.",
+      "pickOther": "Choose another session",
+      "pickTitle": "Choose a session",
+      "pickBody": "Today's planned sessions first, then the team's own and DCU's standard sessions. A session you choose yourself is saved as an ordinary ride.",
+      "today": "Today",
+      "team": "The team's sessions",
+      "dcu": "DCU's standard sessions",
+      "dcuNote": "Built on DCU's interval sheet and example weeks. Your coach knows your plan best.",
+      "when": "DCU: {when}",
+      "freeMeta": "As long as you like, no intervals"
     },
     "devices": {
       "heading": "Trainer and heart rate",
@@ -2686,7 +2699,6 @@
       "facts": "{km} km · {climb} m of climbing",
       "own": "Ride your own route (GPX)",
       "ownHint": "A GPX file with elevation from, say, Komoot or Strava. It is read here in the browser and sent nowhere.",
-      "bundled": "Back to {name}",
       "error": {
         "not_gpx": "That isn't a GPX file.",
         "no_points": "The file has no points.",
@@ -2695,11 +2707,28 @@
         "too_short": "The route is too short.",
         "corrupt": "The file can't be read.",
         "fetch": "The route couldn't be loaded."
+      },
+      "pick": "Choose a route",
+      "ownTitle": "Your own route"
+    },
+    "routes": {
+      "bu-dm-2026": {
+        "name": "B&U DM 2026 · Vejle",
+        "about": "The championship lap: down Sleldevej and up Vardevej to the finish on Vejledalen."
+      },
+      "vejle": {
+        "name": "Vejle Fjord and Kiddesvej",
+        "about": "Along the fjord, up Munkebjerg and home over Kiddesvej."
+      },
+      "himmelbjerget": {
+        "name": "Himmelbjerget from Ry",
+        "about": "Through the woods up to Himmelbjerget and home past Gammel Rye."
       }
     },
     "credits": {
       "osm": "Roads © OpenStreetMap contributors (ODbL)",
-      "eudem": "Elevation: EU-DEM (Copernicus)"
+      "eudem": "Elevation: EU-DEM (Copernicus)",
+      "race": "Course: B&U DM 2026, Vejle Cykelklub"
     },
     "ride": {
       "watt": "Watts",
@@ -2738,14 +2767,18 @@
       "left": "{time} left",
       "countdown": "Get ready",
       "profile": "The whole session: {duration}. {elapsed} ridden.",
-      "routeProfile": "The route: {km} km. Lap {lap}, {along} km in."
+      "routeProfile": "The route: {km} km. Lap {lap}, {along} km in.",
+      "map": "Map of the route",
+      "mapShow": "Show the map (K)",
+      "mapHide": "Hide the map (K)"
     },
     "scene": {
       "chalkName": "COME ON {name}!",
       "chalkAnyone": "COME ON!",
       "chalkTop": "ALMOST THERE",
       "cafe": "CAFÉ",
-      "stand": "SODA · 10 KR."
+      "stand": "SODA · 10 KR.",
+      "finish": "FINISH"
     },
     "end": {
       "title": "End the ride?",
@@ -2789,6 +2822,7 @@
     "little": {
       "title": "Today's little things",
       "himmelbjerg": "{metres} m of climbing – that is Himmelbjerget, Denmark's famous 147-metre hill, {times, number} times.",
+      "finish": "{count, plural, one {Across the finish line once.} other {Across the finish line # times.}}",
       "cargoOvertaken": "{count, plural, one {Overtaken by an electric cargo bike. It does 25.} other {Overtaken by # electric cargo bikes. They do 25.}}",
       "cargoOvertook": "{count, plural, one {You overtook an electric cargo bike.} other {You overtook # electric cargo bikes.}}",
       "car": "{count, plural, one {Baptised in windscreen washer fluid.} other {Baptised in windscreen washer fluid # times.}}",

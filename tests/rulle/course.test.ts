@@ -2,10 +2,13 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
   buildCourse,
+  bundledRoute,
   COURSE,
   courseAt,
+  DEFAULT_ROUTE,
   readRouteGpx,
   RouteError,
+  ROUTES,
   type RoutePoint,
 } from "@/modules/rulle";
 
@@ -103,5 +106,28 @@ describe("what is refused", () => {
   it("points that never move", () => {
     const still = Array.from({ length: 5 }, () => ({ lat: 55, lon: 9, ele: 1 }));
     expect(() => buildCourse({ name: "", points: still })).toThrow(RouteError);
+  });
+});
+
+describe("the routes that come with Kadence", () => {
+  it("are what their files come to, a lap each", () => {
+    for (const route of ROUTES) {
+      const course = buildCourse(readRouteGpx(readFileSync(`public${route.file}`, "utf8")));
+      expect(Math.round(course.length / 100) / 10).toBe(route.km);
+      expect(Math.abs(course.ascent - route.climb)).toBeLessThan(3);
+      expect(course.outAndBack).toBe(false);
+    }
+  });
+
+  it("start with the B&U DM course, whose lap ends at its finish on Vejledalen", () => {
+    expect(DEFAULT_ROUTE).toBe("bu-dm-2026");
+    const dm = bundledRoute("bu-dm-2026");
+    expect(dm.finish).toBe(true);
+    const file = readRouteGpx(readFileSync(`public${dm.file}`, "utf8"));
+    expect(file.name).toBe("B&U DM 2026: Linjeløbet i Vejle");
+    // The race's start and finish: Vejledalen (toppen).
+    expect(file.points[0]!.lat).toBeCloseTo(55.7222, 3);
+    expect(file.points[0]!.lon).toBeCloseTo(9.4899, 3);
+    expect(bundledRoute("nowhere").key).toBe("bu-dm-2026");
   });
 });

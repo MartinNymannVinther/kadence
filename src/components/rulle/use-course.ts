@@ -1,27 +1,33 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import {
   buildCourse,
+  bundledRoute,
+  DEFAULT_ROUTE,
   readRouteGpx,
   RouteError,
   ROUTE_LIMITS,
-  type BundledRoute,
+  ROUTES,
   type Course,
   type RouteErrorCode,
 } from "@/modules/rulle";
 
 /**
- * The route to ride: the one that comes with Kadence, fetched as the
- * ordinary GPX file it is and read through the same import as a rider's
- * own (`readRouteGpx`, `buildCourse`), or a GPX the rider picks, which is
- * read here in the browser and sent nowhere.
+ * The route to ride: one of those that come with Kadence (ADR 0035),
+ * fetched as the ordinary GPX file it is and read through the same import
+ * as a rider's own (`readRouteGpx`, `buildCourse`), or a GPX the rider
+ * picks, which is read here in the browser and sent nowhere. The route
+ * chosen last is remembered on this device.
  */
 
 export type CourseState =
   | { status: "loading" }
   | { status: "ready"; course: Course; own: boolean }
   | { status: "error"; code: RouteErrorCode | "fetch"; own: boolean };
+
+const REMEMBERED = "kadence.rulle.route";
+const CHANGED = "kadence:rulle-route";
 
 function read(xml: string, own: boolean): CourseState {
   try {
@@ -41,30 +47,56 @@ async function fetchBundled(file: string): Promise<CourseState> {
   }
 }
 
-export function useCourse(route: BundledRoute) {
-  const [state, setState] = useState<CourseState>({ status: "loading" });
-  const [bundledName, setBundledName] = useState("");
+/** Chosen on this page: what counts when the browser will not remember it. */
+let chosenHere: string | null = null;
 
-  const settle = useCallback((next: CourseState) => {
-    if (next.status === "ready" && !next.own) setBundledName(next.course.name);
-    setState(next);
-  }, []);
+function rememberedKey(): string {
+  if (chosenHere) return chosenHere;
+  try {
+    return bundledRoute(window.localStorage.getItem(REMEMBERED)).key;
+  } catch {
+    return DEFAULT_ROUTE;
+  }
+}
+
+function subscribe(listener: () => void): () => void {
+  window.addEventListener(CHANGED, listener);
+  window.addEventListener("storage", listener);
+  return () => {
+    window.removeEventListener(CHANGED, listener);
+    window.removeEventListener("storage", listener);
+  };
+}
+
+export function useCourse() {
+  const key = useSyncExternalStore(subscribe, rememberedKey, () => DEFAULT_ROUTE);
+  const route = bundledRoute(key);
+  const [state, setState] = useState<CourseState>({ status: "loading" });
+  // Asked again for the same route: back from the rider's own file to it.
+  const [asked, setAsked] = useState(0);
 
   useEffect(() => {
     let current = true;
     void fetchBundled(route.file).then((next) => {
-      if (current) settle(next);
+      if (current) setState(next);
     });
     return () => {
       current = false;
     };
-  }, [route.file, settle]);
+  }, [route.file, asked]);
 
-  /** Back from the rider's own route to the one that comes with Kadence. */
-  const loadBundled = useCallback(async () => {
+  /** One of the routes that come with Kadence, instead of the one there is. */
+  const chooseRoute = useCallback((next: string) => {
+    chosenHere = bundledRoute(next).key;
+    try {
+      window.localStorage.setItem(REMEMBERED, chosenHere);
+    } catch {
+      // Not remembered, then: chosen all the same, for this page.
+    }
     setState({ status: "loading" });
-    settle(await fetchBundled(route.file));
-  }, [route.file, settle]);
+    setAsked((n) => n + 1);
+    window.dispatchEvent(new Event(CHANGED));
+  }, []);
 
   const loadFile = useCallback(async (file: File) => {
     if (file.size > ROUTE_LIMITS.maxChars) {
@@ -74,5 +106,5 @@ export function useCourse(route: BundledRoute) {
     setState(read(await file.text(), true));
   }, []);
 
-  return { state, bundledName, loadFile, loadBundled };
+  return { state, route, routes: ROUTES, chooseRoute, loadFile };
 }

@@ -2,6 +2,7 @@
  * Cycling Denmark's (DCU's) training recommendations as data and pure
  * functions: age classes, the 2025 hours and the weekly corridor, the
  * season's phases, the strength programmes and how often to train them,
+ * the interval forms as sessions to ride,
  * and the season plan with its deviation from DCU (ADR 0014). Every
  * number names its source document and page; `sources.ts` lists them.
  *
@@ -53,6 +54,7 @@ export {
   type IntervalForm,
 } from "./intensity";
 export { STRENGTH_PROGRAMMES, type StrengthProgramme } from "./strength";
+export { DCU_BIKE_SESSIONS, type DcuBikeSession } from "./bike-sessions";
 export {
   BUILD_ENDS,
   BUILD_STARTS,

@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Map as MapIcon,
   Maximize,
   Minimize,
   Minus,
@@ -21,7 +22,7 @@ import type { LinkState } from "./bluetooth/reconnect";
  * The strip across the top of the ride: what is being ridden and where in
  * it, whether the trainer is still there, and the few things a rider
  * reaches for mid-ride — pause, the next block, the watts a little lower
- * or higher, ERG on or off, the sound, full screen, and the end. Every
+ * or higher, ERG on or off, the sound, the little map, full screen, and the end. Every
  * control has a key as well (listed in `ride.keys`), so a rider can reach
  * a keyboard on the handlebars rather than the screen.
  */
@@ -32,6 +33,7 @@ export function RideControls({
   canErg,
   connection,
   muted,
+  mapShown,
   fullscreen,
   onReconnect,
   onPause,
@@ -40,6 +42,7 @@ export function RideControls({
   onIntensity,
   onErg,
   onMute,
+  onMap,
   onFullscreen,
   onEnd,
 }: {
@@ -49,6 +52,7 @@ export function RideControls({
   canErg: boolean;
   connection: LinkState | null;
   muted: boolean;
+  mapShown: boolean;
   fullscreen: { on: boolean; available: boolean };
   onReconnect: () => void;
   onPause: () => void;
@@ -57,6 +61,7 @@ export function RideControls({
   onIntensity: (value: number) => void;
   onErg: (on: boolean) => void;
   onMute: () => void;
+  onMap: () => void;
   onFullscreen: () => void;
   onEnd: () => void;
 }) {
@@ -147,6 +152,15 @@ export function RideControls({
           onClick={onMute}
         >
           {muted ? <VolumeX /> : <Volume2 />}
+        </Button>
+        <Button
+          size="icon-lg"
+          variant="outline"
+          aria-label={mapShown ? t("mapHide") : t("mapShow")}
+          aria-pressed={mapShown}
+          onClick={onMap}
+        >
+          <MapIcon />
         </Button>
         {fullscreen.available && (
           <Button

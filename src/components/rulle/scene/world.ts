@@ -3,6 +3,7 @@ import { courseAt, swayAt, type Course } from "@/modules/rulle";
 import { Atmosphere } from "./atmosphere";
 import { CameraRig } from "./camera-rig";
 import { inPaddocks } from "./farmyard";
+import { FinishLine } from "./finish-line";
 import { Ground } from "./ground";
 import { Pace } from "./pace";
 import type { Pause } from "./pause-scene";
@@ -29,6 +30,8 @@ export type WorldOptions = {
   calm: boolean;
   /** A small or slow device: fewer trees and tufts, no antialiasing, fewer pixels. */
   light: boolean;
+  /** A race's course: its finish, with the arch, where the lap ends (ADR 0035). */
+  finish?: boolean;
 };
 
 export type Moment = {
@@ -44,7 +47,7 @@ const QUIET: SmallThingsHooks = {
   sound: () => undefined,
   spray: () => undefined,
 };
-const NO_WORDS: SceneWords = { name: "", top: "", cafe: "", stand: "" };
+const NO_WORDS: SceneWords = { name: "", top: "", cafe: "", stand: "", finish: "" };
 
 /**
  * Metres behind the rider the camera rides, and ahead of the rider it
@@ -66,6 +69,7 @@ export class World {
   private readonly rider = new RiderFigure();
   private readonly atmosphere: Atmosphere;
   private readonly small: SmallThings;
+  private readonly finish: FinishLine | null;
   private readonly pace: Pace;
   private crank = 0;
   private frames = 0;
@@ -115,6 +119,13 @@ export class World {
       this.small.group,
       this.rider.group,
     );
+    this.finish = options.finish
+      ? new FinishLine(course, this.ground, this.small.material, words.finish, {
+          crossed: () => hooks.seen("finish", 1),
+          ring: () => hooks.sound("cheer"),
+        })
+      : null;
+    if (this.finish) this.scene.add(this.finish.group);
     // Only the rider, the rotors, the sky and the camera move; the rest is placed once.
     this.scene.matrixAutoUpdate = false;
     this.terrain.group.matrixAutoUpdate = false;
@@ -172,6 +183,7 @@ export class World {
     const eye = this.rig.camera.position;
     this.atmosphere.follow(eye, seconds);
     this.scenery.animate(seconds);
+    this.finish?.frame(distance, seconds);
     this.terrain.update(eye.x, eye.z, 1);
     if (this.frames++ % 20 === 0) this.roadside.update(eye);
     this.renderer.render(this.scene, this.rig.camera);
@@ -189,6 +201,7 @@ export class World {
     });
     this.rider.dispose();
     this.small.dispose();
+    this.finish?.dispose();
     this.atmosphere.dispose();
     this.renderer.dispose();
   }

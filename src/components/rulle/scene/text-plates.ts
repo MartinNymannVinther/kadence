@@ -127,6 +127,37 @@ export function boardTexture(text: string): THREE.CanvasTexture {
   return texture;
 }
 
+/** A finish arch's banner: the word large, dark on cream, a moss band either end. */
+export function bannerTexture(text: string): THREE.CanvasTexture {
+  const { element, context } = canvas(1024, 128);
+  context.fillStyle = "#f3eee4";
+  context.fillRect(0, 0, 1024, 128);
+  context.fillStyle = "#4a6b53";
+  context.fillRect(0, 0, 90, 128);
+  context.fillRect(934, 0, 90, 128);
+  context.font = `900 96px ${FONT}`;
+  context.fillStyle = "#2e2c29";
+  context.textAlign = "center";
+  context.textBaseline = "middle";
+  context.fillText(text, 512, 70);
+  const texture = new THREE.CanvasTexture(element);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+
+/** The finish line across the road: two rows of black and white squares. */
+export function checkerTexture(): THREE.CanvasTexture {
+  const { element, context } = canvas(512, 64);
+  for (let i = 0; i < 16; i++)
+    for (let j = 0; j < 2; j++) {
+      context.fillStyle = (i + j) % 2 === 0 ? "#f6f3ec" : "#2a2927";
+      context.fillRect(i * 32, j * 32, 32, 32);
+    }
+  const texture = new THREE.CanvasTexture(element);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+
 /** A "z", for a nap: a sprite that rises and fades. */
 export function zSprite(): THREE.Sprite {
   const { element, context } = canvas(64, 64);

@@ -17,10 +17,12 @@ import type { Thresholds } from "@/modules/load";
 import type { Course, SessionTimeline } from "@/modules/rulle";
 import { IntervalBar } from "./interval-bar";
 import { RideControls } from "./ride-controls";
+import { RouteMap } from "./route-map";
 import { BlockTile, BodyTile, WattTile } from "./ride-tiles";
 import { RouteProfile } from "./route-profile";
 import type { Beeps } from "./ride/beeps";
 import { INTENSITY } from "./ride/engine";
+import { useMapShown } from "./ride/use-map-shown";
 import type { Ride } from "./ride/use-ride";
 import { useFullscreen, useWakeLock } from "./ride/use-screen";
 import { Sky } from "./scene/sky";
@@ -55,6 +57,7 @@ export function RideScreen({
   onGo,
   moment,
   name,
+  finish,
 }: {
   title: string;
   trial: boolean;
@@ -71,6 +74,8 @@ export function RideScreen({
   moment: (now: number) => Moment;
   /** The rider's first name, for the chalk on the climb; null for anyone. */
   name: string | null;
+  /** A race's course: its finish, with the arch, where the lap ends. */
+  finish: boolean;
 }) {
   const t = useTranslations("rulle.ride");
   const endWords = useTranslations("rulle.end");
@@ -83,6 +88,7 @@ export function RideScreen({
       top: sceneWords("chalkTop"),
       cafe: sceneWords("cafe"),
       stand: sceneWords("stand"),
+      finish: sceneWords("finish"),
     }),
     [name, sceneWords],
   );
@@ -90,6 +96,7 @@ export function RideScreen({
   const [muted, setMuted] = useState(beeps.muted);
   const [count, setCount] = useState(counting ? COUNTDOWN : 0);
   const fullscreen = useFullscreen();
+  const [mapShown, toggleMap] = useMapShown();
   const live = ride.live;
   const go = useRef(onGo);
   const topRef = useRef<HTMLDivElement>(null);
@@ -148,6 +155,7 @@ export function RideScreen({
       else if (key === "e") ride.setErg(!live.erg);
       else if (key === "f") fullscreen.toggle();
       else if (key === "m") toggleSound();
+      else if (key === "k") toggleMap();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -170,6 +178,7 @@ export function RideScreen({
           top={cover.top}
           bottom={cover.bottom}
           words={words}
+          finish={finish}
           onSeen={ride.note}
           onSound={(kind) => beeps.play(kind)}
         />
@@ -184,6 +193,7 @@ export function RideScreen({
               canErg={Boolean(devices.trainer?.info.erg)}
               connection={connection === "connected" ? null : connection}
               muted={muted}
+              mapShown={mapShown}
               fullscreen={fullscreen}
               onReconnect={() => void devices.connectTrainer()}
               onPause={ride.pause}
@@ -192,6 +202,7 @@ export function RideScreen({
               onIntensity={ride.setIntensity}
               onErg={ride.setErg}
               onMute={toggleSound}
+              onMap={toggleMap}
               onFullscreen={fullscreen.toggle}
               onEnd={() => setEnding(true)}
             />
@@ -204,8 +215,14 @@ export function RideScreen({
             </div>
           </div>
         )}
-        {/* The road, between the numbers above and the bar below. */}
-        <div className="flex-1" />
+        {/* The road, between the numbers above and the bar below; the little map in its corner. */}
+        <div className="relative flex-1">
+          {live && mapShown && (
+            <div className="bg-card/85 border-border pointer-events-none absolute right-3 bottom-3 w-[min(30vmin,15rem)] rounded-xl border p-1.5 shadow-[var(--surface-shadow)] sm:right-4 lg:right-6">
+              <RouteMap course={course} distance={live.distance} finish={finish} />
+            </div>
+          )}
+        </div>
         {live && (
           <div
             ref={panelRef}
