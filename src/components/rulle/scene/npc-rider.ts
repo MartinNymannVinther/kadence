@@ -55,7 +55,13 @@ export class NpcRider {
   private crank: number;
   private raised = 0;
 
-  constructor(material: THREE.Material, kit: number, seed: number, leg: THREE.Material) {
+  constructor(
+    material: THREE.Material,
+    kit: number,
+    seed: number,
+    leg: THREE.Material,
+    shorts: THREE.Material,
+  ) {
     const [jersey, sleeve] = KITS[kit % KITS.length]!;
     const helmet = HELMETS[seed % HELMETS.length]!;
     this.shape = merged([
@@ -79,7 +85,8 @@ export class NpcRider {
     );
     this.group.add(this.arm);
     for (const side of [-1, 1]) {
-      const thigh = new Limb(0.07, leg);
+      // Bib shorts down to the knee, bare shins below them.
+      const thigh = new Limb(0.07, shorts);
       const shin = new Limb(0.05, leg);
       this.group.add(thigh.mesh, shin.mesh);
       this.legs.push({ thigh, shin, side });

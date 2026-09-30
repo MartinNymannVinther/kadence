@@ -49,6 +49,10 @@ export class Traffic {
   private readonly members: Member[] = [];
   private readonly pool: NpcRider[] = [];
   private readonly legs = new THREE.MeshLambertMaterial({ color: PALETTE.skin, flatShading: true });
+  private readonly shorts = new THREE.MeshLambertMaterial({
+    color: PALETTE.shorts,
+    flatShading: true,
+  });
   private flat: { at: number; lap: number; mesh: THREE.Mesh; counted: boolean } | null = null;
   private greeted = new Set<number>();
 
@@ -85,6 +89,7 @@ export class Traffic {
   dispose(): void {
     for (const npc of [...this.pool, ...this.members.map((m) => m.npc)]) npc.dispose();
     this.legs.dispose();
+    this.shorts.dispose();
     if (this.flat) this.flat.mesh.geometry.dispose();
   }
 
@@ -94,7 +99,7 @@ export class Traffic {
     const npc =
       found >= 0
         ? this.pool.splice(found, 1)[0]!
-        : new NpcRider(this.material, kit, seed, this.legs);
+        : new NpcRider(this.material, kit, seed, this.legs, this.shorts);
     npc.group.userData.kit = kit % KITS.length;
     npc.group.rotation.order = "YXZ";
     this.group.add(npc.group);
