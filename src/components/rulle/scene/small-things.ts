@@ -19,7 +19,7 @@ import { Visitors } from "./visitors";
 
 export type SmallThingsHooks = {
   seen: (key: keyof Seen, count: number) => void;
-  sound: (kind: "bell" | "cheer" | "whistle") => void;
+  sound: (kind: "bell" | "cheer" | "whistle" | "horn") => void;
   /** Washer fluid on the lens: the page draws the drops. */
   spray: () => void;
 };

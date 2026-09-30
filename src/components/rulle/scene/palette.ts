@@ -120,6 +120,9 @@ export const PALETTE = {
   bridge: "#c9c5bb",
   bridgeShade: "#a7a399",
   ballast: "#7f7a72",
+  // A race marshal's motorbike (ADR 0037).
+  motoBody: "#e9e6df",
+  motoLight: "#4d7fe0",
   // A city's own face (ADR 0036): Montréal's plexes, their stairs and its churches' tin;
   // the street lights; Mont-Royal's cross.
   plexWalls: ["#9b4a36", "#7e4a37", "#c8a27a", "#b5afa3"],

@@ -2852,6 +2852,7 @@
       "himmelbjerg": "{metres} højdemeter – det er {times, number} gange Himmelbjerget.",
       "finish": "{count, plural, one {Over målstregen én gang.} other {Over målstregen # gange.}}",
       "cobbles": "{count, plural, one {Over brostenene én gang. Det kunne mærkes i tænderne.} other {Over brostenene # gange. Det kunne mærkes i tænderne.}}",
+      "moto": "{count, plural, one {En løbsmarshal på motorcykel dyttede forbi.} other {# løbsmarshaller på motorcykel dyttede forbi.}}",
       "cargoOvertaken": "{count, plural, one {Overhalet af en el-ladcykel. Den kører 25.} other {Overhalet af # el-ladcykler. De kører 25.}}",
       "cargoOvertook": "{count, plural, one {Du overhalede en el-ladcykel.} other {Du overhalede # el-ladcykler.}}",
       "car": "{count, plural, one {Døbt i sprinklervæske.} other {Døbt i sprinklervæske # gange.}}",

@@ -51,14 +51,14 @@ describe("today's little things", () => {
     ]);
   });
 
-  it("counts the cobbles of a city's race day after the line, and reads a ride kept from before", () => {
-    const seen = { ...nothingSeen(), finish: 2, cobbles: 4, cows: 1 };
+  it("counts the cobbles and the marshals' motorbikes of a city's race day, and reads a ride kept from before", () => {
+    const seen = { ...nothingSeen(), finish: 2, cobbles: 4, moto: 1, cows: 1 };
     expect(
       littleThings({ rec: ride(60), ascentM: null, seen, allOnTarget: null }).map((t) => t.key),
-    ).toEqual(["finish", "cobbles", "cows"]);
-    // Kept before race day counted cobbles: none, not a ride that cannot be read.
-    const { cobbles: _, ...before } = nothingSeen();
-    expect(seenSchema.parse(before).cobbles).toBe(0);
+    ).toEqual(["finish", "cobbles", "moto", "cows"]);
+    // Kept before race day counted cobbles and motorbikes: none, not a ride that cannot be read.
+    const { cobbles: _, moto: __, ...before } = nothingSeen();
+    expect(seenSchema.parse(before)).toMatchObject({ cobbles: 0, moto: 0 });
   });
 
   it("makes the pauses stops and cups: a short one is only a drink from the bottle", () => {

@@ -2852,6 +2852,7 @@
       "himmelbjerg": "{metres} m of climbing – that is Himmelbjerget, Denmark's famous 147-metre hill, {times, number} times.",
       "finish": "{count, plural, one {Across the finish line once.} other {Across the finish line # times.}}",
       "cobbles": "{count, plural, one {Over the cobbles once. You felt it in your teeth.} other {Over the cobbles # times. You felt it in your teeth.}}",
+      "moto": "{count, plural, one {A race marshal on a motorbike hooted past.} other {# race marshals on motorbikes hooted past.}}",
       "cargoOvertaken": "{count, plural, one {Overtaken by an electric cargo bike. It does 25.} other {Overtaken by # electric cargo bikes. They do 25.}}",
       "cargoOvertook": "{count, plural, one {You overtook an electric cargo bike.} other {You overtook # electric cargo bikes.}}",
       "car": "{count, plural, one {Baptised in windscreen washer fluid.} other {Baptised in windscreen washer fluid # times.}}",

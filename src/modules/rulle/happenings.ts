@@ -17,7 +17,8 @@ import { courseAt, type Course } from "./route/course";
  * for the corner of the eye. Pure.
  */
 
-export type VisitorKind = "cargo" | "car" | "scooter" | "dog";
+/** What passes; a race marshal's motorbike takes a car's place on a city's closed course (ADR 0037). */
+export type VisitorKind = "cargo" | "car" | "scooter" | "dog" | "moto";
 
 /** Something that passes, and where on the lap it begins. */
 export type Visit = { kind: VisitorKind; at: number };

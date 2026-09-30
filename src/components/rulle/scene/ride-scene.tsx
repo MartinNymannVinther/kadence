@@ -45,7 +45,7 @@ export default function RideScene({
   /** A city's course: streets, pavements and blocks, and race day (ADR 0036). */
   city: City | null;
   onSeen: (key: keyof Seen, count: number) => void;
-  onSound: (kind: "bell" | "cheer" | "whistle") => void;
+  onSound: (kind: "bell" | "cheer" | "whistle" | "horn") => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const latest = useRef({ moment, top, bottom, words, onSeen, onSound });

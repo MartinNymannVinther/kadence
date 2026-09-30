@@ -4,7 +4,7 @@
  * and the small things (ADR 0034) — a cowbell near the end of a hard
  * block and on the chalk climb, the ring-ring of a cargo bike's bell
  * before it overtakes, and on race day a marshal's whistle at an island
- * (ADR 0036). Made by the browser's own sound (Web Audio), no
+ * (ADR 0036) and the horn of a marshal's motorbike coming past (ADR 0037). Made by the browser's own sound (Web Audio), no
  * sound files; one press on M quiets all of it. Browsers only let sound
  * start from a press, so `unlock` is called from the one that starts the
  * ride.
@@ -12,7 +12,7 @@
 
 type Tone = { hz: number; seconds: number; at: number };
 
-export type Sound = "count" | "change" | "end" | "cheer" | "bell" | "whistle";
+export type Sound = "count" | "change" | "end" | "cheer" | "bell" | "whistle" | "horn";
 
 const TONES: Record<"count" | "change" | "end", Tone[]> = {
   count: [{ hz: 880, seconds: 0.12, at: 0 }],
@@ -53,6 +53,7 @@ export class Beeps {
     if (kind === "cheer") return cowbell(context);
     if (kind === "bell") return bell(context);
     if (kind === "whistle") return whistle(context);
+    if (kind === "horn") return horn(context);
     for (const tone of TONES[kind]) {
       const start = context.currentTime + tone.at;
       const oscillator = context.createOscillator();
@@ -150,6 +151,27 @@ function whistle(context: AudioContext): void {
     for (const o of [oscillator, trill]) {
       o.start(start);
       o.stop(start + seconds + 0.02);
+    }
+  }
+}
+
+/** A motorbike's horn, twice and short: two tones a little apart, buzzing. */
+function horn(context: AudioContext): void {
+  for (const at of [0, 0.2]) {
+    const start = context.currentTime + at;
+    const gain = context.createGain();
+    gain.gain.setValueAtTime(0, start);
+    gain.gain.linearRampToValueAtTime(0.07, start + 0.01);
+    gain.gain.setValueAtTime(0.07, start + 0.11);
+    gain.gain.linearRampToValueAtTime(0, start + 0.13);
+    gain.connect(context.destination);
+    for (const hz of [415, 523]) {
+      const oscillator = context.createOscillator();
+      oscillator.type = "sawtooth";
+      oscillator.frequency.value = hz;
+      oscillator.connect(gain);
+      oscillator.start(start);
+      oscillator.stop(start + 0.15);
     }
   }
 }

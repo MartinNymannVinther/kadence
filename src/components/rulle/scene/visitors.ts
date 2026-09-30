@@ -10,6 +10,7 @@ import {
   type VisitorKind,
 } from "@/modules/rulle";
 import { dog, type Dog } from "./folk";
+import { moto, type Moto } from "./moto";
 import type { Ground } from "./ground";
 import { PALETTE } from "./palette";
 import { groundPoint, roadPoint, roadYaw } from "./road-point";
@@ -21,12 +22,15 @@ import { cargoBike, car, NOZZLES, scooter, type Figure } from "./vehicles";
  * overtakes on the left, or waits ahead to be passed, and is counted for
  * "today's little things" as it does. The cargo bike rings before it
  * overtakes; the car washes its windscreen as it goes by, and some of it
- * reaches the rider; the dog runs along for a bit and sits down again.
+ * reaches the rider; the dog runs along for a bit and sits down again. On
+ * a city's closed course on race day (ADR 0037) there is no car and no
+ * farm dog: a race marshal's motorbike comes past in their places,
+ * hooting, rides ahead a while with the flag up, and goes on.
  */
 
 export type VisitorHooks = {
   seen: (key: keyof Seen) => void;
-  sound: (kind: "bell") => void;
+  sound: (kind: "bell" | "horn") => void;
   /** Drops on the lens: the car's washer fluid reached the rider. */
   spray: () => void;
 };
@@ -50,6 +54,9 @@ const GONE_BEHIND = 45;
 const DOG_RUNS = 70;
 const DOG_TOP_SPEED = 9.5;
 const SPRAY = 140;
+/** A marshal's motorbike rides this far ahead of the rider until it has been out this long, seconds. */
+const MOTO_AHEAD = 22;
+const MOTO_HOLD = 34;
 
 export class Visitors {
   readonly group = new THREE.Group();
@@ -92,9 +99,10 @@ export class Visitors {
     const along = distance - lap * length;
     if (lap !== this.lap) {
       this.lap = lap;
-      // A city's course is closed on race day: no car on it, and no farm dog.
-      this.plan = visitsOnLap(this.course, lap).filter(
-        (v) => !this.ground.city || (v.kind !== "car" && v.kind !== "dog"),
+      // A city's course is closed on race day: a marshal's motorbike where
+      // a car or a farm dog would have come.
+      this.plan = visitsOnLap(this.course, lap).map((v) =>
+        this.ground.city && (v.kind === "car" || v.kind === "dog") ? { ...v, kind: "moto" } : v,
       );
       this.next = 0;
       while (this.next < this.plan.length && this.plan[this.next]!.at < along - 300) this.next++;
@@ -126,7 +134,9 @@ export class Visitors {
             ? car(this.material, cars[Math.floor(hash(this.lap, 1, 93) * cars.length)]!)
             : kind === "scooter"
               ? scooter(this.material)
-              : dog(this.material);
+              : kind === "moto"
+                ? moto(this.material)
+                : dog(this.material);
       figure.group.rotation.order = "YXZ";
       if (kind === "car") figure.group.add(this.spray);
       this.figures.set(kind, figure);
@@ -164,6 +174,14 @@ export class Visitors {
         speed: Math.max(VISITOR_SPEED.car, speed + 9),
         overtakes: true,
       };
+    else if (visit === "moto")
+      this.active = {
+        ...base,
+        distance: distance - 60,
+        offset: -1.5,
+        speed: Math.max(10, speed + 7),
+        overtakes: true,
+      };
     else if (visit === "scooter")
       this.active = {
         ...base,
@@ -180,6 +198,7 @@ export class Visitors {
 
   private move(a: Active, distance: number, speed: number, seconds: number): void {
     a.age += seconds;
+    if (a.visit === "moto") this.steerMoto(a, distance, speed);
     if (a.visit === "dog") this.moveDog(a, distance, speed, seconds);
     else a.distance += a.speed * seconds;
     const at =
@@ -214,6 +233,19 @@ export class Visitors {
       this.group.remove(group);
       this.active = null;
     }
+  }
+
+  /** Up past the rider with two hoots, ahead of the rider a while with the flag up, then away. */
+  private steerMoto(a: Active, distance: number, speed: number): void {
+    const ahead = a.distance - distance;
+    if (!a.rang && ahead > -25) {
+      a.rang = true;
+      this.hooks.sound("horn");
+    }
+    if (ahead < MOTO_AHEAD && a.age < MOTO_HOLD) a.speed = speed + 7;
+    else if (a.age < MOTO_HOLD) a.speed = Math.max(0, speed + (MOTO_AHEAD - ahead) * 0.4);
+    else a.speed = speed + 9;
+    (a.figure as Moto).waving = ahead > 4 && a.age < MOTO_HOLD;
   }
 
   /** Sits by the verge until the rider is near, runs along beside for a bit, and sits again. */
