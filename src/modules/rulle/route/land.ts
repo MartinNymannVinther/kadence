@@ -38,12 +38,18 @@ export const LAND_KINDS = {
   buildings: ["house", "farm", "big", "block", "church", "part"],
   /** A roof's shape where the map says it; "unsaid" leaves it to the building's kind. */
   roofs: ["unsaid", "flat", "gabled", "hipped", "pyramidal", "dome", "skillion", "mansard"],
+  /**
+   * What a bridge or a tunnel by the route carries (ADR 0037): a road, a
+   * motorway, a path, a railway, water, or a wildlife crossing's green.
+   */
+  structures: ["road", "motorway", "path", "rail", "water", "green"],
 } as const;
 
 export type AreaKind = (typeof LAND_KINDS.areas)[number];
 export type LineKind = (typeof LAND_KINDS.lines)[number];
 export type BuildingKind = (typeof LAND_KINDS.buildings)[number];
 export type RoofShape = (typeof LAND_KINDS.roofs)[number];
+export type StructureKind = (typeof LAND_KINDS.structures)[number];
 
 const flat = z.array(z.number().finite()).max(200_000);
 
@@ -90,6 +96,14 @@ export const landFileSchema = z.object({
     .default([]),
   /** The cobbled streets the route runs along (ADR 0036), as lines. */
   setts: z.array(flat).max(2_000).default([]),
+  /**
+   * The bridges and tunnels along the route and across it (ADR 0037): what
+   * each carries, whether it is a bridge (1) or a tunnel (2), and its line.
+   */
+  structures: z
+    .array(z.tuple([z.number().int().min(0), z.number().int().min(1).max(3), flat]))
+    .max(5_000)
+    .default([]),
 });
 
 /** A land file as it is written: what the script makes, and `readLand` reads. */
@@ -124,6 +138,8 @@ export type Land = {
   trees: XY[];
   /** The cobbled streets the route runs along. */
   setts: XY[][];
+  /** The bridges and tunnels along the route and across it. */
+  structures: { kind: StructureKind; bridge: boolean; tunnel: boolean; points: XY[] }[];
   /** Every area, its outline first and its holes after: what a farmyard or a town is, where. */
   areas: { kind: AreaKind; id: number; rings: XY[][] }[];
   /** Lakes and rivers above the sea, with the level their water lies at. */
@@ -295,6 +311,14 @@ export function readLand(json: unknown, course: Course): Land | null {
     turbines: file.turbines.map(([x, y]) => ({ x, y })),
     trees: file.trees.map(([x, y]) => ({ x, y })),
     setts: file.setts.map(points),
+    structures: file.structures
+      .filter(([kind]) => kind < LAND_KINDS.structures.length)
+      .map(([kind, flags, values]) => ({
+        kind: LAND_KINDS.structures[kind]!,
+        bridge: (flags & 1) !== 0,
+        tunnel: (flags & 2) !== 0,
+        points: points(values),
+      })),
     areas: areas.map((a) => ({ kind: LAND_KINDS.areas[a.kind]!, id: a.index, rings: a.rings })),
     waters,
   };

@@ -42,6 +42,7 @@ export {
   type Land,
   type LandFile,
   type LineKind,
+  type StructureKind,
 } from "./route/land";
 export {
   bundledRoute,
@@ -128,6 +129,14 @@ export {
 export { punctureOnLap, ridersOnLap, type Puncture, type Rider, type RiderKind } from "./traffic";
 export { gradeHere, POSTURE, postureAt, type Posture } from "./posture";
 export { CITIES, sunToward, type CityFace } from "./route/cities";
+export {
+  STRUCTURES,
+  structuresOn,
+  WIDE,
+  type Overpass,
+  type Structures,
+  type Underpass,
+} from "./route/structures";
 export {
   crowdAt,
   inside,

@@ -3,7 +3,16 @@ import { buildCourse, readRouteGpx, toPlane } from "@/modules/rulle";
 import { LAND_KINDS, type LandFile } from "@/modules/rulle/route/land";
 import { decodePng, terrarium, type Image } from "./rulle-land/png";
 import { area, clip, footprint, joinRings, simplify, type Box, type P } from "./rulle-land/shapes";
-import { areaKind, buildingKind, colourOf, levelsOf, metres, roofIndex } from "./rulle-land/tags";
+import {
+  areaKind,
+  buildingKind,
+  colourOf,
+  levelsOf,
+  metres,
+  roofIndex,
+  structureIndex,
+  structureOf,
+} from "./rulle-land/tags";
 
 /**
  * The land around a route that comes with Kadence (ADR 0035), fetched
@@ -15,7 +24,8 @@ import { areaKind, buildingKind, colourOf, levelsOf, metres, roofIndex } from ".
  * towns and their buildings, tree rows and hedges, wind turbines; in a
  * city its buildings' heights and roofs where the map says them, their
  * towers and spires, the tall ones on the skyline, the street trees, and
- * the cobbled streets the route runs along.
+ * the cobbled streets the route runs along; and the bridges and tunnels
+ * along the route and across it (ADR 0037).
  * Everything in metres on the course's own plane.
  *
  *     pnpm script scripts/rulle-land.ts public/rulle/routes/bu-dm-2026-vejle.gpx [--buildings 650]
@@ -40,6 +50,9 @@ const TREES = 60;
 /** Cobbled streets are fetched this close to the road, and kept if the road runs along one. */
 const SETTS = 30;
 const SETT_NEAR = 8;
+/** Bridges and tunnels are fetched this close to the road, and kept if one comes within `STRUCTURE_NEAR`. */
+const STRUCTURES = 60;
+const STRUCTURE_NEAR = 15;
 /** Ways no race is ridden on, cobbled or not. */
 const FOOT = ["footway", "path", "steps", "cycleway", "bridleway", "corridor", "pedestrian"];
 
@@ -123,6 +136,13 @@ async function main(): Promise<void> {
     const { lat, lon } = toLatLon(course.x[i]!, course.y[i]!);
     along.push(`${lat.toFixed(5)},${lon.toFixed(5)}`);
   }
+  // Close along the road, for what must be found within metres of it: the
+  // coarse line above cuts corners by more than that.
+  const near: string[] = [];
+  for (let i = 0; i < course.x.length; i += Math.max(1, Math.round(20 / course.step))) {
+    const { lat, lon } = toLatLon(course.x[i]!, course.y[i]!);
+    near.push(`${lat.toFixed(5)},${lon.toFixed(5)}`);
+  }
   const query = `[out:json][timeout:180];
   (
     way["natural"~"^(wood|water|wetland|heath|scrub|grassland|beach|sand)$"](${bbox});
@@ -143,7 +163,9 @@ async function main(): Promise<void> {
     way["building:part"]["height"](${bbox});
     way["building"~"^(church|cathedral|chapel|basilica)$"](${bbox});
     node["natural"="tree"](around:${TREES},${along.join(",")});
-    way["highway"]["surface"~"^(sett|cobblestone|unhewn_cobblestone)$"](around:${SETTS},${along.join(",")});
+    way["highway"]["surface"~"^(sett|cobblestone|unhewn_cobblestone)$"](around:${SETTS},${near.join(",")});
+    way["bridge"]["bridge"!="no"](around:${STRUCTURES},${near.join(",")});
+    way["tunnel"]["tunnel"!="no"](around:${STRUCTURES},${near.join(",")});
     node["generator:source"="wind"](${bbox});
   );
   out geom qt;`;
@@ -181,6 +203,7 @@ async function main(): Promise<void> {
     turbines: [],
     trees: [],
     setts: [],
+    structures: [],
   };
   // Nearest the road, in metres: what decides whether a building far off is on the skyline.
   const fromRoad = (p: P) => {
@@ -255,6 +278,15 @@ async function main(): Promise<void> {
       ]);
       continue;
     }
+    // A bridge or a tunnel near the road is kept as a structure, and then
+    // goes on to be whatever else it is: a stream in a culvert is a stream.
+    const structure = e.type === "way" ? structureOf(tags) : null;
+    if (structure && line.length >= 2 && densify(line, 4).some((p) => onRoad(p) < STRUCTURE_NEAR))
+      land.structures!.push([
+        structureIndex(structure.kind),
+        structure.flags,
+        round(simplify(line, 0.5)),
+      ]);
     if (e.type === "way" && tags.highway && tags.surface) {
       // A cobbled street is kept where the road runs along it, not only across it.
       const near = line.filter((p) => onRoad(p) < SETT_NEAR).length;
@@ -310,8 +342,22 @@ async function main(): Promise<void> {
   const json = JSON.stringify(land);
   writeFileSync(out, json);
   console.log(
-    `${out}: ${(json.length / 1024).toFixed(0)} KB — heights ${cols}×${rows}, areas ${land.areas.length}, lines ${land.lines.length}, buildings ${land.buildings.length} (${land.buildings.filter((b) => b.length > 7).length} with heights or roofs), trees ${land.trees!.length}, cobbled streets ${land.setts!.length}, turbines ${land.turbines.length}`,
+    `${out}: ${(json.length / 1024).toFixed(0)} KB — heights ${cols}×${rows}, areas ${land.areas.length}, lines ${land.lines.length}, buildings ${land.buildings.length} (${land.buildings.filter((b) => b.length > 7).length} with heights or roofs), trees ${land.trees!.length}, cobbled streets ${land.setts!.length}, bridges and tunnels ${land.structures!.length}, turbines ${land.turbines.length}`,
   );
+}
+
+/** A line with a point at least every `every` metres along it. */
+function densify(line: P[], every: number): P[] {
+  const out: P[] = [];
+  for (let i = 0; i + 1 < line.length; i++) {
+    const a = line[i]!;
+    const b = line[i + 1]!;
+    const n = Math.max(1, Math.ceil(Math.hypot(b.x - a.x, b.y - a.y) / every));
+    for (let k = 0; k < n; k++)
+      out.push({ x: a.x + ((b.x - a.x) * k) / n, y: a.y + ((b.y - a.y) * k) / n });
+  }
+  out.push(line.at(-1)!);
+  return out;
 }
 
 main().catch((error: unknown) => {

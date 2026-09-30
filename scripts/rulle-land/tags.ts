@@ -1,4 +1,10 @@
-import { LAND_KINDS, type AreaKind, type BuildingKind, type RoofShape } from "@/modules/rulle";
+import {
+  LAND_KINDS,
+  type AreaKind,
+  type BuildingKind,
+  type RoofShape,
+  type StructureKind,
+} from "@/modules/rulle";
 
 /**
  * What OpenStreetMap's tags say, in the land's own kinds: what covers an
@@ -128,6 +134,42 @@ export function metres(value: string | undefined): number {
   const m = /^\s*(\d+(?:[.,]\d+)?)\s*(m|meter|metre)?\s*$/i.exec(value ?? "");
   return m ? Math.round(Number.parseFloat(m[1]!.replace(",", ".")) * 10) / 10 : 0;
 }
+
+/** Ways on foot or by bike, and farm tracks: a narrow bridge, a small tunnel. */
+const PATHS = ["footway", "path", "steps", "cycleway", "bridleway", "pedestrian", "track"];
+
+/**
+ * A bridge or a tunnel, and what it carries (ADR 0037); null for anything
+ * else. A passage through a building, and what runs deep underground — a
+ * metro, a railway two levels down — is no structure anyone sees.
+ */
+export function structureOf(t: Tags): { kind: StructureKind; flags: number } | null {
+  const bridge = Boolean(t.bridge) && t.bridge !== "no";
+  const tunnel =
+    Boolean(t.tunnel) && t.tunnel !== "no" && t.tunnel !== "building_passage" && !t.indoor;
+  if (!bridge && !tunnel) return null;
+  if (tunnel && Number.parseInt(t.layer ?? "-1", 10) <= -2) return null;
+  const kind: StructureKind | null = t.waterway
+    ? "water"
+    : t.railway
+      ? t.railway === "subway"
+        ? null
+        : "rail"
+      : t.man_made === "wildlife_crossing"
+        ? "green"
+        : t.highway
+          ? t.highway === "corridor"
+            ? null
+            : PATHS.includes(t.highway)
+              ? "path"
+              : ["motorway", "motorway_link", "trunk"].includes(t.highway)
+                ? "motorway"
+                : "road"
+          : null;
+  return kind ? { kind, flags: (bridge ? 1 : 0) | (tunnel ? 2 : 0) } : null;
+}
+
+export const structureIndex = (kind: StructureKind) => LAND_KINDS.structures.indexOf(kind);
 
 /** Storeys above the ground, from the map, within reason; 0 where it does not say. */
 export function levelsOf(t: Tags): number {
