@@ -1,4 +1,4 @@
-import type { City, Course, Land } from "@/modules/rulle";
+import { inside, type City, type Course, type Land, type Stretch } from "@/modules/rulle";
 import { coverPatch, fieldColor, type Patch } from "./land-cover";
 import { hash, hills, smoothstep } from "./noise";
 import { PALETTE } from "./palette";
@@ -15,7 +15,8 @@ import { RoadGrid, type Nearest } from "./road-grid";
  * through them, with rolling swells laid over it that grow away from the
  * road, and a patchwork of fields, woods and pasture. Either way, where
  * the land dips below the sea there is water — the fjord beside the shore
- * road.
+ * road. Under a bridge the road is on (ADR 0037) the land is left as it
+ * lies, and never higher than a little below the deck.
  *
  * World coordinates are three.js's: x east, y up, z south (so a course's
  * north, and the land's, is -z).
@@ -41,6 +42,8 @@ const REACH = 300;
 export const GRID = 25;
 /** How far below its surface the bed of a lake is drawn. */
 const LAKE_DEPTH = 0.8;
+/** Under a bridge the land lies at least this far below the road. */
+const UNDER_DECK = 2.5;
 /** Corner heights remembered before the memory is let go and started again. */
 const REMEMBERED = 120_000;
 
@@ -105,8 +108,15 @@ export class Ground {
     readonly land: Land | null = null,
     /** A city's streets (ADR 0036): what nobody mapped is paved, not fields. */
     readonly city: City | null = null,
+    /** Where the road is on a bridge (ADR 0037): no verge, and the land left under it. */
+    readonly decks: readonly Stretch[] = [],
   ) {
     this.road = new RoadGrid(course);
+  }
+
+  /** Whether the road is on a bridge `along` metres into the lap. */
+  onDeck(along: number): boolean {
+    return this.decks.some((d) => inside(d, along, this.course.length));
   }
 
   /** The nearest point of the road within about `reach` metres: how far, and how high it is there. */
@@ -127,6 +137,9 @@ export class Ground {
       free = level === null ? found : Math.min(found, level - LAKE_DEPTH);
     }
     if (road.d === Infinity) return free;
+    // Under a bridge the land lies as it lies: the river, the road below.
+    if (this.decks.length > 0 && this.onDeck(road.index * this.course.step))
+      return Math.min(free, road.ele - sink(this.course, road.index) - UNDER_DECK);
     const w = smoothstep(FLAT_TO, freeAt, road.d);
     return (road.ele - sink(this.course, road.index)) * (1 - w) + free * w;
   }

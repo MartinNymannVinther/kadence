@@ -11,8 +11,9 @@ import { disposeTrees, plant, treeMaterial, treeShapes, type Family } from "./tr
  * What stands close to the road, where the eye catches it at the edge of
  * the picture: this is where the sense of speed comes from. A white post
  * every fifty metres on both sides, as on any Danish country road; tufts
- * of grass along the verges; now and then a tree a few metres off. Built
- * in half-kilometre lengths, each shown only while the rider is near it.
+ * of grass along the verges; now and then a tree a few metres off — none
+ * of it on a bridge (ADR 0037). Built in half-kilometre lengths, each
+ * shown only while the rider is near it.
  */
 
 const LENGTH = 50;
@@ -37,6 +38,8 @@ export class Roadside {
     blocked: (x: number, z: number) => boolean = () => false,
     /** A city's street has none of this: its trees are the map's (ADR 0036). */
     city = false,
+    /** Where the road is on a bridge: no verge to stand on. */
+    onDeck: (along: number) => boolean = () => false,
   ) {
     if (city) return;
     const all = sections(course);
@@ -50,6 +53,7 @@ export class Roadside {
       for (let i = start; i < end; i++) {
         const s = all[i]!;
         center.add(new THREE.Vector3(s.cx, s.cy, s.cz));
+        if (onDeck(i * course.step)) continue;
         // Stood on the verge (or the land beyond it) `off` metres from the road's middle.
         const at = (off: number, embed: number) =>
           new THREE.Vector3(

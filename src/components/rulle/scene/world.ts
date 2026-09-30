@@ -3,7 +3,7 @@ import {
   CITIES,
   courseAt,
   postureAt,
-  raceDayOf,
+  structuresOn,
   sunToward,
   swayAt,
   type City,
@@ -12,14 +12,16 @@ import {
   type Posture,
 } from "@/modules/rulle";
 import { Atmosphere } from "./atmosphere";
+import { Bridges } from "./bridges";
 import { CameraRig } from "./camera-rig";
 import { inPaddocks } from "./farmyard";
 import { FinishLine } from "./finish-line";
 import { Ground } from "./ground";
-import { Pace } from "./pace";
+import type { Pace } from "./pace";
 import type { Pause } from "./pause-scene";
 import { castShadows, freeze } from "./props";
-import { RaceDayScene } from "./race-day";
+import { raceDayIn, type RaceDayScene } from "./race-day";
+import { rideRenderer } from "./renderer";
 import { RiderFigure } from "./rider";
 import { buildRoad } from "./road";
 import { roadPoint, turnAt } from "./road-point";
@@ -87,6 +89,7 @@ export class World {
   private readonly small: SmallThings;
   private readonly finish: FinishLine | null;
   private readonly race: RaceDayScene | null;
+  private readonly bridges: Bridges;
   private readonly pace: Pace;
   private readonly calm: boolean;
   private crank = 0;
@@ -102,26 +105,21 @@ export class World {
     words: SceneWords = NO_WORDS,
     hooks: SmallThingsHooks = QUIET_HOOKS,
   ) {
-    this.renderer = new THREE.WebGLRenderer({
-      canvas,
-      antialias: !options.light,
-      powerPreference: "high-performance",
-    });
-    const ratio = Math.min(window.devicePixelRatio || 1, options.light ? 1 : 1.5);
-    this.renderer.setPixelRatio(ratio);
-    this.pace = new Pace(ratio, Math.min(ratio, 0.75));
-    this.shaded = !options.light;
-    if (this.shaded) {
-      this.renderer.shadowMap.enabled = true;
-      this.renderer.shadowMap.type = THREE.PCFShadowMap;
-    }
+    ({
+      renderer: this.renderer,
+      pace: this.pace,
+      shaded: this.shaded,
+    } = rideRenderer(canvas, options.light));
     this.calm = options.calm;
     this.rig = new CameraRig(options.calm);
     const city = options.city ?? null;
     // On a city's race day the sun stands where it stood that day (ADR 0036).
     this.atmosphere = new Atmosphere(this.scene, city ? sunToward(CITIES[city].sun) : undefined);
     if (this.shaded) this.atmosphere.castShadows();
-    this.ground = new Ground(course, options.land ?? null, city);
+    // The bridges the road is on, and what passes over and under it (ADR 0037).
+    const found = structuresOn(course, options.land?.structures ?? []);
+    this.ground = new Ground(course, options.land ?? null, city, found.decks);
+    const onDeck = (along: number) => this.ground.onDeck(along);
     // No tree in a field with cows in it, nor in the water.
     const fields = inPaddocks(course, this.ground);
     const water = this.atmosphere.water;
@@ -140,6 +138,7 @@ export class World {
       options.light ? 0.5 : 1,
       (x, z) => fields(x, z) || this.ground.wet(x, z),
       city !== null,
+      onDeck,
     );
     const room = (x: number, z: number, r: number) => {
       this.scenery.clearAround(x, z, r);
@@ -153,20 +152,18 @@ export class World {
       room,
     });
     // A city's course on race day: its crowd, its marshals, its cobbles (ADR 0036).
-    this.race = city
-      ? new RaceDayScene(
-          course,
-          this.ground,
-          raceDayOf(course, options.land?.setts ?? []),
-          city,
-          this.small.material,
-          words,
-          hooks,
-          room,
-          options,
-        )
-      : null;
-    this.road = buildRoad(course, city !== null, (along) => this.race?.rumble(along) === 1);
+    this.race = raceDayIn(
+      city,
+      course,
+      this.ground,
+      this.small.material,
+      words,
+      hooks,
+      room,
+      options,
+    );
+    this.road = buildRoad(course, city !== null, (along) => this.race?.rumble(along) === 1, onDeck);
+    this.bridges = new Bridges(course, this.ground, found);
     if (this.shaded) {
       this.road.traverse((child) => {
         if (child instanceof THREE.Mesh) child.receiveShadow = true;
@@ -179,9 +176,11 @@ export class World {
       this.scenery.group,
       this.road,
       this.roadside.group,
+      this.bridges.group,
       this.small.group,
       this.rider.group,
     );
+    if (this.shaded) castShadows(this.bridges.group);
     this.finish = options.finish
       ? new FinishLine(
           course,
@@ -206,6 +205,7 @@ export class World {
     this.scenery.group.matrixAutoUpdate = false;
     freeze(this.road);
     freeze(this.roadside.group);
+    freeze(this.bridges.group);
     const start = courseAt(course, 0);
     this.terrain.fill(start.x, -start.y);
   }
@@ -290,6 +290,7 @@ export class World {
     this.small.dispose();
     this.finish?.dispose();
     this.race?.dispose();
+    this.bridges.dispose();
     this.atmosphere.dispose();
     this.renderer.dispose();
   }

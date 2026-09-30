@@ -116,6 +116,9 @@ export const PALETTE = {
   teams: ["#4a6b53", "#c23b33", "#2d4a86", "#e2b93b", "#26231f", "#e9e4da"],
   jackets: ["#4a6b53", "#c23b33", "#4f5d73", "#d6a84a", "#3d4148", "#e4ebe4", "#8e4a36", "#6f8d68"],
   podium: "#f1ece3",
+  // Bridges (ADR 0037): their concrete, lit and in shade.
+  bridge: "#c9c5bb",
+  bridgeShade: "#a7a399",
   // A city's own face (ADR 0036): Montréal's plexes, their stairs and its churches' tin;
   // the street lights; Mont-Royal's cross.
   plexWalls: ["#9b4a36", "#7e4a37", "#c8a27a", "#b5afa3"],

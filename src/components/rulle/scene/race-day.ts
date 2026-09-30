@@ -4,8 +4,10 @@ import {
   hash,
   inside,
   lapAlong,
+  raceDayOf,
   type City,
   type Course,
+  type Land,
   type RaceDay,
   type Side,
 } from "@/modules/rulle";
@@ -51,6 +53,22 @@ const ONE_WHISTLE = 250;
 /** Marshals are drawn this far ahead of the rider, and this far behind. */
 const SEEN_AHEAD = 450;
 const SEEN_BEHIND = 40;
+
+/** Race day on a city's course, laid out from its marks and its land; none anywhere else. */
+export function raceDayIn(
+  city: City | null,
+  course: Course,
+  ground: Ground,
+  material: THREE.Material,
+  words: SceneWords,
+  hooks: SmallThingsHooks,
+  room: (x: number, z: number, r: number) => void,
+  options: { calm: boolean; light: boolean; land?: Land | null },
+): RaceDayScene | null {
+  if (!city) return null;
+  const day = raceDayOf(course, options.land?.setts ?? []);
+  return new RaceDayScene(course, ground, day, city, material, words, hooks, room, options);
+}
 
 export class RaceDayScene {
   readonly group = new THREE.Group();
