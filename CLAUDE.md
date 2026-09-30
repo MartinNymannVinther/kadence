@@ -142,7 +142,10 @@ codebase to:
   parsers in `src/modules/rulle/ble`), holds each block's watts in ERG,
   and saves the ride as an ordinary FIT file through the import. A route
   is a GPX file read in the browser; the landscape is three.js, loaded
-  only on the ride screen. No table of its own.
+  only on the ride screen. The routes that come with Kadence carry their
+  real land beside them (`<route>.land.json` from OpenStreetMap and a
+  height model, made once by `scripts/rulle-land.ts`, ADR 0035); nothing
+  is fetched from a map service at ride time. No table of its own.
 - Deployment: Docker Compose run via Coolify on an EU VPS (Hetzner
   initially; the provider must stay replaceable). Nightly encrypted
   backups to EU object storage. No Vercel, no Neon, no US cloud.
@@ -268,7 +271,9 @@ codebase to:
   Bluetooth and ERG, the interval bar read at two metres, a Danish route
   from GPX, the landscape, the ride saved as FIT onto its session; the
   small things on the way, the coffee stop and today's little things
-  (ADR 0034).
+  (ADR 0034); a session to choose from the team's library or DCU's, the
+  B&U DM 2026 course with its finish and two more routes through their
+  real land, a small map, and company on the road (ADR 0035).
 - Before 1.0: dogma seven — one real winter with one real team
   (docs/launch.md).
 - Later, each as its own decision: a rider on two teams (club and

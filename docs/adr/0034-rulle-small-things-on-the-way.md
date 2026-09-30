@@ -1,6 +1,6 @@
 # ADR 0034: Rulle's small things — once in a while, at the edge of the picture, never on the numbers
 
-Status: accepted · Date: 2026-09-30 · Builds on 0013, 0033
+Status: accepted · Date: 2026-09-30 · Builds on 0013, 0033 · Amended by 0035 (other riders pass while a small thing does)
 
 ## Context
 

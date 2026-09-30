@@ -221,10 +221,26 @@ they cheer or wear, and whether anyone wants a switch.
 
 ### A team's own routes
 
-Every rider rides the route from Vejle or a GPX of their own on the
-device. A coach who wants the team on the same local loop hands out a
-file. A route shared through Kadence is a table with RLS, audit and
-isolation tests (ADR 0033), and waits until a coach asks for it.
+Every rider rides one of the three routes that come with Kadence or a
+GPX of their own on the device. A coach who wants the team on the same
+local loop hands out a file, and that loop runs through land made up
+from it, not the real land the three have (ADR 0035). A route shared
+through Kadence is a table with RLS, audit and isolation tests (ADR
+0033), and waits until a coach asks for it.
+
+### The real land is a map's
+
+The land round the three routes (ADR 0035) is OpenStreetMap's and a
+height model's, drawn by rule: a building is the rectangle round its
+footprint with windows spaced evenly, a lake's shore follows a 25 m grid
+softened by the land, a wood the map does not call conifer is one or the
+other by its number, and no building beyond 650 m of the road is real.
+The files were fetched once, on 30 September 2026, and are refreshed by
+hand (`scripts/rulle-land.ts`); the terrain tiles it reads sit in a US
+cloud's open-data bucket, fetched by a developer, never by Kadence. The
+stills look right; whether a rider who knows Vejle recognises it, and
+whether a family's laptop keeps up with the woods at Munkebjerg and the
+shadows, is for a real ride to say.
 
 ## Paid
 

@@ -103,3 +103,23 @@ Writes `public/icon-192.png`, `public/icon-512.png`,
 `src/app/manifest.ts` and the root layout point to. It touches no
 database; it lives here because it is run by hand, once, when the mark
 changes. Node's own zlib writes the PNGs, so no image library is needed.
+
+## rulle-land.ts
+
+Fetches the land round a route that comes with Rulle and writes it beside
+the route's GPX file, as `<route>.land.json` (ADR 0035).
+
+```
+pnpm script scripts/rulle-land.ts public/rulle/routes/bu-dm-2026-vejle.gpx
+```
+
+The ground's heights every 40 m for 2.6 km round the road come from
+Mapzen's terrain tiles (Terrarium; EU-DEM and SRTM in Denmark), the
+woods, water, fields, towns, hedges, streams, turbines and the buildings
+within 650 m of the road from OpenStreetMap's Overpass API. Both are sent
+a box round the road and nothing else. Run it when a route is added or
+its file changes, check the file in, and credit the sources on the route
+(`rulle.credits`); the file is OpenStreetMap's data under the ODbL. It
+touches no database and is never run at build or ride time: Rulle reads
+the file, and without it draws the land it makes up. `rulle-land/` holds
+its PNG reader for the tiles and its geometry.

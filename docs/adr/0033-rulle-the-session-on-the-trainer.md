@@ -1,6 +1,6 @@
 # ADR 0033: Rulle — today's session on the trainer, in the browser
 
-Status: accepted · Date: 2026-09-29 · Builds on 0016, 0018, 0019, 0022
+Status: accepted · Date: 2026-09-29 · Builds on 0016, 0018, 0019, 0022 · Amended by 0035 (the routes that come with Kadence run through their real land)
 
 ## Context
 
