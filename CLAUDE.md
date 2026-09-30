@@ -145,7 +145,10 @@ codebase to:
   only on the ride screen. The routes that come with Kadence carry their
   real land beside them (`<route>.land.json` from OpenStreetMap and a
   height model, made once by `scripts/rulle-land.ts`, ADR 0035); nothing
-  is fetched from a map service at ride time. No table of its own.
+  is fetched from a map service at ride time. The city routes are ridden
+  on race day, laid out from the organiser's waypoints and the land
+  (`raceDayOf`, pure), each city with its own face (`CITIES`, ADR 0036).
+  No table of its own.
 - Deployment: Docker Compose run via Coolify on an EU VPS (Hetzner
   initially; the provider must stay replaceable). Nightly encrypted
   backups to EU object storage. No Vercel, no Neon, no US cloud.
@@ -273,7 +276,10 @@ codebase to:
   small things on the way, the coffee stop and today's little things
   (ADR 0034); a session to choose from the team's library or DCU's, the
   B&U DM 2026 course with its finish and two more routes through their
-  real land, a small map, and company on the road (ADR 0035).
+  real land, a small map, and company on the road (ADR 0035); Future
+  Racing in Copenhagen and the Worlds circuit in Montréal, through their
+  cities on race day — the crowd, the marshals, the cobbles — each city
+  with its own face (ADR 0036).
 - Before 1.0: dogma seven — one real winter with one real team
   (docs/launch.md).
 - Later, each as its own decision: a rider on two teams (club and

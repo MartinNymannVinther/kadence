@@ -53,7 +53,7 @@ export function groundPoint(
   if (beyond <= VERGE) {
     const along = distance - Math.floor(distance / course.length) * course.length;
     const index = Math.min(course.x.length - 1, Math.floor(along / course.step));
-    out.y += groundAt(offset, sink(course, index), ground.city) - 0.03;
+    out.y += groundAt(offset, sink(course, index), ground.city !== null) - 0.03;
     return out;
   }
   out.y = drawnHeight(ground, out.x, out.z);

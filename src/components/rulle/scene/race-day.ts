@@ -9,6 +9,7 @@ import {
   type RaceDay,
   type Side,
 } from "@/modules/rulle";
+import { CityFace } from "./city-face";
 import { cobblesMesh, disposeCobbles } from "./cobbles";
 import { Crowd } from "./crowd";
 import type { Ground } from "./ground";
@@ -36,7 +37,8 @@ import { disposeTextured, signTexture } from "./text-plates";
  * whistle; a marshal at every sharp bend; the cobbles, that shake the
  * picture; the speed bumps, that lift the bike; the feed zone's soigneurs
  * with their musettes held out and the litter zone's bins, each zone with
- * its sign; the team buses where the teams park; the podium.
+ * its sign; the team buses where the teams park; the podium. And the
+ * city's own face round it all (`city-face.ts`).
  */
 
 /** The islands stand this far left of the road's middle: the riders pass them on the right. */
@@ -53,6 +55,7 @@ const SEEN_BEHIND = 40;
 export class RaceDayScene {
   readonly group = new THREE.Group();
   private readonly crowd: Crowd;
+  private readonly face: CityFace;
   private readonly marshals: { figure: Marshal; along: number; island: boolean }[] = [];
   private readonly shapes: THREE.BufferGeometry[] = [];
   private readonly faces: THREE.Mesh[] = [];
@@ -74,7 +77,8 @@ export class RaceDayScene {
     options: { calm: boolean; light: boolean },
   ) {
     this.crowd = new Crowd(course, ground, day, city, material, options);
-    this.group.add(this.crowd.group);
+    this.face = new CityFace(course, ground, city, material);
+    this.group.add(this.crowd.group, this.face.group);
     const fixed = new THREE.Group();
     // What lies on the road, each copy baked where it lies, all of a kind one mesh.
     const onRoad = (shape: THREE.BufferGeometry, places: number[], offset: number) => {
@@ -168,6 +172,7 @@ export class RaceDayScene {
     const L = this.course.length;
     const along = lapAlong(distance, L);
     this.crowd.frame(along, seconds);
+    this.face.frame(along);
     const last = this.lastAlong;
     for (const m of this.marshals) {
       const ahead = lapAlong(m.along - along, L);
@@ -228,6 +233,7 @@ export class RaceDayScene {
 
   dispose(): void {
     this.crowd.dispose();
+    this.face.dispose();
     for (const shape of this.shapes) shape.dispose();
     for (const face of this.faces) disposeTextured(face);
     for (const m of this.marshals) m.figure.dispose();

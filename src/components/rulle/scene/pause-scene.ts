@@ -1,8 +1,15 @@
 import * as THREE from "three";
-import { drinksIn, pauseStage, stopKind, type Course, type PauseStage } from "@/modules/rulle";
+import {
+  CITIES,
+  drinksIn,
+  pauseStage,
+  stopKind,
+  type Course,
+  type PauseStage,
+} from "@/modules/rulle";
 import type { Ground } from "./ground";
 import type { RiderFigure } from "./rider";
-import { groundPoint, roadYaw } from "./road-point";
+import { groundPoint, roadPoint, roadYaw } from "./road-point";
 import { Sitter } from "./sitter";
 import { buildStop, type Stop } from "./stops";
 
@@ -28,6 +35,8 @@ type Here = {
   stage: PauseStage;
   seconds: number;
   side: 1 | -1;
+  /** The road's surface by the stop: the camera keeps above it. */
+  road: number;
 };
 
 /** Seconds the picture takes to dip to the haze, each way. */
@@ -119,7 +128,9 @@ export class PauseScene {
   private sitDown(pause: Pause, distance: number, rider: RiderFigure): void {
     const side = this.side(distance);
     const kind = stopKind(pause.index);
-    const stop = buildStop(kind, this.material, this.words);
+    // In a city, its own stand (ADR 0036).
+    const stand = this.ground.city ? CITIES[this.ground.city].stand : "farm";
+    const stop = buildStop(kind, this.material, this.words, stand);
     const at = distance + 10;
     stop.group.position.copy(groundPoint(this.course, this.ground, at, side * 12.5));
     // Facing the road, from whichever side it stands on.
@@ -133,7 +144,8 @@ export class PauseScene {
     const stage = pauseStage(pause.seconds);
     sitter.set(stage);
     this.group.add(stop.group);
-    this.here = { index: pause.index, stop, sitter, stage, seconds: pause.seconds, side };
+    const road = roadPoint(this.course, at, 0).y;
+    this.here = { index: pause.index, stop, sitter, stage, seconds: pause.seconds, side, road };
     rider.setStop("parked");
     this.jumpNext = true;
   }
@@ -155,14 +167,17 @@ export class PauseScene {
     this.jumpNext = true;
   }
 
-  /** From the verge by the road, a little to the side, at the rider at the table; drifting, unless asked not to. */
+  /**
+   * From the verge by the road, a little to the side, at the rider at the
+   * table; drifting, unless asked not to. Where the stop stands below the
+   * road, from above the road's edge, looking down over it.
+   */
   private view(here: Here): View {
     const drift = this.calm ? 0 : Math.sin(this.clock * 0.12) * 1.2;
     const g = here.stop.group;
-    return {
-      eye: g.localToWorld(new THREE.Vector3(-2.4 + drift, 2.0, -6.6)),
-      look: g.localToWorld(new THREE.Vector3(0.4, 0.95, 0.7)),
-    };
+    const eye = g.localToWorld(new THREE.Vector3(-2.4 + drift, 2.0, -6.6));
+    eye.y = Math.max(eye.y, here.road + 1.9);
+    return { eye, look: g.localToWorld(new THREE.Vector3(0.4, 0.95, 0.7)) };
   }
 
   private parked(here: Here): Parked {

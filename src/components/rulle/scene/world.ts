@@ -1,8 +1,10 @@
 import * as THREE from "three";
 import {
+  CITIES,
   courseAt,
   postureAt,
   raceDayOf,
+  sunToward,
   swayAt,
   type City,
   type Course,
@@ -115,10 +117,11 @@ export class World {
     }
     this.calm = options.calm;
     this.rig = new CameraRig(options.calm);
-    this.atmosphere = new Atmosphere(this.scene);
-    if (this.shaded) this.atmosphere.castShadows();
     const city = options.city ?? null;
-    this.ground = new Ground(course, options.land ?? null, city !== null);
+    // On a city's race day the sun stands where it stood that day (ADR 0036).
+    this.atmosphere = new Atmosphere(this.scene, city ? sunToward(CITIES[city].sun) : undefined);
+    if (this.shaded) this.atmosphere.castShadows();
+    this.ground = new Ground(course, options.land ?? null, city);
     // No tree in a field with cows in it, nor in the water.
     const fields = inPaddocks(course, this.ground);
     const water = this.atmosphere.water;

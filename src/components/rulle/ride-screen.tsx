@@ -94,12 +94,13 @@ export function RideScreen({
         : sceneWords("chalkAnyone"),
       top: sceneWords("chalkTop"),
       cafe: sceneWords("cafe"),
-      stand: sceneWords("stand"),
-      finish: sceneWords("finish"),
+      // A city's own signs, in its own words (ADR 0036): its stand, and over its line.
+      stand: city ? sceneWords(`standIn.${city}`) : sceneWords("stand"),
+      finish: city === "montreal" ? sceneWords("finishIn.montreal") : sceneWords("finish"),
       feed: sceneWords("feed"),
       litter: sceneWords("litter"),
     }),
-    [name, sceneWords],
+    [name, sceneWords, city],
   );
   const [ending, setEnding] = useState(false);
   const [muted, setMuted] = useState(beeps.muted);

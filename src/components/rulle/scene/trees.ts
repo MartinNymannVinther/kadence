@@ -5,7 +5,8 @@ import { at, type Batches, merged, painted } from "./props";
 
 /**
  * The trees, low-poly and flat-shaded: conifers, broadleaves green or
- * turning, birches, and the bushes of a hedge. One shape for each kind,
+ * turning — or in June all green, and in a Montréal September maples
+ * going red (ADR 0036) — birches, and the bushes of a hedge. One shape for each kind,
  * its crown painted white: each copy is given its crown's colour, so a
  * chunk's woods are four instanced meshes, not one for every green. The
  * material (`treeMaterial`) paints a white crown in the copy's colour and
@@ -55,13 +56,22 @@ function bush(): THREE.BufferGeometry {
 
 const colors = (list: readonly string[]) => list.map((c) => new THREE.Color(c));
 
-export function treeShapes(): TreeShapes {
+/** The season in the leaves: a Danish autumn, June, or maples turning. */
+export type Season = "autumn" | "summer" | "maples";
+
+export function treeShapes(season: Season = "autumn"): TreeShapes {
   const leaves = broadleaf();
+  // The trees that turn are, in June, only a fresher green; in Montréal, red.
+  const turning =
+    season === "summer" ? PALETTE.june : season === "maples" ? PALETTE.maples : PALETTE.autumn;
   return {
     conifers: { geometry: conifer(), crowns: colors(PALETTE.trees) },
     broadleaves: { geometry: leaves, crowns: colors(PALETTE.trees) },
-    autumn: { geometry: leaves, crowns: colors(PALETTE.autumn) },
-    birches: { geometry: birch(), crowns: colors(PALETTE.birchCrowns) },
+    autumn: { geometry: leaves, crowns: colors(turning) },
+    birches: {
+      geometry: birch(),
+      crowns: colors(season === "summer" ? PALETTE.june : PALETTE.birchCrowns),
+    },
     bushes: { geometry: bush(), crowns: colors(PALETTE.hedge) },
   };
 }

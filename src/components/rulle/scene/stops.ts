@@ -9,10 +9,15 @@ import { boardTexture, disposeTextured, signTexture } from "./text-plates";
 /**
  * Where a pause is spent (ADR 0034): a little café with a parasol over
  * its table, or a farm stand with a crate of sodas and an honesty box and
- * a table beside it. Built in its own coordinates facing -z, toward the
- * road: the table at the origin, the rider's chair behind it, the house
- * or the stand behind that, and a place for the bike against the wall.
+ * a table beside it — in Copenhagen a hot-dog wagon instead, and in
+ * Montréal a dépanneur, the corner shop (ADR 0036). Built in its own
+ * coordinates facing -z, toward the road: the table at the origin, the
+ * rider's chair behind it, the house or the stand behind that, and a
+ * place for the bike against the wall.
  */
+
+/** What the stand is: at a farm, a pølsevogn, or a dépanneur. */
+export type StandLook = "farm" | "polsevogn" | "depanneur";
 
 export type Stop = {
   group: THREE.Group;
@@ -90,6 +95,7 @@ export function buildStop(
   kind: StopKind,
   material: THREE.Material,
   words: { cafe: string; stand: string },
+  stand: StandLook = "farm",
 ): Stop {
   const group = new THREE.Group();
   const parts: THREE.BufferGeometry[] = tableSet(kind === "cafe");
@@ -103,6 +109,52 @@ export function buildStop(
     );
     board = sign(words.cafe, 1.7);
     board.position.set(0.6, 3.3, 1.97);
+  } else if (stand === "polsevogn") {
+    // A white wagon on its wheels, a red roof over the hatch, bottles on the counter.
+    parts.push(
+      box(2.6, 1.25, 1.4, P.wall, 0.3, 1.05, 2.6),
+      box(2.7, 0.12, 1.6, P.flagRed, 0.3, 2.25, 2.6),
+      box(2.6, 0.5, 0.06, P.flagRed, 0.3, 2.0, 1.88),
+      box(1.8, 0.06, 0.4, P.metal, 0.3, 1.2, 1.82),
+      box(2.6, 0.12, 0.06, P.flagRed, 0.3, 0.55, 1.88),
+      // One axle across it, a wheel either side, and the drawbar.
+      painted(
+        new THREE.CylinderGeometry(0.3, 0.3, 0.14, 10)
+          .rotateX(Math.PI / 2)
+          .translate(0.3, 0.3, 1.84),
+        P.tyre,
+      ),
+      painted(
+        new THREE.CylinderGeometry(0.3, 0.3, 0.14, 10)
+          .rotateX(Math.PI / 2)
+          .translate(0.3, 0.3, 3.36),
+        P.tyre,
+      ),
+      rod(v(-1.0, 0.5, 2.6), v(-1.7, 0.35, 2.6), 0.03, P.metal),
+    );
+    for (let k = 0; k < 4; k++)
+      parts.push(drinkShape("bottle", true).translate(-0.2 + k * 0.2, 1.23, 1.82));
+    board = sign(words.stand, 1.9);
+    board.position.set(0.3, 1.99, 1.84);
+  } else if (stand === "depanneur") {
+    // The corner shop in the brick ground floor of a plex, its crate of drinks by the door.
+    parts.push(
+      box(5, 3.6, 4.2, P.plexWalls[0], 0.6, 1.8, 4.4),
+      box(5.2, 0.2, 4.4, P.flatRoof, 0.6, 3.7, 4.4),
+      box(1.0, 2.0, 0.06, P.wood, 1.9, 1.0, 2.27),
+      box(2.4, 1.4, 0.06, P.glass, -0.3, 1.45, 2.27),
+      box(0.5, 0.3, 0.4, P.parasol, 1.0, 0.15, 1.95),
+    );
+    for (let k = 0; k < 6; k++)
+      parts.push(
+        drinkShape("bottle", true).translate(
+          0.85 + (k % 3) * 0.15,
+          0.3,
+          1.85 + Math.floor(k / 3) * 0.18,
+        ),
+      );
+    board = sign(words.stand, 2.4);
+    board.position.set(0.6, 2.75, 2.24);
   } else {
     parts.push(
       box(1.8, 0.9, 0.7, P.wood, 0.3, 0.45, 2.4),
@@ -148,9 +200,9 @@ export function buildStop(
     drink,
     seat: v(0, 0, 0.62),
     bike:
-      kind === "cafe"
+      kind === "cafe" || stand === "depanneur"
         ? { at: v(-0.85, 0, 2.05), yaw: -Math.PI / 2, lean: -0.16 }
-        : { at: v(1.75, 0, 2.3), yaw: Math.PI / 2, lean: 0.16 },
+        : { at: v(stand === "polsevogn" ? 1.95 : 1.75, 0, 2.3), yaw: Math.PI / 2, lean: 0.16 },
     leave(count) {
       for (let k = empties.children.length; k < count; k++) {
         const geometry = drinkShape(drink, false);

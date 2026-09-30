@@ -24,6 +24,10 @@ export const PALETTE = {
   trees: ["#63825f", "#6f8d68", "#7c9870", "#5b7a5d"],
   /** Beech and oak turning: the few trees an autumn afternoon lights up. */
   autumn: ["#c2a04f", "#b7843f", "#a8703f", "#cdb35e"],
+  /** In June the same trees in fresh leaf (ADR 0036). */
+  june: ["#7fa568", "#8eb170", "#74995f", "#98b877"],
+  /** Montréal's maples in late September: red, orange, a yellow one. */
+  maples: ["#b5473a", "#c35a3c", "#a53d33", "#c98a45", "#cdb35e"],
   birchBark: "#ece7dd",
   birchCrowns: ["#b3bb6c", "#cdb55c"],
   hedge: ["#6d8a5f", "#7d956a", "#8a9860"],
@@ -112,6 +116,16 @@ export const PALETTE = {
   teams: ["#4a6b53", "#c23b33", "#2d4a86", "#e2b93b", "#26231f", "#e9e4da"],
   jackets: ["#4a6b53", "#c23b33", "#4f5d73", "#d6a84a", "#3d4148", "#e4ebe4", "#8e4a36", "#6f8d68"],
   podium: "#f1ece3",
+  // A city's own face (ADR 0036): Montréal's plexes, their stairs and its churches' tin;
+  // the street lights; Mont-Royal's cross.
+  plexWalls: ["#9b4a36", "#7e4a37", "#c8a27a", "#b5afa3"],
+  plexBlocks: ["#8e4a36", "#a65a44", "#b5afa3"],
+  stairs: "#34383b",
+  tin: "#a9afb2",
+  lampHat: "#3b3d3f",
+  lampGlass: "#f1ecd9",
+  lampPost: "#8d9296",
+  crossSteel: "#7d8285",
   window: "#3f4a52",
   windowFrame: "#f4f1ea",
 } as const;

@@ -1,4 +1,4 @@
-import type { Course, Land } from "@/modules/rulle";
+import type { City, Course, Land } from "@/modules/rulle";
 import { coverPatch, fieldColor, type Patch } from "./land-cover";
 import { hash, hills, smoothstep } from "./noise";
 import { PALETTE } from "./palette";
@@ -104,7 +104,7 @@ export class Ground {
     /** The real land round a route that comes with Kadence; null for any other. */
     readonly land: Land | null = null,
     /** A city's streets (ADR 0036): what nobody mapped is paved, not fields. */
-    readonly city = false,
+    readonly city: City | null = null,
   ) {
     this.road = new RoadGrid(course);
   }
@@ -147,7 +147,7 @@ export class Ground {
   patch(x: number, z: number): Patch {
     if (this.land) {
       const cover = this.land.coverAt(x, -z);
-      if (cover) return coverPatch(cover.kind, cover.id, this.city);
+      if (cover) return coverPatch(cover.kind, cover.id, this.city !== null);
       // Land no one has mapped: in a city streets and squares; in the country
       // fields, and no woods made up in the real country.
       if (this.land.heightAt(x, -z) !== null)

@@ -150,7 +150,7 @@ describe("a city's street", () => {
     JSON.parse(readFileSync("public/rulle/routes/future-racing-2026-kobenhavn.land.json", "utf8")),
     cph,
   )!;
-  const city = new Ground(cph, cphLand, true);
+  const city = new Ground(cph, cphLand, "kobenhavn");
 
   it("steps up a kerb to the cycle track, and again to the pavement", () => {
     const out = (m: number) => groundAt(ROAD_HALF + m, 0.4, true);

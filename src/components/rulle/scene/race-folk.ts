@@ -122,6 +122,11 @@ function cloth(kind: FlagKind, x: number, y: number, z: number): THREE.BufferGeo
   }
 }
 
+/** A flag's cloth on its own, its near edge at x = 0 and its foot at y = 0: for a flagpole. */
+export function clothShape(kind: FlagKind): THREE.BufferGeometry {
+  return merged(cloth(kind, 0, 0, 0));
+}
+
 /** A flag's colour from far off, where its cross or its bands are too small to see. */
 const FLAG_FAR: Record<FlagKind, string> = {
   dk: P.flagRed,

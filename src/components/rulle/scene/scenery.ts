@@ -1,11 +1,12 @@
 import * as THREE from "three";
+import { CITIES } from "@/modules/rulle";
 import { foldAround, type Buildings } from "./buildings";
 import type { Ground } from "./ground";
 import { LandScenery } from "./land-scenery";
 import { hash } from "./noise";
 import { Batches, church, farm, freeze, turbineBlades, turbineTower } from "./props";
 import { CHUNK, drawnHeight, type ChunkKey } from "./terrain";
-import { disposeTrees, treeMaterial, treeShapes } from "./trees";
+import { disposeTrees, treeMaterial, treeShapes, type TreeShapes } from "./trees";
 import { plantWoods } from "./woods";
 
 /**
@@ -34,12 +35,12 @@ export class Scenery {
     flatShading: true,
   });
   private readonly leaves = treeMaterial();
-  private readonly shapes = {
-    trees: treeShapes(),
-    farms: [farm(0), farm(1), farm(2)],
-    church: church(),
-    tower: turbineTower(),
-    blades: turbineBlades(),
+  private readonly shapes: {
+    trees: TreeShapes;
+    farms: THREE.BufferGeometry[];
+    church: THREE.BufferGeometry;
+    tower: THREE.BufferGeometry;
+    blades: THREE.BufferGeometry;
   };
   private readonly land: LandScenery | null;
 
@@ -54,6 +55,14 @@ export class Scenery {
     /** What streams are drawn in. */
     private readonly water: THREE.Material = new THREE.MeshBasicMaterial(),
   ) {
+    this.shapes = {
+      // A city's trees as they stand on its race day (ADR 0036).
+      trees: treeShapes(ground.city ? CITIES[ground.city].trees : "autumn"),
+      farms: [farm(0), farm(1), farm(2)],
+      church: church(),
+      tower: turbineTower(),
+      blades: turbineBlades(),
+    };
     this.land = ground.land ? new LandScenery(ground.land, ground) : null;
   }
 

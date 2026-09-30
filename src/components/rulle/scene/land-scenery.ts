@@ -1,12 +1,13 @@
 import * as THREE from "three";
 import type { Land, LineKind } from "@/modules/rulle";
-import { buildingsMesh, type Footprint } from "./buildings";
+import { buildingsMesh, lookOf, type Footprint, type Look } from "./buildings";
 import type { Ground } from "./ground";
 import { hash } from "./noise";
 import type { Batches } from "./props";
 import { CHUNK, drawnHeight } from "./terrain";
 import { plant, type TreeShapes } from "./trees";
 import { streamStrips } from "./water";
+import { MAPPED, madeUpBuildings } from "./made-up-buildings";
 import { family } from "./woods";
 
 /**
@@ -20,8 +21,6 @@ import { family } from "./woods";
  * building no storeys. Sorted into chunks once, when the ride begins.
  */
 
-/** Buildings are in the land's file this far from the road; beyond it they are made up. */
-const MAPPED = 700;
 const SPACING: Record<LineKind, number> = { river: 8, stream: 8, trees: 8.5, hedge: 3.6 };
 const WIDTH = { river: 6, stream: 1.6 } as const;
 /** Nothing stands nearer the road's middle than this: in a city, the pavement is the street's. */
@@ -44,11 +43,14 @@ export class LandScenery {
   private readonly buckets = new Map<string, Bucket>();
   /** A city's usual storeys: what its mapped buildings have, most often. */
   private readonly usual: number;
+  /** How the city builds, or the country (ADR 0036). */
+  private readonly look: Look;
 
   constructor(
     private readonly land: Land,
     private readonly ground: Ground,
   ) {
+    this.look = lookOf(ground.city);
     const bucket = (k: string) => {
       let found = this.buckets.get(k);
       if (!found) {
@@ -137,11 +139,23 @@ export class LandScenery {
     const footprints = [
       ...(found?.buildings ?? [])
         .filter((b) => this.clear(b) && free(b.x, b.z))
-        .map((b) => ({ ...b, far: this.ground.nearest(b.x, b.z, 220).d })),
-      ...this.madeUp(cx, cz, found?.farms ?? [], free).map((b) => ({ ...b, far: MAPPED })),
+        .map((b) => {
+          const near = this.ground.nearest(b.x, b.z, 220);
+          return { ...b, far: near.d, road: this.roadAt(near.index, near.d) };
+        }),
+      ...madeUpBuildings(this.ground, this.usual, cx, cz, found?.farms ?? [], free).map((b) => ({
+        ...b,
+        far: MAPPED,
+      })),
     ];
     const meshes: THREE.Mesh[] = [];
-    const buildings = buildingsMesh(footprints, height, material, (b) => this.storeys(b));
+    const buildings = buildingsMesh(
+      footprints,
+      height,
+      material,
+      (b) => this.storeys(b),
+      this.look,
+    );
     if (buildings) meshes.push(buildings);
     // The street trees the map has, on the pavement and never in the road.
     for (const [k, t] of (found?.trees ?? []).entries()) {
@@ -202,6 +216,13 @@ export class LandScenery {
     return Math.max(2, this.usual + Math.floor(hash(b.seed, 3, 651) * 3) - 1);
   }
 
+  /** The road's point at a sample, where one was near at all. */
+  private roadAt(index: number, d: number): { x: number; z: number } | null {
+    const course = this.ground.course;
+    if (!Number.isFinite(d) || index < 0 || index >= course.x.length) return null;
+    return { x: course.x[index]!, z: -course.y[index]! };
+  }
+
   /** Whether a building stands clear of the road: none of its corners or sides on it. */
   private clear(b: Footprint): boolean {
     const c = Math.cos(b.angle);
@@ -248,93 +269,6 @@ export class LandScenery {
     if (last && last.x >= x0 && last.x < x1 && -last.y >= z0 && -last.y < z1)
       out.push({ x: last.x, z: -last.y });
     return out.filter((p, i) => p !== BREAK || (i > 0 && i < out.length - 1));
-  }
-
-  /**
-   * Buildings no one mapped for the ride: houses filling a town and a
-   * hall or two in an industrial estate beyond the mapped ones, and a
-   * farm on each farmyard out there.
-   */
-  private madeUp(
-    cx: number,
-    cz: number,
-    farms: { x: number; z: number; seed: number }[],
-    free: (x: number, z: number) => boolean,
-  ): Footprint[] {
-    const out: Footprint[] = [];
-    const middle = this.ground.nearest((cx + 0.5) * CHUNK, (cz + 0.5) * CHUNK, MAPPED + CHUNK).d;
-    for (const farm of farms) {
-      const turn = hash(farm.seed, 1, 611) * Math.PI;
-      const seed = 1_000_000 + farm.seed;
-      out.push({ x: farm.x, z: farm.z, w: 14, d: 8, angle: turn, kind: "house", levels: 1, seed });
-      const bx = farm.x + Math.cos(turn) * 4 + Math.sin(turn) * 16;
-      const bz = farm.z - Math.sin(turn) * 4 + Math.cos(turn) * 16;
-      out.push({
-        x: bx,
-        z: bz,
-        w: 11,
-        d: 26,
-        angle: turn,
-        kind: "farm",
-        levels: 1,
-        seed: seed + 1,
-      });
-    }
-    if (middle < MAPPED - CHUNK * 0.71) return out;
-    const n = 12;
-    const side = CHUNK / n;
-    for (let a = 0; a < n; a++)
-      for (let b = 0; b < n; b++) {
-        const ia = cx * n + a;
-        const ib = cz * n + b;
-        const x = (ia + 0.2 + hash(ia, ib, 621) * 0.6) * side;
-        const z = (ib + 0.2 + hash(ia, ib, 622) * 0.6) * side;
-        const kind = this.ground.patch(x, z).kind;
-        const town = kind === "town" && hash(ia, ib, 623) < 0.55;
-        const hall = kind === "industry" && hash(ia, ib, 623) < 0.3;
-        if (!town && !hall) continue;
-        if (middle < MAPPED + CHUNK * 0.71 && this.ground.nearest(x, z, MAPPED + 50).d <= MAPPED)
-          continue;
-        if (!free(x, z)) continue;
-        const seed = 2_000_000 + ia * 7919 + ib;
-        // A city's blocks stand square to one another, as its streets run.
-        const grid = hash(cx, cz, 628) * Math.PI;
-        out.push(
-          town && this.ground.city
-            ? {
-                x,
-                z,
-                w: 18 + hash(ia, ib, 624) * 12,
-                d: 11 + hash(ia, ib, 625) * 4,
-                angle: grid + (hash(ia, ib, 626) < 0.5 ? 0 : Math.PI / 2),
-                kind: "block",
-                levels: this.usual + Math.floor(hash(ia, ib, 627) * 3) - 1,
-                seed,
-              }
-            : town
-              ? {
-                  x,
-                  z,
-                  w: 8 + hash(ia, ib, 624) * 6,
-                  d: 7 + hash(ia, ib, 625) * 3,
-                  angle: hash(ia, ib, 626) * Math.PI,
-                  kind: "house",
-                  levels: hash(ia, ib, 627) < 0.2 ? 2 : 1,
-                  seed,
-                }
-              : {
-                  x,
-                  z,
-                  w: 20 + hash(ia, ib, 624) * 16,
-                  d: 14 + hash(ia, ib, 625) * 10,
-                  angle: hash(ia, ib, 626) * Math.PI,
-                  kind: "big",
-                  levels: 1,
-                  seed,
-                },
-        );
-      }
-    return out;
   }
 }
 

@@ -55,3 +55,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0033](0033-rulle-the-session-on-the-trainer.md)       | Rulle: today's session on the trainer, in the browser                                      | → 0016, 0018, 0019, 0022 |
 | [0034](0034-rulle-small-things-on-the-way.md)          | Rulle's small things: once in a while, at the edge of the picture, never on the numbers    | → 0013, 0033             |
 | [0035](0035-rulle-real-roads-real-land-and-company.md) | Rulle's routes: a session to choose, real roads through real land, and company on them     | → 0014, 0033, 0034       |
+| [0036](0036-rulle-in-the-city-on-race-day.md)          | Rulle in the city: Future Racing in Copenhagen and the Worlds in Montréal, on race day     | → 0013, 0034, 0035       |

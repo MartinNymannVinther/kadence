@@ -5,8 +5,8 @@ import { cloud } from "./props";
 import { RIPPLE, waterMaterial } from "./water";
 
 /**
- * Light and air: a low autumn sun from the south-west and the sky's cool
- * light from above; a dome of sky that pales into haze at the horizon,
+ * Light and air: a low autumn sun from the south-west — or where it stands
+ * on a city's race day (ADR 0036) — and the sky's cool light from above; a dome of sky that pales into haze at the horizon,
  * warmest low toward the sun, and the same haze as fog, so the land fades
  * into it rather than ending; water where the land dips below the sea,
  * the sun glinting on it; a few slow clouds. Where the device can afford
@@ -14,7 +14,7 @@ import { RIPPLE, waterMaterial } from "./water";
  */
 
 /** Toward the sun: the south-west, and not high. */
-const SUN = new THREE.Vector3(-0.55, 0.62, 0.56).normalize();
+const AUTUMN_SUN = new THREE.Vector3(-0.55, 0.62, 0.56).normalize();
 /** Metres either side of the rider the sun's shadows are drawn. */
 const SHADOWED = 14;
 /** The sea's facets: its normals lean a little every this many metres. */
@@ -30,8 +30,11 @@ export class Atmosphere {
   private readonly clouds: THREE.Mesh[] = [];
   private readonly disposables: { dispose: () => void }[] = [];
   private placed = false;
+  private readonly toward: THREE.Vector3;
 
-  constructor(scene: THREE.Scene) {
+  constructor(scene: THREE.Scene, sun?: { x: number; y: number; z: number }) {
+    this.toward = sun ? new THREE.Vector3(sun.x, sun.y, sun.z).normalize() : AUTUMN_SUN.clone();
+    const SUN = this.toward;
     const haze = new THREE.Color(PALETTE.haze);
     scene.background = haze;
     scene.fog = new THREE.Fog(haze, 320, 2250);
@@ -119,7 +122,7 @@ export class Atmosphere {
   /** Where the sun's shadows are drawn: round the rider, the light coming the same way. */
   light(at: THREE.Vector3): void {
     this.sun.target.position.copy(at);
-    this.sun.position.copy(at).addScaledVector(SUN, 70);
+    this.sun.position.copy(at).addScaledVector(this.toward, 70);
   }
 
   /** The sky and the sea keep their distance; the clouds drift east on the westerly. */
