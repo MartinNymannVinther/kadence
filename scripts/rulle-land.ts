@@ -1,8 +1,18 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { buildCourse, readRouteGpx, toPlane } from "@/modules/rulle";
 import { LAND_KINDS, type LandFile } from "@/modules/rulle/route/land";
-import { decodePng, terrarium, type Image } from "./rulle-land/png";
-import { area, clip, footprint, joinRings, simplify, type Box, type P } from "./rulle-land/shapes";
+import { get } from "./rulle-land/fetch";
+import { heightsOver } from "./rulle-land/heights";
+import {
+  area,
+  clip,
+  densify,
+  footprint,
+  joinRings,
+  simplify,
+  type Box,
+  type P,
+} from "./rulle-land/shapes";
 import {
   areaKind,
   buildingKind,
@@ -38,11 +48,8 @@ import {
  */
 
 const MARGIN = 2600; // metres of land around the route: the landscape draws 2.3 km out
-const STEP = 40; // metres between heights
-const ZOOM = 13;
 const EARTH_M = 6_371_008.8;
 const RAD = Math.PI / 180;
-const AGENT = "Kadence-Rulle/0.9 (land for bundled routes; https://kadence.haij.dk)";
 /** On the skyline from anywhere in the land: this tall, or a church. */
 const SKYLINE = 25;
 /** Street trees are fetched this close to the road. */
@@ -78,56 +85,7 @@ async function main(): Promise<void> {
   };
   const sw = toLatLon(box.minX, box.minY);
   const ne = toLatLon(box.maxX, box.maxY);
-
-  async function get(url: string, init?: RequestInit): Promise<Response> {
-    for (let attempt = 0; ; attempt++) {
-      const response = await fetch(url, {
-        ...init,
-        headers: { "User-Agent": AGENT, ...init?.headers },
-      });
-      if (response.ok) return response;
-      if (attempt >= 4 || ![429, 502, 503, 504].includes(response.status))
-        throw new Error(`${url}: ${response.status}`);
-      await new Promise((r) => setTimeout(r, 2000 * 2 ** attempt));
-    }
-  }
-
-  // Heights: the tiles over the box, sampled every STEP metres, bilinear between pixels.
-  const tileX = (lon: number) => ((lon + 180) / 360) * 2 ** ZOOM;
-  const tileY = (lat: number) =>
-    ((1 - Math.log(Math.tan(lat * RAD) + 1 / Math.cos(lat * RAD)) / Math.PI) / 2) * 2 ** ZOOM;
-  const tiles = new Map<string, Image>();
-  for (let tx = Math.floor(tileX(sw.lon)); tx <= Math.floor(tileX(ne.lon)); tx++)
-    for (let ty = Math.floor(tileY(ne.lat)); ty <= Math.floor(tileY(sw.lat)); ty++) {
-      const url = `https://s3.amazonaws.com/elevation-tiles-prod/terrarium/${ZOOM}/${tx}/${ty}.png`;
-      tiles.set(`${tx}/${ty}`, decodePng(new Uint8Array(await (await get(url)).arrayBuffer())));
-    }
-  const pixel = (px: number, py: number) => {
-    const tile = tiles.get(`${Math.floor(px / 256)}/${Math.floor(py / 256)}`)!;
-    return terrarium(tile, Math.floor(px) % 256, Math.floor(py) % 256);
-  };
-  const heightAt = (lat: number, lon: number) => {
-    const px = tileX(lon) * 256 - 0.5;
-    const py = tileY(lat) * 256 - 0.5;
-    const x0 = Math.floor(px);
-    const y0 = Math.floor(py);
-    const u = px - x0;
-    const v = py - y0;
-    return (
-      pixel(x0, y0) * (1 - u) * (1 - v) +
-      pixel(x0 + 1, y0) * u * (1 - v) +
-      pixel(x0, y0 + 1) * (1 - u) * v +
-      pixel(x0 + 1, y0 + 1) * u * v
-    );
-  };
-  const cols = Math.ceil((box.maxX - box.minX) / STEP) + 1;
-  const rows = Math.ceil((box.maxY - box.minY) / STEP) + 1;
-  const dm = new Int16Array(cols * rows);
-  for (let j = 0; j < rows; j++)
-    for (let i = 0; i < cols; i++) {
-      const { lat, lon } = toLatLon(box.minX + i * STEP, box.minY + j * STEP);
-      dm[j * cols + i] = Math.round(Math.max(-3000, Math.min(3000, heightAt(lat, lon))) * 10);
-    }
+  const heights = await heightsOver(box, toLatLon);
 
   // What covers the land, from OpenStreetMap.
   const bbox = `${sw.lat.toFixed(6)},${sw.lon.toFixed(6)},${ne.lat.toFixed(6)},${ne.lon.toFixed(6)}`;
@@ -189,14 +147,7 @@ async function main(): Promise<void> {
     version: 1,
     origin,
     fetched: osm.osm3s?.timestamp_osm_base ?? new Date().toISOString(),
-    heights: {
-      x0: Math.round(box.minX),
-      y0: Math.round(box.minY),
-      step: STEP,
-      cols,
-      rows,
-      dm: Buffer.from(dm.buffer).toString("base64"),
-    },
+    heights,
     areas: [],
     lines: [],
     buildings: [],
@@ -342,22 +293,8 @@ async function main(): Promise<void> {
   const json = JSON.stringify(land);
   writeFileSync(out, json);
   console.log(
-    `${out}: ${(json.length / 1024).toFixed(0)} KB — heights ${cols}×${rows}, areas ${land.areas.length}, lines ${land.lines.length}, buildings ${land.buildings.length} (${land.buildings.filter((b) => b.length > 7).length} with heights or roofs), trees ${land.trees!.length}, cobbled streets ${land.setts!.length}, bridges and tunnels ${land.structures!.length}, turbines ${land.turbines.length}`,
+    `${out}: ${(json.length / 1024).toFixed(0)} KB — heights ${heights.cols}×${heights.rows}, areas ${land.areas.length}, lines ${land.lines.length}, buildings ${land.buildings.length} (${land.buildings.filter((b) => b.length > 7).length} with heights or roofs), trees ${land.trees!.length}, cobbled streets ${land.setts!.length}, bridges and tunnels ${land.structures!.length}, turbines ${land.turbines.length}`,
   );
-}
-
-/** A line with a point at least every `every` metres along it. */
-function densify(line: P[], every: number): P[] {
-  const out: P[] = [];
-  for (let i = 0; i + 1 < line.length; i++) {
-    const a = line[i]!;
-    const b = line[i + 1]!;
-    const n = Math.max(1, Math.ceil(Math.hypot(b.x - a.x, b.y - a.y) / every));
-    for (let k = 0; k < n; k++)
-      out.push({ x: a.x + ((b.x - a.x) * k) / n, y: a.y + ((b.y - a.y) * k) / n });
-  }
-  out.push(line.at(-1)!);
-  return out;
 }
 
 main().catch((error: unknown) => {

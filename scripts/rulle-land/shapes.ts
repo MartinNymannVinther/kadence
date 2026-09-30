@@ -160,3 +160,17 @@ function convexHull(points: P[]): P[] {
   }
   return [...lower.slice(0, -1), ...upper.slice(0, -1)];
 }
+
+/** A line with a point at least every `every` metres along it. */
+export function densify(line: P[], every: number): P[] {
+  const out: P[] = [];
+  for (let i = 0; i + 1 < line.length; i++) {
+    const a = line[i]!;
+    const b = line[i + 1]!;
+    const n = Math.max(1, Math.ceil(Math.hypot(b.x - a.x, b.y - a.y) / every));
+    for (let k = 0; k < n; k++)
+      out.push({ x: a.x + ((b.x - a.x) * k) / n, y: a.y + ((b.y - a.y) * k) / n });
+  }
+  out.push(line.at(-1)!);
+  return out;
+}
