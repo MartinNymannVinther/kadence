@@ -6,6 +6,7 @@ import { demoWorkspaces } from "@/core/db/schema";
 import { DEMO_HEADER, demoSignupHeaderValue } from "@/core/auth/signup";
 import { env } from "@/core/env";
 import { organizationSlug } from "@/lib/slug";
+import { arrivalOrigin } from "./origin";
 import { createDemoRoles, readAccounts } from "./roles";
 import { seedDemoTeam } from "./seed";
 import { TEAM_NAME } from "./seed-data";
@@ -32,29 +33,36 @@ export function demoEnabled(): boolean {
 }
 
 /**
- * Where a new demo lands, as a URL the browser can follow.
+ * Where a new demo lands, as a URL the browser can follow: on the public
+ * origin the visitor came in by, `host` (`origin.ts`).
  *
- * Built from BETTER_AUTH_URL and never from the request, because behind
- * the proxy the request does not know the public address: Next hands a
- * route handler `https://0.0.0.0:3000/...`, the container's own listen
- * address, and a redirect built on that sends the visitor to a place
- * that does not exist. BETTER_AUTH_URL is the installation's declared
- * public origin, the same one passkeys and share links are bound to.
+ * Never built from the request's own URL, because behind the proxy the
+ * request does not know the public address: Next hands a route handler
+ * `https://0.0.0.0:3000/...`, the container's own listen address, and a
+ * redirect built on that sends the visitor to a place that does not
+ * exist. BETTER_AUTH_URL is the installation's declared public origin,
+ * the same one passkeys and share links are bound to; a visitor who came
+ * in by another origin the installation trusts — a developer's machine on
+ * the home network — lands back on that one, where the session's cookie
+ * was set.
  */
-export function demoLandingUrl(locale: "da" | "en"): URL {
+export function demoLandingUrl(locale: "da" | "en", host: string | null = null): URL {
   const prefix = locale === "da" ? "" : `/${locale}`;
-  return new URL(`${prefix}/today`, env.BETTER_AUTH_URL);
+  return new URL(
+    `${prefix}/today`,
+    arrivalOrigin(host, env.BETTER_AUTH_URL, env.AUTH_TRUSTED_ORIGINS),
+  );
 }
 
 /**
  * Whether the demo's session cookie carries the Secure flag. Decided by
- * the public origin, for the same reason as above: the request's own
- * protocol is `http:` inside the container even when every visitor
- * arrives over TLS, and a session cookie without Secure on a public
- * installation is a cookie that may be sent in the clear.
+ * the public origin the visitor came in by, for the same reason as above:
+ * the request's own protocol is `http:` inside the container even when
+ * every visitor arrives over TLS, and a session cookie without Secure on
+ * a public installation is a cookie that may be sent in the clear.
  */
-export function demoCookieSecure(): boolean {
-  return env.BETTER_AUTH_URL.startsWith("https://");
+export function demoCookieSecure(host: string | null = null): boolean {
+  return arrivalOrigin(host, env.BETTER_AUTH_URL, env.AUTH_TRUSTED_ORIGINS).protocol === "https:";
 }
 
 export type DemoSession = { headers: Headers } | null;

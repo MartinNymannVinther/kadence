@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { callerKey, rateLimit } from "@/core/rate-limit";
+import { arrivalHost } from "@/modules/demo/origin";
 import {
   createDemoWorkspace,
   demoCookieSecure,
@@ -49,10 +50,11 @@ export async function GET(
   const demo = await createDemoWorkspace(language);
   if (!demo) return refusal("The demo is not available right now.", 503);
 
-  // Both the destination and the cookie's Secure flag come from the
-  // installation's public origin, not from the request: behind the proxy
-  // the request only knows the container's own address.
-  const response = NextResponse.redirect(demoLandingUrl(language), {
+  // Both the destination and the cookie's Secure flag come from the public
+  // origin the visitor came in by, one the installation trusts, not from
+  // the request's own URL: behind the proxy that is the container's.
+  const host = arrivalHost(request.headers);
+  const response = NextResponse.redirect(demoLandingUrl(language, host), {
     status: 303,
   });
   // The sign-up call answered with the session cookie; hand it on.
@@ -62,7 +64,7 @@ export async function GET(
       response.cookies.set(name, rest.join("="), {
         httpOnly: true,
         sameSite: "lax",
-        secure: demoCookieSecure(),
+        secure: demoCookieSecure(host),
         path: "/",
       });
   }

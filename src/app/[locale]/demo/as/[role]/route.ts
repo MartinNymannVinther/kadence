@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getSession } from "@/core/auth/session";
 import { DEMO_ROLES, switchDemoRole, type DemoRole } from "@/modules/demo/roles";
+import { arrivalHost } from "@/modules/demo/origin";
 import { demoCookieSecure, demoEnabled, demoLandingUrl } from "@/modules/demo/service";
 
 export const runtime = "nodejs";
@@ -12,7 +13,7 @@ export const dynamic = "force-dynamic";
  * demo's accounts may use it (roles.ts), and only while the demo lives.
  */
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ locale: string; role: string }> },
 ) {
   if (!demoEnabled()) return new NextResponse("Not found", { status: 404 });
@@ -21,8 +22,9 @@ export async function GET(
   if (!(DEMO_ROLES as readonly string[]).includes(role))
     return new NextResponse("Not found", { status: 404 });
 
+  const host = arrivalHost(request.headers);
   const session = await getSession();
-  if (!session) return NextResponse.redirect(demoLandingUrl(language), { status: 303 });
+  if (!session) return NextResponse.redirect(demoLandingUrl(language, host), { status: 303 });
   const headers = await switchDemoRole(
     {
       userId: session.user.id,
@@ -33,7 +35,7 @@ export async function GET(
   );
   if (!headers) return new NextResponse("Not found", { status: 404 });
 
-  const response = NextResponse.redirect(demoLandingUrl(language), { status: 303 });
+  const response = NextResponse.redirect(demoLandingUrl(language, host), { status: 303 });
   for (const cookie of headers.getSetCookie()) {
     const [pair] = cookie.split(";");
     const [name, ...rest] = (pair ?? "").split("=");
@@ -41,7 +43,7 @@ export async function GET(
       response.cookies.set(name, rest.join("="), {
         httpOnly: true,
         sameSite: "lax",
-        secure: demoCookieSecure(),
+        secure: demoCookieSecure(host),
         path: "/",
       });
   }
