@@ -3,6 +3,7 @@ import { buildCourse, readRouteGpx, toPlane } from "@/modules/rulle";
 import { LAND_KINDS, type LandFile } from "@/modules/rulle/route/land";
 import { decodePng, terrarium, type Image } from "./rulle-land/png";
 import { area, clip, footprint, joinRings, simplify, type Box, type P } from "./rulle-land/shapes";
+import { areaKind, buildingKind, colourOf, levelsOf, metres, roofIndex } from "./rulle-land/tags";
 
 /**
  * The land around a route that comes with Kadence (ADR 0035), fetched
@@ -11,10 +12,15 @@ import { area, clip, footprint, joinRings, simplify, type Box, type P } from "./
  * the ground's heights from Mapzen's terrain tiles (Terrarium encoding;
  * in Denmark from SRTM and EU-DEM, the sea from bathymetry), and from
  * OpenStreetMap (ODbL) what covers it — woods, water, fields, meadows,
- * towns and their buildings, tree rows and hedges, wind turbines.
+ * towns and their buildings, tree rows and hedges, wind turbines; in a
+ * city its buildings' heights and roofs where the map says them, their
+ * towers and spires, the tall ones on the skyline, and the street trees.
  * Everything in metres on the course's own plane.
  *
- *     pnpm script scripts/rulle-land.ts public/rulle/routes/bu-dm-2026-vejle.gpx
+ *     pnpm script scripts/rulle-land.ts public/rulle/routes/bu-dm-2026-vejle.gpx [--buildings 650]
+ *
+ * `--buildings` is how far from the road the buildings are fetched, in
+ * metres: a dense city keeps its file small with less.
  *
  * Run by a developer when a route is added or its file changes; never at
  * build or run time.
@@ -26,10 +32,17 @@ const ZOOM = 13;
 const EARTH_M = 6_371_008.8;
 const RAD = Math.PI / 180;
 const AGENT = "Kadence-Rulle/0.9 (land for bundled routes; https://kadence.haij.dk)";
+/** On the skyline from anywhere in the land: this tall, or a church. */
+const SKYLINE = 25;
+/** Street trees are fetched this close to the road. */
+const TREES = 60;
 
 async function main(): Promise<void> {
   const gpxPath = process.argv[2];
-  if (!gpxPath) throw new Error("Usage: pnpm script scripts/rulle-land.ts <route.gpx>");
+  if (!gpxPath)
+    throw new Error("Usage: pnpm script scripts/rulle-land.ts <route.gpx> [--buildings 650]");
+  const flag = process.argv.indexOf("--buildings");
+  const reach = flag > 0 ? Number(process.argv[flag + 1]) : 650;
   const course = buildCourse(readRouteGpx(readFileSync(gpxPath, "utf8")));
   const { origin } = course;
   const toLatLon = (x: number, y: number) => ({
@@ -110,11 +123,20 @@ async function main(): Promise<void> {
     relation["natural"~"^(wood|water|wetland|heath|scrub|grassland)$"](${bbox});
     way["landuse"~"^(forest|farmland|meadow|grass|residential|industrial|commercial|retail|orchard|allotments|cemetery|farmyard|recreation_ground|village_green|reservoir|basin)$"](${bbox});
     relation["landuse"~"^(forest|farmland|meadow|grass|residential|industrial|commercial|retail|orchard|farmyard)$"](${bbox});
-    way["leisure"~"^(park|golf_course)$"](${bbox});
+    way["leisure"~"^(park|golf_course|garden|pitch)$"](${bbox});
+    relation["leisure"~"^(park|golf_course|garden)$"](${bbox});
+    relation["landuse"~"^(grass|meadow|recreation_ground|cemetery|allotments)$"](${bbox});
     way["waterway"~"^(river|stream|canal|riverbank|ditch|drain)$"](${bbox});
     way["natural"="tree_row"](${bbox});
     way["barrier"="hedge"](${bbox});
-    way["building"](around:650,${along.join(",")});
+    way["landuse"="cemetery"](${bbox});
+    way["amenity"="grave_yard"](${bbox});
+    way["building"](around:${reach},${along.join(",")});
+    way["building:part"](around:${reach},${along.join(",")});
+    way["building"]["height"](${bbox});
+    way["building:part"]["height"](${bbox});
+    way["building"~"^(church|cathedral|chapel|basilica)$"](${bbox});
+    node["natural"="tree"](around:${TREES},${along.join(",")});
     node["generator:source"="wind"](${bbox});
   );
   out geom qt;`;
@@ -133,65 +155,6 @@ async function main(): Promise<void> {
     })
   ).json()) as { elements: Element[]; osm3s?: { timestamp_osm_base?: string } };
 
-  const areaKind = (t: Record<string, string>): string | null => {
-    if (
-      t.natural === "water" ||
-      t.waterway === "riverbank" ||
-      t.landuse === "reservoir" ||
-      t.landuse === "basin"
-    )
-      return "water";
-    if (t.natural === "wood" || t.landuse === "forest")
-      return t.leaf_type === "needleleaved" || t.wood === "coniferous" ? "conifer" : "forest";
-    if (t.natural === "wetland") return "wetland";
-    if (t.natural === "heath" || t.natural === "scrub") return "heath";
-    if (t.natural === "beach" || t.natural === "sand") return "sand";
-    if (t.landuse === "farmland") return "field";
-    if (t.landuse === "orchard") return "orchard";
-    if (t.landuse === "farmyard") return "yard";
-    if (t.landuse === "industrial") return "industry";
-    if (["residential", "commercial", "retail", "allotments", "cemetery"].includes(t.landuse ?? ""))
-      return "town";
-    if (
-      t.natural === "grassland" ||
-      ["meadow", "grass", "village_green", "recreation_ground"].includes(t.landuse ?? "") ||
-      t.leisure === "park" ||
-      t.leisure === "golf_course"
-    )
-      return "meadow";
-    return null;
-  };
-  const buildingKind = (t: Record<string, string>) => {
-    const b = t.building ?? "yes";
-    if (["church", "chapel", "cathedral"].includes(b)) return "church";
-    if (
-      [
-        "farm_auxiliary",
-        "barn",
-        "shed",
-        "agricultural",
-        "cowshed",
-        "stable",
-        "greenhouse",
-        "silo",
-      ].includes(b)
-    )
-      return "farm";
-    if (
-      [
-        "industrial",
-        "warehouse",
-        "commercial",
-        "retail",
-        "office",
-        "supermarket",
-        "hangar",
-      ].includes(b)
-    )
-      return "big";
-    if (["apartments", "dormitory", "hospital", "school"].includes(b)) return "block";
-    return "house";
-  };
   const round = (points: P[]) => points.flatMap((p) => [Math.round(p.x), Math.round(p.y)]);
   const land: LandFile = {
     version: 1,
@@ -209,30 +172,61 @@ async function main(): Promise<void> {
     lines: [],
     buildings: [],
     turbines: [],
+    trees: [],
   };
+  // Nearest the road, in metres: what decides whether a building far off is on the skyline.
+  const fromRoad = (p: P) => {
+    let best = Infinity;
+    for (let i = 0; i < course.x.length; i += 3)
+      best = Math.min(best, Math.hypot(course.x[i]! - p.x, course.y[i]! - p.y));
+    return best;
+  };
+  // A building drawn in parts is drawn by its parts alone, as a map means it.
+  const parts = osm.elements
+    .filter((e) => e.type === "way" && e.tags?.["building:part"] && !e.tags.building)
+    .map((e) => footprint((e.geometry ?? []).map((g) => plane(g.lat, g.lon))));
+  const hasParts = (f: { x: number; y: number; w: number; d: number; angle: number }) =>
+    parts.some((q) => {
+      const c = Math.cos(f.angle);
+      const s = Math.sin(f.angle);
+      const u = (q.x - f.x) * c + (q.y - f.y) * s;
+      const v = -(q.x - f.x) * s + (q.y - f.y) * c;
+      return Math.abs(u) < f.w / 2 + 0.5 && Math.abs(v) < f.d / 2 + 0.5;
+    });
   for (const e of osm.elements) {
     const tags = e.tags ?? {};
     if (e.type === "node" && e.lat !== undefined && e.lon !== undefined) {
       const p = plane(e.lat, e.lon);
-      land.turbines.push([Math.round(p.x), Math.round(p.y)]);
+      if (tags.natural === "tree") land.trees!.push([Math.round(p.x), Math.round(p.y)]);
+      else land.turbines.push([Math.round(p.x), Math.round(p.y)]);
       continue;
     }
     const line = (e.geometry ?? []).map((g) => plane(g.lat, g.lon));
-    if (e.type === "way" && tags.building && line.length >= 4) {
+    if (e.type === "way" && (tags.building || tags["building:part"]) && line.length >= 4) {
       const f = footprint(line);
       if (f.w * f.d < 12 || f.w * f.d > 12000) continue;
-      const levels = Math.max(
-        1,
-        Math.min(8, Number.parseInt(tags["building:levels"] ?? "", 10) || 0),
-      );
+      const kind = buildingKind(tags);
+      if (kind !== "part" && hasParts(f)) continue;
+      const height = metres(tags.height);
+      // Beyond the fetched reach, only what stands on the skyline.
+      if (fromRoad(f) > reach + 30 && height < SKYLINE && kind !== "church") continue;
+      const tail = [
+        height,
+        metres(tags.min_height),
+        roofIndex(tags),
+        colourOf(tags["roof:colour"]),
+      ];
+      // Say nothing the map did not: a plain building needs only its first seven.
+      while (tail.length > 0 && tail.at(-1) === (tail.length === 4 ? -1 : 0)) tail.pop();
       land.buildings.push([
         Math.round(f.x * 10) / 10,
         Math.round(f.y * 10) / 10,
         Math.round(f.w * 10) / 10,
         Math.round(f.d * 10) / 10,
         Math.round(f.angle * 1000) / 1000,
-        LAND_KINDS.buildings.indexOf(buildingKind(tags) as never),
-        levels,
+        LAND_KINDS.buildings.indexOf(kind),
+        levelsOf(tags),
+        ...tail,
       ]);
       continue;
     }
@@ -277,7 +271,7 @@ async function main(): Promise<void> {
         .map((h) => clip(simplify(h, 4), box))
         .filter((h) => h.length >= 3 && area(h) >= 150)
         .map(round);
-      land.areas.push([LAND_KINDS.areas.indexOf(kind as never), round(cut), ...holes]);
+      land.areas.push([LAND_KINDS.areas.indexOf(kind), round(cut), ...holes]);
     }
   }
 
@@ -285,7 +279,7 @@ async function main(): Promise<void> {
   const json = JSON.stringify(land);
   writeFileSync(out, json);
   console.log(
-    `${out}: ${(json.length / 1024).toFixed(0)} KB — heights ${cols}×${rows}, areas ${land.areas.length}, lines ${land.lines.length}, buildings ${land.buildings.length}, turbines ${land.turbines.length}`,
+    `${out}: ${(json.length / 1024).toFixed(0)} KB — heights ${cols}×${rows}, areas ${land.areas.length}, lines ${land.lines.length}, buildings ${land.buildings.length} (${land.buildings.filter((b) => b.length > 7).length} with heights or roofs), trees ${land.trees!.length}, turbines ${land.turbines.length}`,
   );
 }
 

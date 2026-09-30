@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { Ground, groundAt, ROAD_HALF, sink, VERGE } from "@/components/rulle/scene/ground";
+import { herdsHere } from "@/components/rulle/scene/farmyard";
+import { Ground, groundAt, ROAD_HALF, sink, STREET, VERGE } from "@/components/rulle/scene/ground";
 import { hash, hills, valueNoise } from "@/components/rulle/scene/noise";
 import { buildCourse, readLand, readRouteGpx } from "@/modules/rulle";
 
@@ -138,5 +139,44 @@ describe("the real land beside the road", () => {
       }
     expect(kinds.get("forest")! + (kinds.get("conifer") ?? 0)).toBeGreaterThan(20);
     expect(kinds.get("water")).toBeGreaterThan(5);
+  });
+});
+
+describe("a city's street", () => {
+  const cph = buildCourse(
+    readRouteGpx(readFileSync("public/rulle/routes/future-racing-2026-kobenhavn.gpx", "utf8")),
+  );
+  const cphLand = readLand(
+    JSON.parse(readFileSync("public/rulle/routes/future-racing-2026-kobenhavn.land.json", "utf8")),
+    cph,
+  )!;
+  const city = new Ground(cph, cphLand, true);
+
+  it("steps up a kerb to the cycle track, and again to the pavement", () => {
+    const out = (m: number) => groundAt(ROAD_HALF + m, 0.4, true);
+    expect(out(0)).toBe(0);
+    expect(out(STREET.kerb)).toBeCloseTo(STREET.trackLift, 6);
+    expect(out(1)).toBeCloseTo(STREET.trackLift, 6);
+    expect(out(STREET.track + STREET.kerb)).toBeCloseTo(STREET.pavementLift, 6);
+    expect(out(4)).toBeCloseTo(STREET.pavementLift, 6);
+    // Beyond the pavement, down to the land.
+    expect(out(VERGE)).toBeCloseTo(-0.4, 6);
+    expect(out(STREET.pavement + 0.5)).toBeLessThan(STREET.pavementLift);
+    expect(out(STREET.pavement + 0.5)).toBeGreaterThan(-0.4);
+  });
+
+  it("is paved where no one mapped anything, and has no herds in its parks", () => {
+    let paved = 0;
+    for (let i = 0; i < cph.x.length; i += 40)
+      for (const off of [-120, 120]) {
+        const { x, z } = beside(cph, i, off);
+        if (cphLand.coverAt(x, -z) === null) {
+          expect(city.patch(x, z).kind).toBe("town");
+          paved += 1;
+        }
+        expect(city.grazing(x, z)).toBe(false);
+      }
+    expect(paved).toBeGreaterThan(0);
+    expect(herdsHere(cph, city)).toEqual([]);
   });
 });

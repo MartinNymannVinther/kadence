@@ -1,14 +1,15 @@
 import * as THREE from "three";
 import type { Course } from "@/modules/rulle";
-import { ROAD_HALF, sink, VERGE } from "./ground";
+import { ROAD_HALF, sink, STREET, VERGE } from "./ground";
 import { PALETTE } from "./palette";
 
 /**
  * The road itself, the whole route at once: asphalt six metres wide on
- * its grass verges, white edge lines, and a dashed middle line whose
- * dashes run under the wheel — the road's own sense of speed. A route
- * ridden out and back is one road, drawn once. Built in kilometre
- * lengths, so what is behind the camera is not drawn.
+ * its grass verges — or in a city (ADR 0036) its kerbs, cycle tracks and
+ * pavements — white edge lines, and a dashed middle line whose dashes run
+ * under the wheel: the road's own sense of speed. A route ridden out and
+ * back is one road, drawn once. Built in kilometre lengths, so what is
+ * behind the camera is not drawn.
  */
 
 const SEGMENT = 100;
@@ -40,7 +41,7 @@ export function sections(course: Course): Section[] {
   return out;
 }
 
-export function buildRoad(course: Course): THREE.Group {
+export function buildRoad(course: Course, city = false): THREE.Group {
   const group = new THREE.Group();
   const all = sections(course);
   const n = all.length;
@@ -55,8 +56,10 @@ export function buildRoad(course: Course): THREE.Group {
       const t = all[(i + 1) % n]!;
       // Asphalt, then the two verges falling to the land, further where the road is steep.
       builder.band(s, t, -ROAD_HALF, ROAD_HALF, 0.03, 0.03, PALETTE.road);
-      builder.verge(s, t, 1);
-      builder.verge(s, t, -1);
+      for (const side of [1, -1] as const) {
+        if (city) builder.street(s, t, side);
+        else builder.verge(s, t, side);
+      }
       builder.band(s, t, ROAD_HALF - 0.45, ROAD_HALF - 0.3, 0.05, 0.05, PALETTE.line);
       builder.band(s, t, -ROAD_HALF + 0.3, -ROAD_HALF + 0.45, 0.05, 0.05, PALETTE.line);
       // A dash starts every DASH_EVERY metres; this section holds the one that falls in it.
@@ -107,6 +110,32 @@ class Strip {
         ? [p(s, inner, 0.01), p(s, outer, -s.sunk), p(t, outer, -t.sunk), p(t, inner, 0.01)]
         : [p(s, outer, -s.sunk), p(s, inner, 0.01), p(t, inner, 0.01), p(t, outer, -t.sunk)];
     this.quad(a, b, c, d, PALETTE.verge);
+  }
+
+  /** A city street's side: kerb, cycle track, kerb, pavement, and down to the land (`STREET`). */
+  street(s: Section, t: Section, side: 1 | -1) {
+    const S = STREET;
+    const bands: [number, number, number, number, string][] = [
+      [0, S.kerb, 0, S.trackLift, PALETTE.kerb],
+      [S.kerb, S.track, S.trackLift, S.trackLift, PALETTE.cycleTrack],
+      [S.track, S.track + S.kerb, S.trackLift, S.pavementLift, PALETTE.kerb],
+      [S.track + S.kerb, S.pavement, S.pavementLift, S.pavementLift, PALETTE.pavement],
+    ];
+    for (const [from, to, liftFrom, liftTo, color] of bands) {
+      if (side > 0) this.band(s, t, ROAD_HALF + from, ROAD_HALF + to, liftFrom, liftTo, color);
+      else this.band(s, t, -(ROAD_HALF + to), -(ROAD_HALF + from), liftTo, liftFrom, color);
+    }
+    // Beyond the pavement, down to the land.
+    const p = (q: Section, off: number, lift: number) =>
+      [q.cx + q.rx * off, q.cy + lift, q.cz + q.rz * off] as const;
+    const inner = side * (ROAD_HALF + S.pavement);
+    const outer = side * (ROAD_HALF + VERGE);
+    const up = S.pavementLift;
+    const [a, b, c, d] =
+      side > 0
+        ? [p(s, inner, up), p(s, outer, -s.sunk), p(t, outer, -t.sunk), p(t, inner, up)]
+        : [p(s, outer, -s.sunk), p(s, inner, up), p(t, inner, up), p(t, outer, -t.sunk)];
+    this.quad(a, b, c, d, PALETTE.pavement);
   }
 
   /** A dash of the middle line, starting `offset` metres after `s` (running on past `t` if it must). */

@@ -87,11 +87,20 @@ export const PALETTE = {
   wetland: "#98a684",
   coniferFloor: "#637b5d",
   lakeBed: "#8b9d9b",
+  /** A cemetery's lawn, between its rows of stones. */
+  cemetery: "#a3b489",
+  // A city's streets (ADR 0036): paving, the cycle track, the pavement and its kerb.
+  paving: ["#b4afa5", "#bab4a9", "#aea99f"],
+  cycleTrack: "#7c7973",
+  pavement: "#bdb8ae",
+  kerb: "#d3cec4",
   walls: ["#f1ece3", "#e3cf9c", "#b9694f", "#d9d3c7"],
   roofs: ["#a3614b", "#5f5953", "#484542", "#8b8783"],
   blockWalls: ["#b56a50", "#d9bd82", "#e6e1d6"],
   hall: ["#c6c2b8", "#a9aaa4"],
   flatRoof: "#77736d",
+  /** A spire's or a dome's copper, gone green. */
+  copper: "#6f9e87",
   window: "#3f4a52",
   windowFrame: "#f4f1ea",
 } as const;

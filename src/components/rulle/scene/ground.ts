@@ -60,11 +60,38 @@ export function sink(course: Course, index: number): number {
   return Math.min(2.4, 0.35 + 12 * steepest);
 }
 
-/** The ground below the road's surface `off` metres from its middle, where the land is `sunk` below it. */
-export function groundAt(off: number, sunk: number): number {
+/**
+ * A city street's side (ADR 0036), outward from the asphalt's edge: a kerb,
+ * the cycle track, a second kerb, the pavement, and down to the land.
+ * Metres out and metres above the asphalt.
+ */
+export const STREET = {
+  kerb: 0.15,
+  track: 2,
+  trackLift: 0.1,
+  pavement: 5,
+  pavementLift: 0.16,
+} as const;
+
+/**
+ * The ground below the road's surface `off` metres from its middle, where
+ * the land is `sunk` below it: the grass verge falling to the land, or in
+ * a city the kerbs, the cycle track and the pavement.
+ */
+export function groundAt(off: number, sunk: number, city = false): number {
   const out = Math.abs(off) - ROAD_HALF;
   if (out <= 0) return 0;
-  return 0.01 - (sunk + 0.01) * Math.min(1, out / VERGE);
+  if (!city) return 0.01 - (sunk + 0.01) * Math.min(1, out / VERGE);
+  const S = STREET;
+  if (out <= S.kerb) return (S.trackLift * out) / S.kerb;
+  if (out <= S.track) return S.trackLift;
+  if (out <= S.track + S.kerb)
+    return S.trackLift + ((S.pavementLift - S.trackLift) * (out - S.track)) / S.kerb;
+  if (out <= S.pavement) return S.pavementLift;
+  return (
+    S.pavementLift -
+    (S.pavementLift + sunk) * Math.min(1, (out - S.pavement) / (VERGE - S.pavement))
+  );
 }
 
 export class Ground {
@@ -76,6 +103,8 @@ export class Ground {
     readonly course: Course,
     /** The real land round a route that comes with Kadence; null for any other. */
     readonly land: Land | null = null,
+    /** A city's streets (ADR 0036): what nobody mapped is paved, not fields. */
+    readonly city = false,
   ) {
     this.road = new RoadGrid(course);
   }
@@ -118,9 +147,11 @@ export class Ground {
   patch(x: number, z: number): Patch {
     if (this.land) {
       const cover = this.land.coverAt(x, -z);
-      if (cover) return coverPatch(cover.kind, cover.id);
-      // Land no one has mapped: fields, and no woods made up in the real country.
-      if (this.land.heightAt(x, -z) !== null) return this.madeUp(x, z, false);
+      if (cover) return coverPatch(cover.kind, cover.id, this.city);
+      // Land no one has mapped: in a city streets and squares; in the country
+      // fields, and no woods made up in the real country.
+      if (this.land.heightAt(x, -z) !== null)
+        return this.city ? coverPatch("town", 0, true) : this.madeUp(x, z, false);
     }
     return this.madeUp(x, z, true);
   }
@@ -136,8 +167,9 @@ export class Ground {
     return (this.land?.heightAt(x, -z) ?? this.height(x, z)) < 0.25;
   }
 
-  /** Where a herd may graze: a field or a meadow, not a wood, a garden or a lake. */
+  /** Where a herd may graze: a field or a meadow, not a wood, a garden or a lake; none in a city. */
   grazing(x: number, z: number): boolean {
+    if (this.city) return false;
     if (!this.land) return true;
     const kind = this.patch(x, z).kind;
     return (kind === "field" || kind === "pasture" || kind === "meadow") && !this.wet(x, z);

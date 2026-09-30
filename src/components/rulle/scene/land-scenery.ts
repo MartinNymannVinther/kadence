@@ -15,26 +15,35 @@ import { family } from "./woods";
  * which is within 650 metres of the road; beyond that, where no one's
  * house is drawn, a town filled with houses and a farmyard with its farm,
  * of the same making. The tree rows and the hedges along their lines, the
- * streams, the wind turbines. Sorted into chunks once, when the ride
- * begins.
+ * streams, the wind turbines. In a city (ADR 0036) its street trees, and
+ * blocks of flats as high as the city's own where the map gives a
+ * building no storeys. Sorted into chunks once, when the ride begins.
  */
 
 /** Buildings are in the land's file this far from the road; beyond it they are made up. */
 const MAPPED = 700;
 const SPACING: Record<LineKind, number> = { river: 8, stream: 8, trees: 8.5, hedge: 3.6 };
 const WIDTH = { river: 6, stream: 1.6 } as const;
+/** Nothing stands nearer the road's middle than this: in a city, the pavement is the street's. */
+const CLEAR = { country: 6.5, city: 8.5 } as const;
+/** A street tree stands on the pavement, beyond the cycle track. */
+const TREE_FROM = 5.3;
 
+type XZ = { x: number; z: number };
 type Bucket = {
   buildings: Footprint[];
   lines: number[];
-  farms: { x: number; z: number; seed: number }[];
-  turbines: { x: number; z: number }[];
+  farms: (XZ & { seed: number })[];
+  turbines: XZ[];
+  trees: XZ[];
 };
 
 const key = (x: number, z: number) => `${Math.floor(x / CHUNK)},${Math.floor(z / CHUNK)}`;
 
 export class LandScenery {
   private readonly buckets = new Map<string, Bucket>();
+  /** A city's usual storeys: what its mapped buildings have, most often. */
+  private readonly usual: number;
 
   constructor(
     private readonly land: Land,
@@ -43,7 +52,7 @@ export class LandScenery {
     const bucket = (k: string) => {
       let found = this.buckets.get(k);
       if (!found) {
-        found = { buildings: [], lines: [], farms: [], turbines: [] };
+        found = { buildings: [], lines: [], farms: [], turbines: [], trees: [] };
         this.buckets.set(k, found);
       }
       return found;
@@ -60,8 +69,18 @@ export class LandScenery {
         kind: b.kind,
         levels: b.levels,
         seed,
+        height: b.height,
+        minHeight: b.minHeight,
+        roof: b.roof,
+        roofColour: b.roofColour,
       });
     });
+    const told = land.buildings
+      .filter((b) => (b.kind === "house" || b.kind === "block") && b.levels >= 2)
+      .map((b) => b.levels)
+      .sort((a, b) => a - b);
+    this.usual = told.length > 20 ? told[Math.floor(told.length / 2)]! : 4;
+    for (const t of land.trees) bucket(key(t.x, -t.y)).trees.push({ x: t.x, z: -t.y });
     land.lines.forEach((line, index) => {
       const seen = new Set<string>();
       for (let k = 0; k < line.points.length; k++) {
@@ -116,12 +135,29 @@ export class LandScenery {
     const found = this.buckets.get(`${cx},${cz}`);
     const height = (x: number, z: number) => drawnHeight(this.ground, x, z);
     const footprints = [
-      ...(found?.buildings ?? []).filter((b) => this.clear(b) && free(b.x, b.z)),
-      ...this.madeUp(cx, cz, found?.farms ?? [], free),
+      ...(found?.buildings ?? [])
+        .filter((b) => this.clear(b) && free(b.x, b.z))
+        .map((b) => ({ ...b, far: this.ground.nearest(b.x, b.z, 220).d })),
+      ...this.madeUp(cx, cz, found?.farms ?? [], free).map((b) => ({ ...b, far: MAPPED })),
     ];
     const meshes: THREE.Mesh[] = [];
-    const buildings = buildingsMesh(footprints, height, material);
+    const buildings = buildingsMesh(footprints, height, material, (b) => this.storeys(b));
     if (buildings) meshes.push(buildings);
+    // The street trees the map has, on the pavement and never in the road.
+    for (const [k, t] of (found?.trees ?? []).entries()) {
+      if (hash(cx * 131 + k, cz, 641) > density) continue;
+      if (this.ground.nearest(t.x, t.z, 15).d < TREE_FROM || !free(t.x, t.z)) continue;
+      const tree = family("town", hash(cx * 131 + k, cz, 642));
+      const at = new THREE.Vector3(t.x, height(t.x, t.z) - 0.25, t.z);
+      plant(
+        batches,
+        shapes,
+        tree === "conifers" ? "broadleaves" : tree,
+        at,
+        0.9 + hash(k, cx, 643) * 0.35,
+        [cx * 131 + k, cz + 7],
+      );
+    }
     const streams: { points: { x: number; z: number }[]; width: number }[] = [];
     for (const index of found?.lines ?? []) {
       const line = this.land.lines[index]!;
@@ -153,6 +189,19 @@ export class LandScenery {
     return meshes;
   }
 
+  /**
+   * Storeys for a building the map gives none: in the country one; in a
+   * city a shed or a kiosk one or two, anything bigger about as many as
+   * the city's own, a storey more or less.
+   */
+  private storeys(b: Footprint): number {
+    if (!this.ground.city) return 1;
+    const area = b.w * b.d;
+    if (area < 60) return 1;
+    if (area < 150) return 2;
+    return Math.max(2, this.usual + Math.floor(hash(b.seed, 3, 651) * 3) - 1);
+  }
+
   /** Whether a building stands clear of the road: none of its corners or sides on it. */
   private clear(b: Footprint): boolean {
     const c = Math.cos(b.angle);
@@ -170,7 +219,8 @@ export class LandScenery {
     ] as const) {
       const x = b.x + (c * u * b.w) / 2 + (s * v * b.d) / 2;
       const z = b.z + (s * u * b.w) / 2 - (c * v * b.d) / 2;
-      if (this.ground.nearest(x, z, 20).d < 6.5) return false;
+      if (this.ground.nearest(x, z, 20).d < (this.ground.city ? CLEAR.city : CLEAR.country))
+        return false;
     }
     return true;
   }
@@ -247,28 +297,41 @@ export class LandScenery {
           continue;
         if (!free(x, z)) continue;
         const seed = 2_000_000 + ia * 7919 + ib;
+        // A city's blocks stand square to one another, as its streets run.
+        const grid = hash(cx, cz, 628) * Math.PI;
         out.push(
-          town
+          town && this.ground.city
             ? {
                 x,
                 z,
-                w: 8 + hash(ia, ib, 624) * 6,
-                d: 7 + hash(ia, ib, 625) * 3,
-                angle: hash(ia, ib, 626) * Math.PI,
-                kind: "house",
-                levels: hash(ia, ib, 627) < 0.2 ? 2 : 1,
+                w: 18 + hash(ia, ib, 624) * 12,
+                d: 11 + hash(ia, ib, 625) * 4,
+                angle: grid + (hash(ia, ib, 626) < 0.5 ? 0 : Math.PI / 2),
+                kind: "block",
+                levels: this.usual + Math.floor(hash(ia, ib, 627) * 3) - 1,
                 seed,
               }
-            : {
-                x,
-                z,
-                w: 20 + hash(ia, ib, 624) * 16,
-                d: 14 + hash(ia, ib, 625) * 10,
-                angle: hash(ia, ib, 626) * Math.PI,
-                kind: "big",
-                levels: 1,
-                seed,
-              },
+            : town
+              ? {
+                  x,
+                  z,
+                  w: 8 + hash(ia, ib, 624) * 6,
+                  d: 7 + hash(ia, ib, 625) * 3,
+                  angle: hash(ia, ib, 626) * Math.PI,
+                  kind: "house",
+                  levels: hash(ia, ib, 627) < 0.2 ? 2 : 1,
+                  seed,
+                }
+              : {
+                  x,
+                  z,
+                  w: 20 + hash(ia, ib, 624) * 16,
+                  d: 14 + hash(ia, ib, 625) * 10,
+                  angle: hash(ia, ib, 626) * Math.PI,
+                  kind: "big",
+                  levels: 1,
+                  seed,
+                },
         );
       }
     return out;

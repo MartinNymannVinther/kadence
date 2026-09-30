@@ -27,6 +27,7 @@ export default function RideScene({
   words,
   finish,
   land,
+  city,
   onSeen,
   onSound,
 }: {
@@ -41,6 +42,8 @@ export default function RideScene({
   finish: boolean;
   /** The real land round the route, if it is one that comes with Kadence. */
   land: Land | null;
+  /** A city's course: streets, pavements and blocks (ADR 0036). */
+  city: boolean;
   onSeen: (key: keyof Seen, count: number) => void;
   onSound: (kind: "bell" | "cheer") => void;
 }) {
@@ -73,6 +76,7 @@ export default function RideScene({
           light: window.innerWidth < 700 || (navigator.hardwareConcurrency ?? 8) <= 4,
           finish,
           land,
+          city,
         },
         latest.current.words,
         {
@@ -109,7 +113,7 @@ export default function RideScene({
       resize.current = () => {};
       world.dispose();
     };
-  }, [course, finish, land]);
+  }, [course, finish, land, city]);
 
   return (
     <div className="relative h-full w-full">

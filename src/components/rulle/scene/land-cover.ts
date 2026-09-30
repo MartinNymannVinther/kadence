@@ -23,7 +23,8 @@ export type PatchKind =
   | "wetland"
   | "forest"
   | "conifer"
-  | "water";
+  | "water"
+  | "cemetery";
 
 export type Patch = { kind: PatchKind; color: string; id: number };
 
@@ -34,7 +35,9 @@ export const fieldColor = (id: number): string =>
 const pick = (colors: readonly string[], id: number) =>
   colors[Math.floor(hash(id, 2, 5) * colors.length)]!;
 
-export function coverPatch(kind: AreaKind, id: number): Patch {
+export function coverPatch(kind: AreaKind, id: number, city = false): Patch {
+  // A city's built-up land is paving and courtyards, not a village's gardens.
+  if (city && kind === "town") return { kind, color: pick(PALETTE.paving, id), id };
   switch (kind) {
     case "field":
       return { kind, color: fieldColor(id), id };
@@ -50,6 +53,8 @@ export function coverPatch(kind: AreaKind, id: number): Patch {
       return { kind, color: PALETTE.coniferFloor, id };
     case "water":
       return { kind, color: PALETTE.lakeBed, id };
+    case "cemetery":
+      return { kind, color: PALETTE.cemetery, id };
     case "wetland":
     case "orchard":
     case "yard":

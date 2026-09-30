@@ -38,6 +38,7 @@ export {
   readLand,
   type AreaKind,
   type BuildingKind,
+  type RoofShape,
   type Land,
   type LandFile,
   type LineKind,

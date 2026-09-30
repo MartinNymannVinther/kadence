@@ -10,7 +10,8 @@
  * (`rulle.credits`).
  */
 
-export type RouteCredit = "osm" | "eudem" | "terrain" | "race";
+export type RouteCredit =
+  "osm" | "eudem" | "terrain" | "terrainCanada" | "buDm2026" | "futureRacing2026" | "montreal2026";
 
 export type BundledRoute = {
   key: string;
@@ -23,6 +24,8 @@ export type BundledRoute = {
   climb: number;
   /** A race's course: the lap ends at a finish line where it starts, with its arch. */
   finish?: boolean;
+  /** In a city: streets with kerbs, cycle tracks and pavements, blocks of flats (ADR 0036). */
+  city?: boolean;
 };
 
 export const ROUTES = [
@@ -37,7 +40,7 @@ export const ROUTES = [
      */
     file: "/rulle/routes/bu-dm-2026-vejle.gpx",
     land: "/rulle/routes/bu-dm-2026-vejle.land.json",
-    credits: ["race", "osm", "terrain"],
+    credits: ["buDm2026", "osm", "terrain"],
     km: 10.0,
     climb: 144,
     finish: true,
@@ -68,6 +71,49 @@ export const ROUTES = [
     credits: ["osm", "eudem", "terrain"],
     km: 22.5,
     climb: 218,
+  },
+  {
+    key: "future-racing-2026",
+    /**
+     * Future Racing 2026, the youth race on the Copenhagen Sprint circuit on
+     * 14 June 2026, in the morning before the professionals ride it (DCU
+     * District Sjælland with CC Hillerød and ABC København,
+     * https://www.sportstiming.dk/event/18537): a closed lap of 10.3 km
+     * from the finish by SMK in Sølvgade, past Kastellet, over the cobbles
+     * of Fredericiagade, down Nørre Farimagsgade to Rådhuspladsen, along
+     * the Lakes and back through Nørrebro. The organiser's route file, its
+     * lap starting at the finish line, with its marks (the obstacles, the
+     * cobbles, the feed zone); heights from EU-DEM v1.1.
+     */
+    file: "/rulle/routes/future-racing-2026-kobenhavn.gpx",
+    land: "/rulle/routes/future-racing-2026-kobenhavn.land.json",
+    credits: ["futureRacing2026", "osm", "eudem", "terrain"],
+    km: 10.3,
+    climb: 50,
+    finish: true,
+    city: true,
+  },
+  {
+    key: "montreal-2026",
+    /**
+     * The Mont-Royal circuit of the 2026 UCI Road World Championships in
+     * Montreal (20–27 September 2026), the circuit alone: from the finish
+     * on Avenue du Parc by the George-Étienne Cartier monument up Voie
+     * Camillien-Houde, down Chemin Remembrance and Côte-des-Neiges, up
+     * Chemin de Polytechnique through the Université de Montréal, through
+     * Outremont, round Parc Jeanne-Mance and up Avenue du Parc to the line.
+     * 13.4 km and 269 m by the official course map
+     * (https://www.montreal2026.org/defi-montreal-2026/); drawn along
+     * OpenStreetMap's roads through the streets that map names, 13.6 km
+     * and 271 m. Heights from Mapzen's terrain model (CDEM in Canada).
+     */
+    file: "/rulle/routes/montreal-2026-mont-royal.gpx",
+    land: "/rulle/routes/montreal-2026-mont-royal.land.json",
+    credits: ["montreal2026", "osm", "terrainCanada"],
+    km: 13.6,
+    climb: 271,
+    finish: true,
+    city: true,
   },
 ] as const satisfies readonly BundledRoute[];
 

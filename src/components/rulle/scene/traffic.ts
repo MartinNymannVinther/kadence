@@ -65,7 +65,10 @@ export class Traffic {
     const along = distance - lap * length;
     if (lap !== this.lap) {
       this.lap = lap;
-      this.plan = ridersOnLap(this.course, lap);
+      // A city's closed course is ridden one way: nobody comes the other.
+      this.plan = ridersOnLap(this.course, lap).filter(
+        (r) => !this.ground.city || r.kind !== "oncoming",
+      );
       this.next = 0;
       while (this.next < this.plan.length && this.plan[this.next]!.at < along) this.next++;
       this.puncture(lap);

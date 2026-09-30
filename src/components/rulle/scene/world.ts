@@ -35,6 +35,8 @@ export type WorldOptions = {
   finish?: boolean;
   /** The real land round the route, when it is one that comes with Kadence (ADR 0035). */
   land?: Land | null;
+  /** A city's course (ADR 0036): streets, pavements and blocks, closed for the race. */
+  city?: boolean;
 };
 
 export type Moment = {
@@ -103,7 +105,8 @@ export class World {
     this.rig = new CameraRig(options.calm);
     this.atmosphere = new Atmosphere(this.scene);
     if (this.shaded) this.atmosphere.castShadows();
-    this.ground = new Ground(course, options.land ?? null);
+    const city = options.city ?? false;
+    this.ground = new Ground(course, options.land ?? null, city);
     // No tree in a field with cows in it, nor in the water.
     const fields = inPaddocks(course, this.ground);
     const water = this.atmosphere.water;
@@ -121,6 +124,7 @@ export class World {
       course,
       options.light ? 0.5 : 1,
       (x, z) => fields(x, z) || this.ground.wet(x, z),
+      city,
     );
     this.small = new SmallThings(course, this.ground, words, hooks, {
       calm: options.calm,
@@ -130,7 +134,7 @@ export class World {
         this.roadside.clearAround(x, z, r);
       },
     });
-    this.road = buildRoad(course);
+    this.road = buildRoad(course, city);
     if (this.shaded) {
       this.road.traverse((child) => {
         if (child instanceof THREE.Mesh) child.receiveShadow = true;

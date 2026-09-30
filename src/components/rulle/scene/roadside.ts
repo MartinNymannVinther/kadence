@@ -35,7 +35,10 @@ export class Roadside {
     density = 1,
     /** Where no tree may stand: the herds' fields, and water. */
     blocked: (x: number, z: number) => boolean = () => false,
+    /** A city's street has none of this: its trees are the map's (ADR 0036). */
+    city = false,
   ) {
+    if (city) return;
     const all = sections(course);
     const n = course.outAndBack ? Math.ceil(all.length / 2) : all.length;
     const everyPost = Math.max(1, Math.round(50 / course.step));

@@ -110,13 +110,18 @@ Fetches the land round a route that comes with Rulle and writes it beside
 the route's GPX file, as `<route>.land.json` (ADR 0035).
 
 ```
-pnpm script scripts/rulle-land.ts public/rulle/routes/bu-dm-2026-vejle.gpx
+pnpm script scripts/rulle-land.ts public/rulle/routes/bu-dm-2026-vejle.gpx [--buildings 650]
 ```
 
 The ground's heights every 40 m for 2.6 km round the road come from
 Mapzen's terrain tiles (Terrarium; EU-DEM and SRTM in Denmark), the
 woods, water, fields, towns, hedges, streams, turbines and the buildings
-within 650 m of the road from OpenStreetMap's Overpass API. Both are sent
+within 650 m of the road (`--buildings` says otherwise) from
+OpenStreetMap's Overpass API. For a city (ADR 0036) it keeps what the map
+says of a building's height, the height it starts at, its roof's shape
+and colour, the parts a tower or a spire is drawn in, every tall building
+and church in the land for the skyline, the street trees along the road
+and the cemeteries. Both are sent
 a box round the road and nothing else. Run it when a route is added or
 its file changes, check the file in, and credit the sources on the route
 (`rulle.credits`); the file is OpenStreetMap's data under the ODbL. It

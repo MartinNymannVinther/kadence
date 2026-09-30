@@ -30,14 +30,20 @@ export const LAND_KINDS = {
     "forest",
     "conifer",
     "water",
+    // Added later, so laid last: a file keeps its kinds' numbers.
+    "cemetery",
   ],
   lines: ["river", "stream", "trees", "hedge"],
-  buildings: ["house", "farm", "big", "block", "church"],
+  /** A "part" is a piece of a building drawn on its own: a tower, a spire, a dome. */
+  buildings: ["house", "farm", "big", "block", "church", "part"],
+  /** A roof's shape where the map says it; "unsaid" leaves it to the building's kind. */
+  roofs: ["unsaid", "flat", "gabled", "hipped", "pyramidal", "dome", "skillion", "mansard"],
 } as const;
 
 export type AreaKind = (typeof LAND_KINDS.areas)[number];
 export type LineKind = (typeof LAND_KINDS.lines)[number];
 export type BuildingKind = (typeof LAND_KINDS.buildings)[number];
+export type RoofShape = (typeof LAND_KINDS.roofs)[number];
 
 const flat = z.array(z.number().finite()).max(200_000);
 
@@ -55,23 +61,37 @@ export const landFileSchema = z.object({
   }),
   areas: z.array(z.tuple([z.number().int().min(0), flat]).rest(flat)).max(60_000),
   lines: z.array(z.tuple([z.number().int().min(0), flat])).max(60_000),
+  /**
+   * A building: its middle, its sides, its turn, its kind and storeys; and
+   * where the map says them, its height and the height it starts at (a
+   * spire on a tower), metres, its roof's shape and the roof's colour
+   * (0xRRGGBB, or -1).
+   */
   buildings: z
     .array(
-      z.tuple([
-        z.number(),
-        z.number(),
-        z.number(),
-        z.number(),
-        z.number(),
-        z.number().int(),
-        z.number().int(),
-      ]),
+      z
+        .tuple([
+          z.number(),
+          z.number(),
+          z.number(),
+          z.number(),
+          z.number(),
+          z.number().int(),
+          z.number().int(),
+        ])
+        .rest(z.number()),
     )
     .max(100_000),
   turbines: z.array(z.tuple([z.number(), z.number()])).max(5_000),
+  /** Single trees the map has, by the road: a city's street trees. */
+  trees: z
+    .array(z.tuple([z.number(), z.number()]))
+    .max(50_000)
+    .default([]),
 });
 
-export type LandFile = z.infer<typeof landFileSchema>;
+/** A land file as it is written: what the script makes, and `readLand` reads. */
+export type LandFile = z.input<typeof landFileSchema>;
 
 type XY = { x: number; y: number };
 
@@ -91,8 +111,15 @@ export type Land = {
     angle: number;
     kind: BuildingKind;
     levels: number;
+    /** Metres, where the map says: to the top, and where it starts. */
+    height: number | null;
+    minHeight: number;
+    roof: RoofShape;
+    /** 0xRRGGBB, where the map says. */
+    roofColour: number | null;
   }[];
   turbines: XY[];
+  trees: XY[];
   /** Every area, its outline first and its holes after: what a farmyard or a town is, where. */
   areas: { kind: AreaKind; id: number; rings: XY[][] }[];
   /** Lakes and rivers above the sea, with the level their water lies at. */
@@ -246,16 +273,23 @@ export function readLand(json: unknown, course: Course): Land | null {
       .map(([kind, values]) => ({ kind: LAND_KINDS.lines[kind]!, points: points(values) })),
     buildings: file.buildings
       .filter((b) => b[5] >= 0 && b[5] < LAND_KINDS.buildings.length)
-      .map(([x, y, w, d, angle, kind, levels]) => ({
-        x,
-        y,
-        w,
-        d,
-        angle,
-        kind: LAND_KINDS.buildings[kind]!,
-        levels,
-      })),
+      .map(
+        ([x, y, w, d, angle, kind, levels, height = 0, minHeight = 0, roof = 0, colour = -1]) => ({
+          x,
+          y,
+          w,
+          d,
+          angle,
+          kind: LAND_KINDS.buildings[kind]!,
+          levels,
+          height: height > 0 ? height : null,
+          minHeight: Math.max(0, minHeight),
+          roof: LAND_KINDS.roofs[roof] ?? "unsaid",
+          roofColour: colour >= 0 ? colour : null,
+        }),
+      ),
     turbines: file.turbines.map(([x, y]) => ({ x, y })),
+    trees: file.trees.map(([x, y]) => ({ x, y })),
     areas: areas.map((a) => ({ kind: LAND_KINDS.areas[a.kind]!, id: a.index, rings: a.rings })),
     waters,
   };

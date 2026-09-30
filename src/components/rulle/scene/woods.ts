@@ -31,6 +31,7 @@ const GROWS: Record<PatchKind, number> = {
   industry: 0.02,
   sand: 0.01,
   water: 0,
+  cemetery: 0.14,
 };
 
 /** Places along a chunk's side: about 13 metres apart on the real land, 20 on the made-up. */

@@ -92,7 +92,10 @@ export class Visitors {
     const along = distance - lap * length;
     if (lap !== this.lap) {
       this.lap = lap;
-      this.plan = visitsOnLap(this.course, lap);
+      // A city's course is closed on race day: no car on it, and no farm dog.
+      this.plan = visitsOnLap(this.course, lap).filter(
+        (v) => !this.ground.city || (v.kind !== "car" && v.kind !== "dog"),
+      );
       this.next = 0;
       while (this.next < this.plan.length && this.plan[this.next]!.at < along - 300) this.next++;
     }

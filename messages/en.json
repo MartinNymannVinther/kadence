@@ -681,7 +681,7 @@
       },
       "rulle": {
         "title": "Rulle: the session on the trainer",
-        "body": "When you can't get outside, ride today's session indoors in Rulle: in the menu, or \"Ride indoors\" on the session. Connect the trainer with one press. A smart trainer sets the watts of each block itself (ERG), so all you do is pedal; a trainer that only measures leaves the numbers to you. A heart-rate strap can be connected beside it. The screen shows the watts against the target, the time left of the block and the whole session as a bar you ride across, large enough to read from the bike. Space pauses, the right arrow skips to the next block, up and down make the session easier or harder. Stop pedalling, and Rulle pauses with you. When the session is over, the ride is saved as an ordinary ride on the session, and you say how hard it was. Without a connection the ride waits in the browser. Rulle needs Chrome or Edge on a computer or Android; on an iPhone, the Bluefy app can. Now and then something small happens on the way – an electric cargo bike, a car with windscreen washer fluid, a dog – and pause long enough and you sit down at a café. They are counted in today's little things when you finish; the numbers and the bar are left in peace. With no session today, you can choose one of the team's own or DCU's standard sessions, and choose between the routes – among them the championship lap from B&U DM 2026 in Vejle, with its finish at the top. K shows and hides the little map of the route. H shows the speed – the route's speed for your watts and a standard rider, so a guide, not a measure – and on a climb or a descent its percent is down in the corner. The rider on the screen stands on the steep climbs and gets low on the fast descents. The routes that come with Kadence run through the real land from OpenStreetMap – the woods, the lakes, the fjord and the towns – and you meet other riders on the road, some with a hand raised."
+        "body": "When you can't get outside, ride today's session indoors in Rulle: in the menu, or \"Ride indoors\" on the session. Connect the trainer with one press. A smart trainer sets the watts of each block itself (ERG), so all you do is pedal; a trainer that only measures leaves the numbers to you. A heart-rate strap can be connected beside it. The screen shows the watts against the target, the time left of the block and the whole session as a bar you ride across, large enough to read from the bike. Space pauses, the right arrow skips to the next block, up and down make the session easier or harder. Stop pedalling, and Rulle pauses with you. When the session is over, the ride is saved as an ordinary ride on the session, and you say how hard it was. Without a connection the ride waits in the browser. Rulle needs Chrome or Edge on a computer or Android; on an iPhone, the Bluefy app can. Now and then something small happens on the way – an electric cargo bike, a car with windscreen washer fluid, a dog – and pause long enough and you sit down at a café. They are counted in today's little things when you finish; the numbers and the bar are left in peace. With no session today, you can choose one of the team's own or DCU's standard sessions, and choose between the routes – among them the championship lap from B&U DM 2026 in Vejle, with its finish at the top, the Future Racing lap through Copenhagen and the Worlds circuit round Mont-Royal in Montréal. K shows and hides the little map of the route. H shows the speed – the route's speed for your watts and a standard rider, so a guide, not a measure – and on a climb or a descent its percent is down in the corner. The rider on the screen stands on the steep climbs and gets low on the fast descents. The routes that come with Kadence run through the real land from OpenStreetMap – the woods, the lakes, the fjord and the towns – and you meet other riders on the road, some with a hand raised."
       },
       "keys": {
         "title": "Upload keys",
@@ -2723,13 +2723,24 @@
       "himmelbjerget": {
         "name": "Himmelbjerget from Ry",
         "about": "Through the woods up to Himmelbjerget and home past Gammel Rye."
+      },
+      "future-racing-2026": {
+        "name": "Future Racing 2026 · Copenhagen",
+        "about": "The youth race on the Copenhagen Sprint circuit: from SMK past Kastellet, over the cobbles, down to the City Hall Square, along the Lakes and home through Nørrebro."
+      },
+      "montreal-2026": {
+        "name": "Worlds 2026 · Montréal",
+        "about": "The circuit round Mont-Royal: up Camillien-Houde and Polytechnique, round Parc Jeanne-Mance and up Avenue du Parc to the line."
       }
     },
     "credits": {
       "osm": "Map data © OpenStreetMap contributors (ODbL)",
       "eudem": "Elevation: EU-DEM (Copernicus)",
       "terrain": "Terrain: EU-DEM (Copernicus), SRTM (USGS), ETOPO1 (NOAA), via Mapzen",
-      "race": "Course: B&U DM 2026, Vejle Cykelklub"
+      "buDm2026": "Course: B&U DM 2026, Vejle Cykelklub",
+      "futureRacing2026": "Course: Future Racing 2026, DCU District Sjælland, CC Hillerød and ABC København",
+      "montreal2026": "Circuit: 2026 Road World Championships, Montréal, drawn from the organiser's map",
+      "terrainCanada": "Terrain and heights: CDEM © Natural Resources Canada (Open Government Licence – Canada), via Mapzen"
     },
     "ride": {
       "watt": "Watts",

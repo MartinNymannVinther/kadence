@@ -65,8 +65,25 @@ function file(overrides: Partial<LandFile> = {}): LandFile {
       [kind("areas", "water"), square(-60, -100, -15, 100)],
     ],
     lines: [[kind("lines", "hedge"), [100, 500, 600, 500]]],
-    buildings: [[300, 800, 10, 8, 0.3, kind("buildings", "house"), 1]],
+    buildings: [
+      [300, 800, 10, 8, 0.3, kind("buildings", "house"), 1],
+      // A spire on a tower: 60 m to its tip from 40 m up, pyramidal, in copper.
+      [
+        320,
+        820,
+        8,
+        8,
+        0,
+        kind("buildings", "part"),
+        0,
+        60,
+        40,
+        kind("roofs", "pyramidal"),
+        0x6f9e87,
+      ],
+    ],
     turbines: [[900, 1400]],
+    trees: [[-5, 120]],
     ...overrides,
   };
 }
@@ -124,9 +141,21 @@ describe("the land round a route", () => {
       },
     ]);
     expect(land.buildings).toEqual([
-      { x: 300, y: 800, w: 10, d: 8, angle: 0.3, kind: "house", levels: 1 },
+      {
+        ...{ x: 300, y: 800, w: 10, d: 8, angle: 0.3, kind: "house", levels: 1 },
+        ...{ height: null, minHeight: 0, roof: "unsaid", roofColour: null },
+      },
+      {
+        ...{ x: 320, y: 820, w: 8, d: 8, angle: 0, kind: "part", levels: 0 },
+        ...{ height: 60, minHeight: 40, roof: "pyramidal", roofColour: 0x6f9e87 },
+      },
     ]);
     expect(land.turbines).toEqual([{ x: 900, y: 1400 }]);
+    expect(land.trees).toEqual([{ x: -5, y: 120 }]);
+    // A file from before the street trees is read all the same.
+    const older = file();
+    delete older.trees;
+    expect(readLand(older, course)!.trees).toEqual([]);
     expect(land.areas.map((a) => a.kind)).toEqual(["field", "forest", "water", "water"]);
   });
 
@@ -171,8 +200,16 @@ describe("the land that comes with the routes", () => {
       expect(off[Math.floor(off.length * 0.9)]).toBeLessThan(10);
       expect(off.at(-1)).toBeLessThan(25);
       const kinds = new Set(land.areas.map((a) => a.kind));
-      for (const k of ["field", "forest", "water", "town"] as const) expect(kinds).toContain(k);
-      expect(land.buildings.length).toBeGreaterThan(500);
+      if ("city" in route && route.city) {
+        // A city: its streets and blocks, its parks, its water, its street trees.
+        for (const k of ["town", "meadow", "water", "cemetery"] as const)
+          expect(kinds).toContain(k);
+        expect(land.buildings.length).toBeGreaterThan(3000);
+        expect(land.trees.length).toBeGreaterThan(300);
+      } else {
+        for (const k of ["field", "forest", "water", "town"] as const) expect(kinds).toContain(k);
+        expect(land.buildings.length).toBeGreaterThan(500);
+      }
     });
   }
 });

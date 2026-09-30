@@ -63,6 +63,8 @@ export function RulleApp({
   const course = useCourse();
   const courseReady = course.state.status === "ready" ? course.state.course : null;
   const land = course.state.status === "ready" ? course.state.land : null;
+  // A city's streets for a city's route: not for a rider's own file.
+  const city = Boolean(course.route.city) && course.state.status === "ready" && !course.state.own;
   // A race's course has its finish, where the lap ends: not a route of the rider's own.
   const finish =
     Boolean(course.route.finish) && course.state.status === "ready" && !course.state.own;
@@ -138,6 +140,7 @@ export function RulleApp({
         name={trial ? null : name}
         finish={finish}
         land={land}
+        city={city}
       />
     );
 
