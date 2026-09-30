@@ -1,6 +1,8 @@
 import * as THREE from "three";
 import type { Course, Stretch, Structures } from "@/modules/rulle";
+import { BridgeTraffic } from "./bridge-traffic";
 import { ROAD_HALF, type Ground } from "./ground";
+import { deckLines } from "./overpass-deck";
 import { PALETTE as P } from "./palette";
 import { roadPoint, roadYaw } from "./road-point";
 import { overpassShapes } from "./overpasses";
@@ -13,9 +15,10 @@ import { drawnHeight } from "./terrain";
  * bridge the road is on, pairs of piers down to the land or the water
  * below, a crossbeam on each, and at each end the abutment where the
  * bridge meets the land — the deck itself, its edges and its parapets are
- * the road's own (`road.ts`); what passes over the road (`overpasses.ts`);
- * and the railings where the road crosses a tunnel (`underpasses.ts`).
- * One mesh for all of it.
+ * the road's own (`road.ts`); what passes over the road (`overpasses.ts`)
+ * and what runs over it (`bridge-traffic.ts`); and the railings where the
+ * road crosses a tunnel (`underpasses.ts`). One mesh for all that stands
+ * still.
  */
 
 /** How deep the deck is below the road's surface (`road.ts`), and how far apart its piers stand. */
@@ -32,11 +35,14 @@ export class Bridges {
     flatShading: true,
   });
 
+  private readonly traffic: BridgeTraffic;
+
   constructor(course: Course, ground: Ground, found: Structures) {
     const parts = found.decks.flatMap((deck) => supports(course, ground, deck));
+    const over = deckLines(course, ground, found.overpasses);
     const shapes = [
       parts.length > 0 ? merged(parts) : null,
-      overpassShapes(course, ground, found.overpasses),
+      overpassShapes(ground, over),
       underpassShapes(course, found.underpasses),
     ];
     for (const shape of shapes) {
@@ -46,10 +52,18 @@ export class Bridges {
       mesh.matrixAutoUpdate = false;
       this.group.add(mesh);
     }
+    this.traffic = new BridgeTraffic(over, this.material);
+    this.group.add(this.traffic.group);
+  }
+
+  /** What runs over the bridges, on by `seconds`, if the eye is near enough to see it. */
+  frame(eye: THREE.Vector3, seconds: number): void {
+    this.traffic.frame(eye, seconds);
   }
 
   dispose(): void {
     for (const shape of this.shapes) shape.dispose();
+    this.traffic.dispose();
     this.material.dispose();
   }
 }

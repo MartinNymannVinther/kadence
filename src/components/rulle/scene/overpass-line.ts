@@ -4,7 +4,7 @@ import { ROAD_HALF } from "./ground";
 import { roadPoint } from "./road-point";
 
 /**
- * The line an overpass is drawn along (`overpasses.ts`), in the world:
+ * The line an overpass's deck runs along (`overpass-deck.ts`), in the world:
  * the map's line, drawn on past the road where it ends short of it, or
  * one straight across the road for a tunnel's roof the map does not name;
  * a point every few metres along it, and the line's own frame at any of
@@ -15,13 +15,14 @@ export type Pt = { x: number; z: number };
 
 /**
  * A line drawn on past the road where the map's ends short of it: at
- * least this far beyond the road's edge on each side, along its own way.
+ * least `reach` metres from the road's middle on each side, along its own
+ * way.
  */
-export function pastTheRoad(course: Course, line: Pt[], list: Overpass[]): Pt[] {
+export function pastTheRoad(course: Course, line: Pt[], list: Overpass[], at: number): Pt[] {
   const out = line.map((p) => ({ ...p }));
   for (const c of list) {
     const road = roadPoint(course, c.along, 0);
-    const reach = (ROAD_HALF + 9) / Math.max(0.3, Math.sin(c.angle));
+    const reach = at / Math.max(0.3, Math.sin(c.angle));
     for (const end of [0, out.length - 1]) {
       const tip = out[end]!;
       const next = out[end === 0 ? 1 : end - 1]!;
@@ -87,9 +88,15 @@ export function frameAt(line: Pt[], k: number, p: Pt): Frame {
   return { x: p.x, z: p.z, lx, lz, sx: lz, sz: -lx };
 }
 
+/** The line's frame `s` metres along it, found by halving: what runs on a long bridge asks often. */
 export function frameAtArc(line: Pt[], arc: number[], s: number): Frame {
   let k = 0;
-  while (k + 1 < line.length && arc[k + 1]! < s) k++;
+  let hi = line.length - 1;
+  while (hi - k > 1) {
+    const mid = (k + hi) >> 1;
+    if (arc[mid]! < s) k = mid;
+    else hi = mid;
+  }
   const a = line[k]!;
   const b = line[Math.min(line.length - 1, k + 1)]!;
   const span = (arc[k + 1] ?? arc[k]!) - arc[k]! || 1;

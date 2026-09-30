@@ -269,6 +269,7 @@ export class World {
       if (this.frames % 30 === 0) castShadows(this.small.group);
     }
     this.scenery.animate(seconds);
+    this.bridges.frame(eye, seconds);
     this.finish?.frame(distance, seconds);
     this.race?.frame(distance, seconds);
     this.terrain.update(eye.x, eye.z, 1);

@@ -120,6 +120,10 @@ export const PALETTE = {
   bridge: "#c9c5bb",
   bridgeShade: "#a7a399",
   ballast: "#7f7a72",
+  // What runs over them: a train, white with a red band; a lorry's box.
+  train: "#e6e3dc",
+  trainBand: "#b3453b",
+  trailer: "#d8d5ce",
   // A race marshal's motorbike (ADR 0037).
   motoBody: "#e9e6df",
   motoLight: "#4d7fe0",
