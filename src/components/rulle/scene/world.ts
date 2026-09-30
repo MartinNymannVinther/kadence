@@ -2,21 +2,26 @@ import * as THREE from "three";
 import { courseAt, swayAt, type Course } from "@/modules/rulle";
 import { Atmosphere } from "./atmosphere";
 import { CameraRig } from "./camera-rig";
+import { inPaddocks } from "./farmyard";
 import { Ground } from "./ground";
 import { Pace } from "./pace";
+import type { Pause } from "./pause-scene";
 import { freeze } from "./props";
 import { RiderFigure } from "./rider";
 import { buildRoad } from "./road";
+import { roadPoint } from "./road-point";
 import { Roadside } from "./roadside";
 import { Scenery } from "./scenery";
+import { SmallThings, type SceneWords, type SmallThingsHooks } from "./small-things";
 import { Terrain } from "./terrain";
 
 /**
  * The landscape of a ride (ADR 0033), put together: the ground made from
  * the route, the road, what stands by it and on the land, the sky, the
- * rider, and the camera that follows. Given where the rider is along the
- * course, how fast and at what cadence, it draws one frame. It knows
- * nothing about sessions or trainers.
+ * rider, the camera that follows, and the small things on the way (ADR
+ * 0034). Given where the rider is along the course, how fast, at what
+ * cadence and whether paused, it draws one frame. It knows nothing about
+ * sessions or trainers.
  */
 
 export type WorldOptions = {
@@ -26,7 +31,20 @@ export type WorldOptions = {
   light: boolean;
 };
 
-export type Moment = { distance: number; speed: number; cadence: number };
+export type Moment = {
+  distance: number;
+  speed: number;
+  cadence: number;
+  /** The ride's pause, if it is paused: which one, and for how long. */
+  pause: Pause | null;
+};
+
+const QUIET: SmallThingsHooks = {
+  seen: () => undefined,
+  sound: () => undefined,
+  spray: () => undefined,
+};
+const NO_WORDS: SceneWords = { name: "", top: "", cafe: "", stand: "" };
 
 /**
  * Metres behind the rider the camera rides, and ahead of the rider it
@@ -47,6 +65,7 @@ export class World {
   private readonly road: THREE.Group;
   private readonly rider = new RiderFigure();
   private readonly atmosphere: Atmosphere;
+  private readonly small: SmallThings;
   private readonly pace: Pace;
   private crank = 0;
   private frames = 0;
@@ -56,6 +75,8 @@ export class World {
     canvas: HTMLCanvasElement,
     private readonly course: Course,
     options: WorldOptions,
+    words: SceneWords = NO_WORDS,
+    hooks: SmallThingsHooks = QUIET,
   ) {
     this.renderer = new THREE.WebGLRenderer({
       canvas,
@@ -68,12 +89,22 @@ export class World {
     this.rig = new CameraRig(options.calm);
     this.atmosphere = new Atmosphere(this.scene);
     this.ground = new Ground(course);
-    this.scenery = new Scenery(this.ground, options.light ? 0.5 : 1);
+    // No tree in a field with cows in it.
+    const fields = inPaddocks(course, this.ground);
+    this.scenery = new Scenery(this.ground, options.light ? 0.5 : 1, fields);
     this.terrain = new Terrain(this.ground, (key, cx, cz, added) => {
       if (added) this.scenery.add(key, cx, cz);
       else this.scenery.remove(key);
     });
-    this.roadside = new Roadside(course, options.light ? 0.5 : 1);
+    this.roadside = new Roadside(course, options.light ? 0.5 : 1, fields);
+    this.small = new SmallThings(course, this.ground, words, hooks, {
+      calm: options.calm,
+      canvas,
+      room: (x, z, r) => {
+        this.scenery.clearAround(x, z, r);
+        this.roadside.clearAround(x, z, r);
+      },
+    });
     this.road = buildRoad(course);
     this.rider.group.rotation.order = "YXZ";
     this.scene.add(
@@ -81,6 +112,7 @@ export class World {
       this.scenery.group,
       this.road,
       this.roadside.group,
+      this.small.group,
       this.rider.group,
     );
     // Only the rider, the rotors, the sky and the camera move; the rest is placed once.
@@ -109,19 +141,34 @@ export class World {
     const ratio = this.pace.frame(seconds);
     if (ratio !== null) this.renderer.setPixelRatio(ratio);
     const { distance, speed, cadence } = moment;
-    const here = this.pointAt(distance, swayAt(distance));
-    const back = this.pointAt(distance - 2, swayAt(distance - 2));
-    const front = this.pointAt(distance + 2, swayAt(distance + 2));
-    const along = new THREE.Vector3().subVectors(front, back);
-    this.rider.group.position.copy(here);
-    this.rider.group.rotation.y = Math.atan2(-along.x, -along.z);
-    this.rider.group.rotation.x = Math.atan(courseAt(this.course, distance).grade);
+    const pausing = this.small.frame(moment, seconds, this.rig.camera.position, this.rider);
+    const bike = this.rider.group;
+    if (pausing.parked) {
+      // Against the café's wall while the rider sits at the table.
+      bike.position.copy(pausing.parked.at);
+      bike.rotation.set(0, pausing.parked.yaw, pausing.parked.lean);
+    } else {
+      const here = this.pointAt(distance, swayAt(distance));
+      const back = this.pointAt(distance - 2, swayAt(distance - 2));
+      const front = this.pointAt(distance + 2, swayAt(distance + 2));
+      const along = new THREE.Vector3().subVectors(front, back);
+      bike.position.copy(here);
+      bike.rotation.set(
+        Math.atan(courseAt(this.course, distance).grade),
+        Math.atan2(-along.x, -along.z),
+        0,
+      );
+    }
     this.crank += (cadence / 60) * 2 * Math.PI * seconds;
     this.rider.animate(seconds, cadence, speed);
 
-    const behind = this.pointAt(distance - BEHIND, 0.4);
-    const ahead = this.pointAt(distance + AHEAD, swayAt(distance + AHEAD) * 0.5);
-    this.rig.follow(behind, ahead, this.turn(distance), speed, this.crank, seconds);
+    if (pausing.jump) this.rig.jump();
+    if (pausing.view) this.rig.view(pausing.view.eye, pausing.view.look, seconds);
+    else {
+      const behind = this.pointAt(distance - BEHIND, 0.4);
+      const ahead = this.pointAt(distance + AHEAD, swayAt(distance + AHEAD) * 0.5);
+      this.rig.follow(behind, ahead, this.turn(distance), speed, this.crank, seconds);
+    }
     const eye = this.rig.camera.position;
     this.atmosphere.follow(eye, seconds);
     this.scenery.animate(seconds);
@@ -141,18 +188,14 @@ export class World {
       }
     });
     this.rider.dispose();
+    this.small.dispose();
     this.atmosphere.dispose();
     this.renderer.dispose();
   }
 
   /** A point on the road `offset` metres right of its middle, on the road's surface. */
   private pointAt(distance: number, offset: number): THREE.Vector3 {
-    const p = courseAt(this.course, distance);
-    const q = courseAt(this.course, distance + 1);
-    const dx = q.x - p.x;
-    const dz = -(q.y - p.y);
-    const len = Math.hypot(dx, dz) || 1;
-    return new THREE.Vector3(p.x + (-dz / len) * offset, p.ele + 0.03, -p.y + (dx / len) * offset);
+    return roadPoint(this.course, distance, offset);
   }
 
   /** How much the road bends here: radians per metre, to the left positive. */

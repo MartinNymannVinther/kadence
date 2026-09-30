@@ -4,6 +4,7 @@ import { groundAt, ROAD_HALF } from "./ground";
 import { hash } from "./noise";
 import { Batches, roadPost, treeShapes, tuft } from "./props";
 import { sections } from "./road";
+import { clearIn } from "./scenery";
 
 /**
  * What stands close to the road, where the eye catches it at the edge of
@@ -27,7 +28,12 @@ export class Roadside {
     flatShading: true,
   });
 
-  constructor(course: Course, density = 1) {
+  constructor(
+    course: Course,
+    density = 1,
+    /** Where no tree may stand: the herds' fields. */
+    blocked: (x: number, z: number) => boolean = () => false,
+  ) {
     const all = sections(course);
     const n = course.outAndBack ? Math.ceil(all.length / 2) : all.length;
     const everyPost = Math.max(1, Math.round(50 / course.step));
@@ -62,10 +68,10 @@ export class Roadside {
             shade,
           );
         }
-        if (hash(i, 0, 46) < 0.16 * density) {
-          const side = hash(i, 1, 47) < 0.5 ? -1 : 1;
-          // Within the flat beside the road, where the land is where the verge says it is.
-          const off = side * (ROAD_HALF + 8 + hash(i, 2, 48) * 6);
+        const side = hash(i, 1, 47) < 0.5 ? -1 : 1;
+        // Within the flat beside the road, where the land is where the verge says it is.
+        const off = side * (ROAD_HALF + 8 + hash(i, 2, 48) * 6);
+        if (hash(i, 0, 46) < 0.16 * density && !blocked(s.cx + s.rx * off, s.cz + s.rz * off)) {
           const kinds = hash(i, 3, 49) < 0.4 ? conifers : broadleaves;
           const shape = kinds[Math.floor(hash(i, 4, 50) * kinds.length)]!;
           const shade = 0.92 + hash(i, 7, 53) * 0.16;
@@ -84,6 +90,11 @@ export class Roadside {
       this.group.add(object);
       this.parts.push({ center, object });
     }
+  }
+
+  /** Makes room at a place for a stop: what stands within `r` metres goes. */
+  clearAround(x: number, z: number, r: number): void {
+    for (const part of this.parts) clearIn(part.object, x, z, r);
   }
 
   update(camera: THREE.Vector3): void {

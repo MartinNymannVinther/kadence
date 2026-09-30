@@ -173,3 +173,63 @@ describe("a ride without a session", () => {
     expect(timeline.seconds).toBe(140);
   });
 });
+
+describe("the small things in a session", () => {
+  const hard: BikeStructure = {
+    kind: "bike",
+    steps: [
+      { kind: "step", intent: "warmup", seconds: 60, target: { kind: "zone", zone: 2 } },
+      {
+        kind: "step",
+        intent: "work",
+        seconds: 60,
+        target: { kind: "ftp_pct", low: 100, high: 100 },
+      },
+      { kind: "step", intent: "recover", seconds: 60, target: { kind: "zone", zone: 1 } },
+    ],
+  };
+
+  it("rings a cowbell ten, eight and six seconds before a hard block ends, and not in an easy one", () => {
+    const { engine, cues, ride } = setup(hard);
+    engine.start(T0);
+    ride(0, 125);
+    expect(cues).toEqual([
+      ...["count", "count", "count", "change"],
+      ...["cheer", "cheer", "cheer", "count", "count", "count", "change"],
+    ]);
+  });
+
+  it("says the session was ridden on target when every block with watts was", () => {
+    const { engine, ride } = setup(hard);
+    engine.start(T0);
+    // Each block at its own watts: zone 2 for the warm-up, FTP, zone 1.
+    ride(0, 60, 163);
+    ride(60, 120, 250);
+    ride(120, 185, 125);
+    expect(engine.status).toBe("finished");
+    expect(engine.allOnTarget()).toBe(true);
+  });
+
+  it("does not, when a block was ridden under, or skipped", () => {
+    const under = setup(hard);
+    under.engine.start(T0);
+    under.ride(0, 60, 163);
+    under.ride(60, 120, 180);
+    under.ride(120, 185, 125);
+    expect(under.engine.allOnTarget()).toBe(false);
+
+    const skipped = setup(hard);
+    skipped.engine.start(T0);
+    skipped.ride(0, 60, 163);
+    skipped.engine.skip(T0 + 60_000);
+    skipped.ride(60, 125, 125);
+    expect(skipped.engine.allOnTarget()).toBe(false);
+  });
+
+  it("cannot say, when nothing measured the watts", () => {
+    const { engine, ride } = setup(hard);
+    engine.start(T0);
+    ride(0, 185, null);
+    expect(engine.allOnTarget()).toBeNull();
+  });
+});

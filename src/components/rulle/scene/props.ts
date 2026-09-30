@@ -132,7 +132,7 @@ export function tuft(): THREE.BufferGeometry {
 }
 
 /** A gabled building: walls, and a roof of two slopes over them. */
-function building(w: number, d: number, h: number, roof: string): THREE.BufferGeometry {
+export function building(w: number, d: number, h: number, roof: string): THREE.BufferGeometry {
   const walls = painted(at(new THREE.BoxGeometry(w, h, d), 0, h / 2, 0), PALETTE.wall);
   const ridge = w * 0.42;
   const shape = new THREE.Shape();

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { Course, SessionTimeline } from "@/modules/rulle";
+import { nothingSeen, type Course, type Seen, type SessionTimeline } from "@/modules/rulle";
 import type { TrainerLink } from "../bluetooth/trainer-link";
 import type { Moment } from "../scene/world";
 import type { Beeps } from "./beeps";
@@ -34,12 +34,15 @@ export type RideOptions = {
  * The ride engine in a page: made at the start, ticked, drawn, kept in
  * the browser, and connected to the trainer — whichever trainer is
  * connected now, so one connected again mid-ride gets the current target.
+ * What the landscape showed on the way (ADR 0034) is counted here too,
+ * and kept with the ride.
  */
 export function useRide(options: RideOptions) {
   const engine = useRef<RideEngine | null>(null);
   const latest = useRef(options);
   const [live, setLive] = useState<Live | null>(null);
   const [running, setRunning] = useState(false);
+  const seen = useRef<Seen>(nothingSeen());
 
   useEffect(() => {
     latest.current = options;
@@ -56,15 +59,31 @@ export function useRide(options: RideOptions) {
    */
   const moment = useCallback((now: number): Moment => {
     const ride = engine.current;
-    if (!ride) return { distance: 0, speed: 0, cadence: 0 };
+    if (!ride) return { distance: 0, speed: 0, cadence: 0, pause: null };
     const at = ride.positionAt(now);
-    if (ride.status !== "riding") return { distance: at.distance, speed: 0, cadence: 0 };
+    if (ride.status !== "riding") {
+      const open = ride.status === "paused" ? ride.recording?.pauses.at(-1) : undefined;
+      const pause =
+        ride.recording && open && open.to === null
+          ? {
+              index: ride.recording.pauses.length - 1,
+              seconds: Math.max(0, (now - ride.recording.startedAt) / 1000 - open.from),
+            }
+          : null;
+      return { distance: at.distance, speed: 0, cadence: 0, pause };
+    }
     const cadence = latest.current.sensors.now(now).cadence;
     return {
       distance: at.distance,
       speed: at.speed,
       cadence: cadence ?? (at.speed > 1 ? DRAWN_CADENCE : 0),
+      pause: null,
     };
+  }, []);
+
+  /** Something the landscape showed: counted for "today's little things". */
+  const note = useCallback((key: keyof Seen, count: number) => {
+    seen.current = { ...seen.current, [key]: seen.current[key] + count };
   }, []);
 
   const start = useCallback(() => {
@@ -91,7 +110,8 @@ export function useRide(options: RideOptions) {
     const keep = setInterval(() => {
       const { keepFor, meta } = latest.current;
       const recording = engine.current?.recording;
-      if (keepFor && recording) keepRide(keepFor, { meta, recording, state: "riding" });
+      if (keepFor && recording)
+        keepRide(keepFor, { meta, recording, state: "riding", seen: seen.current });
     }, KEEP_MS);
     return () => {
       clearInterval(tick);
@@ -122,6 +142,8 @@ export function useRide(options: RideOptions) {
     engine,
     live,
     moment,
+    note,
+    seen: () => seen.current,
     start,
     pause: () => act((ride, now) => ride.pause(now)),
     resume: () => act((ride, now) => ride.resume(now)),

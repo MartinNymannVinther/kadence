@@ -7,7 +7,14 @@ import { PALETTE } from "./palette";
  * the physics gives. The legs follow the pedals by two-bone inverse
  * kinematics, so they bend as legs do rather than swinging stiffly. Local
  * coordinates face -z, like a camera; y is up.
+ *
+ * In a pause (ADR 0034) the figure stops with a foot down and drinks from
+ * the bottle now and then; at a café only the bike is left, parked, while
+ * the rider sits at the table (`Sitter`).
  */
+
+/** Riding; stopped with a foot down and the bottle; or gone to the table, the bike parked. */
+export type Stop = "riding" | "bottle" | "parked";
 
 const WHEEL = 0.34;
 const CRANK = 0.17;
@@ -22,8 +29,15 @@ export class RiderFigure {
   readonly group = new THREE.Group();
   private readonly wheels: THREE.Mesh[] = [];
   private readonly legs: { thigh: THREE.Mesh; shin: THREE.Mesh; side: number }[] = [];
+  private readonly arms: { upper: THREE.Mesh; lower: THREE.Mesh; side: number }[] = [];
   private readonly body = new THREE.Group();
+  private readonly bottle: THREE.Mesh;
+  private readonly shadow: THREE.Mesh;
   private crank = 0;
+  private stop: Stop = "riding";
+  private stopped = 0;
+  /** How far the right hand is on its way from the bar to the mouth, 0 to 1. */
+  private lift = 0;
   private readonly materials = {
     jersey: lambert(PALETTE.jersey),
     light: lambert(PALETTE.jerseyLight),
@@ -48,6 +62,7 @@ export class RiderFigure {
     shadow.scale.set(0.9, 1.9, 1);
     shadow.position.y = 0.02;
     this.group.add(shadow);
+    this.shadow = shadow;
 
     for (const z of [0.52, -0.5]) {
       const wheel = new THREE.Mesh(new THREE.TorusGeometry(WHEEL, 0.032, 4, 14), m.tyre);
@@ -90,12 +105,13 @@ export class RiderFigure {
     helmet.rotation.x = -0.35;
     this.body.add(helmet);
     for (const side of [-1, 1]) {
-      const shoulder = new THREE.Vector3(side * 0.16, 1.34, -0.25);
-      const elbow = new THREE.Vector3(side * 0.19, 1.14, -0.4);
-      const hand = new THREE.Vector3(side * 0.2, 0.97, -0.47);
-      this.body.add(this.tube(shoulder, elbow, 0.045, m.light));
-      this.body.add(this.tube(elbow, hand, 0.04, m.skin));
+      const upper = new THREE.Mesh(this.unit, m.light);
+      const lower = new THREE.Mesh(this.unit, m.skin);
+      this.body.add(upper, lower);
+      this.arms.push({ upper, lower, side });
     }
+    this.bottle = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.2, 6), m.jersey);
+    this.body.add(this.bottle);
     this.group.add(this.body);
     for (const side of [-1, 1]) {
       const thigh = new THREE.Mesh(this.unit, m.shorts);
@@ -106,11 +122,26 @@ export class RiderFigure {
     this.pose();
   }
 
+  setStop(stop: Stop): void {
+    if (stop === this.stop) return;
+    this.stop = stop;
+    this.stopped = 0;
+    const away = stop === "parked";
+    this.body.visible = !away;
+    this.shadow.visible = !away;
+    for (const leg of this.legs) leg.thigh.visible = leg.shin.visible = !away;
+    this.pose();
+  }
+
   /** Moves the legs and wheels on by `seconds` at this cadence and speed. */
   animate(seconds: number, cadence: number, speed: number): void {
     this.crank = (this.crank + (cadence / 60) * 2 * Math.PI * seconds) % (2 * Math.PI);
     for (const wheel of this.wheels) wheel.rotation.x -= (speed / WHEEL) * seconds;
     this.body.rotation.z = Math.sin(this.crank) * 0.012 * Math.min(1, cadence / 60);
+    this.stopped += seconds;
+    // Stopped: a drink every five seconds or so, the bottle at the mouth for a moment.
+    const drinking = this.stop === "bottle" && this.stopped % 5 > 1.2 && this.stopped % 5 < 3.4;
+    this.lift += ((drinking ? 1 : 0) - this.lift) * Math.min(1, seconds * 5);
     this.pose();
   }
 
@@ -126,14 +157,37 @@ export class RiderFigure {
     for (const leg of this.legs) {
       const angle = this.crank + (leg.side > 0 ? 0 : Math.PI);
       const hip = new THREE.Vector3(leg.side * 0.1, 0.98, 0.17);
-      const foot = new THREE.Vector3(
-        leg.side * 0.11,
-        BB.y + CRANK * Math.sin(angle),
-        BB.z - CRANK * Math.cos(angle),
-      );
+      // Stopped, the left foot is down on the road beside the bike.
+      const down = this.stop === "bottle" && leg.side < 0;
+      const foot = down
+        ? new THREE.Vector3(-0.34, 0.03, 0.12)
+        : new THREE.Vector3(
+            leg.side * 0.11,
+            BB.y + CRANK * Math.sin(angle),
+            BB.z - CRANK * Math.cos(angle),
+          );
       const knee = kneeOf(hip, foot);
       this.place(leg.thigh, hip, knee, 0.07);
       this.place(leg.shin, knee, foot, 0.05);
+    }
+    for (const arm of this.arms) {
+      const lift = arm.side > 0 ? this.lift : 0;
+      const shoulder = new THREE.Vector3(arm.side * 0.16, 1.34, -0.25);
+      const elbow = new THREE.Vector3(arm.side * 0.19, 1.14, -0.4).lerp(
+        new THREE.Vector3(0.25, 1.17, -0.3),
+        lift,
+      );
+      const hand = new THREE.Vector3(arm.side * 0.2, 0.97, -0.47).lerp(
+        new THREE.Vector3(0.07, 1.43, -0.42),
+        lift,
+      );
+      this.place(arm.upper, shoulder, elbow, 0.045);
+      this.place(arm.lower, elbow, hand, 0.04);
+      if (arm.side > 0) {
+        this.bottle.visible = this.stop === "bottle";
+        this.bottle.position.copy(hand).add(new THREE.Vector3(0, 0.02, 0));
+        this.bottle.rotation.set(-0.3 - lift * 1.6, 0, 0);
+      }
     }
   }
 

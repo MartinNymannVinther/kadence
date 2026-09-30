@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { blockAt, buildTimeline, ergWatts, standing } from "@/modules/rulle";
+import { blockAt, buildTimeline, ergWatts, isHard, standing } from "@/modules/rulle";
 import type { BikeStructure } from "@/modules/workouts/structure";
 
 const threshold: BikeStructure = {
@@ -116,5 +116,34 @@ describe("a rider without an FTP", () => {
   it("rides every block freely: percent of nothing is no watts", () => {
     expect(timeline.blocks.every((b) => b.watts === null && b.band === null)).toBe(true);
     expect(standing(timeline.blocks[1]!, 245, 1)).toBe("free");
+  });
+});
+
+describe("a block hard enough for a cowbell", () => {
+  const blocks = buildTimeline(threshold, { ftp: 250 }).blocks;
+
+  it("is a work block of 45 seconds or more at 85 % of FTP or above", () => {
+    expect(blocks.filter(isHard).map((b) => b.intent)).toEqual(["work", "work", "work"]);
+    expect(blocks.filter(isHard).every((b) => b.seconds === 480)).toBe(true);
+  });
+
+  it("is not the warm-up, a recovery, a steady block or a short open effort", () => {
+    for (const block of blocks)
+      if (block.intent !== "work" || block.seconds < 45) expect(isHard(block)).toBe(false);
+  });
+
+  it("is a work block by feel, and not an easy one in watts", () => {
+    const [byFeel, easy] = buildTimeline(
+      {
+        kind: "bike",
+        steps: [
+          { kind: "step", intent: "work", seconds: 60, target: { kind: "rpe", value: 8 } },
+          { kind: "step", intent: "work", seconds: 600, target: { kind: "zone", zone: 2 } },
+        ],
+      },
+      { ftp: 250 },
+    ).blocks;
+    expect(isHard(byFeel!)).toBe(true);
+    expect(isHard(easy!)).toBe(false);
   });
 });

@@ -35,5 +35,7 @@ export default async function RullePage({
   const asked = typeof search.session === "string" ? search.session : null;
   const today = todayInCopenhagen();
   const start = await rulleStart(ctx, me, asked, today);
-  return <RulleApp start={start} route={bundledRoute(DEFAULT_ROUTE)} today={today} />;
+  // The first name, chalked on the steepest climb (ADR 0034): the rider's own screen only.
+  const name = me?.rider?.name.trim().split(/\s+/)[0] || null;
+  return <RulleApp start={start} route={bundledRoute(DEFAULT_ROUTE)} today={today} name={name} />;
 }

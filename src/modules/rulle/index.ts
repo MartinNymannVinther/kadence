@@ -8,7 +8,8 @@
  * - the session as blocks with the watts to hold and the watts that count;
  * - the ride as it is recorded, and as the FIT file it is saved as;
  * - what a trainer, a power meter and a heart-rate strap say over
- *   Bluetooth, and what Rulle says back (`ble/`).
+ *   Bluetooth, and what Rulle says back (`ble/`);
+ * - the small things on the way and what they came to (ADR 0034).
  *
  * The browser's half — Bluetooth, the landscape, the screen — is in
  * src/components/rulle.
@@ -35,6 +36,7 @@ export {
   blockAt,
   buildTimeline,
   ergWatts,
+  isHard,
   ON_TARGET_SLACK,
   scaledBand,
   standing,
@@ -79,3 +81,34 @@ export {
   type PowerMeasurement,
 } from "./ble/cycling-power";
 export { parseHeartRate } from "./ble/heart-rate";
+export { hash } from "./hash";
+export {
+  chalkOf,
+  drinksIn,
+  flagsOf,
+  herdsOf,
+  PAUSE_AT,
+  pauseStage,
+  riseOver,
+  steepestClimb,
+  stopKind,
+  VISITOR_SPEED,
+  visitsOnLap,
+  type Chalk,
+  type Climb,
+  type Flag,
+  type Herd,
+  type PauseStage,
+  type StopKind,
+  type Visit,
+  type VisitorKind,
+} from "./happenings";
+export {
+  HIMMELBJERGET_M,
+  littleThings,
+  nothingSeen,
+  pauseLengths,
+  seenSchema,
+  type LittleThing,
+  type Seen,
+} from "./little-things";

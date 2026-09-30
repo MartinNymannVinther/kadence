@@ -75,6 +75,18 @@ export function buildTimeline(structure: BikeStructure, rider: Thresholds): Sess
   return { blocks, seconds: blocks.at(-1)?.to ?? 0 };
 }
 
+/**
+ * A block hard enough for a cowbell in its last seconds (ADR 0034): a work
+ * block of at least 45 seconds, at 85 % of FTP or more — or with no watts
+ * written (an effort by feel, a sprint), since a work block is meant to be
+ * hard.
+ */
+export function isHard(block: Block): boolean {
+  if (block.intent !== "work" || block.seconds < 45) return false;
+  const pct = powerPct(block.target);
+  return pct === null || pct >= 85;
+}
+
 /** The block the session is in at `second`, or null once it is over. */
 export function blockAt(timeline: SessionTimeline, second: number): BlockNow | null {
   if (second < 0) return null;

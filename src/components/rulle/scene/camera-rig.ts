@@ -9,6 +9,9 @@ import * as THREE from "three";
  * rider who has asked for less motion on the screen, only the following
  * is left.
  *
+ * In a pause at a café it looks at the table instead (`view`), and after
+ * the dip to the haze it is simply there (`jump`) rather than flying.
+ *
  * The screen's lower part is covered by the numbers and the bar, so the
  * picture is shifted up (a view offset): the road ahead and the rider sit
  * in the band between the strip at the top and the panel at the bottom.
@@ -42,6 +45,29 @@ export class CameraRig {
     const shift = Math.max(-height * 0.3, Math.min(height * 0.3, height / 2 - band));
     this.camera.setViewOffset(width, height, 0, shift, width, height);
     this.camera.updateProjectionMatrix();
+  }
+
+  /** Starts the next frame where the camera should be, instead of gliding there. */
+  jump(): void {
+    this.placed = false;
+  }
+
+  /** Looks from `eye` at `look`, easing there: the table of a café, in a pause. */
+  view(eye: THREE.Vector3, look: THREE.Vector3, seconds: number): void {
+    if (!this.placed) {
+      this.camera.position.copy(eye);
+      this.target.copy(look);
+      this.placed = true;
+    }
+    const ease = 1 - Math.exp(-seconds * 3);
+    this.camera.position.lerp(eye, ease);
+    this.target.lerp(look, ease);
+    this.camera.lookAt(this.target);
+    this.roll = 0;
+    if (this.camera.fov !== this.baseFov) {
+      this.camera.fov = this.baseFov;
+      this.camera.updateProjectionMatrix();
+    }
   }
 
   /**

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -54,6 +54,7 @@ export function RideScreen({
   counting,
   onGo,
   moment,
+  name,
 }: {
   title: string;
   trial: boolean;
@@ -68,9 +69,23 @@ export function RideScreen({
   onGo: () => void;
   /** Where the rider is on the course, for the landscape. */
   moment: (now: number) => Moment;
+  /** The rider's first name, for the chalk on the climb; null for anyone. */
+  name: string | null;
 }) {
   const t = useTranslations("rulle.ride");
   const endWords = useTranslations("rulle.end");
+  const sceneWords = useTranslations("rulle.scene");
+  const words = useMemo(
+    () => ({
+      name: name
+        ? sceneWords("chalkName", { name: name.toLocaleUpperCase("da").slice(0, 16) })
+        : sceneWords("chalkAnyone"),
+      top: sceneWords("chalkTop"),
+      cafe: sceneWords("cafe"),
+      stand: sceneWords("stand"),
+    }),
+    [name, sceneWords],
+  );
   const [ending, setEnding] = useState(false);
   const [muted, setMuted] = useState(beeps.muted);
   const [count, setCount] = useState(counting ? COUNTDOWN : 0);
@@ -149,7 +164,15 @@ export function RideScreen({
   return (
     <div className="bg-background relative h-svh w-full overflow-hidden">
       <div className="absolute inset-0">
-        <RideScene course={course} moment={moment} top={cover.top} bottom={cover.bottom} />
+        <RideScene
+          course={course}
+          moment={moment}
+          top={cover.top}
+          bottom={cover.bottom}
+          words={words}
+          onSeen={ride.note}
+          onSound={(kind) => beeps.play(kind)}
+        />
       </div>
       <div className="relative z-10 flex h-full flex-col">
         {live && (

@@ -9,8 +9,9 @@ import { clockText } from "@/components/training/duration";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "@/i18n/navigation";
-import { totals, type Recording } from "@/modules/rulle";
+import { littleThings, totals, type Recording, type Seen } from "@/modules/rulle";
 import { slugify } from "@/modules/workouts/export";
+import { LittleThings } from "./little-things";
 import { forgetRide, type RideMeta } from "./ride/ride-store";
 import { ended, rideFile, saveRide, type SaveResult } from "./ride/save-ride";
 
@@ -27,22 +28,32 @@ const RETRY_MS = 30_000;
  * back. Then the rider says how hard it was — the one thing no sensor
  * knows. A ride with nothing measured is no file: the session is ticked
  * off by hand instead, with the minutes already filled in. A coach's
- * trial is saved nowhere; the file can always be taken along.
+ * trial is saved nowhere; the file can always be taken along. Below the
+ * numbers, the ride's little things (ADR 0034).
  */
 export function DoneScreen({
   recording,
   meta,
   trial,
   keepFor,
+  seen,
+  onTarget,
 }: {
   recording: Recording;
   meta: RideMeta;
   trial: boolean;
   keepFor: string | null;
+  /** What the landscape showed on the way; null where it showed nothing. */
+  seen: Seen | null;
+  onTarget: boolean | null;
 }) {
   const t = useTranslations("rulle.done");
   const final = useMemo(() => ended(recording), [recording]);
   const sum = useMemo(() => totals(final), [final]);
+  const little = useMemo(
+    () => littleThings({ rec: final, ascentM: sum.ascentM, seen, allOnTarget: onTarget }),
+    [final, sum, seen, onTarget],
+  );
   const saves = !trial && sum.measured && keepFor !== null;
   const [status, setStatus] = useState<Status>(saves ? "saving" : "none");
   const [result, setResult] = useState<SaveResult | null>(null);
@@ -120,6 +131,8 @@ export function DoneScreen({
           </div>
         ))}
       </dl>
+
+      <LittleThings things={little} />
 
       <Card>
         <CardContent className="flex flex-col gap-3">

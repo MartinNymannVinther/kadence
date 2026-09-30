@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import type { Course } from "@/modules/rulle";
+import { useEffect, useRef, useState } from "react";
+import type { Course, Seen } from "@/modules/rulle";
+import { LensDrops } from "./lens-drops";
+import type { SceneWords } from "./small-things";
 import { Sky } from "./sky";
 import { World, type Moment } from "./world";
 
@@ -11,13 +13,18 @@ import { World, type Moment } from "./world";
  * quiet sky lies behind the canvas the whole time: it is what shows while
  * the landscape is built, and all that shows where WebGL is missing or
  * fails. A small or slow device gets fewer trees and pixels; a rider who
- * has asked for less motion gets a camera that only follows.
+ * has asked for less motion gets a camera that only follows, and no drops
+ * on the lens. What the small things on the way (ADR 0034) meet is told
+ * back through `onSeen`, and what they ring through `onSound`.
  */
 export default function RideScene({
   course,
   moment,
   top,
   bottom,
+  words,
+  onSeen,
+  onSound,
 }: {
   course: Course;
   /** Where the rider is now: read every frame. */
@@ -25,13 +32,18 @@ export default function RideScene({
   /** Pixels of the screen covered by the strip on top and the panel below. */
   top: number;
   bottom: number;
+  words: SceneWords;
+  onSeen: (key: keyof Seen, count: number) => void;
+  onSound: (kind: "bell" | "cheer") => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const latest = useRef({ moment, top, bottom });
+  const latest = useRef({ moment, top, bottom, words, onSeen, onSound });
   const resize = useRef<() => void>(() => {});
+  // Each spray of washer fluid, numbered: the drops on the lens are drawn for the latest.
+  const [spray, setSpray] = useState(0);
 
   useEffect(() => {
-    latest.current = { moment, top, bottom };
+    latest.current = { moment, top, bottom, words, onSeen, onSound };
   });
 
   // Only when the strip or the panel over the picture changes: the page
@@ -43,11 +55,21 @@ export default function RideScene({
     const canvas = canvasRef.current;
     if (!canvas) return;
     let world: World;
+    const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     try {
-      world = new World(canvas, course, {
-        calm: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-        light: window.innerWidth < 700 || (navigator.hardwareConcurrency ?? 8) <= 4,
-      });
+      world = new World(
+        canvas,
+        course,
+        { calm, light: window.innerWidth < 700 || (navigator.hardwareConcurrency ?? 8) <= 4 },
+        latest.current.words,
+        {
+          seen: (key, count) => latest.current.onSeen(key, count),
+          sound: (kind) => latest.current.onSound(kind),
+          spray: () => {
+            if (!calm) setSpray((n) => n + 1);
+          },
+        },
+      );
     } catch {
       // No WebGL: the sky behind the canvas is the landscape.
       return;
@@ -82,6 +104,7 @@ export default function RideScene({
         <Sky />
       </div>
       <canvas ref={canvasRef} aria-hidden className="absolute inset-0 block h-full w-full" />
+      {spray > 0 && <LensDrops key={spray} seed={spray} top={top} bottom={bottom} />}
     </div>
   );
 }

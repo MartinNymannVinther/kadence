@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { readRecording, type Recording } from "@/modules/rulle";
+import { readRecording, seenSchema, type Recording, type Seen } from "@/modules/rulle";
 
 /**
  * A ride kept in the browser until Kadence has it (dogma 2): every few
@@ -34,6 +34,9 @@ export type KeptRide = {
   /** "riding" while it goes on; "finished" once it ended and waits to be saved. */
   state: "riding" | "finished";
   keptAt: number;
+  /** What the landscape showed on the way, and whether every block was on target (ADR 0034). */
+  seen?: Seen;
+  onTarget?: boolean | null;
 };
 
 const keptSchema = z.object({
@@ -41,6 +44,9 @@ const keptSchema = z.object({
   recording: z.unknown(),
   state: z.enum(["riding", "finished"]),
   keptAt: z.number(),
+  // Kept from before these were: a ride without them still reads.
+  seen: seenSchema.optional().catch(undefined),
+  onTarget: z.boolean().nullable().optional().catch(undefined),
 });
 
 function storage(): Storage | null {

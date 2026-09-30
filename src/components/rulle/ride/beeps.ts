@@ -1,12 +1,17 @@
 /**
  * What a rider hears when the eyes are on the road: three short beeps as a
- * block runs out, a longer one when the next begins, and two at the end.
- * Made by the browser's own sound (Web Audio), no sound files. Browsers
- * only let sound start from a press, so `unlock` is called from the one
- * that starts the ride.
+ * block runs out, a longer one when the next begins, and two at the end;
+ * and the small things (ADR 0034) — a cowbell near the end of a hard
+ * block and on the chalk climb, and the ring-ring of a cargo bike's bell
+ * before it overtakes. Made by the browser's own sound (Web Audio), no
+ * sound files; one press on M quiets all of it. Browsers only let sound
+ * start from a press, so `unlock` is called from the one that starts the
+ * ride.
  */
 
 type Tone = { hz: number; seconds: number; at: number };
+
+export type Sound = "count" | "change" | "end" | "cheer" | "bell";
 
 const TONES: Record<"count" | "change" | "end", Tone[]> = {
   count: [{ hz: 880, seconds: 0.12, at: 0 }],
@@ -41,9 +46,11 @@ export class Beeps {
     void this.context.resume().catch(() => undefined);
   }
 
-  play(kind: keyof typeof TONES): void {
+  play(kind: Sound): void {
     const context = this.context;
     if (this.quiet || !context || context.state !== "running") return;
+    if (kind === "cheer") return cowbell(context);
+    if (kind === "bell") return bell(context);
     for (const tone of TONES[kind]) {
       const start = context.currentTime + tone.at;
       const oscillator = context.createOscillator();
@@ -57,6 +64,59 @@ export class Beeps {
       oscillator.connect(gain).connect(context.destination);
       oscillator.start(start);
       oscillator.stop(start + tone.seconds + 0.02);
+    }
+  }
+}
+
+/**
+ * A cowbell shaken by someone at the roadside: four quick knocks. Two
+ * square waves a fifth-ish apart through a band-pass, dying fast — the
+ * old drum machines' recipe for a cowbell.
+ */
+function cowbell(context: AudioContext): void {
+  for (let k = 0; k < 4; k++) {
+    const start = context.currentTime + k * 0.16;
+    const filter = context.createBiquadFilter();
+    filter.type = "bandpass";
+    filter.frequency.value = 1100;
+    filter.Q.value = 0.9;
+    const gain = context.createGain();
+    gain.gain.setValueAtTime(0, start);
+    gain.gain.linearRampToValueAtTime(0.22, start + 0.004);
+    gain.gain.exponentialRampToValueAtTime(0.06, start + 0.06);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.35);
+    filter.connect(gain).connect(context.destination);
+    for (const hz of [540, 800]) {
+      const oscillator = context.createOscillator();
+      oscillator.type = "square";
+      oscillator.frequency.value = hz;
+      oscillator.connect(filter);
+      oscillator.start(start);
+      oscillator.stop(start + 0.4);
+    }
+  }
+}
+
+/** A bicycle bell, rung twice: a few metallic partials that ring out. */
+function bell(context: AudioContext): void {
+  const partials: [number, number][] = [
+    [2350, 0.16],
+    [3890, 0.07],
+    [5620, 0.035],
+  ];
+  for (const at of [0, 0.22]) {
+    const start = context.currentTime + at;
+    for (const [hz, level] of partials) {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = "sine";
+      oscillator.frequency.value = hz;
+      gain.gain.setValueAtTime(0, start);
+      gain.gain.linearRampToValueAtTime(level, start + 0.003);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.7);
+      oscillator.connect(gain).connect(context.destination);
+      oscillator.start(start);
+      oscillator.stop(start + 0.75);
     }
   }
 }

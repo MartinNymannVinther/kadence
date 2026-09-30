@@ -681,7 +681,7 @@
       },
       "rulle": {
         "title": "Rulle: the session on the trainer",
-        "body": "When you can't get outside, ride today's session indoors in Rulle: in the menu, or \"Ride indoors\" on the session. Connect the trainer with one press. A smart trainer sets the watts of each block itself (ERG), so all you do is pedal; a trainer that only measures leaves the numbers to you. A heart-rate strap can be connected beside it. The screen shows the watts against the target, the time left of the block and the whole session as a bar you ride across, large enough to read from the bike. Space pauses, the right arrow skips to the next block, up and down make the session easier or harder. Stop pedalling, and Rulle pauses with you. When the session is over, the ride is saved as an ordinary ride on the session, and you say how hard it was. Without a connection the ride waits in the browser. Rulle needs Chrome or Edge on a computer or Android; on an iPhone, the Bluefy app can."
+        "body": "When you can't get outside, ride today's session indoors in Rulle: in the menu, or \"Ride indoors\" on the session. Connect the trainer with one press. A smart trainer sets the watts of each block itself (ERG), so all you do is pedal; a trainer that only measures leaves the numbers to you. A heart-rate strap can be connected beside it. The screen shows the watts against the target, the time left of the block and the whole session as a bar you ride across, large enough to read from the bike. Space pauses, the right arrow skips to the next block, up and down make the session easier or harder. Stop pedalling, and Rulle pauses with you. When the session is over, the ride is saved as an ordinary ride on the session, and you say how hard it was. Without a connection the ride waits in the browser. Rulle needs Chrome or Edge on a computer or Android; on an iPhone, the Bluefy app can. Now and then something small happens on the way – an electric cargo bike, a car with windscreen washer fluid, a dog – and pause long enough and you sit down at a café. They are counted in today's little things when you finish; the numbers and the bar are left in peace."
       },
       "keys": {
         "title": "Upload keys",
@@ -2740,6 +2740,13 @@
       "profile": "The whole session: {duration}. {elapsed} ridden.",
       "routeProfile": "The route: {km} km. Lap {lap}, {along} km in."
     },
+    "scene": {
+      "chalkName": "COME ON {name}!",
+      "chalkAnyone": "COME ON!",
+      "chalkTop": "ALMOST THERE",
+      "cafe": "CAFÉ",
+      "stand": "SODA · 10 KR."
+    },
     "end": {
       "title": "End the ride?",
       "body": "The ride is saved in Kadence as it is now.",
@@ -2778,6 +2785,19 @@
         "notFound": "The session no longer exists. Download the FIT file and upload it on “Today”.",
         "too_large": "The ride is too large to save from here. Download the FIT file and upload it on “Today”."
       }
+    },
+    "little": {
+      "title": "Today's little things",
+      "himmelbjerg": "{metres} m of climbing – that is Himmelbjerget, Denmark's famous 147-metre hill, {times, number} times.",
+      "cargoOvertaken": "{count, plural, one {Overtaken by an electric cargo bike. It does 25.} other {Overtaken by # electric cargo bikes. They do 25.}}",
+      "cargoOvertook": "{count, plural, one {You overtook an electric cargo bike.} other {You overtook # electric cargo bikes.}}",
+      "car": "{count, plural, one {Baptised in windscreen washer fluid.} other {Baptised in windscreen washer fluid # times.}}",
+      "scooter": "{count, plural, one {A hooligan on an e-scooter shot past at 50. Wearing a helmet, at least.} other {# hooligans on e-scooters shot past at 50. Wearing helmets, at least.}}",
+      "dog": "{count, plural, one {A dog ran along for a bit.} other {# dogs ran along for a bit.}}",
+      "cows": "{count, plural, one {# cow watched you go by.} other {# cows passed.}}",
+      "cafe": "{stops, plural, one {One coffee stop} other {# coffee stops}} and {cups, plural, one {one cup} other {# cups}}.",
+      "stand": "{stops, plural, one {One stop at the farm stand} other {# stops at the farm stand}} and {bottles, plural, one {one soda} other {# sodas}}.",
+      "onTarget": "Every block on target: the session ridden as it was written."
     },
     "kept": {
       "waiting": "A ride from {when} is waiting to be saved.",

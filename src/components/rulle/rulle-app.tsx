@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { buildTimeline, type BundledRoute, type Recording } from "@/modules/rulle";
+import { buildTimeline, type BundledRoute, type Recording, type Seen } from "@/modules/rulle";
 import type { RulleSession, RulleStart } from "@/modules/rulle/service";
 import { DoneScreen } from "./done-screen";
 import { ReadyScreen } from "./ready/ready-screen";
@@ -28,10 +28,13 @@ export function RulleApp({
   start,
   route,
   today,
+  name,
 }: {
   start: RulleStart;
   route: BundledRoute;
   today: string;
+  /** The rider's first name, for the chalk on the climb. */
+  name: string | null;
 }) {
   const t = useTranslations("rulle");
   const sessions = useMemo(() => {
@@ -59,6 +62,8 @@ export function RulleApp({
     recording: Recording;
     meta: RideMeta;
     trial: boolean;
+    seen: Seen | null;
+    onTarget: boolean | null;
   } | null>(null);
   // A ride this device kept from before is offered back before a new one can overwrite it.
   const kept = useKeptRide(start.riderId);
@@ -84,8 +89,10 @@ export function RulleApp({
       const recording = engine.recording;
       if (!recording) return;
       void devices.trainer?.link.release().catch(() => undefined);
-      if (keepFor) keepRide(keepFor, { meta, recording, state: "finished" });
-      setFinished({ recording, meta, trial });
+      const seen = ride.seen();
+      const onTarget = engine.allOnTarget();
+      if (keepFor) keepRide(keepFor, { meta, recording, state: "finished", seen, onTarget });
+      setFinished({ recording, meta, trial, seen, onTarget });
       setPhase("done");
     },
   });
@@ -97,6 +104,8 @@ export function RulleApp({
         meta={finished.meta}
         trial={finished.trial}
         keepFor={finished.trial ? null : start.riderId}
+        seen={finished.seen}
+        onTarget={finished.onTarget}
       />
     );
 
@@ -117,6 +126,7 @@ export function RulleApp({
           setPhase("riding");
         }}
         moment={ride.moment}
+        name={trial ? null : name}
       />
     );
 
@@ -141,7 +151,13 @@ export function RulleApp({
       onSaveKept={() => {
         if (!kept) return;
         // Kept until Kadence has it: the done screen forgets it once it is saved.
-        setFinished({ recording: kept.recording, meta: kept.meta, trial: false });
+        setFinished({
+          recording: kept.recording,
+          meta: kept.meta,
+          trial: false,
+          seen: kept.seen ?? null,
+          onTarget: kept.onTarget ?? null,
+        });
         setPhase("done");
       }}
       onDiscardKept={() => {

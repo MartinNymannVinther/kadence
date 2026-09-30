@@ -233,6 +233,26 @@
   --text-ride-label: clamp(0.95rem, 2.3vmin, 1.8rem);
   --text-ride-value: clamp(1.9rem, 6.5vmin, 5.5rem);
   --text-ride-hero: clamp(2.8rem, 11vmin, 9.5rem);
+  /* Washer fluid on Rulle's lens (ADR 0034): a drop lands, runs a little, dries. */
+  --animate-rulle-drop: rulle-drop 2.6s ease-out forwards;
+  @keyframes rulle-drop {
+    0% {
+      opacity: 0;
+      transform: translateY(0) scale(0.5);
+    }
+    8% {
+      opacity: 0.95;
+      transform: translateY(0) scale(1);
+    }
+    60% {
+      opacity: 0.75;
+      transform: translateY(14px) scale(1, 1.08);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(34px) scale(0.9, 1.15);
+    }
+  }
   /* The sticky note's corner (ADR 0016) — the one radius below sm. */
   --radius-xs: 0.3rem;
   --radius-sm: calc(var(--radius) * 0.6);

@@ -35,10 +35,25 @@ export class Scenery {
     blades: turbineBlades(),
   };
 
+  /** Circles where a stop was put, kept clear from then on. */
+  private readonly cleared: { x: number; z: number; r: number }[] = [];
+
   constructor(
     private readonly ground: Ground,
     private readonly density = 1,
+    /** Where nothing of this may stand: the herds' fields. */
+    private readonly blocked: (x: number, z: number) => boolean = () => false,
   ) {}
+
+  /** Makes room at a place: what stands within `r` metres goes, and nothing grows there again. */
+  clearAround(x: number, z: number, r: number): void {
+    this.cleared.push({ x, z, r });
+    for (const { object } of this.chunks.values()) clearIn(object, x, z, r);
+  }
+
+  private free(x: number, z: number): boolean {
+    return !this.blocked(x, z) && this.cleared.every((c) => Math.hypot(x - c.x, z - c.z) > c.r);
+  }
 
   add(key: ChunkKey, cx: number, cz: number): void {
     const object = new THREE.Group();
@@ -51,7 +66,12 @@ export class Scenery {
       const z = z0 + (0.15 + hash(cx, cz, salt + 1) * 0.7) * CHUNK;
       const d = this.ground.nearest(x, z).d;
       const y = this.ground.height(x, z);
-      const ok = d >= min && d <= max && y > 0.6 && this.ground.patch(x, z).kind !== "forest";
+      const ok =
+        d >= min &&
+        d <= max &&
+        y > 0.6 &&
+        this.ground.patch(x, z).kind !== "forest" &&
+        this.free(x, z);
       return ok ? new THREE.Vector3(x, y, z) : null;
     };
     const farmAt = hash(cx, cz, 60) < FARM_CHANCE ? spot(61, 45, 900) : null;
@@ -141,7 +161,7 @@ export class Scenery {
         const z = (ib + hash(ia, ib, 92)) * TREE_GRID;
         const forest = this.ground.patch(x, z).kind === "forest";
         if (!forest && hash(ia, ib, 93) > 0.012) continue;
-        if (this.ground.nearest(x, z).d < 16) continue;
+        if (this.ground.nearest(x, z).d < 16 || !this.free(x, z)) continue;
         const y = this.ground.height(x, z);
         if (y < 0.4) continue;
         const scale = 0.8 + hash(ia, ib, 94) * 0.6;
@@ -156,4 +176,30 @@ export class Scenery {
       }
     for (const mesh of batches.build(this.material)) object.add(mesh);
   }
+}
+
+/** Takes out of `object` every copy of a shape, and every shape, standing within `r` of a place. */
+export function clearIn(object: THREE.Object3D, x: number, z: number, r: number): void {
+  const m = new THREE.Matrix4();
+  const at = new THREE.Vector3();
+  const none = new THREE.Matrix4().makeScale(0, 0, 0);
+  object.traverse((child) => {
+    if (child instanceof THREE.InstancedMesh) {
+      let changed = false;
+      for (let i = 0; i < child.count; i++) {
+        child.getMatrixAt(i, m);
+        at.setFromMatrixPosition(m);
+        if (Math.hypot(at.x - x, at.z - z) <= r) {
+          child.setMatrixAt(i, none);
+          changed = true;
+        }
+      }
+      if (changed) child.instanceMatrix.needsUpdate = true;
+    } else if (
+      child instanceof THREE.Mesh &&
+      child.parent === object &&
+      Math.hypot(child.position.x - x, child.position.z - z) <= r
+    )
+      child.visible = false;
+  });
 }

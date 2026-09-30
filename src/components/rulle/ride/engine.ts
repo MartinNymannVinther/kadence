@@ -4,6 +4,7 @@ import {
   courseAt,
   endRecording,
   ergWatts,
+  isHard,
   nextSpeed,
   pauseRecording,
   record,
@@ -30,6 +31,7 @@ import {
   type Clock,
 } from "./clock";
 import type { Sensors, SensorsNow } from "./sensors";
+import { OnTarget } from "./on-target";
 import { PowerTrace } from "./trace";
 
 /**
@@ -44,6 +46,9 @@ import { PowerTrace } from "./trace";
  *   against 300 W at a standstill.
  * - With neither watts nor a turning crank for `AUTO_PAUSE_SECONDS` the
  *   ride pauses, and it goes on by itself when the legs do.
+ * - The last seconds of a hard block get a cowbell (ADR 0034), and every
+ *   second of a block with watts to hold counts toward whether the session
+ *   was ridden on target.
  * - The speed along the course is the physics' answer to the measured
  *   watts. Without anything that measures them, the landscape still moves
  *   at the block's watts, but nothing about speed or distance is recorded:
@@ -56,14 +61,16 @@ export const AUTO_PAUSE_SECONDS = 3;
 const RESUME_WATTS = 30;
 const RESUME_CADENCE = 20;
 export const INTENSITY = { min: 0.5, max: 1.2, step: 0.05 } as const;
+/** Seconds before a hard block ends when the cowbell rings, before the three beeps. */
+const CHEER_AT = [10, 8, 6];
 
 export type Status = "ready" | "riding" | "paused" | "finished";
 
 export type EngineEvents = {
   /** What the trainer should hold now: watts, or null for the rider's own gears. */
   target: (watts: number | null) => void;
-  /** 3, 2, 1 before a block ends, the change of block, and the end of the session. */
-  cue: (kind: "count" | "change" | "end") => void;
+  /** 3, 2, 1 before a block ends, the change of block, the end, and a cowbell near a hard block's end. */
+  cue: (kind: "count" | "change" | "end" | "cheer") => void;
   finished: () => void;
 };
 
@@ -102,13 +109,16 @@ export class RideEngine {
   private lastSecond = -1;
   private blockIndex = -1;
   private idleSince: number | null = null;
+  private readonly onTarget: OnTarget;
 
   constructor(
     private readonly timeline: SessionTimeline | null,
     private readonly course: Course,
     private readonly sensors: Sensors,
     private readonly events: EngineEvents,
-  ) {}
+  ) {
+    this.onTarget = new OnTarget(timeline);
+  }
 
   start(now: number): void {
     if (this.status !== "ready") return;
@@ -162,6 +172,7 @@ export class RideEngine {
       return;
     const current = blockAt(this.timeline, Math.floor(planSecond(this.clock, now)));
     if (!current) return;
+    this.onTarget.skip();
     this.clock = skipTo(this.clock, now, current.block.to);
     this.tick(now);
   }
@@ -187,6 +198,11 @@ export class RideEngine {
     this.events.cue("end");
     this.events.target(null);
     this.events.finished();
+  }
+
+  /** Whether the session was ridden as written (`OnTarget`); null when that cannot be said. */
+  allOnTarget(): boolean | null {
+    return this.onTarget.verdict(this.sensors.seen.power);
   }
 
   /** Where the rider is now, between ticks too: the scene asks every frame. */
@@ -245,6 +261,7 @@ export class RideEngine {
     this.trace.add(second, live.power);
     this.watchIdle(now, live);
     if (!this.timeline || !current || this.status !== "riding") return;
+    this.onTarget.second(current.index, current.block, live.power3s, this.intensity);
     if (current.index !== this.blockIndex) {
       const left = this.timeline.blocks[this.blockIndex];
       if (left) {
@@ -254,6 +271,8 @@ export class RideEngine {
       this.blockIndex = current.index;
       this.events.target(this.target());
     } else if (current.remaining <= 3) this.events.cue("count");
+    else if (isHard(current.block) && CHEER_AT.includes(current.remaining))
+      this.events.cue("cheer");
   }
 
   private watchIdle(now: number, live: SensorsNow): void {
