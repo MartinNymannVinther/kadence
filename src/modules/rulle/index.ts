@@ -103,6 +103,7 @@ export {
   type Visit,
   type VisitorKind,
 } from "./happenings";
+export { punctureOnLap, ridersOnLap, type Puncture, type Rider, type RiderKind } from "./traffic";
 export {
   HIMMELBJERGET_M,
   littleThings,

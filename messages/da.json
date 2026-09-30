@@ -2828,6 +2828,8 @@
       "car": "{count, plural, one {Døbt i sprinklervæske.} other {Døbt i sprinklervæske # gange.}}",
       "scooter": "{count, plural, one {En bølle på el-løbehjul drønede forbi i 50. Med hjelm, heldigvis.} other {# bøller på el-løbehjul drønede forbi i 50. Med hjelm, heldigvis.}}",
       "dog": "{count, plural, one {En hund løb med et stykke.} other {# hunde løb med et stykke.}}",
+      "puncture": "{count, plural, one {Du kørte forbi én, der skiftede slange. Godt, det ikke var dig.} other {Du kørte forbi # punkteringer. Godt, det ikke var dig.}}",
+      "waves": "{count, plural, one {En rytter hilste på vejen.} other {# ryttere hilste på vejen.}}",
       "cows": "{count, plural, one {# ko fulgte dig med øjnene.} other {# køer passeret.}}",
       "cafe": "{stops, plural, one {Et kaffestop} other {# kaffestop}} og {cups, plural, one {en kop} other {# kopper}}.",
       "stand": "{stops, plural, one {Et stop ved boden} other {# stop ved boden}} og {bottles, plural, one {en sodavand} other {# sodavand}}.",

@@ -5,12 +5,13 @@ import { Farmyard } from "./farmyard";
 import type { Ground } from "./ground";
 import { PauseScene, type Pause } from "./pause-scene";
 import type { RiderFigure } from "./rider";
+import { Traffic } from "./traffic";
 import { Visitors } from "./visitors";
 
 /**
  * The small things on the way (ADR 0034), gathered for the world: what
- * passes on the road, the herds and the flags, the chalk climb, and the
- * pauses spent at a café. Everything here is for the corner of the eye —
+ * passes on the road, the other riders on it (ADR 0035), the herds and
+ * the flags, the chalk climb, and the pauses spent at a café. Everything here is for the corner of the eye —
  * none of it touches the numbers or the bar — and what the rider met is
  * told to the page as it happens, for "today's little things".
  */
@@ -33,6 +34,7 @@ export class SmallThings {
     flatShading: true,
   });
   private readonly visitors: Visitors;
+  private readonly traffic: Traffic;
   private readonly farmyard: Farmyard;
   private readonly chalk: ChalkClimb | null;
   private readonly pauses: PauseScene;
@@ -54,6 +56,7 @@ export class SmallThings {
       sound: hooks.sound,
       spray: hooks.spray,
     });
+    this.traffic = new Traffic(course, ground, material, hooks.seen);
     this.farmyard = new Farmyard(course, ground, material, (count) => hooks.seen("cows", count));
     const chalk = chalkOf(course);
     this.chalk = chalk
@@ -79,7 +82,7 @@ export class SmallThings {
       options.room,
       side,
     );
-    this.group.add(this.visitors.group, this.farmyard.group, this.pauses.group);
+    this.group.add(this.visitors.group, this.traffic.group, this.farmyard.group, this.pauses.group);
     if (this.chalk) this.group.add(this.chalk.group);
   }
 
@@ -91,6 +94,7 @@ export class SmallThings {
     rider: RiderFigure,
   ) {
     this.visitors.frame(moment.distance, moment.speed, seconds, moment.pause !== null);
+    this.traffic.frame(moment.distance, moment.speed, seconds, moment.pause !== null);
     this.farmyard.frame(moment.distance, eye, seconds);
     this.chalk?.frame(moment.distance, seconds);
     return this.pauses.frame(moment.pause, moment.distance, seconds, rider);
@@ -98,6 +102,7 @@ export class SmallThings {
 
   dispose(): void {
     this.visitors.dispose();
+    this.traffic.dispose();
     this.farmyard.dispose();
     this.chalk?.dispose();
     this.pauses.dispose();

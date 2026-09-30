@@ -22,12 +22,24 @@ export const seenSchema = z.object({
   cows: z.number().int().min(0),
   // Counted from ADR 0035 on; a ride kept from before has none.
   finish: z.number().int().min(0).default(0),
+  puncture: z.number().int().min(0).default(0),
+  waves: z.number().int().min(0).default(0),
 });
 
 export type Seen = z.infer<typeof seenSchema>;
 
 export function nothingSeen(): Seen {
-  return { cargoOvertaken: 0, cargoOvertook: 0, car: 0, scooter: 0, dog: 0, cows: 0, finish: 0 };
+  return {
+    cargoOvertaken: 0,
+    cargoOvertook: 0,
+    car: 0,
+    scooter: 0,
+    dog: 0,
+    cows: 0,
+    finish: 0,
+    puncture: 0,
+    waves: 0,
+  };
 }
 
 /**
@@ -50,6 +62,8 @@ const SEEN_ORDER: (keyof Seen)[] = [
   "car",
   "scooter",
   "dog",
+  "puncture",
+  "waves",
   "cows",
 ];
 

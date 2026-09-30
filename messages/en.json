@@ -2828,6 +2828,8 @@
       "car": "{count, plural, one {Baptised in windscreen washer fluid.} other {Baptised in windscreen washer fluid # times.}}",
       "scooter": "{count, plural, one {A hooligan on an e-scooter shot past at 50. Wearing a helmet, at least.} other {# hooligans on e-scooters shot past at 50. Wearing helmets, at least.}}",
       "dog": "{count, plural, one {A dog ran along for a bit.} other {# dogs ran along for a bit.}}",
+      "puncture": "{count, plural, one {You rode past someone changing a tube. Glad it wasn't you.} other {You rode past # punctures. Glad it wasn't you.}}",
+      "waves": "{count, plural, one {One rider waved on the way.} other {# riders waved on the way.}}",
       "cows": "{count, plural, one {# cow watched you go by.} other {# cows passed.}}",
       "cafe": "{stops, plural, one {One coffee stop} other {# coffee stops}} and {cups, plural, one {one cup} other {# cups}}.",
       "stand": "{stops, plural, one {One stop at the farm stand} other {# stops at the farm stand}} and {bottles, plural, one {one soda} other {# sodas}}.",
