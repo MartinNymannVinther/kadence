@@ -148,6 +148,9 @@ codebase to:
   is fetched from a map service at ride time. The city routes are ridden
   on race day, laid out from the organiser's waypoints and the land
   (`raceDayOf`, pure), each city with its own face (`CITIES`, ADR 0036).
+  The land also carries the bridges and tunnels along the route
+  (`structuresOn`, pure): the road over its rivers, and under railways
+  and motorways with a train now and then over them (ADR 0037).
   No table of its own.
 - Deployment: Docker Compose run via Coolify on an EU VPS (Hetzner
   initially; the provider must stay replaceable). Nightly encrypted
@@ -279,7 +282,9 @@ codebase to:
   real land, a small map, and company on the road (ADR 0035); Future
   Racing in Copenhagen and the Worlds circuit in Montréal, through their
   cities on race day — the crowd, the marshals, the cobbles — each city
-  with its own face (ADR 0036).
+  with its own face (ADR 0036); the bridges and tunnels on the way, a
+  train now and then over the road, and race marshals on motorbikes
+  (ADR 0037).
 - Before 1.0: dogma seven — one real winter with one real team
   (docs/launch.md).
 - Later, each as its own decision: a rider on two teams (club and

@@ -75,11 +75,12 @@ so fitness, fatigue and form mean something for every rider.
 the rider opens today's session in Rulle, connects the trainer over
 Bluetooth, and pedals: a smart trainer holds each block's watts. The
 session is a bar the rider rides across, the numbers are sized to be
-read from the saddle, and a quiet low-poly landscape made from a real
-Danish road — Vejle, Munkebjerg and Kiddesvej, or a GPX of the rider's
-own — rolls past behind them. The ride lands on the session as an
-ordinary FIT file. No other riders, no races: an emergency that should
-feel good.
+read from the saddle, and a quiet low-poly landscape rolls past behind
+them: five real roads through their real land — Vejle's hills and the
+fjord to Munkebjerg, Himmelbjerget, the B&U DM lap, and Copenhagen and
+Montréal on race day — or a GPX of the rider's own. The ride lands on
+the session as an ordinary FIT file. Company on the road and a crowd on
+race day, but nobody to beat: an emergency that should feel good.
 
 **Guardrails and wellbeing.** The week against DCU's corridor, the
 longest ride for the class, the ramp, strength too close together, sleep,

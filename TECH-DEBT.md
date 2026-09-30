@@ -243,6 +243,13 @@ stills look right; whether a rider who knows Vejle recognises it, and
 whether a family's laptop keeps up with the woods at Munkebjerg and the
 shadows, is for a real ride to say.
 
+A bridge's height is a guess too (ADR 0037): the map says a bridge is
+there, not how high, and the course's smoothed heights do not dip where
+the real road dips under a railway. So by Vejle station the tracks rise
+over the road on piers and pass close to the buildings beside them. A
+rider who knows the station says whether it reads; the fix, if it does
+not, is a height per bridge by hand in the land file.
+
 ### Whether race day is too much
 
 The city routes (ADR 0036) are ridden on race day every time: a crowd of
