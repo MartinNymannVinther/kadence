@@ -211,6 +211,14 @@ the laptop a family actually has in front of the bike. The two metres
 the numbers are sized for are measured on paper; a rider on a real
 trainer says whether they read.
 
+### Whether the small things are too many, or too few
+
+The things that pass, the cowbell and the coffee stop (ADR 0034) have
+been seen in stills and in a simulated ride, not by a rider an hour into
+a winter session. About one every eight or nine minutes is a guess; so
+is a cowbell at the end of every hard block. A real winter says whether
+they cheer or wear, and whether anyone wants a switch.
+
 ### A team's own routes
 
 Every rider rides the route from Vejle or a GPX of their own on the

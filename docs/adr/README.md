@@ -53,3 +53,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0031](0031-sessions-onto-a-garmin-by-cable.md)  | Sessions onto a Garmin by cable: the day first, a serial per version, into Garmin/NewFiles | → 0018                   |
 | [0032](0032-a-way-back-in.md)                    | A way back in: a one-time link a coach makes, for a member who forgot the password         | → 0010, 0019             |
 | [0033](0033-rulle-the-session-on-the-trainer.md) | Rulle: today's session on the trainer, in the browser                                      | → 0016, 0018, 0019, 0022 |
+| [0034](0034-rulle-small-things-on-the-way.md)    | Rulle's small things: once in a while, at the edge of the picture, never on the numbers    | → 0013, 0033             |

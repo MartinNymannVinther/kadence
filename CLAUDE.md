@@ -266,7 +266,9 @@ codebase to:
   the docs.
 - Rulle (done): the session on the trainer indoors (ADR 0033) — Web
   Bluetooth and ERG, the interval bar read at two metres, a Danish route
-  from GPX, the landscape, the ride saved as FIT onto its session.
+  from GPX, the landscape, the ride saved as FIT onto its session; the
+  small things on the way, the coffee stop and today's little things
+  (ADR 0034).
 - Before 1.0: dogma seven — one real winter with one real team
   (docs/launch.md).
 - Later, each as its own decision: a rider on two teams (club and
