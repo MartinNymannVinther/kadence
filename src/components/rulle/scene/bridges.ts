@@ -3,15 +3,19 @@ import type { Course, Stretch, Structures } from "@/modules/rulle";
 import { ROAD_HALF, type Ground } from "./ground";
 import { PALETTE as P } from "./palette";
 import { roadPoint, roadYaw } from "./road-point";
+import { overpassShapes } from "./overpasses";
 import { box, merged } from "./shapes";
+import { underpassShapes } from "./underpasses";
 import { drawnHeight } from "./terrain";
 
 /**
  * The bridges on the way (ADR 0037), as the landscape draws them: under a
  * bridge the road is on, pairs of piers down to the land or the water
  * below, a crossbeam on each, and at each end the abutment where the
- * bridge meets the land. The deck itself, its edges and its parapets are
- * the road's own (`road.ts`). One mesh for all of it.
+ * bridge meets the land — the deck itself, its edges and its parapets are
+ * the road's own (`road.ts`); what passes over the road (`overpasses.ts`);
+ * and the railings where the road crosses a tunnel (`underpasses.ts`).
+ * One mesh for all of it.
  */
 
 /** How deep the deck is below the road's surface (`road.ts`), and how far apart its piers stand. */
@@ -30,8 +34,13 @@ export class Bridges {
 
   constructor(course: Course, ground: Ground, found: Structures) {
     const parts = found.decks.flatMap((deck) => supports(course, ground, deck));
-    if (parts.length > 0) {
-      const shape = merged(parts);
+    const shapes = [
+      parts.length > 0 ? merged(parts) : null,
+      overpassShapes(course, ground, found.overpasses),
+      underpassShapes(course, found.underpasses),
+    ];
+    for (const shape of shapes) {
+      if (!shape) continue;
       this.shapes.push(shape);
       const mesh = new THREE.Mesh(shape, this.material);
       mesh.matrixAutoUpdate = false;

@@ -119,6 +119,7 @@ export const PALETTE = {
   // Bridges (ADR 0037): their concrete, lit and in shade.
   bridge: "#c9c5bb",
   bridgeShade: "#a7a399",
+  ballast: "#7f7a72",
   // A city's own face (ADR 0036): Montréal's plexes, their stairs and its churches' tin;
   // the street lights; Mont-Royal's cross.
   plexWalls: ["#9b4a36", "#7e4a37", "#c8a27a", "#b5afa3"],
