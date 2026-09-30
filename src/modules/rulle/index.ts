@@ -124,6 +124,7 @@ export {
   type VisitorKind,
 } from "./happenings";
 export { punctureOnLap, ridersOnLap, type Puncture, type Rider, type RiderKind } from "./traffic";
+export { gradeHere, POSTURE, postureAt, type Posture } from "./posture";
 export {
   HIMMELBJERGET_M,
   littleThings,

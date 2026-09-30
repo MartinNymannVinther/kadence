@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Gauge,
   Map as MapIcon,
   Maximize,
   Minimize,
@@ -22,7 +23,8 @@ import type { LinkState } from "./bluetooth/reconnect";
  * The strip across the top of the ride: what is being ridden and where in
  * it, whether the trainer is still there, and the few things a rider
  * reaches for mid-ride — pause, the next block, the watts a little lower
- * or higher, ERG on or off, the sound, the little map, full screen, and the end. Every
+ * or higher, ERG on or off, the sound, the little map, the speed, full
+ * screen, and the end. Every
  * control has a key as well (listed in `ride.keys`), so a rider can reach
  * a keyboard on the handlebars rather than the screen.
  */
@@ -34,6 +36,7 @@ export function RideControls({
   connection,
   muted,
   mapShown,
+  speedShown,
   fullscreen,
   onReconnect,
   onPause,
@@ -43,6 +46,7 @@ export function RideControls({
   onErg,
   onMute,
   onMap,
+  onSpeed,
   onFullscreen,
   onEnd,
 }: {
@@ -53,6 +57,7 @@ export function RideControls({
   connection: LinkState | null;
   muted: boolean;
   mapShown: boolean;
+  speedShown: boolean;
   fullscreen: { on: boolean; available: boolean };
   onReconnect: () => void;
   onPause: () => void;
@@ -62,6 +67,7 @@ export function RideControls({
   onErg: (on: boolean) => void;
   onMute: () => void;
   onMap: () => void;
+  onSpeed: () => void;
   onFullscreen: () => void;
   onEnd: () => void;
 }) {
@@ -161,6 +167,15 @@ export function RideControls({
           onClick={onMap}
         >
           <MapIcon />
+        </Button>
+        <Button
+          size="icon-lg"
+          variant="outline"
+          aria-label={speedShown ? t("speedHide") : t("speedShow")}
+          aria-pressed={speedShown}
+          onClick={onSpeed}
+        >
+          <Gauge />
         </Button>
         {fullscreen.available && (
           <Button

@@ -70,7 +70,7 @@ export function cargoBike(material: THREE.Material): Figure {
       const angle = crank + i * Math.PI;
       const side = i === 0 ? -1 : 1;
       const hip = v(side * 0.1, 1.0, 0.1);
-      const foot = v(side * 0.12, 0.42 + 0.16 * Math.sin(angle), -0.02 - 0.16 * Math.cos(angle));
+      const foot = v(side * 0.12, 0.42 - 0.16 * Math.sin(angle), -0.02 - 0.16 * Math.cos(angle));
       const k = knee(hip, foot, 0.46, 0.46);
       leg.thigh.between(hip, k);
       leg.shin.between(k, foot);

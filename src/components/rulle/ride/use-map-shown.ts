@@ -3,12 +3,16 @@
 import { useCallback, useSyncExternalStore } from "react";
 
 /**
- * Whether the little map is shown on the ride screen (ADR 0035): shown
- * until a rider hides it, and remembered on this device either way.
+ * What a rider chooses to have on the ride screen, remembered on this
+ * device either way: the little map (ADR 0035), shown until it is hidden,
+ * and the speed, hidden until it is asked for.
  */
 
-const KEY = "kadence.rulle.map";
-const CHANGED = "kadence:rulle-map";
+type Choice = { key: string; byDefault: boolean };
+
+const MAP: Choice = { key: "kadence.rulle.map", byDefault: true };
+const SPEED: Choice = { key: "kadence.rulle.speed", byDefault: false };
+const CHANGED = "kadence:rulle-shown";
 
 function subscribe(listener: () => void): () => void {
   window.addEventListener(CHANGED, listener);
@@ -19,23 +23,31 @@ function subscribe(listener: () => void): () => void {
   };
 }
 
-function shown(): boolean {
+function shown({ key, byDefault }: Choice): boolean {
   try {
-    return window.localStorage.getItem(KEY) !== "off";
+    const kept = window.localStorage.getItem(key);
+    return kept === null ? byDefault : kept === "on";
   } catch {
-    return true;
+    return byDefault;
   }
 }
 
-export function useMapShown(): [boolean, () => void] {
-  const on = useSyncExternalStore(subscribe, shown, () => true);
+function useShown(choice: Choice): [boolean, () => void] {
+  const on = useSyncExternalStore(
+    subscribe,
+    () => shown(choice),
+    () => choice.byDefault,
+  );
   const toggle = useCallback(() => {
     try {
-      window.localStorage.setItem(KEY, shown() ? "off" : "on");
+      window.localStorage.setItem(choice.key, shown(choice) ? "off" : "on");
     } catch {
-      // Not remembered: the map stays as it is.
+      // Not remembered: it stays as it is.
     }
     window.dispatchEvent(new Event(CHANGED));
-  }, []);
+  }, [choice]);
   return [on, toggle];
 }
+
+export const useMapShown = () => useShown(MAP);
+export const useSpeedShown = () => useShown(SPEED);

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { courseAt, swayAt, type Course, type Land } from "@/modules/rulle";
+import { courseAt, postureAt, swayAt, type Course, type Land, type Posture } from "@/modules/rulle";
 import { Atmosphere } from "./atmosphere";
 import { CameraRig } from "./camera-rig";
 import { inPaddocks } from "./farmyard";
@@ -76,6 +76,7 @@ export class World {
   private readonly pace: Pace;
   private crank = 0;
   private frames = 0;
+  private posture: Posture = "seated";
   private readonly shaded: boolean;
   private laid = { width: 0, height: 0, top: 0, bottom: 0 };
 
@@ -198,7 +199,11 @@ export class World {
       );
     }
     this.crank += (cadence / 60) * 2 * Math.PI * seconds;
-    this.rider.animate(seconds, cadence, speed);
+    // In the saddle, out of it on a steep climb, tucked on a fast descent.
+    this.posture = postureAt(this.course, distance, speed, cadence, this.posture);
+    this.rider.animate(seconds, cadence, speed, this.posture);
+    // Out of the saddle the bike rocks under the rider.
+    if (!pausing.parked) bike.rotation.z = this.rider.roll;
 
     if (pausing.jump) this.rig.jump();
     if (pausing.view) this.rig.view(pausing.view.eye, pausing.view.look, seconds);

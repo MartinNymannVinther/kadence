@@ -22,7 +22,8 @@ import { BlockTile, BodyTile, WattTile } from "./ride-tiles";
 import { RouteProfile } from "./route-profile";
 import type { Beeps } from "./ride/beeps";
 import { INTENSITY } from "./ride/engine";
-import { useMapShown } from "./ride/use-map-shown";
+import { useMapShown, useSpeedShown } from "./ride/use-map-shown";
+import { RoadCard } from "./road-card";
 import type { Ride } from "./ride/use-ride";
 import { useFullscreen, useWakeLock } from "./ride/use-screen";
 import { Sky } from "./scene/sky";
@@ -100,6 +101,7 @@ export function RideScreen({
   const [count, setCount] = useState(counting ? COUNTDOWN : 0);
   const fullscreen = useFullscreen();
   const [mapShown, toggleMap] = useMapShown();
+  const [speedShown, toggleSpeed] = useSpeedShown();
   const live = ride.live;
   const go = useRef(onGo);
   const topRef = useRef<HTMLDivElement>(null);
@@ -159,6 +161,7 @@ export function RideScreen({
       else if (key === "f") fullscreen.toggle();
       else if (key === "m") toggleSound();
       else if (key === "k") toggleMap();
+      else if (key === "h") toggleSpeed();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -198,6 +201,7 @@ export function RideScreen({
               connection={connection === "connected" ? null : connection}
               muted={muted}
               mapShown={mapShown}
+              speedShown={speedShown}
               fullscreen={fullscreen}
               onReconnect={() => void devices.connectTrainer()}
               onPause={ride.pause}
@@ -207,6 +211,7 @@ export function RideScreen({
               onErg={ride.setErg}
               onMute={toggleSound}
               onMap={toggleMap}
+              onSpeed={toggleSpeed}
               onFullscreen={fullscreen.toggle}
               onEnd={() => setEnding(true)}
             />
@@ -219,8 +224,16 @@ export function RideScreen({
             </div>
           </div>
         )}
-        {/* The road, between the numbers above and the bar below; the little map in its corner. */}
+        {/* The road, between the numbers above and the bar below: its percent and speed in one corner, the little map in the other. */}
         <div className="relative flex-1">
+          {live && (
+            <RoadCard
+              course={course}
+              distance={live.distance}
+              speed={live.speed}
+              speedShown={speedShown}
+            />
+          )}
           {live && mapShown && (
             <div className="bg-card/85 border-border pointer-events-none absolute right-3 bottom-3 w-[min(30vmin,15rem)] rounded-xl border p-1.5 shadow-[var(--surface-shadow)] sm:right-4 lg:right-6">
               <RouteMap course={course} distance={live.distance} finish={finish} />

@@ -1,16 +1,20 @@
 import * as THREE from "three";
+import type { Posture } from "@/modules/rulle";
 import { PALETTE } from "./palette";
+import { poseOf, twoBones, type Blend } from "./rider-pose";
 
 /**
  * The rider on the screen: a low-poly cyclist in Kadence's moss green,
  * pedalling at the cadence the trainer measures and rolling at the speed
- * the physics gives. The legs follow the pedals by two-bone inverse
- * kinematics, so they bend as legs do rather than swinging stiffly. Local
- * coordinates face -z, like a camera; y is up.
+ * the physics gives. The legs follow the pedals, and the arms the bar, by
+ * two-bone inverse kinematics, so they bend as limbs do rather than
+ * swinging stiffly. Local coordinates face -z, like a camera; y is up.
  *
- * In a pause (ADR 0034) the figure stops with a foot down and drinks from
- * the bottle now and then; at a café only the bike is left, parked, while
- * the rider sits at the table (`Sitter`).
+ * The rider sits, stands on a steep climb with the bike rocking under
+ * them, or tucks on a fast descent (`postureAt`), easing from one to the
+ * next. In a pause (ADR 0034) the figure stops with a foot down and drinks
+ * from the bottle now and then; at a café only the bike is left, parked,
+ * while the rider sits at the table (`Sitter`).
  */
 
 /** Riding; stopped with a foot down and the bottle; or gone to the table, the bike parked. */
@@ -20,8 +24,15 @@ const WHEEL = 0.34;
 const CRANK = 0.17;
 const THIGH = 0.47;
 const SHIN = 0.46;
+const UPPER_ARM = 0.27;
+const FOREARM = 0.22;
 const BB = new THREE.Vector3(0, 0.3, 0.05);
 const UP = new THREE.Vector3(0, 1, 0);
+/** Knees bend forward; elbows out, down and back. */
+const KNEE_POLE = new THREE.Vector3(0, 0.3, -1);
+const ELBOW_POLE = (side: number) => new THREE.Vector3(side * 0.7, -0.4, 0.6);
+/** How quickly the rider eases from one posture to the next, per second. */
+const EASE = 3;
 
 const lambert = (color: string) => new THREE.MeshLambertMaterial({ color, flatShading: true });
 
@@ -31,9 +42,17 @@ export class RiderFigure {
   private readonly legs: { thigh: THREE.Mesh; shin: THREE.Mesh; side: number }[] = [];
   private readonly arms: { upper: THREE.Mesh; lower: THREE.Mesh; side: number }[] = [];
   private readonly body = new THREE.Group();
+  private readonly torso: THREE.Mesh;
+  private readonly shorts: THREE.Mesh;
+  private readonly head: THREE.Mesh;
+  private readonly helmet: THREE.Mesh;
   private readonly bottle: THREE.Mesh;
   private readonly shadow: THREE.Mesh;
   private crank = 0;
+  private cadence = 0;
+  private blend: Blend = { seated: 1, standing: 0, tuck: 0 };
+  /** The bike's lean from side to side out of the saddle, radians, to the left positive. */
+  roll = 0;
   private stop: Stop = "riding";
   private stopped = 0;
   /** How far the right hand is on its way from the bar to the mouth, 0 to 1. */
@@ -87,23 +106,15 @@ export class RiderFigure {
     ];
     for (const [a, b] of frame) this.group.add(this.tube(a, b, 0.022, m.frame));
 
-    // The body leans over the bars and rocks a little with the pedal stroke.
-    const hips = new THREE.Vector3(0, 0.98, 0.19);
-    const shoulders = new THREE.Vector3(0, 1.36, -0.27);
-    this.body.add(this.tube(hips, shoulders, 0.17, m.jersey));
-    this.body.add(
-      this.tube(new THREE.Vector3(0, 0.99, 0.2), new THREE.Vector3(0, 1.05, 0.12), 0.18, m.shorts),
-    );
-    const head = new THREE.Mesh(new THREE.IcosahedronGeometry(0.12, 0), m.skin);
-    head.position.set(0, 1.49, -0.38);
-    this.body.add(head);
-    const helmet = new THREE.Mesh(
+    // The body, placed for its posture every frame (`pose`).
+    this.torso = new THREE.Mesh(this.unit, m.jersey);
+    this.shorts = new THREE.Mesh(this.unit, m.shorts);
+    this.head = new THREE.Mesh(new THREE.IcosahedronGeometry(0.12, 0), m.skin);
+    this.helmet = new THREE.Mesh(
       new THREE.SphereGeometry(0.135, 7, 4, 0, Math.PI * 2, 0, Math.PI / 2),
       m.helmet,
     );
-    helmet.position.set(0, 1.51, -0.37);
-    helmet.rotation.x = -0.35;
-    this.body.add(helmet);
+    this.body.add(this.torso, this.shorts, this.head, this.helmet);
     for (const side of [-1, 1]) {
       const upper = new THREE.Mesh(this.unit, m.light);
       const lower = new THREE.Mesh(this.unit, m.skin);
@@ -133,11 +144,18 @@ export class RiderFigure {
     this.pose();
   }
 
-  /** Moves the legs and wheels on by `seconds` at this cadence and speed. */
-  animate(seconds: number, cadence: number, speed: number): void {
+  /**
+   * Moves the legs and wheels on by `seconds` at this cadence and speed,
+   * easing toward `posture`; stopped, the rider sits.
+   */
+  animate(seconds: number, cadence: number, speed: number, posture: Posture = "seated"): void {
     this.crank = (this.crank + (cadence / 60) * 2 * Math.PI * seconds) % (2 * Math.PI);
+    this.cadence = cadence;
     for (const wheel of this.wheels) wheel.rotation.x -= (speed / WHEEL) * seconds;
-    this.body.rotation.z = Math.sin(this.crank) * 0.012 * Math.min(1, cadence / 60);
+    const aim = this.stop === "riding" ? posture : "seated";
+    const k = Math.min(1, seconds * EASE);
+    for (const p of ["seated", "standing", "tuck"] as const)
+      this.blend[p] += ((p === aim ? 1 : 0) - this.blend[p]) * k;
     this.stopped += seconds;
     // Stopped: a drink every five seconds or so, the bottle at the mouth for a moment.
     const drinking = this.stop === "bottle" && this.stopped % 5 > 1.2 && this.stopped % 5 < 3.4;
@@ -154,33 +172,43 @@ export class RiderFigure {
   }
 
   private pose(): void {
+    const pose = poseOf(this.blend, this.crank, this.cadence);
+    this.roll = this.stop === "riding" ? pose.roll : 0;
     for (const leg of this.legs) {
+      // Right pedal at the front at crank 0, going down: pedalling forward.
       const angle = this.crank + (leg.side > 0 ? 0 : Math.PI);
-      const hip = new THREE.Vector3(leg.side * 0.1, 0.98, 0.17);
+      const hip = pose.hips.clone().add(new THREE.Vector3(leg.side * pose.hipWidth, 0, -0.02));
       // Stopped, the left foot is down on the road beside the bike.
       const down = this.stop === "bottle" && leg.side < 0;
       const foot = down
         ? new THREE.Vector3(-0.34, 0.03, 0.12)
         : new THREE.Vector3(
             leg.side * 0.11,
-            BB.y + CRANK * Math.sin(angle),
+            BB.y - CRANK * Math.sin(angle),
             BB.z - CRANK * Math.cos(angle),
           );
-      const knee = kneeOf(hip, foot);
+      const knee = twoBones(hip, foot, THIGH, SHIN, KNEE_POLE);
       this.place(leg.thigh, hip, knee, 0.07);
       this.place(leg.shin, knee, foot, 0.05);
     }
+    const along = new THREE.Vector3().subVectors(pose.shoulders, pose.hips).normalize();
+    this.place(this.torso, pose.hips, pose.shoulders, 0.17);
+    this.place(
+      this.shorts,
+      pose.hips.clone().add(new THREE.Vector3(0, 0.01, 0.01)),
+      pose.hips.clone().addScaledVector(along, 0.1),
+      0.18,
+    );
+    this.head.position.copy(pose.head);
+    this.helmet.position.copy(pose.head).add(new THREE.Vector3(0, 0.02, 0.01));
+    this.helmet.rotation.x = pose.helmet;
     for (const arm of this.arms) {
       const lift = arm.side > 0 ? this.lift : 0;
-      const shoulder = new THREE.Vector3(arm.side * 0.16, 1.34, -0.25);
-      const elbow = new THREE.Vector3(arm.side * 0.19, 1.14, -0.4).lerp(
-        new THREE.Vector3(0.25, 1.17, -0.3),
-        lift,
-      );
-      const hand = new THREE.Vector3(arm.side * 0.2, 0.97, -0.47).lerp(
-        new THREE.Vector3(0.07, 1.43, -0.42),
-        lift,
-      );
+      const shoulder = pose.shoulders.clone().add(new THREE.Vector3(arm.side * 0.16, -0.02, 0.02));
+      // The right hand to the mouth with the bottle, when stopped.
+      const mouth = pose.head.clone().add(new THREE.Vector3(0.07, -0.06, -0.04));
+      const hand = pose.hands[arm.side > 0 ? 1 : 0]!.clone().lerp(mouth, lift);
+      const elbow = twoBones(shoulder, hand, UPPER_ARM, FOREARM, ELBOW_POLE(arm.side));
       this.place(arm.upper, shoulder, elbow, 0.045);
       this.place(arm.lower, elbow, hand, 0.04);
       if (arm.side > 0) {
@@ -204,26 +232,4 @@ export class RiderFigure {
     mesh.quaternion.setFromUnitVectors(UP, along.divideScalar(length));
     mesh.scale.set(radius, length, radius);
   }
-}
-
-/** Where the knee is, for a hip and a foot: the triangle of thigh and shin, bent forward. */
-function kneeOf(hip: THREE.Vector3, foot: THREE.Vector3): THREE.Vector3 {
-  const dy = foot.y - hip.y;
-  const dz = foot.z - hip.z;
-  const d = Math.min(THIGH + SHIN - 1e-3, Math.max(1e-3, Math.hypot(dy, dz)));
-  const uy = dy / d;
-  const uz = dz / d;
-  const cos = (THIGH * THIGH + d * d - SHIN * SHIN) / (2 * THIGH * d);
-  const alpha = Math.acos(Math.min(1, Math.max(-1, cos)));
-  // Perpendicular to hip-to-foot, on the forward (-z) side.
-  const py = -uz;
-  const pz = uy;
-  const along = THIGH * Math.cos(alpha);
-  const across = THIGH * Math.sin(alpha);
-  const sign = pz < 0 ? 1 : -1;
-  return new THREE.Vector3(
-    (hip.x + foot.x) / 2,
-    hip.y + uy * along + py * across * sign,
-    hip.z + uz * along + pz * across * sign,
-  );
 }

@@ -97,7 +97,7 @@ export class NpcRider {
     for (const leg of this.legs) {
       const angle = this.crank + (leg.side > 0 ? 0 : Math.PI);
       const hip = v(leg.side * 0.1, 0.98, 0.17);
-      const foot = v(leg.side * 0.11, BB.y + 0.17 * Math.sin(angle), BB.z - 0.17 * Math.cos(angle));
+      const foot = v(leg.side * 0.11, BB.y - 0.17 * Math.sin(angle), BB.z - 0.17 * Math.cos(angle));
       const k = knee(hip, foot, 0.47, 0.46);
       leg.thigh.between(hip, k);
       leg.shin.between(k, foot);
