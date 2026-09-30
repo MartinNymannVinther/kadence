@@ -32,8 +32,12 @@ export default function RideScene({
 
   useEffect(() => {
     latest.current = { moment, top, bottom };
-    resize.current();
   });
+
+  // Only when the strip or the panel over the picture changes: the page
+  // draws its numbers four times a second, and the picture is not redone
+  // for that.
+  useEffect(() => resize.current(), [top, bottom]);
 
   useEffect(() => {
     const canvas = canvasRef.current;

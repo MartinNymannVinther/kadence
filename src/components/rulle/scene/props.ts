@@ -22,6 +22,19 @@ export function painted(geometry: THREE.BufferGeometry, color: string): THREE.Bu
   return flat;
 }
 
+/**
+ * Marks what never moves as such: its place is worked out once, not in
+ * every frame. With hundreds of trees, posts and farms around the rider,
+ * that is most of what a frame would otherwise spend before it draws.
+ */
+export function freeze<T extends THREE.Object3D>(object: T): T {
+  object.traverse((child) => {
+    child.matrixAutoUpdate = false;
+    child.updateMatrix();
+  });
+  return object;
+}
+
 export function merged(parts: THREE.BufferGeometry[]): THREE.BufferGeometry {
   const geometry = mergeGeometries(parts, false);
   if (!geometry) throw new Error("Shapes that do not merge.");

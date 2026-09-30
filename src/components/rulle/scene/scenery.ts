@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { CHUNK, type ChunkKey } from "./terrain";
 import type { Ground } from "./ground";
 import { hash } from "./noise";
-import { Batches, church, farm, treeShapes, turbineBlades, turbineTower } from "./props";
+import { Batches, church, farm, freeze, treeShapes, turbineBlades, turbineTower } from "./props";
 
 /**
  * The things on the land, chunk by chunk with the terrain under them:
@@ -89,6 +89,9 @@ export class Scenery {
         object.add(tower);
       }
     }
+    freeze(object);
+    // The rotors are all that moves here.
+    for (const rotor of blades) rotor.matrixAutoUpdate = true;
     this.group.add(object);
     this.chunks.set(key, { object, blades });
   }

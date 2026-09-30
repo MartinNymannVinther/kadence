@@ -3,6 +3,8 @@ import { courseAt, swayAt, type Course } from "@/modules/rulle";
 import { Atmosphere } from "./atmosphere";
 import { CameraRig } from "./camera-rig";
 import { Ground } from "./ground";
+import { Pace } from "./pace";
+import { freeze } from "./props";
 import { RiderFigure } from "./rider";
 import { buildRoad } from "./road";
 import { Roadside } from "./roadside";
@@ -45,8 +47,10 @@ export class World {
   private readonly road: THREE.Group;
   private readonly rider = new RiderFigure();
   private readonly atmosphere: Atmosphere;
+  private readonly pace: Pace;
   private crank = 0;
   private frames = 0;
+  private laid = { width: 0, height: 0, top: 0, bottom: 0 };
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -58,7 +62,9 @@ export class World {
       antialias: !options.light,
       powerPreference: "high-performance",
     });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, options.light ? 1 : 1.5));
+    const ratio = Math.min(window.devicePixelRatio || 1, options.light ? 1 : 1.5);
+    this.renderer.setPixelRatio(ratio);
+    this.pace = new Pace(ratio, Math.min(ratio, 0.75));
     this.rig = new CameraRig(options.calm);
     this.atmosphere = new Atmosphere(this.scene);
     this.ground = new Ground(course);
@@ -77,16 +83,31 @@ export class World {
       this.roadside.group,
       this.rider.group,
     );
+    // Only the rider, the rotors, the sky and the camera move; the rest is placed once.
+    this.scene.matrixAutoUpdate = false;
+    this.terrain.group.matrixAutoUpdate = false;
+    this.scenery.group.matrixAutoUpdate = false;
+    freeze(this.road);
+    freeze(this.roadside.group);
     const start = courseAt(course, 0);
     this.terrain.fill(start.x, -start.y);
   }
 
   resize(width: number, height: number, top: number, bottom: number): void {
-    this.renderer.setSize(width, height, false);
+    const was = this.laid;
+    if (width === was.width && height === was.height && top === was.top && bottom === was.bottom)
+      return;
+    // Setting a canvas's size, even to the size it already has, throws its
+    // drawing buffer away and has the GPU make a new one: frames lost each
+    // time. Only a size that changed is set.
+    if (width !== was.width || height !== was.height) this.renderer.setSize(width, height, false);
     this.rig.layout(width, height, top, bottom);
+    this.laid = { width, height, top, bottom };
   }
 
   frame(moment: Moment, seconds: number): void {
+    const ratio = this.pace.frame(seconds);
+    if (ratio !== null) this.renderer.setPixelRatio(ratio);
     const { distance, speed, cadence } = moment;
     const here = this.pointAt(distance, swayAt(distance));
     const back = this.pointAt(distance - 2, swayAt(distance - 2));
