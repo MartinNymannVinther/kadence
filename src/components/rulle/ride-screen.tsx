@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { clockText } from "@/components/training/duration";
 import type { Thresholds } from "@/modules/load";
-import type { Course, SessionTimeline } from "@/modules/rulle";
+import type { Course, Land, SessionTimeline } from "@/modules/rulle";
 import { IntervalBar } from "./interval-bar";
 import { RideControls } from "./ride-controls";
 import { RouteMap } from "./route-map";
@@ -58,6 +58,7 @@ export function RideScreen({
   moment,
   name,
   finish,
+  land,
 }: {
   title: string;
   trial: boolean;
@@ -76,6 +77,8 @@ export function RideScreen({
   name: string | null;
   /** A race's course: its finish, with the arch, where the lap ends. */
   finish: boolean;
+  /** The real land round a route that comes with Kadence (ADR 0035). */
+  land: Land | null;
 }) {
   const t = useTranslations("rulle.ride");
   const endWords = useTranslations("rulle.end");
@@ -179,6 +182,7 @@ export function RideScreen({
           bottom={cover.bottom}
           words={words}
           finish={finish}
+          land={land}
           onSeen={ride.note}
           onSound={(kind) => beeps.play(kind)}
         />

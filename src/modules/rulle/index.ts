@@ -22,7 +22,26 @@ export {
   type RouteFile,
   type RoutePoint,
 } from "./route/gpx-route";
-export { buildCourse, COURSE, courseAt, type Course, type CoursePoint } from "./route/course";
+export {
+  buildCourse,
+  COURSE,
+  courseAt,
+  toPlane,
+  type Course,
+  type CoursePoint,
+} from "./route/course";
+export {
+  BANK,
+  COVER_CELL,
+  LAND_KINDS,
+  landFileSchema,
+  readLand,
+  type AreaKind,
+  type BuildingKind,
+  type Land,
+  type LandFile,
+  type LineKind,
+} from "./route/land";
 export {
   bundledRoute,
   DEFAULT_ROUTE,
@@ -87,6 +106,7 @@ export {
   drinksIn,
   flagsOf,
   herdsOf,
+  herdsOn,
   PAUSE_AT,
   pauseStage,
   riseOver,

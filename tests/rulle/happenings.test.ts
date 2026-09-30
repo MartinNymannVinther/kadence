@@ -6,6 +6,7 @@ import {
   drinksIn,
   flagsOf,
   herdsOf,
+  herdsOn,
   pauseStage,
   readRouteGpx,
   riseOver,
@@ -120,6 +121,37 @@ describe("by the road", () => {
       for (const flag of flags)
         expect(flag.at < herd.at - 150 || flag.at > herd.at + herd.length + 150).toBe(true);
     }
+  });
+});
+
+describe("herds on the real land", () => {
+  it("stay where they are where the land has a field for them", () => {
+    expect(herdsOn(vejle, () => true)).toEqual(herdsOf(vejle));
+  });
+
+  it("move across the road or along it to the nearest field, clear of the rest", () => {
+    const original = herdsOf(vejle);
+    // No field where any herd would be, nor across from it.
+    const taken = (at: number) => original.some((h) => Math.abs(h.at - at) < 1);
+    const moved = herdsOn(vejle, (h) => !taken(h.at));
+    expect(moved.length).toBe(original.length);
+    const chalk = chalkOf(vejle)!;
+    const flags = flagsOf(vejle);
+    moved.forEach((herd, k) => {
+      expect(Math.abs(herd.at - original[k]!.at)).toBeGreaterThanOrEqual(100);
+      expect(Math.abs(herd.at - original[k]!.at)).toBeLessThanOrEqual(1200);
+      expect(herd.at + herd.length < chalk.from - 200 || herd.at > chalk.to + 200).toBe(true);
+      for (const flag of flags.filter((f) => f.side === herd.side))
+        expect(flag.at < herd.at - 60 || flag.at > herd.at + herd.length + 60).toBe(true);
+      for (const other of moved.slice(0, k))
+        expect(
+          herd.at > other.at + other.length + 200 || herd.at + herd.length < other.at - 200,
+        ).toBe(true);
+    });
+  });
+
+  it("are not there where the land has no field anywhere near", () => {
+    expect(herdsOn(vejle, () => false)).toEqual([]);
   });
 });
 

@@ -54,6 +54,8 @@ export type Course = {
   maxEle: number;
   /** The file ended away from its start, and the course rides back the way it came. */
   outAndBack: boolean;
+  /** The plane's middle, where x and y are 0: what lays the land around the route on it (ADR 0035). */
+  origin: { lat: number; lon: number };
 };
 
 export type CoursePoint = {
@@ -74,8 +76,20 @@ const RAD = Math.PI / 180;
 
 type Flat = { x: number; y: number; ele: number };
 
+/** A place on the plane of a course whose middle is `origin`: metres east (x) and north (y). */
+export function toPlane(origin: { lat: number; lon: number }, lat: number, lon: number) {
+  const kx = EARTH_M * Math.cos(origin.lat * RAD) * RAD;
+  return { x: (lon - origin.lon) * kx, y: (lat - origin.lat) * EARTH_M * RAD };
+}
+
 export function buildCourse(file: RouteFile): Course {
-  const flat = dropRepeats(project(file.points));
+  const origin = {
+    lat: file.points.reduce((s, p) => s + p.lat, 0) / file.points.length,
+    lon: file.points.reduce((s, p) => s + p.lon, 0) / file.points.length,
+  };
+  const flat = dropRepeats(
+    file.points.map((p) => ({ ...toPlane(origin, p.lat, p.lon), ele: p.ele })),
+  );
   if (flat.length < 2) throw new RouteError("too_short", "The route has no length.");
   const first = flat[0]!;
   const last = flat.at(-1)!;
@@ -119,7 +133,20 @@ export function buildCourse(file: RouteFile): Course {
     minEle = Math.min(minEle, ele[i]!);
     maxEle = Math.max(maxEle, ele[i]!);
   }
-  return { name: file.name, length, step, x, y, ele, grade, ascent, minEle, maxEle, outAndBack };
+  return {
+    name: file.name,
+    length,
+    step,
+    x,
+    y,
+    ele,
+    grade,
+    ascent,
+    minEle,
+    maxEle,
+    outAndBack,
+    origin,
+  };
 }
 
 /** Where the rider is after `metres`, going round as many laps as it takes. */
@@ -141,14 +168,6 @@ export function courseAt(course: Course, metres: number): CoursePoint {
     lap,
     along,
   };
-}
-
-function project(points: RouteFile["points"]): Flat[] {
-  const lat0 = points.reduce((s, p) => s + p.lat, 0) / points.length;
-  const lon0 = points.reduce((s, p) => s + p.lon, 0) / points.length;
-  const kx = EARTH_M * Math.cos(lat0 * RAD) * RAD;
-  const ky = EARTH_M * RAD;
-  return points.map((p) => ({ x: (p.lon - lon0) * kx, y: (p.lat - lat0) * ky, ele: p.ele }));
 }
 
 /** Points closer than half a metre to the one before say nothing new. */

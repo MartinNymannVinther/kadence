@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { courseAt, swayAt, type Course } from "@/modules/rulle";
+import { courseAt, swayAt, type Course, type Land } from "@/modules/rulle";
 import { Atmosphere } from "./atmosphere";
 import { CameraRig } from "./camera-rig";
 import { inPaddocks } from "./farmyard";
@@ -17,8 +17,9 @@ import { SmallThings, type SceneWords, type SmallThingsHooks } from "./small-thi
 import { Terrain } from "./terrain";
 
 /**
- * The landscape of a ride (ADR 0033), put together: the ground made from
- * the route, the road, what stands by it and on the land, the sky, the
+ * The landscape of a ride (ADR 0033), put together: the ground — the real
+ * land round a route that comes with Kadence (ADR 0035), or one made from
+ * the route — the road, what stands by it and on the land, the sky, the
  * rider, the camera that follows, and the small things on the way (ADR
  * 0034). Given where the rider is along the course, how fast, at what
  * cadence and whether paused, it draws one frame. It knows nothing about
@@ -28,10 +29,12 @@ import { Terrain } from "./terrain";
 export type WorldOptions = {
   /** Less motion on the screen: the camera only follows. */
   calm: boolean;
-  /** A small or slow device: fewer trees and tufts, no antialiasing, fewer pixels. */
+  /** A small or slow device: fewer trees and tufts, no antialiasing or shadows, fewer pixels. */
   light: boolean;
   /** A race's course: its finish, with the arch, where the lap ends (ADR 0035). */
   finish?: boolean;
+  /** The real land round the route, when it is one that comes with Kadence (ADR 0035). */
+  land?: Land | null;
 };
 
 export type Moment = {
@@ -73,6 +76,7 @@ export class World {
   private readonly pace: Pace;
   private crank = 0;
   private frames = 0;
+  private readonly shaded: boolean;
   private laid = { width: 0, height: 0, top: 0, bottom: 0 };
 
   constructor(
@@ -90,17 +94,33 @@ export class World {
     const ratio = Math.min(window.devicePixelRatio || 1, options.light ? 1 : 1.5);
     this.renderer.setPixelRatio(ratio);
     this.pace = new Pace(ratio, Math.min(ratio, 0.75));
+    this.shaded = !options.light;
+    if (this.shaded) {
+      this.renderer.shadowMap.enabled = true;
+      this.renderer.shadowMap.type = THREE.PCFShadowMap;
+    }
     this.rig = new CameraRig(options.calm);
     this.atmosphere = new Atmosphere(this.scene);
-    this.ground = new Ground(course);
-    // No tree in a field with cows in it.
+    if (this.shaded) this.atmosphere.castShadows();
+    this.ground = new Ground(course, options.land ?? null);
+    // No tree in a field with cows in it, nor in the water.
     const fields = inPaddocks(course, this.ground);
-    this.scenery = new Scenery(this.ground, options.light ? 0.5 : 1, fields);
-    this.terrain = new Terrain(this.ground, (key, cx, cz, added) => {
-      if (added) this.scenery.add(key, cx, cz);
-      else this.scenery.remove(key);
-    });
-    this.roadside = new Roadside(course, options.light ? 0.5 : 1, fields);
+    const water = this.atmosphere.water;
+    this.scenery = new Scenery(this.ground, options.light ? 0.5 : 1, fields, water);
+    this.terrain = new Terrain(
+      this.ground,
+      (key, cx, cz, added) => {
+        if (added) this.scenery.add(key, cx, cz);
+        else this.scenery.remove(key);
+      },
+      water,
+      this.shaded,
+    );
+    this.roadside = new Roadside(
+      course,
+      options.light ? 0.5 : 1,
+      (x, z) => fields(x, z) || this.ground.wet(x, z),
+    );
     this.small = new SmallThings(course, this.ground, words, hooks, {
       calm: options.calm,
       canvas,
@@ -110,6 +130,12 @@ export class World {
       },
     });
     this.road = buildRoad(course);
+    if (this.shaded) {
+      this.road.traverse((child) => {
+        if (child instanceof THREE.Mesh) child.receiveShadow = true;
+      });
+      castShadows(this.rider.group);
+    }
     this.rider.group.rotation.order = "YXZ";
     this.scene.add(
       this.terrain.group,
@@ -126,6 +152,7 @@ export class World {
         })
       : null;
     if (this.finish) this.scene.add(this.finish.group);
+    if (this.finish && this.shaded) castShadows(this.finish.group);
     // Only the rider, the rotors, the sky and the camera move; the rest is placed once.
     this.scene.matrixAutoUpdate = false;
     this.terrain.group.matrixAutoUpdate = false;
@@ -182,6 +209,11 @@ export class World {
     }
     const eye = this.rig.camera.position;
     this.atmosphere.follow(eye, seconds);
+    if (this.shaded) {
+      this.atmosphere.light(bike.position);
+      // What passes by comes and goes: whatever is new casts its shadow too.
+      if (this.frames % 30 === 0) castShadows(this.small.group);
+    }
     this.scenery.animate(seconds);
     this.finish?.frame(distance, seconds);
     this.terrain.update(eye.x, eye.z, 1);
@@ -220,4 +252,13 @@ export class World {
     while (d < -Math.PI) d += 2 * Math.PI;
     return d / 20;
   }
+}
+
+/** Everything solid in an object casts a shadow; what is see-through does not. */
+function castShadows(object: THREE.Object3D): void {
+  object.traverse((child) => {
+    if (!(child instanceof THREE.Mesh) || child.castShadow) return;
+    const material = child.material as THREE.Material;
+    if (!material.transparent) child.castShadow = true;
+  });
 }

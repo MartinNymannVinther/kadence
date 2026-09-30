@@ -2,18 +2,21 @@
  * The routes that come with Kadence (ADR 0033, 0035). Each is an ordinary GPX file in
  * `public/rulle/routes`, fetched by the browser and read through the same
  * import as a rider's own file (`gpx-route.ts`, `course.ts`): the file is
- * the route, and adding one is a file and a line here.
+ * the route, and adding one is a file and a line here. Beside it lies the
+ * land round it (`land.ts`), made once by `scripts/rulle-land.ts`.
  *
- * `credits` names where the roads and heights came from, as their
- * licences ask; the words for each are in the message catalogues
+ * `credits` names where the roads, the heights and the land came from, as
+ * their licences ask; the words for each are in the message catalogues
  * (`rulle.credits`).
  */
 
-export type RouteCredit = "osm" | "eudem" | "race";
+export type RouteCredit = "osm" | "eudem" | "terrain" | "race";
 
 export type BundledRoute = {
   key: string;
   file: string;
+  /** The land round the route: heights, woods, water, towns (ADR 0035). */
+  land?: string;
   credits: readonly RouteCredit[];
   /** Kilometres a lap and metres climbed, as the file comes to (a test holds them to it). */
   km: number;
@@ -33,7 +36,8 @@ export const ROUTES = [
      * heights as in it.
      */
     file: "/rulle/routes/bu-dm-2026-vejle.gpx",
-    credits: ["race"],
+    land: "/rulle/routes/bu-dm-2026-vejle.land.json",
+    credits: ["race", "osm", "terrain"],
     km: 10.0,
     climb: 144,
     finish: true,
@@ -47,7 +51,8 @@ export const ROUTES = [
      * (25 m), with the shoreline points it leaves empty from SRTM.
      */
     file: "/rulle/routes/vejle-munkebjerg.gpx",
-    credits: ["osm", "eudem"],
+    land: "/rulle/routes/vejle-munkebjerg.land.json",
+    credits: ["osm", "eudem", "terrain"],
     km: 18.0,
     climb: 222,
   },
@@ -59,7 +64,8 @@ export const ROUTES = [
      * OpenStreetMap routed by BRouter (fastbike); heights from EU-DEM v1.1.
      */
     file: "/rulle/routes/ry-himmelbjerget.gpx",
-    credits: ["osm", "eudem"],
+    land: "/rulle/routes/ry-himmelbjerget.land.json",
+    credits: ["osm", "eudem", "terrain"],
     km: 22.5,
     climb: 218,
   },

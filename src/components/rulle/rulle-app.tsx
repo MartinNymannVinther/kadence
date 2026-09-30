@@ -62,6 +62,7 @@ export function RulleApp({
   const devices = useDevices(sensors);
   const course = useCourse();
   const courseReady = course.state.status === "ready" ? course.state.course : null;
+  const land = course.state.status === "ready" ? course.state.land : null;
   // A race's course has its finish, where the lap ends: not a route of the rider's own.
   const finish =
     Boolean(course.route.finish) && course.state.status === "ready" && !course.state.own;
@@ -136,6 +137,7 @@ export function RulleApp({
         moment={ride.moment}
         name={trial ? null : name}
         finish={finish}
+        land={land}
       />
     );
 

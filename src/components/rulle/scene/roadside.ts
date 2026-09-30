@@ -2,9 +2,10 @@ import * as THREE from "three";
 import type { Course } from "@/modules/rulle";
 import { groundAt, ROAD_HALF } from "./ground";
 import { hash } from "./noise";
-import { Batches, roadPost, treeShapes, tuft } from "./props";
+import { Batches, roadPost, tuft } from "./props";
 import { sections } from "./road";
 import { clearIn } from "./scenery";
+import { disposeTrees, plant, treeMaterial, treeShapes, type Family } from "./trees";
 
 /**
  * What stands close to the road, where the eye catches it at the edge of
@@ -27,19 +28,20 @@ export class Roadside {
     vertexColors: true,
     flatShading: true,
   });
+  private readonly leaves = treeMaterial();
 
   constructor(
     course: Course,
     density = 1,
-    /** Where no tree may stand: the herds' fields. */
+    /** Where no tree may stand: the herds' fields, and water. */
     blocked: (x: number, z: number) => boolean = () => false,
   ) {
     const all = sections(course);
     const n = course.outAndBack ? Math.ceil(all.length / 2) : all.length;
     const everyPost = Math.max(1, Math.round(50 / course.step));
-    const { conifers, broadleaves } = this.trees;
     for (let start = 0; start < n; start += LENGTH) {
       const batches = new Batches();
+      const trees = new Batches();
       const center = new THREE.Vector3();
       const end = Math.min(n, start + LENGTH);
       for (let i = start; i < end; i++) {
@@ -72,21 +74,22 @@ export class Roadside {
         // Within the flat beside the road, where the land is where the verge says it is.
         const off = side * (ROAD_HALF + 8 + hash(i, 2, 48) * 6);
         if (hash(i, 0, 46) < 0.16 * density && !blocked(s.cx + s.rx * off, s.cz + s.rz * off)) {
-          const kinds = hash(i, 3, 49) < 0.4 ? conifers : broadleaves;
-          const shape = kinds[Math.floor(hash(i, 4, 50) * kinds.length)]!;
-          const shade = 0.92 + hash(i, 7, 53) * 0.16;
-          batches.add(
-            shape,
-            at(off, 0.3),
-            hash(i, 5, 51) * 6,
-            size(0.8 + hash(i, 6, 52) * 0.5),
-            shade,
-          );
+          const roll = hash(i, 3, 49);
+          const kind: Family =
+            roll < 0.3
+              ? "conifers"
+              : roll < 0.52
+                ? "autumn"
+                : roll < 0.62
+                  ? "birches"
+                  : "broadleaves";
+          plant(trees, this.trees, kind, at(off, 0.3), 0.8 + hash(i, 6, 52) * 0.5, [i, 4051]);
         }
       }
       center.divideScalar(Math.max(1, end - start));
       const object = new THREE.Group();
       for (const mesh of batches.build(this.material)) object.add(mesh);
+      for (const mesh of trees.build(this.leaves)) object.add(mesh);
       this.group.add(object);
       this.parts.push({ center, object });
     }
@@ -103,14 +106,11 @@ export class Roadside {
   }
 
   dispose(): void {
-    for (const geometry of [
-      this.post,
-      this.tuft,
-      ...this.trees.conifers,
-      ...this.trees.broadleaves,
-    ])
-      geometry.dispose();
+    this.post.dispose();
+    this.tuft.dispose();
+    disposeTrees(this.trees);
     this.material.dispose();
+    this.leaves.dispose();
     for (const part of this.parts)
       for (const child of part.object.children) (child as THREE.InstancedMesh).dispose();
   }

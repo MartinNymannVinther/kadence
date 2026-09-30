@@ -1,10 +1,11 @@
 import * as THREE from "three";
-import { chalkOf, flagsOf, herdsOf, type Course, type Seen } from "@/modules/rulle";
+import { chalkOf, flagsOf, type Course, type Seen } from "@/modules/rulle";
 import { ChalkClimb } from "./chalk-climb";
-import { Farmyard } from "./farmyard";
+import { Farmyard, herdsHere } from "./farmyard";
 import type { Ground } from "./ground";
 import { PauseScene, type Pause } from "./pause-scene";
 import type { RiderFigure } from "./rider";
+import { groundPoint } from "./road-point";
 import { Traffic } from "./traffic";
 import { Visitors } from "./visitors";
 
@@ -62,15 +63,21 @@ export class SmallThings {
     this.chalk = chalk
       ? new ChalkClimb(course, ground, material, chalk, words, () => hooks.sound("cheer"))
       : null;
-    // A stop goes on the right, unless a herd's field or a flag is there already.
-    const herds = herdsOf(course);
+    // A stop goes on the right, unless a herd's field or a flag is there
+    // already, or a lake or the sea is; then on the left, unless that is wet.
+    const herds = herdsHere(course, ground);
     const flags = flagsOf(course);
+    const wet = (distance: number, side: 1 | -1) => {
+      const p = groundPoint(course, ground, distance + 10, side * 12.5);
+      return ground.wet(p.x, p.z);
+    };
     const side = (distance: number): 1 | -1 => {
       const at = (distance % course.length) + 10;
       const taken =
         herds.some((h) => h.side === 1 && at > h.at - 60 && at < h.at + h.length + 60) ||
         flags.some((f) => f.side === 1 && Math.abs(at - f.at) < 40);
-      return taken ? -1 : 1;
+      const right = !taken && !wet(distance, 1);
+      return right || wet(distance, -1) ? 1 : -1;
     };
     this.pauses = new PauseScene(
       course,

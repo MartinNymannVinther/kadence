@@ -5,43 +5,60 @@ import {
   buildCourse,
   bundledRoute,
   DEFAULT_ROUTE,
+  readLand,
   readRouteGpx,
   RouteError,
   ROUTE_LIMITS,
   ROUTES,
+  type BundledRoute,
   type Course,
+  type Land,
   type RouteErrorCode,
 } from "@/modules/rulle";
 
 /**
  * The route to ride: one of those that come with Kadence (ADR 0035),
  * fetched as the ordinary GPX file it is and read through the same import
- * as a rider's own (`readRouteGpx`, `buildCourse`), or a GPX the rider
- * picks, which is read here in the browser and sent nowhere. The route
- * chosen last is remembered on this device.
+ * as a rider's own (`readRouteGpx`, `buildCourse`), together with the real
+ * land round it; or a GPX the rider picks, which is read here in the
+ * browser and sent nowhere, and ridden through land made up from it. The
+ * route chosen last is remembered on this device.
  */
 
 export type CourseState =
   | { status: "loading" }
-  | { status: "ready"; course: Course; own: boolean }
+  | { status: "ready"; course: Course; own: boolean; land: Land | null }
   | { status: "error"; code: RouteErrorCode | "fetch"; own: boolean };
 
 const REMEMBERED = "kadence.rulle.route";
 const CHANGED = "kadence:rulle-route";
 
-function read(xml: string, own: boolean): CourseState {
+function read(xml: string, own: boolean, land: unknown = null): CourseState {
   try {
-    return { status: "ready", course: buildCourse(readRouteGpx(xml)), own };
+    const course = buildCourse(readRouteGpx(xml));
+    // Land that does not fit the course is no land: the ride makes its own.
+    return { status: "ready", course, own, land: land === null ? null : readLand(land, course) };
   } catch (error) {
     return { status: "error", code: error instanceof RouteError ? error.code : "corrupt", own };
   }
 }
 
-async function fetchBundled(file: string): Promise<CourseState> {
+/** The land's file, or nothing: without it the route is ridden all the same. */
+async function fetchLand(file: string | undefined): Promise<unknown> {
+  if (!file) return null;
   try {
     const response = await fetch(file);
+    return response.ok ? await response.json() : null;
+  } catch {
+    return null;
+  }
+}
+
+async function fetchBundled(route: BundledRoute): Promise<CourseState> {
+  try {
+    const [response, land] = await Promise.all([fetch(route.file), fetchLand(route.land)]);
     if (!response.ok) throw new Error(String(response.status));
-    return read(await response.text(), false);
+    return read(await response.text(), false, land);
   } catch {
     return { status: "error", code: "fetch", own: false };
   }
@@ -77,13 +94,13 @@ export function useCourse() {
 
   useEffect(() => {
     let current = true;
-    void fetchBundled(route.file).then((next) => {
+    void fetchBundled(route).then((next) => {
       if (current) setState(next);
     });
     return () => {
       current = false;
     };
-  }, [route.file, asked]);
+  }, [route, asked]);
 
   /** One of the routes that come with Kadence, instead of the one there is. */
   const chooseRoute = useCallback((next: string) => {

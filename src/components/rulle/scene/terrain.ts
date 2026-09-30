@@ -1,17 +1,18 @@
 import * as THREE from "three";
-import type { Ground } from "./ground";
+import { GRID as STEP, type Ground } from "./ground";
 import { hash } from "./noise";
+import { PALETTE } from "./palette";
+import { lakeSurface } from "./water";
 
 /**
  * The land around the rider, in square chunks that are built as the ride
  * comes near them and let go behind it, so a route of any length costs
  * the same. Each chunk is a grid of flat-shaded triangles, every face in
- * the colour of the field, wood or pasture it lies in, a shade lighter or
- * darker so the facets read.
+ * the colour of what covers the land there, a shade lighter or darker so
+ * the facets read; and, on the real land, the lakes in it at their level.
  */
 
 export const CHUNK = 400;
-const STEP = 25;
 /** Chunks whose middle is within this of the camera are kept. */
 const RADIUS = 2300;
 
@@ -29,7 +30,7 @@ export function drawnHeight(ground: Ground, x: number, z: number): number {
   const b = Math.floor(z / STEP);
   const u = x / STEP - a;
   const v = z / STEP - b;
-  const h = (i: number, j: number) => ground.height((a + i) * STEP, (b + j) * STEP);
+  const h = (i: number, j: number) => ground.corner(a + i, b + j);
   const h00 = h(0, 0);
   const h11 = h(1, 1);
   if ((((a + b) % 2) + 2) % 2 === 0)
@@ -45,9 +46,11 @@ export function drawnHeight(ground: Ground, x: number, z: number): number {
     : h11 + (h01 - h11) * (1 - u) + (h10 - h11) * (1 - v);
 }
 
+type Chunk = { land: THREE.Mesh; water: THREE.Mesh | null };
+
 export class Terrain {
   readonly group = new THREE.Group();
-  private readonly chunks = new Map<ChunkKey, THREE.Mesh>();
+  private readonly chunks = new Map<ChunkKey, Chunk>();
   private readonly material = new THREE.MeshLambertMaterial({
     vertexColors: true,
     flatShading: true,
@@ -56,6 +59,9 @@ export class Terrain {
   constructor(
     private readonly ground: Ground,
     private readonly onChunk: (key: ChunkKey, cx: number, cz: number, added: boolean) => void,
+    private readonly water: THREE.Material,
+    /** Whether the land shows the shadows cast on it. */
+    private readonly shaded = false,
   ) {}
 
   /** Builds what has come within reach and lets go of what is behind; at most `budget` a call. */
@@ -71,11 +77,10 @@ export class Terrain {
       }
     wanted.sort((a, b) => a[0] - b[0]);
     for (const [, i, j] of wanted.slice(0, budget)) this.build(i, j);
-    for (const [key, mesh] of this.chunks) {
+    for (const [key, chunk] of this.chunks) {
       const [i, j] = key.split(",").map(Number) as [number, number];
       if (Math.hypot((i + 0.5) * CHUNK - x, (j + 0.5) * CHUNK - z) > RADIUS + CHUNK) {
-        this.group.remove(mesh);
-        mesh.geometry.dispose();
+        this.drop(chunk);
         this.chunks.delete(key);
         this.onChunk(key, i, j, false);
       }
@@ -88,9 +93,17 @@ export class Terrain {
   }
 
   dispose(): void {
-    for (const mesh of this.chunks.values()) mesh.geometry.dispose();
+    for (const chunk of this.chunks.values()) this.drop(chunk);
     this.chunks.clear();
     this.material.dispose();
+  }
+
+  private drop(chunk: Chunk): void {
+    for (const mesh of [chunk.land, chunk.water]) {
+      if (!mesh) continue;
+      this.group.remove(mesh);
+      mesh.geometry.dispose();
+    }
   }
 
   private build(i: number, j: number): void {
@@ -100,7 +113,7 @@ export class Terrain {
     const heights = new Float32Array((n + 1) * (n + 1));
     for (let b = 0; b <= n; b++)
       for (let a = 0; a <= n; a++)
-        heights[b * (n + 1) + a] = this.ground.height(x0 + a * STEP, z0 + b * STEP);
+        heights[b * (n + 1) + a] = this.ground.corner(i * n + a, j * n + b);
     const positions = new Float32Array(n * n * 6 * 3);
     const colors = new Float32Array(n * n * 6 * 3);
     const color = new THREE.Color();
@@ -127,7 +140,12 @@ export class Terrain {
         for (const face of faces) {
           const mx = (face[0]![0] + face[1]![0] + face[2]![0]) / 3;
           const mz = (face[0]![2] + face[1]![2] + face[2]![2]) / 3;
-          color.set(this.ground.patch(mx, mz).color);
+          const patch = this.ground.patch(mx, mz);
+          // A lake's bed where the land rises out of the water is its shore, reeds and grass.
+          const shore =
+            patch.kind === "water" &&
+            Math.max(face[0]![1], face[1]![1], face[2]![1]) > (this.ground.lake(mx, mz) ?? 0);
+          color.set(shore ? PALETTE.wetland : patch.color);
           color.multiplyScalar(0.94 + hash(Math.round(mx), Math.round(mz), 5) * 0.1);
           for (const v of face) {
             positions.set(v, p);
@@ -143,8 +161,11 @@ export class Terrain {
     geometry.computeBoundingSphere();
     const mesh = new THREE.Mesh(geometry, this.material);
     mesh.matrixAutoUpdate = false;
+    mesh.receiveShadow = this.shaded;
+    const water = lakeSurface(this.ground, i * n, j * n, n, STEP, this.water);
     this.group.add(mesh);
-    this.chunks.set(`${i},${j}`, mesh);
+    if (water) this.group.add(water);
+    this.chunks.set(`${i},${j}`, { land: mesh, water });
     this.onChunk(`${i},${j}`, i, j, true);
   }
 }

@@ -4,9 +4,10 @@ import { PALETTE } from "./palette";
 
 /**
  * The few shapes the landscape is built from, low-poly and flat-shaded:
- * trees, the white posts along a Danish road, tufts of grass, farms with
- * red roofs, a whitewashed church, wind turbines. Each is one geometry
- * with its colours in its vertices, made once and shared by every copy.
+ * the white posts along a Danish road, tufts of grass, farms with red
+ * roofs, a whitewashed church, wind turbines (the trees are `trees.ts`).
+ * Each is one geometry with its colours in its vertices, made once and
+ * shared by every copy.
  */
 
 /** A geometry in one colour, its faces unshared so flat shading shows them. */
@@ -41,47 +42,19 @@ export function merged(parts: THREE.BufferGeometry[]): THREE.BufferGeometry {
   return geometry;
 }
 
-const at = (geometry: THREE.BufferGeometry, x: number, y: number, z: number) =>
+export const at = (geometry: THREE.BufferGeometry, x: number, y: number, z: number) =>
   geometry.translate(x, y, z);
-
-/** A conifer: a cone on a short trunk, 8 m tall. */
-export function conifer(crown: string): THREE.BufferGeometry {
-  return merged([
-    painted(at(new THREE.CylinderGeometry(0.25, 0.35, 1.6, 5), 0, 0.8, 0), PALETTE.trunk),
-    painted(at(new THREE.ConeGeometry(2.3, 6.8, 7), 0, 1.2 + 3.4, 0), crown),
-  ]);
-}
-
-/** A broadleaf: a faceted crown on a trunk, 7.5 m tall. */
-export function broadleaf(crown: string): THREE.BufferGeometry {
-  const ball = new THREE.IcosahedronGeometry(2.6, 0);
-  ball.scale(1, 1.15, 1);
-  return merged([
-    painted(at(new THREE.CylinderGeometry(0.26, 0.38, 2.6, 5), 0, 1.3, 0), PALETTE.trunk),
-    painted(at(ball, 0, 2.6 + 2.3, 0), crown),
-  ]);
-}
-
-/** Every tree in every colour of the palette's woods: two shapes, four greens. */
-export function treeShapes(): {
-  conifers: THREE.BufferGeometry[];
-  broadleaves: THREE.BufferGeometry[];
-} {
-  return {
-    conifers: PALETTE.trees.map((c) => conifer(c)),
-    broadleaves: PALETTE.trees.map((c) => broadleaf(c)),
-  };
-}
 
 /**
  * Copies of shapes, gathered and then drawn as one instanced mesh per
- * shape: each copy has its place, its turn and size, and a brightness,
- * so a wood of one green is not a wood of clones.
+ * shape: each copy has its place, its turn and size, and a brightness or
+ * a colour (a tree's crown, `trees.ts`), so a wood of one green is not a
+ * wood of clones.
  */
 export class Batches {
   private readonly map = new Map<
     THREE.BufferGeometry,
-    { matrices: THREE.Matrix4[]; shades: number[] }
+    { matrices: THREE.Matrix4[]; shades: (number | THREE.Color)[] }
   >();
 
   add(
@@ -89,7 +62,7 @@ export class Batches {
     position: THREE.Vector3,
     turn: number,
     scale: THREE.Vector3,
-    shade = 1,
+    shade: number | THREE.Color = 1,
   ) {
     const entry = this.map.get(geometry) ?? { matrices: [], shades: [] };
     entry.matrices.push(
@@ -109,8 +82,9 @@ export class Batches {
     for (const [geometry, { matrices, shades }] of this.map) {
       const mesh = new THREE.InstancedMesh(geometry, material, matrices.length);
       matrices.forEach((m, k) => {
+        const shade = shades[k]!;
         mesh.setMatrixAt(k, m);
-        mesh.setColorAt(k, color.setScalar(shades[k]!));
+        mesh.setColorAt(k, typeof shade === "number" ? color.setScalar(shade) : shade);
       });
       mesh.computeBoundingSphere();
       meshes.push(mesh);

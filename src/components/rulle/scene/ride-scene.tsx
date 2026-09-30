@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { Course, Seen } from "@/modules/rulle";
+import type { Course, Land, Seen } from "@/modules/rulle";
 import { LensDrops } from "./lens-drops";
 import type { SceneWords } from "./small-things";
 import { Sky } from "./sky";
@@ -12,10 +12,12 @@ import { World, type Moment } from "./world";
  * canvas that fills the screen. Loaded only on Rulle's ride screen. The
  * quiet sky lies behind the canvas the whole time: it is what shows while
  * the landscape is built, and all that shows where WebGL is missing or
- * fails. A small or slow device gets fewer trees and pixels; a rider who
- * has asked for less motion gets a camera that only follows, and no drops
- * on the lens. What the small things on the way (ADR 0034) meet is told
- * back through `onSeen`, and what they ring through `onSound`.
+ * fails. A small or slow device gets fewer trees and pixels and no
+ * shadows; a rider who has asked for less motion gets a camera that only
+ * follows, and no drops on the lens. On a route that comes with Kadence
+ * the land is the real one (ADR 0035). What the small things on the way
+ * (ADR 0034) meet is told back through `onSeen`, and what they ring
+ * through `onSound`.
  */
 export default function RideScene({
   course,
@@ -24,6 +26,7 @@ export default function RideScene({
   bottom,
   words,
   finish,
+  land,
   onSeen,
   onSound,
 }: {
@@ -36,6 +39,8 @@ export default function RideScene({
   words: SceneWords;
   /** A race's course: the finish arch where the lap ends. */
   finish: boolean;
+  /** The real land round the route, if it is one that comes with Kadence. */
+  land: Land | null;
   onSeen: (key: keyof Seen, count: number) => void;
   onSound: (kind: "bell" | "cheer") => void;
 }) {
@@ -67,6 +72,7 @@ export default function RideScene({
           calm,
           light: window.innerWidth < 700 || (navigator.hardwareConcurrency ?? 8) <= 4,
           finish,
+          land,
         },
         latest.current.words,
         {
@@ -103,7 +109,7 @@ export default function RideScene({
       resize.current = () => {};
       world.dispose();
     };
-  }, [course, finish]);
+  }, [course, finish, land]);
 
   return (
     <div className="relative h-full w-full">

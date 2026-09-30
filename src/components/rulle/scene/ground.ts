@@ -1,32 +1,48 @@
-import type { Course } from "@/modules/rulle";
+import type { Course, Land } from "@/modules/rulle";
+import { coverPatch, fieldColor, type Patch } from "./land-cover";
 import { hash, hills, smoothstep } from "./noise";
 import { PALETTE } from "./palette";
+import { RoadGrid, type Nearest } from "./road-grid";
 
 /**
  * The ground the route runs through, as a function of place: its height,
- * and which field, wood or pasture covers it. The route's own heights are
- * the only survey there is, so the land is made from them: near the road
- * it is the road's height (a road lies on its ground), further out a
- * smooth surface drawn through the road's heights, with rolling swells
- * laid over it that grow away from the road. Where the land dips below
- * the sea, there is water — the fjord beside the shore road.
+ * and what covers it. Near the road it is the road's height (a road lies
+ * on its ground). Further out, on a route that comes with Kadence, it is
+ * the real land (ADR 0035): the height model's heights, lakes at their
+ * level, and the woods, fields, meadows and towns OpenStreetMap has
+ * there. On any other route the road's own heights are the only survey
+ * there is, and the land is made from them: a smooth surface drawn
+ * through them, with rolling swells laid over it that grow away from the
+ * road, and a patchwork of fields, woods and pasture. Either way, where
+ * the land dips below the sea there is water — the fjord beside the shore
+ * road.
  *
  * World coordinates are three.js's: x east, y up, z south (so a course's
- * north is -z).
+ * north, and the land's, is -z).
  */
+
+export type { Patch } from "./land-cover";
 
 /** Half the road's width, metres: a Danish country road. */
 export const ROAD_HALF = 3;
 /** The grass verge beyond the asphalt, metres, falling from the road to the land. */
 export const VERGE = 7;
-/** The land lies at the road's height this far from it, and is its own beyond `FREE_AT`. */
+/**
+ * The land lies at the road's height this far from it, and is its own
+ * beyond `FREE_AT` — sooner on the real land, whose heights are surveyed
+ * and need less room to meet the road's.
+ */
 const FLAT_TO = 18;
 const FREE_AT = 75;
-const CELL = 100;
+const FREE_AT_REAL = 50;
 const PATCH = 150;
 const REACH = 300;
-
-export type Patch = { kind: "field" | "forest" | "pasture"; color: string; id: number };
+/** Metres between the corners of the terrain's triangles. */
+export const GRID = 25;
+/** How far below its surface the bed of a lake is drawn. */
+const LAKE_DEPTH = 0.8;
+/** Corner heights remembered before the memory is let go and started again. */
+const REMEMBERED = 120_000;
 
 /**
  * How far the land beside the road lies below it, metres: a little on
@@ -52,64 +68,83 @@ export function groundAt(off: number, sunk: number): number {
 }
 
 export class Ground {
-  private readonly cells = new Map<string, number[]>();
-  private readonly base: {
-    x0: number;
-    z0: number;
-    step: number;
-    nx: number;
-    nz: number;
-    h: Float32Array;
-  };
+  private readonly road: RoadGrid;
+  private base: ReturnType<typeof baseSurface> | null = null;
+  private readonly corners = new Map<number, number>();
 
-  constructor(readonly course: Course) {
-    const n = course.x.length;
-    for (let i = 0; i < n; i++) {
-      const key = `${Math.floor(course.x[i]! / CELL)},${Math.floor(-course.y[i]! / CELL)}`;
-      const list = this.cells.get(key);
-      if (list) list.push(i);
-      else this.cells.set(key, [i]);
-    }
-    this.base = baseSurface(course);
+  constructor(
+    readonly course: Course,
+    /** The real land round a route that comes with Kadence; null for any other. */
+    readonly land: Land | null = null,
+  ) {
+    this.road = new RoadGrid(course);
   }
 
-  /** The nearest point of the road: how far, and how high it is there. */
-  nearest(x: number, z: number): { d: number; ele: number; index: number } {
-    const cx = Math.floor(x / CELL);
-    const cz = Math.floor(z / CELL);
-    const r = Math.ceil(REACH / CELL);
-    let best = Infinity;
-    let index = -1;
-    for (let i = cx - r; i <= cx + r; i++)
-      for (let j = cz - r; j <= cz + r; j++) {
-        const list = this.cells.get(`${i},${j}`);
-        if (!list) continue;
-        for (const k of list) {
-          const dx = this.course.x[k]! - x;
-          const dz = -this.course.y[k]! - z;
-          const d = dx * dx + dz * dz;
-          if (d < best) {
-            best = d;
-            index = k;
-          }
-        }
-      }
-    return index < 0
-      ? { d: Infinity, ele: 0, index: -1 }
-      : { d: Math.sqrt(best), ele: this.course.ele[index]!, index };
+  /** The nearest point of the road within about `reach` metres: how far, and how high it is there. */
+  nearest(x: number, z: number, reach = REACH): Nearest {
+    return this.road.nearest(x, z, reach);
   }
 
   /** The land's height at a place, metres above the sea. */
   height(x: number, z: number): number {
-    const road = this.nearest(x, z);
-    const free = this.baseAt(x, z) + hills(x, z) * smoothstep(FLAT_TO, 260, road.d);
+    const found = this.land?.heightAt(x, -z) ?? null;
+    const freeAt = found === null ? FREE_AT : FREE_AT_REAL;
+    const road = this.nearest(x, z, found === null ? REACH : freeAt);
+    let free: number;
+    if (found === null) free = this.baseAt(x, z) + hills(x, z) * smoothstep(FLAT_TO, 260, road.d);
+    else {
+      // A lake lies at its level, over a bed a little below it.
+      const level = this.land!.waterAt(x, -z);
+      free = level === null ? found : Math.min(found, level - LAKE_DEPTH);
+    }
     if (road.d === Infinity) return free;
-    const w = smoothstep(FLAT_TO, FREE_AT, road.d);
+    const w = smoothstep(FLAT_TO, freeAt, road.d);
     return (road.ele - sink(this.course, road.index)) * (1 - w) + free * w;
   }
 
-  /** What covers the land here: fields in a patchwork, woods, and pasture. */
+  /** The height at a corner of the terrain's triangles, `GRID` metres apart: worked out once. */
+  corner(a: number, b: number): number {
+    const key = a * 262_144 + b;
+    let h = this.corners.get(key);
+    if (h === undefined) {
+      if (this.corners.size >= REMEMBERED) this.corners.clear();
+      h = this.height(a * GRID, b * GRID);
+      this.corners.set(key, h);
+    }
+    return h;
+  }
+
+  /** What covers the land here. */
   patch(x: number, z: number): Patch {
+    if (this.land) {
+      const cover = this.land.coverAt(x, -z);
+      if (cover) return coverPatch(cover.kind, cover.id);
+      // Land no one has mapped: fields, and no woods made up in the real country.
+      if (this.land.heightAt(x, -z) !== null) return this.madeUp(x, z, false);
+    }
+    return this.madeUp(x, z, true);
+  }
+
+  /** The surface of a lake or a river here, metres above the sea; null where there is none. */
+  lake(x: number, z: number): number | null {
+    return this.land?.waterAt(x, -z) ?? null;
+  }
+
+  /** Whether there is water here: a lake, a river, or the sea. */
+  wet(x: number, z: number): boolean {
+    if (this.lake(x, z) !== null) return true;
+    return (this.land?.heightAt(x, -z) ?? this.height(x, z)) < 0.25;
+  }
+
+  /** Where a herd may graze: a field or a meadow, not a wood, a garden or a lake. */
+  grazing(x: number, z: number): boolean {
+    if (!this.land) return true;
+    const kind = this.patch(x, z).kind;
+    return (kind === "field" || kind === "pasture" || kind === "meadow") && !this.wet(x, z);
+  }
+
+  /** The made-up patchwork: fields, pasture and, where `woods`, a wood now and then. */
+  private madeUp(x: number, z: number, woods: boolean): Patch {
     const cx = Math.floor(x / PATCH);
     const cz = Math.floor(z / PATCH);
     let best = Infinity;
@@ -125,13 +160,13 @@ export class Ground {
         }
       }
     const roll = hash(id, 0, 3);
-    if (roll < 0.13) return { kind: "forest", color: PALETTE.forestFloor, id };
-    const fields = PALETTE.fields;
-    if (roll < 0.3) return { kind: "pasture", color: fields[0]!, id };
-    return { kind: "field", color: fields[Math.floor(hash(id, 1, 4) * fields.length)]!, id };
+    if (woods && roll < 0.13) return coverPatch("forest", id);
+    if (roll < 0.3) return { kind: "pasture", color: PALETTE.fields[0]!, id };
+    return { kind: "field", color: fieldColor(id), id };
   }
 
   private baseAt(x: number, z: number): number {
+    this.base ??= baseSurface(this.course);
     const { x0, z0, step, nx, nz, h } = this.base;
     const fx = Math.min(nx - 1.001, Math.max(0, (x - x0) / step));
     const fz = Math.min(nz - 1.001, Math.max(0, (z - z0) / step));

@@ -168,6 +168,37 @@ export function herdsOf(course: Course): Herd[] {
   return herds;
 }
 
+/**
+ * The herds where the land has fields for them (ADR 0035): each where it
+ * would be if `grazes` says the place is a field or a meadow, or else moved
+ * across the road, or along it a hundred metres at a time up to 1.2 km, to
+ * the nearest place that is — clear of the chalk climb, the flags and the
+ * other herds. A herd that finds none is not there.
+ */
+export function herdsOn(course: Course, grazes: (herd: Herd) => boolean): Herd[] {
+  const chalk = chalkOf(course);
+  const flags = flagsOf(course);
+  const out: Herd[] = [];
+  const clear = (h: Herd) =>
+    h.at >= START &&
+    h.at + h.length <= course.length - START &&
+    !(chalk && within(h.at, chalk.from - 200, chalk.to + 200, course.length)) &&
+    !flags.some((f) => f.side === h.side && f.at > h.at - 60 && f.at < h.at + h.length + 60) &&
+    !out.some((o) => h.at < o.at + o.length + 200 && h.at + h.length > o.at - 200);
+  for (const herd of herdsOf(course)) {
+    const shifts = [0];
+    for (let k = 1; k <= 12; k++) shifts.push(k * 100, -k * 100);
+    const across: 1 | -1 = herd.side === 1 ? -1 : 1;
+    const found = shifts
+      .flatMap((shift) =>
+        [herd.side, across].map((side): Herd => ({ ...herd, at: herd.at + shift, side })),
+      )
+      .find((h) => clear(h) && grazes(h));
+    if (found) out.push(found);
+  }
+  return out;
+}
+
 /** Where the flags stand, the same on every lap: none by a herd or on the chalk climb. */
 export function flagsOf(course: Course): Flag[] {
   const seed = Math.round(course.length) + 2;

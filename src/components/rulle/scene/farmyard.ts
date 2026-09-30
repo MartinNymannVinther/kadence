@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { flagsOf, hash, herdsOf, type Course, type Herd } from "@/modules/rulle";
+import { flagsOf, hash, herdsOf, herdsOn, type Course, type Herd } from "@/modules/rulle";
 import { cowBody, cowHead, fence, flagCloth, flagPole, NECK, wave } from "./farm-life";
 import type { Ground } from "./ground";
 import { freeze } from "./props";
@@ -25,9 +25,25 @@ type Cow = { neck: THREE.Vector3; yaw: number; grazing: boolean };
 const WATCHING = 90;
 const HEAD_TURN = 1.2;
 
+/**
+ * The herds the land has room for: on the real land (ADR 0035) each in a
+ * field or a meadow, not a wood, a garden or a lake (`herdsOn`).
+ */
+export function herdsHere(course: Course, ground: Ground): Herd[] {
+  if (!ground.land) return herdsOf(course);
+  return herdsOn(course, (herd) =>
+    [0.15, 0.5, 0.85].every((f) =>
+      [14, 36].every((off) => {
+        const p = groundPoint(course, ground, herd.at + herd.length * f, herd.side * off);
+        return ground.grazing(p.x, p.z);
+      }),
+    ),
+  );
+}
+
 /** Whether a place lies in one of the herds' fields, where no tree should grow. */
 export function inPaddocks(course: Course, ground: Ground): (x: number, z: number) => boolean {
-  const herds = herdsOf(course);
+  const herds = herdsHere(course, ground);
   return (x, z) => {
     const near = ground.nearest(x, z);
     if (near.index < 0 || near.d < 6 || near.d > 70) return false;
@@ -60,7 +76,7 @@ export class Farmyard {
     private readonly material: THREE.Material,
     private readonly seen: (count: number) => void,
   ) {
-    herdsOf(course).forEach((herd, index) => this.addHerd(herd, index));
+    herdsHere(course, ground).forEach((herd, index) => this.addHerd(herd, index));
     for (const flag of flagsOf(course)) {
       const foot = groundPoint(course, ground, flag.at, flag.side * 10.8);
       const pole = flagPole(8);

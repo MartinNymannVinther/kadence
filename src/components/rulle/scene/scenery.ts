@@ -1,19 +1,25 @@
 import * as THREE from "three";
-import { CHUNK, type ChunkKey } from "./terrain";
+import { foldAround, type Buildings } from "./buildings";
 import type { Ground } from "./ground";
+import { LandScenery } from "./land-scenery";
 import { hash } from "./noise";
-import { Batches, church, farm, freeze, treeShapes, turbineBlades, turbineTower } from "./props";
+import { Batches, church, farm, freeze, turbineBlades, turbineTower } from "./props";
+import { CHUNK, drawnHeight, type ChunkKey } from "./terrain";
+import { disposeTrees, treeMaterial, treeShapes } from "./trees";
+import { plantWoods } from "./woods";
 
 /**
- * The things on the land, chunk by chunk with the terrain under them:
- * woods where the ground says wood, a lone tree in a field, farms with
- * their red roofs back from the road, now and then a whitewashed village
- * church, and wind turbines turning slowly in the distance. Placed by
- * hashing where they stand, so the same route is the same country.
+ * The things on the land, chunk by chunk with the terrain under them. On
+ * the real land round a route that comes with Kadence (ADR 0035), what is
+ * there: woods, tree rows and hedges, towns and farms, streams, wind
+ * turbines (`LandScenery`). On any other route, a country made up to fit
+ * it: woods where the ground says wood, a lone tree in a field, farms
+ * with their red roofs back from the road, now and then a whitewashed
+ * village church, and wind turbines turning slowly in the distance.
+ * Placed by hashing where they stand, so the same route is the same
+ * country.
  */
 
-/** Metres between the places a tree may stand; a chunk holds a whole number of them. */
-const TREE_GRID = 20;
 const FARM_CHANCE = 0.32;
 const CHURCH_CHANCE = 0.03;
 const TURBINE_CHANCE = 0.07;
@@ -27,6 +33,7 @@ export class Scenery {
     vertexColors: true,
     flatShading: true,
   });
+  private readonly leaves = treeMaterial();
   private readonly shapes = {
     trees: treeShapes(),
     farms: [farm(0), farm(1), farm(2)],
@@ -34,6 +41,7 @@ export class Scenery {
     tower: turbineTower(),
     blades: turbineBlades(),
   };
+  private readonly land: LandScenery | null;
 
   /** Circles where a stop was put, kept clear from then on. */
   private readonly cleared: { x: number; z: number; r: number }[] = [];
@@ -43,12 +51,20 @@ export class Scenery {
     private readonly density = 1,
     /** Where nothing of this may stand: the herds' fields. */
     private readonly blocked: (x: number, z: number) => boolean = () => false,
-  ) {}
+    /** What streams are drawn in. */
+    private readonly water: THREE.Material = new THREE.MeshBasicMaterial(),
+  ) {
+    this.land = ground.land ? new LandScenery(ground.land, ground) : null;
+  }
 
   /** Makes room at a place: what stands within `r` metres goes, and nothing grows there again. */
   clearAround(x: number, z: number, r: number): void {
     this.cleared.push({ x, z, r });
-    for (const { object } of this.chunks.values()) clearIn(object, x, z, r);
+    for (const { object } of this.chunks.values()) {
+      clearIn(object, x, z, r);
+      for (const child of object.children)
+        if (child.userData.parts) foldAround(child as Buildings, x, z, r);
+    }
   }
 
   private free(x: number, z: number): boolean {
@@ -58,7 +74,82 @@ export class Scenery {
   add(key: ChunkKey, cx: number, cz: number): void {
     const object = new THREE.Group();
     const blades: THREE.Object3D[] = [];
-    this.trees(object, cx, cz);
+    const batches = new Batches();
+    const free = (x: number, z: number) => this.free(x, z);
+    plantWoods(batches, this.shapes.trees, this.ground, cx, cz, this.density, free);
+    if (this.land) {
+      for (const mesh of this.land.build(
+        cx,
+        cz,
+        batches,
+        this.shapes.trees,
+        this.material,
+        this.water,
+        this.density,
+        free,
+      ))
+        object.add(mesh);
+      this.land
+        .turbines(cx, cz)
+        .forEach((t, k) => this.turbine(object, blades, t.x, t.z, cx, cz + k));
+    } else this.madeUp(object, blades, cx, cz);
+    for (const mesh of batches.build(this.leaves)) object.add(mesh);
+    freeze(object);
+    // The rotors are all that moves here.
+    for (const rotor of blades) rotor.matrixAutoUpdate = true;
+    this.group.add(object);
+    this.chunks.set(key, { object, blades });
+  }
+
+  remove(key: ChunkKey): void {
+    const chunk = this.chunks.get(key);
+    if (!chunk) return;
+    this.group.remove(chunk.object);
+    chunk.object.traverse((child) => {
+      if (child instanceof THREE.InstancedMesh) child.dispose();
+      else if (child instanceof THREE.Mesh && child.userData.own) child.geometry.dispose();
+    });
+    this.chunks.delete(key);
+  }
+
+  /** The turbines turn. */
+  animate(seconds: number): void {
+    for (const chunk of this.chunks.values())
+      for (const rotor of chunk.blades) rotor.rotation.z += BLADE_SPEED * seconds;
+  }
+
+  dispose(): void {
+    for (const key of [...this.chunks.keys()]) this.remove(key);
+    const { trees, farms, church, tower, blades } = this.shapes;
+    disposeTrees(trees);
+    for (const geometry of [...farms, church, tower, blades]) geometry.dispose();
+    this.material.dispose();
+    this.leaves.dispose();
+  }
+
+  /** A wind turbine, its rotor facing the westerly. */
+  private turbine(
+    object: THREE.Group,
+    blades: THREE.Object3D[],
+    x: number,
+    z: number,
+    cx: number,
+    cz: number,
+  ): void {
+    const tower = new THREE.Mesh(this.shapes.tower, this.material);
+    tower.position.set(x, drawnHeight(this.ground, x, z) - 0.5, z);
+    // The wind is from the west, as it mostly is: every rotor faces it.
+    tower.rotation.y = -Math.PI / 2;
+    const rotor = new THREE.Mesh(this.shapes.blades, this.material);
+    rotor.position.set(0, 62.5, 3.6);
+    rotor.rotation.z = hash(cx, cz, 84) * Math.PI;
+    tower.add(rotor);
+    blades.push(rotor);
+    object.add(tower);
+  }
+
+  /** The made-up country's farm, church and turbines in a chunk, by chance. */
+  private madeUp(object: THREE.Group, blades: THREE.Object3D[], cx: number, cz: number): void {
     const x0 = cx * CHUNK;
     const z0 = cz * CHUNK;
     const spot = (salt: number, min: number, max: number) => {
@@ -66,11 +157,12 @@ export class Scenery {
       const z = z0 + (0.15 + hash(cx, cz, salt + 1) * 0.7) * CHUNK;
       const d = this.ground.nearest(x, z).d;
       const y = this.ground.height(x, z);
+      const kind = this.ground.patch(x, z).kind;
       const ok =
         d >= min &&
         d <= max &&
         y > 0.6 &&
-        this.ground.patch(x, z).kind !== "forest" &&
+        (kind === "field" || kind === "pasture") &&
         this.free(x, z);
       return ok ? new THREE.Vector3(x, y, z) : null;
     };
@@ -94,87 +186,9 @@ export class Scenery {
     const turbineAt = hash(cx, cz, 80) < TURBINE_CHANCE ? spot(81, 260, Infinity) : null;
     if (turbineAt) {
       const count = 1 + Math.floor(hash(cx, cz, 83) * 3);
-      for (let k = 0; k < count; k++) {
-        const x = turbineAt.x + k * 150;
-        const z = turbineAt.z - k * 90;
-        const tower = new THREE.Mesh(this.shapes.tower, this.material);
-        tower.position.set(x, this.ground.height(x, z) - 0.5, z);
-        // The wind is from the west, as it mostly is: every rotor faces it.
-        tower.rotation.y = -Math.PI / 2;
-        const rotor = new THREE.Mesh(this.shapes.blades, this.material);
-        rotor.position.set(0, 62.5, 3.6);
-        rotor.rotation.z = hash(cx, cz + k, 84) * Math.PI;
-        tower.add(rotor);
-        blades.push(rotor);
-        object.add(tower);
-      }
+      for (let k = 0; k < count; k++)
+        this.turbine(object, blades, turbineAt.x + k * 150, turbineAt.z - k * 90, cx, cz + k);
     }
-    freeze(object);
-    // The rotors are all that moves here.
-    for (const rotor of blades) rotor.matrixAutoUpdate = true;
-    this.group.add(object);
-    this.chunks.set(key, { object, blades });
-  }
-
-  remove(key: ChunkKey): void {
-    const chunk = this.chunks.get(key);
-    if (!chunk) return;
-    this.group.remove(chunk.object);
-    chunk.object.traverse((child) => {
-      if (child instanceof THREE.InstancedMesh) child.dispose();
-    });
-    this.chunks.delete(key);
-  }
-
-  /** The turbines turn. */
-  animate(seconds: number): void {
-    for (const chunk of this.chunks.values())
-      for (const rotor of chunk.blades) rotor.rotation.z += BLADE_SPEED * seconds;
-  }
-
-  dispose(): void {
-    for (const key of [...this.chunks.keys()]) this.remove(key);
-    const { trees, farms, church, tower, blades } = this.shapes;
-    for (const geometry of [
-      ...trees.conifers,
-      ...trees.broadleaves,
-      ...farms,
-      church,
-      tower,
-      blades,
-    ])
-      geometry.dispose();
-    this.material.dispose();
-  }
-
-  /** Woods where the ground is wood, and a rare lone tree in a field. */
-  private trees(object: THREE.Group, cx: number, cz: number): void {
-    const batches = new Batches();
-    const { conifers, broadleaves } = this.shapes.trees;
-    const n = CHUNK / TREE_GRID;
-    for (let a = 0; a < n; a++)
-      for (let b = 0; b < n; b++) {
-        const ia = cx * n + a;
-        const ib = cz * n + b;
-        if (hash(ia, ib, 90) > this.density) continue;
-        const x = (ia + hash(ia, ib, 91)) * TREE_GRID;
-        const z = (ib + hash(ia, ib, 92)) * TREE_GRID;
-        const forest = this.ground.patch(x, z).kind === "forest";
-        if (!forest && hash(ia, ib, 93) > 0.012) continue;
-        if (this.ground.nearest(x, z).d < 16 || !this.free(x, z)) continue;
-        const y = this.ground.height(x, z);
-        if (y < 0.4) continue;
-        const scale = 0.8 + hash(ia, ib, 94) * 0.6;
-        const kinds = hash(ia, ib, 97) < (forest ? 0.55 : 0.2) ? conifers : broadleaves;
-        batches.add(
-          kinds[Math.floor(hash(ia, ib, 98) * kinds.length)]!,
-          new THREE.Vector3(x, y - 0.3, z),
-          hash(ia, ib, 95) * 6,
-          new THREE.Vector3(scale, scale * (0.9 + hash(ia, ib, 96) * 0.3), scale),
-          0.9 + hash(ia, ib, 99) * 0.2,
-        );
-      }
-    for (const mesh of batches.build(this.material)) object.add(mesh);
   }
 }
 
@@ -198,6 +212,7 @@ export function clearIn(object: THREE.Object3D, x: number, z: number, r: number)
     } else if (
       child instanceof THREE.Mesh &&
       child.parent === object &&
+      !child.userData.own &&
       Math.hypot(child.position.x - x, child.position.z - z) <= r
     )
       child.visible = false;
