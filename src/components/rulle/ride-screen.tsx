@@ -23,6 +23,7 @@ import { RouteProfile } from "./route-profile";
 import type { Beeps } from "./ride/beeps";
 import { INTENSITY } from "./ride/engine";
 import { useMapShown, useSpeedShown } from "./ride/use-map-shown";
+import { DevWarp } from "./dev-warp";
 import { RoadCard } from "./road-card";
 import type { Ride } from "./ride/use-ride";
 import { useFullscreen, useWakeLock } from "./ride/use-screen";
@@ -246,6 +247,8 @@ export function RideScreen({
               <RouteMap course={course} distance={live.distance} finish={finish} />
             </div>
           )}
+          {/* Only under `next dev`: the way along the route run faster, or backwards. */}
+          {process.env.NODE_ENV === "development" && live && <DevWarp onWarp={ride.setWarp} />}
         </div>
         {live && (
           <div

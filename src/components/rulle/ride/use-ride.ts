@@ -151,6 +151,11 @@ export function useRide(options: RideOptions) {
     finish: () => act((ride, now) => ride.finish(now)),
     setIntensity: (value: number) => act((ride) => ride.setIntensity(value)),
     setErg: (on: boolean) => act((ride) => ride.setErg(on)),
+    /** Development only: times the rider's speed along the route, negative backwards. */
+    setWarp: (factor: number) =>
+      act((ride) => {
+        ride.warp.factor = factor;
+      }),
   };
 }
 

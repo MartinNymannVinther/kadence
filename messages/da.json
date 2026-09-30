@@ -2871,6 +2871,12 @@
       "discard": "Kassér",
       "discardTitle": "Kassér turen?",
       "discardBody": "Turen findes kun her i browseren. Kasserer du den, er den væk."
+    },
+    "dev": {
+      "title": "Spol",
+      "back": "Baglæns",
+      "times": "{factor}×",
+      "hint": "Kun under udvikling. Komma og punktum skifter farten, B vender retningen."
     }
   }
 }

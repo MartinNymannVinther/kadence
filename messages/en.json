@@ -2871,6 +2871,12 @@
       "discard": "Discard",
       "discardTitle": "Discard the ride?",
       "discardBody": "The ride exists only here in the browser. If you discard it, it's gone."
+    },
+    "dev": {
+      "title": "Warp",
+      "back": "Backwards",
+      "times": "{factor}×",
+      "hint": "Development only. Comma and full stop change the speed, B turns the way round."
     }
   }
 }

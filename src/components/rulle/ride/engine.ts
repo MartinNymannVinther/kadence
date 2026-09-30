@@ -33,6 +33,7 @@ import {
 import type { Sensors, SensorsNow } from "./sensors";
 import { OnTarget } from "./on-target";
 import { PowerTrace } from "./trace";
+import { Warp } from "./warp";
 
 /**
  * A ride while it is ridden (ADR 0033): the session's clock and blocks,
@@ -101,6 +102,8 @@ export class RideEngine {
   intensity = 1;
   erg = true;
   recording: Recording | null = null;
+  /** Development only: the way along the route run faster, or backwards (`warp.ts`). */
+  readonly warp = new Warp();
   private readonly trace = new PowerTrace();
   private clock: Clock | null = null;
   private speed = 0;
@@ -207,9 +210,9 @@ export class RideEngine {
 
   /** Where the rider is now, between ticks too: the scene asks every frame. */
   positionAt(now: number): CoursePoint & { speed: number; distance: number } {
-    const ahead =
-      this.status === "riding" ? (this.speed * Math.max(0, now - this.movedAt)) / 1000 : 0;
-    const distance = this.distance + Math.min(ahead, this.speed);
+    const since =
+      this.status === "riding" ? Math.min(1, Math.max(0, now - this.movedAt) / 1000) : 0;
+    const distance = this.warp.shown(this.distance + this.speed * since, this.speed, since);
     return { ...courseAt(this.course, distance), speed: this.speed, distance };
   }
 
@@ -234,7 +237,7 @@ export class RideEngine {
           ? standing(block.block, sensors.power3s, this.intensity)
           : "free",
       speed: this.speed,
-      distance: this.distance,
+      distance: this.warp.shown(this.distance, this.speed),
       intensity: this.intensity,
       erg: this.erg,
       trace: this.trace.values,
@@ -295,6 +298,7 @@ export class RideEngine {
       : (this.blockWatts() ?? DRAWN_WATTS);
     this.speed = nextSpeed(this.speed, watts, courseAt(this.course, this.distance).grade, dt);
     this.distance += this.speed * dt;
+    this.warp.advance(this.speed, dt);
   }
 
   private blockWatts(): number | null {

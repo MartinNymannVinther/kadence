@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { RideEngine } from "@/components/rulle/ride/engine";
 import { Sensors } from "@/components/rulle/ride/sensors";
+import { Warp } from "@/components/rulle/ride/warp";
 import { buildCourse, buildTimeline, totals, type RoutePoint } from "@/modules/rulle";
 import type { BikeStructure } from "@/modules/workouts/structure";
 
@@ -231,5 +232,47 @@ describe("the small things in a session", () => {
     engine.start(T0);
     ride(0, 185, null);
     expect(engine.allOnTarget()).toBeNull();
+  });
+});
+
+describe("the warp, only under development", () => {
+  it("runs the shown place faster, or backwards, from where the rider is", () => {
+    const warp = new Warp();
+    warp.advance(10, 1);
+    expect(warp.shown(10, 10)).toBe(10);
+    warp.factor = 4;
+    warp.advance(10, 1);
+    // Ridden 10 m more, shown 40 m more.
+    expect(warp.shown(20, 10)).toBe(50);
+    // Between two steps it runs on at four times the speed too.
+    expect(warp.shown(20 + 5, 10, 0.5)).toBe(50 + 20);
+    warp.factor = -2;
+    warp.advance(10, 1);
+    // Ridden 10 m more, shown 20 m back.
+    expect(warp.shown(30, 10)).toBe(30);
+    // Standing still, it still runs.
+    warp.factor = 20;
+    const before = warp.shown(30, 0);
+    warp.advance(0, 1);
+    expect(warp.shown(30, 0) - before).toBeGreaterThan(100);
+  });
+
+  it("moves what is shown, and records only what was ridden", () => {
+    const plain = setup(null);
+    plain.engine.start(T0);
+    plain.ride(0, 30);
+    const fast = setup(null);
+    fast.engine.warp.factor = 8;
+    fast.engine.start(T0);
+    fast.ride(0, 30);
+    const at = T0 + 30_000;
+    const ridden = plain.engine.live(at).distance;
+    expect(ridden).toBeGreaterThan(150);
+    expect(fast.engine.live(at).distance / ridden).toBeGreaterThan(7.5);
+    expect(fast.engine.positionAt(at).distance).toBeGreaterThan(7.5 * ridden);
+    expect(fast.engine.recording!.distance.at(-1)).toBeCloseTo(
+      plain.engine.recording!.distance.at(-1)!,
+      6,
+    );
   });
 });
