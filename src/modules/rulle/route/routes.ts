@@ -13,6 +13,9 @@
 export type RouteCredit =
   "osm" | "eudem" | "terrain" | "terrainCanada" | "buDm2026" | "futureRacing2026" | "montreal2026";
 
+/** The cities a route that comes with Kadence runs through (ADR 0036). */
+export type City = "kobenhavn" | "montreal";
+
 export type BundledRoute = {
   key: string;
   file: string;
@@ -24,8 +27,11 @@ export type BundledRoute = {
   climb: number;
   /** A race's course: the lap ends at a finish line where it starts, with its arch. */
   finish?: boolean;
-  /** In a city: streets with kerbs, cycle tracks and pavements, blocks of flats (ADR 0036). */
-  city?: boolean;
+  /**
+   * In a city: streets with kerbs, cycle tracks and pavements, blocks of
+   * flats, and on race day its crowd and its marshals (ADR 0036).
+   */
+  city?: City;
 };
 
 export const ROUTES = [
@@ -80,7 +86,7 @@ export const ROUTES = [
      * District Sjælland with CC Hillerød and ABC København,
      * https://www.sportstiming.dk/event/18537): a closed lap of 10.3 km
      * from the finish by SMK in Sølvgade, past Kastellet, over the cobbles
-     * of Fredericiagade, down Nørre Farimagsgade to Rådhuspladsen, along
+     * of Adelgade, down Nørre Farimagsgade to Rådhuspladsen, along
      * the Lakes and back through Nørrebro. The organiser's route file, its
      * lap starting at the finish line, with its marks (the obstacles, the
      * cobbles, the feed zone); heights from EU-DEM v1.1.
@@ -91,7 +97,7 @@ export const ROUTES = [
     km: 10.3,
     climb: 50,
     finish: true,
-    city: true,
+    city: "kobenhavn",
   },
   {
     key: "montreal-2026",
@@ -113,7 +119,7 @@ export const ROUTES = [
     km: 13.6,
     climb: 271,
     finish: true,
-    city: true,
+    city: "montreal",
   },
 ] as const satisfies readonly BundledRoute[];
 

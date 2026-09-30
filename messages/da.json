@@ -681,7 +681,7 @@
       },
       "rulle": {
         "title": "Rulle: passet på hometraineren",
-        "body": "Kan du ikke komme ud, så kør dagens pas indendørs i Rulle: i menuen, eller \"Kør indendørs\" på passet. Forbind hometraineren med ét tryk. En smart trainer styrer selv watt i hver blok (ERG), så du bare skal træde; kan traineren kun måle, rammer du selv tallene. Et pulsbælte kan forbindes ved siden af. Skærmen viser watt mod mål, tiden tilbage af blokken og hele passet som en bjælke, du kører hen over, stort nok til at læse fra cyklen. Mellemrum holder pause, pil højre springer til næste blok, pil op og ned gør passet lettere eller hårdere. Holder du op med at træde, holder Rulle pause med dig. Når passet er slut, gemmes turen som en almindelig tur på passet, og du siger, hvor hårdt det var. Uden net venter turen i browseren. Rulle kræver Chrome eller Edge på en computer eller Android; på iPhone kan appen Bluefy. Undervejs sker der små ting en gang imellem – en el-ladcykel, en bil med sprinklervæske, en hund – og holder du pause længe nok, sætter du dig på en café. De tælles med i dagens små ting, når du er færdig; tallene og bjælken får lov at være i fred. Har du ikke noget pas i dag, kan du vælge et af holdets egne eller DCU's standardpas, og du kan vælge mellem ruterne – blandt dem DM-omgangen fra B&U DM 2026 i Vejle med mål på toppen, Future Racing-omgangen gennem København og VM-rundstrækningen om Mont-Royal i Montréal. K viser og skjuler det lille kort over ruten. H viser hastigheden – rutens fart for dine watt og en standardrytter, så den er et fingerpeg, ikke en måling – og på en stigning eller nedkørsel står procenten nede i hjørnet. Rytteren på skærmen rejser sig på de stejle stigninger og ligger lavt på de hurtige nedkørsler. Ruterne, der følger med, kører gennem det rigtige land fra OpenStreetMap – skovene, søerne, fjorden og byerne – og du møder andre ryttere på vejen, nogle med en hånd i vejret."
+        "body": "Kan du ikke komme ud, så kør dagens pas indendørs i Rulle: i menuen, eller \"Kør indendørs\" på passet. Forbind hometraineren med ét tryk. En smart trainer styrer selv watt i hver blok (ERG), så du bare skal træde; kan traineren kun måle, rammer du selv tallene. Et pulsbælte kan forbindes ved siden af. Skærmen viser watt mod mål, tiden tilbage af blokken og hele passet som en bjælke, du kører hen over, stort nok til at læse fra cyklen. Mellemrum holder pause, pil højre springer til næste blok, pil op og ned gør passet lettere eller hårdere. Holder du op med at træde, holder Rulle pause med dig. Når passet er slut, gemmes turen som en almindelig tur på passet, og du siger, hvor hårdt det var. Uden net venter turen i browseren. Rulle kræver Chrome eller Edge på en computer eller Android; på iPhone kan appen Bluefy. Undervejs sker der små ting en gang imellem – en el-ladcykel, en bil med sprinklervæske, en hund – og holder du pause længe nok, sætter du dig på en café. De tælles med i dagens små ting, når du er færdig; tallene og bjælken får lov at være i fred. Har du ikke noget pas i dag, kan du vælge et af holdets egne eller DCU's standardpas, og du kan vælge mellem ruterne – blandt dem DM-omgangen fra B&U DM 2026 i Vejle med mål på toppen, Future Racing-omgangen gennem København og VM-rundstrækningen om Mont-Royal i Montréal. K viser og skjuler det lille kort over ruten. H viser hastigheden – rutens fart for dine watt og en standardrytter, så den er et fingerpeg, ikke en måling – og på en stigning eller nedkørsel står procenten nede i hjørnet. Rytteren på skærmen rejser sig på de stejle stigninger og ligger lavt på de hurtige nedkørsler. Ruterne, der følger med, kører gennem det rigtige land fra OpenStreetMap – skovene, søerne, fjorden og byerne – og du møder andre ryttere på vejen, nogle med en hånd i vejret. På byruterne er det løbsdag: publikum langs opløbet og op ad stigningerne, vagter med gule flag ved hellerne og i de skarpe sving, brosten, der ryster, fartbump, en langningszone og holdbusserne."
       },
       "keys": {
         "title": "Upload-nøgler",
@@ -2797,7 +2797,9 @@
       "chalkTop": "SNART TOPPEN",
       "cafe": "CAFÉ",
       "stand": "SODAVAND · 10 KR.",
-      "finish": "MÅL"
+      "finish": "MÅL",
+      "feed": "LANGNINGSZONE",
+      "litter": "AFFALDSZONE"
     },
     "end": {
       "title": "Afslut turen?",
@@ -2842,6 +2844,7 @@
       "title": "Dagens små ting",
       "himmelbjerg": "{metres} højdemeter – det er {times, number} gange Himmelbjerget.",
       "finish": "{count, plural, one {Over målstregen én gang.} other {Over målstregen # gange.}}",
+      "cobbles": "{count, plural, one {Over brostenene én gang. Det kunne mærkes i tænderne.} other {Over brostenene # gange. Det kunne mærkes i tænderne.}}",
       "cargoOvertaken": "{count, plural, one {Overhalet af en el-ladcykel. Den kører 25.} other {Overhalet af # el-ladcykler. De kører 25.}}",
       "cargoOvertook": "{count, plural, one {Du overhalede en el-ladcykel.} other {Du overhalede # el-ladcykler.}}",
       "car": "{count, plural, one {Døbt i sprinklervæske.} other {Døbt i sprinklervæske # gange.}}",

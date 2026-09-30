@@ -24,6 +24,8 @@ export const seenSchema = z.object({
   finish: z.number().int().min(0).default(0),
   puncture: z.number().int().min(0).default(0),
   waves: z.number().int().min(0).default(0),
+  // Counted from ADR 0036 on.
+  cobbles: z.number().int().min(0).default(0),
 });
 
 export type Seen = z.infer<typeof seenSchema>;
@@ -39,6 +41,7 @@ export function nothingSeen(): Seen {
     finish: 0,
     puncture: 0,
     waves: 0,
+    cobbles: 0,
   };
 }
 
@@ -57,6 +60,7 @@ export type LittleThing =
 
 const SEEN_ORDER: (keyof Seen)[] = [
   "finish",
+  "cobbles",
   "cargoOvertaken",
   "cargoOvertook",
   "car",

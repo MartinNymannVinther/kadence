@@ -1,4 +1,5 @@
 import { RouteError, type RouteFile } from "./gpx-route";
+import { marksOn, type CourseMark } from "./marks";
 
 /**
  * A route made rideable: the file's points laid on a flat plane in
@@ -56,6 +57,8 @@ export type Course = {
   outAndBack: boolean;
   /** The plane's middle, where x and y are 0: what lays the land around the route on it (ADR 0035). */
   origin: { lat: number; lon: number };
+  /** An organiser's marks along the lap: the obstacles, the cobbles, the feed zone (ADR 0036). */
+  marks: CourseMark[];
 };
 
 export type CoursePoint = {
@@ -146,6 +149,7 @@ export function buildCourse(file: RouteFile): Course {
     maxEle,
     outAndBack,
     origin,
+    marks: marksOn(file.marks ?? [], { x, y, step }, (lat, lon) => toPlane(origin, lat, lon)),
   };
 }
 

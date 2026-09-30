@@ -35,16 +35,32 @@ export function ball(
   return painted(new THREE.IcosahedronGeometry(r, 0).scale(...scale).translate(x, y, z), color);
 }
 
-/** A round rod from `a` to `b`: a leg, an arm, a tube of a frame. */
+/** A round rod from `a` to `b`: a leg, an arm, a tube of a frame; `open` at its ends, where nobody looks. */
 export function rod(
   a: THREE.Vector3,
   b: THREE.Vector3,
   r: number,
   color: string,
   segments = 5,
+  open = false,
 ): THREE.BufferGeometry {
   const along = new THREE.Vector3().subVectors(b, a);
-  const geometry = new THREE.CylinderGeometry(r, r, Math.max(1e-3, along.length()), segments);
+  const length = Math.max(1e-3, along.length());
+  const geometry = new THREE.CylinderGeometry(r, r, length, segments, 1, open);
+  geometry.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(UP, along.normalize()));
+  const middle = new THREE.Vector3().addVectors(a, b).multiplyScalar(0.5);
+  return painted(geometry.translate(middle.x, middle.y, middle.z), color);
+}
+
+/** A square bar from `a` to `b`: an arm in a crowd of thousands, cheaper than a rod. */
+export function bar(
+  a: THREE.Vector3,
+  b: THREE.Vector3,
+  w: number,
+  color: string,
+): THREE.BufferGeometry {
+  const along = new THREE.Vector3().subVectors(b, a);
+  const geometry = new THREE.BoxGeometry(w, Math.max(1e-3, along.length()), w);
   geometry.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(UP, along.normalize()));
   const middle = new THREE.Vector3().addVectors(a, b).multiplyScalar(0.5);
   return painted(geometry.translate(middle.x, middle.y, middle.z), color);

@@ -101,6 +101,17 @@ export const PALETTE = {
   flatRoof: "#77736d",
   /** A spire's or a dome's copper, gone green. */
   copper: "#6f9e87",
+  // Race day on a city's course (ADR 0036).
+  vest: "#cdd257",
+  marshalFlag: "#e2bf3c",
+  island: "#b9b4aa",
+  signBlue: "#3d6591",
+  setts: ["#8f8b84", "#9a968e", "#85827c", "#a29d95"],
+  settGaps: "#66625d",
+  bumpWhite: "#ece8df",
+  teams: ["#4a6b53", "#c23b33", "#2d4a86", "#e2b93b", "#26231f", "#e9e4da"],
+  jackets: ["#4a6b53", "#c23b33", "#4f5d73", "#d6a84a", "#3d4148", "#e4ebe4", "#8e4a36", "#6f8d68"],
+  podium: "#f1ece3",
   window: "#3f4a52",
   windowFrame: "#f4f1ea",
 } as const;

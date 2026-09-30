@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { clockText } from "@/components/training/duration";
 import type { Thresholds } from "@/modules/load";
-import type { Course, Land, SessionTimeline } from "@/modules/rulle";
+import type { City, Course, Land, SessionTimeline } from "@/modules/rulle";
 import { IntervalBar } from "./interval-bar";
 import { RideControls } from "./ride-controls";
 import { RouteMap } from "./route-map";
@@ -81,8 +81,8 @@ export function RideScreen({
   finish: boolean;
   /** The real land round a route that comes with Kadence (ADR 0035). */
   land: Land | null;
-  /** A city's course: streets, pavements and blocks (ADR 0036). */
-  city: boolean;
+  /** A city's course: streets, pavements and blocks, and race day (ADR 0036). */
+  city: City | null;
 }) {
   const t = useTranslations("rulle.ride");
   const endWords = useTranslations("rulle.end");
@@ -96,6 +96,8 @@ export function RideScreen({
       cafe: sceneWords("cafe"),
       stand: sceneWords("stand"),
       finish: sceneWords("finish"),
+      feed: sceneWords("feed"),
+      litter: sceneWords("litter"),
     }),
     [name, sceneWords],
   );

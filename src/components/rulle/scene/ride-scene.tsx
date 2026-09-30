@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { Course, Land, Seen } from "@/modules/rulle";
+import type { City, Course, Land, Seen } from "@/modules/rulle";
 import { LensDrops } from "./lens-drops";
 import type { SceneWords } from "./small-things";
 import { Sky } from "./sky";
@@ -42,10 +42,10 @@ export default function RideScene({
   finish: boolean;
   /** The real land round the route, if it is one that comes with Kadence. */
   land: Land | null;
-  /** A city's course: streets, pavements and blocks (ADR 0036). */
-  city: boolean;
+  /** A city's course: streets, pavements and blocks, and race day (ADR 0036). */
+  city: City | null;
   onSeen: (key: keyof Seen, count: number) => void;
-  onSound: (kind: "bell" | "cheer") => void;
+  onSound: (kind: "bell" | "cheer" | "whistle") => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const latest = useRef({ moment, top, bottom, words, onSeen, onSound });

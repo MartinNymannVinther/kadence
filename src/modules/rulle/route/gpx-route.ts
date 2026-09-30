@@ -1,5 +1,6 @@
 import { FitError } from "@/modules/fit";
 import { scanXml } from "@/modules/files/xml";
+import { MARK_LIMITS, type RouteMark } from "./marks";
 
 /**
  * A route for Rulle from a GPX file: where the road goes and how high it
@@ -15,7 +16,9 @@ import { scanXml } from "@/modules/files/xml";
  * points, too many, or too few heights to draw a hill from — a route
  * without elevation would be a flat line, and the profile is the point.
  * A point without a height between two that have one takes the line
- * between them.
+ * between them. A race's file may carry its organiser's waypoints beside
+ * the track — the obstacles, the cobbles, the feed zone (`marks.ts`) —
+ * and their words are kept, capped, to be read for what they are.
  *
  * Pure: it runs in the browser, where a rider's own file is read and
  * stays, and in the tests.
@@ -30,7 +33,7 @@ export const ROUTE_LIMITS = {
 } as const;
 
 export type RoutePoint = { lat: number; lon: number; ele: number };
-export type RouteFile = { name: string; points: RoutePoint[] };
+export type RouteFile = { name: string; points: RoutePoint[]; marks?: RouteMark[] };
 
 export type RouteErrorCode =
   "not_gpx" | "no_points" | "no_elevation" | "too_large" | "too_short" | "corrupt";
@@ -65,12 +68,23 @@ export function readRouteGpx(xml: string): RouteFile {
   let root: string | undefined;
   let point: Draft | null = null;
   let count = 0;
+  const marks: RouteMark[] = [];
+  let mark: RouteMark | null = null;
 
   try {
     scanXml(xml, {
       open(name, attrs) {
         root ??= name;
         stack.push(name);
+        if (name === "wpt") {
+          const lat = num(attrs.lat ?? "");
+          const lon = num(attrs.lon ?? "");
+          mark =
+            marks.length < MARK_LIMITS.maxMarks && lat !== undefined && lon !== undefined
+              ? { lat, lon, text: "" }
+              : null;
+          return;
+        }
         if (name !== "trkpt" && name !== "rtept") return;
         if (++count > ROUTE_LIMITS.maxPoints) throw new RouteError("too_large", "Too many points.");
         const lat = num(attrs.lat ?? "");
@@ -82,6 +96,10 @@ export function readRouteGpx(xml: string): RouteFile {
       },
       close(name) {
         stack.pop();
+        if (name === "wpt") {
+          if (mark && Math.abs(mark.lat) <= 90 && Math.abs(mark.lon) <= 180) marks.push(mark);
+          mark = null;
+        }
         if ((name === "trkpt" || name === "rtept") && point)
           (name === "trkpt" ? track : route).push(point);
         if (name === "trkpt" || name === "rtept") point = null;
@@ -91,6 +109,14 @@ export function readRouteGpx(xml: string): RouteFile {
         const parent = stack.at(-2);
         if (point) {
           if (name === "ele") point.ele = num(text) ?? null;
+          return;
+        }
+        if (mark) {
+          if (
+            ["name", "cmt", "desc", "type"].includes(name ?? "") &&
+            mark.text.length < MARK_LIMITS.maxText
+          )
+            mark.text = `${mark.text} ${text}`.slice(0, MARK_LIMITS.maxText);
           return;
         }
         if (name === "name" && (parent === "metadata" || parent === "trk" || parent === "rte"))
@@ -111,6 +137,7 @@ export function readRouteGpx(xml: string): RouteFile {
   return {
     name: (names.metadata ?? names.trk ?? names.rte ?? "").trim(),
     points: withHeights(drafts),
+    marks,
   };
 }
 

@@ -48,6 +48,7 @@ export {
   DEFAULT_ROUTE,
   ROUTES,
   type BundledRoute,
+  type City,
   type RouteCredit,
   type RouteKey,
 } from "./route/routes";
@@ -126,6 +127,28 @@ export {
 } from "./happenings";
 export { punctureOnLap, ridersOnLap, type Puncture, type Rider, type RiderKind } from "./traffic";
 export { gradeHere, POSTURE, postureAt, type Posture } from "./posture";
+export {
+  crowdAt,
+  inside,
+  lapAlong,
+  lapGap,
+  RACE_DAY,
+  raceDayOf,
+  type Bend,
+  type Crowd,
+  type RaceDay,
+  type Side,
+  type Spot,
+  type Stretch,
+} from "./route/race-day";
+export {
+  MARK_LIMITS,
+  markKind,
+  marksOn,
+  type CourseMark,
+  type MarkKind,
+  type RouteMark,
+} from "./route/marks";
 export {
   HIMMELBJERGET_M,
   littleThings,

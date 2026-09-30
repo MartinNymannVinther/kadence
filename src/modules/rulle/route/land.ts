@@ -88,6 +88,8 @@ export const landFileSchema = z.object({
     .array(z.tuple([z.number(), z.number()]))
     .max(50_000)
     .default([]),
+  /** The cobbled streets the route runs along (ADR 0036), as lines. */
+  setts: z.array(flat).max(2_000).default([]),
 });
 
 /** A land file as it is written: what the script makes, and `readLand` reads. */
@@ -120,6 +122,8 @@ export type Land = {
   }[];
   turbines: XY[];
   trees: XY[];
+  /** The cobbled streets the route runs along. */
+  setts: XY[][];
   /** Every area, its outline first and its holes after: what a farmyard or a town is, where. */
   areas: { kind: AreaKind; id: number; rings: XY[][] }[];
   /** Lakes and rivers above the sea, with the level their water lies at. */
@@ -290,6 +294,7 @@ export function readLand(json: unknown, course: Course): Land | null {
       ),
     turbines: file.turbines.map(([x, y]) => ({ x, y })),
     trees: file.trees.map(([x, y]) => ({ x, y })),
+    setts: file.setts.map(points),
     areas: areas.map((a) => ({ kind: LAND_KINDS.areas[a.kind]!, id: a.index, rings: a.rings })),
     waters,
   };

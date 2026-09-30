@@ -25,6 +25,13 @@ export function roadPoint(
   return out.set(p.x + (-dz / len) * offset, p.ele + 0.03, -p.y + (dx / len) * offset);
 }
 
+/** How much the road bends at `distance`: radians per metre over the next 20, to the left positive. */
+export function turnAt(course: Course, distance: number): number {
+  const a = courseAt(course, distance).heading;
+  const b = courseAt(course, distance + 20).heading;
+  return Math.atan2(Math.sin(b - a), Math.cos(b - a)) / 20;
+}
+
 /** The turn about the vertical that faces a thing made facing -z along the road at `distance`. */
 export function roadYaw(course: Course, distance: number): number {
   const a = roadPoint(course, distance - 2, 0);

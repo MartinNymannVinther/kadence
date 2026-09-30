@@ -7,8 +7,9 @@ import { PALETTE } from "./palette";
  * The road itself, the whole route at once: asphalt six metres wide on
  * its grass verges — or in a city (ADR 0036) its kerbs, cycle tracks and
  * pavements — white edge lines, and a dashed middle line whose dashes run
- * under the wheel: the road's own sense of speed. A route ridden out and
- * back is one road, drawn once. Built in kilometre lengths, so what is
+ * under the wheel: the road's own sense of speed — no lines where it is
+ * cobbled (`cobbles.ts`). A route ridden out and back is one road, drawn
+ * once. Built in kilometre lengths, so what is
  * behind the camera is not drawn.
  */
 
@@ -41,7 +42,11 @@ export function sections(course: Course): Section[] {
   return out;
 }
 
-export function buildRoad(course: Course, city = false): THREE.Group {
+export function buildRoad(
+  course: Course,
+  city = false,
+  cobbled: (along: number) => boolean = () => false,
+): THREE.Group {
   const group = new THREE.Group();
   const all = sections(course);
   const n = all.length;
@@ -60,6 +65,7 @@ export function buildRoad(course: Course, city = false): THREE.Group {
         if (city) builder.street(s, t, side);
         else builder.verge(s, t, side);
       }
+      if (cobbled(i * course.step) || cobbled((i + 1) * course.step)) continue;
       builder.band(s, t, ROAD_HALF - 0.45, ROAD_HALF - 0.3, 0.05, 0.05, PALETTE.line);
       builder.band(s, t, -ROAD_HALF + 0.3, -ROAD_HALF + 0.45, 0.05, 0.05, PALETTE.line);
       // A dash starts every DASH_EVERY metres; this section holds the one that falls in it.

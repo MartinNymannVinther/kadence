@@ -2,8 +2,9 @@
  * What a rider hears when the eyes are on the road: three short beeps as a
  * block runs out, a longer one when the next begins, and two at the end;
  * and the small things (ADR 0034) — a cowbell near the end of a hard
- * block and on the chalk climb, and the ring-ring of a cargo bike's bell
- * before it overtakes. Made by the browser's own sound (Web Audio), no
+ * block and on the chalk climb, the ring-ring of a cargo bike's bell
+ * before it overtakes, and on race day a marshal's whistle at an island
+ * (ADR 0036). Made by the browser's own sound (Web Audio), no
  * sound files; one press on M quiets all of it. Browsers only let sound
  * start from a press, so `unlock` is called from the one that starts the
  * ride.
@@ -11,7 +12,7 @@
 
 type Tone = { hz: number; seconds: number; at: number };
 
-export type Sound = "count" | "change" | "end" | "cheer" | "bell";
+export type Sound = "count" | "change" | "end" | "cheer" | "bell" | "whistle";
 
 const TONES: Record<"count" | "change" | "end", Tone[]> = {
   count: [{ hz: 880, seconds: 0.12, at: 0 }],
@@ -51,6 +52,7 @@ export class Beeps {
     if (this.quiet || !context || context.state !== "running") return;
     if (kind === "cheer") return cowbell(context);
     if (kind === "bell") return bell(context);
+    if (kind === "whistle") return whistle(context);
     for (const tone of TONES[kind]) {
       const start = context.currentTime + tone.at;
       const oscillator = context.createOscillator();
@@ -117,6 +119,37 @@ function bell(context: AudioContext): void {
       oscillator.connect(gain).connect(context.destination);
       oscillator.start(start);
       oscillator.stop(start + 0.75);
+    }
+  }
+}
+
+/**
+ * A marshal's whistle, two short blasts: a high tone warbling fast, as
+ * the pea in a whistle makes it, soft at both ends.
+ */
+function whistle(context: AudioContext): void {
+  for (const [at, seconds] of [
+    [0, 0.18],
+    [0.26, 0.32],
+  ] as const) {
+    const start = context.currentTime + at;
+    const oscillator = context.createOscillator();
+    const trill = context.createOscillator();
+    const depth = context.createGain();
+    const gain = context.createGain();
+    oscillator.type = "sine";
+    oscillator.frequency.value = 2900;
+    trill.frequency.value = 28;
+    depth.gain.value = 160;
+    trill.connect(depth).connect(oscillator.frequency);
+    gain.gain.setValueAtTime(0, start);
+    gain.gain.linearRampToValueAtTime(0.09, start + 0.02);
+    gain.gain.setValueAtTime(0.09, start + seconds - 0.04);
+    gain.gain.linearRampToValueAtTime(0, start + seconds);
+    oscillator.connect(gain).connect(context.destination);
+    for (const o of [oscillator, trill]) {
+      o.start(start);
+      o.stop(start + seconds + 0.02);
     }
   }
 }

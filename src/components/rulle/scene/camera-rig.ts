@@ -5,9 +5,9 @@ import * as THREE from "three";
  * from besides the things by the road: it rides behind and above along
  * the road itself, so it turns with the bends rather than cutting them;
  * it looks a little down the road; its view widens a touch with speed and
- * leans a touch into a bend; and it bobs faintly with the pedals. For a
- * rider who has asked for less motion on the screen, only the following
- * is left.
+ * leans a touch into a bend; and it bobs faintly with the pedals, and
+ * shakes on cobbles (ADR 0036). For a rider who has asked for less motion
+ * on the screen, only the following is left.
  *
  * In a pause at a café it looks at the table instead (`view`), and after
  * the dip to the haze it is simply there (`jump`) rather than flying.
@@ -32,6 +32,7 @@ export class CameraRig {
   private baseFov = WIDE_FOV;
   private roll = 0;
   private placed = false;
+  private clock = 0;
 
   constructor(private readonly calm: boolean) {}
 
@@ -73,7 +74,8 @@ export class CameraRig {
   /**
    * One frame: `behind` is the road a few metres back (where the camera
    * goes), `ahead` the road some way ahead (where it looks), `turn` how
-   * much the road bends there (radians per metre, left positive).
+   * much the road bends there (radians per metre, left positive);
+   * `rumble` how much the road shakes (1 on cobbles).
    */
   follow(
     behind: THREE.Vector3,
@@ -82,7 +84,9 @@ export class CameraRig {
     speed: number,
     crank: number,
     seconds: number,
+    rumble = 0,
   ): void {
+    this.clock += seconds;
     const eye = behind.clone().setY(behind.y + HEIGHT);
     const look = ahead.clone().setY(ahead.y + LOOK_HEIGHT);
     if (!this.placed) {
@@ -94,6 +98,12 @@ export class CameraRig {
     this.camera.position.lerp(eye, follow);
     this.target.lerp(look, 1 - Math.exp(-seconds * 7));
     if (!this.calm) this.camera.position.y += Math.sin(crank * 2) * 0.012;
+    if (!this.calm && rumble > 0) {
+      const t = this.clock * 2 * Math.PI;
+      const hard = rumble * Math.min(1, speed / 6);
+      this.camera.position.y += (Math.sin(t * 14.2) + Math.sin(t * 19.7)) * 0.018 * hard;
+      this.camera.position.x += Math.sin(t * 16.4) * 0.012 * hard;
+    }
     this.camera.lookAt(this.target);
 
     if (this.calm) return;

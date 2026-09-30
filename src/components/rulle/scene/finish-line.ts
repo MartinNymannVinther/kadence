@@ -12,8 +12,9 @@ import { bannerTexture, checkerTexture, disposeTextured } from "./text-plates";
  * The finish of a race's course (ADR 0035), where its lap ends and the
  * next begins: an arch over the road with its banner, the checkered line
  * across the asphalt, crowd barriers along the last stretch with people
- * behind them, and one with a cowbell by the line. Every time over it
- * counts, for today's little things.
+ * behind them, and one with a cowbell by the line — on race day in a city
+ * the crowd is race day's own (ADR 0036), and the line has the cowbell
+ * alone. Every time over it counts, for today's little things.
  */
 
 /** Metres of barriers before the line, and after it. */
@@ -37,6 +38,7 @@ export class FinishLine {
     material: THREE.Material,
     word: string,
     private readonly hooks: { crossed: () => void; ring: () => void },
+    crowd = true,
   ) {
     const L = course.length;
     // The arch, facing along the road; its banner on both faces.
@@ -83,10 +85,10 @@ export class FinishLine {
     line.add(checks);
     // Barriers along both edges, and the people behind them near the line.
     const parts: THREE.BufferGeometry[] = [];
-    for (let at = L - BEFORE; at < L + AFTER; at += 2.4)
+    for (let at = L - BEFORE; crowd && at < L + AFTER; at += 2.4)
       for (const side of [-1, 1]) parts.push(barrier(course, ground, at, side));
     let k = 0;
-    for (let at = L - 75; at < L - 4; at += 5.5)
+    for (let at = L - 75; crowd && at < L - 4; at += 5.5)
       for (const side of [-1, 1]) {
         if (hash(k, side, 211) < 0.3) {
           k++;
@@ -97,17 +99,13 @@ export class FinishLine {
         parts.push(person(foot, yaw, CLOTHES[k % CLOTHES.length]!, hash(k, 2, 213) < 0.5));
         k++;
       }
-    const crowd = merged(parts);
-    this.shapes.push(crowd);
+    const people = parts.length > 0 ? merged(parts) : null;
+    if (people) this.shapes.push(people);
     this.fan = spectator(material);
     this.fan.group.position.copy(groundPoint(course, ground, L - 12, 4.9));
     this.fan.group.rotation.y = roadYaw(course, L - 12) + Math.PI / 2;
-    this.group.add(
-      freeze(arch),
-      freeze(line),
-      freeze(new THREE.Mesh(crowd, material)),
-      this.fan.group,
-    );
+    this.group.add(freeze(arch), freeze(line), this.fan.group);
+    if (people) this.group.add(freeze(new THREE.Mesh(people, material)));
   }
 
   /** Counts the line as it is crossed, and rings the cowbell as the rider comes to it. */

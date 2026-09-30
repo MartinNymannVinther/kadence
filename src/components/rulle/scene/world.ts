@@ -1,5 +1,14 @@
 import * as THREE from "three";
-import { courseAt, postureAt, swayAt, type Course, type Land, type Posture } from "@/modules/rulle";
+import {
+  courseAt,
+  postureAt,
+  raceDayOf,
+  swayAt,
+  type City,
+  type Course,
+  type Land,
+  type Posture,
+} from "@/modules/rulle";
 import { Atmosphere } from "./atmosphere";
 import { CameraRig } from "./camera-rig";
 import { inPaddocks } from "./farmyard";
@@ -7,13 +16,20 @@ import { FinishLine } from "./finish-line";
 import { Ground } from "./ground";
 import { Pace } from "./pace";
 import type { Pause } from "./pause-scene";
-import { freeze } from "./props";
+import { castShadows, freeze } from "./props";
+import { RaceDayScene } from "./race-day";
 import { RiderFigure } from "./rider";
 import { buildRoad } from "./road";
-import { roadPoint } from "./road-point";
+import { roadPoint, turnAt } from "./road-point";
 import { Roadside } from "./roadside";
 import { Scenery } from "./scenery";
-import { SmallThings, type SceneWords, type SmallThingsHooks } from "./small-things";
+import {
+  NO_WORDS,
+  QUIET_HOOKS,
+  SmallThings,
+  type SceneWords,
+  type SmallThingsHooks,
+} from "./small-things";
 import { Terrain } from "./terrain";
 
 /**
@@ -35,8 +51,8 @@ export type WorldOptions = {
   finish?: boolean;
   /** The real land round the route, when it is one that comes with Kadence (ADR 0035). */
   land?: Land | null;
-  /** A city's course (ADR 0036): streets, pavements and blocks, closed for the race. */
-  city?: boolean;
+  /** A city's course (ADR 0036): streets, pavements and blocks, closed for the race and lined. */
+  city?: City | null;
 };
 
 export type Moment = {
@@ -46,13 +62,6 @@ export type Moment = {
   /** The ride's pause, if it is paused: which one, and for how long. */
   pause: Pause | null;
 };
-
-const QUIET: SmallThingsHooks = {
-  seen: () => undefined,
-  sound: () => undefined,
-  spray: () => undefined,
-};
-const NO_WORDS: SceneWords = { name: "", top: "", cafe: "", stand: "", finish: "" };
 
 /**
  * Metres behind the rider the camera rides, and ahead of the rider it
@@ -75,7 +84,9 @@ export class World {
   private readonly atmosphere: Atmosphere;
   private readonly small: SmallThings;
   private readonly finish: FinishLine | null;
+  private readonly race: RaceDayScene | null;
   private readonly pace: Pace;
+  private readonly calm: boolean;
   private crank = 0;
   private frames = 0;
   private posture: Posture = "seated";
@@ -87,7 +98,7 @@ export class World {
     private readonly course: Course,
     options: WorldOptions,
     words: SceneWords = NO_WORDS,
-    hooks: SmallThingsHooks = QUIET,
+    hooks: SmallThingsHooks = QUIET_HOOKS,
   ) {
     this.renderer = new THREE.WebGLRenderer({
       canvas,
@@ -102,11 +113,12 @@ export class World {
       this.renderer.shadowMap.enabled = true;
       this.renderer.shadowMap.type = THREE.PCFShadowMap;
     }
+    this.calm = options.calm;
     this.rig = new CameraRig(options.calm);
     this.atmosphere = new Atmosphere(this.scene);
     if (this.shaded) this.atmosphere.castShadows();
-    const city = options.city ?? false;
-    this.ground = new Ground(course, options.land ?? null, city);
+    const city = options.city ?? null;
+    this.ground = new Ground(course, options.land ?? null, city !== null);
     // No tree in a field with cows in it, nor in the water.
     const fields = inPaddocks(course, this.ground);
     const water = this.atmosphere.water;
@@ -124,17 +136,34 @@ export class World {
       course,
       options.light ? 0.5 : 1,
       (x, z) => fields(x, z) || this.ground.wet(x, z),
-      city,
+      city !== null,
     );
+    const room = (x: number, z: number, r: number) => {
+      this.scenery.clearAround(x, z, r);
+      this.roadside.clearAround(x, z, r);
+      // The crowd makes way between the road and a café, not only where it stands.
+      this.race?.clearAround(x, z, r + 8);
+    };
     this.small = new SmallThings(course, this.ground, words, hooks, {
       calm: options.calm,
       canvas,
-      room: (x, z, r) => {
-        this.scenery.clearAround(x, z, r);
-        this.roadside.clearAround(x, z, r);
-      },
+      room,
     });
-    this.road = buildRoad(course, city);
+    // A city's course on race day: its crowd, its marshals, its cobbles (ADR 0036).
+    this.race = city
+      ? new RaceDayScene(
+          course,
+          this.ground,
+          raceDayOf(course, options.land?.setts ?? []),
+          city,
+          this.small.material,
+          words,
+          hooks,
+          room,
+          options,
+        )
+      : null;
+    this.road = buildRoad(course, city !== null, (along) => this.race?.rumble(along) === 1);
     if (this.shaded) {
       this.road.traverse((child) => {
         if (child instanceof THREE.Mesh) child.receiveShadow = true;
@@ -151,13 +180,23 @@ export class World {
       this.rider.group,
     );
     this.finish = options.finish
-      ? new FinishLine(course, this.ground, this.small.material, words.finish, {
-          crossed: () => hooks.seen("finish", 1),
-          ring: () => hooks.sound("cheer"),
-        })
+      ? new FinishLine(
+          course,
+          this.ground,
+          this.small.material,
+          words.finish,
+          {
+            crossed: () => hooks.seen("finish", 1),
+            ring: () => hooks.sound("cheer"),
+          },
+          // On race day the crowd lines the finish already.
+          !this.race,
+        )
       : null;
     if (this.finish) this.scene.add(this.finish.group);
     if (this.finish && this.shaded) castShadows(this.finish.group);
+    if (this.race) this.scene.add(this.race.group);
+    if (this.race && this.shaded) castShadows(this.race.group);
     // Only the rider, the rotors, the sky and the camera move; the rest is placed once.
     this.scene.matrixAutoUpdate = false;
     this.terrain.group.matrixAutoUpdate = false;
@@ -206,15 +245,18 @@ export class World {
     // In the saddle, out of it on a steep climb, tucked on a fast descent.
     this.posture = postureAt(this.course, distance, speed, cadence, this.posture);
     this.rider.animate(seconds, cadence, speed, this.posture);
-    // Out of the saddle the bike rocks under the rider.
+    // Out of the saddle the bike rocks under the rider; on cobbles it shakes.
     if (!pausing.parked) bike.rotation.z = this.rider.roll;
+    const rumble =
+      this.calm || pausing.parked ? 0 : (this.race?.jolt(bike, distance, speed, seconds) ?? 0);
 
     if (pausing.jump) this.rig.jump();
     if (pausing.view) this.rig.view(pausing.view.eye, pausing.view.look, seconds);
     else {
       const behind = this.pointAt(distance - BEHIND, 0.4);
       const ahead = this.pointAt(distance + AHEAD, swayAt(distance + AHEAD) * 0.5);
-      this.rig.follow(behind, ahead, this.turn(distance), speed, this.crank, seconds);
+      const turn = turnAt(this.course, distance);
+      this.rig.follow(behind, ahead, turn, speed, this.crank, seconds, rumble);
     }
     const eye = this.rig.camera.position;
     this.atmosphere.follow(eye, seconds);
@@ -225,6 +267,7 @@ export class World {
     }
     this.scenery.animate(seconds);
     this.finish?.frame(distance, seconds);
+    this.race?.frame(distance, seconds);
     this.terrain.update(eye.x, eye.z, 1);
     if (this.frames++ % 20 === 0) this.roadside.update(eye);
     this.renderer.render(this.scene, this.rig.camera);
@@ -243,31 +286,15 @@ export class World {
     this.rider.dispose();
     this.small.dispose();
     this.finish?.dispose();
+    this.race?.dispose();
     this.atmosphere.dispose();
     this.renderer.dispose();
   }
 
-  /** A point on the road `offset` metres right of its middle, on the road's surface. */
+  /** A point on the road `offset` metres right of its middle, on the road's surface: over a bump, on it. */
   private pointAt(distance: number, offset: number): THREE.Vector3 {
-    return roadPoint(this.course, distance, offset);
+    const point = roadPoint(this.course, distance, offset);
+    if (this.race) point.y += this.race.lift(distance);
+    return point;
   }
-
-  /** How much the road bends here: radians per metre, to the left positive. */
-  private turn(distance: number): number {
-    const a = courseAt(this.course, distance).heading;
-    const b = courseAt(this.course, distance + 20).heading;
-    let d = b - a;
-    while (d > Math.PI) d -= 2 * Math.PI;
-    while (d < -Math.PI) d += 2 * Math.PI;
-    return d / 20;
-  }
-}
-
-/** Everything solid in an object casts a shadow; what is see-through does not. */
-function castShadows(object: THREE.Object3D): void {
-  object.traverse((child) => {
-    if (!(child instanceof THREE.Mesh) || child.castShadow) return;
-    const material = child.material as THREE.Material;
-    if (!material.transparent) child.castShadow = true;
-  });
 }

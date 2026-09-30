@@ -19,13 +19,40 @@ import { Visitors } from "./visitors";
 
 export type SmallThingsHooks = {
   seen: (key: keyof Seen, count: number) => void;
-  sound: (kind: "bell" | "cheer") => void;
+  sound: (kind: "bell" | "cheer" | "whistle") => void;
   /** Washer fluid on the lens: the page draws the drops. */
   spray: () => void;
 };
 
 /** Words the landscape shows, in the reader's language. */
-export type SceneWords = { name: string; top: string; cafe: string; stand: string; finish: string };
+export type SceneWords = {
+  name: string;
+  top: string;
+  cafe: string;
+  stand: string;
+  finish: string;
+  /** Race day's zones (ADR 0036). */
+  feed: string;
+  litter: string;
+};
+
+/** Words for a landscape nobody reads: a harness, a test. */
+export const NO_WORDS: SceneWords = {
+  name: "",
+  top: "",
+  cafe: "",
+  stand: "",
+  finish: "",
+  feed: "",
+  litter: "",
+};
+
+/** Hooks nobody listens to. */
+export const QUIET_HOOKS: SmallThingsHooks = {
+  seen: () => undefined,
+  sound: () => undefined,
+  spray: () => undefined,
+};
 
 export class SmallThings {
   readonly group = new THREE.Group();

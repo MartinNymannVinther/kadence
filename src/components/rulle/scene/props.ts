@@ -36,6 +36,15 @@ export function freeze<T extends THREE.Object3D>(object: T): T {
   return object;
 }
 
+/** Everything solid in an object casts a shadow; what is see-through does not, nor a crowd. */
+export function castShadows(object: THREE.Object3D): void {
+  object.traverse((child) => {
+    if (!(child instanceof THREE.Mesh) || child.castShadow || child.userData.shadowless) return;
+    const material = child.material as THREE.Material;
+    if (!material.transparent) child.castShadow = true;
+  });
+}
+
 export function merged(parts: THREE.BufferGeometry[]): THREE.BufferGeometry {
   const geometry = mergeGeometries(parts, false);
   if (!geometry) throw new Error("Shapes that do not merge.");

@@ -14,7 +14,8 @@ import { areaKind, buildingKind, colourOf, levelsOf, metres, roofIndex } from ".
  * OpenStreetMap (ODbL) what covers it — woods, water, fields, meadows,
  * towns and their buildings, tree rows and hedges, wind turbines; in a
  * city its buildings' heights and roofs where the map says them, their
- * towers and spires, the tall ones on the skyline, and the street trees.
+ * towers and spires, the tall ones on the skyline, the street trees, and
+ * the cobbled streets the route runs along.
  * Everything in metres on the course's own plane.
  *
  *     pnpm script scripts/rulle-land.ts public/rulle/routes/bu-dm-2026-vejle.gpx [--buildings 650]
@@ -36,6 +37,11 @@ const AGENT = "Kadence-Rulle/0.9 (land for bundled routes; https://kadence.haij.
 const SKYLINE = 25;
 /** Street trees are fetched this close to the road. */
 const TREES = 60;
+/** Cobbled streets are fetched this close to the road, and kept if the road runs along one. */
+const SETTS = 30;
+const SETT_NEAR = 8;
+/** Ways no race is ridden on, cobbled or not. */
+const FOOT = ["footway", "path", "steps", "cycleway", "bridleway", "corridor", "pedestrian"];
 
 async function main(): Promise<void> {
   const gpxPath = process.argv[2];
@@ -137,6 +143,7 @@ async function main(): Promise<void> {
     way["building:part"]["height"](${bbox});
     way["building"~"^(church|cathedral|chapel|basilica)$"](${bbox});
     node["natural"="tree"](around:${TREES},${along.join(",")});
+    way["highway"]["surface"~"^(sett|cobblestone|unhewn_cobblestone)$"](around:${SETTS},${along.join(",")});
     node["generator:source"="wind"](${bbox});
   );
   out geom qt;`;
@@ -173,12 +180,30 @@ async function main(): Promise<void> {
     buildings: [],
     turbines: [],
     trees: [],
+    setts: [],
   };
   // Nearest the road, in metres: what decides whether a building far off is on the skyline.
   const fromRoad = (p: P) => {
     let best = Infinity;
     for (let i = 0; i < course.x.length; i += 3)
       best = Math.min(best, Math.hypot(course.x[i]! - p.x, course.y[i]! - p.y));
+    return best;
+  };
+  // The same, exactly: to the road's own line between its points.
+  const onRoad = (p: P) => {
+    let best = Infinity;
+    for (let i = 0; i + 1 < course.x.length; i++) {
+      const dx = course.x[i + 1]! - course.x[i]!;
+      const dy = course.y[i + 1]! - course.y[i]!;
+      const f = Math.max(
+        0,
+        Math.min(
+          1,
+          ((p.x - course.x[i]!) * dx + (p.y - course.y[i]!) * dy) / (dx * dx + dy * dy || 1),
+        ),
+      );
+      best = Math.min(best, Math.hypot(course.x[i]! + f * dx - p.x, course.y[i]! + f * dy - p.y));
+    }
     return best;
   };
   // A building drawn in parts is drawn by its parts alone, as a map means it.
@@ -230,6 +255,12 @@ async function main(): Promise<void> {
       ]);
       continue;
     }
+    if (e.type === "way" && tags.highway && tags.surface) {
+      // A cobbled street is kept where the road runs along it, not only across it.
+      const near = line.filter((p) => onRoad(p) < SETT_NEAR).length;
+      if (!FOOT.includes(tags.highway) && near >= 2) land.setts!.push(round(simplify(line, 1)));
+      continue;
+    }
     const lineKind =
       tags.waterway === "river" || tags.waterway === "canal"
         ? "river"
@@ -279,7 +310,7 @@ async function main(): Promise<void> {
   const json = JSON.stringify(land);
   writeFileSync(out, json);
   console.log(
-    `${out}: ${(json.length / 1024).toFixed(0)} KB — heights ${cols}×${rows}, areas ${land.areas.length}, lines ${land.lines.length}, buildings ${land.buildings.length} (${land.buildings.filter((b) => b.length > 7).length} with heights or roofs), trees ${land.trees!.length}, turbines ${land.turbines.length}`,
+    `${out}: ${(json.length / 1024).toFixed(0)} KB — heights ${cols}×${rows}, areas ${land.areas.length}, lines ${land.lines.length}, buildings ${land.buildings.length} (${land.buildings.filter((b) => b.length > 7).length} with heights or roofs), trees ${land.trees!.length}, cobbled streets ${land.setts!.length}, turbines ${land.turbines.length}`,
   );
 }
 

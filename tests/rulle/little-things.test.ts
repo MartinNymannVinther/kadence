@@ -4,6 +4,7 @@ import {
   littleThings,
   nothingSeen,
   pauseLengths,
+  seenSchema,
   stopKind,
   type Recording,
 } from "@/modules/rulle";
@@ -48,6 +49,16 @@ describe("today's little things", () => {
       { key: "car", count: 2 },
       { key: "cows", count: 17 },
     ]);
+  });
+
+  it("counts the cobbles of a city's race day after the line, and reads a ride kept from before", () => {
+    const seen = { ...nothingSeen(), finish: 2, cobbles: 4, cows: 1 };
+    expect(
+      littleThings({ rec: ride(60), ascentM: null, seen, allOnTarget: null }).map((t) => t.key),
+    ).toEqual(["finish", "cobbles", "cows"]);
+    // Kept before race day counted cobbles: none, not a ride that cannot be read.
+    const { cobbles: _, ...before } = nothingSeen();
+    expect(seenSchema.parse(before).cobbles).toBe(0);
   });
 
   it("makes the pauses stops and cups: a short one is only a drink from the bottle", () => {
