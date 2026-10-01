@@ -124,13 +124,19 @@ export class SmallThings {
 
   /** One frame of it all; what the pause asks of the camera and the bike. */
   frame(
-    moment: { distance: number; speed: number; pause: Pause | null },
+    moment: { distance: number; speed: number; pause: Pause | null; line?: number | null },
     seconds: number,
     eye: THREE.Vector3,
     rider: RiderFigure,
   ) {
     this.visitors.frame(moment.distance, moment.speed, seconds, moment.pause !== null);
-    this.traffic.frame(moment.distance, moment.speed, seconds, moment.pause !== null);
+    this.traffic.frame(
+      moment.distance,
+      moment.speed,
+      seconds,
+      moment.pause !== null,
+      moment.line ?? null,
+    );
     this.farmyard.frame(moment.distance, eye, seconds);
     this.chalk?.frame(moment.distance, seconds);
     return this.pauses.frame(moment.pause, moment.distance, seconds, rider);

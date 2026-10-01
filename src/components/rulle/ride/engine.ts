@@ -12,14 +12,9 @@ import {
   scaledBand,
   standing,
   startRecording,
-  type Band,
-  type Block,
-  type BlockNow,
   type Course,
-  type CoursePoint,
   type Recording,
   type SessionTimeline,
-  type Standing,
 } from "@/modules/rulle";
 import {
   pauseClock,
@@ -30,10 +25,11 @@ import {
   startClock,
   type Clock,
 } from "./clock";
+import type { Live } from "./live";
 import type { Sensors, SensorsNow } from "./sensors";
 import { OnTarget } from "./on-target";
+import { Shown, type ShownAt } from "./shown";
 import { PowerTrace } from "./trace";
-import { Warp } from "./warp";
 
 /**
  * A ride while it is ridden (ADR 0033): the session's clock and blocks,
@@ -54,6 +50,9 @@ import { Warp } from "./warp";
  *   watts. Without anything that measures them, the landscape still moves
  *   at the block's watts, but nothing about speed or distance is recorded:
  *   a ride is what was measured.
+ * - Where the rider is shown can run ahead of where they have ridden — the
+ *   developer's warp, the cheat code (`shown.ts`) — but what is recorded
+ *   is what was ridden.
  */
 
 /** Watts the landscape moves at when nothing measures them and the block names none. */
@@ -75,26 +74,7 @@ export type EngineEvents = {
   finished: () => void;
 };
 
-export type Live = SensorsNow & {
-  status: Status;
-  autoPaused: boolean;
-  /** Seconds into the plan. */
-  second: number;
-  /** Seconds ridden, pauses and skips left out. */
-  ridden: number;
-  totalSeconds: number | null;
-  block: BlockNow | null;
-  next: Block | null;
-  target: number | null;
-  band: Band | null;
-  standing: Standing;
-  speed: number;
-  distance: number;
-  intensity: number;
-  erg: boolean;
-  /** The watts ridden, one average per TRACE_SECONDS of the plan. */
-  trace: readonly (number | null)[];
-};
+export type { Live } from "./live";
 
 export class RideEngine {
   status: Status = "ready";
@@ -102,8 +82,8 @@ export class RideEngine {
   intensity = 1;
   erg = true;
   recording: Recording | null = null;
-  /** Development only: the way along the route run faster, or backwards (`warp.ts`). */
-  readonly warp = new Warp();
+  /** Where the rider is shown: the developer's warp and the cheat code (`shown.ts`). */
+  readonly shown = new Shown();
   private readonly trace = new PowerTrace();
   private clock: Clock | null = null;
   private speed = 0;
@@ -208,12 +188,17 @@ export class RideEngine {
     return this.onTarget.verdict(this.sensors.seen.power);
   }
 
-  /** Where the rider is now, between ticks too: the scene asks every frame. */
-  positionAt(now: number): CoursePoint & { speed: number; distance: number } {
-    const since =
-      this.status === "riding" ? Math.min(1, Math.max(0, now - this.movedAt) / 1000) : 0;
-    const distance = this.warp.shown(this.distance + this.speed * since, this.speed, since);
-    return { ...courseAt(this.course, distance), speed: this.speed, distance };
+  /** Where the rider is shown now, between ticks too: the scene asks every frame. */
+  positionAt(now: number): ShownAt {
+    const riding = this.status === "riding";
+    const since = riding ? Math.min(1, Math.max(0, now - this.movedAt) / 1000) : 0;
+    return this.shown.at(
+      this.course,
+      this.distance + this.speed * since,
+      this.speed,
+      since,
+      riding,
+    );
   }
 
   live(now: number): Live {
@@ -236,8 +221,9 @@ export class RideEngine {
         block && this.status === "riding"
           ? standing(block.block, sensors.power3s, this.intensity)
           : "free",
-      speed: this.speed,
-      distance: this.warp.shown(this.distance, this.speed),
+      speed: this.shown.speed(this.speed),
+      distance: this.shown.place(this.distance, this.speed),
+      cheat: this.shown.cheat.on,
       intensity: this.intensity,
       erg: this.erg,
       trace: this.trace.values,
@@ -298,7 +284,7 @@ export class RideEngine {
       : (this.blockWatts() ?? DRAWN_WATTS);
     this.speed = nextSpeed(this.speed, watts, courseAt(this.course, this.distance).grade, dt);
     this.distance += this.speed * dt;
-    this.warp.advance(this.speed, dt);
+    this.shown.advance(this.distance, this.speed, dt);
   }
 
   private blockWatts(): number | null {

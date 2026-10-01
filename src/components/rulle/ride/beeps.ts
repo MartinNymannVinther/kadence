@@ -18,7 +18,8 @@ import { Ambience } from "./ambience";
 
 type Tone = { hz: number; seconds: number; at: number };
 
-export type Sound = "count" | "change" | "end" | "cheer" | "bell" | "whistle" | "horn";
+export type Sound =
+  "count" | "change" | "end" | "cheer" | "bell" | "whistle" | "horn" | "fanfare" | "fanfareOff";
 
 const TONES: Record<"count" | "change" | "end", Tone[]> = {
   count: [{ hz: 880, seconds: 0.12, at: 0 }],
@@ -78,6 +79,8 @@ export class Beeps {
     if (kind === "bell") return bell(context);
     if (kind === "whistle") return whistle(context);
     if (kind === "horn") return horn(context);
+    if (kind === "fanfare") return arcade(context, [523, 659, 784, 1047], 0.09);
+    if (kind === "fanfareOff") return arcade(context, [784, 523], 0.12);
     for (const tone of TONES[kind]) {
       const start = context.currentTime + tone.at;
       const oscillator = context.createOscillator();
@@ -206,4 +209,32 @@ function horn(context: AudioContext): void {
       oscillator.stop(start + 0.17);
     }
   }
+}
+
+/**
+ * The cheat code's fanfare (ADR 0045), as an old arcade machine played
+ * it: quick square-wave notes up the chord as it comes on, two down as it
+ * goes off, softened so they chirp rather than buzz.
+ */
+function arcade(context: AudioContext, notes: number[], step: number): void {
+  const soft = context.createBiquadFilter();
+  soft.type = "lowpass";
+  soft.frequency.value = 2600;
+  soft.connect(context.destination);
+  notes.forEach((hz, k) => {
+    const start = context.currentTime + k * step;
+    const last = k === notes.length - 1;
+    const long = last ? 0.28 : step * 0.9;
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+    oscillator.type = "square";
+    oscillator.frequency.value = hz;
+    gain.gain.setValueAtTime(0, start);
+    gain.gain.linearRampToValueAtTime(0.045, start + 0.01);
+    gain.gain.setValueAtTime(0.045, start + long - 0.03);
+    gain.gain.linearRampToValueAtTime(0, start + long);
+    oscillator.connect(gain).connect(soft);
+    oscillator.start(start);
+    oscillator.stop(start + long + 0.02);
+  });
 }

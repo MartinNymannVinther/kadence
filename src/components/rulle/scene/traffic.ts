@@ -20,12 +20,15 @@ import { groundPoint, roadPoint, roadYaw } from "./road-point";
  * those from behind, faster, passing on the left; a few together now and
  * then. Once in a while someone at the roadside mending a puncture. Riders
  * come from a small pool and go back to it; none is ever raced or timed.
+ * A rider steering about on the cheat code (ADR 0045) is made way for.
  */
 
 type Member = {
   npc: NpcRider;
   distance: number;
   offset: number;
+  /** Where across the road it rides when nobody is in the way. */
+  home: number;
   speed: number;
   /** Along the road (1) or against it (-1). */
   way: 1 | -1;
@@ -40,6 +43,8 @@ const GAP = 2.4;
 const AHEAD = 420;
 const BEHIND = 60;
 const POOL = 12;
+/** Making way: this near along the road and across it, to this far beside, at this pace (m/s). */
+const WAY = { along: 10, across: 1.6, beside: 1.7, pace: 2.5, edge: 2.7 } as const;
 
 export class Traffic {
   readonly group = new THREE.Group();
@@ -63,7 +68,14 @@ export class Traffic {
     private readonly seen: (key: keyof Seen, count: number) => void,
   ) {}
 
-  frame(distance: number, speed: number, seconds: number, paused: boolean): void {
+  /** On by `seconds`; `line` is where the cheat code has the rider across the road, if it has. */
+  frame(
+    distance: number,
+    speed: number,
+    seconds: number,
+    paused: boolean,
+    line: number | null = null,
+  ): void {
     const length = this.course.length;
     const lap = Math.floor(distance / length);
     const along = distance - lap * length;
@@ -82,7 +94,7 @@ export class Traffic {
       if (!paused) this.start(due, distance);
       this.next++;
     }
-    for (const m of [...this.members]) this.move(m, distance, seconds);
+    for (const m of [...this.members]) this.move(m, distance, seconds, line);
     this.mend(distance);
   }
 
@@ -119,6 +131,7 @@ export class Traffic {
         npc: this.take(kit, rider.seed + i),
         distance: distance + APPEAR[rider.kind] + (abreast ? 0.4 : i * GAP * (way === 1 ? -1 : 1)),
         offset: LANE[rider.kind] + (abreast ? -0.7 : 0),
+        home: LANE[rider.kind] + (abreast ? -0.7 : 0),
         speed: rider.speed,
         way,
         greets: rider.greets && i === 0,
@@ -126,8 +139,9 @@ export class Traffic {
     }
   }
 
-  private move(m: Member, distance: number, seconds: number): void {
+  private move(m: Member, distance: number, seconds: number, line: number | null): void {
     m.distance += m.way * m.speed * seconds;
+    m.offset = makeWay(m, distance, seconds, line);
     const group = m.npc.group;
     group.position.copy(roadPoint(this.course, m.distance, m.offset));
     group.rotation.y = roadYaw(this.course, m.distance) + (m.way === 1 ? 0 : Math.PI);
@@ -171,4 +185,19 @@ export class Traffic {
       this.seen("puncture", 1);
     }
   }
+}
+
+/** Where across the road a rider rides now: out of the way of one steering about, or home again. */
+function makeWay(m: Member, distance: number, seconds: number, line: number | null): number {
+  let want = m.home;
+  if (line !== null && Math.abs(m.distance - distance) < WAY.along) {
+    if (Math.abs(m.home - line) < WAY.across) {
+      // Beside the rider on its own side, or the other side where its own runs off the road.
+      const side = m.home >= line ? 1 : -1;
+      want = line + side * WAY.beside;
+      if (Math.abs(want) > WAY.edge) want = line - side * WAY.beside;
+    }
+  }
+  const gap = want - m.offset;
+  return m.offset + Math.sign(gap) * Math.min(Math.abs(gap), WAY.pace * seconds);
 }

@@ -5,7 +5,9 @@ import { nothingSeen, type Course, type Seen, type SessionTimeline } from "@/mod
 import type { TrainerLink } from "../bluetooth/trainer-link";
 import type { Moment } from "../scene/world";
 import type { Beeps } from "./beeps";
+import type { Push } from "./cheat";
 import { RideEngine, type Live } from "./engine";
+import type { ShownAt } from "./shown";
 import { keepRide, type RideMeta } from "./ride-store";
 import type { Sensors } from "./sensors";
 
@@ -17,6 +19,14 @@ const DRAWN_CADENCE = 85;
 const DRAW_MS = 250;
 /** The ride is put aside in the browser this often. */
 const KEEP_MS = 10_000;
+
+/** Where the landscape shows the rider: the place, and the cheat's line and lean (ADR 0045). */
+const shown = (at: ShownAt) => ({
+  distance: at.distance,
+  line: at.line,
+  lean: at.lean,
+  cheat: at.cheat,
+});
 
 export type RideOptions = {
   timeline: SessionTimeline | null;
@@ -70,11 +80,11 @@ export function useRide(options: RideOptions) {
               seconds: Math.max(0, (now - ride.recording.startedAt) / 1000 - open.from),
             }
           : null;
-      return { distance: at.distance, speed: 0, cadence: 0, pause };
+      return { ...shown(at), speed: 0, cadence: 0, pause };
     }
     const cadence = latest.current.sensors.now(now).cadence;
     return {
-      distance: at.distance,
+      ...shown(at),
       speed: at.speed,
       cadence: cadence ?? (at.speed > 1 ? DRAWN_CADENCE : 0),
       pause: null,
@@ -154,8 +164,20 @@ export function useRide(options: RideOptions) {
     /** Development only: times the rider's speed along the route, negative backwards. */
     setWarp: (factor: number) =>
       act((ride) => {
-        ride.warp.factor = factor;
+        ride.shown.warp.factor = factor;
       }),
+    /** The cheat code on or off (ADR 0045); the page hears whether it is on. */
+    toggleCheat: (): boolean => {
+      const ride = engine.current;
+      if (!ride) return false;
+      const now = Date.now();
+      const { speed, distance } = ride.live(now);
+      ride.shown.cheat.toggle(speed, distance);
+      draw();
+      return ride.shown.cheat.on;
+    },
+    /** What the cheat's keys hold now: faster or slower, left or right. */
+    steerCheat: (throttle: Push, steer: Push) => engine.current?.shown.cheat.hold(throttle, steer),
   };
 }
 
