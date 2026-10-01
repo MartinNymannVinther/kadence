@@ -8,6 +8,7 @@ import {
   type Seen,
 } from "@/modules/rulle";
 import type { Ground } from "./ground";
+import { personOf } from "./folk-look";
 import { KITS, NpcRider, puncture } from "./npc-rider";
 import { PALETTE } from "./palette";
 import { freeze } from "./props";
@@ -53,7 +54,8 @@ export class Traffic {
   private next = 0;
   private readonly members: Member[] = [];
   private readonly pool: NpcRider[] = [];
-  private readonly legs = new THREE.MeshLambertMaterial({ color: PALETTE.skin, flatShading: true });
+  /** The bare shins, a material for each skin. */
+  private readonly legs = new Map<string, THREE.MeshLambertMaterial>();
   private readonly shorts = new THREE.MeshLambertMaterial({
     color: PALETTE.shorts,
     flatShading: true,
@@ -100,7 +102,7 @@ export class Traffic {
 
   dispose(): void {
     for (const npc of [...this.pool, ...this.members.map((m) => m.npc)]) npc.dispose();
-    this.legs.dispose();
+    for (const legs of this.legs.values()) legs.dispose();
     this.shorts.dispose();
     if (this.flat) this.flat.mesh.geometry.dispose();
   }
@@ -108,14 +110,22 @@ export class Traffic {
   private take(kit: number, seed: number): NpcRider {
     // Pooled riders keep the kit they were made in: a new kit is a new rider.
     const found = this.pool.findIndex((n) => n.group.userData.kit === kit % KITS.length);
-    const npc =
-      found >= 0
-        ? this.pool.splice(found, 1)[0]!
-        : new NpcRider(this.material, kit, seed, this.legs, this.shorts);
+    const npc = found >= 0 ? this.pool.splice(found, 1)[0]! : this.rider(kit, seed);
     npc.group.userData.kit = kit % KITS.length;
     npc.group.rotation.order = "YXZ";
     this.group.add(npc.group);
     return npc;
+  }
+
+  /** A new rider in a kit, with a skin of their own. */
+  private rider(kit: number, seed: number): NpcRider {
+    const { skin } = personOf(seed + 5200);
+    let legs = this.legs.get(skin);
+    if (!legs) {
+      legs = new THREE.MeshLambertMaterial({ color: skin, flatShading: true });
+      this.legs.set(skin, legs);
+    }
+    return new NpcRider(this.material, kit, seed, legs, this.shorts, skin);
   }
 
   private start(rider: Rider, distance: number): void {
@@ -170,7 +180,7 @@ export class Traffic {
     }
     const found = punctureOnLap(this.course, lap);
     if (!found) return;
-    const mesh = new THREE.Mesh(puncture(lap), this.material);
+    const mesh = new THREE.Mesh(puncture(lap, personOf(lap + 6100).skin), this.material);
     mesh.position.copy(groundPoint(this.course, this.ground, found.at, 4.3));
     mesh.rotation.y = roadYaw(this.course, found.at) + Math.PI / 2;
     this.group.add(freeze(mesh));

@@ -13,6 +13,7 @@ import {
   type Side,
 } from "@/modules/rulle";
 import { CityFace } from "./city-face";
+import { personOf } from "./folk-look";
 import { cobblesMesh, disposeCobbles } from "./cobbles";
 import { Crowd } from "./crowd";
 import type { Ground } from "./ground";
@@ -138,7 +139,8 @@ export class RaceDayScene {
         const foot = groundPoint(course, ground, d, side * 3.55);
         const yaw = roadYaw(course, d) + (side * Math.PI) / 2 + side * 0.4;
         const team = P.teams[Math.floor(hash(k, 2, 821) * P.teams.length)]!;
-        parts.push(soigneurShape(team).rotateY(yaw).translate(foot.x, foot.y, foot.z));
+        const shape = soigneurShape(team, personOf(k + 4100));
+        parts.push(shape.rotateY(yaw).translate(foot.x, foot.y, foot.z));
       }
       fixed.add(new THREE.Mesh(this.keep(merged(parts)), material));
       this.sign(place, words.feed, from - 6, side);
@@ -236,7 +238,7 @@ export class RaceDayScene {
 
   /** A marshal `offset` right of the road's middle, facing the riders: on an island, or at the kerb. */
   private marshal(along: number, offset: number, island: boolean): void {
-    const figure = marshal(this.material);
+    const figure = marshal(this.material, personOf(Math.round(along) + 7300));
     const foot = island
       ? roadPoint(this.course, along, offset)
       : groundPoint(this.course, this.ground, along, offset);

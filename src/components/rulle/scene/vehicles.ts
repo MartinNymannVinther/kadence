@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { personOf, type Person } from "./folk-look";
 import { PALETTE as P } from "./palette";
 import { ball, box, jointed, knee, Limb, merged, rod, v, wheel } from "./shapes";
 
@@ -19,7 +20,7 @@ export type Figure = {
 const lambert = (color: string) => new THREE.MeshLambertMaterial({ color, flatShading: true });
 
 /** A Christiania bike with a motor: the box in front, the child facing the parent, a rain jacket. */
-export function cargoBike(material: THREE.Material): Figure {
+export function cargoBike(material: THREE.Material, person: Person = personOf(0)): Figure {
   const group = new THREE.Group();
   const body = merged([
     box(0.86, 0.06, 0.8, P.cargoBox, 0, 0.36, -1.15),
@@ -40,21 +41,21 @@ export function cargoBike(material: THREE.Material): Figure {
     box(0.12, 0.12, 0.34, P.dark, 0, 0.66, -0.36),
     // The parent, upright in a rain jacket.
     rod(v(0, 1.0, 0.1), v(0, 1.5, -0.06), 0.17, P.raincoat, 6),
-    ball(0.11, P.skin, 0, 1.69, -0.09),
+    ball(0.11, person.skin, 0, 1.69, -0.09),
     ball(0.125, P.frame, 0, 1.73, -0.08, [1, 0.75, 1.1]),
     rod(v(-0.17, 1.44, -0.08), v(-0.29, 1.03, -0.6), 0.045, P.raincoat),
     rod(v(0.17, 1.44, -0.08), v(0.29, 1.03, -0.6), 0.045, P.raincoat),
     // The child on the bench at the front, facing back toward the parent.
     box(0.7, 0.05, 0.22, P.wood, 0, 0.62, -1.42),
     rod(v(0, 0.66, -1.4), v(0, 0.98, -1.35), 0.12, P.denim, 6),
-    ball(0.09, P.skin, 0, 1.1, -1.33),
+    ball(0.09, person.skin, 0, 1.1, -1.33),
     ball(0.1, P.kidHelmet, 0, 1.15, -1.34, [1, 0.8, 1.1]),
   ]);
   group.add(new THREE.Mesh(body, material));
   const shoulder = v(0.1, 0.96, -1.33);
   const arm = jointed(rod(shoulder, v(0.26, 1.24, -1.24), 0.035, P.denim), material, shoulder);
   group.add(arm);
-  const trousers = lambert(P.trousers);
+  const trousers = lambert(person.trousers);
   const legs = [0, 1].map(() => ({
     thigh: new Limb(0.065, trousers),
     shin: new Limb(0.05, trousers),

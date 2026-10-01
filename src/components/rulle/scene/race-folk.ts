@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { MARK, type Person } from "./folk-look";
 import { PALETTE as P } from "./palette";
 import { ball, bar, box, jointed, merged, rod, v } from "./shapes";
 import type { Figure } from "./vehicles";
@@ -7,10 +8,12 @@ import type { Figure } from "./vehicles";
  * The people of race day (ADR 0036), low-poly like everyone else on the
  * road: the crowd, in a few poses, each copy in a jacket of its own (the
  * jacket is painted white and given its colour per copy, as a tree's crown
- * is, `treeMaterial`); some with a flag — Dannebrog in Copenhagen, and at
- * the Worlds in Montréal Canada's, Québec's and the visitors'; a marshal
- * in a yellow vest with a yellow flag; and a soigneur in the feed zone
- * holding a musette out. Each faces -z and stands on y = 0.
+ * is, `treeMaterial`) and with a skin, hair, trousers, long hair or a cap
+ * of its own (painted in markers, `folkMaterial`, ADR 0045); some with a
+ * flag — Dannebrog in Copenhagen, and at the Worlds in Montréal Canada's,
+ * Québec's and the visitors'; a marshal in a yellow vest with a yellow
+ * flag; and a soigneur in the feed zone holding a musette out. Each faces
+ * -z and stands on y = 0.
  */
 
 /** Painted per copy: the jacket. */
@@ -27,21 +30,20 @@ export const FLAGS: Record<"kobenhavn" | "montreal", readonly FlagKind[]> = {
   montreal: ["ca", "qc", "ca", "be", "dk", "nl", "fr"],
 };
 
-const HAIR: Record<Pose | "flag", string> = {
-  down: "#3a2e26",
-  up: "#b89760",
-  clap: P.cap,
-  flag: "#2a2622",
-};
-
-function body(trousers: string, hair: string): THREE.BufferGeometry[] {
+/** Someone in the crowd, but for the arms: every colour but the jacket's a marker (`folkMaterial`). */
+function body(): THREE.BufferGeometry[] {
   return [
-    box(0.13, 0.8, 0.16, trousers, -0.1, 0.4, 0),
-    box(0.13, 0.8, 0.16, trousers, 0.1, 0.4, 0),
+    box(0.13, 0.8, 0.16, MARK.trousers, -0.1, 0.4, 0),
+    box(0.13, 0.8, 0.16, MARK.trousers, 0.1, 0.4, 0),
     box(0.44, 0.6, 0.26, JACKET, 0, 1.1, 0),
-    ball(0.12, P.skin, 0, 1.55, 0),
+    ball(0.12, MARK.skin, 0, 1.55, 0),
     // Hair over the top and the back of the head; the face left free.
-    box(0.25, 0.1, 0.25, hair, 0, 1.64, 0.03),
+    box(0.25, 0.1, 0.25, MARK.hair, 0, 1.64, 0.03),
+    // Long hair down the back, for some.
+    box(0.23, 0.34, 0.08, MARK.long, 0, 1.43, 0.12),
+    // A cap with its peak to the front, for a few.
+    box(0.27, 0.07, 0.27, MARK.cap, 0, 1.69, 0.02),
+    box(0.24, 0.02, 0.13, MARK.cap, 0, 1.66, -0.17),
   ];
 }
 
@@ -58,7 +60,7 @@ export function spectatorShape(pose: Pose): THREE.BufferGeometry {
       : pose === "up"
         ? [v(-0.45, 1.9, -0.05), v(0.45, 1.9, -0.05)]
         : [v(-0.05, 1.22, -0.3), v(0.05, 1.22, -0.3)];
-  return merged([...body(P.trousers, HAIR[pose]), arm(-0.25, hands[0]!), arm(0.25, hands[1]!)]);
+  return merged([...body(), arm(-0.25, hands[0]!), arm(0.25, hands[1]!)]);
 }
 
 /** A flag's cloth, `w` by `h`, its near edge on a stick at x = 0, facing ±z. */
@@ -143,9 +145,9 @@ const FLAG_FAR: Record<FlagKind, string> = {
  */
 export function farShape(flag: FlagKind | null): THREE.BufferGeometry {
   const parts = [
-    box(0.34, 0.8, 0.16, P.trousers, 0, 0.4, 0),
+    box(0.34, 0.8, 0.16, MARK.trousers, 0, 0.4, 0),
     box(0.44, 0.6, 0.26, JACKET, 0, 1.1, 0),
-    box(0.22, 0.26, 0.22, P.skin, 0, 1.54, 0),
+    box(0.22, 0.26, 0.22, MARK.skin, 0, 1.54, 0),
   ];
   if (flag) parts.push(box(0.72, 0.48, 0.03, FLAG_FAR[flag], 0.69, 2.22, -0.06));
   return merged(parts);
@@ -155,7 +157,7 @@ export function farShape(flag: FlagKind | null): THREE.BufferGeometry {
 export function flagShape(kind: FlagKind): THREE.BufferGeometry {
   const hand = v(0.32, 1.86, -0.06);
   return merged([
-    ...body(P.denim, HAIR.flag),
+    ...body(),
     arm(-0.25, v(-0.28, 0.9, 0)),
     arm(0.25, hand),
     bar(v(0.32, 1.55, -0.06), v(0.32, 2.5, -0.06), 0.025, P.wood),
@@ -166,16 +168,16 @@ export function flagShape(kind: FlagKind): THREE.BufferGeometry {
 export type Marshal = Figure & { waving: boolean };
 
 /** A marshal in a yellow vest, a yellow flag in the right hand: waved overhead as a rider comes. */
-export function marshal(material: THREE.Material): Marshal {
+export function marshal(material: THREE.Material, person: Person): Marshal {
   const group = new THREE.Group();
   const still = merged([
-    box(0.13, 0.8, 0.16, P.trousers, -0.1, 0.4, 0),
-    box(0.13, 0.8, 0.16, P.trousers, 0.1, 0.4, 0),
+    box(0.13, 0.8, 0.16, person.trousers, -0.1, 0.4, 0),
+    box(0.13, 0.8, 0.16, person.trousers, 0.1, 0.4, 0),
     box(0.44, 0.6, 0.26, P.vest, 0, 1.1, 0),
     // The vest's reflective bands.
     box(0.45, 0.05, 0.27, P.metal, 0, 0.95, 0),
     box(0.45, 0.05, 0.27, P.metal, 0, 1.2, 0),
-    ball(0.12, P.skin, 0, 1.55, 0),
+    ball(0.12, person.skin, 0, 1.55, 0),
     box(0.24, 0.08, 0.24, P.vest, 0, 1.67, 0.01),
     box(0.24, 0.02, 0.12, P.vest, 0, 1.64, -0.16),
     rod(shoulder(-0.25), v(-0.28, 0.9, 0), 0.055, P.vest),
@@ -208,13 +210,14 @@ export function marshal(material: THREE.Material): Marshal {
 }
 
 /** A soigneur at the roadside in a team's jacket, a musette held out at the end of an arm. */
-export function soigneurShape(jacket: string): THREE.BufferGeometry {
+export function soigneurShape(jacket: string, person: Person): THREE.BufferGeometry {
   const hand = v(0.26, 1.35, -0.62);
   return merged([
-    box(0.13, 0.8, 0.16, P.trousers, -0.1, 0.4, 0),
-    box(0.13, 0.8, 0.16, P.trousers, 0.1, 0.4, 0),
+    box(0.13, 0.8, 0.16, person.trousers, -0.1, 0.4, 0),
+    box(0.13, 0.8, 0.16, person.trousers, 0.1, 0.4, 0),
     box(0.44, 0.6, 0.26, jacket, 0, 1.1, 0),
-    ball(0.12, P.skin, 0, 1.55, 0),
+    ball(0.12, person.skin, 0, 1.55, 0),
+    box(0.25, 0.06, 0.25, person.hair, 0, 1.65, 0.04),
     box(0.24, 0.08, 0.24, jacket, 0, 1.67, 0.01),
     rod(shoulder(-0.25), v(-0.28, 0.9, 0), 0.055, jacket),
     rod(shoulder(0.25), hand, 0.055, jacket),
