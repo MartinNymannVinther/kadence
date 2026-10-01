@@ -151,8 +151,8 @@ Rules:
 
 ## Rulle and the rest
 
-Rulle (`/rulle`, ADR 0033–0037) is the session on the trainer. It has
-**no table of its own**:
+Rulle (`/rulle`, ADR 0033–0037, 0045) is the session on the trainer. It
+has **no table of its own**:
 
 - It reads the day's session, the rider and their thresholds through the
   ordinary services (`src/modules/rulle/service.ts`), under the same RLS.
@@ -166,6 +166,9 @@ Rulle (`/rulle`, ADR 0033–0037) is the session on the trainer. It has
 - Routes are GPX read in the browser, with their land beside them in
   `<route>.land.json`, made once by `scripts/rulle-land.ts`. Nothing is
   fetched from a map service while riding.
+- Where the rider is shown can run ahead of where they have ridden — the
+  developer's warp and the cheat code (`ride/shown.ts`) — but what is
+  recorded is always what was ridden.
 - **Web Bluetooth needs a secure context — https or `localhost` — and
   works only in Chrome and Edge** (on a computer and on Android). Safari
   and Firefox are told so plainly. Locally, test Rulle on

@@ -3,6 +3,7 @@ import { buildCourse, readRouteGpx, toPlane } from "@/modules/rulle";
 import { LAND_KINDS, type LandFile } from "@/modules/rulle/route/land";
 import { get } from "./rulle-land/fetch";
 import { heightsOver } from "./rulle-land/heights";
+import { fromRoad as roadFrom, onRoad as roadOn } from "./rulle-land/road";
 import {
   area,
   clip,
@@ -156,30 +157,8 @@ async function main(): Promise<void> {
     setts: [],
     structures: [],
   };
-  // Nearest the road, in metres: what decides whether a building far off is on the skyline.
-  const fromRoad = (p: P) => {
-    let best = Infinity;
-    for (let i = 0; i < course.x.length; i += 3)
-      best = Math.min(best, Math.hypot(course.x[i]! - p.x, course.y[i]! - p.y));
-    return best;
-  };
-  // The same, exactly: to the road's own line between its points.
-  const onRoad = (p: P) => {
-    let best = Infinity;
-    for (let i = 0; i + 1 < course.x.length; i++) {
-      const dx = course.x[i + 1]! - course.x[i]!;
-      const dy = course.y[i + 1]! - course.y[i]!;
-      const f = Math.max(
-        0,
-        Math.min(
-          1,
-          ((p.x - course.x[i]!) * dx + (p.y - course.y[i]!) * dy) / (dx * dx + dy * dy || 1),
-        ),
-      );
-      best = Math.min(best, Math.hypot(course.x[i]! + f * dx - p.x, course.y[i]! + f * dy - p.y));
-    }
-    return best;
-  };
+  const fromRoad = (p: P) => roadFrom(course, p);
+  const onRoad = (p: P) => roadOn(course, p);
   // A building drawn in parts is drawn by its parts alone, as a map means it.
   const parts = osm.elements
     .filter((e) => e.type === "way" && e.tags?.["building:part"] && !e.tags.building)
