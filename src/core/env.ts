@@ -110,6 +110,18 @@ export const EnvSchema = z
     // itself, so no rider's position reaches a map service. Without it the
     // route is drawn on plain paper, as before.
     MAP_FILE: z.string().min(1).optional(),
+    // A rider's races and results from Cykling Danmark's member portal
+    // (src/modules/results, ADR 0039), read from the rider's public page
+    // by the UCI ID a coach entered. An external service, and one that has
+    // not yet said yes: "off" (the default) reads nothing, and the coach
+    // sees a link to the rider's page instead; "on" reads it for every
+    // rider with a UCI ID; a comma-separated list of UCI IDs reads it for
+    // those riders only, the way to try it with one rider first.
+    DCU_RESULTS: z
+      .string()
+      .transform((v) => v.replace(/\s/g, ""))
+      .pipe(z.union([z.enum(["off", "on"]), z.string().regex(/^[0-9]{11}(,[0-9]{11})*$/)]))
+      .default("off"),
   })
   .superRefine((value, ctx) => {
     // `next build` runs with NODE_ENV=production and placeholder values

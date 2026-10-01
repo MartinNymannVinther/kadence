@@ -21,6 +21,7 @@ import {
   deleteEventAction,
   updateEventAction,
 } from "@/modules/training/actions";
+import { EventResults } from "./event-results";
 import type { CalendarEventCard, RiderOption } from "./types";
 
 const KINDS = ["race", "exam", "school", "camp", "holiday", "ill", "other"] as const;
@@ -99,6 +100,7 @@ export function EventDialog({
             <DialogTitle>{event ? t("editTitle") : t("addTitle")}</DialogTitle>
             <DialogDescription>{t("body")}</DialogDescription>
           </DialogHeader>
+          {event && <EventResults event={event} riders={riders} />}
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="flex flex-col gap-1.5">
               <label htmlFor={ids.kind} className="text-sm font-medium">

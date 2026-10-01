@@ -100,7 +100,21 @@ const TABLES: Array<{ table: string; row: (s: string) => Record<string, unknown>
   { table: "checkins", row: (s) => ({ rider_id: `rider_${s}`, on_date: DAY, energy: 4 }) },
   {
     table: "calendar_events",
-    row: (s) => ({ kind: "race", title: `Løb ${s}`, starts_on: DAY, ends_on: DAY }),
+    row: (s) => ({ id: `evt_${s}`, kind: "race", title: `Løb ${s}`, starts_on: DAY, ends_on: DAY }),
+  },
+  {
+    table: "race_results",
+    row: (s) => ({
+      rider_id: `rider_${s}`,
+      event_id: `evt_${s}`,
+      source_ref: "17614:101512",
+      race: `Løb ${s}`,
+      discipline: "Landevej",
+      race_class: "U19",
+      raced_on: DAY,
+      place: 3,
+      result_url: "https://www.sportstiming.dk/event/17614/results?round=101512",
+    }),
   },
   {
     table: "comments",
@@ -311,6 +325,34 @@ describe("a row can only name rows of its own team (drizzle/0003)", () => {
         title: "x",
         starts_on: DAY,
         ends_on: DAY,
+      },
+    ],
+    [
+      "a result for B's rider",
+      {
+        table: "race_results",
+        rider_id: "rider_b",
+        event_id: "evt_a",
+        source_ref: "1:2",
+        race: "x",
+        discipline: "Landevej",
+        race_class: "U19",
+        raced_on: DAY,
+        result_url: "https://www.sportstiming.dk/event/1/results",
+      },
+    ],
+    [
+      "a result on B's race",
+      {
+        table: "race_results",
+        rider_id: "rider_a",
+        event_id: "evt_b",
+        source_ref: "1:3",
+        race: "x",
+        discipline: "Landevej",
+        race_class: "U19",
+        raced_on: DAY,
+        result_url: "https://www.sportstiming.dk/event/1/results",
       },
     ],
   ];

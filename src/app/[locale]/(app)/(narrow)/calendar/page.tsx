@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { after } from "next/server";
 import { getLocale, getTranslations } from "next-intl/server";
 import { buttonVariants } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -7,7 +8,7 @@ import { calendarHref, type CalendarQuery } from "@/components/calendar/href";
 import { RiderSelect } from "@/components/calendar/rider-select";
 import { RiderWeek } from "@/components/calendar/rider-week";
 import { TeamGrid } from "@/components/calendar/team-grid";
-import { toActivityCard, toCard, toEventCard } from "@/components/calendar/to-card";
+import { toActivityCard, toCard, toEventCard, withResults } from "@/components/calendar/to-card";
 import { WeekNav } from "@/components/calendar/week-nav";
 import { SessionSheet } from "@/components/session/session-sheet";
 import { SessionView } from "@/components/session/session-view";
@@ -16,6 +17,8 @@ import { todayInCopenhagen } from "@/core/dates";
 import { basisText } from "@/components/season/basis-text";
 import { Link, redirect } from "@/i18n/navigation";
 import { seasonStartYear, weeklyCorridor } from "@/modules/dcu";
+import { refreshStaleRaces } from "@/modules/results/refresh";
+import { listRaceResults } from "@/modules/results/service";
 import { riderClass } from "@/modules/season/class";
 import { whoAmI } from "@/modules/team/access";
 import { getRiders } from "@/modules/team/riders";
@@ -95,12 +98,17 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
     ? { week: monday, view: "team" }
     : { week: monday, rider: choose ? rider.id : null };
 
-  const [sessions, unplanned, events, templates] = await Promise.all([
+  const [sessions, unplanned, eventRows, results, templates] = await Promise.all([
     listSessions(ctx, { ...range, riderIds }),
     listUnplanned(ctx, { ...range, riderIds }),
     listEvents(ctx, { ...range, riderIds }),
+    // The places from Cykling Danmark are the coach's (ADR 0039).
+    me.isCoach ? listRaceResults(ctx, { ...range, riderIds }) : Promise.resolve([]),
     canWrite ? listTemplates(ctx) : Promise.resolve([]),
   ]);
+  const events = withResults(eventRows.map(toEventCard), results);
+  // Kadence has no scheduled job: a coach's visit is when the races are read again.
+  if (me.isCoach) after(() => refreshStaleRaces(ctx, riderIds));
   const templateOptions = templates.map((tpl) => ({
     id: tpl.id,
     name: tpl.name,
@@ -143,7 +151,7 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
           today={today}
           sessions={sessions.map(toCard)}
           activities={unplanned.map(toActivityCard)}
-          events={events.map(toEventCard)}
+          events={events}
           templates={templateOptions}
           query={query}
         />
@@ -154,7 +162,7 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
           today={today}
           sessions={sessions.map(toCard)}
           activities={unplanned.map(toActivityCard)}
-          events={events.map(toEventCard)}
+          events={events}
           canWrite={canWrite}
           isCoach={me.isCoach}
           riders={me.isCoach ? visible : [rider]}

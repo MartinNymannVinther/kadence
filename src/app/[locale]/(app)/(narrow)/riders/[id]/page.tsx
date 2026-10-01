@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { CalendarDays, CalendarRange, ChevronLeft } from "lucide-react";
 import { notFound } from "next/navigation";
+import { after } from "next/server";
 import { getLocale, getTranslations } from "next-intl/server";
 import { FitUpload } from "@/components/activities/fit-upload";
 import { UploadKeysCard } from "@/components/devices/upload-keys-card";
@@ -16,6 +17,7 @@ import { ArchiveRider } from "@/components/team/archive-rider";
 import { classText } from "@/components/team/class-text";
 import { EraseRider } from "@/components/team/erase-rider";
 import { GuardianList } from "@/components/team/guardian-list";
+import { RaceCard } from "@/components/team/race-card";
 import { guardianState } from "@/components/team/guardian-state";
 import { RiderAccount } from "@/components/team/rider-account";
 import { RiderInsightCard } from "@/components/team/rider-insight-card";
@@ -31,6 +33,9 @@ import { Link, redirect } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { listUploadKeys, MAX_KEYS_PER_RIDER } from "@/modules/devices/upload-keys";
 import { getInsights } from "@/modules/insight/service";
+import { refreshStaleRaces } from "@/modules/results/refresh";
+import { raceStatus } from "@/modules/results/service";
+import { dcuProfileUrl, formatUciId } from "@/modules/results/uci-id";
 import { whoAmI } from "@/modules/team/access";
 import { listGuardians } from "@/modules/team/guardians";
 import { getRider } from "@/modules/team/riders";
@@ -55,9 +60,11 @@ export async function generateMetadata({
  * One rider, for a coach: the week's warnings and the last two weeks of
  * check-ins, the load chart and the weeks' hours against DCU, height
  * through the growth spurt, a ride uploaded on the rider's behalf and the
- * rider's upload keys, if they have any; then the profile, the thresholds the zones are worked out from, the rider's
- * own account and invitation, the parents and where their links stand,
- * the way to archive the rider — and, apart, to erase them.
+ * rider's upload keys, if they have any; then the profile, the thresholds
+ * the zones are worked out from, the UCI ID and the races read from
+ * Cykling Danmark, the rider's own account and invitation, the parents
+ * and where their links stand, the way to archive the rider — and,
+ * apart, to erase them.
  */
 export default async function RiderPage({ params }: { params: Promise<{ id: string }> }) {
   const ctx = await getOrgContext();
@@ -86,6 +93,7 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
     riderRecords,
     goals,
     uploadKeys,
+    races,
   ] = await Promise.all([
     listGuardians(ctx, rider.id),
     listPendingInvitations(ctx.orgId),
@@ -96,7 +104,9 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
     getRiderRecords(ctx, rider.id, { today }),
     listGoals(ctx, rider.id, today),
     listUploadKeys(ctx, rider.id),
+    raceStatus(ctx, rider.id),
   ]);
+  after(() => refreshStaleRaces(ctx, [rider.id]));
   const insight = insights[0] ?? null;
   const shownMeasurements: MeasurementRow[] = measurements.flatMap((m) =>
     m.kind === "height_cm" || m.kind === "weight_kg"
@@ -227,6 +237,26 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
             maxHr: rider.maxHr,
             restingHr: rider.restingHr,
             thresholdsOn: rider.thresholdsOn,
+          }}
+        />
+        <RaceCard
+          riderId={rider.id}
+          status={{
+            uciId: races.uciId,
+            printed: races.uciId ? formatUciId(races.uciId) : null,
+            profileUrl: races.uciId ? dcuProfileUrl(races.uciId) : null,
+            reads: races.reads,
+            installationReads: races.installationReads,
+            checkedAt: races.checkedAt?.toISOString() ?? null,
+            error: races.error,
+            latest: races.latest.map((r) => ({
+              racedOn: r.racedOn,
+              race: r.race,
+              raceClass: r.raceClass,
+              place: r.place,
+              placeNote: r.placeNote,
+              resultUrl: r.resultUrl,
+            })),
           }}
         />
         <RiderAccount

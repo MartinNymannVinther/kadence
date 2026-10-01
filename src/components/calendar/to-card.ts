@@ -1,7 +1,7 @@
-import type { CalendarEventRow } from "@/core/db/schema";
+import type { CalendarEventRow, RaceResultRow } from "@/core/db/schema";
 import type { CalendarActivity } from "@/modules/training/activities";
 import type { CalendarSession } from "@/modules/training/sessions";
-import type { CalendarActivityCard, CalendarCard, CalendarEventCard } from "./types";
+import type { CalendarActivityCard, CalendarCard, CalendarEventCard, EventResult } from "./types";
 
 /**
  * The rows the services return, trimmed to what the calendar draws before
@@ -55,5 +55,32 @@ export function toEventCard(e: CalendarEventRow): CalendarEventCard {
     endsOn: e.endsOn,
     priority: e.priority,
     note: e.note,
+    source: e.source,
   };
+}
+
+/**
+ * A coach's calendar: each race with the results that hang on it. Only a
+ * coach's page calls this; a rider's and a parent's get the races alone.
+ */
+export function withResults(
+  cards: CalendarEventCard[],
+  results: RaceResultRow[],
+): CalendarEventCard[] {
+  const byEvent = new Map<string, EventResult[]>();
+  for (const r of results) {
+    const list = byEvent.get(r.eventId) ?? [];
+    list.push({
+      riderId: r.riderId,
+      race: r.race,
+      raceClass: r.raceClass,
+      place: r.place,
+      placeNote: r.placeNote,
+      resultUrl: r.resultUrl,
+    });
+    byEvent.set(r.eventId, list);
+  }
+  return cards.map((card) =>
+    byEvent.has(card.id) ? { ...card, results: byEvent.get(card.id) } : card,
+  );
 }

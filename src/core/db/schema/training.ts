@@ -239,11 +239,14 @@ export const calendarEvents = pgTable(
     /** A race's priority: A | B | C. */
     priority: text("priority"),
     note: text("note").notNull().default(""),
+    /** Where the event came from when no person typed it: "dcu", a race read from Cykling Danmark (docs/adr/0039). */
+    source: text("source"),
     createdBy: text("created_by").references(() => users.id, { onDelete: "set null" }),
     ...timestamps,
   },
   (t) => [
     index("calendar_events_org_dates_idx").on(t.orgId, t.startsOn),
+    check("calendar_events_source", sql`${t.source} is null or ${t.source} = 'dcu'`),
     check(
       "calendar_events_kind",
       sql`${t.kind} in ('race','exam','school','camp','holiday','ill','other')`,

@@ -785,7 +785,10 @@
     "not_a_rider": "Only a rider can connect their own device.",
     "too_many_keys": "You already have as many keys as you can have. Remove one before you create a new one.",
     "too_many_keys_made": "You have created many keys just now. Try again in an hour.",
-    "flagGone": "That warning is no longer active. Reload the page."
+    "flagGone": "That warning is no longer active. Reload the page.",
+    "uciId": "A UCI ID is 11 digits, as on the licence.",
+    "uciTaken": "Another rider on the team already has that UCI ID.",
+    "noUciId": "The rider has no UCI ID yet."
   },
   "calendar": {
     "title": "Calendar",
@@ -932,7 +935,13 @@
       "onlyYou": "Only in your calendar.",
       "note": "Note",
       "deleteTitle": "Delete the event?",
-      "deleteBody": "It disappears from the calendar."
+      "deleteBody": "It disappears from the calendar.",
+      "results": {
+        "source": "Read from Cykling Danmark.",
+        "label": "Results",
+        "list": "Result list",
+        "coachOnly": "Only coaches see the placing."
+      }
     },
     "log": {
       "title": "Log training",
@@ -1169,6 +1178,31 @@
       "typeName": "Type \"{name}\"",
       "confirm": "Delete for good",
       "done": "{name} and all data are deleted."
+    },
+    "races": {
+      "title": "Races from Cykling Danmark",
+      "body": "With the rider's UCI ID, Kadence reads the races the rider has ridden and puts them in the rider's calendar. Only coaches see the placings.",
+      "uciId": "UCI ID",
+      "uciHint": "On the rider's licence, 11 digits. Empty the field to remove it; the races and placings read under it go too.",
+      "profile": "The rider's page at Cykling Danmark",
+      "off": "This installation does not read races. The link shows the rider's results at Cykling Danmark.",
+      "notThisRider": "This installation reads races for selected riders only, and not for this rider yet.",
+      "checked": "Last read {when}.",
+      "notYet": "Not read yet.",
+      "refresh": "Read races now",
+      "read": "{count, plural, =0 {No races to read} one {# result read} other {# results read}}",
+      "busy": "Kadence is already reading. Try again in a moment.",
+      "fresh": "The races were read less than ten minutes ago.",
+      "latest": "Latest races",
+      "coachOnly": "Only coaches see the placings. The rider sees the race in their calendar.",
+      "errors": {
+        "unknown": "Cykling Danmark does not know that UCI ID. Check the number on the licence.",
+        "wrong_rider": "The page at Cykling Danmark was not this rider's. Nothing was changed.",
+        "not_profile": "The page at Cykling Danmark did not look as expected, so Kadence left it alone. Nothing was changed.",
+        "timeout": "Cykling Danmark did not answer in time. Kadence will try again later.",
+        "network": "Kadence could not reach Cykling Danmark. Kadence will try again later.",
+        "other": "The races could not be read. Kadence will try again later."
+      }
     }
   },
   "session": {
@@ -1331,7 +1365,8 @@
       "3": "OK",
       "4": "Good",
       "5": "Really good"
-    }
+    },
+    "placed": "placed {place}"
   },
   "workouts": {
     "profile": {

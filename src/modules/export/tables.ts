@@ -39,6 +39,7 @@ export const EXPORT_TABLES: ExportTable[] = [
   { table: "rider_goals", sheet: "Mål", orderBy: "rider_id, starts_on" },
   { table: "flag_resolutions", sheet: "Afklaret", orderBy: "rider_id, week_monday, kind" },
   { table: "calendar_events", sheet: "Kalender", orderBy: "starts_on" },
+  { table: "race_results", sheet: "Løbsresultater", orderBy: "rider_id, raced_on" },
   { table: "comments", sheet: "Kommentarer", orderBy: "rider_id, created_at" },
   { table: "season_plans", sheet: "Sæsonplaner", orderBy: "rider_id, season_start_year" },
   { table: "workout_templates", sheet: "Skabeloner", orderBy: "sport, name" },

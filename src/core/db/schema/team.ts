@@ -74,15 +74,27 @@ export const riders = pgTable(
     shareTraining: boolean("share_training").notNull().default(true),
     shareWellbeing: boolean("share_wellbeing").notNull().default(false),
     archived: boolean("archived").notNull().default(false),
+    /**
+     * The UCI ID on the rider's licence, set by a coach (docs/adr/0039).
+     * Eleven digits, stored without the spaces the licence prints them with.
+     */
+    uciId: text("uci_id"),
+    /** When Kadence last asked Cykling Danmark for the rider's races, and what went wrong if it did. */
+    racesCheckedAt: timestamp("races_checked_at", { withTimezone: true }),
+    racesError: text("races_error").notNull().default(""),
     ...timestamps,
   },
   (t) => [
+    uniqueIndex("riders_org_uci_uq")
+      .on(t.orgId, t.uciId)
+      .where(sql`${t.uciId} is not null`),
     uniqueIndex("riders_org_user_uq")
       .on(t.orgId, t.userId)
       .where(sql`${t.userId} is not null`),
     index("riders_org_idx").on(t.orgId),
     check("riders_birth_year", sql`${t.birthYear} between 1940 and 2100`),
     check("riders_sex", sql`${t.sex} is null or ${t.sex} in ('female','male')`),
+    check("riders_uci_id", sql`${t.uciId} is null or ${t.uciId} ~ '^[0-9]{11}$'`),
     check(
       "riders_category",
       sql`${t.categoryOverride} is null or ${t.categoryOverride} in ('U17-1','U17-2','U19-1','U19-2','U23-1','U23-2','U23-3','U23-4','senior')`,

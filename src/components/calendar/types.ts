@@ -45,4 +45,18 @@ export type CalendarEventCard = {
   endsOn: string;
   priority: string | null;
   note: string;
+  /** "dcu" for a race Kadence read from Cykling Danmark (ADR 0039). */
+  source: string | null;
+  /** The results on the race: given to a coach's calendar only. */
+  results?: EventResult[];
+};
+
+/** A rider's result on a race, as Cykling Danmark published it. */
+export type EventResult = {
+  riderId: string;
+  race: string;
+  raceClass: string;
+  place: number | null;
+  placeNote: string;
+  resultUrl: string;
 };

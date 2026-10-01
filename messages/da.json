@@ -785,7 +785,10 @@
     "not_a_rider": "Kun en rytter kan forbinde sin egen enhed.",
     "too_many_keys": "Du har allerede så mange nøgler, som du kan have. Fjern en, før du opretter en ny.",
     "too_many_keys_made": "Du har oprettet mange nøgler lige nu. Prøv igen om en time.",
-    "flagGone": "Advarslen er ikke aktiv længere. Genindlæs siden."
+    "flagGone": "Advarslen er ikke aktiv længere. Genindlæs siden.",
+    "uciId": "Et UCI ID er 11 cifre, som det står på licensen.",
+    "uciTaken": "En anden rytter på holdet har allerede det UCI ID.",
+    "noUciId": "Rytteren har ikke noget UCI ID endnu."
   },
   "calendar": {
     "title": "Kalender",
@@ -932,7 +935,13 @@
       "onlyYou": "Kun i din kalender.",
       "note": "Note",
       "deleteTitle": "Slet begivenheden?",
-      "deleteBody": "Den forsvinder fra kalenderen."
+      "deleteBody": "Den forsvinder fra kalenderen.",
+      "results": {
+        "source": "Hentet fra Cykling Danmark.",
+        "label": "Resultater",
+        "list": "Resultatliste",
+        "coachOnly": "Placeringen ses kun af trænere."
+      }
     },
     "log": {
       "title": "Log træning",
@@ -1169,6 +1178,31 @@
       "typeName": "Skriv \"{name}\"",
       "confirm": "Slet for altid",
       "done": "{name} og alle data er slettet."
+    },
+    "races": {
+      "title": "Løb fra Cykling Danmark",
+      "body": "Med rytterens UCI ID henter Kadence de løb, rytteren har kørt, og lægger dem i rytterens kalender. Placeringerne ser kun trænere.",
+      "uciId": "UCI ID",
+      "uciHint": "Står på rytterens licens og er 11 cifre. Tøm feltet for at fjerne det. Så forsvinder de hentede løb og placeringer igen.",
+      "profile": "Rytterens side hos Cykling Danmark",
+      "off": "Kadence henter ikke løb på denne installation. Linket viser rytterens resultater hos Cykling Danmark.",
+      "notThisRider": "Kadence henter kun løb for udvalgte ryttere på denne installation, og ikke for denne rytter endnu.",
+      "checked": "Sidst hentet {when}.",
+      "notYet": "Ikke hentet endnu.",
+      "refresh": "Hent løb nu",
+      "read": "{count, plural, =0 {Ingen løb at hente} one {# resultat hentet} other {# resultater hentet}}",
+      "busy": "Kadence henter allerede. Prøv igen om lidt.",
+      "fresh": "Løbene blev hentet for under ti minutter siden.",
+      "latest": "Seneste løb",
+      "coachOnly": "Placeringerne ses kun af trænere. Rytteren ser løbet i sin kalender.",
+      "errors": {
+        "unknown": "Cykling Danmark kender ikke det UCI ID. Tjek tallet på licensen.",
+        "wrong_rider": "Siden hos Cykling Danmark var ikke denne rytters. Intet blev ændret.",
+        "not_profile": "Siden hos Cykling Danmark så anderledes ud end ventet, så Kadence lod den være. Intet blev ændret.",
+        "timeout": "Cykling Danmark svarede ikke i tide. Kadence prøver igen senere.",
+        "network": "Kadence kunne ikke nå Cykling Danmark. Kadence prøver igen senere.",
+        "other": "Løbene kunne ikke hentes. Kadence prøver igen senere."
+      }
     }
   },
   "session": {
@@ -1331,7 +1365,8 @@
       "3": "OK",
       "4": "Godt",
       "5": "Rigtig godt"
-    }
+    },
+    "placed": "placering {place}"
   },
   "workouts": {
     "profile": {

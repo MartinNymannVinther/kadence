@@ -10,6 +10,7 @@ export * from "./foundation";
 export * from "./team";
 export * from "./training";
 export * from "./upload";
+export * from "./results";
 export * from "./resets";
 export * from "./ai";
 export * from "./demo";
