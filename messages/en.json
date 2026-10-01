@@ -641,7 +641,7 @@
       },
       "sessions": {
         "title": "Sessions and templates",
-        "body": "A session is built in steps: warm-up, work, rest and cool-down, each with a length and a target in zones, percent of FTP or threshold heart rate, or by feel. Repeats gather steps that are ridden several times. Once the rider's thresholds are set, the targets read in watts and pulse. Strength sessions have exercises, and a programme has a progression, so sets and reps follow along from session to session. A coach can also press \"Build with AI\" and write the session in their own words, e.g. \"5x4 min VO2max\" or \"strength 45 min, legs and core\", or what to change in the session as it stands. The proposal is shown first, and nothing is saved until the coach saves the session. Save a session as a template in the workout library and it can be given to one rider or the whole team at once."
+        "body": "A session is built in steps: warm-up, work, rest and cool-down, each with a length and a target in zones, percent of FTP or threshold heart rate, or by feel. Repeats gather steps that are ridden several times. Once the rider's thresholds are set, the targets read in watts and pulse. Strength sessions have exercises, and a programme has a progression, so sets and reps follow along from session to session. A coach can also press \"Build with AI\" and write the session in their own words, e.g. \"5x4 min VO2max\" or \"strength 45 min, legs and core\", or what to change in the session as it stands. The proposal is shown first, and nothing is saved until the coach saves the session. Bike sessions can be built from building blocks with one tap, say a warm-up, threshold intervals or sprints, and strength exercises are suggested as you type the name, DCU's exercises and ones without machines. Save a session as a template in the workout library and it can be given to one rider or the whole team at once."
       },
       "done": {
         "title": "Done and RPE",
@@ -1638,6 +1638,49 @@
       "setsReps": "{sets} × {reps}",
       "progression": "Progression",
       "rule": "{open, select, yes {{group}, from session {from}} other {{group}, sessions {from}–{to}}}: {sets} × {reps}"
+    },
+    "blocks": {
+      "title": "Building blocks",
+      "warmup": "Warm-up 15 min",
+      "endurance": "Endurance 1 h Z2",
+      "cadence": "Cadence 4×2 min",
+      "tempo": "Tempo 3×10 min",
+      "threshold": "Threshold 2×15 min",
+      "vo2": "VO₂max 5×4 min",
+      "sprint": "Sprint 6×10 s",
+      "cooldown": "Cool-down 10 min"
+    },
+    "catalogue": {
+      "names": {
+        "plank": "Plank",
+        "sidePlank": "Side plank",
+        "deadBug": "Dead bug",
+        "birdDog": "Bird dog",
+        "gluteBridge": "Glute bridge",
+        "lunge": "Lunge",
+        "stepUp": "Step-up",
+        "splitSquat": "Bulgarian split squat",
+        "gobletSquat": "Goblet squat",
+        "romanianDeadlift": "Romanian deadlift",
+        "pushUp": "Push-ups",
+        "bandRow": "Band row",
+        "hipFlexor": "Hip flexor stretch",
+        "catCow": "Cat-cow"
+      },
+      "loads": {
+        "bodyweight": "body weight",
+        "band": "band"
+      }
+    },
+    "summary": {
+      "title": "At a glance",
+      "time": "Total time",
+      "load": "Estimated load",
+      "zones": "Time in the zones",
+      "open": "No target",
+      "exercises": "{count, plural, one {# exercise} other {# exercises}}",
+      "sets": "{count, plural, one {# set} other {# sets}}",
+      "loadHint": "The load is Kadence's own estimate from the zones or the minutes, the same estimate form and load count with for the session."
     }
   },
   "load": {

@@ -5,20 +5,28 @@ import type { Exercise } from "@/modules/workouts/structure";
 import { GroupSelect } from "./group-select";
 import { NumberField } from "./number-field";
 import { TextField } from "./text-field";
+import type { CatalogueOption } from "./use-catalogue";
 
 /**
  * One exercise: its name and group, sets × reps with a load written the
  * way a coach writes it ("RM", "20 kg", "kropsvægt"), the rest between
  * sets and a note. The progression below may change sets, reps and load
- * by where the rider is in the programme.
+ * by where the rider is in the programme. Typing a name offers the
+ * catalogue's exercises (ADR 0044); choosing one fills its group, sets,
+ * reps and load while those are still the new exercise's defaults.
  */
 export function ExerciseEditor({
   exercise,
   title,
   onChange,
   actions,
+  catalogue = [],
+  listId,
 }: {
   exercise: Exercise;
+  /** The suggestions, and the id of the <datalist> that offers them. */
+  catalogue?: CatalogueOption[];
+  listId?: string;
   title: string;
   onChange: (exercise: Exercise) => void;
   actions: React.ReactNode;
@@ -41,7 +49,27 @@ export function ExerciseEditor({
           placeholder={t("namePlaceholder")}
           required
           className="col-span-2 sm:col-span-1"
-          onChange={(v) => set("name", v)}
+          list={listId}
+          onChange={(name) => {
+            const known = catalogue.find((e) => e.name === name);
+            const untouched =
+              exercise.group === "legs" &&
+              exercise.sets === 3 &&
+              exercise.reps === "12" &&
+              exercise.load === "";
+            onChange(
+              known && untouched
+                ? {
+                    ...exercise,
+                    name,
+                    group: known.group,
+                    sets: known.sets,
+                    reps: known.reps,
+                    load: known.load,
+                  }
+                : { ...exercise, name },
+            );
+          }}
         />
         <GroupSelect
           label={t("group")}

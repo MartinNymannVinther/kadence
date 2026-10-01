@@ -12,6 +12,7 @@ import { ItemActions } from "./item-actions";
 import { duplicateItem, moveItem, removeItem, replaceItem } from "./list-ops";
 import { NumberField } from "./number-field";
 import { ProgressionEditor } from "./progression-editor";
+import { useCatalogue } from "./use-catalogue";
 
 /**
  * A strength session or programme: the warm-up in words, how long it
@@ -27,6 +28,8 @@ export function StrengthBuilder({
 }) {
   const t = useTranslations("workouts.strength");
   const warmupId = useId();
+  const listId = useId();
+  const catalogue = useCatalogue();
   const exercises = structure.exercises;
   const setExercises = (next: StrengthStructure["exercises"]) =>
     onChange({ ...structure, exercises: next });
@@ -60,6 +63,11 @@ export function StrengthBuilder({
         <h3 id={`${warmupId}-ex`} className="text-2sm font-semibold">
           {t("exercises")}
         </h3>
+        <datalist id={listId}>
+          {catalogue.map((e) => (
+            <option key={e.name} value={e.name} />
+          ))}
+        </datalist>
         <ol className="flex flex-col gap-2">
           {exercises.map((exercise, i) => {
             const name = t("exerciseName", { n: i + 1 });
@@ -68,6 +76,8 @@ export function StrengthBuilder({
                 <ExerciseEditor
                   exercise={exercise}
                   title={name}
+                  catalogue={catalogue}
+                  listId={listId}
                   onChange={(next) => setExercises(replaceItem(exercises, i, next))}
                   actions={
                     <ItemActions

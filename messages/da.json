@@ -641,7 +641,7 @@
       },
       "sessions": {
         "title": "Pas og skabeloner",
-        "body": "Et pas bygges i trin: opvarmning, arbejde, pause og nedkørsel, med en længde og et mål i zoner, procent af FTP eller tærskelpuls, eller efter følelse. Gentagelser samler trin, der køres flere gange. Når rytterens tærskler er sat, står målene i watt og puls. Styrkepas har øvelser, og et program har en progression, så sæt og gentagelser følger med fra pas til pas. Træneren kan også trykke \"Byg med AI\" og skrive passet med sine egne ord, fx \"5x4 min VO2max\" eller \"styrke 45 min, ben og core\", eller hvad der skal ændres i det pas, der står. Forslaget vises først, og intet gemmes, før træneren gemmer passet. Gem et pas som skabelon i træningsbiblioteket, så kan det lægges til én rytter eller hele holdet på én gang."
+        "body": "Et pas bygges i trin: opvarmning, arbejde, pause og nedkørsel, med en længde og et mål i zoner, procent af FTP eller tærskelpuls, eller efter følelse. Gentagelser samler trin, der køres flere gange. Når rytterens tærskler er sat, står målene i watt og puls. Styrkepas har øvelser, og et program har en progression, så sæt og gentagelser følger med fra pas til pas. Træneren kan også trykke \"Byg med AI\" og skrive passet med sine egne ord, fx \"5x4 min VO2max\" eller \"styrke 45 min, ben og core\", eller hvad der skal ændres i det pas, der står. Forslaget vises først, og intet gemmes, før træneren gemmer passet. Cykelpas kan bygges med byggeklodser med ét tryk, fx opvarmning, tærskelintervaller eller sprint, og styrkeøvelser foreslås, mens du skriver navnet, med DCU's øvelser og øvelser uden maskiner. Gem et pas som skabelon i træningsbiblioteket, så kan det lægges til én rytter eller hele holdet på én gang."
       },
       "done": {
         "title": "Udført og RPE",
@@ -1638,6 +1638,49 @@
       "setsReps": "{sets} × {reps}",
       "progression": "Progression",
       "rule": "{open, select, yes {{group}, fra pas {from}} other {{group}, pas {from}–{to}}}: {sets} × {reps}"
+    },
+    "blocks": {
+      "title": "Byggeklodser",
+      "warmup": "Opvarmning 15 min",
+      "endurance": "Distance 1 t Z2",
+      "cadence": "Kadence 4×2 min",
+      "tempo": "Tempo 3×10 min",
+      "threshold": "Tærskel 2×15 min",
+      "vo2": "VO₂-max 5×4 min",
+      "sprint": "Sprint 6×10 sek",
+      "cooldown": "Nedkørsel 10 min"
+    },
+    "catalogue": {
+      "names": {
+        "plank": "Planke",
+        "sidePlank": "Sideplanke",
+        "deadBug": "Dead bug",
+        "birdDog": "Fuglehund",
+        "gluteBridge": "Hoftehæv",
+        "lunge": "Udfald",
+        "stepUp": "Step-up",
+        "splitSquat": "Bulgarsk split squat",
+        "gobletSquat": "Goblet squat",
+        "romanianDeadlift": "Rumænsk dødløft",
+        "pushUp": "Armstrækninger",
+        "bandRow": "Roning med elastik",
+        "hipFlexor": "Hoftebøjerstræk",
+        "catCow": "Kat og ko"
+      },
+      "loads": {
+        "bodyweight": "kropsvægt",
+        "band": "elastik"
+      }
+    },
+    "summary": {
+      "title": "Overblik",
+      "time": "Samlet tid",
+      "load": "Anslået belastning",
+      "zones": "Tid i zonerne",
+      "open": "Uden mål",
+      "exercises": "{count, plural, one {# øvelse} other {# øvelser}}",
+      "sets": "{count, plural, one {# sæt} other {# sæt}}",
+      "loadHint": "Belastningen er Kadences eget skøn ud fra zonerne eller minutterne, det samme skøn som form og belastning regner med for passet."
     }
   },
   "load": {

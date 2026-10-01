@@ -296,6 +296,14 @@ codebase to:
 - Races (done): a rider's races and placings from Cykling Danmark in
   the calendar, the placing for the coach (ADR 0039). Entries wait for
   Cykling Danmark (docs/research/dcu-results.md).
+- Planning (done): the workout library in the menu, and "Byg med AI"
+  for bike and strength sessions, from words or by changing what is
+  there (ADR 0038); four numbers wherever a week is planned — DCU, the
+  coach's goal, planned and done (ADR 0040); a session repeated on set
+  weekdays (ADR 0041); a week copied (ADR 0042); the team's week plan
+  for the whole team or chosen riders, with an AI week that reads no
+  rider's data (ADR 0043); building blocks, exercise suggestions and the
+  session at a glance in the builder (ADR 0044).
 - Before 1.0: dogma seven — one real winter with one real team
   (docs/launch.md).
 - Later, each as its own decision: a rider on two teams (club and

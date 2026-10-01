@@ -7,13 +7,15 @@ import { Button } from "@/components/ui/button";
 import { problemText } from "@/components/workouts/problem-text";
 import { checkDraft, newDraft } from "@/components/workouts/session-draft";
 import { SessionFields } from "@/components/workouts/session-fields";
+import { WorkoutSummary } from "@/components/workouts/workout-summary";
 import { useRouter } from "@/i18n/navigation";
 import { createTemplateAction, updateTemplateAction } from "@/modules/training/actions";
 
 /**
  * A template written or changed in the library, with the same builder the
- * calendar uses. Checked against the shared schema before it is sent; a
- * new one opens on its own page once saved, on the sport it was asked for.
+ * calendar uses, and on a wide screen the session at a glance beside it
+ * (ADR 0044). Checked against the shared schema before it is sent; a new
+ * one opens on its own page once saved, on the sport it was asked for.
  */
 export function TemplateEditor({
   template,
@@ -68,8 +70,18 @@ export function TemplateEditor({
   }
 
   return (
-    <form onSubmit={save} className="flex max-w-3xl flex-col gap-5">
-      <SessionFields draft={draft} onChange={setDraft} assist assistOpen={assistOpen} />
+    <form
+      onSubmit={save}
+      className="grid max-w-5xl gap-5 lg:grid-cols-[minmax(0,1fr)_17rem] lg:gap-x-6"
+    >
+      <div className="flex min-w-0 flex-col gap-5">
+        <SessionFields draft={draft} onChange={setDraft} assist assistOpen={assistOpen} />
+      </div>
+      <div className="max-lg:hidden lg:row-span-3">
+        <div className="sticky top-6">
+          <WorkoutSummary structure={draft.structures[draft.sport]} />
+        </div>
+      </div>
       {problem && (
         <p role="alert" className="text-destructive text-sm">
           {problem}

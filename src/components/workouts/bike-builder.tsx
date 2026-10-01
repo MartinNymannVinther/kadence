@@ -1,9 +1,10 @@
 "use client";
 
-import { Plus, Repeat as RepeatIcon } from "lucide-react";
+import { Blocks, Plus, Repeat as RepeatIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { durationText } from "@/components/training/duration";
+import { BUILDING_BLOCKS, placeBlock } from "@/modules/workouts/building-blocks";
 import { structureMinutes, type BikeStructure } from "@/modules/workouts/structure";
 import { newRepeat, newStep } from "./defaults";
 import { ItemActions } from "./item-actions";
@@ -18,8 +19,10 @@ const MAX_ITEMS = 60;
  * A bike session, built on a phone as well as at a desk: the profile and
  * the total time on top, live, and below them the steps and repeats in
  * riding order, each with its own up, down, copy and remove. New steps
- * land at the end, before the cool-down if there is one. "Byg med AI",
- * above the builder, writes or changes the steps from a coach's words.
+ * land at the end, before the cool-down if there is one; a building block
+ * (ADR 0044) — a warm-up, threshold intervals, sprints — goes where it
+ * belongs with one tap. "Byg med AI", above the builder, writes or
+ * changes the steps from a coach's words.
  */
 export function BikeBuilder({
   structure,
@@ -29,6 +32,7 @@ export function BikeBuilder({
   onChange: (structure: BikeStructure) => void;
 }) {
   const t = useTranslations("workouts.bike");
+  const blocks = useTranslations("workouts.blocks");
   const duration = useTranslations("training.duration");
   const items = structure.steps;
   const set = (steps: BikeStructure["steps"]) => onChange({ ...structure, steps });
@@ -123,6 +127,25 @@ export function BikeBuilder({
           <RepeatIcon data-icon="inline-start" />
           {t("addRepeat")}
         </Button>
+      </div>
+      <div className="flex min-w-0 flex-col gap-1.5">
+        <span className="text-meta flex items-center gap-1 text-xs font-medium">
+          <Blocks aria-hidden className="size-3.5" />
+          {blocks("title")}
+        </span>
+        <div role="group" aria-label={blocks("title")} className="flex flex-wrap gap-1.5">
+          {BUILDING_BLOCKS.map((block) => (
+            <button
+              key={block.key}
+              type="button"
+              disabled={items.length >= MAX_ITEMS}
+              className="focus-ring border-border bg-card hover:bg-accent rounded-full border px-2.5 py-1 text-xs disabled:opacity-45 max-sm:min-h-9"
+              onClick={() => set(placeBlock(items, block))}
+            >
+              {blocks(block.key as "warmup")}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

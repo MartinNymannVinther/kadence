@@ -63,3 +63,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0041](0041-repeat-a-session-on-set-weekdays.md)                 | Repeat a session on set weekdays: a series key on ordinary sessions, not a rule                          | → 0014, 0025, 0040             |
 | [0042](0042-copy-a-week.md)                                      | Copy a week: each rider's own sessions laid again, groups kept, series not doubled                       | → 0025, 0040, 0041             |
 | [0043](0043-the-teams-week-plan.md)                              | The team's week plan: built in one place for many riders, laid in at once, an AI week without rider data | → 0017, 0025, 0038, 0040, 0042 |
+| [0044](0044-a-better-builder.md)                                 | A better builder: building blocks for the bike, exercise suggestions, the session at a glance            | → 0014, 0015, 0016, 0038       |
