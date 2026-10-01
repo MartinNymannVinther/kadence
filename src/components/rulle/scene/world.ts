@@ -3,7 +3,6 @@ import {
   CITIES,
   courseAt,
   postureAt,
-  structuresOn,
   sunToward,
   swayAt,
   type City,
@@ -12,21 +11,17 @@ import {
   type Posture,
 } from "@/modules/rulle";
 import { Atmosphere } from "./atmosphere";
-import { Bridges } from "./bridges";
 import { CameraRig } from "./camera-rig";
-import { inPaddocks } from "./farmyard";
 import { FinishLine } from "./finish-line";
-import { Ground } from "./ground";
+import { Landscape } from "./landscape";
+import { Listener } from "./listener";
 import type { Pace } from "./pace";
 import type { Pause } from "./pause-scene";
-import { castShadows, freeze } from "./props";
+import { castShadows } from "./props";
 import { raceDayIn, type RaceDayScene } from "./race-day";
 import { rideRenderer } from "./renderer";
 import { RiderFigure } from "./rider";
-import { buildRoad } from "./road";
 import { roadPoint, turnAt } from "./road-point";
-import { Roadside } from "./roadside";
-import { Scenery } from "./scenery";
 import {
   NO_WORDS,
   QUIET_HOOKS,
@@ -34,7 +29,6 @@ import {
   type SceneWords,
   type SmallThingsHooks,
 } from "./small-things";
-import { Terrain } from "./terrain";
 
 /**
  * The landscape of a ride (ADR 0033), put together: the ground — the real
@@ -79,17 +73,13 @@ export class World {
   private readonly renderer: THREE.WebGLRenderer;
   private readonly scene = new THREE.Scene();
   private readonly rig: CameraRig;
-  private readonly ground: Ground;
-  private readonly terrain: Terrain;
-  private readonly scenery: Scenery;
-  private readonly roadside: Roadside;
-  private readonly road: THREE.Group;
+  private readonly land: Landscape;
+  private readonly listener: Listener;
   private readonly rider = new RiderFigure();
   private readonly atmosphere: Atmosphere;
   private readonly small: SmallThings;
   private readonly finish: FinishLine | null;
   private readonly race: RaceDayScene | null;
-  private readonly bridges: Bridges;
   private readonly pace: Pace;
   private readonly calm: boolean;
   private crank = 0;
@@ -116,75 +106,34 @@ export class World {
     // On a city's race day the sun stands where it stood that day (ADR 0036).
     this.atmosphere = new Atmosphere(this.scene, city ? sunToward(CITIES[city].sun) : undefined);
     if (this.shaded) this.atmosphere.castShadows();
-    // The bridges the road is on, and what passes over and under it (ADR 0037).
-    const found = structuresOn(course, options.land?.structures ?? []);
-    this.ground = new Ground(course, options.land ?? null, city, found.decks);
-    const onDeck = (along: number) => this.ground.onDeck(along);
-    // No tree in a field with cows in it, nor in the water.
-    const fields = inPaddocks(course, this.ground);
-    const water = this.atmosphere.water;
-    this.scenery = new Scenery(this.ground, options.light ? 0.5 : 1, fields, water);
-    this.terrain = new Terrain(
-      this.ground,
-      (key, cx, cz, added) => {
-        if (added) this.scenery.add(key, cx, cz);
-        else this.scenery.remove(key);
-      },
-      water,
-      this.shaded,
-    );
-    this.roadside = new Roadside(
+    this.land = new Landscape(
       course,
-      options.light ? 0.5 : 1,
-      (x, z) => fields(x, z) || this.ground.wet(x, z),
-      city !== null,
-      onDeck,
+      { land: options.land ?? null, city, light: options.light, shaded: this.shaded },
+      this.atmosphere.water,
     );
+    const ground = this.land.ground;
     const room = (x: number, z: number, r: number) => {
-      this.scenery.clearAround(x, z, r);
-      this.roadside.clearAround(x, z, r);
+      this.land.clearAround(x, z, r);
       // The crowd makes way between the road and a café, not only where it stands.
       this.race?.clearAround(x, z, r + 8);
     };
-    this.small = new SmallThings(course, this.ground, words, hooks, {
+    this.small = new SmallThings(course, ground, words, hooks, {
       calm: options.calm,
       canvas,
       room,
     });
     // A city's course on race day: its crowd, its marshals, its cobbles (ADR 0036).
-    this.race = raceDayIn(
-      city,
-      course,
-      this.ground,
-      this.small.material,
-      words,
-      hooks,
-      room,
-      options,
-    );
-    this.road = buildRoad(course, city !== null, (along) => this.race?.rumble(along) === 1, onDeck);
-    this.bridges = new Bridges(course, this.ground, found);
-    if (this.shaded) {
-      this.road.traverse((child) => {
-        if (child instanceof THREE.Mesh) child.receiveShadow = true;
-      });
-      castShadows(this.rider.group);
-    }
+    this.race = raceDayIn(city, course, ground, this.small.material, words, hooks, room, options);
+    this.land.layRoad((along) => this.race?.road.rumble(along) === 1, this.shaded);
+    // What the rider would hear of the road, for the sound under the ride (ADR 0045).
+    this.listener = new Listener(course, options.land ?? null, city !== null, hooks.hear);
+    if (this.shaded) castShadows(this.rider.group);
     this.rider.group.rotation.order = "YXZ";
-    this.scene.add(
-      this.terrain.group,
-      this.scenery.group,
-      this.road,
-      this.roadside.group,
-      this.bridges.group,
-      this.small.group,
-      this.rider.group,
-    );
-    if (this.shaded) castShadows(this.bridges.group);
+    this.scene.add(this.land.group, this.small.group, this.rider.group);
     this.finish = options.finish
       ? new FinishLine(
           course,
-          this.ground,
+          ground,
           this.small.material,
           words.finish,
           {
@@ -199,15 +148,8 @@ export class World {
     if (this.finish && this.shaded) castShadows(this.finish.group);
     if (this.race) this.scene.add(this.race.group);
     if (this.race && this.shaded) castShadows(this.race.group);
-    // Only the rider, the rotors, the sky and the camera move; the rest is placed once.
+    // Only the rider, what passes, the sky and the camera move; the land is placed once.
     this.scene.matrixAutoUpdate = false;
-    this.terrain.group.matrixAutoUpdate = false;
-    this.scenery.group.matrixAutoUpdate = false;
-    freeze(this.road);
-    freeze(this.roadside.group);
-    freeze(this.bridges.group);
-    const start = courseAt(course, 0);
-    this.terrain.fill(start.x, -start.y);
   }
 
   resize(width: number, height: number, top: number, bottom: number): void {
@@ -251,7 +193,7 @@ export class World {
     // Out of the saddle the bike rocks under the rider; on cobbles it shakes.
     if (!pausing.parked) bike.rotation.z = this.rider.roll;
     const rumble =
-      this.calm || pausing.parked ? 0 : (this.race?.jolt(bike, distance, speed, seconds) ?? 0);
+      this.calm || pausing.parked ? 0 : (this.race?.road.jolt(bike, distance, speed, seconds) ?? 0);
 
     if (pausing.jump) this.rig.jump();
     if (pausing.view) this.rig.view(pausing.view.eye, pausing.view.look, seconds);
@@ -268,30 +210,20 @@ export class World {
       // What passes by comes and goes: whatever is new casts its shadow too.
       if (this.frames % 30 === 0) castShadows(this.small.group);
     }
-    this.scenery.animate(seconds);
-    this.bridges.frame(eye, seconds);
+    this.land.frame(eye, seconds);
     this.finish?.frame(distance, seconds);
     this.race?.frame(distance, seconds);
-    this.terrain.update(eye.x, eye.z, 1);
-    if (this.frames++ % 20 === 0) this.roadside.update(eye);
+    this.listener.frame(distance, speed, seconds, (d) => this.race?.heard(d) ?? 0);
+    this.frames++;
     this.renderer.render(this.scene, this.rig.camera);
   }
 
   dispose(): void {
-    this.terrain.dispose();
-    this.scenery.dispose();
-    this.roadside.dispose();
-    this.road.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
-        child.geometry.dispose();
-        (child.material as THREE.Material).dispose();
-      }
-    });
+    this.land.dispose();
     this.rider.dispose();
     this.small.dispose();
     this.finish?.dispose();
     this.race?.dispose();
-    this.bridges.dispose();
     this.atmosphere.dispose();
     this.renderer.dispose();
   }
@@ -299,7 +231,7 @@ export class World {
   /** A point on the road `offset` metres right of its middle, on the road's surface: over a bump, on it. */
   private pointAt(distance: number, offset: number): THREE.Vector3 {
     const point = roadPoint(this.course, distance, offset);
-    if (this.race) point.y += this.race.lift(distance);
+    if (this.race) point.y += this.race.road.lift(distance);
     return point;
   }
 }

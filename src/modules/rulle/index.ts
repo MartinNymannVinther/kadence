@@ -128,6 +128,16 @@ export {
 } from "./happenings";
 export { punctureOnLap, ridersOnLap, type Puncture, type Rider, type RiderKind } from "./traffic";
 export { gradeHere, POSTURE, postureAt, type Posture } from "./posture";
+export {
+  crowdHeard,
+  HEARING,
+  mixOf,
+  placeAt,
+  Towns,
+  type Heard,
+  type Mix,
+  type Place,
+} from "./hearing";
 export { CITIES, sunToward, type CityFace } from "./route/cities";
 export {
   STRUCTURES,
