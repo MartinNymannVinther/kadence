@@ -145,6 +145,31 @@ export function bannerTexture(text: string): THREE.CanvasTexture {
   return texture;
 }
 
+/** A hill sprint's banner (ADR 0046): red dots on white, as a climber's jersey, the words in the middle. */
+export function polkaBannerTexture(text: string): THREE.CanvasTexture {
+  const { element, context } = canvas(1024, 128);
+  context.fillStyle = "#f6f3ec";
+  context.fillRect(0, 0, 1024, 128);
+  context.fillStyle = "#b23a32";
+  for (let row = 0; row < 4; row++)
+    for (let x = (row % 2) * 24 + 12; x < 1024; x += 48) {
+      context.beginPath();
+      context.arc(x, 16 + row * 32, 9, 0, Math.PI * 2);
+      context.fill();
+    }
+  context.font = `900 84px ${FONT}`;
+  const width = context.measureText(text).width;
+  context.fillStyle = "#f6f3ec";
+  context.fillRect(512 - width / 2 - 28, 10, width + 56, 108);
+  context.fillStyle = "#9c2f29";
+  context.textAlign = "center";
+  context.textBaseline = "middle";
+  context.fillText(text, 512, 70);
+  const texture = new THREE.CanvasTexture(element);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+
 /** The finish line across the road: two rows of black and white squares. */
 export function checkerTexture(): THREE.CanvasTexture {
   const { element, context } = canvas(512, 64);

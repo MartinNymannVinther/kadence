@@ -152,7 +152,7 @@ function barrier(course: Course, ground: Ground, at: number, side: number): THRE
 }
 
 /** Someone watching: facing the road, in a jacket of `color`, maybe with both arms up. */
-function person(foot: THREE.Vector3, yaw: number, color: string, cheering: boolean) {
+export function person(foot: THREE.Vector3, yaw: number, color: string, cheering: boolean) {
   const arm = (x: number) =>
     cheering
       ? rod(v(x, 1.38, 0), v(x * 1.6, 1.95, -0.05), 0.05, color)

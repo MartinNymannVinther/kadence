@@ -1,7 +1,8 @@
 /**
  * An organiser's marks on a route (ADR 0036): the waypoints a race's GPX
  * carries beside its track — an island in the middle of the road, the
- * cobbles, the feed zone, the finish, the team buses' car park — read for
+ * cobbles, the feed zone, the finish, the team buses' car park, the top of
+ * a hill sprint (ADR 0046) — read for
  * what they say, in Danish, English or French, and laid along the course
  * where they are. A mark that says none of these is left alone; so is one
  * too far from the road to belong to it. What a person wrote is only
@@ -9,7 +10,16 @@
  */
 
 export type MarkKind =
-  "obstacle" | "cobbles" | "feed" | "litter" | "finish" | "podium" | "parking" | "bumps" | "bend";
+  | "obstacle"
+  | "cobbles"
+  | "hill"
+  | "feed"
+  | "litter"
+  | "finish"
+  | "podium"
+  | "parking"
+  | "bumps"
+  | "bend";
 
 /** A waypoint as the file has it. */
 export type RouteMark = { lat: number; lon: number; text: string };
@@ -33,8 +43,12 @@ export const MARK_LIMITS = {
 /** The words each kind of mark is written with; the first that fits is the kind. */
 const WORDS: readonly [MarkKind, RegExp][] = [
   ["cobbles", /brosten|cobble|\bpav[ée]s?(?![a-z])/i],
+  [
+    "hill",
+    /bakkespurt|bjergspurt|bjergpoint|bjergkonge|king of the mountains?|hill ?sprint|grand prix de la montagne|meilleur grimpeur/i,
+  ],
   ["feed", /feed ?zone|ravitaill|langning|forplejning/i],
-  ["litter", /litter|affald|déchets?|dechets?/i],
+  ["litter", /litter|affald|déchets?|dechets?|drop ?zone/i],
   ["podium", /podie|podium/i],
   ["parking", /parker|parking|team ?bus|holdbus/i],
   ["bumps", /bump|chikane|ralentisseur|dos d.âne/i],

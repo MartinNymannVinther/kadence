@@ -28,6 +28,8 @@ export const seenSchema = z.object({
   cobbles: z.number().int().min(0).default(0),
   // Counted from ADR 0037 on.
   moto: z.number().int().min(0).default(0),
+  // Counted from ADR 0046 on.
+  hill: z.number().int().min(0).default(0),
 });
 
 export type Seen = z.infer<typeof seenSchema>;
@@ -45,6 +47,7 @@ export function nothingSeen(): Seen {
     waves: 0,
     cobbles: 0,
     moto: 0,
+    hill: 0,
   };
 }
 
@@ -63,6 +66,7 @@ export type LittleThing =
 
 const SEEN_ORDER: (keyof Seen)[] = [
   "finish",
+  "hill",
   "cobbles",
   "moto",
   "cargoOvertaken",

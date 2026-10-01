@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,7 @@ import { useFullscreen, useWakeLock } from "./ride/use-screen";
 import { Sky } from "./scene/sky";
 import type { Moment } from "./scene/world";
 import type { Devices } from "./use-devices";
+import { useSceneWords } from "./use-scene-words";
 
 const COUNTDOWN = 3;
 
@@ -87,22 +88,7 @@ export function RideScreen({
 }) {
   const t = useTranslations("rulle.ride");
   const endWords = useTranslations("rulle.end");
-  const sceneWords = useTranslations("rulle.scene");
-  const words = useMemo(
-    () => ({
-      name: name
-        ? sceneWords("chalkName", { name: name.toLocaleUpperCase("da").slice(0, 16) })
-        : sceneWords("chalkAnyone"),
-      top: sceneWords("chalkTop"),
-      cafe: sceneWords("cafe"),
-      // A city's own signs, in its own words (ADR 0036): its stand, and over its line.
-      stand: city ? sceneWords(`standIn.${city}`) : sceneWords("stand"),
-      finish: city === "montreal" ? sceneWords("finishIn.montreal") : sceneWords("finish"),
-      feed: sceneWords("feed"),
-      litter: sceneWords("litter"),
-    }),
-    [name, sceneWords, city],
-  );
+  const words = useSceneWords(name, city);
   const [ending, setEnding] = useState(false);
   const [muted, setMuted] = useState(beeps.muted);
   const [count, setCount] = useState(counting ? COUNTDOWN : 0);
