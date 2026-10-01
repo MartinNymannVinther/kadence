@@ -6,12 +6,14 @@ import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { dayMonth, weekdayShort } from "@/components/training/day-label";
 import { hoursText } from "@/components/training/duration";
+import { VolumeBar } from "@/components/season/volume-bar";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { CalendarDialogs, type DialogState } from "./calendar-dialogs";
 import { EventChip } from "./event-chip";
 import { calendarHref, type CalendarQuery } from "./href";
 import { TeamChip } from "./team-chip";
+import type { Volume } from "@/modules/season/volume";
 import type { TemplateOption } from "./template-picker";
 import type { CalendarActivityCard, CalendarCard, CalendarEventCard, RiderOption } from "./types";
 import { useSessionDrag } from "./use-session-drag";
@@ -21,7 +23,10 @@ import { useWeekSessions } from "./use-week-sessions";
  * The coach's week for the whole team: a row per rider, a column per day,
  * each session a small chip in its colour — what TrainingPeaks does not
  * show on one screen. It scrolls sideways on a phone with the names held
- * in place, and a chip can be dragged to another day in its own row.
+ * in place, and a chip can be dragged to another day in its own row. Each
+ * rider's week on the bike against the season plan, in the four numbers
+ * every planning view shares (ADR 0040), is the last column — and on a
+ * phone, where that column is a long way off, it sits under the name.
  */
 export function TeamGrid({
   riders,
@@ -32,6 +37,7 @@ export function TeamGrid({
   events,
   templates,
   query,
+  volumes,
 }: {
   riders: RiderOption[];
   days: string[];
@@ -41,6 +47,8 @@ export function TeamGrid({
   events: CalendarEventCard[];
   templates: TemplateOption[];
   query: CalendarQuery;
+  /** Each rider's four numbers for the week (ADR 0040), by rider id. */
+  volumes: Record<string, Volume>;
 }) {
   const t = useTranslations("calendar.team");
   const actions = useTranslations("calendar.actions");
@@ -92,15 +100,16 @@ export function TeamGrid({
         className="border-border bg-card overflow-x-auto overscroll-x-contain rounded-xl border shadow-[var(--surface-shadow)]"
       >
         {/* Fixed layout: the columns come from <colgroup>, never from a chip's text.
-            The floor is names (8rem) + 7 × 6.5rem + hours (6rem); below it the grid scrolls sideways. */}
-        <table className="w-full table-fixed min-w-[59.5rem] border-collapse text-sm">
+            The floor is names (8rem) + 7 × 6.5rem + the week (9rem); below it the grid scrolls
+            sideways. On a phone the week moves under the name, and its column goes. */}
+        <table className="w-full table-fixed min-w-[53.5rem] border-collapse text-sm sm:min-w-[62.5rem]">
           <caption className="sr-only">{t("caption")}</caption>
           <colgroup>
             <col className="w-28 sm:w-32" />
             {days.map((date) => (
               <col key={date} />
             ))}
-            <col className="w-24" />
+            <col className="w-0 sm:w-36" />
           </colgroup>
           <thead>
             <tr className="border-border border-b">
@@ -148,7 +157,7 @@ export function TeamGrid({
               ))}
               <th
                 scope="col"
-                className="text-label py-2 pr-3 pl-1 text-right align-top text-xs font-medium whitespace-nowrap"
+                className="text-label py-2 pr-3 pl-1 text-left align-top text-xs font-medium whitespace-nowrap max-sm:hidden"
               >
                 {t("week")}
               </th>
@@ -176,6 +185,9 @@ export function TeamGrid({
                     >
                       {rider.name}
                     </Link>
+                    {volumes[rider.id] && (
+                      <VolumeBar compact volume={volumes[rider.id]!} className="mt-2 sm:hidden" />
+                    )}
                   </th>
                   {days.map((date) => (
                     <td
@@ -210,11 +222,17 @@ export function TeamGrid({
                       </div>
                     </td>
                   ))}
-                  <td className="py-2 pr-3 pl-1 text-right align-top text-xs font-medium whitespace-nowrap tabular-nums">
-                    {t("hours", {
-                      done: hoursText(done, locale),
-                      planned: hoursText(planned, locale),
-                    })}
+                  <td className="py-2 pr-3 pl-1 align-top max-sm:hidden">
+                    {volumes[rider.id] ? (
+                      <VolumeBar compact volume={volumes[rider.id]!} />
+                    ) : (
+                      <span className="block text-right text-xs font-medium whitespace-nowrap tabular-nums">
+                        {t("hours", {
+                          done: hoursText(done, locale),
+                          planned: hoursText(planned, locale),
+                        })}
+                      </span>
+                    )}
                   </td>
                 </tr>
               );

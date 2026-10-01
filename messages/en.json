@@ -657,7 +657,7 @@
       },
       "season": {
         "title": "The season plan and DCU",
-        "body": "The season runs from October to September. The plan is filled with DCU's hours for the rider's class (U17, U19 or U23 and the year in it), month by month, with DCU's phases: break and free riding in October, distance in November and December, long base intervals in January and February, short hard intervals around March, and the racing season from April. The coach and the rider can change anything, but DCU's numbers and the deviation always stand beside it. Only hours on the bike count. Kadence's seven zones are Kadence's own; DCU's heart-rate bands are shown beside them for comparison."
+        "body": "The season runs from October to September. The plan is filled with DCU's hours for the rider's class (U17, U19 or U23 and the year in it), month by month, with DCU's phases: break and free riding in October, distance in November and December, long base intervals in January and February, short hard intervals around March, and the racing season from April. The coach and the rider can change anything, but DCU's numbers and the deviation always stand beside it. Wherever training is planned, the same four numbers stand: DCU (DCU's hours and the corridor round them), Goal (the season plan the coach has set), Planned (the sessions in the calendar) and Done (what was actually ridden). You see them for the week in the calendar, for each rider in the team's week, and month by month on the season page, where \"The whole team\" shows every rider at once. Only hours on the bike count. Kadence's seven zones are Kadence's own; DCU's heart-rate bands are shown beside them for comparison."
       },
       "load": {
         "title": "Load: fitness, fatigue and freshness",
@@ -828,16 +828,10 @@
     },
     "totals": {
       "all": "Hours in total",
-      "bike": "On the bike",
+      "bike": "On the bike against the season plan",
+      "bikeFor": "On the bike against the season plan, {basis}",
       "of": "{done} of {planned} h",
-      "corridor": "DCU's range",
-      "corridorValue": "{hours} h of {low}–{high} h",
-      "corridorNote": "Ridden and planned on the bike this week against DCU's range for {klass}: {state}.",
-      "state": {
-        "inside": "inside the range",
-        "over": "above the range",
-        "under": "below the range"
-      }
+      "strength": "Strength: {done} of {planned, plural, one {# session} other {# sessions}} done. DCU recommends {dcu} a week."
     },
     "actions": {
       "addSession": "Add session",
@@ -851,7 +845,7 @@
     "team": {
       "caption": "The team's week: a row per rider and a column per day",
       "rider": "Rider",
-      "week": "Hours",
+      "week": "On the bike",
       "hours": "{done} of {planned} h"
     },
     "menu": {
@@ -2057,6 +2051,16 @@
     "previous": "Previous",
     "next": "Next",
     "thisSeason": "This season",
+    "view": {
+      "rider": "One rider",
+      "team": "The whole team"
+    },
+    "team": {
+      "subtitle": "Each rider's hours on the bike this month and in the season so far, against the goal and DCU.",
+      "toDate": "The season so far",
+      "toDateValue": "Done {done} h · planned {planned} h · goal {goal} · DCU {dcu}",
+      "empty": "No riders to show."
+    },
     "noRiders": {
       "coachTitle": "No riders yet",
       "coachBody": "A season plan belongs to a rider. Add the team's riders, and you can lay a plan for each of them from DCU.",
@@ -2085,9 +2089,10 @@
       "done": "The plan is filled again from DCU."
     },
     "monthsTitle": "Month by month",
-    "plan": "Plan",
+    "plan": "Goal",
     "dcu": "DCU",
-    "ridden": "Ridden",
+    "scheduled": "Planned",
+    "ridden": "Done",
     "hours": "{hours} h",
     "dcuHours": "DCU: {hours} h",
     "deviationLabel": "Deviation from DCU",
@@ -2137,15 +2142,16 @@
     "notePlaceholder": "E.g. a camp or exams",
     "planNote": "Note for the season",
     "planNotePlaceholder": "E.g. the season's goals, or why the plan differs from DCU",
-    "totals": "The season in total: {plan} h planned · DCU {dcu} h · {ridden} h ridden",
+    "totals": "The season in total: goal {plan} h · planned {scheduled} h · done {ridden} h · DCU {dcu} h",
     "readOnlyNote": "You can see the plan. The coach and the rider can change it.",
     "chart": {
       "title": "Hours per month",
-      "planned": "Plan",
-      "ridden": "Ridden on the bike",
+      "planned": "Goal",
+      "scheduled": "Planned",
+      "ridden": "Done",
       "dcu": "DCU",
-      "label": "Hours per month in the season: plan, ridden and DCU's hours",
-      "readout": "{month}: plan {plan} h · DCU {dcu} h · ridden {ridden} h",
+      "label": "Hours on the bike per month in the season: goal, planned, done and DCU's hours",
+      "readout": "{month}: goal {plan} h · planned {scheduled} h · done {ridden} h · DCU {dcu} h",
       "hint": "Point at a month, or use the arrow keys, to see the numbers."
     },
     "reference": {
@@ -2168,6 +2174,31 @@
       "sourcesTitle": "The sources at DCU",
       "opensElsewhere": "(opens at Cycling Denmark)",
       "snapshot": "Kadence keeps a copy of the numbers from DCU's documents. When DCU publishes new recommendations, the numbers are updated by hand."
+    }
+  },
+  "volume": {
+    "done": "Done",
+    "planned": "Planned",
+    "goal": "Goal",
+    "dcu": "DCU",
+    "hours": "{hours} h",
+    "range": "{low}–{high} h",
+    "noGoal": "no goal of your own",
+    "noDcu": "no DCU class",
+    "said": "Done {done} h, planned {planned} h, goal {goal}, DCU {dcu}.",
+    "compact": "{done} of {planned} h",
+    "goalShort": "Goal {hours}",
+    "dcuShort": "DCU {low}–{high}",
+    "expected": "Expected {hours} h on the bike:",
+    "state": {
+      "inside": "inside DCU's corridor",
+      "over": "above DCU's corridor",
+      "under": "below DCU's corridor"
+    },
+    "toGoal": {
+      "on": "on the goal",
+      "over": "{hours} h over the goal",
+      "under": "{hours} h under the goal"
     }
   },
   "assist": {

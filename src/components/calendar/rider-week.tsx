@@ -14,13 +14,14 @@ import type { TemplateOption } from "./template-picker";
 import type { CalendarActivityCard, CalendarCard, CalendarEventCard, RiderOption } from "./types";
 import { useSessionDrag } from "./use-session-drag";
 import { useWeekSessions } from "./use-week-sessions";
-import { WeekTotals, type Corridor } from "./week-totals";
+import type { Volume } from "@/modules/season/volume";
+import { WeekTotals } from "./week-totals";
 
 /**
  * One rider's week: seven columns on a desktop, a day-by-day list on a
  * phone. Sessions move by dragging on a desktop and by "Flyt" everywhere;
- * the week's hours sit on top, planned beside done and against DCU's
- * corridor. A coach can ask the AI to propose the week; the rider and the
+ * the week's hours sit on top, the bike's in the four numbers against
+ * the season plan (ADR 0040). A coach can ask the AI to propose the week; the rider and the
  * coach can upload a ride.
  */
 export function RiderWeek({
@@ -35,7 +36,8 @@ export function RiderWeek({
   riders,
   templates,
   query,
-  corridor,
+  volume,
+  basisLabel,
 }: {
   riderId: string;
   days: string[];
@@ -48,8 +50,10 @@ export function RiderWeek({
   riders: RiderOption[];
   templates: TemplateOption[];
   query: CalendarQuery;
-  /** DCU's corridor for the rider's class this week, when the rider has one. */
-  corridor: Corridor | null;
+  /** The bike's four numbers for the week: DCU, the goal, planned and done. */
+  volume: Volume | null;
+  /** The DCU class-year they are read for, as words. */
+  basisLabel: string | null;
 }) {
   const t = useTranslations("calendar.actions");
   const { sessions, move, place, landed, announcement } = useWeekSessions(initial);
@@ -68,8 +72,8 @@ export function RiderWeek({
           monday={monday}
           sessions={sessions}
           activities={activities}
-          corridor={corridor}
-          today={today}
+          volume={volume}
+          basisLabel={basisLabel}
         />
         {canWrite && (
           <div className="flex flex-wrap gap-2">

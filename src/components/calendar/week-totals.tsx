@@ -1,36 +1,36 @@
 "use client";
 
-import { ArrowDown, ArrowUp, Check } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { num } from "@/components/charts/format";
+import { VolumeBar } from "@/components/season/volume-bar";
 import { hoursText } from "@/components/training/duration";
 import { addDaysIso } from "@/core/dates";
+import { strengthFrequency } from "@/modules/dcu";
 import { weeklyTotals, type WeekActivity } from "@/modules/load";
+import type { Volume } from "@/modules/season/volume";
 import type { CalendarActivityCard, CalendarCard } from "./types";
 
 /**
- * The week's hours, planned beside done — and the bike's on their own
- * line, since DCU counts only hours on the bike. The done side is the load
- * model's weekly total (src/modules/load/fitness.ts); the bars say the
- * same as the numbers beside them. Under them, the week's bike hours —
- * ridden and still planned — against DCU's corridor for the rider's class,
- * with a word and an arrow as well as the band.
+ * The week's training: every sport's hours, done of planned; the bike's
+ * hours against the season plan in the four numbers every planning view
+ * shares (ADR 0040) — DCU, the coach's goal, planned and done; and the
+ * strength sessions against DCU's two or three a week, or one after
+ * mid-March. The done side is the load model's weekly total
+ * (src/modules/load/fitness.ts); the four numbers come from the server.
  */
-
-export type Corridor = { low: number; target: number; high: number; klass: string };
 export function WeekTotals({
   monday,
   sessions,
   activities,
-  corridor = null,
-  today,
+  volume = null,
+  basisLabel = null,
 }: {
   monday: string;
-  /** Sessions before today that were not done do not count as still planned. */
-  today: string;
   sessions: CalendarCard[];
   activities: CalendarActivityCard[];
-  corridor?: Corridor | null;
+  /** The bike's four numbers for the rider's week, when there is a rider. */
+  volume?: Volume | null;
+  /** The DCU class-year the numbers are read for, as words. */
+  basisLabel?: string | null;
 }) {
   const t = useTranslations("calendar.totals");
   const locale = useLocale();
@@ -56,77 +56,48 @@ export function WeekTotals({
   ];
   const week = weeklyTotals(done, monday, addDaysIso(monday, 6))[0];
   const planned = sessions.reduce((sum, s) => sum + s.plannedMinutes, 0);
-  const plannedBike = sessions
-    .filter((s) => s.sport === "bike")
-    .reduce((sum, s) => sum + s.plannedMinutes, 0);
-  const openBike = sessions
-    .filter((s) => s.sport === "bike" && !s.activity && s.onDate >= today)
-    .reduce((sum, s) => sum + s.plannedMinutes, 0);
-  const bikeWeek = (week?.bikeHours ?? 0) + openBike / 60;
-  const rows = [
-    { key: "all", label: t("all"), planned, done: (week?.hours ?? 0) * 60 },
-    { key: "bike", label: t("bike"), planned: plannedBike, done: (week?.bikeHours ?? 0) * 60 },
-  ];
+  const share =
+    planned > 0 ? Math.min(1, ((week?.hours ?? 0) * 60) / planned) : week?.hours ? 1 : 0;
+  const strength = sessions.filter((s) => s.sport === "strength");
+  const strengthDone =
+    strength.filter((s) => s.activity).length +
+    activities.filter((a) => a.sport === "strength").length;
+  const frequency = strengthFrequency(monday);
 
   return (
-    <dl className="grid w-full max-w-md grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1.5 text-2sm">
-      {rows.map((row) => {
-        const share = row.planned > 0 ? Math.min(1, row.done / row.planned) : row.done > 0 ? 1 : 0;
-        return (
-          <div key={row.key} className="contents">
-            <dt className="text-meta">{row.label}</dt>
-            <dd className="bg-secondary h-2 overflow-hidden rounded-full" aria-hidden>
-              <div
-                className="bg-primary h-full rounded-full"
-                style={{ width: `${share * 100}%` }}
-              />
-            </dd>
-            <dd className="font-medium tabular-nums">
-              {t("of", {
-                done: hoursText(row.done, locale),
-                planned: hoursText(row.planned, locale),
-              })}
-            </dd>
-          </div>
-        );
-      })}
-      {corridor && <CorridorRow corridor={corridor} hours={bikeWeek} />}
-    </dl>
-  );
-}
-
-function CorridorRow({ corridor, hours }: { corridor: Corridor; hours: number }) {
-  const t = useTranslations("calendar.totals");
-  const locale = useLocale();
-  const top = Math.max(corridor.high * 1.25, hours, 1);
-  const pct = (v: number) => `${Math.min(100, (v / top) * 100)}%`;
-  const state = hours > corridor.high ? "over" : hours < corridor.low ? "under" : "inside";
-  const Icon = state === "over" ? ArrowUp : state === "under" ? ArrowDown : Check;
-  const h = (v: number) => num(v, locale, 1);
-  return (
-    <div className="contents">
-      <dt className="text-meta">{t("corridor")}</dt>
-      <dd className="bg-secondary relative h-2 rounded-full" aria-hidden>
-        <span
-          className="bg-accent absolute inset-y-0 rounded-full"
-          style={{
-            left: pct(corridor.low),
-            width: `calc(${pct(corridor.high)} - ${pct(corridor.low)})`,
-          }}
-        />
-        <span
-          className="bg-primary absolute -top-1 h-4 w-1 rounded-full"
-          style={{ left: `calc(${pct(hours)} - 2px)` }}
-        />
-      </dd>
-      <dd className="flex items-center gap-1 font-medium tabular-nums">
-        <Icon aria-hidden className="size-3.5" />
-        <span className="sr-only">{t(`state.${state}`)}: </span>
-        {t("corridorValue", { hours: h(hours), low: h(corridor.low), high: h(corridor.high) })}
-      </dd>
-      <dd className="text-meta col-span-3 -mt-0.5 text-xs">
-        {t("corridorNote", { klass: corridor.klass, state: t(`state.${state}`) })}
-      </dd>
+    <div className="flex w-full max-w-xl flex-col gap-3 text-2sm">
+      <dl className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3">
+        <dt className="text-meta">{t("all")}</dt>
+        <dd className="bg-secondary h-2 overflow-hidden rounded-full" aria-hidden>
+          <div className="bg-primary h-full rounded-full" style={{ width: `${share * 100}%` }} />
+        </dd>
+        <dd className="font-medium tabular-nums">
+          {t("of", {
+            done: hoursText((week?.hours ?? 0) * 60, locale),
+            planned: hoursText(planned, locale),
+          })}
+        </dd>
+      </dl>
+      {volume && (
+        <section aria-label={t("bike")} className="flex flex-col gap-1.5">
+          <h3 className="text-meta text-xs font-medium">
+            {basisLabel ? t("bikeFor", { basis: basisLabel }) : t("bike")}
+          </h3>
+          <VolumeBar volume={volume} />
+        </section>
+      )}
+      {(strength.length > 0 || strengthDone > 0 || volume) && (
+        <p className="text-meta text-xs">
+          {t("strength", {
+            done: strengthDone,
+            planned: strength.length,
+            dcu:
+              frequency.perWeekMin === frequency.perWeekMax
+                ? String(frequency.perWeekMin)
+                : `${frequency.perWeekMin}–${frequency.perWeekMax}`,
+          })}
+        </p>
+      )}
     </div>
   );
 }

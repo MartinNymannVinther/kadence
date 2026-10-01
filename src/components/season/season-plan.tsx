@@ -20,10 +20,13 @@ import type { RiddenData, SeasonPlanData } from "./types";
 export function SeasonPlan({
   plan,
   ridden,
+  scheduled,
   canWrite,
 }: {
   plan: SeasonPlanData;
   ridden: RiddenData;
+  /** The bike hours planned in the calendar, month by month. */
+  scheduled: RiddenData;
   canWrite: boolean;
 }) {
   const t = useTranslations("season");
@@ -62,6 +65,7 @@ export function SeasonPlan({
 
   const shown = editing ? months : plan.months;
   const riddenOf = (month: number) => ridden.find((r) => r.month === month)?.hours ?? null;
+  const scheduledOf = (month: number) => scheduled.find((r) => r.month === month)?.hours ?? null;
 
   return (
     <form onSubmit={save} className="flex flex-col gap-3">
@@ -70,6 +74,7 @@ export function SeasonPlan({
           {t("totals", {
             plan: total(shown.map((m) => m.hours)),
             dcu: total(plan.dcu),
+            scheduled: total(scheduled.map((r) => r.hours)),
             ridden: total(ridden.map((r) => r.hours)),
           })}
         </p>
@@ -95,6 +100,7 @@ export function SeasonPlan({
               month={month}
               dcu={plan.dcu[i] ?? 0}
               ridden={riddenOf(month.month)}
+              scheduled={scheduledOf(month.month)}
             />
           ),
         )}

@@ -657,7 +657,7 @@
       },
       "season": {
         "title": "Sæsonplanen og DCU",
-        "body": "Sæsonen går fra oktober til september. Planen fyldes ud med DCU's timer for rytterens årgang (U17, U19 eller U23 og året i den), måned for måned, med DCU's faser: pause og frit i oktober, distance i november og december, lange basisintervaller i januar og februar, korte hårde intervaller omkring marts og løbssæson fra april. Træneren og rytteren kan rette alt, men DCU's tal og afvigelsen står altid ved siden af. Kun timer på cyklen tæller med. Kadences syv zoner er Kadences egne; DCU's pulsbånd står ved siden af til sammenligning."
+        "body": "Sæsonen går fra oktober til september. Planen fyldes ud med DCU's timer for rytterens årgang (U17, U19 eller U23 og året i den), måned for måned, med DCU's faser: pause og frit i oktober, distance i november og december, lange basisintervaller i januar og februar, korte hårde intervaller omkring marts og løbssæson fra april. Træneren og rytteren kan rette alt, men DCU's tal og afvigelsen står altid ved siden af. Overalt hvor der planlægges, står de samme fire tal: DCU (DCU's timer og rammen omkring dem), Mål (sæsonplanen, som træneren har sat), Planlagt (passene i kalenderen) og Udført (det, der faktisk er kørt). Du ser dem for ugen i kalenderen, for hver rytter i holdets uge og måned for måned på sæsonsiden, hvor \"Hele holdet\" viser alle ryttere på én gang. Kun timer på cyklen tæller med. Kadences syv zoner er Kadences egne; DCU's pulsbånd står ved siden af til sammenligning."
       },
       "load": {
         "title": "Belastning: kondition, træthed og friskhed",
@@ -828,16 +828,10 @@
     },
     "totals": {
       "all": "Timer i alt",
-      "bike": "På cyklen",
+      "bike": "På cyklen mod sæsonplanen",
+      "bikeFor": "På cyklen mod sæsonplanen, {basis}",
       "of": "{done} af {planned} t",
-      "corridor": "DCU's ramme",
-      "corridorValue": "{hours} t af {low}–{high} t",
-      "corridorNote": "Kørt og planlagt på cyklen i ugen mod DCU's ramme for {klass}: {state}.",
-      "state": {
-        "inside": "inden for rammen",
-        "over": "over rammen",
-        "under": "under rammen"
-      }
+      "strength": "Styrke: {done} af {planned} pas udført. DCU anbefaler {dcu} om ugen."
     },
     "actions": {
       "addSession": "Tilføj pas",
@@ -851,7 +845,7 @@
     "team": {
       "caption": "Holdets uge: en række pr. rytter og en kolonne pr. dag",
       "rider": "Rytter",
-      "week": "Timer",
+      "week": "På cyklen",
       "hours": "{done} af {planned} t"
     },
     "menu": {
@@ -2057,6 +2051,16 @@
     "previous": "Forrige",
     "next": "Næste",
     "thisSeason": "Denne sæson",
+    "view": {
+      "rider": "Én rytter",
+      "team": "Hele holdet"
+    },
+    "team": {
+      "subtitle": "Hver rytters timer på cyklen i denne måned og i sæsonen indtil nu, mod målet og DCU.",
+      "toDate": "Sæsonen indtil nu",
+      "toDateValue": "Udført {done} t · planlagt {planned} t · mål {goal} · DCU {dcu}",
+      "empty": "Ingen ryttere at vise."
+    },
     "noRiders": {
       "coachTitle": "Ingen ryttere endnu",
       "coachBody": "En sæsonplan hører til en rytter. Tilføj holdets ryttere, så kan du lægge en plan for hver af dem ud fra DCU.",
@@ -2085,9 +2089,10 @@
       "done": "Planen er fyldt ud igen fra DCU."
     },
     "monthsTitle": "Måned for måned",
-    "plan": "Plan",
+    "plan": "Mål",
     "dcu": "DCU",
-    "ridden": "Kørt",
+    "scheduled": "Planlagt",
+    "ridden": "Udført",
     "hours": "{hours} t",
     "dcuHours": "DCU: {hours} t",
     "deviationLabel": "Afvigelse fra DCU",
@@ -2137,15 +2142,16 @@
     "notePlaceholder": "Fx lejr eller eksamen",
     "planNote": "Note til sæsonen",
     "planNotePlaceholder": "Fx sæsonens mål, eller hvorfor planen afviger fra DCU",
-    "totals": "Sæsonen i alt: {plan} t planlagt · DCU {dcu} t · {ridden} t kørt",
+    "totals": "Sæsonen i alt: mål {plan} t · planlagt {scheduled} t · udført {ridden} t · DCU {dcu} t",
     "readOnlyNote": "Du kan se planen. Træneren og rytteren kan rette den.",
     "chart": {
       "title": "Timer pr. måned",
-      "planned": "Plan",
-      "ridden": "Kørt på cyklen",
+      "planned": "Mål",
+      "scheduled": "Planlagt",
+      "ridden": "Udført",
       "dcu": "DCU",
-      "label": "Timer pr. måned i sæsonen: plan, kørt og DCU's timer",
-      "readout": "{month}: plan {plan} t · DCU {dcu} t · kørt {ridden} t",
+      "label": "Timer på cyklen pr. måned i sæsonen: mål, planlagt, udført og DCU's timer",
+      "readout": "{month}: mål {plan} t · planlagt {scheduled} t · udført {ridden} t · DCU {dcu} t",
       "hint": "Peg på en måned, eller brug piletasterne, for at se tallene."
     },
     "reference": {
@@ -2168,6 +2174,31 @@
       "sourcesTitle": "Kilderne hos DCU",
       "opensElsewhere": "(åbner hos Cykling Danmark)",
       "snapshot": "Kadence har en kopi af tallene fra DCU's dokumenter. Når DCU udgiver nye anbefalinger, bliver tallene opdateret i hånden."
+    }
+  },
+  "volume": {
+    "done": "Udført",
+    "planned": "Planlagt",
+    "goal": "Mål",
+    "dcu": "DCU",
+    "hours": "{hours} t",
+    "range": "{low}–{high} t",
+    "noGoal": "intet eget mål",
+    "noDcu": "ingen DCU-årgang",
+    "said": "Udført {done} t, planlagt {planned} t, mål {goal}, DCU {dcu}.",
+    "compact": "{done} af {planned} t",
+    "goalShort": "Mål {hours}",
+    "dcuShort": "DCU {low}–{high}",
+    "expected": "Forventet {hours} t på cyklen:",
+    "state": {
+      "inside": "inden for DCU's ramme",
+      "over": "over DCU's ramme",
+      "under": "under DCU's ramme"
+    },
+    "toGoal": {
+      "on": "på målet",
+      "over": "{hours} t over målet",
+      "under": "{hours} t under målet"
     }
   },
   "assist": {

@@ -12,18 +12,21 @@ export function ownNote(month: PlanMonth): string {
 }
 
 /**
- * One month of the season plan, read: the plan's hours beside DCU's and
- * what was ridden, the deviation in words, the phase, DCU's guidance for
- * the month, and the plan's own note if it has one.
+ * One month of the season plan, read: the coach's goal beside what is
+ * planned in the calendar, what was done and DCU's hours (ADR 0040), the
+ * goal's deviation from DCU in words, the phase, DCU's guidance for the
+ * month, and the plan's own note if it has one.
  */
 export function MonthRow({
   month,
   dcu,
   ridden,
+  scheduled,
 }: {
   month: PlanMonth;
   dcu: number;
   ridden: number | null;
+  scheduled: number | null;
 }) {
   const t = useTranslations("season");
   const locale = useLocale();
@@ -43,16 +46,22 @@ export function MonthRow({
             <dt className="text-meta">{t("plan")}</dt>
             <dd className="font-semibold tabular-nums">{hours(month.hours)}</dd>
           </div>
-          <div className="flex items-baseline gap-1.5">
-            <dt className="text-meta">{t("dcu")}</dt>
-            <dd className="tabular-nums">{hours(dcu)}</dd>
-          </div>
+          {scheduled !== null && (
+            <div className="flex items-baseline gap-1.5">
+              <dt className="text-meta">{t("scheduled")}</dt>
+              <dd className="tabular-nums">{hours(scheduled)}</dd>
+            </div>
+          )}
           {ridden !== null && (
             <div className="flex items-baseline gap-1.5">
               <dt className="text-meta">{t("ridden")}</dt>
               <dd className="tabular-nums">{hours(ridden)}</dd>
             </div>
           )}
+          <div className="flex items-baseline gap-1.5">
+            <dt className="text-meta">{t("dcu")}</dt>
+            <dd className="tabular-nums">{hours(dcu)}</dd>
+          </div>
           <div>
             <dt className="sr-only">{t("deviationLabel")}</dt>
             <dd>

@@ -7,7 +7,13 @@ import { barPath, linearScale, niceTicks } from "@/components/charts/scale";
 import { useHoverIndex } from "@/components/charts/use-hover-index";
 import { useWidth } from "@/components/charts/use-width";
 
-export type SeasonChartMonth = { month: number; planned: number; dcu: number; ridden: number };
+export type SeasonChartMonth = {
+  month: number;
+  planned: number;
+  scheduled: number;
+  dcu: number;
+  ridden: number;
+};
 
 const PLANNED = "var(--series-1)";
 const RIDDEN = "var(--series-2)";
@@ -17,10 +23,11 @@ const LEFT = 30;
 const RIGHT = 8;
 
 /**
- * The season month by month: the plan's hours and the hours actually
- * ridden on the bike as two bars side by side, and DCU's hours as a dark
- * tick across each month — the reference the other two are read against.
- * A pointer or the arrow keys read a month's three numbers above it.
+ * The season month by month in the four numbers (ADR 0040): the coach's
+ * goal as a bar, beside it the hours planned in the calendar as an
+ * outline with the hours done filling it, and DCU's hours as a dark tick
+ * across each month — the reference the others are read against. A
+ * pointer or the arrow keys read a month's four numbers above it.
  */
 export function SeasonChart({ months }: { months: SeasonChartMonth[] }) {
   const t = useTranslations("season.chart");
@@ -30,7 +37,10 @@ export function SeasonChart({ months }: { months: SeasonChartMonth[] }) {
   const slot = (width - LEFT - RIGHT) / Math.max(1, n);
   const center = (i: number) => LEFT + slot * (i + 0.5);
   const hover = useHoverIndex(n, center);
-  const peak = Math.max(10, ...months.map((m) => Math.max(m.planned, m.dcu, m.ridden)));
+  const peak = Math.max(
+    10,
+    ...months.map((m) => Math.max(m.planned, m.scheduled, m.dcu, m.ridden)),
+  );
   const ticks = niceTicks(0, peak, 3);
   const y = linearScale([0, ticks.at(-1)!], [PLOT, 6]);
   const bar = Math.max(4, Math.min(16, (slot - 6) / 2));
@@ -42,6 +52,7 @@ export function SeasonChart({ months }: { months: SeasonChartMonth[] }) {
       <ChartLegend
         items={[
           { key: "planned", label: t("planned"), mark: "bar", color: PLANNED },
+          { key: "scheduled", label: t("scheduled"), mark: "outline", color: RIDDEN },
           { key: "ridden", label: t("ridden"), mark: "bar", color: RIDDEN },
           { key: "dcu", label: t("dcu"), mark: "tick", color: "var(--foreground)" },
         ]}
@@ -51,6 +62,7 @@ export function SeasonChart({ months }: { months: SeasonChartMonth[] }) {
           ? t("readout", {
               month: monthLong(shown.month, locale),
               plan: hours(shown.planned),
+              scheduled: hours(shown.scheduled),
               dcu: hours(shown.dcu),
               ridden: hours(shown.ridden),
             })
@@ -90,6 +102,14 @@ export function SeasonChart({ months }: { months: SeasonChartMonth[] }) {
                 )}
                 <path d={barPath(c - bar - 1, bar, PLOT, y(m.planned))} fill={PLANNED} />
                 <path d={barPath(c + 1, bar, PLOT, y(m.ridden))} fill={RIDDEN} />
+                {m.scheduled > 0 && (
+                  <path
+                    d={barPath(c + 1.75, bar - 1.5, PLOT, y(m.scheduled))}
+                    fill="none"
+                    stroke={RIDDEN}
+                    strokeWidth={1.5}
+                  />
+                )}
                 <line
                   x1={c - bar - 3}
                   x2={c + bar + 3}

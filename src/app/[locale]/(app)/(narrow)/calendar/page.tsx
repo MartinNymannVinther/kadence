@@ -16,10 +16,9 @@ import { getOrgContext } from "@/core/auth/session";
 import { todayInCopenhagen } from "@/core/dates";
 import { basisText } from "@/components/season/basis-text";
 import { Link, redirect } from "@/i18n/navigation";
-import { seasonStartYear, weeklyCorridor } from "@/modules/dcu";
 import { refreshStaleRaces } from "@/modules/results/refresh";
 import { listRaceResults } from "@/modules/results/service";
-import { riderClass } from "@/modules/season/class";
+import { volumesFor } from "@/modules/season/volumes";
 import { whoAmI } from "@/modules/team/access";
 import { getRiders } from "@/modules/team/riders";
 import { listUnplanned } from "@/modules/training/activities";
@@ -98,13 +97,14 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
     ? { week: monday, view: "team" }
     : { week: monday, rider: choose ? rider.id : null };
 
-  const [sessions, unplanned, eventRows, results, templates] = await Promise.all([
+  const [sessions, unplanned, eventRows, results, templates, volumes] = await Promise.all([
     listSessions(ctx, { ...range, riderIds }),
     listUnplanned(ctx, { ...range, riderIds }),
     listEvents(ctx, { ...range, riderIds }),
     // The places from Cykling Danmark are the coach's (ADR 0039).
     me.isCoach ? listRaceResults(ctx, { ...range, riderIds }) : Promise.resolve([]),
     canWrite ? listTemplates(ctx) : Promise.resolve([]),
+    volumesFor(ctx, riderIds, range, today),
   ]);
   const events = withResults(eventRows.map(toEventCard), results);
   // Kadence has no scheduled job: a coach's visit is when the races are read again.
@@ -117,15 +117,8 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
     source: tpl.source,
   }));
   const openSession = param("session");
-  const row = riderRows.find((r) => r.id === rider.id);
-  const basis = row ? riderClass(row, seasonStartYear(monday)).basis : null;
+  const volume = teamView ? null : (volumes.get(rider.id) ?? null);
   const seasonT = await getTranslations("season");
-  const corridor = basis
-    ? {
-        ...weeklyCorridor(basis, monday),
-        klass: basisText(basis, (k, v) => seasonT(k, v)),
-      }
-    : null;
 
   return (
     <div className="flex min-w-0 flex-col gap-5">
@@ -154,6 +147,7 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
           events={events}
           templates={templateOptions}
           query={query}
+          volumes={Object.fromEntries(volumes)}
         />
       ) : (
         <RiderWeek
@@ -168,7 +162,8 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
           riders={me.isCoach ? visible : [rider]}
           templates={templateOptions}
           query={query}
-          corridor={corridor}
+          volume={volume}
+          basisLabel={volume?.basis ? basisText(volume.basis, (k, v) => seasonT(k, v)) : null}
         />
       )}
       {openSession && (

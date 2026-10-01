@@ -9,8 +9,10 @@ import { DcuReference } from "@/components/season/dcu-reference";
 import { ResetPlan } from "@/components/season/reset-plan";
 import { SeasonChart } from "@/components/season/season-chart";
 import { SeasonPlan } from "@/components/season/season-plan";
+import { TeamSeason } from "@/components/season/team-season";
 import { buttonVariants } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { SegmentedFilter } from "@/components/ui/segmented";
 import { PageHeader } from "@/components/ui/page-header";
 import { getOrgContext } from "@/core/auth/session";
 import { todayInCopenhagen } from "@/core/dates";
@@ -18,7 +20,7 @@ import { Link, redirect } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { monthHours, seasonStartYear, type ClassBasis } from "@/modules/dcu";
 import { getSeasonPlan, riderClass } from "@/modules/season/plans";
-import { getSeasonRidden } from "@/modules/season/ridden";
+import { seasonVolumes, teamSeasonVolumes } from "@/modules/season/volumes";
 import { whoAmI } from "@/modules/team/access";
 import { getRiders } from "@/modules/team/riders";
 
@@ -34,7 +36,9 @@ type Search = Promise<Record<string, string | string[] | undefined>>;
  * plan's hours, DCU's beside them and what was ridden, the deviation in
  * words, and where the numbers come from. A coach picks the rider, a rider
  * sees their own, a parent their child's without a pen; `?season=` moves a
- * season back or forward — the coming one is planned in September.
+ * season back or forward — the coming one is planned in September. A
+ * coach's `?view=team` shows every rider's month and season so far in the
+ * four numbers (ADR 0040).
  */
 export default async function SeasonPage({ searchParams }: { searchParams: Search }) {
   const ctx = await getOrgContext();
@@ -73,14 +77,41 @@ export default async function SeasonPage({ searchParams }: { searchParams: Searc
     );
   }
 
+  if (me.isCoach && param("view") === "team") {
+    const volumes = await teamSeasonVolumes(
+      ctx,
+      visible.map((r) => r.id),
+      today,
+    );
+    return (
+      <div className="flex min-w-0 max-w-4xl flex-col gap-7">
+        <PageHeader title={t("title")} subtitle={t("team.subtitle")} />
+        <ViewSwitch team riderHref="/season" />
+        <TeamSeason
+          month={Number(today.slice(5, 7))}
+          rows={visible.flatMap((r) => {
+            const v = volumes.get(r.id);
+            return v
+              ? [{ id: r.id, name: r.name, href: withQuery("/season", { rider: r.id }), ...v }]
+              : [];
+          })}
+        />
+      </div>
+    );
+  }
+
   const rider =
     visible.find((r) => r.id === param("rider")) ??
     visible.find((r) => r.id === me.rider?.id) ??
     visible[0]!;
-  const [plan, ridden] = await Promise.all([
+  const [plan, volumes] = await Promise.all([
     getSeasonPlan(ctx, rider.id, season),
-    getSeasonRidden(ctx, rider.id, season),
+    seasonVolumes(ctx, rider.id, season, today),
   ]);
+  // The four numbers' two calendar sides, month by month (ADR 0040).
+  const tenth = (v: number) => Math.round(v * 10) / 10;
+  const ridden = volumes.map((v) => ({ month: v.month, hours: tenth(v.volume.done) }));
+  const scheduled = volumes.map((v) => ({ month: v.month, hours: tenth(v.volume.planned) }));
   const canWrite = me.isCoach || me.rider?.id === rider.id;
   const href = (query: { rider?: string; season?: number }) =>
     withQuery("/season", {
@@ -108,6 +139,8 @@ export default async function SeasonPage({ searchParams }: { searchParams: Searc
           ) : undefined
         }
       />
+
+      {me.isCoach && visible.length > 1 && <ViewSwitch team={false} riderHref={href({})} />}
 
       <nav aria-label={t("seasonNav")} className="flex flex-wrap items-center gap-2">
         <Link
@@ -157,6 +190,7 @@ export default async function SeasonPage({ searchParams }: { searchParams: Searc
                   month: m.month,
                   planned: m.hours,
                   dcu: dcu[i] ?? 0,
+                  scheduled: scheduled.find((r) => r.month === m.month)?.hours ?? 0,
                   ridden: ridden.find((r) => r.month === m.month)?.hours ?? 0,
                 }))}
               />
@@ -170,6 +204,7 @@ export default async function SeasonPage({ searchParams }: { searchParams: Searc
             <SeasonPlan
               plan={{ id: plan.id, basis: plan.basis, months: plan.months, dcu, note: plan.note }}
               ridden={ridden}
+              scheduled={scheduled}
               canWrite={canWrite}
             />
           </section>
@@ -198,5 +233,19 @@ export default async function SeasonPage({ searchParams }: { searchParams: Searc
         <DcuReference />
       </section>
     </div>
+  );
+}
+
+/** The coach's two ways to look at the season: the whole team, or one rider's plan. */
+async function ViewSwitch({ team, riderHref }: { team: boolean; riderHref: string }) {
+  const view = await getTranslations("season.view");
+  return (
+    <SegmentedFilter
+      className="self-start"
+      items={[
+        { key: "rider", label: view("rider"), href: riderHref, active: !team },
+        { key: "team", label: view("team"), href: "/season?view=team", active: team },
+      ]}
+    />
   );
 }

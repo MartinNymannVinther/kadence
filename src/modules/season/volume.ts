@@ -1,0 +1,136 @@
+import { addDaysIso } from "@/core/dates";
+import {
+  CORRIDOR_BAND,
+  COUNTS_TOWARD_DCU_HOURS,
+  monthHours,
+  seasonStartYear,
+  type ClassBasis,
+} from "@/modules/dcu";
+
+/**
+ * How much a rider rides against the season plan, in four numbers that
+ * mean the same wherever they are shown (ADR 0040):
+ *
+ * - **DCU**: DCU's hours for the class-year, with the corridor round them;
+ * - **Mål** (goal): the coach's own season plan;
+ * - **Planlagt** (planned): the bike sessions in the calendar;
+ * - **Udført** (done): what was actually ridden.
+ *
+ * Only hours on the bike count, as DCU counts them. DCU's and the plan's
+ * hours are given per month; a day carries its month's hours over the
+ * month's calendar days — the derivation `weeklyCorridor` uses — so a
+ * week, a month or a season to date are all sums of their days, and a
+ * range across a season's turn reads each day in its own season.
+ *
+ * Pure: imports nothing from the database.
+ */
+
+export type VolumeRange = { from: string; to: string };
+
+/** What one season knows about a rider: the basis DCU's hours are read for, and the coach's months. */
+export type SeasonFrame = {
+  basis: ClassBasis | null;
+  goal: ReadonlyArray<{ month: number; hours: number }> | null;
+};
+
+export type VolumeSession = {
+  onDate: string;
+  sport: string;
+  plannedMinutes: number;
+  done: boolean;
+};
+export type VolumeActivity = { onDate: string; sport: string; seconds: number };
+
+export type Volume = {
+  /** The DCU class-year the range is read for — its first day's season. */
+  basis: ClassBasis | null;
+  dcu: { low: number; target: number; high: number } | null;
+  goal: number | null;
+  planned: number;
+  done: number;
+  /** Done, plus the bike sessions still to ride from today on: where the range is heading. */
+  expected: number;
+};
+
+export type VolumeState = "under" | "inside" | "over";
+
+const counts = (sport: string) => COUNTS_TOWARD_DCU_HOURS[sport as "bike"] === true;
+
+function daysInMonth(year: number, month: number): number {
+  return new Date(Date.UTC(year, month, 0)).getUTCDate();
+}
+
+function days(range: VolumeRange): string[] {
+  const out: string[] = [];
+  for (let d = range.from; d <= range.to && out.length < 400; d = addDaysIso(d, 1)) out.push(d);
+  return out;
+}
+
+const inRange = (date: string, range: VolumeRange) => date >= range.from && date <= range.to;
+
+/**
+ * The four numbers for a range. `frameOf` answers for a season by the
+ * year it starts in; a day whose season has no basis leaves DCU unknown,
+ * and a day whose season has no plan leaves the goal unknown — a number
+ * for part of a range would read as the whole.
+ */
+export function volumeOf(input: {
+  range: VolumeRange;
+  frameOf: (seasonStartYear: number) => SeasonFrame;
+  sessions: ReadonlyArray<VolumeSession>;
+  activities: ReadonlyArray<VolumeActivity>;
+  today: string;
+}): Volume {
+  let dcu: number | null = 0;
+  let goal: number | null = 0;
+  for (const day of days(input.range)) {
+    const [year, month] = day.split("-").map(Number) as [number, number];
+    const frame = input.frameOf(seasonStartYear(day));
+    const share = 1 / daysInMonth(year, month);
+    dcu = dcu === null || !frame.basis ? null : dcu + monthHours(frame.basis, month) * share;
+    const planned = frame.goal?.find((m) => m.month === month);
+    goal = goal === null || !planned ? null : goal + planned.hours * share;
+  }
+  const bike = input.sessions.filter((s) => counts(s.sport) && inRange(s.onDate, input.range));
+  const planned = bike.reduce((sum, s) => sum + s.plannedMinutes, 0) / 60;
+  const done =
+    input.activities
+      .filter((a) => counts(a.sport) && inRange(a.onDate, input.range))
+      .reduce((sum, a) => sum + Math.max(0, a.seconds), 0) / 3600;
+  const ahead =
+    bike
+      .filter((s) => !s.done && s.onDate >= input.today)
+      .reduce((sum, s) => sum + s.plannedMinutes, 0) / 60;
+  return {
+    basis: input.frameOf(seasonStartYear(input.range.from)).basis,
+    dcu:
+      dcu === null
+        ? null
+        : { low: dcu * (1 - CORRIDOR_BAND), target: dcu, high: dcu * (1 + CORRIDOR_BAND) },
+    goal,
+    planned,
+    done,
+    expected: done + ahead,
+  };
+}
+
+/** Where the expected hours land against DCU's corridor; null without one, or in October's break. */
+export function dcuState(volume: Volume): VolumeState | null {
+  if (!volume.dcu || volume.dcu.target === 0) return null;
+  if (volume.expected > volume.dcu.high) return "over";
+  if (volume.expected < volume.dcu.low) return "under";
+  return "inside";
+}
+
+/** The months of a season, October first, each as its own range. */
+export function seasonMonths(seasonStart: number): Array<VolumeRange & { month: number }> {
+  return [10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((month) => {
+    const year = month >= 10 ? seasonStart : seasonStart + 1;
+    const mm = String(month).padStart(2, "0");
+    return {
+      month,
+      from: `${year}-${mm}-01`,
+      to: `${year}-${mm}-${String(daysInMonth(year, month)).padStart(2, "0")}`,
+    };
+  });
+}
