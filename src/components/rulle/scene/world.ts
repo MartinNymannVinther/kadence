@@ -22,6 +22,7 @@ import { raceDayIn, type RaceDayScene } from "./race-day";
 import { rideRenderer } from "./renderer";
 import { RiderFigure } from "./rider";
 import { roadPoint, turnAt } from "./road-point";
+import { SpeedLines } from "./speed-lines";
 import {
   NO_WORDS,
   QUIET_HOOKS,
@@ -59,6 +60,12 @@ export type Moment = {
   cadence: number;
   /** The ride's pause, if it is paused: which one, and for how long. */
   pause: Pause | null;
+  /** The cheat code (ADR 0045): metres right of the road's middle, null for the rider's own line. */
+  line?: number | null;
+  /** How far the bike leans into the cheat's turn, radians, positive to the left. */
+  lean?: number;
+  /** Whether the cheat code is on: the speed lines streak past. */
+  cheat?: boolean;
 };
 
 /**
@@ -76,6 +83,8 @@ export class World {
   private readonly land: Landscape;
   private readonly listener: Listener;
   private readonly rider = new RiderFigure();
+  private readonly lines = new SpeedLines();
+  private readonly ray = new THREE.Raycaster();
   private readonly atmosphere: Atmosphere;
   private readonly small: SmallThings;
   private readonly finish: FinishLine | null;
@@ -129,7 +138,7 @@ export class World {
     this.listener = new Listener(course, options.land ?? null, city !== null, hooks.hear);
     if (this.shaded) castShadows(this.rider.group);
     this.rider.group.rotation.order = "YXZ";
-    this.scene.add(this.land.group, this.small.group, this.rider.group);
+    this.scene.add(this.land.group, this.small.group, this.rider.group, this.lines.group);
     this.finish = options.finish
       ? new FinishLine(
           course,
@@ -170,14 +179,16 @@ export class World {
     const { distance, speed, cadence } = moment;
     const pausing = this.small.frame(moment, seconds, this.rig.camera.position, this.rider);
     const bike = this.rider.group;
+    // The rider's line on the road: their own sway, or the cheat code's (ADR 0045).
+    const line = (d: number) => moment.line ?? swayAt(d);
     if (pausing.parked) {
       // Against the café's wall while the rider sits at the table.
       bike.position.copy(pausing.parked.at);
       bike.rotation.set(0, pausing.parked.yaw, pausing.parked.lean);
     } else {
-      const here = this.pointAt(distance, swayAt(distance));
-      const back = this.pointAt(distance - 2, swayAt(distance - 2));
-      const front = this.pointAt(distance + 2, swayAt(distance + 2));
+      const here = this.pointAt(distance, line(distance));
+      const back = this.pointAt(distance - 2, line(distance - 2));
+      const front = this.pointAt(distance + 2, line(distance + 2));
       const along = new THREE.Vector3().subVectors(front, back);
       bike.position.copy(here);
       bike.rotation.set(
@@ -191,15 +202,16 @@ export class World {
     this.posture = postureAt(this.course, distance, speed, cadence, this.posture);
     this.rider.animate(seconds, cadence, speed, this.posture);
     // Out of the saddle the bike rocks under the rider; on cobbles it shakes.
-    if (!pausing.parked) bike.rotation.z = this.rider.roll;
+    if (!pausing.parked) bike.rotation.z = this.rider.roll + (moment.lean ?? 0);
     const rumble =
       this.calm || pausing.parked ? 0 : (this.race?.road.jolt(bike, distance, speed, seconds) ?? 0);
 
     if (pausing.jump) this.rig.jump();
     if (pausing.view) this.rig.view(pausing.view.eye, pausing.view.look, seconds);
     else {
-      const behind = this.pointAt(distance - BEHIND, 0.4);
-      const ahead = this.pointAt(distance + AHEAD, swayAt(distance + AHEAD) * 0.5);
+      // Following the cheat's line across the road some of the way.
+      const behind = this.pointAt(distance - BEHIND, 0.4 + (moment.line ?? 0) * 0.6);
+      const ahead = this.pointAt(distance + AHEAD, line(distance + AHEAD) * 0.5);
       const turn = turnAt(this.course, distance);
       this.rig.follow(behind, ahead, turn, speed, this.crank, seconds, rumble);
     }
@@ -214,6 +226,7 @@ export class World {
     this.finish?.frame(distance, seconds);
     this.race?.frame(distance, seconds);
     this.listener.frame(distance, speed, seconds, (d) => this.race?.heard(d) ?? 0);
+    this.lines.frame(this.rig.camera, moment.cheat ? speed : 0, seconds);
     this.frames++;
     this.renderer.render(this.scene, this.rig.camera);
   }
@@ -221,11 +234,26 @@ export class World {
   dispose(): void {
     this.land.dispose();
     this.rider.dispose();
+    this.lines.dispose();
     this.small.dispose();
     this.finish?.dispose();
     this.race?.dispose();
     this.atmosphere.dispose();
     this.renderer.dispose();
+  }
+
+  /** Whether a point on the canvas, pixels from its top left, falls on the rider: the cheat's taps. */
+  riderAt(x: number, y: number): boolean {
+    const { width, height } = this.laid;
+    if (width === 0 || height === 0) return false;
+    this.ray.setFromCamera(
+      new THREE.Vector2((x / width) * 2 - 1, 1 - (y / height) * 2),
+      this.rig.camera,
+    );
+    const at = this.rider.group.position;
+    return this.ray.ray.intersectsSphere(
+      new THREE.Sphere(new THREE.Vector3(at.x, at.y + 1, at.z), 1.3),
+    );
   }
 
   /** A point on the road `offset` metres right of its middle, on the road's surface: over a bump, on it. */

@@ -23,6 +23,9 @@ const TALL_FOV = 68;
 /** How much wider the view gets at speed, degrees, and from what speed (m/s). */
 const FAST_WIDEN = 6;
 const FAST = 14;
+/** And wider still, faster than any rider rides — the cheat code's (ADR 0045) — up to this speed. */
+const RUSH_WIDEN = 12;
+const RUSH = 33;
 const HEIGHT = 3.1;
 const LOOK_HEIGHT = 0.3;
 
@@ -94,7 +97,8 @@ export class CameraRig {
       this.target.copy(look);
       this.placed = true;
     }
-    const follow = 1 - Math.exp(-seconds * 5);
+    // Keeping up with the bike: at a cheat's speeds, closer behind it than the easing would leave.
+    const follow = 1 - Math.exp(-seconds * (5 + Math.max(0, speed - FAST) * 0.25));
     this.camera.position.lerp(eye, follow);
     this.target.lerp(look, 1 - Math.exp(-seconds * 7));
     if (!this.calm) this.camera.position.y += Math.sin(crank * 2) * 0.012;
@@ -110,7 +114,8 @@ export class CameraRig {
     const lean = Math.max(-0.045, Math.min(0.045, turn * speed * 0.9));
     this.roll += (lean - this.roll) * (1 - Math.exp(-seconds * 2.5));
     this.camera.rotateZ(this.roll);
-    const fov = this.baseFov + FAST_WIDEN * Math.min(1, speed / FAST);
+    const rush = Math.max(0, Math.min(1, (speed - FAST) / (RUSH - FAST)));
+    const fov = this.baseFov + FAST_WIDEN * Math.min(1, speed / FAST) + RUSH_WIDEN * rush;
     if (Math.abs(fov - this.camera.fov) > 0.05) {
       this.camera.fov += (fov - this.camera.fov) * (1 - Math.exp(-seconds * 1.5));
       this.camera.updateProjectionMatrix();

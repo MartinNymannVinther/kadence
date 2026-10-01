@@ -32,6 +32,7 @@ export default function RideScene({
   onSeen,
   onSound,
   onHear,
+  onRiderTap,
 }: {
   course: Course;
   /** Where the rider is now: read every frame. */
@@ -49,15 +50,17 @@ export default function RideScene({
   onSeen: (key: keyof Seen, count: number) => void;
   onSound: (kind: "bell" | "cheer" | "whistle" | "horn") => void;
   onHear: (heard: Heard) => void;
+  /** A tap or a click on the rider: five quick ones are the cheat code (ADR 0045). */
+  onRiderTap: () => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const latest = useRef({ moment, top, bottom, words, onSeen, onSound, onHear });
+  const latest = useRef({ moment, top, bottom, words, onSeen, onSound, onHear, onRiderTap });
   const resize = useRef<() => void>(() => {});
   // Each spray of washer fluid, numbered: the drops on the lens are drawn for the latest.
   const [spray, setSpray] = useState(0);
 
   useEffect(() => {
-    latest.current = { moment, top, bottom, words, onSeen, onSound, onHear };
+    latest.current = { moment, top, bottom, words, onSeen, onSound, onHear, onRiderTap };
   });
 
   // Only when the strip or the panel over the picture changes: the page
@@ -102,6 +105,15 @@ export default function RideScene({
     resize.current();
     const observer = new ResizeObserver(() => resize.current());
     observer.observe(canvas);
+    // The screen's panels lie over the canvas, so a tap is looked for on the whole window.
+    const tapped = (event: PointerEvent) => {
+      const box = canvas.getBoundingClientRect();
+      const x = event.clientX - box.left;
+      const y = event.clientY - box.top;
+      if (x < 0 || y < 0 || x > box.width || y > box.height) return;
+      if (world.riderAt(x, y)) latest.current.onRiderTap();
+    };
+    window.addEventListener("pointerdown", tapped);
     let last = performance.now();
     let raf = 0;
     const loop = (time: number) => {
@@ -114,6 +126,7 @@ export default function RideScene({
     return () => {
       cancelAnimationFrame(raf);
       observer.disconnect();
+      window.removeEventListener("pointerdown", tapped);
       resize.current = () => {};
       world.dispose();
     };

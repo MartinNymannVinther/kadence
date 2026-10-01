@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { clockText } from "@/components/training/duration";
 import type { Thresholds } from "@/modules/load";
 import type { City, Course, Land, SessionTimeline } from "@/modules/rulle";
+import { CheatOverlay } from "./cheat-overlay";
 import { EndDialog } from "./end-dialog";
 import { IntervalBar } from "./interval-bar";
 import { RideControls } from "./ride-controls";
@@ -14,6 +15,7 @@ import { BlockTile, BodyTile, WattTile } from "./ride-tiles";
 import { RouteProfile } from "./route-profile";
 import type { Beeps } from "./ride/beeps";
 import { INTENSITY } from "./ride/engine";
+import { useCheat } from "./ride/use-cheat";
 import { useCountdown } from "./ride/use-countdown";
 import { useMapShown, useSpeedShown } from "./ride/use-map-shown";
 import { useRideKeys } from "./ride/use-ride-keys";
@@ -40,7 +42,8 @@ const RideScene = dynamic(() => import("./scene/ride-scene"), {
  * pedal stroke; a question before the end; the screen kept awake. On
  * request nothing but the rider and the land (ADR 0045): every number
  * gone, the little map only if it is shown; a tap or I brings them back,
- * and so does a trainer that drops out.
+ * and so does a trainer that drops out. And the cheat code (`useCheat`),
+ * that hands the bike's speed and line on the road to the rider.
  */
 export function RideScreen({
   title,
@@ -122,11 +125,18 @@ export function RideScreen({
     return () => observer.disconnect();
   }, [shown, bare]);
 
+  const cheating = live?.cheat ?? false;
+  const cheat = useCheat(live !== null && !ending, cheating, ride, beeps);
   useRideKeys(live !== null && !ending, {
     " ": () => (live?.status === "paused" ? ride.resume() : ride.pause()),
-    arrowright: ride.skip,
-    arrowup: () => live && ride.setIntensity(live.intensity + INTENSITY.step),
-    arrowdown: () => live && ride.setIntensity(live.intensity - INTENSITY.step),
+    // While the cheat is on, the arrows steer the bike and leave the session alone.
+    ...(cheating
+      ? {}
+      : {
+          arrowright: ride.skip,
+          arrowup: () => live && ride.setIntensity(live.intensity + INTENSITY.step),
+          arrowdown: () => live && ride.setIntensity(live.intensity - INTENSITY.step),
+        }),
     e: () => live && ride.setErg(!live.erg),
     f: fullscreen.toggle,
     m: toggleSound,
@@ -157,6 +167,7 @@ export function RideScreen({
           onSeen={ride.note}
           onSound={(kind) => beeps.play(kind)}
           onHear={(heard) => beeps.hear(heard)}
+          onRiderTap={cheat.tap}
         />
       </div>
       <div className="relative z-10 flex h-full flex-col">
@@ -219,6 +230,14 @@ export function RideScreen({
             </div>
           )}
           {/* Only under `next dev`: the way along the route run faster, or backwards. */}
+          {live && cheating && !bare && (
+            <CheatOverlay
+              banner={cheat.banner}
+              kmh={live.speed * 3.6}
+              onOff={cheat.toggle}
+              onSteer={ride.steerCheat}
+            />
+          )}
           {process.env.NODE_ENV === "development" && live && (
             <DevWarp onWarp={ride.setWarp} hidden={bare} />
           )}
