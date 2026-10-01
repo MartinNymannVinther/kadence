@@ -1,15 +1,13 @@
 /**
  * What the land script (`rulle-land.ts`, ADR 0035) asks OpenStreetMap's
- * Overpass API for: what covers the land in the box round the route, the
- * buildings near the road (or every one in the box), and what must be
- * found within metres of the road. `along` is the road's line every few
+ * Overpass API for: what covers the land in the box round the route, its
+ * roads, the buildings near the road (or every one in the box), and what
+ * must be found within metres of the road. `along` is the road's line every few
  * hundred metres, `near` every 20, both as "lat,lon".
  */
 
 /** Street trees are fetched this close to the road. */
 export const TREES = 60;
-/** Cobbled streets are fetched this close to the road. */
-export const SETTS = 30;
 /** Bridges and tunnels are fetched this close to the road. */
 export const STRUCTURES = 60;
 
@@ -45,7 +43,7 @@ export function landQuery(
     way["amenity"="grave_yard"](${bbox});
     ${buildings}
     node["natural"="tree"](around:${TREES},${along.join(",")});
-    way["highway"]["surface"~"^(sett|cobblestone|unhewn_cobblestone)$"](around:${SETTS},${near.join(",")});
+    way["highway"](${bbox});
     way["bridge"]["bridge"!="no"](around:${STRUCTURES},${near.join(",")});
     way["tunnel"]["tunnel"!="no"](around:${STRUCTURES},${near.join(",")});
     node["generator:source"="wind"](${bbox});

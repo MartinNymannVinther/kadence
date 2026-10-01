@@ -1,9 +1,11 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { buildCourse, readRouteGpx, toPlane } from "@/modules/rulle";
-import { LAND_KINDS, type LandFile } from "@/modules/rulle/route/land-file";
+import { LAND_KINDS, MAPPED, type LandFile, type RoadKind } from "@/modules/rulle/route/land-file";
 import { get } from "./rulle-land/fetch";
 import { heightsOver } from "./rulle-land/heights";
+import { nearTheRoad } from "./rulle-land/near";
 import { landQuery } from "./rulle-land/query";
+import { offRoute, roadIndex, roadOf } from "./rulle-land/roads";
 import {
   area,
   clip,
@@ -35,8 +37,9 @@ import {
  * towns and their buildings, tree rows and hedges, wind turbines; in a
  * city its buildings' heights and roofs where the map says them, their
  * towers and spires, the tall ones on the skyline, the street trees, and
- * the cobbled streets the route runs along; and the bridges and tunnels
- * along the route and across it (ADR 0037).
+ * the cobbled streets the route runs along; the bridges and tunnels
+ * along the route and across it (ADR 0037); and the roads round it, from
+ * main roads to footpaths, but the route's own (ADR 0045).
  * Everything in metres on the course's own plane.
  *
  *     pnpm script scripts/rulle-land.ts public/rulle/routes/bu-dm-2026-vejle.gpx [--buildings 650|all]
@@ -57,6 +60,9 @@ const RAD = Math.PI / 180;
 const SKYLINE = 25;
 /** A cobbled street is kept if the road runs along it this close. */
 const SETT_NEAR = 8;
+const SETTS = ["sett", "cobblestone", "unhewn_cobblestone"];
+/** Roads drawn only near the route: further off they are thinner than a pixel. */
+const NARROW: RoadKind[] = ["service", "cycle", "foot"];
 /** A bridge or a tunnel is kept if it comes this close to the road. */
 const STRUCTURE_NEAR = 15;
 /** Ways no race is ridden on, cobbled or not. */
@@ -131,34 +137,12 @@ async function main(): Promise<void> {
     trees: [],
     setts: [],
     structures: [],
+    roads: [],
     // Every building is here out to this far: the whole land, or the
     // reach, and the 30 m a building's middle may lie past it, with room.
     reach: reach === "all" ? MARGIN : reach + 50,
   };
-  // Nearest the road, in metres: what decides whether a building far off is on the skyline.
-  const fromRoad = (p: P) => {
-    let best = Infinity;
-    for (let i = 0; i < course.x.length; i += 3)
-      best = Math.min(best, Math.hypot(course.x[i]! - p.x, course.y[i]! - p.y));
-    return best;
-  };
-  // The same, exactly: to the road's own line between its points.
-  const onRoad = (p: P) => {
-    let best = Infinity;
-    for (let i = 0; i + 1 < course.x.length; i++) {
-      const dx = course.x[i + 1]! - course.x[i]!;
-      const dy = course.y[i + 1]! - course.y[i]!;
-      const f = Math.max(
-        0,
-        Math.min(
-          1,
-          ((p.x - course.x[i]!) * dx + (p.y - course.y[i]!) * dy) / (dx * dx + dy * dy || 1),
-        ),
-      );
-      best = Math.min(best, Math.hypot(course.x[i]! + f * dx - p.x, course.y[i]! + f * dy - p.y));
-    }
-    return best;
-  };
+  const { fromRoad, onRoad, isRoute } = nearTheRoad(course);
   // A building drawn in parts is drawn by its parts alone, as a map means it.
   const parts = osm.elements
     .filter((e) => e.type === "way" && e.tags?.["building:part"] && !e.tags.building)
@@ -212,16 +196,31 @@ async function main(): Promise<void> {
     // A bridge or a tunnel near the road is kept as a structure, and then
     // goes on to be whatever else it is: a stream in a culvert is a stream.
     const structure = e.type === "way" ? structureOf(tags) : null;
-    if (structure && line.length >= 2 && densify(line, 4).some((p) => onRoad(p) < STRUCTURE_NEAR))
+    const byRoute =
+      structure && line.length >= 2 && densify(line, 4).some((p) => onRoad(p) < STRUCTURE_NEAR);
+    if (structure && byRoute)
       land.structures!.push([
         structureIndex(structure.kind),
         structure.flags,
         round(simplify(line, 0.5)),
       ]);
-    if (e.type === "way" && tags.highway && tags.surface) {
+    if (e.type === "way" && tags.highway) {
       // A cobbled street is kept where the road runs along it, not only across it.
-      const near = line.filter((p) => onRoad(p) < SETT_NEAR).length;
-      if (!FOOT.includes(tags.highway) && near >= 2) land.setts!.push(round(simplify(line, 1)));
+      if (SETTS.includes(tags.surface ?? "") && !FOOT.includes(tags.highway)) {
+        const near = line.filter((p) => onRoad(p) < SETT_NEAR).length;
+        if (near >= 2) land.setts!.push(round(simplify(line, 1)));
+      }
+      // Every road round the route, but where it is the route (ADR 0045);
+      // a drive or a path only near it, as further off it is too narrow to see.
+      // A bridge by the route is drawn as one (ADR 0037), not on the land under it.
+      const road = byRoute && structure.flags & 1 ? null : roadOf(tags);
+      const narrow = road && NARROW.includes(road.kind);
+      if (road && (!narrow || densify(line, 50).some((p) => fromRoad(p) <= MAPPED)))
+        for (const piece of offRoute(densify(line, 10), isRoute)) {
+          const kept = simplify(piece, 1.5);
+          if (kept.length >= 2)
+            land.roads!.push([roadIndex(road.kind), road.unpaved ? 1 : 0, round(kept)]);
+        }
       continue;
     }
     const lineKind =
@@ -273,7 +272,7 @@ async function main(): Promise<void> {
   const json = JSON.stringify(land);
   writeFileSync(out, json);
   console.log(
-    `${out}: ${(json.length / 1024).toFixed(0)} KB — heights ${heights.cols}×${heights.rows}, areas ${land.areas.length}, lines ${land.lines.length}, buildings ${land.buildings.length} (${land.buildings.filter((b) => b.length > 7).length} with heights or roofs), trees ${land.trees!.length}, cobbled streets ${land.setts!.length}, bridges and tunnels ${land.structures!.length}, turbines ${land.turbines.length}`,
+    `${out}: ${(json.length / 1024).toFixed(0)} KB — heights ${heights.cols}×${heights.rows}, areas ${land.areas.length}, lines ${land.lines.length}, buildings ${land.buildings.length} (${land.buildings.filter((b) => b.length > 7).length} with heights or roofs), trees ${land.trees!.length}, cobbled streets ${land.setts!.length}, bridges and tunnels ${land.structures!.length}, roads ${land.roads!.length}, turbines ${land.turbines.length}`,
   );
 }
 

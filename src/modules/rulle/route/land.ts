@@ -5,6 +5,7 @@ import {
   type AreaKind,
   type BuildingKind,
   type LineKind,
+  type RoadKind,
   type RoofShape,
   type StructureKind,
 } from "./land-file";
@@ -50,6 +51,8 @@ export type Land = {
   setts: XY[][];
   /** The bridges and tunnels along the route and across it. */
   structures: { kind: StructureKind; bridge: boolean; tunnel: boolean; points: XY[] }[];
+  /** The roads round the route but the route's own (ADR 0045). */
+  roads: { kind: RoadKind; unpaved: boolean; points: XY[] }[];
   /** Every area, its outline first and its holes after: what a farmyard or a town is, where. */
   areas: { kind: AreaKind; id: number; rings: XY[][] }[];
   /** Lakes and rivers above the sea, with the level their water lies at. */
@@ -229,6 +232,13 @@ export function readLand(json: unknown, course: Course): Land | null {
         kind: LAND_KINDS.structures[kind]!,
         bridge: (flags & 1) !== 0,
         tunnel: (flags & 2) !== 0,
+        points: points(values),
+      })),
+    roads: file.roads
+      .filter(([kind]) => kind < LAND_KINDS.roads.length)
+      .map(([kind, unpaved, values]) => ({
+        kind: LAND_KINDS.roads[kind]!,
+        unpaved: unpaved === 1,
         points: points(values),
       })),
     areas: areas.map((a) => ({ kind: LAND_KINDS.areas[a.kind]!, id: a.index, rings: a.rings })),

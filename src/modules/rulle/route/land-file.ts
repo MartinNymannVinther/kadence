@@ -39,6 +39,12 @@ export const LAND_KINDS = {
    * motorway, a path, a railway, water, or a wildlife crossing's green.
    */
   structures: ["road", "motorway", "path", "rail", "water", "green"],
+  /**
+   * The roads round the route (ADR 0045), widest first: a main road, a
+   * minor one or a town's street, a service road or a drive, a farm
+   * track, a cycle path, a footpath.
+   */
+  roads: ["main", "minor", "service", "track", "cycle", "foot"],
 } as const;
 
 export type AreaKind = (typeof LAND_KINDS.areas)[number];
@@ -46,6 +52,7 @@ export type LineKind = (typeof LAND_KINDS.lines)[number];
 export type BuildingKind = (typeof LAND_KINDS.buildings)[number];
 export type RoofShape = (typeof LAND_KINDS.roofs)[number];
 export type StructureKind = (typeof LAND_KINDS.structures)[number];
+export type RoadKind = (typeof LAND_KINDS.roads)[number];
 
 /** How far from the road a land file's buildings reach when it does not say (ADR 0035). */
 export const MAPPED = 700;
@@ -102,6 +109,14 @@ export const landFileSchema = z.object({
   structures: z
     .array(z.tuple([z.number().int().min(0), z.number().int().min(1).max(3), flat]))
     .max(5_000)
+    .default([]),
+  /**
+   * The roads round the route but the route's own (ADR 0045): their kind,
+   * whether they are unpaved (1) or not (0), and their line.
+   */
+  roads: z
+    .array(z.tuple([z.number().int().min(0), z.number().int().min(0).max(1), flat]))
+    .max(30_000)
     .default([]),
   /**
    * How far from the road, metres, every building the map has is in the

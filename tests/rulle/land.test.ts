@@ -160,6 +160,41 @@ describe("the land round a route", () => {
     expect(land.areas.map((a) => a.kind)).toEqual(["field", "forest", "water", "water"]);
   });
 
+  it("keeps the roads round the route, and none from a file made before them", () => {
+    const roads = readLand(
+      file({
+        roads: [
+          [kind("roads", "minor"), 0, [20, 0, 300, 50]],
+          [kind("roads", "track"), 1, [300, 50, 600, 40, 700, 200]],
+        ],
+      }),
+      course,
+    )!.roads;
+    expect(roads).toEqual([
+      {
+        kind: "minor",
+        unpaved: false,
+        points: [
+          { x: 20, y: 0 },
+          { x: 300, y: 50 },
+        ],
+      },
+      {
+        kind: "track",
+        unpaved: true,
+        points: [
+          { x: 300, y: 50 },
+          { x: 600, y: 40 },
+          { x: 700, y: 200 },
+        ],
+      },
+    ]);
+    expect(land.roads).toEqual([]);
+    expect(
+      readLand(file({ roads: [[kind("roads", "foot"), 2, [0, 0, 1, 1]]] }), course),
+    ).toBeNull();
+  });
+
   it("says how far from the road its buildings reach: 700 m when the file does not say", () => {
     expect(land.reach).toBe(MAPPED);
     expect(MAPPED).toBe(700);

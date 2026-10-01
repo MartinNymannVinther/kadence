@@ -5,6 +5,7 @@ import type { Ground } from "./ground";
 import { LandScenery } from "./land-scenery";
 import { hash } from "./noise";
 import { Batches, church, farm, freeze, turbineBlades, turbineTower } from "./props";
+import { SideRoads } from "./side-roads";
 import { CHUNK, drawnHeight, type ChunkKey } from "./terrain";
 import { disposeTrees, treeMaterial, treeShapes, type TreeShapes } from "./trees";
 import { plantWoods } from "./woods";
@@ -13,7 +14,8 @@ import { plantWoods } from "./woods";
  * The things on the land, chunk by chunk with the terrain under them. On
  * the real land round a route that comes with Kadence (ADR 0035), what is
  * there: woods, tree rows and hedges, towns and farms, streams, wind
- * turbines (`LandScenery`). On any other route, a country made up to fit
+ * turbines (`LandScenery`), and the roads between them, which nothing
+ * stands on (`SideRoads`, ADR 0045). On any other route, a country made up to fit
  * it: woods where the ground says wood, a lone tree in a field, farms
  * with their red roofs back from the road, now and then a whitewashed
  * village church, and wind turbines turning slowly in the distance.
@@ -21,6 +23,8 @@ import { plantWoods } from "./woods";
  * country.
  */
 
+/** Nothing grows or stands this near a road's edge. */
+const ROAD_ROOM = 1.5;
 const FARM_CHANCE = 0.32;
 const CHURCH_CHANCE = 0.03;
 const TURBINE_CHANCE = 0.07;
@@ -43,6 +47,7 @@ export class Scenery {
     blades: THREE.BufferGeometry;
   };
   private readonly land: LandScenery | null;
+  private readonly roads: SideRoads | null;
 
   /** Circles where a stop was put, kept clear from then on. */
   private readonly cleared: { x: number; z: number; r: number }[] = [];
@@ -64,6 +69,7 @@ export class Scenery {
       blades: turbineBlades(),
     };
     this.land = ground.land ? new LandScenery(ground.land, ground) : null;
+    this.roads = ground.land?.roads.length ? new SideRoads(ground.land, ground) : null;
   }
 
   /** Makes room at a place: what stands within `r` metres goes, and nothing grows there again. */
@@ -77,7 +83,11 @@ export class Scenery {
   }
 
   private free(x: number, z: number): boolean {
-    return !this.blocked(x, z) && this.cleared.every((c) => Math.hypot(x - c.x, z - c.z) > c.r);
+    return (
+      !this.blocked(x, z) &&
+      !this.roads?.on(x, z, ROAD_ROOM) &&
+      this.cleared.every((c) => Math.hypot(x - c.x, z - c.z) > c.r)
+    );
   }
 
   add(key: ChunkKey, cx: number, cz: number): void {
@@ -102,6 +112,8 @@ export class Scenery {
         .turbines(cx, cz)
         .forEach((t, k) => this.turbine(object, blades, t.x, t.z, cx, cz + k));
     } else this.madeUp(object, blades, cx, cz);
+    const roads = this.roads?.build(cx, cz);
+    if (roads) object.add(roads);
     for (const mesh of batches.build(this.leaves)) object.add(mesh);
     freeze(object);
     // The rotors are all that moves here.
@@ -134,6 +146,7 @@ export class Scenery {
     for (const geometry of [...farms, church, tower, blades]) geometry.dispose();
     this.material.dispose();
     this.leaves.dispose();
+    this.roads?.dispose();
   }
 
   /** A wind turbine, its rotor facing the westerly. */

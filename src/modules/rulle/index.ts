@@ -39,6 +39,7 @@ export {
   type BuildingKind,
   type LandFile,
   type LineKind,
+  type RoadKind,
   type RoofShape,
   type StructureKind,
 } from "./route/land-file";
