@@ -1,5 +1,6 @@
 import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
+import { after } from "next/server";
 import { getLocale, getTranslations } from "next-intl/server";
 import { ownerAccessSummary } from "@/core/access/summary";
 import { getOrgContext, getSession } from "@/core/auth/session";
@@ -8,6 +9,8 @@ import { withOrgContext } from "@/core/db/tenant";
 import { redirect } from "@/i18n/navigation";
 import { DemoBanner } from "@/components/demo-banner";
 import { isDemoWorkspace } from "@/modules/demo/service";
+import { refreshOwnRacesLater } from "@/modules/results/own";
+import { refreshStaleRaces } from "@/modules/results/refresh";
 import { whoAmI } from "@/modules/team/access";
 import { AppSidebar } from "./app-sidebar";
 import { MobileHeader } from "./mobile-header";
@@ -44,6 +47,11 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const demo = context ? await isDemoWorkspace(context.orgId) : false;
   const me = context ? await whoAmI(context.orgId, context.userId) : null;
   const isCoach = Boolean(me?.isCoach);
+  // Opening Kadence is when races are read from Cykling Danmark (ADR 0039):
+  // a coach's visit reads the whole team, a rider's their own, in the
+  // background after the page, and only what is more than three hours old.
+  if (context && me?.isCoach) after(() => refreshStaleRaces(context));
+  else if (context && me?.rider) after(() => refreshOwnRacesLater(context));
   // Rulle is for riding, and for a coach trying a session on the trainer (ADR 0033).
   const rides = Boolean(me?.isCoach || me?.rider);
 

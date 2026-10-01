@@ -42,11 +42,22 @@ software out.
   profile of the UCI ID that was asked for, or it is refused whole. A row
   that does not read cleanly is skipped, never filled in (the parser is
   pure, `src/modules/results/dcu-profile.ts`).
-- **No scheduled job.** A coach presses "read races now", or opens a page
-  (the rider's, the calendar), and once the page has been answered
-  (`after()`) Kadence reads riders whose races are more than a day old,
-  three at a time. It is never twice in ten minutes per rider and never
-  more than six pages a minute for the installation.
+- **Read when Kadence is opened, not on a schedule.** Kadence has no
+  scheduled job. A coach opening Kadence, the calendar or a rider's page
+  puts every rider on the team whose races are more than three hours
+  old in a line. The line runs in the background after the page has
+  been answered (`after()`) and reads one rider at a time, ten seconds
+  apart (`src/modules/results/queue.ts`). A rider opening Kadence does
+  the same for their own races. The coach's "read races now" reads at
+  once, but never twice in ten minutes for the same rider. The whole
+  installation never reads more than six pages a minute.
+- **The rider's visit writes what the rider may write.** It is written
+  as the rider, the way a ride from their bike computer is (ADR 0018).
+  It puts a race in the rider's own calendar for a day that has none,
+  and writes no place: only a coach writes those. A coach's visit then
+  finds those races and hangs the places on them. When the rider's own
+  reading last ran is kept in memory, because the rider may not write
+  the rider row's note of it.
 - **A race in the calendar, the placing on it for the coach.** Each
   result from the season before and this one hangs on a race in the
   rider's calendar. It goes on the race it hung on before; otherwise on a

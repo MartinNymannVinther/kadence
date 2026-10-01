@@ -4,12 +4,11 @@ import { env } from "@/core/env";
 import { calendarEvents, raceResults, riders } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { todayInCopenhagen } from "@/core/dates";
-import { rateLimit } from "@/core/rate-limit";
-import { DeviceHttpError, loggable } from "@/modules/devices/http";
 import { requireCoach } from "@/modules/team/access";
-import { DcuPageError, parseDcuProfile, type DcuProfile } from "./dcu-profile";
-import { fetchDcuProfile } from "./fetch-dcu";
+import type { DcuProfile } from "./dcu-profile";
 import { planImport } from "./plan";
+import { enqueue } from "./queue";
+import { exclusive, readProfile, sinceFor, staleSince } from "./read";
 import { readsRacesFor } from "./switch";
 
 /**
@@ -17,11 +16,12 @@ import { readsRacesFor } from "./switch";
  * calendar (ADR 0039): a race Kadence makes for the day where the
  * calendar has none, and the result on it for the coach.
  *
- * Kadence has no scheduled job, so this runs when a coach asks — the
- * button on the rider's page — and, at most once a day per rider, after a
- * coach's page has been answered. It is polite to the portal: one page per
- * rider, never twice in ten minutes, never more than a few a minute for
- * the whole installation, and one at a time per rider.
+ * Kadence has no scheduled job, so this runs when a coach opens Kadence —
+ * the whole team, in the line in queue.ts, for every rider whose races
+ * are more than three hours old — and when a coach asks, with the button
+ * on the rider's page, at most every ten minutes. A rider opening Kadence
+ * reads their own races into their calendar (own.ts); the places are
+ * written here, by a coach's visit, because only a coach writes them.
  *
  * The page is fetched outside any transaction; what it says is written in
  * one, as the coach who asked, under the ordinary policies.
@@ -34,25 +34,7 @@ export type RefreshOutcome =
   | { state: "busy" }
   | { state: "failed"; error: string };
 
-const DAY_MS = 24 * 60 * 60 * 1000;
 const FORCED_GAP_MS = 10 * 60 * 1000;
-const PER_MINUTE = 6;
-const inFlight = new Set<string>();
-
-/** Why the read failed, as the short word stored on the rider and shown to the coach. */
-function errorWord(error: unknown): string {
-  if (error instanceof DcuPageError) return error.code;
-  if (error instanceof DeviceHttpError) {
-    if (error.code === "status" && error.status === 404) return "unknown";
-    return error.code;
-  }
-  return "generic";
-}
-
-/** The first of January of last year: the season before and this one. */
-function sinceFor(today: string): string {
-  return `${Number(today.slice(0, 4)) - 1}-01-01`;
-}
 
 export async function refreshRaces(
   ctx: OrgContext,
@@ -68,32 +50,20 @@ export async function refreshRaces(
     return row;
   });
   if (!rider) throw new Refused("notFound");
-  if (!rider.uciId) throw new Refused("invalid", "noUciId");
-  if (!readsRacesFor(env.DCU_RESULTS, rider.uciId)) return { state: "off" };
-  const gap = options.force ? FORCED_GAP_MS : DAY_MS;
-  if (rider.at && Date.now() - rider.at.getTime() < gap) return { state: "fresh" };
-  if (inFlight.has(riderId)) return { state: "busy" };
-  if (!rateLimit("dcu-results", PER_MINUTE, 60_000).allowed) return { state: "busy" };
+  const uciId = rider.uciId;
+  if (!uciId) throw new Refused("invalid", "noUciId");
+  if (!readsRacesFor(env.DCU_RESULTS, uciId)) return { state: "off" };
+  if (!staleSince(rider.at, options.force ? FORCED_GAP_MS : undefined)) return { state: "fresh" };
 
-  inFlight.add(riderId);
-  try {
-    let profile: DcuProfile;
-    try {
-      profile = parseDcuProfile(await fetchDcuProfile(rider.uciId), rider.uciId);
-      // Rows on the page and not one that reads: the page has changed, and
-      // an import of nothing would say the rider rode nothing.
-      if (profile.results.length === 0 && profile.skipped > 0)
-        throw new DcuPageError("not_profile");
-    } catch (error) {
-      const word = errorWord(error);
-      console.warn("dcu results: read failed", loggable(error));
-      await note(ctx, riderId, word);
-      return { state: "failed", error: word };
+  const outcome = await exclusive(riderId, async (): Promise<RefreshOutcome> => {
+    const read = await readProfile(uciId);
+    if ("error" in read) {
+      await note(ctx, riderId, read.error);
+      return { state: "failed", error: read.error };
     }
-    return await store(ctx, riderId, profile, options.today ?? todayInCopenhagen());
-  } finally {
-    inFlight.delete(riderId);
-  }
+    return store(ctx, riderId, read.profile, options.today ?? todayInCopenhagen());
+  });
+  return outcome === "busy" ? { state: "busy" } : outcome;
 }
 
 async function note(ctx: OrgContext, riderId: string, error: string) {
@@ -202,26 +172,25 @@ async function store(
 }
 
 /**
- * After a coach's page: the riders whose races were last read more than a
- * day ago, a few at a time. Whatever goes wrong is noted on the rider and
- * never reaches the page, which has already been answered.
+ * When a coach opens Kadence, or a page about riders: every rider among
+ * `riderIds` whose races are more than three hours old goes in the line.
+ * Whatever goes wrong is noted on the rider and never reaches the page,
+ * which has already been answered.
  */
-export async function refreshStaleRaces(ctx: OrgContext, riderIds: string[], max = 3) {
-  if (env.DCU_RESULTS === "off" || riderIds.length === 0) return;
+export async function refreshStaleRaces(ctx: OrgContext, riderIds?: string[]) {
+  if (env.DCU_RESULTS === "off" || riderIds?.length === 0) return;
   const due = await withOrgContext(ctx, async (tx) => {
     await requireCoach(tx, ctx);
     return tx
       .select({ id: riders.id, uciId: riders.uciId, at: riders.racesCheckedAt })
       .from(riders)
-      .where(and(inArray(riders.id, riderIds), eq(riders.archived, false)));
+      .where(and(eq(riders.archived, false), riderIds ? inArray(riders.id, riderIds) : undefined));
   }).catch(() => []);
-  const stale = due.filter(
-    (r) =>
-      readsRacesFor(env.DCU_RESULTS, r.uciId) && (!r.at || Date.now() - r.at.getTime() >= DAY_MS),
-  );
-  for (const rider of stale.slice(0, max)) {
-    await refreshRaces(ctx, rider.id).catch((error: unknown) =>
-      console.warn("dcu results: refresh failed", loggable(error)),
-    );
+  for (const rider of due) {
+    if (!readsRacesFor(env.DCU_RESULTS, rider.uciId) || !staleSince(rider.at)) continue;
+    enqueue(`coach:${rider.id}`, async () => {
+      const outcome = await refreshRaces(ctx, rider.id);
+      return outcome.state === "read" || outcome.state === "failed";
+    });
   }
 }

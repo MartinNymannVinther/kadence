@@ -90,9 +90,11 @@ entries by UCI ID. That is the first question to put to them (below).
 - A coach enters the rider's UCI ID. Without anything else, the coach
   gets a link to the rider's page at the portal.
 - With `DCU_RESULTS` on, or listing the rider's UCI ID, Kadence reads
-  that one page, at most once a day per rider, never twice in ten minutes,
-  and at most six a minute for the whole installation. It names itself in
-  the user agent with the installation's address. It reads
+  that one page when a coach or the rider opens Kadence and the last
+  reading is more than three hours old. It reads one rider at a time,
+  ten seconds apart, never twice in ten minutes for the same rider, and
+  at most six pages a minute for the whole installation. It names
+  itself in the user agent with the installation's address. It reads
   `dcumedlem.sportstiming.dk` only, never `www.sportstiming.dk`.
 - Each race from the season before and this one goes into the rider's
   calendar as a race. If the calendar already has a race that day, the
