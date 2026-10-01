@@ -250,6 +250,23 @@ over the road on piers and pass close to the buildings beside them. A
 rider who knows the station says whether it reads; the fix, if it does
 not, is a height per bridge by hand in the land file.
 
+### Whether the sound under the ride is right
+
+The wind, the tyres, the birds, a town's hum and the crowd (ADR 0045) are
+made from noise and a few tones, and their levels were set by reasoning,
+not by ear on a family's laptop speakers. Whether they are too loud, too
+quiet or too much like noise is for a real ride to say; if so, the
+levels are in `mixOf` and the master in `ambience.ts`. There is one level
+and M; a slider waits until someone asks for it.
+
+### A cheat code anyone can share
+
+The cheat code (ADR 0045) ships to everyone, behind SPURT or five taps on
+the rider. It moves only what is shown, so the ride recorded and the
+coach's numbers are untouched, but a rider can spend a session at
+120 km/h instead of looking at the bar. Whether coaches want a switch to
+turn it off for their team is for the first winter to say.
+
 ### Whether race day is too much
 
 The city routes (ADR 0036) are ridden on race day every time: a crowd of
