@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { CalendarPlus, CopyPlus, Plus } from "lucide-react";
+import { CalendarPlus, CalendarRange, CopyPlus, Plus } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { dayMonth, weekdayShort } from "@/components/training/day-label";
 import { hoursText } from "@/components/training/duration";
 import { VolumeBar } from "@/components/season/volume-bar";
@@ -77,7 +77,15 @@ export function TeamGrid({
   return (
     <div className="flex min-w-0 flex-col gap-3">
       <div className="flex flex-wrap gap-2 sm:justify-end">
+        <Link
+          href={`/calendar/week-plan?week=${days[0] ?? today}`}
+          className={cn(buttonVariants(), "max-sm:h-11")}
+        >
+          <CalendarRange data-icon="inline-start" />
+          {t("plan")}
+        </Link>
         <Button
+          variant="outline"
           className="max-sm:h-11"
           onClick={() => setDialog({ kind: "session", date: firstDay, riderIds: [] })}
         >

@@ -99,7 +99,7 @@ export function weekDraftPrompt(c: Context, locale: string) {
 }
 
 /** DCU's race limits for the class (Sporstlige_regler_2026), as a line of context. */
-function raceRulesLine(category: string): string {
+export function raceRulesLine(category: string): string {
   if (category !== "U17" && category !== "U19" && category !== "U23")
     return "No DCU race rules for this class.";
   const r = raceRulesFor(category);

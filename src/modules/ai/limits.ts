@@ -27,10 +27,13 @@ export const MAX_CALLS_PER_INSTALLATION_PER_DAY = env.AI_DAILY_CALL_CAP;
  * What a model call was for (docs/adr/0017): `week_draft` a proposed week
  * of sessions for a rider, `build_workout` a coach's words built into a
  * bike or strength session (docs/adr/0038; `parse_workout` before it, on
- * rows already counted), `coach_brief` the Monday summary of who needs
- * attention, `test` the connection test under Settings → AI.
+ * rows already counted), `group_week` a week for a group of riders
+ * from DCU and the team's library (docs/adr/0043), `coach_brief` the
+ * Monday summary of who needs attention, `test` the connection test
+ * under Settings → AI.
  */
-export type AiKind = "week_draft" | "build_workout" | "parse_workout" | "coach_brief" | "test";
+export type AiKind =
+  "week_draft" | "build_workout" | "parse_workout" | "group_week" | "coach_brief" | "test";
 
 export class RateLimited extends Error {
   constructor() {

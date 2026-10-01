@@ -193,7 +193,7 @@ Routes:
 - `POST /api/activities/upload` (FIT)
 - `GET/POST /api/devices/{wahoo,garmin}/{connect,callback,webhook}`
 - `GET /api/sessions/[id]/export?format=zwo|erg|mrc|fit`
-- `/api/ai/{week-draft,build-workout,coach-brief}`
+- `/api/ai/{week-draft,build-workout,group-week,coach-brief}`
 - `/api/export`
 - `/api/health`
 - `/api/version`

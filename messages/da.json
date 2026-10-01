@@ -637,7 +637,7 @@
       },
       "calendar": {
         "title": "Kalenderen",
-        "body": "Kalenderen viser en uge ad gangen. På en computer står dagene side om side, på telefonen under hinanden. Træneren kan se hele holdet på én gang og trække et pas til en anden dag. På telefonen bruger du \"Flyt\" i passets menu. Løb, eksamen, skole, lejr, ferie og sygdom står i kalenderen som små mærker. Farverne på passene viser, hvordan det gik: grøn er som planlagt, gul er lidt ved siden af, rød er ikke udført eller langt fra planen, og grå er ikke kørt endnu. Der står altid et ord ved farven. Skal det samme pas gå igen, fx styrke hver tirsdag og torsdag i vinter, så slå \"Gentag på faste ugedage\" til, når du lægger passet ind: vælg ugedagene og den sidste dag. Hvert pas kan rettes for sig, og \"Ret\" og \"Slet\" kan også tage resten af serien. \"Kopiér ugen før\" lægger hver rytters egne pas fra en anden uge ind på de samme ugedage i den uge, du står på. Træneren kan gøre det for hele holdet på én gang, og først ser man, hvad det giver mod sæsonplanen."
+        "body": "Kalenderen viser en uge ad gangen. På en computer står dagene side om side, på telefonen under hinanden. Træneren kan se hele holdet på én gang og trække et pas til en anden dag. På telefonen bruger du \"Flyt\" i passets menu. Løb, eksamen, skole, lejr, ferie og sygdom står i kalenderen som små mærker. Farverne på passene viser, hvordan det gik: grøn er som planlagt, gul er lidt ved siden af, rød er ikke udført eller langt fra planen, og grå er ikke kørt endnu. Der står altid et ord ved farven. Skal det samme pas gå igen, fx styrke hver tirsdag og torsdag i vinter, så slå \"Gentag på faste ugedage\" til, når du lægger passet ind: vælg ugedagene og den sidste dag. Hvert pas kan rettes for sig, og \"Ret\" og \"Slet\" kan også tage resten af serien. \"Kopiér ugen før\" lægger hver rytters egne pas fra en anden uge ind på de samme ugedage i den uge, du står på. Træneren kan gøre det for hele holdet på én gang, og først ser man, hvad det giver mod sæsonplanen. Træneren kan også planlægge en hel uge for holdet eller udvalgte ryttere på én gang: \"Planlæg ugen\" i holdets uge. Vælg ryttere, eventuelt en hel årgang med ét tryk, læg pas på dagene, eller start fra en blok, en rytters uge eller et forslag fra AI'en, se hvad det giver mod sæsonplanen, og læg ugen ind."
       },
       "sessions": {
         "title": "Pas og skabeloner",
@@ -852,6 +852,7 @@
       "caption": "Holdets uge: en række pr. rytter og en kolonne pr. dag",
       "rider": "Rytter",
       "week": "På cyklen",
+      "plan": "Planlæg ugen",
       "hours": "{done} af {planned} t"
     },
     "menu": {
@@ -987,6 +988,68 @@
       "km": "Distance",
       "submit": "Gem",
       "saved": "Træningen er gemt."
+    }
+  },
+  "weekPlan": {
+    "title": "Planlæg ugen",
+    "subtitle": "Uge {n}, {from}–{to}",
+    "back": "Tilbage til holdets uge",
+    "coachOnly": "Kun trænere planlægger holdets uge.",
+    "open": "Planlæg ugen",
+    "applied": "{count, plural, one {# pas er lagt ind} other {# pas er lagt ind}} hos {riders, plural, one {# rytter} other {# ryttere}}.",
+    "riders": {
+      "title": "Hvem er ugen for?",
+      "quick": "Vælg hurtigt",
+      "all": "Hele holdet ({count})",
+      "class": "{name} ({count})"
+    },
+    "week": {
+      "title": "Ugen",
+      "body": "Læg pas på dagene fra biblioteket, byg dem her, eller start fra en blok, en rytters uge eller et forslag fra AI'en. Intet kommer i kalenderen, før du lægger ugen ind.",
+      "replaced": "Ugen er skiftet ud.",
+      "undo": "Fortryd"
+    },
+    "days": {
+      "add": "Tilføj pas {day}",
+      "edit": "Ret {title}",
+      "remove": "Fjern {title}",
+      "rest": "Hviledag"
+    },
+    "item": {
+      "addTitle": "Pas {day}",
+      "editTitle": "Ret passet {day}",
+      "add": "Læg på {day}"
+    },
+    "start": {
+      "source": "Start fra",
+      "block": "En blok",
+      "rider": "En rytters uge",
+      "week": "Ugen i blokken",
+      "weekN": "Uge {n}",
+      "weekOf": "Ugen med",
+      "load": "Hent",
+      "hint": "Det, du henter, erstatter ugen her. Du kan rette alt bagefter."
+    },
+    "ai": {
+      "open": "Foreslå ugen med AI",
+      "basis": "Årgang",
+      "wish": "Hvad skal ugen handle om?",
+      "wishPlaceholder": "Fx rolig uge før løbet søndag, eller to korte intervalpas og ét styrkepas",
+      "hint": "AI'en får DCU's timer for årgangen, holdets egne begivenheder og biblioteket. Den får ingen rytterdata. Forslaget lander i planen, hvor du kan rette det.",
+      "ask": "Foreslå ugen",
+      "close": "Luk",
+      "thinking": "Tænker … det kan tage lidt tid.",
+      "title": "Forslag til holdets uge",
+      "body": "\"Brug forslaget\" lægger passene i planen her. Intet kommer i kalenderen, før du lægger ugen ind.",
+      "empty": "AI'en foreslog ingen pas til ugen.",
+      "use": "Brug forslaget"
+    },
+    "apply": {
+      "title": "Læg ugen ind",
+      "empty": "Vælg ryttere, og læg mindst ét pas på ugen.",
+      "summary": "{sessions, plural, one {# pas} other {# pas}} til {riders, plural, one {# rytter} other {# ryttere}}. Hvert pas bliver et holdpas, så \"Ret alle\" virker bagefter.",
+      "preview": "Se, hvad det giver mod sæsonplanen",
+      "confirm": "{riders, plural, one {Læg ugen ind hos # rytter} other {Læg ugen ind hos # ryttere}}"
     }
   },
   "library": {

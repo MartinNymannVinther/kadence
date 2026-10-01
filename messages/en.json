@@ -637,7 +637,7 @@
       },
       "calendar": {
         "title": "The calendar",
-        "body": "The calendar shows one week at a time. On a computer the days stand side by side, on a phone one below the other. The coach can see the whole team at once and drag a session to another day. On a phone you use \"Move\" in the session's menu. Races, exams, school, camps, holidays and illness sit in the calendar as small labels. The colours on the sessions show how it went: green is as planned, yellow is a little off, red is not done or far from the plan, and grey is not ridden yet. There is always a word beside the colour. If the same session should come back, say strength every Tuesday and Thursday this winter, turn on \"Repeat on set weekdays\" when you add it: choose the weekdays and the last day. Each session can be changed on its own, and \"Edit\" and \"Delete\" can also take the rest of the series. \"Copy the week before\" lays each rider's own sessions from another week on the same weekdays of the week you are on. A coach can do it for the whole team at once, and first sees what it gives against the season plan."
+        "body": "The calendar shows one week at a time. On a computer the days stand side by side, on a phone one below the other. The coach can see the whole team at once and drag a session to another day. On a phone you use \"Move\" in the session's menu. Races, exams, school, camps, holidays and illness sit in the calendar as small labels. The colours on the sessions show how it went: green is as planned, yellow is a little off, red is not done or far from the plan, and grey is not ridden yet. There is always a word beside the colour. If the same session should come back, say strength every Tuesday and Thursday this winter, turn on \"Repeat on set weekdays\" when you add it: choose the weekdays and the last day. Each session can be changed on its own, and \"Edit\" and \"Delete\" can also take the rest of the series. \"Copy the week before\" lays each rider's own sessions from another week on the same weekdays of the week you are on. A coach can do it for the whole team at once, and first sees what it gives against the season plan. A coach can also plan a whole week for the team or chosen riders at once: \"Plan the week\" in the team's week. Choose riders, a whole class with one tap if you like, put sessions on the days or start from a block, a rider's week or a proposal from the AI, see what it gives against the season plan, and lay the week in."
       },
       "sessions": {
         "title": "Sessions and templates",
@@ -852,6 +852,7 @@
       "caption": "The team's week: a row per rider and a column per day",
       "rider": "Rider",
       "week": "On the bike",
+      "plan": "Plan the week",
       "hours": "{done} of {planned} h"
     },
     "menu": {
@@ -987,6 +988,68 @@
       "km": "Distance",
       "submit": "Save",
       "saved": "The training is saved."
+    }
+  },
+  "weekPlan": {
+    "title": "Plan the week",
+    "subtitle": "Week {n}, {from}–{to}",
+    "back": "Back to the team's week",
+    "coachOnly": "Only coaches plan the team's week.",
+    "open": "Plan the week",
+    "applied": "{count, plural, one {# session laid in} other {# sessions laid in}} for {riders, plural, one {# rider} other {# riders}}.",
+    "riders": {
+      "title": "Who is the week for?",
+      "quick": "Quick choice",
+      "all": "The whole team ({count})",
+      "class": "{name} ({count})"
+    },
+    "week": {
+      "title": "The week",
+      "body": "Put sessions on the days from the library, build them here, or start from a block, a rider's week or a proposal from the AI. Nothing reaches the calendar until you lay the week in.",
+      "replaced": "The week was replaced.",
+      "undo": "Undo"
+    },
+    "days": {
+      "add": "Add a session {day}",
+      "edit": "Edit {title}",
+      "remove": "Remove {title}",
+      "rest": "Rest day"
+    },
+    "item": {
+      "addTitle": "Session {day}",
+      "editTitle": "Edit the session {day}",
+      "add": "Put on {day}"
+    },
+    "start": {
+      "source": "Start from",
+      "block": "A block",
+      "rider": "A rider's week",
+      "week": "The week in the block",
+      "weekN": "Week {n}",
+      "weekOf": "The week of",
+      "load": "Load",
+      "hint": "What you load replaces the week here. You can change everything after."
+    },
+    "ai": {
+      "open": "Propose the week with AI",
+      "basis": "Class",
+      "wish": "What should the week be about?",
+      "wishPlaceholder": "E.g. an easy week before Sunday's race, or two short interval sessions and one strength session",
+      "hint": "The AI gets DCU's hours for the class, the team's own events and the library. It gets no rider data. The proposal lands in the plan, where you can change it.",
+      "ask": "Propose the week",
+      "close": "Close",
+      "thinking": "Thinking … this can take a while.",
+      "title": "Proposed team week",
+      "body": "\"Use the proposal\" puts the sessions in the plan here. Nothing reaches the calendar until you lay the week in.",
+      "empty": "The AI proposed no sessions for the week.",
+      "use": "Use the proposal"
+    },
+    "apply": {
+      "title": "Lay the week in",
+      "empty": "Choose riders, and put at least one session on the week.",
+      "summary": "{sessions, plural, one {# session} other {# sessions}} for {riders, plural, one {# rider} other {# riders}}. Each session becomes a group session, so \"Edit all\" works afterwards.",
+      "preview": "See what it gives against the season plan",
+      "confirm": "{riders, plural, one {Lay the week in for # rider} other {Lay the week in for # riders}}"
     }
   },
   "library": {
