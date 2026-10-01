@@ -152,6 +152,14 @@ codebase to:
   (`structuresOn`, pure): the road over its rivers, and under railways
   and motorways with a train now and then over them (ADR 0037).
   No table of its own.
+- Races from Cykling Danmark (ADR 0039): a coach enters a rider's UCI
+  ID, and, when the installation turns it on (`DCU_RESULTS`), Kadence
+  reads the rider's public page at the member portal, one page per
+  rider, at most daily, after a coach's page has been answered. The
+  races go in the rider's calendar; the placing (`race_results`) is the
+  coach's, readable by the rider only in their export. The parser is
+  pure (`src/modules/results/dcu-profile.ts`) and refuses rather than
+  guesses. Entries are not read: they need Cykling Danmark's help.
 - Deployment: Docker Compose run via Coolify on an EU VPS (Hetzner
   initially; the provider must stay replaceable). Nightly encrypted
   backups to EU object storage. No Vercel, no Neon, no US cloud.
@@ -285,6 +293,9 @@ codebase to:
   with its own face (ADR 0036); the bridges and tunnels on the way, a
   train now and then over the road, and race marshals on motorbikes
   (ADR 0037).
+- Races (done): a rider's races and placings from Cykling Danmark in
+  the calendar, the placing for the coach (ADR 0039). Entries wait for
+  Cykling Danmark (docs/research/dcu-results.md).
 - Before 1.0: dogma seven — one real winter with one real team
   (docs/launch.md).
 - Later, each as its own decision: a rider on two teams (club and

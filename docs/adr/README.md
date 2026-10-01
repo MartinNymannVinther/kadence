@@ -58,3 +58,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0036](0036-rulle-in-the-city-on-race-day.md)                    | Rulle in the city: Future Racing in Copenhagen and the Worlds in Montréal, on race day        | → 0013, 0034, 0035       |
 | [0037](0037-rulle-bridges-tunnels-and-marshals-on-motorbikes.md) | Rulle's bridges and tunnels: the road over them, a train now and then, marshals on motorbikes | → 0034, 0035, 0036       |
 | [0038](0038-build-a-session-with-ai.md)                          | Build a session with AI, bike and strength: from words or by changing what is there           | → 0014, 0017             |
+| [0039](0039-races-from-cykling-danmark.md)                       | Races from Cykling Danmark: a rider's races in the calendar, the placing for the coach        | → 0011, 0013, 0018       |

@@ -125,6 +125,21 @@ What this means in practice:
   provider already holds about the rider's own rides is between the rider
   and the provider, and Kadence neither sees nor controls it.
 
+## Sources Kadence reads from
+
+Not subprocessors: they process nothing on Kadence's behalf. Kadence
+asks them for something public and takes the answer home. What goes out
+is the question.
+
+| Source                                                                                                              | Turned on by                                                                        | From Kadence to the source                                                                                                                                                                        | From the source to Kadence                                                                                                                                                                                                                       | Location               | Added      |
+| ------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------- | ---------- |
+| Cykling Danmark's member portal (`dcumedlem.sportstiming.dk`, run by Sportstiming ApS, Viby J, for Cykling Danmark) | The installation (`DCU_RESULTS`), then a coach entering a rider's UCI ID (ADR 0039) | A request for one public page, the rider's: the UCI ID in its address, and a user agent naming Kadence and the installation's address. Nothing else: no name, no team, no other data about anyone | The rider's public page: name, birth year, UCI ID and every result filed under the licence. Kadence keeps the races from the season before on, with class, date, place and the link to the result list; it keeps neither the name nor the points | Denmark (Sportstiming) | 2026-10-01 |
+
+The installation reads nothing until `DCU_RESULTS` is `on` or names the
+rider's UCI ID, and nothing for a rider without one. The link to a
+result list at `www.sportstiming.dk` is only shown: a coach opens it in
+their own browser, and Kadence never fetches it.
+
 ## Not subprocessors, but worth naming
 
 **GitHub** holds the source repository. It processes no installation
