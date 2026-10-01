@@ -11,7 +11,14 @@
  */
 
 export type RouteCredit =
-  "osm" | "eudem" | "terrain" | "terrainCanada" | "buDm2026" | "futureRacing2026" | "montreal2026";
+  | "osm"
+  | "eudem"
+  | "terrain"
+  | "terrainCanada"
+  | "buDm2026"
+  | "futureRacing2026"
+  | "montreal2026"
+  | "tourDeHimmelfart2026";
 
 /** The cities a route that comes with Kadence runs through (ADR 0036). */
 export type City = "kobenhavn" | "montreal";
@@ -49,6 +56,25 @@ export const ROUTES = [
     credits: ["buDm2026", "osm", "terrain"],
     km: 10.0,
     climb: 144,
+    finish: true,
+  },
+  {
+    key: "tour-de-himmelfart-2026",
+    /**
+     * The queen stage of Tour de Himmelfart 2026, stage 5, in Odder on
+     * 16 May 2026 (Odder Cykel Klub, https://www.tourdehimmelfart.dk/5-etape/):
+     * a lap of 15.7 km from the finish on Vestermarken out to Tvenstrup, up
+     * Pederstrupvej to the hill sprint at Pederstrup, round by Løjenkær,
+     * down through Hads Bæk's valley at Balle Findal and home by Balle and
+     * Snærild. The race's own route file, heights as in it (they agree with
+     * EU-DEM within a metre), with the hill sprint and the drop zones from
+     * the organiser's map.
+     */
+    file: "/rulle/routes/tour-de-himmelfart-2026-odder.gpx",
+    land: "/rulle/routes/tour-de-himmelfart-2026-odder.land.json",
+    credits: ["tourDeHimmelfart2026", "osm", "terrain"],
+    km: 15.7,
+    climb: 178,
     finish: true,
   },
   {
