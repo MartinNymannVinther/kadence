@@ -637,7 +637,7 @@
       },
       "calendar": {
         "title": "Kalenderen",
-        "body": "Kalenderen viser en uge ad gangen. På en computer står dagene side om side, på telefonen under hinanden. Træneren kan se hele holdet på én gang og trække et pas til en anden dag. På telefonen bruger du \"Flyt\" i passets menu. Løb, eksamen, skole, lejr, ferie og sygdom står i kalenderen som små mærker. Farverne på passene viser, hvordan det gik: grøn er som planlagt, gul er lidt ved siden af, rød er ikke udført eller langt fra planen, og grå er ikke kørt endnu. Der står altid et ord ved farven. Skal det samme pas gå igen, fx styrke hver tirsdag og torsdag i vinter, så slå \"Gentag på faste ugedage\" til, når du lægger passet ind: vælg ugedagene og den sidste dag. Hvert pas kan rettes for sig, og \"Ret\" og \"Slet\" kan også tage resten af serien."
+        "body": "Kalenderen viser en uge ad gangen. På en computer står dagene side om side, på telefonen under hinanden. Træneren kan se hele holdet på én gang og trække et pas til en anden dag. På telefonen bruger du \"Flyt\" i passets menu. Løb, eksamen, skole, lejr, ferie og sygdom står i kalenderen som små mærker. Farverne på passene viser, hvordan det gik: grøn er som planlagt, gul er lidt ved siden af, rød er ikke udført eller langt fra planen, og grå er ikke kørt endnu. Der står altid et ord ved farven. Skal det samme pas gå igen, fx styrke hver tirsdag og torsdag i vinter, så slå \"Gentag på faste ugedage\" til, når du lægger passet ind: vælg ugedagene og den sidste dag. Hvert pas kan rettes for sig, og \"Ret\" og \"Slet\" kan også tage resten af serien. \"Kopiér ugen før\" lægger hver rytters egne pas fra en anden uge ind på de samme ugedage i den uge, du står på. Træneren kan gøre det for hele holdet på én gang, og først ser man, hvad det giver mod sæsonplanen."
       },
       "sessions": {
         "title": "Pas og skabeloner",
@@ -792,7 +792,8 @@
     "repeatOrder": "Slutdatoen ligger før den første dag.",
     "repeatTooLong": "En gentagelse kan højst gå et halvt år frem.",
     "repeatEmpty": "Ingen af de valgte ugedage ligger i perioden.",
-    "repeatTooMany": "Det bliver for mange pas på én gang. Vælg færre ryttere eller en kortere periode."
+    "repeatTooMany": "Det bliver for mange pas på én gang. Vælg færre ryttere eller en kortere periode.",
+    "copySameWeek": "En uge kan ikke kopieres ind i sig selv."
   },
   "calendar": {
     "title": "Kalender",
@@ -934,6 +935,18 @@
       "tooManyStrength": "Fra uge {week} ({date}) anbefaler DCU {max} styrkepas om ugen. Serien har {perWeek}.",
       "hint": "Hvert pas kan stadig flyttes og rettes for sig. \"Ret\" og \"Slet\" kan også tage resten af serien.",
       "preview": "Se timerne mod sæsonplanen"
+    },
+    "copyWeek": {
+      "open": "Kopiér ugen før",
+      "title": "Kopiér en uge",
+      "body": "Hver rytter får sine egne pas fra den valgte uge lagt ind på de samme ugedage i {week}. Det, der er kørt, følger ikke med.",
+      "from": "Kopiér fra ugen med",
+      "weekLabel": "uge {n} ({from}–{to})",
+      "preview": "Se, hvad det giver",
+      "confirm": "Kopiér ugen",
+      "counts": "{copied, plural, =0 {Der er ingen pas at kopiere i den uge.} one {# pas kopieres.} other {# pas kopieres.}}",
+      "skipped": "{skipped, plural, one {# pas springes over, fordi serien allerede har en dag i ugen.} other {# pas springes over, fordi deres serie allerede har en dag i ugen.}}",
+      "done": "{count, plural, one {# pas er kopieret.} other {# pas er kopieret.}}"
     },
     "event": {
       "addTitle": "Tilføj begivenhed",
@@ -2216,6 +2229,7 @@
     "compact": "{done} af {planned} t",
     "goalShort": "Mål {hours}",
     "dcuShort": "DCU {low}–{high}",
+    "dcuBreak": "DCU: pause og frit",
     "expected": "Forventet {hours} t på cyklen:",
     "state": {
       "inside": "inden for DCU's ramme",

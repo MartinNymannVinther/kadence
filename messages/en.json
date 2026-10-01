@@ -637,7 +637,7 @@
       },
       "calendar": {
         "title": "The calendar",
-        "body": "The calendar shows one week at a time. On a computer the days stand side by side, on a phone one below the other. The coach can see the whole team at once and drag a session to another day. On a phone you use \"Move\" in the session's menu. Races, exams, school, camps, holidays and illness sit in the calendar as small labels. The colours on the sessions show how it went: green is as planned, yellow is a little off, red is not done or far from the plan, and grey is not ridden yet. There is always a word beside the colour. If the same session should come back, say strength every Tuesday and Thursday this winter, turn on \"Repeat on set weekdays\" when you add it: choose the weekdays and the last day. Each session can be changed on its own, and \"Edit\" and \"Delete\" can also take the rest of the series."
+        "body": "The calendar shows one week at a time. On a computer the days stand side by side, on a phone one below the other. The coach can see the whole team at once and drag a session to another day. On a phone you use \"Move\" in the session's menu. Races, exams, school, camps, holidays and illness sit in the calendar as small labels. The colours on the sessions show how it went: green is as planned, yellow is a little off, red is not done or far from the plan, and grey is not ridden yet. There is always a word beside the colour. If the same session should come back, say strength every Tuesday and Thursday this winter, turn on \"Repeat on set weekdays\" when you add it: choose the weekdays and the last day. Each session can be changed on its own, and \"Edit\" and \"Delete\" can also take the rest of the series. \"Copy the week before\" lays each rider's own sessions from another week on the same weekdays of the week you are on. A coach can do it for the whole team at once, and first sees what it gives against the season plan."
       },
       "sessions": {
         "title": "Sessions and templates",
@@ -792,7 +792,8 @@
     "repeatOrder": "The last day is before the first.",
     "repeatTooLong": "A repeat can run half a year ahead at most.",
     "repeatEmpty": "None of the chosen weekdays falls in the period.",
-    "repeatTooMany": "That is too many sessions at once. Choose fewer riders or a shorter period."
+    "repeatTooMany": "That is too many sessions at once. Choose fewer riders or a shorter period.",
+    "copySameWeek": "A week cannot be copied into itself."
   },
   "calendar": {
     "title": "Calendar",
@@ -934,6 +935,18 @@
       "tooManyStrength": "From week {week} ({date}) DCU recommends {max, plural, one {# strength session} other {# strength sessions}} a week. The series has {perWeek}.",
       "hint": "Each session can still be moved and changed on its own. \"Edit\" and \"Delete\" can also take the rest of the series.",
       "preview": "See the hours against the season plan"
+    },
+    "copyWeek": {
+      "open": "Copy the week before",
+      "title": "Copy a week",
+      "body": "Each rider's own sessions from the chosen week are laid on the same weekdays of {week}. What was ridden does not come along.",
+      "from": "Copy from the week with",
+      "weekLabel": "week {n} ({from}–{to})",
+      "preview": "See what it gives",
+      "confirm": "Copy the week",
+      "counts": "{copied, plural, =0 {There are no sessions to copy in that week.} one {# session is copied.} other {# sessions are copied.}}",
+      "skipped": "{skipped, plural, one {# session is left out, as its series already has a day in the week.} other {# sessions are left out, as their series already has a day in the week.}}",
+      "done": "{count, plural, one {# session copied.} other {# sessions copied.}}"
     },
     "event": {
       "addTitle": "Add event",
@@ -2216,6 +2229,7 @@
     "compact": "{done} of {planned} h",
     "goalShort": "Goal {hours}",
     "dcuShort": "DCU {low}–{high}",
+    "dcuBreak": "DCU: break and free riding",
     "expected": "Expected {hours} h on the bike:",
     "state": {
       "inside": "inside DCU's corridor",

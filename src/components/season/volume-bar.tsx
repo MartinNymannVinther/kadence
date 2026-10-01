@@ -86,7 +86,12 @@ export function VolumeBar({
   const locale = useLocale();
   const h = (v: number) => num(v, locale, 1);
   const dcu = volume.dcu && volume.dcu.high > 0 ? volume.dcu : null;
-  const dcuText = dcu ? t("range", { low: h(dcu.low), high: h(dcu.high) }) : t("noDcu");
+  // A DCU number of nothing is October's "pause + frit", not a class without hours.
+  const dcuText = dcu
+    ? t("range", { low: h(dcu.low), high: h(dcu.high) })
+    : volume.dcu
+      ? t("dcuBreak")
+      : t("noDcu");
   const goalText = volume.goal !== null ? t("hours", { hours: h(volume.goal) }) : t("noGoal");
   const said = t("said", {
     done: h(volume.done),
@@ -105,7 +110,11 @@ export function VolumeBar({
         <p aria-hidden className="text-meta truncate text-2xs tabular-nums">
           {[
             volume.goal !== null ? t("goalShort", { hours: h(volume.goal) }) : null,
-            dcu ? t("dcuShort", { low: h(dcu.low), high: h(dcu.high) }) : null,
+            dcu
+              ? t("dcuShort", { low: h(dcu.low), high: h(dcu.high) })
+              : volume.dcu
+                ? t("dcuBreak")
+                : null,
           ]
             .filter(Boolean)
             .join(" · ")}

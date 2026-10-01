@@ -1,6 +1,7 @@
 "use client";
 
 import { AddSessionSheet } from "./add-session-sheet";
+import { CopyWeekDialog } from "./copy-week-dialog";
 import { EventDialog } from "./event-dialog";
 import { LogActivityDialog } from "./log-activity-dialog";
 import type { TemplateOption } from "./template-picker";
@@ -15,7 +16,8 @@ export type DialogState =
   | null
   | { kind: "session"; date: string; riderIds: string[] }
   | { kind: "event"; date: string; riderId: string | null; event?: CalendarEventCard }
-  | { kind: "log"; date: string; riderId: string };
+  | { kind: "log"; date: string; riderId: string }
+  | { kind: "copyWeek"; monday: string; riderIds: string[] };
 
 export function CalendarDialogs({
   state,
@@ -45,6 +47,18 @@ export function CalendarDialogs({
         defaultDate={state.date}
         templates={templates}
         canBuild={isCoach}
+      />
+    );
+  }
+  if (state.kind === "copyWeek") {
+    return (
+      <CopyWeekDialog
+        key={key}
+        open
+        onOpenChange={close}
+        monday={state.monday}
+        riders={riders}
+        defaultRiderIds={state.riderIds}
       />
     );
   }

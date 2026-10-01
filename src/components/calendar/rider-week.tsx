@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CalendarPlus, NotebookPen, Plus } from "lucide-react";
+import { CalendarPlus, CopyPlus, NotebookPen, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { UploadDialog } from "@/components/activities/upload-dialog";
 import { WeekDraftDialog } from "@/components/assist/week-draft-dialog";
@@ -56,6 +56,7 @@ export function RiderWeek({
   basisLabel: string | null;
 }) {
   const t = useTranslations("calendar.actions");
+  const copy = useTranslations("calendar.copyWeek");
   const { sessions, move, place, landed, announcement } = useWeekSessions(initial);
   const drag = useSessionDrag(move);
   const [dialog, setDialog] = useState<DialogState>(null);
@@ -102,6 +103,16 @@ export function RiderWeek({
               <CalendarPlus data-icon="inline-start" />
               {t("addEvent")}
             </Button>
+            {canPlan && (
+              <Button
+                variant="outline"
+                className="max-sm:h-11"
+                onClick={() => setDialog({ kind: "copyWeek", monday, riderIds: [riderId] })}
+              >
+                <CopyPlus data-icon="inline-start" />
+                {copy("open")}
+              </Button>
+            )}
             <UploadDialog riderId={riderId} />
             {isCoach && <WeekDraftDialog riderId={riderId} monday={monday} />}
           </div>

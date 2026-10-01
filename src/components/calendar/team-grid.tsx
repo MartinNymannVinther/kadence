@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { CalendarPlus, Plus } from "lucide-react";
+import { CalendarPlus, CopyPlus, Plus } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { dayMonth, weekdayShort } from "@/components/training/day-label";
@@ -53,6 +53,7 @@ export function TeamGrid({
   const t = useTranslations("calendar.team");
   const actions = useTranslations("calendar.actions");
   const labels = useTranslations("calendar.week");
+  const copy = useTranslations("calendar.copyWeek");
   const locale = useLocale();
   const { sessions, move, landed, announcement } = useWeekSessions(initial);
   const drag = useSessionDrag(move);
@@ -90,6 +91,20 @@ export function TeamGrid({
         >
           <CalendarPlus data-icon="inline-start" />
           {actions("addEvent")}
+        </Button>
+        <Button
+          variant="outline"
+          className="max-sm:h-11"
+          onClick={() =>
+            setDialog({
+              kind: "copyWeek",
+              monday: days[0] ?? today,
+              riderIds: riders.map((r) => r.id),
+            })
+          }
+        >
+          <CopyPlus data-icon="inline-start" />
+          {copy("open")}
         </Button>
       </div>
       <p aria-live="polite" className="sr-only">

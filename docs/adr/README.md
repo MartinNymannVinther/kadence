@@ -61,3 +61,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0039](0039-races-from-cykling-danmark.md)                       | Races from Cykling Danmark: a rider's races in the calendar, the placing for the coach            | → 0011, 0013, 0018       |
 | [0040](0040-four-numbers-against-the-season-plan.md)             | Four numbers against the season plan: DCU, the coach's goal, planned and done, one bar everywhere | → 0014, 0015, 0025       |
 | [0041](0041-repeat-a-session-on-set-weekdays.md)                 | Repeat a session on set weekdays: a series key on ordinary sessions, not a rule                   | → 0014, 0025, 0040       |
+| [0042](0042-copy-a-week.md)                                      | Copy a week: each rider's own sessions laid again, groups kept, series not doubled                | → 0025, 0040, 0041       |
