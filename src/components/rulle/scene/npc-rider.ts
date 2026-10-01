@@ -8,7 +8,8 @@ import { ball, box, jointed, knee, Limb, merged, rod, v } from "./shapes";
  * A rider is one merged shape — the bike and the body in a kit of its own
  * — a right arm that can be raised in greeting, and legs that pedal: two
  * meshes and four limbs, so a group costs little. Facing -z, like the
- * rider (`RiderFigure`), and a little simpler.
+ * rider (`RiderFigure`), and a little simpler; each with a skin of their
+ * own (`personOf`, ADR 0045).
  */
 
 /** Kits, jersey and sleeves, and helmets: muted like the landscape, none the rider's own moss. */
@@ -59,8 +60,10 @@ export class NpcRider {
     material: THREE.Material,
     kit: number,
     seed: number,
+    /** The bare shins' material, in the rider's skin. */
     leg: THREE.Material,
     shorts: THREE.Material,
+    skin: string,
   ) {
     const [jersey, sleeve] = KITS[kit % KITS.length]!;
     const helmet = HELMETS[seed % HELMETS.length]!;
@@ -68,17 +71,17 @@ export class NpcRider {
       ...bike(),
       rod(v(0, 0.98, 0.19), v(0, 1.36, -0.27), 0.17, jersey, 6),
       rod(v(0, 0.99, 0.2), v(0, 1.05, 0.12), 0.18, P.shorts, 6),
-      ball(0.12, P.skin, 0, 1.49, -0.38),
+      ball(0.12, skin, 0, 1.49, -0.38),
       ball(0.135, helmet, 0, 1.53, -0.37, [1, 0.72, 1.15]),
       rod(v(-0.16, 1.34, -0.25), v(-0.19, 1.14, -0.4), 0.045, sleeve),
-      rod(v(-0.19, 1.14, -0.4), v(-0.2, 0.97, -0.47), 0.04, P.skin),
+      rod(v(-0.19, 1.14, -0.4), v(-0.2, 0.97, -0.47), 0.04, skin),
     ]);
     this.group.add(new THREE.Mesh(this.shape, material));
     const shoulder = v(0.16, 1.34, -0.25);
     this.arm = jointed(
       merged([
         rod(shoulder, v(0.19, 1.14, -0.4), 0.045, sleeve),
-        rod(v(0.19, 1.14, -0.4), v(0.2, 0.97, -0.47), 0.04, P.skin),
+        rod(v(0.19, 1.14, -0.4), v(0.2, 0.97, -0.47), 0.04, skin),
       ]),
       material,
       shoulder,
@@ -121,7 +124,7 @@ export class NpcRider {
  * saddle and bars, the front wheel off on the grass, and its rider down
  * on one knee with the tube in both hands. Facing -z; one merged shape.
  */
-export function puncture(kit: number): THREE.BufferGeometry {
+export function puncture(kit: number, skin: string): THREE.BufferGeometry {
   const [jersey, sleeve] = KITS[kit % KITS.length]!;
   const upsideDown = merged(bike().slice(1))
     .rotateZ(Math.PI)
@@ -136,10 +139,10 @@ export function puncture(kit: number): THREE.BufferGeometry {
     // Down on the right knee, facing the road.
     rod(v(0.1, 0.02, 0.15), v(0.1, 0.45, 0.02), 0.07, P.shorts),
     rod(v(0.1, 0.45, 0.02), v(0.1, 0.5, -0.3), 0.07, P.shorts),
-    rod(v(-0.1, 0.02, -0.25), v(-0.1, 0.45, -0.25), 0.055, P.skin),
+    rod(v(-0.1, 0.02, -0.25), v(-0.1, 0.45, -0.25), 0.055, skin),
     rod(v(-0.1, 0.45, -0.25), v(-0.1, 0.5, 0.05), 0.07, P.shorts),
     rod(v(0, 0.5, 0.05), v(0, 1.0, -0.05), 0.17, jersey, 6),
-    ball(0.12, P.skin, 0, 1.18, -0.08),
+    ball(0.12, skin, 0, 1.18, -0.08),
     ball(0.125, P.cap, 0, 1.23, -0.07, [1, 0.62, 1]),
     rod(v(-0.16, 0.95, -0.05), v(-0.12, 0.72, -0.35), 0.045, sleeve),
     rod(v(0.16, 0.95, -0.05), v(0.12, 0.72, -0.35), 0.045, sleeve),

@@ -10,6 +10,7 @@ import {
   type VisitorKind,
 } from "@/modules/rulle";
 import { dog, type Dog } from "./folk";
+import { personOf } from "./folk-look";
 import { moto, type Moto } from "./moto";
 import type { Ground } from "./ground";
 import { PALETTE } from "./palette";
@@ -129,7 +130,7 @@ export class Visitors {
       const cars = PALETTE.cars;
       figure =
         kind === "cargo"
-          ? cargoBike(this.material)
+          ? cargoBike(this.material, personOf(this.lap * 31 + 3))
           : kind === "car"
             ? car(this.material, cars[Math.floor(hash(this.lap, 1, 93) * cars.length)]!)
             : kind === "scooter"

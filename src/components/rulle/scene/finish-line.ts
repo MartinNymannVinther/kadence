@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { courseAt, hash, type Course } from "@/modules/rulle";
 import { spectator, type Spectator } from "./folk";
+import { personOf, type Person } from "./folk-look";
 import type { Ground } from "./ground";
 import { PALETTE as P } from "./palette";
 import { freeze } from "./props";
@@ -96,7 +97,12 @@ export class FinishLine {
         }
         const foot = groundPoint(course, ground, at, side * (4.6 + hash(k, 1, 212) * 0.8));
         const yaw = roadYaw(course, at) + (side * Math.PI) / 2;
-        parts.push(person(foot, yaw, CLOTHES[k % CLOTHES.length]!, hash(k, 2, 213) < 0.5));
+        // Each somebody of their own: a skin, hair, a height, and now and then a child.
+        const tall = hash(k, 3, 213) < 0.12 ? 0.66 : 0.93 + hash(k, 4, 213) * 0.14;
+        const looks = personOf(k + 8100);
+        parts.push(
+          person(foot, yaw, CLOTHES[k % CLOTHES.length]!, hash(k, 2, 213) < 0.5, looks, tall),
+        );
         k++;
       }
     const people = parts.length > 0 ? merged(parts) : null;
@@ -152,19 +158,28 @@ function barrier(course: Course, ground: Ground, at: number, side: number): THRE
 }
 
 /** Someone watching: facing the road, in a jacket of `color`, maybe with both arms up. */
-function person(foot: THREE.Vector3, yaw: number, color: string, cheering: boolean) {
+function person(
+  foot: THREE.Vector3,
+  yaw: number,
+  color: string,
+  cheering: boolean,
+  looks: Person,
+  tall: number,
+) {
   const arm = (x: number) =>
     cheering
       ? rod(v(x, 1.38, 0), v(x * 1.6, 1.95, -0.05), 0.05, color)
       : rod(v(x, 1.38, 0), v(x * 1.3, 0.95, -0.02), 0.05, color);
   return merged([
-    rod(v(-0.1, 0, 0), v(-0.1, 0.86, 0), 0.07, P.trousers),
-    rod(v(0.1, 0, 0), v(0.1, 0.86, 0), 0.07, P.trousers),
+    rod(v(-0.1, 0, 0), v(-0.1, 0.86, 0), 0.07, looks.trousers),
+    rod(v(0.1, 0, 0), v(0.1, 0.86, 0), 0.07, looks.trousers),
     rod(v(0, 0.84, 0), v(0, 1.42, 0), 0.19, color, 6),
     arm(-0.2),
     arm(0.2),
-    ball(0.12, P.skin, 0, 1.6, 0),
+    ball(0.12, looks.skin, 0, 1.6, 0),
+    box(0.25, 0.09, 0.25, looks.hair, 0, 1.69, 0.03),
   ])
+    .scale(tall, tall, tall)
     .rotateY(yaw)
     .translate(foot.x, foot.y, foot.z);
 }

@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { personOf, type Person } from "./folk-look";
 import { PALETTE as P } from "./palette";
 import { ball, box, jointed, merged, rod, v } from "./shapes";
 import type { Figure } from "./vehicles";
@@ -74,14 +75,14 @@ export function dog(material: THREE.Material): Dog {
 export type Spectator = Figure & { ringing: boolean };
 
 /** Someone in a red jacket with a cowbell, for the steep bit. */
-export function spectator(material: THREE.Material): Spectator {
+export function spectator(material: THREE.Material, person: Person = personOf(1)): Spectator {
   const group = new THREE.Group();
   const body = merged([
-    rod(v(-0.1, 0.02, 0), v(-0.1, 0.86, 0), 0.07, P.trousers),
-    rod(v(0.1, 0.02, 0), v(0.1, 0.86, 0), 0.07, P.trousers),
+    rod(v(-0.1, 0.02, 0), v(-0.1, 0.86, 0), 0.07, person.trousers),
+    rod(v(0.1, 0.02, 0), v(0.1, 0.86, 0), 0.07, person.trousers),
     rod(v(0, 0.84, 0), v(0, 1.42, 0), 0.2, P.flagRed, 6),
     rod(v(-0.2, 1.38, 0), v(-0.26, 0.92, -0.02), 0.05, P.flagRed),
-    ball(0.12, P.skin, 0, 1.6, 0),
+    ball(0.12, person.skin, 0, 1.6, 0),
     box(0.3, 0.07, 0.3, P.cowWhite, 0, 1.7, 0),
     box(0.2, 0.12, 0.2, P.flagRed, 0, 1.78, 0),
   ]);
