@@ -30,6 +30,12 @@ describe("DCU's corridor", () => {
     expect(corridorFlag(7.9, corridor)?.kind).toBe("hours_below_corridor");
     expect(corridorFlag(7.9, corridor)?.severity).toBe("info");
   });
+
+  it("notes no floor in a week mostly in the October break, but still warns above", () => {
+    expect(corridorFlag(0, { ...corridor, breakDays: 4 })).toBeNull();
+    expect(corridorFlag(0, { ...corridor, breakDays: 3 })?.kind).toBe("hours_below_corridor");
+    expect(corridorFlag(13, { ...corridor, breakDays: 4 })?.kind).toBe("hours_above_corridor");
+  });
 });
 
 describe("the ramp", () => {

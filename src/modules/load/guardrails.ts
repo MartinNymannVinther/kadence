@@ -56,6 +56,8 @@ export interface Corridor {
   low: number;
   target: number;
   high: number;
+  /** Days of the week in DCU's October break; most of the week free means no floor. */
+  breakDays?: number;
 }
 
 export interface RideLimit {
@@ -89,6 +91,9 @@ export interface GuardrailInput {
 
 const round1 = (value: number) => Math.round(value * 10) / 10;
 
+/** A week with this many October-break days has no floor to fall below. */
+const BREAK_WEEK_DAYS = 4;
+
 /**
  * The week against DCU's corridor: above its top is a warning, below its
  * floor worth knowing. DCU asks riders to train "neither much more nor
@@ -103,7 +108,8 @@ export function corridorFlag(
   if (!corridor) return null;
   const values = { hours: round1(bikeHours), ...corridor };
   if (bikeHours > corridor.high) return { kind: "hours_above_corridor", severity: "warn", values };
-  if (bikeHours < corridor.low) return { kind: "hours_below_corridor", severity: "info", values };
+  if (bikeHours < corridor.low && (corridor.breakDays ?? 0) < BREAK_WEEK_DAYS)
+    return { kind: "hours_below_corridor", severity: "info", values };
   return null;
 }
 
