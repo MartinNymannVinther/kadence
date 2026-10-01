@@ -4,7 +4,7 @@ _Research read 2026-09-29 in eight parallel tracks: Garmin's own programme and t
 
 **Short answer.** The belief that others have solved this without special access from Garmin is half right. Those who did it use the unofficial login: the rider's Garmin password, against Garmin's terms, dark for 16 to 58 days after 17 March 2026, refused from data-centre addresses, and ending in a token that opens the rider's whole Garmin account. That is not for a tool that holds health data about minors. The official door is shut as well: Garmin has taken no new applicants since 25 March 2026, and bought TrainingPeaks on 22 July 2026. What does work, and stands on written terms, is of two kinds. A **relay** that already holds Garmin access and hands the original file on: Tredict (German, EU-hosted, riders from 14) and intervals.icu (free, webhooks, but by its own policy not for anyone under 18). And **local paths** around Garmin's cloud: the cable and a folder picker, or Gadgetbridge on Android. Every one of them needs the same thing Kadence lacks today: a way to receive a file without a browser session. The recommendation is to build that door first (an upload key per rider), then a relay adapter as the automatic path for the rider with an Edge and a phone, and to send Garmin a Data Act request in the meantime. Among other bike computers, Hammerhead Karoo is the most open and fits the adapter Kadence already has.
 
-**Since then.** The door is built: an upload key per rider, the bike computer read as a folder, and a share from the phone (ADR 0029, docs/upload-keys.md). Tredict and intervals.icu have answered in writing (§3.1): Tredict offers the rider's own key rather than OAuth, and intervals.icu leaves its policy on riders under 18 as it is. What is left to ask Tredict is whether a rider needs a paid account.
+**Since then.** The door is built: an upload key per rider, the bike computer read as a folder, and a share from the phone (ADR 0029, docs/upload-keys.md). Tredict and intervals.icu have answered in writing (§3.1): Tredict offers the rider's own key rather than OAuth, and the original files need the rider's paid full access at Tredict and a sign-in there every fortnight; intervals.icu leaves its policy on riders under 18 as it is.
 
 ---
 
@@ -74,7 +74,7 @@ The rider connects Garmin to the relay once; Garmin pushes every ride to the rel
 - **Aggregators** fail dogmas 1 and 2: a monthly fee per installation and no self-hosting. Open Wearables, the open one, needs each deployment's own Garmin keys.
 - **Data protection.** The relay is a service the rider chooses, a controller in its own right, and belongs in the second table of `docs/subprocessors.md` before it is used. The rider and the guardian are told who the relay is and where it works, that it receives what the rider ticks on Garmin's consent screen while Kadence reads rides only, that deleting in Kadence deletes nothing at the relay, and how to disconnect. Kadence does not send a rider to a service whose terms exclude them.
 
-### 3.1 What the two relays answered, in writing, on 2026-09-29
+### 3.1 What the two relays answered, in writing, on 2026-09-29 and 30
 
 Both answered by e-mail the same day they were asked. The answers are given here in Kadence's words, not theirs: a private letter is not quoted in a public repository without its writer's yes.
 
@@ -83,7 +83,14 @@ Both answered by e-mail the same day they were asked. The answers are given here
 - Kadence should use the Personal API, with a token each rider makes, rather than an OAuth client; an OAuth connection can come later if Kadence grows. Tredict's documentation says the same: the Personal API is "the recommended choice for new or small apps without a larger user base yet, like coaching apps. Each user generates their own token and enters it into the app (bring your own key, BYOK). As the app owner you then hold the tokens of all your users and have a special duty of care when storing them" (tredict.com/skills/setup.md).
 - The rider makes the token in Tredict under Settings, "Personal API", and chooses its scopes; `activityRead` is all Kadence needs. It is a bearer token that does not run out. The endpoints are the OAuth ones: the list is `GET /api/oauth/v2/activityList`, newest first, with `startDate`, `endDate` and a page size of 50 to 1,000; the file is `GET /api/oauth/v2/activity/file/{id}`, "the file as Tredict received it from the source platform". A wrong or deleted token answers 401, a missing scope 403. Downloads are limited to ten a second by address.
 - This suits self-hosting better than OAuth would: no installation needs keys of its own, so the relay works on every Kadence the day it is built (dogmas 1 and 2).
-- Not answered yet: whether a rider without a paid account can read the list and the file through the Personal API; whether asking every quarter of an hour is welcome; whether Tredict has conditions for rides that came from Garmin; what riders and parents should be told. A reply asking the four again is written.
+- The four questions left were asked again the same day and answered the next morning, 2026-09-30:
+  - **The file needs a paid account.** The list of activities can be read without one; the original file cannot. A rider needs Tredict's full access for Kadence to fetch rides, at DKK 399 a year in Denmark on Tredict's price page (read 2026-09-29, docs/research/workouts-to-devices.md). Tredict mails the rider a week before full access ends.
+  - **A token sleeps after two weeks.** A rider who has not signed in to Tredict for two weeks has an inactive token until they sign in again; Tredict does it for security.
+  - **Every quarter of an hour is fine.** Files are limited to eight a second; Tredict suggests that Kadence keeps to two.
+  - **No conditions** for rides that came to Tredict from Garmin.
+  - **Riders and parents are Kadence's to tell**, and the data protection is Kadence's to keep, the tokens' safekeeping included.
+  - He asked how many riders Kadence expects to use it now.
+- What it means: the automatic way from a Garmin through Tredict costs a rider Tredict's full access and a sign-in there every fortnight. Without the full access Kadence can read only the list, not the ride.
 
 **intervals.icu** (David Tinker, two hours after the question):
 
