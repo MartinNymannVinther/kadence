@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { offRoute, roadOf } from "../../scripts/rulle-land/roads";
 
-describe("the roads round a route, as the land script reads them (ADR 0045)", () => {
+describe("the roads round a route, as the land script reads them (ADR 0046)", () => {
   it("knows a road's kind and whether it is paved, from the map's tags", () => {
     expect(roadOf({ highway: "secondary" })).toEqual({ kind: "main", unpaved: false });
     expect(roadOf({ highway: "residential" })).toEqual({ kind: "minor", unpaved: false });

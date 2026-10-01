@@ -117,9 +117,9 @@ The ground's heights every 40 m for 2.6 km round the road come from
 Mapzen's terrain tiles (Terrarium; EU-DEM and SRTM in Denmark), the
 woods, water, fields, towns, hedges, streams, turbines and the buildings
 within 650 m of the road (`--buildings` says otherwise; `all` takes every
-building in the land, and Rulle then makes none up, ADR 0045), and the
+building in the land, and Rulle then makes none up, ADR 0046), and the
 roads round it but the route's own (drives and paths only within 700 m,
-ADR 0045) from OpenStreetMap's Overpass API. For a city (ADR 0036) it keeps what the map
+ADR 0046) from OpenStreetMap's Overpass API. For a city (ADR 0036) it keeps what the map
 says of a building's height, the height it starts at, its roof's shape
 and colour, the parts a tower or a spire is drawn in, every tall building
 and church in the land for the skyline, the street trees along the road

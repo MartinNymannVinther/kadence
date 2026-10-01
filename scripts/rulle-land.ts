@@ -1,10 +1,10 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { buildCourse, readRouteGpx, toPlane } from "@/modules/rulle";
-import { LAND_KINDS, MAPPED, type LandFile, type RoadKind } from "@/modules/rulle/route/land-file";
+import { LAND_KINDS, MAPPED, type LandFile, type RoadKind } from "@/modules/rulle/route/land";
 import { get } from "./rulle-land/fetch";
 import { heightsOver } from "./rulle-land/heights";
-import { nearTheRoad } from "./rulle-land/near";
 import { landQuery } from "./rulle-land/query";
+import { fromRoad as roadFrom, isRoute as routeOwn, onRoad as roadOn } from "./rulle-land/road";
 import { offRoute, roadIndex, roadOf } from "./rulle-land/roads";
 import {
   area,
@@ -39,7 +39,7 @@ import {
  * towers and spires, the tall ones on the skyline, the street trees, and
  * the cobbled streets the route runs along; the bridges and tunnels
  * along the route and across it (ADR 0037); and the roads round it, from
- * main roads to footpaths, but the route's own (ADR 0045).
+ * main roads to footpaths, but the route's own (ADR 0046).
  * Everything in metres on the course's own plane.
  *
  *     pnpm script scripts/rulle-land.ts public/rulle/routes/bu-dm-2026-vejle.gpx [--buildings 650|all]
@@ -47,7 +47,7 @@ import {
  * `--buildings` is how far from the road the buildings are fetched, in
  * metres: a dense city keeps its file small with less. `all` fetches
  * every building in the land, and the landscape then makes none up (ADR
- * 0045). The file says how far they reach.
+ * 0046). The file says how far they reach.
  *
  * Run by a developer when a route is added or its file changes; never at
  * build or run time.
@@ -142,7 +142,9 @@ async function main(): Promise<void> {
     // reach, and the 30 m a building's middle may lie past it, with room.
     reach: reach === "all" ? MARGIN : reach + 50,
   };
-  const { fromRoad, onRoad, isRoute } = nearTheRoad(course);
+  const fromRoad = (p: P) => roadFrom(course, p);
+  const onRoad = (p: P) => roadOn(course, p);
+  const isRoute = (a: P, b: P) => routeOwn(course, a, b);
   // A building drawn in parts is drawn by its parts alone, as a map means it.
   const parts = osm.elements
     .filter((e) => e.type === "way" && e.tags?.["building:part"] && !e.tags.building)
@@ -210,7 +212,7 @@ async function main(): Promise<void> {
         const near = line.filter((p) => onRoad(p) < SETT_NEAR).length;
         if (near >= 2) land.setts!.push(round(simplify(line, 1)));
       }
-      // Every road round the route, but where it is the route (ADR 0045);
+      // Every road round the route, but where it is the route (ADR 0046);
       // a drive or a path only near it, as further off it is too narrow to see.
       // A bridge by the route is drawn as one (ADR 0037), not on the land under it.
       const road = byRoute && structure.flags & 1 ? null : roadOf(tags);

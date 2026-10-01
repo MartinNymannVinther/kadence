@@ -256,7 +256,7 @@ describe("the land that comes with the routes", () => {
     });
   }
 
-  it("the queen stage has every building in its land, all of Odder's (ADR 0045)", () => {
+  it("the queen stage has every building in its land, all of Odder's (ADR 0046)", () => {
     const route = ROUTES.find((r) => r.key === "tour-de-himmelfart-2026")!;
     const own = buildCourse(readRouteGpx(readFileSync(`public${route.file}`, "utf8")));
     const land = readLand(JSON.parse(readFileSync(`public${route.land}`, "utf8")), own)!;

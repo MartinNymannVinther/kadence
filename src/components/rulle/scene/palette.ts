@@ -98,7 +98,7 @@ export const PALETTE = {
   cycleTrack: "#7c7973",
   pavement: "#bdb8ae",
   kerb: "#d3cec4",
-  // The roads round the route (ADR 0045) that are not asphalt: a farm track, a path in the woods.
+  // The roads round the route (ADR 0046) that are not asphalt: a farm track, a path in the woods.
   gravel: "#b5a688",
   dirt: "#a08f74",
   walls: ["#f1ece3", "#e3cf9c", "#b9694f", "#d9d3c7"],

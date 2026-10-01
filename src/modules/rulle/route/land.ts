@@ -1,14 +1,4 @@
 import type { Course } from "./course";
-import {
-  LAND_KINDS,
-  landFileSchema,
-  type AreaKind,
-  type BuildingKind,
-  type LineKind,
-  type RoadKind,
-  type RoofShape,
-  type StructureKind,
-} from "./land-file";
 
 /**
  * The land around a route that comes with Kadence (ADR 0035): the
@@ -19,6 +9,29 @@ import {
  * plane (x east, y north), and read only for the course it was made for:
  * a file made for another is no land at all. Pure.
  */
+
+export {
+  LAND_KINDS,
+  landFileSchema,
+  MAPPED,
+  type AreaKind,
+  type BuildingKind,
+  type LandFile,
+  type LineKind,
+  type RoadKind,
+  type RoofShape,
+  type StructureKind,
+} from "./land-file";
+import {
+  LAND_KINDS,
+  landFileSchema,
+  type AreaKind,
+  type BuildingKind,
+  type LineKind,
+  type RoadKind,
+  type RoofShape,
+  type StructureKind,
+} from "./land-file";
 
 type XY = { x: number; y: number };
 
@@ -51,13 +64,13 @@ export type Land = {
   setts: XY[][];
   /** The bridges and tunnels along the route and across it. */
   structures: { kind: StructureKind; bridge: boolean; tunnel: boolean; points: XY[] }[];
-  /** The roads round the route but the route's own (ADR 0045). */
+  /** The roads round the route but the route's own (ADR 0046). */
   roads: { kind: RoadKind; unpaved: boolean; points: XY[] }[];
   /** Every area, its outline first and its holes after: what a farmyard or a town is, where. */
   areas: { kind: AreaKind; id: number; rings: XY[][] }[];
   /** Lakes and rivers above the sea, with the level their water lies at. */
   waters: { rings: XY[][]; level: number }[];
-  /** How far from the road the map's buildings are all here; beyond it they are made up (ADR 0045). */
+  /** How far from the road the map's buildings are all here; beyond it they are made up (ADR 0046). */
   reach: number;
 };
 

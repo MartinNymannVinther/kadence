@@ -1,10 +1,11 @@
 import { z } from "zod";
 
 /**
- * The land file's format (ADR 0035): what `scripts/rulle-land.ts` writes
- * beside a route's GPX file and `readLand` (`land.ts`) reads. Kinds are
- * kept by their number in these lists, so a kind is only ever added at
- * the end. Pure.
+ * A land file as it is written (ADR 0035, 0036, 0037, 0046): the kinds of
+ * what covers the land, of its buildings, their roofs, its bridges and
+ * tunnels and its roads, each kept as its number; and the schema a file is read with,
+ * every list capped. `scripts/rulle-land.ts` writes it; `readLand`
+ * (`land.ts`) reads it for a course. Pure.
  */
 
 export const LAND_KINDS = {
@@ -40,7 +41,7 @@ export const LAND_KINDS = {
    */
   structures: ["road", "motorway", "path", "rail", "water", "green"],
   /**
-   * The roads round the route (ADR 0045), widest first: a main road, a
+   * The roads round the route (ADR 0046), widest first: a main road, a
    * minor one or a town's street, a service road or a drive, a farm
    * track, a cycle path, a footpath.
    */
@@ -111,7 +112,7 @@ export const landFileSchema = z.object({
     .max(5_000)
     .default([]),
   /**
-   * The roads round the route but the route's own (ADR 0045): their kind,
+   * The roads round the route but the route's own (ADR 0046): their kind,
    * whether they are unpaved (1) or not (0), and their line.
    */
   roads: z
@@ -120,7 +121,7 @@ export const landFileSchema = z.object({
     .default([]),
   /**
    * How far from the road, metres, every building the map has is in the
-   * file; beyond it the landscape makes them up (ADR 0045). A file that
+   * file; beyond it the landscape makes them up (ADR 0046). A file that
    * does not say has them out to `MAPPED`.
    */
   reach: z.number().positive().max(10_000).default(MAPPED),

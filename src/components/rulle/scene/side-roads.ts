@@ -5,7 +5,7 @@ import { PALETTE } from "./palette";
 import { CHUNK, drawnHeight } from "./terrain";
 
 /**
- * The roads round the route on its real land (ADR 0045), from a main road
+ * The roads round the route on its real land (ADR 0046), from a main road
  * to a path in the woods: each a strip on the land as wide as its kind,
  * asphalt, or gravel and earth where it is unpaved, built chunk by chunk
  * with the land. Where one meets the route it climbs the verge to the

@@ -30,19 +30,22 @@ export {
   type Course,
   type CoursePoint,
 } from "./route/course";
-export { BANK, COVER_CELL, readLand, type Land } from "./route/land";
 export {
+  BANK,
+  COVER_CELL,
   LAND_KINDS,
   landFileSchema,
   MAPPED,
+  readLand,
   type AreaKind,
   type BuildingKind,
+  type RoofShape,
+  type Land,
   type LandFile,
   type LineKind,
   type RoadKind,
-  type RoofShape,
   type StructureKind,
-} from "./route/land-file";
+} from "./route/land";
 export {
   bundledRoute,
   DEFAULT_ROUTE,

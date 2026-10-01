@@ -8,7 +8,7 @@ import { CHUNK } from "./terrain";
  * hall or two in an industrial estate beyond the mapped ones, and a
  * farm on each farmyard out there. The land's file says how far from the
  * road its buildings reach (`mapped`); a file with every building in its
- * land has none made up (ADR 0045).
+ * land has none made up (ADR 0046).
  */
 export function madeUpBuildings(
   ground: Ground,

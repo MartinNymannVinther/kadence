@@ -2,7 +2,7 @@ import { LAND_KINDS, type RoadKind } from "@/modules/rulle";
 import type { P } from "./shapes";
 
 /**
- * The roads round a route, for the land script (ADR 0045): what kind of
+ * The roads round a route, for the land script (ADR 0046): what kind of
  * road a way is and whether it is paved, from its tags; and the pieces of
  * it that are not the route itself.
  */

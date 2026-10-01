@@ -34,7 +34,7 @@ describe("the buildings no one mapped for the ride", () => {
     for (const b of houses) expect(ground.nearest(b.x, b.z, MAPPED + 50).d).toBeGreaterThan(MAPPED);
   });
 
-  it("are none where the land has every building it holds (ADR 0045)", () => {
+  it("are none where the land has every building it holds (ADR 0046)", () => {
     expect(madeUp(2600)).toEqual([]);
   });
 });
