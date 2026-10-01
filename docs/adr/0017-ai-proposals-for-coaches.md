@@ -1,6 +1,6 @@
 # ADR 0017: Three AI proposals for coaches, and the team's yes to riders' data
 
-Status: accepted · Date: 2026-09-27 · Builds on 0008 and 0009
+Status: accepted · Date: 2026-09-27 · Builds on 0008 and 0009 · "Tekst til pas" amended by 0038
 
 ## Context
 

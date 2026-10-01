@@ -2,13 +2,14 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { Pool } from "pg";
 import { NotAllowed } from "@/modules/ai/service";
 import { buildCoachBrief } from "@/modules/assist/coach-brief";
-import { proposeParsedWorkout, sanitizeParsed } from "@/modules/assist/parse-workout";
+import { proposeBuiltWorkout } from "@/modules/assist/build-workout";
+import { sanitizeParsed } from "@/modules/assist/parse-workout";
 import { proposeWeek, sanitizeWeekDraft } from "@/modules/assist/week-draft";
 import { adminPool } from "../helpers/db";
 import { insertSql, seedPerson } from "../helpers/rows";
 
 /**
- * The three proposals without a model (the suite runs with none): the
+ * The proposals without a model (the suite runs with none): the
  * rules read a coach's shorthand on their own, the Monday list comes from
  * the guardrails, and the week draft refuses until the team has let the
  * AI read riders' data. Then the sanitizers, which are what stands
@@ -50,14 +51,57 @@ afterAll(async () => {
 
 describe("without a model", () => {
   it("reads the coach's shorthand by the rules alone", async () => {
-    const result = await proposeParsedWorkout(COACH, "2 t Z2", "da");
-    expect(result).toMatchObject({ engine: "rules", proposal: { via: "rules" } });
+    const result = await proposeBuiltWorkout(
+      COACH,
+      { sport: "bike", text: "2 t Z2", category: null },
+      "da",
+    );
+    expect(result).toMatchObject({ engine: "rules", proposal: { via: "rules", title: "" } });
+  });
+
+  it("notes a session past DCU's longest ride for the class the coach chose", async () => {
+    const result = await proposeBuiltWorkout(
+      COACH,
+      { sport: "bike", text: "5 t Z2", category: "U17" },
+      "da",
+    );
+    expect(result?.proposal.notes).toEqual([{ kind: "longestRide", category: "U17", hours: 4 }]);
   });
 
   it("says there is no model for words the rules cannot read", async () => {
-    await expect(proposeParsedWorkout(COACH, "noget sjovt på cyklen", "da")).rejects.toMatchObject({
-      name: "NoModel",
-    });
+    await expect(
+      proposeBuiltWorkout(
+        COACH,
+        { sport: "bike", text: "noget sjovt på cyklen", category: null },
+        "da",
+      ),
+    ).rejects.toMatchObject({ name: "NoModel" });
+  });
+
+  it("asks the model, not the rules, to change a session already built", async () => {
+    const current = {
+      kind: "bike",
+      steps: [{ kind: "step", intent: "steady", seconds: 3600, target: { kind: "zone", zone: 2 } }],
+    };
+    await expect(
+      proposeBuiltWorkout(COACH, { sport: "bike", text: "2 t Z2", category: null, current }, "da"),
+    ).rejects.toMatchObject({ name: "NoModel" });
+  });
+
+  it("has no rules for strength: the model builds it, or the panel says there is none", async () => {
+    await expect(
+      proposeBuiltWorkout(
+        COACH,
+        { sport: "strength", text: "Styrke 45 min, ben og core", category: "U19" },
+        "da",
+      ),
+    ).rejects.toMatchObject({ name: "NoModel" });
+  });
+
+  it("builds sessions for coaches only", async () => {
+    await expect(
+      proposeBuiltWorkout(RIDER, { sport: "bike", text: "2 t Z2", category: null }, "da"),
+    ).rejects.toMatchObject({ code: "forbidden" });
   });
 
   it("lists who needs attention from the guardrails, without a summary", async () => {

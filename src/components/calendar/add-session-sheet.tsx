@@ -121,7 +121,7 @@ export function AddSessionSheet({
           {mode === "template" ? (
             <TemplatePicker templates={templates} value={templateId} onChange={setTemplateId} />
           ) : (
-            <SessionFields draft={draft} onChange={setDraft} showKm />
+            <SessionFields draft={draft} onChange={setDraft} showKm assist={canBuild} />
           )}
 
           {problem && (

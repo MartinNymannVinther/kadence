@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { SegmentedChoice } from "@/components/ui/segmented";
 import { Textarea } from "@/components/ui/textarea";
+import { BuildWithAi } from "@/components/assist/build-with-ai";
 import { SportIcon } from "@/components/training/sport-icon";
 import { NumberField } from "./number-field";
 import { SPORTS, type SessionDraft, type Sport } from "./session-draft";
@@ -14,17 +15,24 @@ import { StructureBuilder } from "./structure-builder";
  * The whole of a session or template as a form: a title, the sport, the
  * builder for that sport and a word to the rider. Used by the calendar's
  * "Tilføj pas" and by the library's own editor, so a session is written
- * the same way wherever it is written.
+ * the same way wherever it is written. A coach also gets "Byg med AI"
+ * above the builder (ADR 0038).
  */
 export function SessionFields({
   draft,
   onChange,
   showKm = false,
+  assist = false,
+  assistOpen = false,
 }: {
   draft: SessionDraft;
   onChange: (draft: SessionDraft) => void;
   /** Planned distance, for a session in the calendar; templates have none. */
   showKm?: boolean;
+  /** "Byg med AI": a coach's, as building is. */
+  assist?: boolean;
+  /** Open on arrival, for "Byg med AI" from the library's top. */
+  assistOpen?: boolean;
 }) {
   const t = useTranslations("workouts.fields");
   const sports = useTranslations("training.sport");
@@ -68,6 +76,8 @@ export function SessionFields({
           }))}
         />
       </div>
+
+      {assist && <BuildWithAi draft={draft} onChange={onChange} defaultOpen={assistOpen} />}
 
       <StructureBuilder
         structure={draft.structures[draft.sport]}

@@ -17,7 +17,8 @@ const TITLES = { bike: "newTitleBike", strength: "newTitleStrength" } as const;
 
 /**
  * A new template for the library — a coach's to write. `?sport=` opens
- * the builder on that sport; it can still be changed in the form.
+ * the builder on that sport, which can still be changed in the form, and
+ * `?ai=1` with "Byg med AI" open (ADR 0038).
  */
 export default async function NewTemplatePage({
   searchParams,
@@ -32,7 +33,8 @@ export default async function NewTemplatePage({
   }
   const t = await getTranslations("library");
   const me = await whoAmI(ctx.orgId, ctx.userId);
-  const asked = (await searchParams).sport;
+  const search = await searchParams;
+  const asked = search.sport;
   const sport = asked === "bike" || asked === "strength" ? asked : undefined;
 
   return (
@@ -50,7 +52,7 @@ export default async function NewTemplatePage({
         subtitle={t("newSubtitle")}
       />
       {me?.isCoach ? (
-        <TemplateEditor sport={sport} />
+        <TemplateEditor sport={sport} assistOpen={search.ai === "1"} />
       ) : (
         <EmptyState title={t("coachOnlyTitle")} hint={t("coachOnlyBody")} />
       )}

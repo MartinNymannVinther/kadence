@@ -18,9 +18,12 @@ import { createTemplateAction, updateTemplateAction } from "@/modules/training/a
 export function TemplateEditor({
   template,
   sport,
+  assistOpen = false,
 }: {
   /** The sport a new template starts on. */
   sport?: "bike" | "strength";
+  /** "Byg med AI" open on arrival (`?ai=1`). */
+  assistOpen?: boolean;
   template?: {
     id: string;
     name: string;
@@ -66,7 +69,7 @@ export function TemplateEditor({
 
   return (
     <form onSubmit={save} className="flex max-w-3xl flex-col gap-5">
-      <SessionFields draft={draft} onChange={setDraft} />
+      <SessionFields draft={draft} onChange={setDraft} assist assistOpen={assistOpen} />
       {problem && (
         <p role="alert" className="text-destructive text-sm">
           {problem}

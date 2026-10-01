@@ -641,7 +641,7 @@
       },
       "sessions": {
         "title": "Pas og skabeloner",
-        "body": "Et pas bygges i trin: opvarmning, arbejde, pause og nedkørsel, med en længde og et mål i zoner, procent af FTP eller tærskelpuls, eller efter følelse. Gentagelser samler trin, der køres flere gange. Når rytterens tærskler er sat, står målene i watt og puls. Styrkepas har øvelser, og et program har en progression, så sæt og gentagelser følger med fra pas til pas. Gem et pas som skabelon i biblioteket, så kan det lægges til én rytter eller hele holdet på én gang."
+        "body": "Et pas bygges i trin: opvarmning, arbejde, pause og nedkørsel, med en længde og et mål i zoner, procent af FTP eller tærskelpuls, eller efter følelse. Gentagelser samler trin, der køres flere gange. Når rytterens tærskler er sat, står målene i watt og puls. Styrkepas har øvelser, og et program har en progression, så sæt og gentagelser følger med fra pas til pas. Træneren kan også trykke \"Byg med AI\" og skrive passet med sine egne ord, fx \"5x4 min VO2max\" eller \"styrke 45 min, ben og core\", eller hvad der skal ændres i det pas, der står. Forslaget vises først, og intet gemmes, før træneren gemmer passet. Gem et pas som skabelon i træningsbiblioteket, så kan det lægges til én rytter eller hele holdet på én gang."
       },
       "done": {
         "title": "Udført og RPE",
@@ -952,6 +952,7 @@
     "subtitle": "Holdets pas og programmer, klar til at lægge i kalenderen.",
     "newBike": "Nyt cykelpas",
     "newStrength": "Nyt styrkepas",
+    "newWithAi": "Byg med AI",
     "newTitle": "Ny skabelon",
     "newTitleBike": "Nyt cykelpas",
     "newTitleStrength": "Nyt styrkepas",
@@ -2154,17 +2155,37 @@
       "unreadable": "Teksten kunne ikke læses som et pas. Prøv at skrive det lidt anderledes, fx \"3x10 min Z4 / 5 min pause\".",
       "generic": "Det lykkedes ikke at få et forslag. Prøv igen."
     },
-    "parse": {
-      "open": "Skriv det som du plejer",
-      "label": "Skriv passet med dine egne ord",
-      "placeholder": "Fx 15 min opvarmning, 3x10 min Z4 / 5 min pause, 10 min nedkørsel",
-      "hint": "Reglerne læser den almindelige kortform uden nogen sprogmodel. AI'en bruges kun til det, reglerne ikke kan læse, og den får ingen rytterdata.",
-      "read": "Læs det",
-      "reading": "Læser …",
+    "build": {
+      "open": "Byg med AI",
+      "label": "Beskriv passet",
+      "placeholder": {
+        "bike": "Fx 75 min med 5x4 min VO2max og 3 min pause imellem",
+        "strength": "Fx 45 min styrke uden maskiner, med fokus på ben og core",
+        "refine": "Fx gør det 15 min kortere, eller byt den sidste øvelse ud"
+      },
+      "examples": "Prøv fx",
+      "example": {
+        "bike1": "2 t Z2",
+        "bike2": "Tærskelpas med 2x20 min Z4 og 5 min pause",
+        "bike3": "Sprintpas på en time med 8 sprint på 10 sek",
+        "strength1": "Styrke 45 min med kropsvægt, ben og core",
+        "strength2": "Første pas i vinterens styrkeforløb i fitnesscentret",
+        "strength3": "Core og bevægelighed i 20 min derhjemme"
+      },
+      "category": "Årgang",
+      "categoryNone": "Ingen bestemt",
+      "refine": "Ret i det pas, der står nu",
+      "hint": "Vælger du årgang, holder forslaget sig inden for DCU's rammer. Der går ingen rytterdata med, og intet gemmes, før du gemmer passet.",
+      "ruleHint": "Kortform som \"3x10 min Z4 / 5 min pause\" læses af reglerne uden sprogmodel.",
+      "build": "Byg forslaget",
+      "building": "Bygger … det kan tage lidt tid.",
       "close": "Luk",
-      "title": "Sådan blev det læst",
-      "body": "Se trinene igennem. \"Brug\" erstatter trinene i passet, og intet gemmes, før du gemmer passet.",
-      "use": "Brug"
+      "title": "Forslag til passet",
+      "body": "Se forslaget igennem. \"Brug forslaget\" lægger det i byggeren, hvor du kan rette alt. Intet gemmes, før du gemmer passet.",
+      "use": "Brug forslaget",
+      "used": "Forslaget ligger nu i passet.",
+      "undo": "Fortryd",
+      "longestRide": "Passet er længere end DCU's længste træningstur for {category} på {hours} timer. Det er din beslutning."
     },
     "week": {
       "open": "Foreslå ugen",

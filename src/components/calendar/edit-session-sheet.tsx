@@ -21,11 +21,14 @@ export function EditSessionSheet({
   onOpenChange,
   session,
   groupChoice,
+  isCoach,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   session: CalendarCard;
   groupChoice: boolean;
+  /** "Byg med AI" is a coach's (ADR 0038). */
+  isCoach: boolean;
 }) {
   const t = useTranslations("calendar.edit");
   const problems = useTranslations("workouts.problem");
@@ -61,7 +64,7 @@ export function EditSessionSheet({
       <SheetContent side="right" className="w-full max-w-full overflow-y-auto sm:max-w-2xl">
         <form onSubmit={save} className="flex flex-col gap-5 p-5 pt-12 sm:p-6">
           <SheetTitle className="text-lg font-semibold">{t("title")}</SheetTitle>
-          <SessionFields draft={draft} onChange={setDraft} showKm />
+          <SessionFields draft={draft} onChange={setDraft} showKm assist={isCoach} />
           {groupChoice && (
             <fieldset className="flex flex-col gap-2">
               <legend className="mb-1.5 text-sm font-medium">{t("scope")}</legend>

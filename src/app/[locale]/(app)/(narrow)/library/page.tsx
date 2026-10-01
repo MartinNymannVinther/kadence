@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bike, Dumbbell, Plus } from "lucide-react";
+import { Bike, Dumbbell, Plus, Sparkles } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { buttonVariants } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
@@ -54,7 +54,8 @@ export default async function LibraryPage({
         actions={
           isCoach ? (
             // The coach's corner of the library: a new session of either
-            // kind, and DCU's strength programmes fetched into it (ADR 0014).
+            // kind, one built with AI (ADR 0038), and DCU's strength
+            // programmes fetched into it (ADR 0014).
             <>
               <Link href="/library/new?sport=bike" className={cn(buttonVariants(), "max-sm:h-11")}>
                 <Bike data-icon="inline-start" />
@@ -66,6 +67,13 @@ export default async function LibraryPage({
               >
                 <Dumbbell data-icon="inline-start" />
                 {t("newStrength")}
+              </Link>
+              <Link
+                href="/library/new?ai=1"
+                className={cn(buttonVariants({ variant: "outline" }), "max-sm:h-11")}
+              >
+                <Sparkles data-icon="inline-start" />
+                {t("newWithAi")}
               </Link>
               <InstallDcuButton />
             </>

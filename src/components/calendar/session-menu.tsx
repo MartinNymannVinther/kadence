@@ -118,7 +118,13 @@ export function SessionMenu({
         />
       )}
       {dialog === "edit" && (
-        <EditSessionSheet open onOpenChange={close} session={session} groupChoice={groupChoice} />
+        <EditSessionSheet
+          open
+          onOpenChange={close}
+          session={session}
+          groupChoice={groupChoice}
+          isCoach={isCoach}
+        />
       )}
     </>
   );

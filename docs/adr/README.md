@@ -57,3 +57,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0035](0035-rulle-real-roads-real-land-and-company.md)           | Rulle's routes: a session to choose, real roads through real land, and company on them        | → 0014, 0033, 0034       |
 | [0036](0036-rulle-in-the-city-on-race-day.md)                    | Rulle in the city: Future Racing in Copenhagen and the Worlds in Montréal, on race day        | → 0013, 0034, 0035       |
 | [0037](0037-rulle-bridges-tunnels-and-marshals-on-motorbikes.md) | Rulle's bridges and tunnels: the road over them, a train now and then, marshals on motorbikes | → 0034, 0035, 0036       |
+| [0038](0038-build-a-session-with-ai.md)                          | Build a session with AI, bike and strength: from words or by changing what is there           | → 0014, 0017             |

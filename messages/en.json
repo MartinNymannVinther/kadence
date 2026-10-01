@@ -641,7 +641,7 @@
       },
       "sessions": {
         "title": "Sessions and templates",
-        "body": "A session is built in steps: warm-up, work, rest and cool-down, each with a length and a target in zones, percent of FTP or threshold heart rate, or by feel. Repeats gather steps that are ridden several times. Once the rider's thresholds are set, the targets read in watts and pulse. Strength sessions have exercises, and a programme has a progression, so sets and reps follow along from session to session. Save a session as a template in the library and it can be given to one rider or the whole team at once."
+        "body": "A session is built in steps: warm-up, work, rest and cool-down, each with a length and a target in zones, percent of FTP or threshold heart rate, or by feel. Repeats gather steps that are ridden several times. Once the rider's thresholds are set, the targets read in watts and pulse. Strength sessions have exercises, and a programme has a progression, so sets and reps follow along from session to session. A coach can also press \"Build with AI\" and write the session in their own words, e.g. \"5x4 min VO2max\" or \"strength 45 min, legs and core\", or what to change in the session as it stands. The proposal is shown first, and nothing is saved until the coach saves the session. Save a session as a template in the workout library and it can be given to one rider or the whole team at once."
       },
       "done": {
         "title": "Done and RPE",
@@ -952,6 +952,7 @@
     "subtitle": "The team's sessions and programmes, ready to put in the calendar.",
     "newBike": "New bike session",
     "newStrength": "New strength session",
+    "newWithAi": "Build with AI",
     "newTitle": "New template",
     "newTitleBike": "New bike session",
     "newTitleStrength": "New strength session",
@@ -2154,17 +2155,37 @@
       "unreadable": "The text could not be read as a session. Try writing it a little differently, e.g. \"3x10 min Z4 / 5 min rest\".",
       "generic": "Could not get a proposal. Try again."
     },
-    "parse": {
-      "open": "Write it the way you usually do",
-      "label": "Write the session in your own words",
-      "placeholder": "E.g. 15 min warm-up, 3x10 min Z4 / 5 min rest, 10 min cool-down",
-      "hint": "The rules read the usual shorthand without any language model. The AI is used only for what the rules cannot read, and it gets no rider data.",
-      "read": "Read it",
-      "reading": "Reading …",
+    "build": {
+      "open": "Build with AI",
+      "label": "Describe the session",
+      "placeholder": {
+        "bike": "E.g. 75 min with 5x4 min VO2max and 3 min rest in between",
+        "strength": "E.g. 45 min strength without machines, focused on legs and core",
+        "refine": "E.g. make it 15 min shorter, or swap the last exercise"
+      },
+      "examples": "Try for example",
+      "example": {
+        "bike1": "2 h Z2",
+        "bike2": "Threshold session with 2x20 min Z4 and 5 min rest",
+        "bike3": "One-hour sprint session with 8 sprints of 10 s",
+        "strength1": "45 min strength with body weight, legs and core",
+        "strength2": "First session of the winter's strength block in the gym",
+        "strength3": "Core and mobility for 20 min at home"
+      },
+      "category": "Class",
+      "categoryNone": "None in particular",
+      "refine": "Change the session as it stands",
+      "hint": "Choose a class and the proposal stays inside DCU's frame. No rider data is sent, and nothing is saved until you save the session.",
+      "ruleHint": "Shorthand like \"3x10 min Z4 / 5 min rest\" is read by the rules without a language model.",
+      "build": "Build the proposal",
+      "building": "Building … this can take a while.",
       "close": "Close",
-      "title": "How it was read",
-      "body": "Look through the steps. \"Use\" replaces the session's steps, and nothing is saved until you save the session.",
-      "use": "Use"
+      "title": "Proposed session",
+      "body": "Look the proposal through. \"Use the proposal\" puts it in the builder, where you can change everything. Nothing is saved until you save the session.",
+      "use": "Use the proposal",
+      "used": "The proposal is now in the session.",
+      "undo": "Undo",
+      "longestRide": "The session is longer than DCU's longest training ride for {category}, {hours, plural, one {# hour} other {# hours}}. It is your decision."
     },
     "week": {
       "open": "Propose the week",
