@@ -8,13 +8,14 @@ import { setUciId } from "@/modules/results/service";
 import { fakeFetch } from "../devices/fake-fetch";
 import { adminPool } from "../helpers/db";
 import { insertSql, seedPerson } from "../helpers/rows";
-import { PAGE, UCI } from "../results/profile-fixture";
+import { PAGE, profilePage, UCI } from "../results/profile-fixture";
 
 /**
  * Opening Kadence reads races from Cykling Danmark (ADR 0039): a rider's
  * visit puts their own races in their calendar, written as the rider and
  * without a single place; a coach's visit reads the whole team and hangs
- * the places on those same races, never on twins.
+ * the places on those same races, never on twins. And the rider may set
+ * their own UCI ID, which the portal must know, born in the rider's year.
  */
 
 const ORG = "org_racevisits";
@@ -112,5 +113,31 @@ describe("opening Kadence", () => {
     await whenIdle();
     expect(await refreshRaces(COACH, "rv_rider")).toEqual({ state: "fresh" });
     expect(calls).toHaveLength(0);
+  });
+
+  it("refuses a UCI ID the portal does not know, or one born in another year", async () => {
+    Object.assign(env, { DCU_RESULTS: "on" });
+    const other = "10099999999";
+    const route = `GET https://dcumedlem.sportstiming.dk/profile/${other}`;
+    fakeFetch({ [route]: () => html(profilePage("", other, 2008)) });
+    await expect(setUciId(RIDER, { riderId: "rv_rider", uciId: other })).rejects.toMatchObject({
+      code: "invalid",
+      detail: "uciBirthYear",
+    });
+    fakeFetch({ [route]: () => new Response("Not Found", { status: 404 }) });
+    await expect(setUciId(COACH, { riderId: "rv_rider", uciId: other })).rejects.toMatchObject({
+      code: "invalid",
+      detail: "uciUnknown",
+    });
+    expect(await races()).toHaveLength(6);
+  });
+
+  it("takes everything read along when the rider removes their own UCI ID", async () => {
+    expect(await setUciId(RIDER, { riderId: "rv_rider", uciId: "" })).toMatchObject({
+      uciId: null,
+    });
+    expect(await races()).toEqual([]);
+    const left = await admin.query(`select 1 from race_results where org_id = $1`, [ORG]);
+    expect(left.rowCount).toBe(0);
   });
 });

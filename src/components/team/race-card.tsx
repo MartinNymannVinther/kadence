@@ -34,7 +34,14 @@ export type RaceCardStatus = {
   latest: RaceCardResult[];
 };
 
-const ERRORS = ["unknown", "wrong_rider", "not_profile", "timeout", "network"] as const;
+const ERRORS = [
+  "unknown",
+  "wrong_rider",
+  "wrong_person",
+  "not_profile",
+  "timeout",
+  "network",
+] as const;
 
 /**
  * A rider's races from Cykling Danmark, on the coach's page for the rider

@@ -511,6 +511,17 @@
         "remove": "Remove link",
         "removeTitle": "Remove the link?",
         "removeBody": "You can no longer see your child's training. A coach can add you again."
+      },
+      "races": {
+        "title": "Your races from Cykling Danmark",
+        "body": "Enter the UCI ID from your licence, and the races you have ridden go in your calendar. Your coaches can also see your placings. Your parents cannot.",
+        "uciId": "UCI ID",
+        "hint": "On your licence, 11 digits. Kadence checks that the birth year at Cykling Danmark matches yours. Empty the field to remove it again.",
+        "profile": "Your page at Cykling Danmark",
+        "reads": "Your races are read when you or your coach open Kadence.",
+        "off": "This installation does not read races yet.",
+        "read": "{count, plural, =0 {Your races are already in the calendar} one {# race added to your calendar} other {# races added to your calendar}}",
+        "failed": "Saved. The races could not be read just now; Kadence tries again the next time you open it."
       }
     },
     "team": {
@@ -793,7 +804,9 @@
     "repeatTooLong": "A repeat can run half a year ahead at most.",
     "repeatEmpty": "None of the chosen weekdays falls in the period.",
     "repeatTooMany": "That is too many sessions at once. Choose fewer riders or a shorter period.",
-    "copySameWeek": "A week cannot be copied into itself."
+    "copySameWeek": "A week cannot be copied into itself.",
+    "uciBirthYear": "That UCI ID belongs to a rider born in another year. Check the number on the licence.",
+    "uciUnknown": "Cykling Danmark does not know that UCI ID. Check the number on the licence."
   },
   "calendar": {
     "title": "Calendar",
@@ -1280,7 +1293,7 @@
       "title": "Races from Cykling Danmark",
       "body": "With the rider's UCI ID, Kadence reads the races the rider has ridden and puts them in the rider's calendar. Only coaches see the placings.",
       "uciId": "UCI ID",
-      "uciHint": "On the rider's licence, 11 digits. Empty the field to remove it; the races and placings read under it go too.",
+      "uciHint": "On the rider's licence, 11 digits, and the rider can enter it too. Kadence checks that the birth year at Cykling Danmark matches. Empty the field to remove it; the races and placings read under it go too.",
       "profile": "The rider's page at Cykling Danmark",
       "off": "This installation does not read races. The link shows the rider's results at Cykling Danmark.",
       "notThisRider": "This installation reads races for selected riders only, and not for this rider yet.",
@@ -1298,7 +1311,8 @@
         "not_profile": "The page at Cykling Danmark did not look as expected, so Kadence left it alone. Nothing was changed.",
         "timeout": "Cykling Danmark did not answer in time. Kadence will try again later.",
         "network": "Kadence could not reach Cykling Danmark. Kadence will try again later.",
-        "other": "The races could not be read. Kadence will try again later."
+        "other": "The races could not be read. Kadence will try again later.",
+        "wrong_person": "The birth year at Cykling Danmark does not match the rider's, so Kadence read nothing. Check the UCI ID."
       }
     }
   },

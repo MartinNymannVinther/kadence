@@ -39,12 +39,12 @@ const FORCED_GAP_MS = 10 * 60 * 1000;
 export async function refreshRaces(
   ctx: OrgContext,
   riderId: string,
-  options: { force?: boolean; today?: string } = {},
+  options: { force?: boolean; today?: string; profile?: DcuProfile } = {},
 ): Promise<RefreshOutcome> {
   const rider = await withOrgContext(ctx, async (tx) => {
     await requireCoach(tx, ctx);
     const [row] = await tx
-      .select({ uciId: riders.uciId, at: riders.racesCheckedAt })
+      .select({ uciId: riders.uciId, at: riders.racesCheckedAt, birthYear: riders.birthYear })
       .from(riders)
       .where(eq(riders.id, riderId));
     return row;
@@ -56,7 +56,10 @@ export async function refreshRaces(
   if (!staleSince(rider.at, options.force ? FORCED_GAP_MS : undefined)) return { state: "fresh" };
 
   const outcome = await exclusive(riderId, async (): Promise<RefreshOutcome> => {
-    const read = await readProfile(uciId);
+    // A page read a moment ago, to check a new UCI ID, is not read twice.
+    const read = options.profile
+      ? { profile: options.profile }
+      : await readProfile(uciId, rider.birthYear);
     if ("error" in read) {
       await note(ctx, riderId, read.error);
       return { state: "failed", error: read.error };

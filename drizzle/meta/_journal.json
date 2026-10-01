@@ -127,6 +127,13 @@
       "when": 1790850621742,
       "tag": "0017_series_key",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1790880529687,
+      "tag": "0018_rider_sets_uci_id",
+      "breakpoints": true
     }
   ]
 }

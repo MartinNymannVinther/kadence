@@ -5,7 +5,8 @@ import { insertSql, seedPerson } from "../helpers/rows";
 
 /**
  * Who inside one team sees a rider's results from Cykling Danmark
- * (ADR 0039, drizzle/0016), proven as the application role with raw SQL.
+ * (ADR 0039, drizzle/0016 and 0018), proven as the application role with
+ * raw SQL.
  * The race in the calendar follows the calendar's rules (rider-isolation);
  * the place on it is the coach's to read and write. The rider reads
  * their own, which is what puts it in their export. A parent — even one
@@ -153,15 +154,36 @@ describe("a result from Cykling Danmark", () => {
 });
 
 describe("the UCI ID", () => {
-  it("is the coach's to set, not the rider's", async () => {
-    const code = await expectSqlError(
-      asApp(app, R1, (c) => c.query(`update riders set uci_id = '10099999999' where id = 'rr1'`)),
+  it("is the coach's or the rider's own to set, never a teammate's", async () => {
+    const own = await asApp(app, R1, (c) =>
+      c.query(`update riders set uci_id = '10099999999' where id = 'rr1'`),
     );
-    expect(code).toBe("42501");
-    const read = await expectSqlError(
-      asApp(app, R1, (c) => c.query(`update riders set races_error = 'x' where id = 'rr1'`)),
+    expect(own.rowCount).toBe(1);
+    const theirs = await asApp(app, R2, (c) =>
+      c.query(`update riders set uci_id = '10099999999' where id = 'rr1'`),
     );
-    expect(read).toBe("42501");
+    expect(theirs.rowCount).toBe(0);
+  });
+
+  it("leaves the notes of when the races were read to Kadence", async () => {
+    for (const change of ["races_error = 'x'", "races_checked_at = now()"]) {
+      const code = await expectSqlError(
+        asApp(app, R1, (c) => c.query(`update riders set ${change} where id = 'rr1'`)),
+      );
+      expect(code).toBe("42501");
+    }
+  });
+
+  it("takes its results along when the rider changes it, though the rider may not delete one", async () => {
+    const after = await asApp(app, R1, async (c) => {
+      await c.query(`update riders set uci_id = '10099999999' where id = 'rr1'`);
+      const results = await c.query(`select 1 from race_results where rider_id = 'rr1'`);
+      const races = await c.query(
+        `select id from calendar_events where rider_id = 'rr1' and source = 'dcu'`,
+      );
+      return { results: results.rowCount, races: races.rowCount };
+    });
+    expect(after).toEqual({ results: 0, races: 0 });
   });
 
   it("takes its results and Kadence's races along when removed, and leaves the coach's race", async () => {

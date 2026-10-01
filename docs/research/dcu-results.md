@@ -87,8 +87,9 @@ entries by UCI ID. That is the first question to put to them (below).
 
 ## What Kadence does (ADR 0039)
 
-- A coach enters the rider's UCI ID. Without anything else, the coach
-  gets a link to the rider's page at the portal.
+- A coach or the rider enters the rider's UCI ID, and it must belong to
+  someone born in the rider's year. Without anything else, it gives a
+  link to the rider's page at the portal.
 - With `DCU_RESULTS` on, or listing the rider's UCI ID, Kadence reads
   that one page when a coach or the rider opens Kadence and the last
   reading is more than three hours old. It reads one rider at a time,
@@ -107,8 +108,8 @@ entries by UCI ID. That is the first question to put to them (below).
 ## Questions for Cykling Danmark and Sportstiming
 
 1. May Kadence read a member's public page at the member portal, one
-   rider at a time, for riders whose coach has entered their UCI ID? Or
-   would you rather offer it another way?
+   rider at a time, for riders whose UCI ID has been entered by them or
+   their coach? Or would you rather offer it another way?
 2. Can a coach see which races a club's riders have entered, by UCI ID,
    from a feed or an export? This is what coaches plan by, and the one
    thing Kadence cannot do on its own.

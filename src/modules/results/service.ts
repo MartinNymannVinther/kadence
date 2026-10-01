@@ -5,31 +5,70 @@ import { env } from "@/core/env";
 import { raceResults, riders, type RaceResultRow } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { sqlStateOf } from "@/modules/export/workspace";
-import { requireCoach } from "@/modules/team/access";
+import { requireCoach, whoAmIIn } from "@/modules/team/access";
 import { id } from "@/modules/training/vocabulary";
+import type { DcuProfile } from "./dcu-profile";
+import { forgetOwnRead } from "./own";
+import { exclusive, readProfile } from "./read";
 import { readsRaces, readsRacesFor } from "./switch";
 import { parseUciId } from "./uci-id";
 
 /**
  * A rider's UCI ID and the results read under it (ADR 0039). The UCI ID
- * is the coach's to set; the results are the coach's to read. Reading
- * them from Cykling Danmark is refresh.ts.
+ * is the coach's or the rider's own to set; the results are the coach's
+ * to read. Reading them from Cykling Danmark is refresh.ts and own.ts.
  */
 
 export const UciIdInput = z.object({ riderId: id, uciId: z.string().trim().max(24) });
 
-/** Sets or removes a rider's UCI ID. Removing or changing it drops what was read under the old one (drizzle/0016). */
+export type SavedUciId = {
+  uciId: string | null;
+  /** Whether a coach saved it: a coach's import writes places, a rider's does not. */
+  byCoach: boolean;
+  /** The page read to check a new UCI ID, so the import need not read it again. */
+  profile: DcuProfile | null;
+};
+
+/**
+ * Sets or removes a rider's UCI ID, as a coach or as the rider. Where
+ * this installation reads races, a new UCI ID is checked first: the
+ * portal must know it, and the member it names must be born in the
+ * rider's year. Removing or changing it drops what was read under the old
+ * one (drizzle/0016).
+ */
 export async function setUciId(
   ctx: OrgContext,
   input: z.infer<typeof UciIdInput>,
-): Promise<{ uciId: string | null }> {
+): Promise<SavedUciId> {
   const uciId = input.uciId === "" ? null : parseUciId(input.uciId);
   if (input.uciId !== "" && !uciId) throw new Refused("invalid", "uciId");
-  return withOrgContext(ctx, async (tx) => {
-    await requireCoach(tx, ctx);
+  const { rider, byCoach } = await withOrgContext(ctx, async (tx) => {
+    const me = await whoAmIIn(tx, ctx);
+    if (!me || (!me.isCoach && me.rider?.id !== input.riderId)) throw new Refused("forbidden");
+    const [row] = await tx
+      .select({ uciId: riders.uciId, birthYear: riders.birthYear })
+      .from(riders)
+      .where(eq(riders.id, input.riderId));
+    if (!row) throw new Refused("notFound");
+    return { rider: row, byCoach: me.isCoach };
+  });
+
+  let profile: DcuProfile | null = null;
+  if (uciId && uciId !== rider.uciId && readsRacesFor(env.DCU_RESULTS, uciId)) {
+    const read = await exclusive(input.riderId, () => readProfile(uciId, rider.birthYear));
+    if (read !== "busy" && "profile" in read) profile = read.profile;
+    if (read !== "busy" && "error" in read) {
+      if (read.error === "wrong_person") throw new Refused("invalid", "uciBirthYear");
+      if (read.error === "unknown") throw new Refused("invalid", "uciUnknown");
+      // The portal could not be asked just now: the ID is saved, and every
+      // reading of it checks the birth year again.
+    }
+  }
+
+  await withOrgContext(ctx, async (tx) => {
     const rows = await tx
       .update(riders)
-      .set({ uciId, racesCheckedAt: null, racesError: "" })
+      .set({ uciId })
       .where(and(eq(riders.id, input.riderId), eq(riders.orgId, ctx.orgId)))
       .returning({ id: riders.id })
       .catch((error: unknown) => {
@@ -37,8 +76,9 @@ export async function setUciId(
         throw error;
       });
     if (rows.length === 0) throw new Refused("notFound");
-    return { uciId };
   });
+  forgetOwnRead(input.riderId);
+  return { uciId, byCoach, profile };
 }
 
 export type RaceStatus = {

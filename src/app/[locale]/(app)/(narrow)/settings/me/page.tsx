@@ -5,12 +5,16 @@ import { buttonVariants } from "@/components/ui/button";
 import { guardianState } from "@/components/team/guardian-state";
 import { MyChildren } from "@/components/team/my-children";
 import { MyGuardians } from "@/components/team/my-guardians";
+import { OwnRacesCard } from "@/components/team/own-races-card";
 import { SharingForm } from "@/components/team/sharing-form";
 import { ThresholdsForm } from "@/components/team/thresholds-form";
 import { getOrgContext } from "@/core/auth/session";
 import { todayInCopenhagen } from "@/core/dates";
+import { env } from "@/core/env";
 import { Link, redirect } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+import { readsRacesFor } from "@/modules/results/switch";
+import { dcuProfileUrl, formatUciId } from "@/modules/results/uci-id";
 import { whoAmI } from "@/modules/team/access";
 import { listGuardians } from "@/modules/team/guardians";
 import { getRider } from "@/modules/team/riders";
@@ -22,8 +26,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /**
  * The person's own corner. A rider decides what their parents see,
- * confirms each parent and keeps their thresholds; a parent sees their
- * links and may end one; everybody finds their security settings here.
+ * confirms each parent, keeps their thresholds and may give their UCI ID;
+ * a parent sees their links and may end one; everybody finds their
+ * security settings here.
  */
 export default async function MePage() {
   const ctx = await getOrgContext();
@@ -69,6 +74,12 @@ export default async function MePage() {
               restingHr: rider.restingHr,
               thresholdsOn: rider.thresholdsOn,
             }}
+          />
+          <OwnRacesCard
+            riderId={rider.id}
+            printed={rider.uciId ? formatUciId(rider.uciId) : null}
+            profileUrl={rider.uciId ? dcuProfileUrl(rider.uciId) : null}
+            reads={readsRacesFor(env.DCU_RESULTS, rider.uciId)}
           />
         </>
       )}

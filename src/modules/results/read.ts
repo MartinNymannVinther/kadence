@@ -54,12 +54,19 @@ export async function exclusive<T>(riderId: string, work: () => Promise<T>): Pro
   }
 }
 
-export async function readProfile(uciId: string): Promise<Read> {
+/**
+ * The page of `uciId`, if it is a member's profile and the member was born
+ * in `birthYear`: a UCI ID typed wrong, or someone else's, is another
+ * person, and their races are not this rider's.
+ */
+export async function readProfile(uciId: string, birthYear: number): Promise<Read> {
   try {
     const profile = parseDcuProfile(await fetchDcuProfile(uciId), uciId);
     // Rows on the page and not one that reads: the page has changed, and
     // an import of nothing would say the rider rode nothing.
     if (profile.results.length === 0 && profile.skipped > 0) throw new DcuPageError("not_profile");
+    if (profile.person.birthYear === null) throw new DcuPageError("not_profile");
+    if (profile.person.birthYear !== birthYear) return { error: "wrong_person" };
     return { profile };
   } catch (error) {
     console.warn("dcu results: read failed", loggable(error));

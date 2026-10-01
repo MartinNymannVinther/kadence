@@ -26,11 +26,19 @@ software out.
 
 ## Decision
 
-- **The coach enters the rider's UCI ID** (`riders.uci_id`, eleven
-  digits, unique on the team). Only a coach sets it: the rider-row guard
-  (drizzle/0007, renewed in 0016) refuses it from the rider. With nothing
-  else turned on, the coach's page for the rider links to the rider's
-  page at the portal.
+- **The coach or the rider enters the rider's UCI ID** (`riders.uci_id`,
+  eleven digits, unique on the team): the coach on the rider's page, the
+  rider under Settings → Me. The rider-row guard (drizzle/0007, renewed
+  in 0016 and 0018) lets the rider change it, as it lets them change
+  their thresholds, and nothing else new: when the races were last read
+  stays Kadence's note. With nothing else turned on, the UCI ID gives a
+  link to the rider's page at the portal.
+- **The birth year must match.** The portal prints the member's birth
+  year above the results. Where the installation reads races, a new UCI
+  ID is checked before it is saved: the portal must know it, and the
+  member must be born in the rider's year. Every reading checks it
+  again, so a number typed wrong, or a teammate's, never brings another
+  person's races into the calendar, whoever typed it.
 - **Reading is the installation's choice, and off by default**
   (`DCU_RESULTS`): `off`, `on`, or a list of UCI IDs to read for and no
   others. That is how it is tried with one rider before a team, and how

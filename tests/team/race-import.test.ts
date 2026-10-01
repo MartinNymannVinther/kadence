@@ -75,6 +75,8 @@ describe("the UCI ID", () => {
   it("is set by a coach, as the licence prints it", async () => {
     expect(await setUciId(COACH, { riderId: "ri_benja", uciId: "100 123 456 78" })).toEqual({
       uciId: UCI,
+      byCoach: true,
+      profile: null,
     });
   });
 
@@ -87,9 +89,13 @@ describe("the UCI ID", () => {
     });
   });
 
-  it("is not the rider's to set", async () => {
-    await expect(setUciId(RIDER, { riderId: "ri_benja", uciId: UCI })).rejects.toMatchObject({
+  it("is the rider's own to set, and no teammate's", async () => {
+    await expect(setUciId(RIDER, { riderId: "ri_other", uciId: UCI })).rejects.toMatchObject({
       code: "forbidden",
+    });
+    expect(await setUciId(RIDER, { riderId: "ri_benja", uciId: UCI })).toMatchObject({
+      uciId: UCI,
+      byCoach: false,
     });
   });
 });

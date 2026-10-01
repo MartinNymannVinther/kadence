@@ -4,6 +4,7 @@ import { calendarEvents, raceResults, riders } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { todayInCopenhagen } from "@/core/dates";
 import { whoAmIIn } from "@/modules/team/access";
+import type { DcuProfile } from "./dcu-profile";
 import { planImport } from "./plan";
 import { enqueue } from "./queue";
 import { exclusive, readProfile, sinceFor, staleSince } from "./read";
@@ -25,15 +26,25 @@ import { readsRacesFor } from "./switch";
 
 const ownReads = new Map<string, number>();
 
+/** A rider's new UCI ID is read afresh, whenever the last reading was. */
+export function forgetOwnRead(riderId: string): void {
+  ownReads.delete(riderId);
+}
+
 export async function refreshOwnRaces(
   ctx: OrgContext,
-  options: { today?: string } = {},
+  options: { today?: string; profile?: DcuProfile } = {},
 ): Promise<RefreshOutcome> {
   const rider = await withOrgContext(ctx, async (tx) => {
     const me = await whoAmIIn(tx, ctx);
     if (!me?.rider) return null;
     const [row] = await tx
-      .select({ id: riders.id, uciId: riders.uciId, at: riders.racesCheckedAt })
+      .select({
+        id: riders.id,
+        uciId: riders.uciId,
+        at: riders.racesCheckedAt,
+        birthYear: riders.birthYear,
+      })
       .from(riders)
       .where(eq(riders.id, me.rider.id));
     return row ?? null;
@@ -44,7 +55,9 @@ export async function refreshOwnRaces(
   if (!staleSince(rider.at) || !staleSince(own ? new Date(own) : null)) return { state: "fresh" };
 
   const outcome = await exclusive(rider.id, async (): Promise<RefreshOutcome> => {
-    const read = await readProfile(uciId);
+    const read = options.profile
+      ? { profile: options.profile }
+      : await readProfile(uciId, rider.birthYear);
     ownReads.set(rider.id, Date.now());
     if ("error" in read) return { state: "failed", error: read.error };
     const since = sinceFor(options.today ?? todayInCopenhagen());

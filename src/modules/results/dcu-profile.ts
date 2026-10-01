@@ -5,8 +5,10 @@
  * The page is one table: a heading row per discipline, class and year
  * ("Landevej - U17 (2026)"), then a row per result — the race, linked to
  * its result list at Sportstiming, the date ("13. september 2026"), the
- * place and DCU's points — and a total. Kadence keeps the race, the
- * date, the class and the place; the points it leaves (ADR 0039).
+ * place and DCU's points — and a total. Above it stand the member's name
+ * and birth year. Kadence keeps the race, the date, the class and the
+ * place, and checks the birth year against the rider's; the points it
+ * leaves (ADR 0039).
  *
  * The page is untrusted input. It refuses rather than guesses: a page
  * that is not the profile of the UCI ID that was asked for is refused
@@ -29,7 +31,10 @@ export type DcuResult = {
   resultUrl: string;
 };
 
-export type DcuProfile = { results: DcuResult[]; skipped: number };
+/** Who the page is about, as the portal prints it above the results. */
+export type DcuPerson = { name: string; birthYear: number | null };
+
+export type DcuProfile = { person: DcuPerson; results: DcuResult[]; skipped: number };
 
 export class DcuPageError extends Error {
   constructor(readonly code: "not_profile" | "wrong_rider") {
@@ -133,9 +138,17 @@ function resultRow(row: string, section: { discipline: string; raceClass: string
  * page is not a member's profile, or is someone else's.
  */
 export function parseDcuProfile(html: string, uciId: string): DcuProfile {
-  const id = /UCI ID ([0-9 ]{11,20})/.exec(text(html));
+  const page = text(html);
+  const id = /UCI ID ([0-9 ]{11,20})/.exec(page);
   if (!id) throw new DcuPageError("not_profile");
   if (id[1]!.replace(/ /g, "") !== uciId) throw new DcuPageError("wrong_rider");
+  // "Benjamin Hove Vinther" in the heading, "M, 2011" just before the UCI ID.
+  const born = /(?:^|\s)(?:[A-ZÆØÅ]{1,2}, )?((?:19|20)[0-9]{2}) UCI ID /.exec(page);
+  const heading = /<h1\b[^>]*>([\s\S]*?)<\/h1>/i.exec(html);
+  const person = {
+    name: heading ? text(heading[1]!).slice(0, 120) : "",
+    birthYear: born ? Number(born[1]) : null,
+  };
 
   const results: DcuResult[] = [];
   const seen = new Set<string>();
@@ -143,7 +156,7 @@ export function parseDcuProfile(html: string, uciId: string): DcuProfile {
   const table = /<table\b[^>]*class="[^"]*\btable-hover\b[^"]*"[^>]*>([\s\S]*?)<\/table>/i.exec(
     html,
   );
-  if (!table) return { results, skipped };
+  if (!table) return { person, results, skipped };
 
   let section: { discipline: string; raceClass: string } | null = null;
   for (const m of table[1]!.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)) {
@@ -167,5 +180,5 @@ export function parseDcuProfile(html: string, uciId: string): DcuProfile {
     seen.add(result.sourceRef);
     results.push(result);
   }
-  return { results, skipped };
+  return { person, results, skipped };
 }

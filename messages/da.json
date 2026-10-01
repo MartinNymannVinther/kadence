@@ -511,6 +511,17 @@
         "remove": "Fjern forbindelse",
         "removeTitle": "Fjern forbindelsen?",
         "removeBody": "Du kan ikke længere se dit barns træning. En træner kan tilføje dig igen."
+      },
+      "races": {
+        "title": "Dine løb fra Cykling Danmark",
+        "body": "Skriv UCI ID'et fra din licens, så kommer de løb, du har kørt, i din kalender. Dine trænere kan også se dine placeringer. Det kan dine forældre ikke.",
+        "uciId": "UCI ID",
+        "hint": "Står på din licens og er 11 cifre. Kadence tjekker, at fødselsåret hos Cykling Danmark passer med dit. Tøm feltet for at fjerne det igen.",
+        "profile": "Din side hos Cykling Danmark",
+        "reads": "Dine løb hentes, når du eller din træner åbner Kadence.",
+        "off": "Kadence henter ikke løb på denne installation endnu.",
+        "read": "{count, plural, =0 {Dine løb er allerede i kalenderen} one {# løb lagt i din kalender} other {# løb lagt i din kalender}}",
+        "failed": "Gemt. Løbene kunne ikke hentes lige nu, men Kadence prøver igen, næste gang du åbner Kadence."
       }
     },
     "team": {
@@ -793,7 +804,9 @@
     "repeatTooLong": "En gentagelse kan højst gå et halvt år frem.",
     "repeatEmpty": "Ingen af de valgte ugedage ligger i perioden.",
     "repeatTooMany": "Det bliver for mange pas på én gang. Vælg færre ryttere eller en kortere periode.",
-    "copySameWeek": "En uge kan ikke kopieres ind i sig selv."
+    "copySameWeek": "En uge kan ikke kopieres ind i sig selv.",
+    "uciBirthYear": "Det UCI ID tilhører en rytter med et andet fødselsår. Tjek tallet på licensen.",
+    "uciUnknown": "Cykling Danmark kender ikke det UCI ID. Tjek tallet på licensen."
   },
   "calendar": {
     "title": "Kalender",
@@ -1280,7 +1293,7 @@
       "title": "Løb fra Cykling Danmark",
       "body": "Med rytterens UCI ID henter Kadence de løb, rytteren har kørt, og lægger dem i rytterens kalender. Placeringerne ser kun trænere.",
       "uciId": "UCI ID",
-      "uciHint": "Står på rytterens licens og er 11 cifre. Tøm feltet for at fjerne det. Så forsvinder de hentede løb og placeringer igen.",
+      "uciHint": "Står på rytterens licens og er 11 cifre, og rytteren kan også selv skrive det. Kadence tjekker, at fødselsåret hos Cykling Danmark passer. Tøm feltet for at fjerne det; så forsvinder de hentede løb og placeringer igen.",
       "profile": "Rytterens side hos Cykling Danmark",
       "off": "Kadence henter ikke løb på denne installation. Linket viser rytterens resultater hos Cykling Danmark.",
       "notThisRider": "Kadence henter kun løb for udvalgte ryttere på denne installation, og ikke for denne rytter endnu.",
@@ -1298,7 +1311,8 @@
         "not_profile": "Siden hos Cykling Danmark så anderledes ud end ventet, så Kadence lod den være. Intet blev ændret.",
         "timeout": "Cykling Danmark svarede ikke i tide. Kadence prøver igen senere.",
         "network": "Kadence kunne ikke nå Cykling Danmark. Kadence prøver igen senere.",
-        "other": "Løbene kunne ikke hentes. Kadence prøver igen senere."
+        "other": "Løbene kunne ikke hentes. Kadence prøver igen senere.",
+        "wrong_person": "Fødselsåret hos Cykling Danmark passer ikke med rytterens, så Kadence hentede intet. Tjek UCI ID'et."
       }
     }
   },

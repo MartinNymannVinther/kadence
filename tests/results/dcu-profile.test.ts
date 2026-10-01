@@ -25,7 +25,14 @@ describe("a rider's page at Cykling Danmark", () => {
     });
   });
 
-  it("keeps what stood in place of a place, and never makes it a number", () => {
+  it("reads who the page is about: the name and the birth year", () => {
+    expect(parseDcuProfile(PAGE, UCI).person).toEqual({ name: "Test Rytter", birthYear: 2011 });
+    expect(parseDcuProfile(profilePage("", UCI, 2008), UCI).person.birthYear).toBe(2008);
+    const unborn = profilePage("").replace("M, 2011", "M");
+    expect(parseDcuProfile(unborn, UCI).person.birthYear).toBeNull();
+  });
+
+  it("keeps what stood where the place goes, and never makes it a number", () => {
     const dnf = parseDcuProfile(PAGE, UCI).results.find((r) => r.sourceRef === "17500:100700");
     expect(dnf).toMatchObject({ place: null, placeNote: "DNF" });
   });
@@ -49,7 +56,7 @@ describe("a rider's page at Cykling Danmark", () => {
   });
 
   it("reads a rider without results as no races", () => {
-    expect(parseDcuProfile(profilePage(""), UCI)).toEqual({ results: [], skipped: 0 });
+    expect(parseDcuProfile(profilePage(""), UCI)).toMatchObject({ results: [], skipped: 0 });
   });
 
   it("skips and counts a row that links anywhere but Sportstiming's result lists", () => {
@@ -69,12 +76,12 @@ describe("a rider's page at Cykling Danmark", () => {
 
   it("skips a row whose date it does not know rather than guessing one", () => {
     const page = profilePage(heading("Landevej - U17 (2026)") + row("Løb", 1, 2, "snart", "1"));
-    expect(parseDcuProfile(page, UCI)).toEqual({ results: [], skipped: 1 });
+    expect(parseDcuProfile(page, UCI)).toMatchObject({ results: [], skipped: 1 });
   });
 
   it("skips rows under a heading it cannot read", () => {
     const page = profilePage(heading("Noget andet") + row("Løb", 1, 2, "1. maj 2026", "1"));
-    expect(parseDcuProfile(page, UCI)).toEqual({ results: [], skipped: 1 });
+    expect(parseDcuProfile(page, UCI)).toMatchObject({ results: [], skipped: 1 });
   });
 
   it("reads a result listed twice once", () => {

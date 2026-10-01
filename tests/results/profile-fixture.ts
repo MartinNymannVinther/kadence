@@ -41,13 +41,13 @@ const total = `
 							<th class="text-right"><b>24</b></th>
 					</tr>`;
 
-export function profilePage(rows: string, uci = UCI): string {
+export function profilePage(rows: string, uci = UCI, born = 2011): string {
   const printed = `${uci.slice(0, 3)} ${uci.slice(3, 6)} ${uci.slice(6, 9)} ${uci.slice(9)}`;
   return `<!DOCTYPE html><html><body>
 <section>
 	<div class="container">
 		<h1><img src="/assets/images/flags/dk.png" style="width:20px;"> Test Rytter</h1>
-		M, 2011
+		M, ${born}
 		<br/>UCI ID ${printed}
 	</div>
 </section>
