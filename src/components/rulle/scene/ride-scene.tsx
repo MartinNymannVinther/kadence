@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { City, Course, Land, Seen } from "@/modules/rulle";
+import type { City, Course, Heard, Land, Seen } from "@/modules/rulle";
 import { LensDrops } from "./lens-drops";
 import type { SceneWords } from "./small-things";
 import { Sky } from "./sky";
@@ -16,8 +16,9 @@ import { World, type Moment } from "./world";
  * shadows; a rider who has asked for less motion gets a camera that only
  * follows, and no drops on the lens. On a route that comes with Kadence
  * the land is the real one (ADR 0035). What the small things on the way
- * (ADR 0034) meet is told back through `onSeen`, and what they ring
- * through `onSound`.
+ * (ADR 0034) meet is told back through `onSeen`, what they ring through
+ * `onSound`, and what the rider would hear of the road through `onHear`
+ * (ADR 0045).
  */
 export default function RideScene({
   course,
@@ -30,6 +31,7 @@ export default function RideScene({
   city,
   onSeen,
   onSound,
+  onHear,
 }: {
   course: Course;
   /** Where the rider is now: read every frame. */
@@ -46,15 +48,16 @@ export default function RideScene({
   city: City | null;
   onSeen: (key: keyof Seen, count: number) => void;
   onSound: (kind: "bell" | "cheer" | "whistle" | "horn") => void;
+  onHear: (heard: Heard) => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const latest = useRef({ moment, top, bottom, words, onSeen, onSound });
+  const latest = useRef({ moment, top, bottom, words, onSeen, onSound, onHear });
   const resize = useRef<() => void>(() => {});
   // Each spray of washer fluid, numbered: the drops on the lens are drawn for the latest.
   const [spray, setSpray] = useState(0);
 
   useEffect(() => {
-    latest.current = { moment, top, bottom, words, onSeen, onSound };
+    latest.current = { moment, top, bottom, words, onSeen, onSound, onHear };
   });
 
   // Only when the strip or the panel over the picture changes: the page
@@ -82,6 +85,7 @@ export default function RideScene({
         {
           seen: (key, count) => latest.current.onSeen(key, count),
           sound: (kind) => latest.current.onSound(kind),
+          hear: (heard) => latest.current.onHear(heard),
           spray: () => {
             if (!calm) setSpray((n) => n + 1);
           },

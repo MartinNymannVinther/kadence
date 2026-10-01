@@ -104,6 +104,12 @@ export function RideScreen({
   const dropped = connection === "reconnecting" || connection === "lost";
   if (bare && dropped) setBare(false);
 
+  // The sound under the ride, while its screen is up (ADR 0045).
+  useEffect(() => {
+    beeps.listen();
+    return () => beeps.hush();
+  }, [beeps]);
+
   useEffect(() => {
     const measure = () =>
       setCover({
@@ -150,6 +156,7 @@ export function RideScreen({
           city={city}
           onSeen={ride.note}
           onSound={(kind) => beeps.play(kind)}
+          onHear={(heard) => beeps.hear(heard)}
         />
       </div>
       <div className="relative z-10 flex h-full flex-col">

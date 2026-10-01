@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { chalkOf, flagsOf, type Course, type Seen } from "@/modules/rulle";
+import { chalkOf, flagsOf, type Course, type Heard, type Seen } from "@/modules/rulle";
 import { ChalkClimb } from "./chalk-climb";
 import { Farmyard, herdsHere } from "./farmyard";
 import type { Ground } from "./ground";
@@ -22,6 +22,8 @@ export type SmallThingsHooks = {
   sound: (kind: "bell" | "cheer" | "whistle" | "horn") => void;
   /** Washer fluid on the lens: the page draws the drops. */
   spray: () => void;
+  /** What the rider would hear of the road, four times a second, for the sound under the ride (ADR 0045). */
+  hear?: (heard: Heard) => void;
 };
 
 /** Words the landscape shows, in the reader's language. */
