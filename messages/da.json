@@ -637,7 +637,7 @@
       },
       "calendar": {
         "title": "Kalenderen",
-        "body": "Kalenderen viser en uge ad gangen. På en computer står dagene side om side, på telefonen under hinanden. Træneren kan se hele holdet på én gang og trække et pas til en anden dag. På telefonen bruger du \"Flyt\" i passets menu. Løb, eksamen, skole, lejr, ferie og sygdom står i kalenderen som små mærker. Farverne på passene viser, hvordan det gik: grøn er som planlagt, gul er lidt ved siden af, rød er ikke udført eller langt fra planen, og grå er ikke kørt endnu. Der står altid et ord ved farven."
+        "body": "Kalenderen viser en uge ad gangen. På en computer står dagene side om side, på telefonen under hinanden. Træneren kan se hele holdet på én gang og trække et pas til en anden dag. På telefonen bruger du \"Flyt\" i passets menu. Løb, eksamen, skole, lejr, ferie og sygdom står i kalenderen som små mærker. Farverne på passene viser, hvordan det gik: grøn er som planlagt, gul er lidt ved siden af, rød er ikke udført eller langt fra planen, og grå er ikke kørt endnu. Der står altid et ord ved farven. Skal det samme pas gå igen, fx styrke hver tirsdag og torsdag i vinter, så slå \"Gentag på faste ugedage\" til, når du lægger passet ind: vælg ugedagene og den sidste dag. Hvert pas kan rettes for sig, og \"Ret\" og \"Slet\" kan også tage resten af serien."
       },
       "sessions": {
         "title": "Pas og skabeloner",
@@ -788,7 +788,11 @@
     "flagGone": "Advarslen er ikke aktiv længere. Genindlæs siden.",
     "uciId": "Et UCI ID er 11 cifre, som det står på licensen.",
     "uciTaken": "En anden rytter på holdet har allerede det UCI ID.",
-    "noUciId": "Rytteren har ikke noget UCI ID endnu."
+    "noUciId": "Rytteren har ikke noget UCI ID endnu.",
+    "repeatOrder": "Slutdatoen ligger før den første dag.",
+    "repeatTooLong": "En gentagelse kan højst gå et halvt år frem.",
+    "repeatEmpty": "Ingen af de valgte ugedage ligger i perioden.",
+    "repeatTooMany": "Det bliver for mange pas på én gang. Vælg færre ryttere eller en kortere periode."
   },
   "calendar": {
     "title": "Kalender",
@@ -840,6 +844,7 @@
     },
     "card": {
       "group": "Holdpas",
+      "series": "Gentaget pas",
       "comments": "{count, plural, one {# kommentar} other {# kommentarer}}"
     },
     "team": {
@@ -869,23 +874,26 @@
     "delete": {
       "title": "Slet {title}?",
       "body": "Passet forsvinder fra kalenderen sammen med kommentarerne til det.",
-      "scope": "Hvem skal det slettes for?",
+      "scope": "Hvad skal slettes?",
       "scopes": {
         "one": "Kun denne",
-        "group": "Hele gruppen"
+        "group": "Hele gruppen",
+        "series": "Dette og de kommende i serien"
       },
       "scopeHints": {
         "one": "Kun denne rytters pas.",
-        "group": "Alle ryttere, der har fået passet og ikke har udført det endnu."
+        "group": "Alle ryttere, der har fået passet og ikke har udført det endnu.",
+        "series": "Alle pas i serien fra denne dag, som ikke er udført endnu."
       },
       "deleted": "Passet er slettet."
     },
     "edit": {
       "title": "Ret passet",
-      "scope": "Hvem skal ændringen gælde for?",
+      "scope": "Hvad skal ændringen gælde for?",
       "scopes": {
         "group": "Hele gruppen (dem, der ikke har udført det)",
-        "one": "Kun denne rytter"
+        "one": "Kun dette pas",
+        "series": "Dette og de kommende i serien (dem, der ikke er udført)"
       }
     },
     "add": {
@@ -907,7 +915,25 @@
       "pickRider": "Vælg mindst én rytter.",
       "pickTemplate": "Vælg et pas fra biblioteket.",
       "submit": "Læg i kalenderen",
-      "added": "{count, plural, one {Passet er lagt i kalenderen.} other {Passet er lagt i # kalendere.}}"
+      "added": "{count, plural, one {Passet er lagt i kalenderen.} other {Passet er lagt i # kalendere.}}",
+      "addedSeries": "{count, plural, one {Serien er lagt ind: # pas.} other {Serien er lagt ind: # pas.}}"
+    },
+    "repeat": {
+      "toggle": "Gentag på faste ugedage",
+      "weekdays": "Ugedage",
+      "until": "Til og med",
+      "summary": "Det giver {count} pas.",
+      "summaryRiders": "Det giver {count} pas pr. rytter, {total} i alt.",
+      "problem": {
+        "order": "Slutdatoen ligger før den første dag.",
+        "tooLong": "Højst {weeks} uger ad gangen.",
+        "empty": "Ingen af de valgte ugedage ligger i perioden.",
+        "tooMany": "Det bliver for mange pas på én gang. Vælg færre ryttere eller en kortere periode."
+      },
+      "close": "{first} og {second} ligger under 48 timer fra hinanden. DCU anbefaler mindst 48 timer mellem styrkepas.",
+      "tooManyStrength": "Fra uge {week} ({date}) anbefaler DCU {max} styrkepas om ugen. Serien har {perWeek}.",
+      "hint": "Hvert pas kan stadig flyttes og rettes for sig. \"Ret\" og \"Slet\" kan også tage resten af serien.",
+      "preview": "Se timerne mod sæsonplanen"
     },
     "event": {
       "addTitle": "Tilføj begivenhed",
@@ -990,7 +1016,8 @@
       "forRider": "For {name}",
       "date": "Dato",
       "submit": "Læg i kalenderen",
-      "done": "{count, plural, one {Passet er lagt i kalenderen.} other {Passet er lagt i # kalendere.}}"
+      "done": "{count, plural, one {Passet er lagt i kalenderen.} other {Passet er lagt i # kalendere.}}",
+      "doneSeries": "{count, plural, one {Serien er lagt ind: # pas.} other {Serien er lagt ind: # pas.}}"
     },
     "editor": {
       "create": "Gem skabelonen",
@@ -2199,6 +2226,11 @@
       "on": "på målet",
       "over": "{hours} t over målet",
       "under": "{hours} t under målet"
+    },
+    "preview": {
+      "week": "Uge {n}",
+      "planned": "Planlagt {before} → {after} t",
+      "note": "Bjælken viser, hvordan det ser ud, når passene er lagt ind. Værnene siger til, de forbyder intet."
     }
   },
   "assist": {

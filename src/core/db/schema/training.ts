@@ -61,6 +61,12 @@ export const plannedSessions = pgTable(
     /** For a strength programme: which session in it this is (1-based). */
     programmeSession: smallint("programme_session"),
     groupKey: text("group_key"),
+    /**
+     * The copies made by one "Gentag" (ADR 0041): the same session on chosen
+     * weekdays over a period, for one or more riders, changed or removed
+     * together from a day onwards.
+     */
+    seriesKey: text("series_key"),
     /** template | ai | manual | group */
     origin: text("origin").notNull().default("manual"),
     activityId: text("activity_id").references(() => activities.id, { onDelete: "set null" }),
@@ -70,6 +76,7 @@ export const plannedSessions = pgTable(
   (t) => [
     index("planned_sessions_rider_date_idx").on(t.orgId, t.riderId, t.onDate),
     index("planned_sessions_group_idx").on(t.orgId, t.groupKey),
+    index("planned_sessions_series_idx").on(t.orgId, t.seriesKey),
     uniqueIndex("planned_sessions_activity_uq")
       .on(t.activityId)
       .where(sql`${t.activityId} is not null`),

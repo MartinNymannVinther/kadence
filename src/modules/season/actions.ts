@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { runAction } from "@/core/action";
+import { todayInCopenhagen } from "@/core/dates";
 import { CLASS_BASES } from "@/modules/dcu";
 import {
   createSeasonPlan,
@@ -10,6 +11,8 @@ import {
   saveSeasonMonths,
   SeasonMonthsInput,
 } from "./plans";
+import { previewPlan } from "./preview";
+import { monthsBetween } from "./volume";
 
 /** The season plan's server actions; the season page and the calendar are refreshed after. */
 
@@ -57,5 +60,39 @@ export async function deleteSeasonPlanAction(raw: unknown) {
     z.object({ planId: id }),
     (ctx, input) => deleteSeasonPlan(ctx, input.planId),
     PATHS,
+  );
+}
+
+/**
+ * What new sessions would do to each rider's four numbers, month by month,
+ * before they are made (ADR 0041): the same sessions for every rider, as
+ * a series puts them. A read; nothing is written.
+ */
+export async function previewSessionsAction(raw: unknown) {
+  return runAction(
+    raw,
+    z.object({
+      riderIds: z.array(id).min(1).max(60),
+      sessions: z
+        .array(
+          z.object({
+            onDate: z.iso.date(),
+            sport: z.enum(["bike", "strength", "other"]),
+            plannedMinutes: z.number().int().min(0).max(1440),
+          }),
+        )
+        .min(1)
+        .max(400),
+    }),
+    (ctx, input) => {
+      const dates = input.sessions.map((s) => s.onDate).sort();
+      return previewPlan(ctx, {
+        riderIds: input.riderIds,
+        additions: () => input.sessions,
+        periods: monthsBetween(dates[0]!, dates.at(-1)!),
+        today: todayInCopenhagen(),
+      });
+    },
+    [],
   );
 }

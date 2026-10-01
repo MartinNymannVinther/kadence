@@ -637,7 +637,7 @@
       },
       "calendar": {
         "title": "The calendar",
-        "body": "The calendar shows one week at a time. On a computer the days stand side by side, on a phone one below the other. The coach can see the whole team at once and drag a session to another day. On a phone you use \"Move\" in the session's menu. Races, exams, school, camps, holidays and illness sit in the calendar as small labels. The colours on the sessions show how it went: green is as planned, yellow is a little off, red is not done or far from the plan, and grey is not ridden yet. There is always a word beside the colour."
+        "body": "The calendar shows one week at a time. On a computer the days stand side by side, on a phone one below the other. The coach can see the whole team at once and drag a session to another day. On a phone you use \"Move\" in the session's menu. Races, exams, school, camps, holidays and illness sit in the calendar as small labels. The colours on the sessions show how it went: green is as planned, yellow is a little off, red is not done or far from the plan, and grey is not ridden yet. There is always a word beside the colour. If the same session should come back, say strength every Tuesday and Thursday this winter, turn on \"Repeat on set weekdays\" when you add it: choose the weekdays and the last day. Each session can be changed on its own, and \"Edit\" and \"Delete\" can also take the rest of the series."
       },
       "sessions": {
         "title": "Sessions and templates",
@@ -788,7 +788,11 @@
     "flagGone": "That warning is no longer active. Reload the page.",
     "uciId": "A UCI ID is 11 digits, as on the licence.",
     "uciTaken": "Another rider on the team already has that UCI ID.",
-    "noUciId": "The rider has no UCI ID yet."
+    "noUciId": "The rider has no UCI ID yet.",
+    "repeatOrder": "The last day is before the first.",
+    "repeatTooLong": "A repeat can run half a year ahead at most.",
+    "repeatEmpty": "None of the chosen weekdays falls in the period.",
+    "repeatTooMany": "That is too many sessions at once. Choose fewer riders or a shorter period."
   },
   "calendar": {
     "title": "Calendar",
@@ -840,6 +844,7 @@
     },
     "card": {
       "group": "Group session",
+      "series": "Repeated session",
       "comments": "{count, plural, one {# comment} other {# comments}}"
     },
     "team": {
@@ -869,23 +874,26 @@
     "delete": {
       "title": "Delete {title}?",
       "body": "The session disappears from the calendar along with its comments.",
-      "scope": "Who should it be deleted for?",
+      "scope": "What should be deleted?",
       "scopes": {
         "one": "Only this one",
-        "group": "The whole group"
+        "group": "The whole group",
+        "series": "This one and the coming ones in the series"
       },
       "scopeHints": {
         "one": "Only this rider's session.",
-        "group": "Every rider who got the session and has not done it yet."
+        "group": "Every rider who got the session and has not done it yet.",
+        "series": "Every session in the series from this day on that is not done yet."
       },
       "deleted": "The session was deleted."
     },
     "edit": {
       "title": "Edit the session",
-      "scope": "Who should the change apply to?",
+      "scope": "What should the change apply to?",
       "scopes": {
         "group": "The whole group (those who have not done it)",
-        "one": "Only this rider"
+        "one": "Only this session",
+        "series": "This one and the coming ones in the series (those not done)"
       }
     },
     "add": {
@@ -907,7 +915,25 @@
       "pickRider": "Choose at least one rider.",
       "pickTemplate": "Choose a session from the library.",
       "submit": "Put in the calendar",
-      "added": "{count, plural, one {The session is in the calendar.} other {The session is in # calendars.}}"
+      "added": "{count, plural, one {The session is in the calendar.} other {The session is in # calendars.}}",
+      "addedSeries": "{count, plural, one {The series is in: # session.} other {The series is in: # sessions.}}"
+    },
+    "repeat": {
+      "toggle": "Repeat on set weekdays",
+      "weekdays": "Weekdays",
+      "until": "Until",
+      "summary": "That makes {count, plural, one {# session} other {# sessions}}.",
+      "summaryRiders": "That makes {count, plural, one {# session} other {# sessions}} per rider, {total} in all.",
+      "problem": {
+        "order": "The last day is before the first.",
+        "tooLong": "{weeks, plural, one {# week} other {# weeks}} at most at a time.",
+        "empty": "None of the chosen weekdays falls in the period.",
+        "tooMany": "That is too many sessions at once. Choose fewer riders or a shorter period."
+      },
+      "close": "{first} and {second} are less than 48 hours apart. DCU recommends at least 48 hours between strength sessions.",
+      "tooManyStrength": "From week {week} ({date}) DCU recommends {max, plural, one {# strength session} other {# strength sessions}} a week. The series has {perWeek}.",
+      "hint": "Each session can still be moved and changed on its own. \"Edit\" and \"Delete\" can also take the rest of the series.",
+      "preview": "See the hours against the season plan"
     },
     "event": {
       "addTitle": "Add event",
@@ -990,7 +1016,8 @@
       "forRider": "For {name}",
       "date": "Date",
       "submit": "Put in the calendar",
-      "done": "{count, plural, one {The session is in the calendar.} other {The session is in # calendars.}}"
+      "done": "{count, plural, one {The session is in the calendar.} other {The session is in # calendars.}}",
+      "doneSeries": "{count, plural, one {The series is in: # session.} other {The series is in: # sessions.}}"
     },
     "editor": {
       "create": "Save the template",
@@ -2199,6 +2226,11 @@
       "on": "on the goal",
       "over": "{hours} h over the goal",
       "under": "{hours} h under the goal"
+    },
+    "preview": {
+      "week": "Week {n}",
+      "planned": "Planned {before} → {after} h",
+      "note": "The bar shows how it looks once the sessions are in. The guardrails say, they forbid nothing."
     }
   },
   "assist": {

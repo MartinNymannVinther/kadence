@@ -13,6 +13,7 @@ import {
 } from "./complete";
 import { createEvent, deleteEvent, EventInput, updateEvent } from "./events";
 import { createGroupSessions, scheduleTemplate } from "./group";
+import { RepeatInput } from "./recurrence";
 import { deleteSession, moveSession, updateSession } from "./sessions";
 import {
   archiveTemplate,
@@ -35,8 +36,11 @@ const LIBRARY = ["/library"];
 export async function createSessionsAction(raw: unknown) {
   return runAction(
     raw,
-    SessionInput.omit({ riderId: true }).extend({ riderIds: z.array(id).min(1).max(60) }),
-    (ctx, { riderIds, ...input }) => createGroupSessions(ctx, riderIds, input),
+    SessionInput.omit({ riderId: true }).extend({
+      riderIds: z.array(id).min(1).max(60),
+      repeat: RepeatInput.optional(),
+    }),
+    (ctx, { riderIds, repeat, ...input }) => createGroupSessions(ctx, riderIds, input, repeat),
     PATHS,
   );
 }
@@ -79,8 +83,14 @@ export async function deleteSessionAction(raw: unknown) {
 export async function scheduleTemplateAction(raw: unknown) {
   return runAction(
     raw,
-    z.object({ templateId: id, riderIds: z.array(id).min(1).max(60), onDate: isoDate }),
-    (ctx, input) => scheduleTemplate(ctx, input.templateId, input.riderIds, input.onDate),
+    z.object({
+      templateId: id,
+      riderIds: z.array(id).min(1).max(60),
+      onDate: isoDate,
+      repeat: RepeatInput.optional(),
+    }),
+    (ctx, input) =>
+      scheduleTemplate(ctx, input.templateId, input.riderIds, input.onDate, input.repeat),
     PATHS,
   );
 }

@@ -23,6 +23,7 @@ export function toCard(s: CalendarSession): CalendarCard {
     plannedKm: s.plannedKm,
     templateId: s.templateId,
     groupKey: s.groupKey,
+    seriesKey: s.seriesKey,
     programmeSession: s.programmeSession,
     activityId: s.activityId,
     activity: s.activity

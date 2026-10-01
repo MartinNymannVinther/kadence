@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { useRun } from "@/components/common/use-run";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +12,9 @@ import { problemText } from "@/components/workouts/problem-text";
 import { checkDraft, newDraft } from "@/components/workouts/session-draft";
 import { SessionFields } from "@/components/workouts/session-fields";
 import { createSessionsAction, scheduleTemplateAction } from "@/modules/training/actions";
+import type { Repeat } from "@/modules/training/recurrence";
+import { structureMinutes } from "@/modules/workouts/structure";
+import { RepeatFields } from "./repeat-fields";
 import { RiderPicker } from "./rider-picker";
 import { TemplatePicker, type TemplateOption } from "./template-picker";
 import type { RiderOption } from "./types";
@@ -19,7 +23,8 @@ import type { RiderOption } from "./types";
  * "Tilføj pas": for whom, which day, and what — a template from the
  * library, or a session built here with the same builder the library
  * uses. Several riders make a group plan. A rider (not a coach) plans
- * from the library for themselves; building is the coach's.
+ * from the library for themselves; building is the coach's. "Gentag" puts
+ * it on chosen weekdays until a last day (ADR 0041).
  */
 export function AddSessionSheet({
   open,
@@ -51,6 +56,15 @@ export function AddSessionSheet({
   const [templateId, setTemplateId] = useState<string | null>(null);
   const [draft, setDraft] = useState(() => newDraft());
   const [problem, setProblem] = useState<string | null>(null);
+  const [repeat, setRepeat] = useState<Repeat | null>(null);
+  const chosen = templates.find((tpl) => tpl.id === templateId) ?? null;
+  const sport = mode === "template" ? (chosen?.sport ?? null) : draft.sport;
+  const minutes =
+    mode === "template"
+      ? (chosen?.plannedMinutes ?? 0)
+      : structureMinutes(draft.structures[draft.sport]);
+  const added = (ids: string[]) =>
+    repeat ? t("addedSeries", { count: ids.length }) : t("added", { count: riderIds.length });
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -58,10 +72,13 @@ export function AddSessionSheet({
     if (mode === "template") {
       if (!templateId) return setProblem(t("pickTemplate"));
       setProblem(null);
-      const done = await run(() => scheduleTemplateAction({ templateId, riderIds, onDate }), {
-        success: t("added", { count: riderIds.length }),
-      });
-      if (done) onOpenChange(false);
+      const done = await run(() =>
+        scheduleTemplateAction({ templateId, riderIds, onDate, repeat: repeat ?? undefined }),
+      );
+      if (done) {
+        toast.success(added(done.ids));
+        onOpenChange(false);
+      }
       return;
     }
     const checked = checkDraft(draft);
@@ -69,11 +86,19 @@ export function AddSessionSheet({
       return setProblem(problemText(checked.problem, draft.structures[draft.sport], problems));
     }
     setProblem(null);
-    const done = await run(
-      () => createSessionsAction({ riderIds, onDate, templateId: null, ...checked.value }),
-      { success: t("added", { count: riderIds.length }) },
+    const done = await run(() =>
+      createSessionsAction({
+        riderIds,
+        onDate,
+        templateId: null,
+        ...checked.value,
+        repeat: repeat ?? undefined,
+      }),
     );
-    if (done) onOpenChange(false);
+    if (done) {
+      toast.success(added(done.ids));
+      onOpenChange(false);
+    }
   }
 
   return (
@@ -123,6 +148,15 @@ export function AddSessionSheet({
           ) : (
             <SessionFields draft={draft} onChange={setDraft} showKm assist={canBuild} />
           )}
+
+          <RepeatFields
+            start={onDate}
+            sport={sport}
+            plannedMinutes={minutes}
+            riderIds={riderIds}
+            value={repeat}
+            onChange={setRepeat}
+          />
 
           {problem && (
             <p role="alert" className="text-destructive text-sm">

@@ -21,13 +21,15 @@ import {
  * back; a rider the caller may not read has none and counts nothing.
  */
 
-type RiderData = {
+export type RiderData = {
+  name: string;
   frameOf: (season: number) => SeasonFrame;
   sessions: VolumeSession[];
   activities: VolumeActivity[];
 };
 
-async function readFor(
+/** Every rider's plans, sessions and activities for a range, as `volumeOf` wants them. */
+export async function readFor(
   tx: AppTransaction,
   riderIds: string[],
   range: VolumeRange,
@@ -95,6 +97,7 @@ async function readFor(
       return frame;
     };
     out.set(rider.id, {
+      name: rider.name,
       frameOf,
       sessions: sessionRows
         .filter((s) => s.riderId === rider.id)

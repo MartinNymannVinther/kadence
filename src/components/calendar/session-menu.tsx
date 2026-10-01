@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { DeleteDialog } from "./delete-dialog";
 import { EditSessionSheet } from "./edit-session-sheet";
 import { MoveDialog } from "./move-dialog";
+import type { Scope } from "@/modules/training/vocabulary";
 import type { CalendarCard, RiderOption } from "./types";
 
 /**
@@ -46,7 +47,13 @@ export function SessionMenu({
   const router = useRouter();
   const [dialog, setDialog] = useState<null | "move" | "copy" | "delete" | "edit">(null);
   const close = (open: boolean) => !open && setDialog(null);
-  const groupChoice = isCoach && session.groupKey !== null;
+  // What a change can reach: this copy, the group's copies that day (a
+  // coach's), and this and the coming copies of a series (ADR 0041).
+  const scopes: Scope[] = [
+    "one",
+    ...(isCoach && session.groupKey !== null ? (["group"] as const) : []),
+    ...(session.seriesKey !== null ? (["series"] as const) : []),
+  ];
   const done = session.activityId !== null;
 
   return (
@@ -111,7 +118,7 @@ export function SessionMenu({
           open
           onOpenChange={close}
           session={session}
-          groupChoice={groupChoice}
+          scopes={scopes}
           onDeleted={
             afterDeleteHref ? () => router.replace(afterDeleteHref, { scroll: false }) : undefined
           }
@@ -122,7 +129,7 @@ export function SessionMenu({
           open
           onOpenChange={close}
           session={session}
-          groupChoice={groupChoice}
+          scopes={scopes}
           isCoach={isCoach}
         />
       )}

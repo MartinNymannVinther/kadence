@@ -24,8 +24,12 @@ export const SessionInput = z.object({
 });
 export type SessionInputT = z.infer<typeof SessionInput>;
 
-/** A change to a session that belongs to a group plan: this rider's copy, or every rider's. */
-export const SCOPES = ["one", "group"] as const;
+/**
+ * What a change to a session reaches: this copy; every rider's copy that
+ * day, for a group plan; or, for a series (ADR 0041), this copy and every
+ * open copy after it.
+ */
+export const SCOPES = ["one", "group", "series"] as const;
 export type Scope = (typeof SCOPES)[number];
 
 /** Noon in Copenhagen on a day, for activities entered by hand that have no clock time. */

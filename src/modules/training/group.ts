@@ -5,39 +5,60 @@ import { plannedSessions, workoutTemplates } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
 import { requireCoach } from "@/modules/team/access";
 import { readStructure, structureMinutes } from "@/modules/workouts/structure";
-import { createSessionIn } from "./sessions";
+import { MAX_SERIES_ROWS, repeatDates, repeatProblem, type Repeat } from "./recurrence";
+import { createSessionsIn } from "./sessions";
 import type { SessionInputT, Sport } from "./vocabulary";
 
 /**
  * Plans for several riders at once — the coach writes it once and it lands
  * in every chosen rider's calendar, each copy carrying the same group key
  * so a later change can reach them all (TrainingPeaks' group plans,
- * without a separate concept).
+ * without a separate concept). With a repeat (ADR 0041) the same goes on
+ * every chosen weekday until the last day: one group key per day, one
+ * series key over them all.
  */
+
+const PROBLEM = { order: "repeatOrder", tooLong: "repeatTooLong", empty: "repeatEmpty" } as const;
+
+/** The days a plan goes on: the one day, or every day of its repeat. */
+function daysOf(onDate: string, repeat: Repeat | undefined, riders: number): string[] {
+  if (!repeat) return [onDate];
+  const problem = repeatProblem(onDate, repeat);
+  if (problem) throw new Refused("invalid", PROBLEM[problem]);
+  const days = repeatDates(onDate, repeat);
+  if (days.length * riders > MAX_SERIES_ROWS) throw new Refused("invalid", "repeatTooMany");
+  return days;
+}
 
 export async function createGroupSessions(
   ctx: OrgContext,
   riderIds: string[],
   input: Omit<SessionInputT, "riderId">,
+  repeat?: Repeat,
 ): Promise<{ groupKey: string; ids: string[] }> {
   return withOrgContext(ctx, async (tx) => {
     // A plan for several riders is a coach's; a session for one rider is
     // anyone's who may write for that rider — a rider planning their own
-    // (createSessionIn checks).
+    // (createSessionsIn checks).
     const unique = [...new Set(riderIds)];
     if (unique.length > 1) await requireCoach(tx, ctx);
-    const groupKey = unique.length > 1 ? randomUUID() : null;
-    const ids: string[] = [];
-    for (const riderId of unique) {
-      const { id } = await createSessionIn(tx, ctx, {
+    const days = daysOf(input.onDate, repeat, unique.length);
+    const seriesKey = repeat ? randomUUID() : null;
+    let firstGroup: string | null = null;
+    const rows = days.flatMap((onDate) => {
+      const groupKey = unique.length > 1 ? randomUUID() : null;
+      firstGroup ??= groupKey;
+      return unique.map((riderId) => ({
         ...input,
+        onDate,
         riderId,
         groupKey,
-        origin: groupKey ? "group" : undefined,
-      });
-      ids.push(id);
-    }
-    return { groupKey: groupKey ?? "", ids };
+        seriesKey,
+        origin: groupKey ? ("group" as const) : undefined,
+      }));
+    });
+    const ids = await createSessionsIn(tx, ctx, rows);
+    return { groupKey: firstGroup ?? "", ids };
   });
 }
 
@@ -51,15 +72,17 @@ async function nextProgrammeSession(tx: AppTransaction, riderId: string, templat
 }
 
 /**
- * A template into the calendar of one or more riders on a day. A strength
- * programme's session is numbered per rider, so each rider's copy carries
- * the sets and reps of where that rider is in the programme.
+ * A template into the calendar of one or more riders on a day — or, with
+ * a repeat, on every day of it. A strength programme's session is
+ * numbered per rider and counts on through the series, so each copy
+ * carries the sets and reps of where that rider is in the programme.
  */
 export async function scheduleTemplate(
   ctx: OrgContext,
   templateId: string,
   riderIds: string[],
   onDate: string,
+  repeat?: Repeat,
 ): Promise<{ ids: string[] }> {
   return withOrgContext(ctx, async (tx) => {
     const [template] = await tx
@@ -69,17 +92,19 @@ export async function scheduleTemplate(
     if (!template) throw new Refused("notFound");
     const sport = template.sport as Sport;
     const structure = readStructure(template.structure, sport);
-    const groupKey = riderIds.length > 1 ? randomUUID() : null;
-    if (groupKey) await requireCoach(tx, ctx);
-    const ids: string[] = [];
-    for (const riderId of [...new Set(riderIds)]) {
-      const programmeSession =
-        structure.kind === "strength" && structure.progression.length > 0
-          ? await nextProgrammeSession(tx, riderId, templateId)
-          : null;
-      const { id } = await createSessionIn(tx, ctx, {
+    const unique = [...new Set(riderIds)];
+    if (unique.length > 1) await requireCoach(tx, ctx);
+    const days = daysOf(onDate, repeat, unique.length);
+    const seriesKey = repeat ? randomUUID() : null;
+    const programme = structure.kind === "strength" && structure.progression.length > 0;
+    const next = new Map<string, number>();
+    for (const riderId of unique)
+      if (programme) next.set(riderId, await nextProgrammeSession(tx, riderId, templateId));
+    const rows = days.flatMap((day, i) => {
+      const groupKey = unique.length > 1 ? randomUUID() : null;
+      return unique.map((riderId) => ({
         riderId,
-        onDate,
+        onDate: day,
         sport,
         title: template.name,
         description: template.description,
@@ -88,11 +113,11 @@ export async function scheduleTemplate(
         plannedKm: null,
         templateId,
         groupKey,
-        origin: groupKey ? "group" : "template",
-        programmeSession,
-      });
-      ids.push(id);
-    }
-    return { ids };
+        seriesKey,
+        origin: groupKey ? ("group" as const) : ("template" as const),
+        programmeSession: programme ? next.get(riderId)! + i : null,
+      }));
+    });
+    return { ids: await createSessionsIn(tx, ctx, rows) };
   });
 }

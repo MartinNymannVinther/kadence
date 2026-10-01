@@ -1,6 +1,6 @@
 "use client";
 
-import { MessageSquare, Users } from "lucide-react";
+import { MessageSquare, Repeat, Users } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { COLOUR_STYLE, ComplianceMark, colourOf } from "@/components/training/compliance-mark";
 import { durationText } from "@/components/training/duration";
@@ -72,6 +72,12 @@ export function SessionCard({
             <span className="flex items-center gap-0.5" title={t("group")}>
               <Users aria-hidden className="size-3" />
               <span className="sr-only">{t("group")}</span>
+            </span>
+          )}
+          {session.seriesKey && (
+            <span className="flex items-center gap-0.5" title={t("series")}>
+              <Repeat aria-hidden className="size-3" />
+              <span className="sr-only">{t("series")}</span>
             </span>
           )}
           {session.commentCount > 0 && (

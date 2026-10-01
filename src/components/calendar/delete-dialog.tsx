@@ -13,29 +13,32 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { deleteSessionAction } from "@/modules/training/actions";
+import type { Scope } from "@/modules/training/vocabulary";
 
 /**
  * Deleting a session — and, for a coach and a session laid on the whole
  * group, the choice of this rider's copy or every copy nobody has done
- * yet ("kun denne" / "hele gruppen").
+ * yet ("kun denne" / "hele gruppen"); for a session in a series, this one
+ * and the coming ones nobody has done (ADR 0041).
  */
 export function DeleteDialog({
   open,
   onOpenChange,
   session,
-  groupChoice,
+  scopes,
   onDeleted,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   session: { id: string; title: string };
-  groupChoice: boolean;
+  /** What the deletion may reach; one choice means no question. */
+  scopes: Scope[];
   onDeleted?: () => void;
 }) {
   const t = useTranslations("calendar.delete");
   const common = useTranslations("common");
   const { run, pending } = useRun();
-  const [scope, setScope] = useState<"one" | "group">("one");
+  const [scope, setScope] = useState<Scope>("one");
 
   async function confirm() {
     const done = await run(() => deleteSessionAction({ sessionId: session.id, scope }), {
@@ -54,10 +57,10 @@ export function DeleteDialog({
           <DialogTitle>{t("title", { title: session.title })}</DialogTitle>
           <DialogDescription>{t("body")}</DialogDescription>
         </DialogHeader>
-        {groupChoice && (
+        {scopes.length > 1 && (
           <fieldset className="flex flex-col gap-2">
             <legend className="mb-1.5 text-sm font-medium">{t("scope")}</legend>
-            {(["one", "group"] as const).map((value) => (
+            {scopes.map((value) => (
               <label
                 key={value}
                 className="border-border has-checked:border-primary has-checked:bg-accent/60 flex min-h-11 cursor-pointer items-start gap-3 rounded-lg border p-3"

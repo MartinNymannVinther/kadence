@@ -19,6 +19,8 @@ export type CalendarCard = {
   plannedKm: number | null;
   templateId: string | null;
   groupKey: string | null;
+  /** The series a "Gentag" made it part of (ADR 0041). */
+  seriesKey: string | null;
   programmeSession: number | null;
   activityId: string | null;
   activity: { id: string; movingSeconds: number; load: number | null } | null;

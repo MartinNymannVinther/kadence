@@ -122,6 +122,23 @@ export function dcuState(volume: Volume): VolumeState | null {
   return "inside";
 }
 
+/** The calendar months from the one `from` is in to the one `to` is in, each whole. */
+export function monthsBetween(from: string, to: string): Array<VolumeRange & { month: number }> {
+  const out: Array<VolumeRange & { month: number }> = [];
+  let [year, month] = from.split("-").map(Number) as [number, number];
+  const last = to.slice(0, 7);
+  while (`${year}-${String(month).padStart(2, "0")}` <= last && out.length < 24) {
+    const mm = String(month).padStart(2, "0");
+    out.push({
+      month,
+      from: `${year}-${mm}-01`,
+      to: `${year}-${mm}-${String(daysInMonth(year, month)).padStart(2, "0")}`,
+    });
+    [year, month] = month === 12 ? [year + 1, 1] : [year, month + 1];
+  }
+  return out;
+}
+
 /** The months of a season, October first, each as its own range. */
 export function seasonMonths(seasonStart: number): Array<VolumeRange & { month: number }> {
   return [10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((month) => {

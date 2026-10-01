@@ -8,7 +8,7 @@ import {
   type PlannedSessionRow,
 } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
-import { requireCoach, requireWriteFor } from "@/modules/team/access";
+import { isCoachRole, requireCoach, requireWriteFor, roleIn } from "@/modules/team/access";
 import { readStructure, structureMinutes } from "@/modules/workouts/structure";
 import { estimatePlannedLoad } from "./load-bridge";
 import type { Scope, SessionInputT } from "./vocabulary";
@@ -131,6 +131,46 @@ export async function createSessionIn(
   return row!;
 }
 
+/**
+ * Many sessions in one statement per few hundred — a series (ADR 0041)
+ * can be two thousand rows. Each rider is checked once, as
+ * `createSessionIn` checks every row, and RLS checks every row again.
+ */
+export async function createSessionsIn(
+  tx: AppTransaction,
+  ctx: OrgContext,
+  inputs: Array<Parameters<typeof createSessionIn>[2] & { seriesKey?: string | null }>,
+): Promise<string[]> {
+  for (const riderId of new Set(inputs.map((i) => i.riderId)))
+    await requireWriteFor(tx, ctx, riderId);
+  const ids: string[] = [];
+  for (let i = 0; i < inputs.length; i += 500) {
+    const rows = await tx
+      .insert(plannedSessions)
+      .values(
+        inputs.slice(i, i + 500).map((input) => ({
+          orgId: ctx.orgId,
+          riderId: input.riderId,
+          onDate: input.onDate,
+          sport: input.sport,
+          title: input.title,
+          description: input.description,
+          plannedKm: input.plannedKm,
+          templateId: input.templateId,
+          groupKey: input.groupKey ?? null,
+          seriesKey: input.seriesKey ?? null,
+          origin: input.origin ?? (input.templateId ? "template" : "manual"),
+          programmeSession: input.programmeSession ?? null,
+          createdBy: ctx.userId,
+          ...derived(input),
+        })),
+      )
+      .returning({ id: plannedSessions.id });
+    ids.push(...rows.map((r) => r.id));
+  }
+  return ids;
+}
+
 export async function createSession(ctx: OrgContext, input: SessionInputT) {
   return withOrgContext(ctx, (tx) => createSessionIn(tx, ctx, input));
 }
@@ -142,8 +182,27 @@ async function loadOwn(tx: AppTransaction, ctx: OrgContext, id: string) {
   return row;
 }
 
-/** The copies a change reaches: this one, or — for a coach — every open copy in its group. */
+/**
+ * The copies a change reaches: this one; for a coach, every open copy in
+ * its group; or every open copy of its series from this day on — every
+ * rider's for a coach, the caller's own otherwise (ADR 0041).
+ */
 async function targets(tx: AppTransaction, ctx: OrgContext, row: PlannedSessionRow, scope: Scope) {
+  if (scope === "series") {
+    if (!row.seriesKey) return [row];
+    const coach = isCoachRole(await roleIn(tx, ctx));
+    return tx
+      .select()
+      .from(plannedSessions)
+      .where(
+        and(
+          eq(plannedSessions.seriesKey, row.seriesKey),
+          isNull(plannedSessions.activityId),
+          gte(plannedSessions.onDate, row.onDate),
+          ...(coach ? [] : [eq(plannedSessions.riderId, row.riderId)]),
+        ),
+      );
+  }
   if (scope === "one" || !row.groupKey) return [row];
   await requireCoach(tx, ctx);
   return tx
