@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  EyeOff,
   Gauge,
   Map as MapIcon,
   Maximize,
@@ -23,10 +24,10 @@ import type { LinkState } from "./bluetooth/reconnect";
  * The strip across the top of the ride: what is being ridden and where in
  * it, whether the trainer is still there, and the few things a rider
  * reaches for mid-ride — pause, the next block, the watts a little lower
- * or higher, ERG on or off, the sound, the little map, the speed, full
- * screen, and the end. Every
- * control has a key as well (listed in `ride.keys`), so a rider can reach
- * a keyboard on the handlebars rather than the screen.
+ * or higher, ERG on or off, the sound, the little map, the speed, nothing
+ * but the rider and the land, full screen, and the end. Every control has
+ * a key as well (`useRideKeys`), so a rider can reach a keyboard on the
+ * handlebars rather than the screen.
  */
 export function RideControls({
   title,
@@ -47,6 +48,7 @@ export function RideControls({
   onMute,
   onMap,
   onSpeed,
+  onBare,
   onFullscreen,
   onEnd,
 }: {
@@ -68,6 +70,8 @@ export function RideControls({
   onMute: () => void;
   onMap: () => void;
   onSpeed: () => void;
+  /** Hides every number: nothing but the rider and the land. */
+  onBare: () => void;
   onFullscreen: () => void;
   onEnd: () => void;
 }) {
@@ -176,6 +180,9 @@ export function RideControls({
           onClick={onSpeed}
         >
           <Gauge />
+        </Button>
+        <Button size="icon-lg" variant="outline" aria-label={t("bare")} onClick={onBare}>
+          <EyeOff />
         </Button>
         {fullscreen.available && (
           <Button
