@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Plus } from "lucide-react";
+import { Bike, Dumbbell, Plus } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { buttonVariants } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
@@ -21,8 +21,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /**
- * The team's library of sessions and programmes. Everyone reads it;
- * coaches keep it. `?archived=1` shows what was put away as well.
+ * The team's workout library: sessions and programmes. Everyone reads it;
+ * coaches keep it, and start a new bike or strength session from the top
+ * of it. `?archived=1` shows what was put away as well.
  */
 export default async function LibraryPage({
   searchParams,
@@ -52,14 +53,21 @@ export default async function LibraryPage({
         subtitle={t("subtitle")}
         actions={
           isCoach ? (
-            // The coach's corner of the library: a new template, and DCU's
-            // strength programmes fetched into it (ADR 0014).
+            // The coach's corner of the library: a new session of either
+            // kind, and DCU's strength programmes fetched into it (ADR 0014).
             <>
-              <InstallDcuButton />
-              <Link href="/library/new" className={cn(buttonVariants(), "max-sm:h-11")}>
-                <Plus data-icon="inline-start" />
-                {t("new")}
+              <Link href="/library/new?sport=bike" className={cn(buttonVariants(), "max-sm:h-11")}>
+                <Bike data-icon="inline-start" />
+                {t("newBike")}
               </Link>
+              <Link
+                href="/library/new?sport=strength"
+                className={cn(buttonVariants({ variant: "outline" }), "max-sm:h-11")}
+              >
+                <Dumbbell data-icon="inline-start" />
+                {t("newStrength")}
+              </Link>
+              <InstallDcuButton />
             </>
           ) : undefined
         }

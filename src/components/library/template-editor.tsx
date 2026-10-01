@@ -13,11 +13,14 @@ import { createTemplateAction, updateTemplateAction } from "@/modules/training/a
 /**
  * A template written or changed in the library, with the same builder the
  * calendar uses. Checked against the shared schema before it is sent; a
- * new one opens on its own page once saved.
+ * new one opens on its own page once saved, on the sport it was asked for.
  */
 export function TemplateEditor({
   template,
+  sport,
 }: {
+  /** The sport a new template starts on. */
+  sport?: "bike" | "strength";
   template?: {
     id: string;
     name: string;
@@ -31,9 +34,11 @@ export function TemplateEditor({
   const common = useTranslations("common");
   const router = useRouter();
   const { run, pending } = useRun();
-  const [draft, setDraft] = useState(() =>
-    newDraft(template ? { ...template, title: template.name } : undefined),
-  );
+  const [draft, setDraft] = useState(() => {
+    if (template) return newDraft({ ...template, title: template.name });
+    const draft = newDraft();
+    return sport ? { ...draft, sport } : draft;
+  });
   const [problem, setProblem] = useState<string | null>(null);
 
   async function save(event: React.FormEvent) {

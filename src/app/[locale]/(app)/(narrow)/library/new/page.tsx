@@ -13,8 +13,17 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("newTitle") };
 }
 
-/** A new template for the library — a coach's to write. */
-export default async function NewTemplatePage() {
+const TITLES = { bike: "newTitleBike", strength: "newTitleStrength" } as const;
+
+/**
+ * A new template for the library — a coach's to write. `?sport=` opens
+ * the builder on that sport; it can still be changed in the form.
+ */
+export default async function NewTemplatePage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const ctx = await getOrgContext();
   const locale = await getLocale();
   if (!ctx) {
@@ -23,6 +32,8 @@ export default async function NewTemplatePage() {
   }
   const t = await getTranslations("library");
   const me = await whoAmI(ctx.orgId, ctx.userId);
+  const asked = (await searchParams).sport;
+  const sport = asked === "bike" || asked === "strength" ? asked : undefined;
 
   return (
     <div className="flex min-w-0 flex-col gap-5">
@@ -33,9 +44,13 @@ export default async function NewTemplatePage() {
         <ChevronLeft aria-hidden className="size-4" />
         {t("back")}
       </Link>
-      <PageHeader size="detail" title={t("newTitle")} subtitle={t("newSubtitle")} />
+      <PageHeader
+        size="detail"
+        title={t(sport ? TITLES[sport] : "newTitle")}
+        subtitle={t("newSubtitle")}
+      />
       {me?.isCoach ? (
-        <TemplateEditor />
+        <TemplateEditor sport={sport} />
       ) : (
         <EmptyState title={t("coachOnlyTitle")} hint={t("coachOnlyBody")} />
       )}
