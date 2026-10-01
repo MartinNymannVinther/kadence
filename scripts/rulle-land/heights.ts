@@ -1,4 +1,4 @@
-import type { LandFile } from "@/modules/rulle/route/land";
+import type { LandFile } from "@/modules/rulle/route/land-file";
 import { get } from "./fetch";
 import { decodePng, terrarium, type Image } from "./png";
 import type { Box } from "./shapes";

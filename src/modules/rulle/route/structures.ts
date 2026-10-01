@@ -1,5 +1,6 @@
 import type { Course } from "./course";
-import type { Land, StructureKind } from "./land";
+import type { Land } from "./land";
+import type { StructureKind } from "./land-file";
 import type { Stretch } from "./race-day";
 
 /**

@@ -3,13 +3,12 @@ import type { Ground } from "./ground";
 import { hash } from "./noise";
 import { CHUNK } from "./terrain";
 
-/** Buildings are in the land's file this far from the road; beyond it they are made up. */
-export const MAPPED = 700;
-
 /**
  * Buildings no one mapped for the ride: houses filling a town and a
  * hall or two in an industrial estate beyond the mapped ones, and a
- * farm on each farmyard out there.
+ * farm on each farmyard out there. The land's file says how far from the
+ * road its buildings reach (`mapped`); a file with every building in its
+ * land has none made up (ADR 0045).
  */
 export function madeUpBuildings(
   ground: Ground,
@@ -19,9 +18,11 @@ export function madeUpBuildings(
   cz: number,
   farms: { x: number; z: number; seed: number }[],
   free: (x: number, z: number) => boolean,
+  /** Metres from the road the land's own buildings reach. */
+  mapped: number,
 ): Footprint[] {
   const out: Footprint[] = [];
-  const middle = ground.nearest((cx + 0.5) * CHUNK, (cz + 0.5) * CHUNK, MAPPED + CHUNK).d;
+  const middle = ground.nearest((cx + 0.5) * CHUNK, (cz + 0.5) * CHUNK, mapped + CHUNK).d;
   for (const farm of farms) {
     const turn = hash(farm.seed, 1, 611) * Math.PI;
     const seed = 1_000_000 + farm.seed;
@@ -39,7 +40,7 @@ export function madeUpBuildings(
       seed: seed + 1,
     });
   }
-  if (middle < MAPPED - CHUNK * 0.71) return out;
+  if (middle < mapped - CHUNK * 0.71) return out;
   const n = 12;
   const side = CHUNK / n;
   for (let a = 0; a < n; a++)
@@ -52,7 +53,7 @@ export function madeUpBuildings(
       const town = kind === "town" && hash(ia, ib, 623) < 0.55;
       const hall = kind === "industry" && hash(ia, ib, 623) < 0.3;
       if (!town && !hall) continue;
-      if (middle < MAPPED + CHUNK * 0.71 && ground.nearest(x, z, MAPPED + 50).d <= MAPPED) continue;
+      if (middle < mapped + CHUNK * 0.71 && ground.nearest(x, z, mapped + 50).d <= mapped) continue;
       if (!free(x, z)) continue;
       const seed = 2_000_000 + ia * 7919 + ib;
       // A city's blocks stand square to one another, as its streets run.

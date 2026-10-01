@@ -4,6 +4,7 @@ import {
   BANK,
   buildCourse,
   LAND_KINDS,
+  MAPPED,
   readLand,
   readRouteGpx,
   ROUTES,
@@ -159,6 +160,13 @@ describe("the land round a route", () => {
     expect(land.areas.map((a) => a.kind)).toEqual(["field", "forest", "water", "water"]);
   });
 
+  it("says how far from the road its buildings reach: 700 m when the file does not say", () => {
+    expect(land.reach).toBe(MAPPED);
+    expect(MAPPED).toBe(700);
+    expect(readLand(file({ reach: 2600 }), course)!.reach).toBe(2600);
+    expect(readLand(file({ reach: -1 }), course)).toBeNull();
+  });
+
   it("is no land at all when made for another course, or not what it says it is", () => {
     const moved = { ...course.origin, lat: course.origin.lat + 0.001 };
     expect(readLand(file({ origin: moved }), course)).toBeNull();
@@ -212,4 +220,25 @@ describe("the land that comes with the routes", () => {
       }
     });
   }
+
+  it("the queen stage has every building in its land, all of Odder's (ADR 0045)", () => {
+    const route = ROUTES.find((r) => r.key === "tour-de-himmelfart-2026")!;
+    const own = buildCourse(readRouteGpx(readFileSync(`public${route.file}`, "utf8")));
+    const land = readLand(JSON.parse(readFileSync(`public${route.land}`, "utf8")), own)!;
+    // As far as the landscape is drawn, so none is made up.
+    expect(land.reach).toBe(2600);
+    const fromRoad = (b: { x: number; y: number }) => {
+      let best = Infinity;
+      for (let i = 0; i < own.x.length; i += 5)
+        best = Math.min(best, Math.hypot(own.x[i]! - b.x, own.y[i]! - b.y));
+      return best;
+    };
+    const far = land.buildings.filter((b) => fromRoad(b) > MAPPED);
+    expect(far.length).toBeGreaterThan(5000);
+    // Odder Kirke, 2.8 km from the start, on the skyline over the town.
+    const church = land.buildings.find(
+      (b) => b.kind === "church" && Math.hypot(b.x - 1410, b.y + 2512) < 20,
+    );
+    expect(church).toBeDefined();
+  });
 });
