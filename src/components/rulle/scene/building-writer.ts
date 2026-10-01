@@ -161,3 +161,37 @@ export function box(
   walls(w, g, L, S, bottom, top, hex, null);
   flat(w, g, L, S, top, hex);
 }
+
+/** A building's side that faces the road: which way it looks out, how far out it stands, and how wide. */
+export type Front = { x: number; z: number; depth: number; wide: number };
+
+/** Of a building `L` by `S` in its frame `f`, the side that faces the road at `road`. */
+export function frontOf(f: Frame, L: number, S: number, road: { x: number; z: number }): Front {
+  const tx = road.x - f.x;
+  const tz = road.z - f.z;
+  const fronts: Front[] = [
+    { x: f.lx, z: f.lz, depth: L / 2, wide: S },
+    { x: -f.lx, z: -f.lz, depth: L / 2, wide: S },
+    { x: f.sx, z: f.sz, depth: S / 2, wide: L },
+    { x: -f.sx, z: -f.sz, depth: S / 2, wide: L },
+  ];
+  return fronts.reduce((a, c) => (c.x * tx + c.z * tz > a.x * tx + a.z * tz ? c : a));
+}
+
+/** The frame on a front: `l` along the wall, `s` out from it, `y` up; its middle on the wall. */
+export function onFront(f: Frame, front: Front): Frame {
+  return {
+    x: f.x + front.x * front.depth,
+    z: f.z + front.z * front.depth,
+    lx: -front.z,
+    lz: front.x,
+    sx: front.x,
+    sz: front.z,
+  };
+}
+
+/** A face drawn from both sides, so it is seen whichever way it is wound. */
+export function both(w: Writer, a: V, b: V, c: V, d: V, hex: string): void {
+  w.quad(a, b, c, d, hex);
+  w.quad(a, d, c, b, hex);
+}

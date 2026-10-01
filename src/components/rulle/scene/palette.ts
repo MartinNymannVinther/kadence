@@ -139,4 +139,14 @@ export const PALETTE = {
   crossSteel: "#7d8285",
   window: "#3f4a52",
   windowFrame: "#f4f1ea",
+  // A big city's own (ADR 0045): Copenhagen's plaster in its colours and its dark red brick,
+  // its slate, its cornices, and its shops' glass, signs and awnings.
+  cityWalls: ["#d9b46f", "#e6d29a", "#c98260", "#e8e1d3", "#cfc8bc", "#9a4e3b", "#e2c3b0"],
+  slate: ["#4f5357", "#5f6266", "#6e6a66", "#a3614b"],
+  cornice: "#efe8da",
+  shopGlass: "#2f3a40",
+  signs: ["#2f4a3c", "#26231f", "#7a2f2a", "#2d3f5e", "#e9e4da"],
+  awnings: ["#b0463c", "#3f6b5a", "#d6a84a", "#2d4a86", "#e9e4da"],
+  // A country town's: black glazed tiles.
+  glazed: "#2f2e2c",
 } as const;
