@@ -1,5 +1,7 @@
 import type { BuildingKind, RoofShape } from "@/modules/rulle";
 import type { Look } from "./building-look";
+import { cityBlock } from "./building-city";
+import { block, farm, hall, house, type Plot } from "./building-homes";
 import { gable, pyramid, riseOf, roofOf } from "./building-roofs";
 import { frontStairs } from "./building-stairs";
 import {
@@ -181,8 +183,13 @@ export function write(
   const far = b.far ?? 0;
   const win = (spec: Windows): Windows | null =>
     far > WINDOWS_WITHIN ? null : { ...spec, framed: spec.framed && far < FRAMES_WITHIN };
-  if (b.height && b.height > 0) return measured(w, b, f, L, S, bottom, high, r, win, look);
-  const levels = b.levels > 0 ? b.levels : storeys(b);
+  // A plain block whose height the map says is, in a big city, built as the city builds.
+  const plain =
+    look.big && (b.kind === "house" || b.kind === "block") && !b.minHeight && (b.height ?? 0) <= 30;
+  if (b.height && b.height > 0 && !(plain && b.height >= 9))
+    return measured(w, b, f, L, S, bottom, high, r, win, look);
+  const told = b.height ? Math.max(3, Math.round((b.height - 3) / 3.2)) : 0;
+  const levels = told || (b.levels > 0 ? b.levels : storeys(b));
   const said = b.roof && b.roof !== "unsaid" ? b.roof : null;
   const tint = (fallback: string) => (b.roofColour != null ? hex(b.roofColour) : fallback);
   // A plex's stairs up the front, the one facing the road, to the floor above; not on every one.
@@ -190,125 +197,24 @@ export function write(
     if (look.stairs && b.road && far <= STAIRS_WITHIN && rows >= 2 && rows <= 4 && r(6) < 0.75)
       frontStairs(w, f, L, S, b.road, high, storey, PALETTE.stairs);
   };
+  const road = b.road ?? null;
+  // A big city's block: of three storeys or more, in the city's way (ADR 0045).
+  if (look.big && (b.kind === "house" || b.kind === "block") && levels >= 3) {
+    const plot = { f, L, S, bottom, high, levels, said, r, win, look, tint, road, far };
+    return cityBlock(w, plot);
+  }
+  const plot: Plot = { w, b, f, L, S, bottom, high, levels, said, r, win, look, tint, stairs };
   switch (b.kind) {
     case "church":
       return church(w, f, L, S, bottom, high, look.churchRoof);
     case "big":
-    case "part": {
-      const top = high + Math.max(b.kind === "part" ? 3 : 6.5, 3.6 * levels);
-      const wall = choose(PALETTE.hall, [0.6, 0.4], r(1));
-      walls(
-        w,
-        f,
-        L,
-        S,
-        bottom,
-        top,
-        wall,
-        win({
-          floor: high + 1.4,
-          rows: Math.max(1, levels),
-          storey: 3.6,
-          spacing: 5.5,
-          wide: 2,
-          tall: 1.1,
-          framed: false,
-        }),
-      );
-      const shape = said ?? "flat";
-      roofOf(w, f, shape, L, S, top, riseOf(shape, L, S, top - high), wall, tint(PALETTE.flatRoof));
-      return;
-    }
-    case "block": {
-      const rows = levels > 1 ? levels : 3;
-      const top = high + 3 * rows + 0.4;
-      const wall = choose(look.blockWalls, [0.45, 0.3, 0.25], r(1));
-      walls(
-        w,
-        f,
-        L,
-        S,
-        bottom,
-        top,
-        wall,
-        win({
-          floor: high,
-          rows,
-          storey: 3,
-          spacing: 2.9,
-          wide: 1.3,
-          tall: 1.35,
-          framed: false,
-        }),
-      );
-      const shape = said ?? (r(2) < 0.5 ? "gabled" : "flat");
-      const rise = shape === "gabled" ? (S / 2) * 0.6 : riseOf(shape, L, S, top - high);
-      const roof = shape === "flat" ? PALETTE.flatRoof : choose(PALETTE.roofs, [0.5, 0.5], r(3));
-      roofOf(w, f, shape, L, S, top, rise, wall, tint(roof));
-      stairs(3, rows);
-      return;
-    }
-    case "farm": {
-      const top = high + 4.2 + (levels > 1 ? 2.8 * (levels - 1) : 0);
-      const walled = [PALETTE.walls[0], PALETTE.walls[2], PALETTE.walls[3]];
-      const wall = choose(walled, [0.5, 0.3, 0.2], r(1));
-      walls(
-        w,
-        f,
-        L,
-        S,
-        bottom,
-        top,
-        wall,
-        win({
-          floor: high + 0.6,
-          rows: 1,
-          storey: 3,
-          spacing: 6,
-          wide: 0.9,
-          tall: 0.7,
-          framed: false,
-        }),
-      );
-      const roofs = [PALETTE.roofs[3], PALETTE.roofs[1], PALETTE.roofs[0]];
-      const shape = said ?? "gabled";
-      const rise = said ? riseOf(said, L, S, top - high) : (S / 2) * 0.55;
-      roofOf(w, f, shape, L, S, top, rise, wall, tint(choose(roofs, [0.45, 0.3, 0.25], r(3))));
-      return;
-    }
-    case "house": {
-      const rows = Math.max(1, levels);
-      const top = high + 2.8 * rows + 0.3;
-      const wall = choose(look.walls, [0.35, 0.25, 0.3, 0.1], r(1));
-      walls(
-        w,
-        f,
-        L,
-        S,
-        bottom,
-        top,
-        wall,
-        win({
-          floor: high,
-          rows,
-          storey: 2.8,
-          spacing: 3.4,
-          wide: 1.05,
-          tall: 1.15,
-          framed: true,
-        }),
-      );
-      const shape = said ?? "gabled";
-      const rise =
-        shape === "gabled" ? Math.min((S / 2) * 0.85, 5) : riseOf(shape, L, S, top - high);
-      const roof = tint(choose(PALETTE.roofs, [0.45, 0.3, 0.15, 0.1], r(3)));
-      roofOf(w, f, shape, L, S, top, rise, wall, roof);
-      if (shape === "gabled" && r(4) < 0.6 && L > 7) {
-        const chimney = L * (r(5) - 0.5) * 0.5;
-        box(w, f, chimney, -0.8, 0.6, 0.6, top + rise * 0.5, top + rise + 0.9, "#8f5643");
-      }
-      stairs(2.8, rows);
-      return;
-    }
+    case "part":
+      return hall(plot);
+    case "block":
+      return block(plot);
+    case "farm":
+      return farm(plot);
+    case "house":
+      return house(plot);
   }
 }

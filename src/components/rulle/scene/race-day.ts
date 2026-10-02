@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import {
   courseAt,
+  crowdHeard,
   hash,
   inside,
   lapAlong,
@@ -12,21 +13,15 @@ import {
   type Side,
 } from "@/modules/rulle";
 import { CityFace } from "./city-face";
+import { personOf } from "./folk-look";
 import { cobblesMesh, disposeCobbles } from "./cobbles";
 import { Crowd } from "./crowd";
 import type { Ground } from "./ground";
 import { PALETTE as P } from "./palette";
 import { freeze } from "./props";
 import { marshal, soigneurShape, type Marshal } from "./race-folk";
-import {
-  binShape,
-  bumpAt,
-  bumpShape,
-  busShape,
-  ISLAND,
-  islandShape,
-  podiumShape,
-} from "./race-props";
+import { binShape, bumpShape, busShape, ISLAND, islandShape, podiumShape } from "./race-props";
+import { RaceRoad } from "./race-road";
 import { groundPoint, roadPoint, roadYaw } from "./road-point";
 import { merged, rod, v } from "./shapes";
 import type { SceneWords, SmallThingsHooks } from "./small-things";
@@ -80,7 +75,8 @@ export class RaceDayScene {
   private readonly cobbles: THREE.Mesh | null;
   private lastAlong: number | null = null;
   private lastWhistle: number | null = null;
-  private clock = 0;
+  /** How the road feels: the cobbles, the bumps. */
+  readonly road: RaceRoad;
 
   constructor(
     private readonly course: Course,
@@ -94,6 +90,7 @@ export class RaceDayScene {
     room: (x: number, z: number, r: number) => void,
     options: { calm: boolean; light: boolean },
   ) {
+    this.road = new RaceRoad(course, day);
     this.crowd = new Crowd(course, ground, day, city, material, options);
     this.face = new CityFace(course, ground, city, material);
     this.group.add(this.crowd.group, this.face.group);
@@ -142,7 +139,8 @@ export class RaceDayScene {
         const foot = groundPoint(course, ground, d, side * 3.55);
         const yaw = roadYaw(course, d) + (side * Math.PI) / 2 + side * 0.4;
         const team = P.teams[Math.floor(hash(k, 2, 821) * P.teams.length)]!;
-        parts.push(soigneurShape(team).rotateY(yaw).translate(foot.x, foot.y, foot.z));
+        const shape = soigneurShape(team, personOf(k + 4100));
+        parts.push(shape.rotateY(yaw).translate(foot.x, foot.y, foot.z));
       }
       fixed.add(new THREE.Mesh(this.keep(merged(parts)), material));
       this.sign(place, words.feed, from - 6, side);
@@ -219,34 +217,9 @@ export class RaceDayScene {
     this.crowd.clearAround(x, z, r);
   }
 
-  /** How much the road shakes here: 1 on the cobbles, else 0. */
-  rumble(distance: number): number {
-    const L = this.course.length;
-    return this.day.cobbles.some((s) => inside(s, distance, L)) ? 1 : 0;
-  }
-
-  /**
-   * Shakes the bike on the cobbles: two quick beats that never quite fall
-   * together — stones, not a motor — harder the faster it goes. How much
-   * the road shakes here, for the camera.
-   */
-  jolt(bike: THREE.Object3D, distance: number, speed: number, seconds: number): number {
-    this.clock += seconds;
-    const rumble = this.rumble(distance);
-    if (rumble === 0) return 0;
-    const t = this.clock * 2 * Math.PI;
-    const hard = Math.min(1, speed / 6);
-    bike.position.y += (Math.sin(t * 13) * 0.5 + Math.sin(t * 17.3) * 0.5) * 0.012 * hard;
-    bike.rotation.z += Math.sin(t * 15.1) * 0.012 * hard;
-    return rumble;
-  }
-
-  /** How high the road stands here over a speed bump, metres. */
-  lift(distance: number): number {
-    const L = this.course.length;
-    let most = 0;
-    for (const b of this.day.bumps) most = Math.max(most, bumpAt(lapAlong(distance - b, L)));
-    return most;
+  /** How many stand by the road round `distance`, 0 to 1, for the sound under the ride (ADR 0045). */
+  heard(distance: number): number {
+    return crowdHeard(this.day, this.course, distance);
   }
 
   dispose(): void {
@@ -265,7 +238,7 @@ export class RaceDayScene {
 
   /** A marshal `offset` right of the road's middle, facing the riders: on an island, or at the kerb. */
   private marshal(along: number, offset: number, island: boolean): void {
-    const figure = marshal(this.material);
+    const figure = marshal(this.material, personOf(Math.round(along) + 7300));
     const foot = island
       ? roadPoint(this.course, along, offset)
       : groundPoint(this.course, this.ground, along, offset);

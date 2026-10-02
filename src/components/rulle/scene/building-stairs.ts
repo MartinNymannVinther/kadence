@@ -1,4 +1,4 @@
-import { at, box, type Frame, type Writer } from "./building-writer";
+import { at, box, frontOf, type Frame, type Writer } from "./building-writer";
 
 /**
  * The stairs outside a Montréal plex (ADR 0036): straight and steep up
@@ -92,14 +92,6 @@ export function frontStairs(
   rise: number,
   hex: string,
 ): void {
-  const tx = road.x - f.x;
-  const tz = road.z - f.z;
-  const fronts = [
-    { x: f.lx, z: f.lz, depth: L / 2, wide: S },
-    { x: -f.lx, z: -f.lz, depth: L / 2, wide: S },
-    { x: f.sx, z: f.sz, depth: S / 2, wide: L },
-    { x: -f.sx, z: -f.sz, depth: S / 2, wide: L },
-  ];
-  const front = fronts.reduce((a, c) => (c.x * tx + c.z * tz > a.x * tx + a.z * tz ? c : a));
+  const front = frontOf(f, L, S, road);
   if (front.wide >= STAIRS_NEED) outsideStairs(w, f, front, front.depth, ground, rise, hex);
 }

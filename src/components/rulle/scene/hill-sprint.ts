@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { courseAt, hash, type Course } from "@/modules/rulle";
 import { person } from "./finish-line";
 import { spectator, type Spectator } from "./folk";
+import { personOf } from "./folk-look";
 import type { Ground } from "./ground";
 import { PALETTE as P } from "./palette";
 import { freeze } from "./props";
@@ -94,7 +95,11 @@ export class HillSprints {
           if (hash(k, side, 231) < 0.35) continue;
           const foot = groundPoint(course, ground, at, side * (4.7 + hash(k, 1, 232) * 1.1));
           const yaw = roadYaw(course, at) + (side * Math.PI) / 2;
-          people.push(person(foot, yaw, CLOTHES[k % CLOTHES.length]!, hash(k, 2, 233) < 0.6));
+          // Each somebody of their own, as at the finish (ADR 0045), and now and then a child.
+          const tall = hash(k, 3, 234) < 0.12 ? 0.66 : 0.93 + hash(k, 4, 234) * 0.14;
+          const looks = personOf(k + 9100);
+          const cheering = hash(k, 2, 233) < 0.6;
+          people.push(person(foot, yaw, CLOTHES[k % CLOTHES.length]!, cheering, looks, tall));
         }
       const fan = spectator(material);
       fan.group.position.copy(groundPoint(course, ground, along - 16, 5));

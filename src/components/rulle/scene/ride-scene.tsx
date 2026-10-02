@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { City, Course, Land, Seen } from "@/modules/rulle";
+import type { City, Course, Heard, Land, Seen } from "@/modules/rulle";
 import { LensDrops } from "./lens-drops";
 import type { SceneWords } from "./small-things";
 import { Sky } from "./sky";
@@ -16,8 +16,9 @@ import { World, type Moment } from "./world";
  * shadows; a rider who has asked for less motion gets a camera that only
  * follows, and no drops on the lens. On a route that comes with Kadence
  * the land is the real one (ADR 0035). What the small things on the way
- * (ADR 0034) meet is told back through `onSeen`, and what they ring
- * through `onSound`.
+ * (ADR 0034) meet is told back through `onSeen`, what they ring through
+ * `onSound`, and what the rider would hear of the road through `onHear`
+ * (ADR 0045).
  */
 export default function RideScene({
   course,
@@ -30,6 +31,8 @@ export default function RideScene({
   city,
   onSeen,
   onSound,
+  onHear,
+  onRiderTap,
 }: {
   course: Course;
   /** Where the rider is now: read every frame. */
@@ -46,15 +49,18 @@ export default function RideScene({
   city: City | null;
   onSeen: (key: keyof Seen, count: number) => void;
   onSound: (kind: "bell" | "cheer" | "whistle" | "horn") => void;
+  onHear: (heard: Heard) => void;
+  /** A tap or a click on the rider: five quick ones are the cheat code (ADR 0045). */
+  onRiderTap: () => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const latest = useRef({ moment, top, bottom, words, onSeen, onSound });
+  const latest = useRef({ moment, top, bottom, words, onSeen, onSound, onHear, onRiderTap });
   const resize = useRef<() => void>(() => {});
   // Each spray of washer fluid, numbered: the drops on the lens are drawn for the latest.
   const [spray, setSpray] = useState(0);
 
   useEffect(() => {
-    latest.current = { moment, top, bottom, words, onSeen, onSound };
+    latest.current = { moment, top, bottom, words, onSeen, onSound, onHear, onRiderTap };
   });
 
   // Only when the strip or the panel over the picture changes: the page
@@ -82,6 +88,7 @@ export default function RideScene({
         {
           seen: (key, count) => latest.current.onSeen(key, count),
           sound: (kind) => latest.current.onSound(kind),
+          hear: (heard) => latest.current.onHear(heard),
           spray: () => {
             if (!calm) setSpray((n) => n + 1);
           },
@@ -98,6 +105,15 @@ export default function RideScene({
     resize.current();
     const observer = new ResizeObserver(() => resize.current());
     observer.observe(canvas);
+    // The screen's panels lie over the canvas, so a tap is looked for on the whole window.
+    const tapped = (event: PointerEvent) => {
+      const box = canvas.getBoundingClientRect();
+      const x = event.clientX - box.left;
+      const y = event.clientY - box.top;
+      if (x < 0 || y < 0 || x > box.width || y > box.height) return;
+      if (world.riderAt(x, y)) latest.current.onRiderTap();
+    };
+    window.addEventListener("pointerdown", tapped);
     let last = performance.now();
     let raf = 0;
     const loop = (time: number) => {
@@ -110,6 +126,7 @@ export default function RideScene({
     return () => {
       cancelAnimationFrame(raf);
       observer.disconnect();
+      window.removeEventListener("pointerdown", tapped);
       resize.current = () => {};
       world.dispose();
     };

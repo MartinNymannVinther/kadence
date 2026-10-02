@@ -8,6 +8,7 @@ import {
   type Seen,
 } from "@/modules/rulle";
 import type { Ground } from "./ground";
+import { personOf } from "./folk-look";
 import { KITS, NpcRider, puncture } from "./npc-rider";
 import { PALETTE } from "./palette";
 import { freeze } from "./props";
@@ -20,12 +21,15 @@ import { groundPoint, roadPoint, roadYaw } from "./road-point";
  * those from behind, faster, passing on the left; a few together now and
  * then. Once in a while someone at the roadside mending a puncture. Riders
  * come from a small pool and go back to it; none is ever raced or timed.
+ * A rider steering about on the cheat code (ADR 0045) is made way for.
  */
 
 type Member = {
   npc: NpcRider;
   distance: number;
   offset: number;
+  /** Where across the road it rides when nobody is in the way. */
+  home: number;
   speed: number;
   /** Along the road (1) or against it (-1). */
   way: 1 | -1;
@@ -40,6 +44,8 @@ const GAP = 2.4;
 const AHEAD = 420;
 const BEHIND = 60;
 const POOL = 12;
+/** Making way: this near along the road and across it, to this far beside, at this pace (m/s). */
+const WAY = { along: 10, across: 1.6, beside: 1.7, pace: 2.5, edge: 2.7 } as const;
 
 export class Traffic {
   readonly group = new THREE.Group();
@@ -48,7 +54,8 @@ export class Traffic {
   private next = 0;
   private readonly members: Member[] = [];
   private readonly pool: NpcRider[] = [];
-  private readonly legs = new THREE.MeshLambertMaterial({ color: PALETTE.skin, flatShading: true });
+  /** The bare shins, a material for each skin. */
+  private readonly legs = new Map<string, THREE.MeshLambertMaterial>();
   private readonly shorts = new THREE.MeshLambertMaterial({
     color: PALETTE.shorts,
     flatShading: true,
@@ -63,7 +70,14 @@ export class Traffic {
     private readonly seen: (key: keyof Seen, count: number) => void,
   ) {}
 
-  frame(distance: number, speed: number, seconds: number, paused: boolean): void {
+  /** On by `seconds`; `line` is where the cheat code has the rider across the road, if it has. */
+  frame(
+    distance: number,
+    speed: number,
+    seconds: number,
+    paused: boolean,
+    line: number | null = null,
+  ): void {
     const length = this.course.length;
     const lap = Math.floor(distance / length);
     const along = distance - lap * length;
@@ -82,13 +96,13 @@ export class Traffic {
       if (!paused) this.start(due, distance);
       this.next++;
     }
-    for (const m of [...this.members]) this.move(m, distance, seconds);
+    for (const m of [...this.members]) this.move(m, distance, seconds, line);
     this.mend(distance);
   }
 
   dispose(): void {
     for (const npc of [...this.pool, ...this.members.map((m) => m.npc)]) npc.dispose();
-    this.legs.dispose();
+    for (const legs of this.legs.values()) legs.dispose();
     this.shorts.dispose();
     if (this.flat) this.flat.mesh.geometry.dispose();
   }
@@ -96,14 +110,22 @@ export class Traffic {
   private take(kit: number, seed: number): NpcRider {
     // Pooled riders keep the kit they were made in: a new kit is a new rider.
     const found = this.pool.findIndex((n) => n.group.userData.kit === kit % KITS.length);
-    const npc =
-      found >= 0
-        ? this.pool.splice(found, 1)[0]!
-        : new NpcRider(this.material, kit, seed, this.legs, this.shorts);
+    const npc = found >= 0 ? this.pool.splice(found, 1)[0]! : this.rider(kit, seed);
     npc.group.userData.kit = kit % KITS.length;
     npc.group.rotation.order = "YXZ";
     this.group.add(npc.group);
     return npc;
+  }
+
+  /** A new rider in a kit, with a skin of their own. */
+  private rider(kit: number, seed: number): NpcRider {
+    const { skin } = personOf(seed + 5200);
+    let legs = this.legs.get(skin);
+    if (!legs) {
+      legs = new THREE.MeshLambertMaterial({ color: skin, flatShading: true });
+      this.legs.set(skin, legs);
+    }
+    return new NpcRider(this.material, kit, seed, legs, this.shorts, skin);
   }
 
   private start(rider: Rider, distance: number): void {
@@ -119,6 +141,7 @@ export class Traffic {
         npc: this.take(kit, rider.seed + i),
         distance: distance + APPEAR[rider.kind] + (abreast ? 0.4 : i * GAP * (way === 1 ? -1 : 1)),
         offset: LANE[rider.kind] + (abreast ? -0.7 : 0),
+        home: LANE[rider.kind] + (abreast ? -0.7 : 0),
         speed: rider.speed,
         way,
         greets: rider.greets && i === 0,
@@ -126,8 +149,9 @@ export class Traffic {
     }
   }
 
-  private move(m: Member, distance: number, seconds: number): void {
+  private move(m: Member, distance: number, seconds: number, line: number | null): void {
     m.distance += m.way * m.speed * seconds;
+    m.offset = makeWay(m, distance, seconds, line);
     const group = m.npc.group;
     group.position.copy(roadPoint(this.course, m.distance, m.offset));
     group.rotation.y = roadYaw(this.course, m.distance) + (m.way === 1 ? 0 : Math.PI);
@@ -156,7 +180,7 @@ export class Traffic {
     }
     const found = punctureOnLap(this.course, lap);
     if (!found) return;
-    const mesh = new THREE.Mesh(puncture(lap), this.material);
+    const mesh = new THREE.Mesh(puncture(lap, personOf(lap + 6100).skin), this.material);
     mesh.position.copy(groundPoint(this.course, this.ground, found.at, 4.3));
     mesh.rotation.y = roadYaw(this.course, found.at) + Math.PI / 2;
     this.group.add(freeze(mesh));
@@ -171,4 +195,19 @@ export class Traffic {
       this.seen("puncture", 1);
     }
   }
+}
+
+/** Where across the road a rider rides now: out of the way of one steering about, or home again. */
+function makeWay(m: Member, distance: number, seconds: number, line: number | null): number {
+  let want = m.home;
+  if (line !== null && Math.abs(m.distance - distance) < WAY.along) {
+    if (Math.abs(m.home - line) < WAY.across) {
+      // Beside the rider on its own side, or the other side where its own runs off the road.
+      const side = m.home >= line ? 1 : -1;
+      want = line + side * WAY.beside;
+      if (Math.abs(want) > WAY.edge) want = line - side * WAY.beside;
+    }
+  }
+  const gap = want - m.offset;
+  return m.offset + Math.sign(gap) * Math.min(Math.abs(gap), WAY.pace * seconds);
 }

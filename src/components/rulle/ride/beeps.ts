@@ -1,18 +1,25 @@
+import type { Heard } from "@/modules/rulle";
+import { Ambience } from "./ambience";
+
 /**
  * What a rider hears when the eyes are on the road: three short beeps as a
  * block runs out, a longer one when the next begins, and two at the end;
  * and the small things (ADR 0034) — a cowbell near the end of a hard
  * block and on the chalk climb, the ring-ring of a cargo bike's bell
  * before it overtakes, and on race day a marshal's whistle at an island
- * (ADR 0036) and the horn of a marshal's motorbike coming past (ADR 0037). Made by the browser's own sound (Web Audio), no
- * sound files; one press on M quiets all of it. Browsers only let sound
- * start from a press, so `unlock` is called from the one that starts the
- * ride.
+ * (ADR 0036) and the horn of a marshal's motorbike coming past (ADR
+ * 0037); all of it over the sound under the ride (`ambience.ts`, ADR
+ * 0045), so none comes out of silence. Made by the browser's own sound
+ * (Web Audio), no sound files; one press on M quiets all of it. Browsers
+ * only let sound start from a press, so `unlock` is called from the one
+ * that starts the ride; the sound under it runs while the ride's screen
+ * is up (`listen`, `hush`).
  */
 
 type Tone = { hz: number; seconds: number; at: number };
 
-export type Sound = "count" | "change" | "end" | "cheer" | "bell" | "whistle" | "horn";
+export type Sound =
+  "count" | "change" | "end" | "cheer" | "bell" | "whistle" | "horn" | "fanfare" | "fanfareOff";
 
 const TONES: Record<"count" | "change" | "end", Tone[]> = {
   count: [{ hz: 880, seconds: 0.12, at: 0 }],
@@ -25,6 +32,7 @@ const TONES: Record<"count" | "change" | "end", Tone[]> = {
 
 export class Beeps {
   private context: AudioContext | null = null;
+  private ambience: Ambience | null = null;
   private quiet = false;
 
   get muted(): boolean {
@@ -33,6 +41,23 @@ export class Beeps {
 
   setMuted(muted: boolean): void {
     this.quiet = muted;
+    this.ambience?.setMuted(muted);
+  }
+
+  /** What the rider would hear of the road now, for the sound under the ride. */
+  hear(heard: Heard): void {
+    this.ambience?.hear(heard);
+  }
+
+  /** The ride's screen is up: the sound under the ride fades in. */
+  listen(): void {
+    if (this.context && !this.ambience) this.ambience = new Ambience(this.context, this.quiet);
+  }
+
+  /** The ride's screen is gone: the sound under it fades away. */
+  hush(): void {
+    this.ambience?.hush();
+    this.ambience = null;
   }
 
   unlock(): void {
@@ -54,6 +79,8 @@ export class Beeps {
     if (kind === "bell") return bell(context);
     if (kind === "whistle") return whistle(context);
     if (kind === "horn") return horn(context);
+    if (kind === "fanfare") return arcade(context, [523, 659, 784, 1047], 0.09);
+    if (kind === "fanfareOff") return arcade(context, [784, 523], 0.12);
     for (const tone of TONES[kind]) {
       const start = context.currentTime + tone.at;
       const oscillator = context.createOscillator();
@@ -144,8 +171,8 @@ function whistle(context: AudioContext): void {
     depth.gain.value = 160;
     trill.connect(depth).connect(oscillator.frequency);
     gain.gain.setValueAtTime(0, start);
-    gain.gain.linearRampToValueAtTime(0.09, start + 0.02);
-    gain.gain.setValueAtTime(0.09, start + seconds - 0.04);
+    gain.gain.linearRampToValueAtTime(0.075, start + 0.04);
+    gain.gain.setValueAtTime(0.075, start + seconds - 0.04);
     gain.gain.linearRampToValueAtTime(0, start + seconds);
     oscillator.connect(gain).connect(context.destination);
     for (const o of [oscillator, trill]) {
@@ -155,23 +182,59 @@ function whistle(context: AudioContext): void {
   }
 }
 
-/** A motorbike's horn, twice and short: two tones a little apart, buzzing. */
+/**
+ * A motorbike's horn, twice and short: two tones a little apart, buzzing,
+ * their edge taken off and swelling in rather than snapping on — a hoot
+ * from behind, not a fright.
+ */
 function horn(context: AudioContext): void {
-  for (const at of [0, 0.2]) {
+  const soft = context.createBiquadFilter();
+  soft.type = "lowpass";
+  soft.frequency.value = 1700;
+  soft.connect(context.destination);
+  for (const at of [0, 0.22]) {
     const start = context.currentTime + at;
     const gain = context.createGain();
     gain.gain.setValueAtTime(0, start);
-    gain.gain.linearRampToValueAtTime(0.07, start + 0.01);
-    gain.gain.setValueAtTime(0.07, start + 0.11);
-    gain.gain.linearRampToValueAtTime(0, start + 0.13);
-    gain.connect(context.destination);
+    gain.gain.linearRampToValueAtTime(0.055, start + 0.035);
+    gain.gain.setValueAtTime(0.055, start + 0.11);
+    gain.gain.linearRampToValueAtTime(0, start + 0.15);
+    gain.connect(soft);
     for (const hz of [415, 523]) {
       const oscillator = context.createOscillator();
       oscillator.type = "sawtooth";
       oscillator.frequency.value = hz;
       oscillator.connect(gain);
       oscillator.start(start);
-      oscillator.stop(start + 0.15);
+      oscillator.stop(start + 0.17);
     }
   }
+}
+
+/**
+ * The cheat code's fanfare (ADR 0045), as an old arcade machine played
+ * it: quick square-wave notes up the chord as it comes on, two down as it
+ * goes off, softened so they chirp rather than buzz.
+ */
+function arcade(context: AudioContext, notes: number[], step: number): void {
+  const soft = context.createBiquadFilter();
+  soft.type = "lowpass";
+  soft.frequency.value = 2600;
+  soft.connect(context.destination);
+  notes.forEach((hz, k) => {
+    const start = context.currentTime + k * step;
+    const last = k === notes.length - 1;
+    const long = last ? 0.28 : step * 0.9;
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+    oscillator.type = "square";
+    oscillator.frequency.value = hz;
+    gain.gain.setValueAtTime(0, start);
+    gain.gain.linearRampToValueAtTime(0.045, start + 0.01);
+    gain.gain.setValueAtTime(0.045, start + long - 0.03);
+    gain.gain.linearRampToValueAtTime(0, start + long);
+    oscillator.connect(gain).connect(soft);
+    oscillator.start(start);
+    oscillator.stop(start + long + 0.02);
+  });
 }

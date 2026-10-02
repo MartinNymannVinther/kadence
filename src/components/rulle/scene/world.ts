@@ -3,7 +3,6 @@ import {
   CITIES,
   courseAt,
   postureAt,
-  structuresOn,
   sunToward,
   swayAt,
   type City,
@@ -12,21 +11,18 @@ import {
   type Posture,
 } from "@/modules/rulle";
 import { Atmosphere } from "./atmosphere";
-import { Bridges } from "./bridges";
 import { CameraRig } from "./camera-rig";
-import { inPaddocks } from "./farmyard";
 import { FinishLine } from "./finish-line";
-import { Ground } from "./ground";
+import { Landscape } from "./landscape";
+import { Listener } from "./listener";
 import type { Pace } from "./pace";
 import type { Pause } from "./pause-scene";
-import { castShadows, freeze } from "./props";
+import { castShadows } from "./props";
 import { raceDayIn, type RaceDayScene } from "./race-day";
 import { rideRenderer } from "./renderer";
 import { RiderFigure } from "./rider";
-import { buildRoad } from "./road";
 import { roadPoint, turnAt } from "./road-point";
-import { Roadside } from "./roadside";
-import { Scenery } from "./scenery";
+import { SpeedLines } from "./speed-lines";
 import {
   NO_WORDS,
   QUIET_HOOKS,
@@ -34,7 +30,6 @@ import {
   type SceneWords,
   type SmallThingsHooks,
 } from "./small-things";
-import { Terrain } from "./terrain";
 
 /**
  * The landscape of a ride (ADR 0033), put together: the ground — the real
@@ -65,6 +60,12 @@ export type Moment = {
   cadence: number;
   /** The ride's pause, if it is paused: which one, and for how long. */
   pause: Pause | null;
+  /** The cheat code (ADR 0045): metres right of the road's middle, null for the rider's own line. */
+  line?: number | null;
+  /** How far the bike leans into the cheat's turn, radians, positive to the left. */
+  lean?: number;
+  /** Whether the cheat code is on: the speed lines streak past. */
+  cheat?: boolean;
 };
 
 /**
@@ -79,17 +80,15 @@ export class World {
   private readonly renderer: THREE.WebGLRenderer;
   private readonly scene = new THREE.Scene();
   private readonly rig: CameraRig;
-  private readonly ground: Ground;
-  private readonly terrain: Terrain;
-  private readonly scenery: Scenery;
-  private readonly roadside: Roadside;
-  private readonly road: THREE.Group;
+  private readonly land: Landscape;
+  private readonly listener: Listener;
   private readonly rider = new RiderFigure();
+  private readonly lines = new SpeedLines();
+  private readonly ray = new THREE.Raycaster();
   private readonly atmosphere: Atmosphere;
   private readonly small: SmallThings;
   private readonly finish: FinishLine | null;
   private readonly race: RaceDayScene | null;
-  private readonly bridges: Bridges;
   private readonly pace: Pace;
   private readonly calm: boolean;
   private crank = 0;
@@ -116,75 +115,34 @@ export class World {
     // On a city's race day the sun stands where it stood that day (ADR 0036).
     this.atmosphere = new Atmosphere(this.scene, city ? sunToward(CITIES[city].sun) : undefined);
     if (this.shaded) this.atmosphere.castShadows();
-    // The bridges the road is on, and what passes over and under it (ADR 0037).
-    const found = structuresOn(course, options.land?.structures ?? []);
-    this.ground = new Ground(course, options.land ?? null, city, found.decks);
-    const onDeck = (along: number) => this.ground.onDeck(along);
-    // No tree in a field with cows in it, nor in the water.
-    const fields = inPaddocks(course, this.ground);
-    const water = this.atmosphere.water;
-    this.scenery = new Scenery(this.ground, options.light ? 0.5 : 1, fields, water);
-    this.terrain = new Terrain(
-      this.ground,
-      (key, cx, cz, added) => {
-        if (added) this.scenery.add(key, cx, cz);
-        else this.scenery.remove(key);
-      },
-      water,
-      this.shaded,
-    );
-    this.roadside = new Roadside(
+    this.land = new Landscape(
       course,
-      options.light ? 0.5 : 1,
-      (x, z) => fields(x, z) || this.ground.wet(x, z),
-      city !== null,
-      onDeck,
+      { land: options.land ?? null, city, light: options.light, shaded: this.shaded },
+      this.atmosphere.water,
     );
+    const ground = this.land.ground;
     const room = (x: number, z: number, r: number) => {
-      this.scenery.clearAround(x, z, r);
-      this.roadside.clearAround(x, z, r);
+      this.land.clearAround(x, z, r);
       // The crowd makes way between the road and a café, not only where it stands.
       this.race?.clearAround(x, z, r + 8);
     };
-    this.small = new SmallThings(course, this.ground, words, hooks, {
+    this.small = new SmallThings(course, ground, words, hooks, {
       calm: options.calm,
       canvas,
       room,
     });
     // A city's course on race day: its crowd, its marshals, its cobbles (ADR 0036).
-    this.race = raceDayIn(
-      city,
-      course,
-      this.ground,
-      this.small.material,
-      words,
-      hooks,
-      room,
-      options,
-    );
-    this.road = buildRoad(course, city !== null, (along) => this.race?.rumble(along) === 1, onDeck);
-    this.bridges = new Bridges(course, this.ground, found);
-    if (this.shaded) {
-      this.road.traverse((child) => {
-        if (child instanceof THREE.Mesh) child.receiveShadow = true;
-      });
-      castShadows(this.rider.group);
-    }
+    this.race = raceDayIn(city, course, ground, this.small.material, words, hooks, room, options);
+    this.land.layRoad((along) => this.race?.road.rumble(along) === 1, this.shaded);
+    // What the rider would hear of the road, for the sound under the ride (ADR 0045).
+    this.listener = new Listener(course, options.land ?? null, city !== null, hooks.hear);
+    if (this.shaded) castShadows(this.rider.group);
     this.rider.group.rotation.order = "YXZ";
-    this.scene.add(
-      this.terrain.group,
-      this.scenery.group,
-      this.road,
-      this.roadside.group,
-      this.bridges.group,
-      this.small.group,
-      this.rider.group,
-    );
-    if (this.shaded) castShadows(this.bridges.group);
+    this.scene.add(this.land.group, this.small.group, this.rider.group, this.lines.group);
     this.finish = options.finish
       ? new FinishLine(
           course,
-          this.ground,
+          ground,
           this.small.material,
           words.finish,
           {
@@ -199,15 +157,8 @@ export class World {
     if (this.finish && this.shaded) castShadows(this.finish.group);
     if (this.race) this.scene.add(this.race.group);
     if (this.race && this.shaded) castShadows(this.race.group);
-    // Only the rider, the rotors, the sky and the camera move; the rest is placed once.
+    // Only the rider, what passes, the sky and the camera move; the land is placed once.
     this.scene.matrixAutoUpdate = false;
-    this.terrain.group.matrixAutoUpdate = false;
-    this.scenery.group.matrixAutoUpdate = false;
-    freeze(this.road);
-    freeze(this.roadside.group);
-    freeze(this.bridges.group);
-    const start = courseAt(course, 0);
-    this.terrain.fill(start.x, -start.y);
   }
 
   resize(width: number, height: number, top: number, bottom: number): void {
@@ -228,14 +179,16 @@ export class World {
     const { distance, speed, cadence } = moment;
     const pausing = this.small.frame(moment, seconds, this.rig.camera.position, this.rider);
     const bike = this.rider.group;
+    // The rider's line on the road: their own sway, or the cheat code's (ADR 0045).
+    const line = (d: number) => moment.line ?? swayAt(d);
     if (pausing.parked) {
       // Against the café's wall while the rider sits at the table.
       bike.position.copy(pausing.parked.at);
       bike.rotation.set(0, pausing.parked.yaw, pausing.parked.lean);
     } else {
-      const here = this.pointAt(distance, swayAt(distance));
-      const back = this.pointAt(distance - 2, swayAt(distance - 2));
-      const front = this.pointAt(distance + 2, swayAt(distance + 2));
+      const here = this.pointAt(distance, line(distance));
+      const back = this.pointAt(distance - 2, line(distance - 2));
+      const front = this.pointAt(distance + 2, line(distance + 2));
       const along = new THREE.Vector3().subVectors(front, back);
       bike.position.copy(here);
       bike.rotation.set(
@@ -249,15 +202,16 @@ export class World {
     this.posture = postureAt(this.course, distance, speed, cadence, this.posture);
     this.rider.animate(seconds, cadence, speed, this.posture);
     // Out of the saddle the bike rocks under the rider; on cobbles it shakes.
-    if (!pausing.parked) bike.rotation.z = this.rider.roll;
+    if (!pausing.parked) bike.rotation.z = this.rider.roll + (moment.lean ?? 0);
     const rumble =
-      this.calm || pausing.parked ? 0 : (this.race?.jolt(bike, distance, speed, seconds) ?? 0);
+      this.calm || pausing.parked ? 0 : (this.race?.road.jolt(bike, distance, speed, seconds) ?? 0);
 
     if (pausing.jump) this.rig.jump();
     if (pausing.view) this.rig.view(pausing.view.eye, pausing.view.look, seconds);
     else {
-      const behind = this.pointAt(distance - BEHIND, 0.4);
-      const ahead = this.pointAt(distance + AHEAD, swayAt(distance + AHEAD) * 0.5);
+      // Following the cheat's line across the road some of the way.
+      const behind = this.pointAt(distance - BEHIND, 0.4 + (moment.line ?? 0) * 0.6);
+      const ahead = this.pointAt(distance + AHEAD, line(distance + AHEAD) * 0.5);
       const turn = turnAt(this.course, distance);
       this.rig.follow(behind, ahead, turn, speed, this.crank, seconds, rumble);
     }
@@ -268,38 +222,44 @@ export class World {
       // What passes by comes and goes: whatever is new casts its shadow too.
       if (this.frames % 30 === 0) castShadows(this.small.group);
     }
-    this.scenery.animate(seconds);
-    this.bridges.frame(eye, seconds);
+    this.land.frame(eye, seconds);
     this.finish?.frame(distance, seconds);
     this.race?.frame(distance, seconds);
-    this.terrain.update(eye.x, eye.z, 1);
-    if (this.frames++ % 20 === 0) this.roadside.update(eye);
+    this.listener.frame(distance, speed, seconds, (d) => this.race?.heard(d) ?? 0);
+    this.lines.frame(this.rig.camera, moment.cheat ? speed : 0, seconds);
+    this.frames++;
     this.renderer.render(this.scene, this.rig.camera);
   }
 
   dispose(): void {
-    this.terrain.dispose();
-    this.scenery.dispose();
-    this.roadside.dispose();
-    this.road.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
-        child.geometry.dispose();
-        (child.material as THREE.Material).dispose();
-      }
-    });
+    this.land.dispose();
     this.rider.dispose();
+    this.lines.dispose();
     this.small.dispose();
     this.finish?.dispose();
     this.race?.dispose();
-    this.bridges.dispose();
     this.atmosphere.dispose();
     this.renderer.dispose();
+  }
+
+  /** Whether a point on the canvas, pixels from its top left, falls on the rider: the cheat's taps. */
+  riderAt(x: number, y: number): boolean {
+    const { width, height } = this.laid;
+    if (width === 0 || height === 0) return false;
+    this.ray.setFromCamera(
+      new THREE.Vector2((x / width) * 2 - 1, 1 - (y / height) * 2),
+      this.rig.camera,
+    );
+    const at = this.rider.group.position;
+    return this.ray.ray.intersectsSphere(
+      new THREE.Sphere(new THREE.Vector3(at.x, at.y + 1, at.z), 1.3),
+    );
   }
 
   /** A point on the road `offset` metres right of its middle, on the road's surface: over a bump, on it. */
   private pointAt(distance: number, offset: number): THREE.Vector3 {
     const point = roadPoint(this.course, distance, offset);
-    if (this.race) point.y += this.race.lift(distance);
+    if (this.race) point.y += this.race.road.lift(distance);
     return point;
   }
 }

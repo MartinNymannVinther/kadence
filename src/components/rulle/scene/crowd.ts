@@ -14,17 +14,19 @@ import type { Ground } from "./ground";
 import { LapParts, type Kind } from "./lap-parts";
 import { PALETTE as P } from "./palette";
 import { FLAGS, farShape, flagShape, spectatorShape, type Pose } from "./race-folk";
+import { folkMaterial } from "./folk-look";
 import { BARRIER_LENGTH, barrierShape } from "./race-props";
 import { groundPoint, roadYaw } from "./road-point";
-import { treeMaterial } from "./trees";
 
 /**
  * Who lines a city's course on race day (ADR 0036), and the barriers they
  * stand behind: as thick as `crowdAt` says, in rows along the kerb, each
- * one somebody of their own — a pose, a jacket, now and then a flag — and
- * those with their arms up or a flag bouncing on their toes. Thousands of
- * them, so copies of a few shapes in parts of the lap (`LapParts`), the
- * far ones plainer. Nobody in the crowd casts a shadow; the barriers do.
+ * one somebody of their own — a pose, a jacket, now and then a flag, a
+ * skin, hair, trousers and a height of their own (`folkMaterial`, ADR
+ * 0045), and children in the front row — and those with their arms up or
+ * a flag bouncing on their toes. Thousands of them, so copies of a few
+ * shapes in parts of the lap (`LapParts`), the far ones plainer. Nobody
+ * in the crowd casts a shadow; the barriers do.
  */
 
 /** Metres between two people in a row, and between rows; the first row's distance from the middle. */
@@ -34,12 +36,15 @@ const FIRST = 3.62;
 const BEHIND_BARRIERS = 3.85;
 /** The barriers stand at the kerb. */
 const BARRIER = 3.3;
+/** Grown-ups this much shorter or taller than the shape, at most; a child in the front row this often. */
+const HEIGHTS = 0.08;
+const CHILDREN = 0.14;
 
 export class Crowd {
   private readonly parts: LapParts;
   private readonly shapes: THREE.BufferGeometry[] = [];
   private readonly people = new Set<THREE.BufferGeometry>();
-  private readonly still = treeMaterial();
+  private readonly still = folkMaterial();
   private readonly lively: THREE.MeshLambertMaterial;
   private readonly time = { value: 0 };
 
@@ -112,7 +117,12 @@ export class Crowd {
             r < (nearLine ? 0.3 : 0.18)
               ? flags[Math.floor(hash(k, seed, 777) * flags.length)]!
               : poses[r < (nearLine ? 0.55 : 0.38) ? 1 : r < 0.6 ? 2 : 0]!;
-          this.parts.add(kind, d, foot, roadYaw(course, along) + turn, jacket);
+          // Children stand at the front, where they can see.
+          const child = row === 0 && hash(k, seed, 778) < CHILDREN;
+          const tall = child
+            ? 0.62 + hash(k, seed, 779) * 0.1
+            : 1 + (hash(k, seed, 779) * 2 - 1) * HEIGHTS;
+          this.parts.add(kind, d, foot, roadYaw(course, along) + turn, jacket, tall);
         }
       }
     }
@@ -155,11 +165,11 @@ const JACKETS: Record<City, readonly string[]> = {
 
 /**
  * The crowd's material for those with their arms up or a flag: flat-shaded
- * and jacketed like the rest (`treeMaterial`), and bouncing on their toes,
+ * and dressed like the rest (`folkMaterial`), and bouncing on their toes,
  * each at a beat of its own.
  */
 function livelyMaterial(time: { value: number }): THREE.MeshLambertMaterial {
-  const material = treeMaterial();
+  const material = folkMaterial();
   const jackets = material.onBeforeCompile;
   material.onBeforeCompile = (shader, renderer) => {
     jackets(shader, renderer);

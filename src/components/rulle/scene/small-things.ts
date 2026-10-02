@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { chalkOf, flagsOf, type Course, type Seen } from "@/modules/rulle";
+import { chalkOf, flagsOf, type Course, type Heard, type Seen } from "@/modules/rulle";
 import { ChalkClimb } from "./chalk-climb";
 import { Farmyard, herdsHere } from "./farmyard";
 import type { Ground } from "./ground";
@@ -24,6 +24,8 @@ export type SmallThingsHooks = {
   sound: (kind: "bell" | "cheer" | "whistle" | "horn") => void;
   /** Washer fluid on the lens: the page draws the drops. */
   spray: () => void;
+  /** What the rider would hear of the road, four times a second, for the sound under the ride (ADR 0045). */
+  hear?: (heard: Heard) => void;
 };
 
 /** Words the landscape shows, in the reader's language. */
@@ -136,13 +138,19 @@ export class SmallThings {
 
   /** One frame of it all; what the pause asks of the camera and the bike. */
   frame(
-    moment: { distance: number; speed: number; pause: Pause | null },
+    moment: { distance: number; speed: number; pause: Pause | null; line?: number | null },
     seconds: number,
     eye: THREE.Vector3,
     rider: RiderFigure,
   ) {
     this.visitors.frame(moment.distance, moment.speed, seconds, moment.pause !== null);
-    this.traffic.frame(moment.distance, moment.speed, seconds, moment.pause !== null);
+    this.traffic.frame(
+      moment.distance,
+      moment.speed,
+      seconds,
+      moment.pause !== null,
+      moment.line ?? null,
+    );
     this.farmyard.frame(moment.distance, eye, seconds);
     this.chalk?.frame(moment.distance, seconds);
     this.hills?.frame(moment.distance, seconds);

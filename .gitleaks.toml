@@ -36,6 +36,11 @@ regexes = [
   # identifier a person wrote, not a credential, which the default
   # generic-api-key rule reads as one because it follows `key:`.
   '''dcu-strength-u(17|19|23)-2016''',
+  # The key of one of DCU's bike sessions in the library
+  # (src/modules/dcu/bike-sessions.ts), likewise an identifier a person
+  # wrote after `key:`, not a credential; the only one of them random
+  # enough to the rule's eye to be read as one.
+  '''dcu-anaerobic-10x30''',
   # The new password a test sets for a user who exists only in the test
   # database, which every run wipes (tests/team/reset-link.test.ts). It
   # remains in the git history.

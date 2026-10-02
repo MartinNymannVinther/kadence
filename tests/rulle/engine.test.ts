@@ -262,7 +262,7 @@ describe("the warp, only under development", () => {
     plain.engine.start(T0);
     plain.ride(0, 30);
     const fast = setup(null);
-    fast.engine.warp.factor = 8;
+    fast.engine.shown.warp.factor = 8;
     fast.engine.start(T0);
     fast.ride(0, 30);
     const at = T0 + 30_000;

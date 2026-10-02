@@ -3,18 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { clockText } from "@/components/training/duration";
 import type { Thresholds } from "@/modules/load";
 import type { City, Course, Land, SessionTimeline } from "@/modules/rulle";
+import { CheatOverlay } from "./cheat-overlay";
+import { EndDialog } from "./end-dialog";
 import { IntervalBar } from "./interval-bar";
 import { RideControls } from "./ride-controls";
 import { RouteMap } from "./route-map";
@@ -22,7 +15,10 @@ import { BlockTile, BodyTile, WattTile } from "./ride-tiles";
 import { RouteProfile } from "./route-profile";
 import type { Beeps } from "./ride/beeps";
 import { INTENSITY } from "./ride/engine";
+import { useCheat } from "./ride/use-cheat";
+import { useCountdown } from "./ride/use-countdown";
 import { useMapShown, useSpeedShown } from "./ride/use-map-shown";
+import { useRideKeys } from "./ride/use-ride-keys";
 import { DevWarp } from "./dev-warp";
 import { RoadCard } from "./road-card";
 import type { Ride } from "./ride/use-ride";
@@ -31,8 +27,6 @@ import { Sky } from "./scene/sky";
 import type { Moment } from "./scene/world";
 import type { Devices } from "./use-devices";
 import { useSceneWords } from "./use-scene-words";
-
-const COUNTDOWN = 3;
 
 // three.js is loaded here and nowhere else in Kadence: only a ride needs it.
 const RideScene = dynamic(() => import("./scene/ride-scene"), {
@@ -45,7 +39,11 @@ const RideScene = dynamic(() => import("./scene/ride-scene"), {
  * landscape behind everything, the strip of controls on top, and across
  * the bottom the three numbers and the session's bar — the part a rider
  * reads, and so the part that is large. A countdown before the first
- * pedal stroke; a question before the end; the screen kept awake.
+ * pedal stroke; a question before the end; the screen kept awake. On
+ * request nothing but the rider and the land (ADR 0045): every number
+ * gone, the little map only if it is shown; a tap or I brings them back,
+ * and so does a trainer that drops out. And the cheat code (`useCheat`),
+ * that hands the bike's speed and line on the road to the rider.
  */
 export function RideScreen({
   title,
@@ -87,26 +85,33 @@ export function RideScreen({
   city: City | null;
 }) {
   const t = useTranslations("rulle.ride");
-  const endWords = useTranslations("rulle.end");
   const words = useSceneWords(name, city);
   const [ending, setEnding] = useState(false);
   const [muted, setMuted] = useState(beeps.muted);
-  const [count, setCount] = useState(counting ? COUNTDOWN : 0);
+  // Nothing but the rider and the land: never remembered, a ride starts with its numbers.
+  const [bare, setBare] = useState(false);
+  const count = useCountdown(counting, beeps, onGo);
   const fullscreen = useFullscreen();
   const [mapShown, toggleMap] = useMapShown();
   const [speedShown, toggleSpeed] = useSpeedShown();
   const live = ride.live;
-  const go = useRef(onGo);
   const topRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   // How much of the screen the strip and the panel cover: the landscape frames the rest.
   const [cover, setCover] = useState({ top: 0, bottom: 0 });
   const shown = live !== null;
+  const connection = devices.trainer?.state ?? null;
   useWakeLock(true);
 
+  // A trainer that drops out brings the numbers back: nobody rides on without ERG unawares.
+  const dropped = connection === "reconnecting" || connection === "lost";
+  if (bare && dropped) setBare(false);
+
+  // The sound under the ride, while its screen is up (ADR 0045).
   useEffect(() => {
-    go.current = onGo;
-  });
+    beeps.listen();
+    return () => beeps.hush();
+  }, [beeps]);
 
   useEffect(() => {
     const measure = () =>
@@ -118,46 +123,26 @@ export function RideScreen({
     for (const element of [topRef.current, panelRef.current])
       if (element) observer.observe(element);
     return () => observer.disconnect();
-  }, [shown]);
+  }, [shown, bare]);
 
-  useEffect(() => {
-    if (!counting) return;
-    let left = COUNTDOWN;
-    beeps.play("count");
-    const timer = setInterval(() => {
-      left -= 1;
-      setCount(left);
-      if (left > 0) beeps.play("count");
-      else {
-        clearInterval(timer);
-        go.current();
-      }
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [counting, beeps]);
-
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if (!live || ending || event.altKey || event.ctrlKey || event.metaKey) return;
-      const target = event.target as HTMLElement | null;
-      if (target && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
-      const key = event.key.toLowerCase();
-      // Space pauses wherever focus is, so it never presses a focused button instead.
-      if (key === " ") {
-        event.preventDefault();
-        if (live.status === "paused") ride.resume();
-        else ride.pause();
-      } else if (key === "arrowright") ride.skip();
-      else if (key === "arrowup") ride.setIntensity(live.intensity + INTENSITY.step);
-      else if (key === "arrowdown") ride.setIntensity(live.intensity - INTENSITY.step);
-      else if (key === "e") ride.setErg(!live.erg);
-      else if (key === "f") fullscreen.toggle();
-      else if (key === "m") toggleSound();
-      else if (key === "k") toggleMap();
-      else if (key === "h") toggleSpeed();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+  const cheating = live?.cheat ?? false;
+  const cheat = useCheat(live !== null && !ending, cheating, ride, beeps);
+  useRideKeys(live !== null && !ending, {
+    " ": () => (live?.status === "paused" ? ride.resume() : ride.pause()),
+    // While the cheat is on, the arrows steer the bike and leave the session alone.
+    ...(cheating
+      ? {}
+      : {
+          arrowright: ride.skip,
+          arrowup: () => live && ride.setIntensity(live.intensity + INTENSITY.step),
+          arrowdown: () => live && ride.setIntensity(live.intensity - INTENSITY.step),
+        }),
+    e: () => live && ride.setErg(!live.erg),
+    f: fullscreen.toggle,
+    m: toggleSound,
+    k: toggleMap,
+    h: toggleSpeed,
+    i: () => setBare((now) => !now && !dropped),
   });
 
   function toggleSound() {
@@ -166,7 +151,6 @@ export function RideScreen({
   }
 
   const total = live?.totalSeconds ?? null;
-  const connection = devices.trainer?.state ?? null;
 
   return (
     <div className="bg-background relative h-svh w-full overflow-hidden">
@@ -174,18 +158,20 @@ export function RideScreen({
         <RideScene
           course={course}
           moment={moment}
-          top={cover.top}
-          bottom={cover.bottom}
+          top={bare ? 0 : cover.top}
+          bottom={bare ? 0 : cover.bottom}
           words={words}
           finish={finish}
           land={land}
           city={city}
           onSeen={ride.note}
           onSound={(kind) => beeps.play(kind)}
+          onHear={(heard) => beeps.hear(heard)}
+          onRiderTap={cheat.tap}
         />
       </div>
       <div className="relative z-10 flex h-full flex-col">
-        {live && (
+        {live && !bare && (
           <div ref={topRef}>
             <RideControls
               title={title}
@@ -206,6 +192,7 @@ export function RideScreen({
               onMute={toggleSound}
               onMap={toggleMap}
               onSpeed={toggleSpeed}
+              onBare={() => setBare(true)}
               onFullscreen={fullscreen.toggle}
               onEnd={() => setEnding(true)}
             />
@@ -220,7 +207,16 @@ export function RideScreen({
         )}
         {/* The road, between the numbers above and the bar below: its percent and speed in one corner, the little map in the other. */}
         <div className="relative flex-1">
-          {live && (
+          {/* With nothing but the rider and the land, a tap anywhere brings the numbers back. */}
+          {live && bare && (
+            <button
+              type="button"
+              aria-label={t("bareBack")}
+              className="absolute inset-0 cursor-default"
+              onClick={() => setBare(false)}
+            />
+          )}
+          {live && !bare && (
             <RoadCard
               course={course}
               distance={live.distance}
@@ -234,9 +230,19 @@ export function RideScreen({
             </div>
           )}
           {/* Only under `next dev`: the way along the route run faster, or backwards. */}
-          {process.env.NODE_ENV === "development" && live && <DevWarp onWarp={ride.setWarp} />}
+          {live && cheating && !bare && (
+            <CheatOverlay
+              banner={cheat.banner}
+              kmh={live.speed * 3.6}
+              onOff={cheat.toggle}
+              onSteer={ride.steerCheat}
+            />
+          )}
+          {process.env.NODE_ENV === "development" && live && (
+            <DevWarp onWarp={ride.setWarp} hidden={bare} />
+          )}
         </div>
-        {live && (
+        {live && !bare && (
           <div
             ref={panelRef}
             className="bg-card/90 border-border flex flex-col gap-2 border-t px-3 pt-3 pb-2 sm:px-4 lg:px-6 lg:pt-4"
@@ -281,29 +287,7 @@ export function RideScreen({
         </div>
       )}
 
-      <Dialog open={ending} onOpenChange={setEnding}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{endWords("title")}</DialogTitle>
-            <DialogDescription>
-              {trial ? endWords("trialBody") : endWords("body")}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              onClick={() => {
-                setEnding(false);
-                ride.finish();
-              }}
-            >
-              {endWords("confirm")}
-            </Button>
-            <Button variant="outline" onClick={() => setEnding(false)}>
-              {endWords("cancel")}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <EndDialog open={ending} trial={trial} onOpenChange={setEnding} onEnd={ride.finish} />
     </div>
   );
 }

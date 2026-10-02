@@ -10,9 +10,17 @@ import { WARPS } from "./ride/warp";
  * Development only (`next dev`): the rider's way along the route run
  * faster — two, four, eight or twenty times — or backwards, to look at a
  * route without riding it. "," and "." step the speed down and up, B
- * turns the way round. Never drawn in a build that is shipped.
+ * turns the way round. Never drawn in a build that is shipped; `hidden`
+ * with nothing but the rider and the land on screen, its keys still at
+ * work.
  */
-export function DevWarp({ onWarp }: { onWarp: (factor: number) => void }) {
+export function DevWarp({
+  onWarp,
+  hidden = false,
+}: {
+  onWarp: (factor: number) => void;
+  hidden?: boolean;
+}) {
   const t = useTranslations("rulle.dev");
   const [step, setStep] = useState(0);
   const [back, setBack] = useState(false);
@@ -46,6 +54,7 @@ export function DevWarp({ onWarp }: { onWarp: (factor: number) => void }) {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  if (hidden) return null;
   return (
     <div
       className="bg-card/85 border-border absolute top-3 right-3 flex items-center gap-1 rounded-xl border p-1 shadow-[var(--surface-shadow)] sm:right-4 lg:right-6"
