@@ -3168,13 +3168,14 @@
       "showW": "Vis watt",
       "showWkg": "Vis W/kg",
       "weight": "Avatarens vægt",
-      "kg": "{kg} kg",
       "heavier": "Tungere avatar",
       "lighter": "Lettere avatar",
       "toWatts": "Watt",
       "toSpeed": "Fart",
       "more": "Flere watt",
-      "less": "Færre watt"
+      "less": "Færre watt",
+      "kgUnit": "kg",
+      "speed": "Fart"
     }
   }
 }

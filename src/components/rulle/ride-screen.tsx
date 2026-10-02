@@ -11,7 +11,7 @@ import { EndDialog } from "./end-dialog";
 import { IntervalBar } from "./interval-bar";
 import { RideControls } from "./ride-controls";
 import { RouteMap } from "./route-map";
-import { BlockTile, BodyTile, WattTile } from "./ride-tiles";
+import { RideNumbers } from "./ride-numbers";
 import { RouteProfile } from "./route-profile";
 import type { Beeps } from "./ride/beeps";
 import { INTENSITY } from "./ride/engine";
@@ -197,13 +197,13 @@ export function RideScreen({
               onFullscreen={fullscreen.toggle}
               onEnd={() => setEnding(true)}
             />
-            <div className="grid grid-cols-2 gap-3 p-3 sm:px-4 lg:grid-cols-3 lg:gap-4 lg:px-6">
-              <WattTile live={live} rider={rider} />
-              <BlockTile live={live} />
-              <div className="col-span-2 lg:col-span-1">
-                <BodyTile live={live} />
-              </div>
-            </div>
+            <RideNumbers
+              live={live}
+              rider={rider}
+              onCheatOff={() => cheat.toggle()}
+              onCheatMode={cheat.toggle}
+              onCheatTune={ride.tuneCheat}
+            />
           </div>
         )}
         {/* The road, between the numbers above and the bar below: its percent and speed in one corner, the little map in the other. */}
@@ -232,15 +232,7 @@ export function RideScreen({
           )}
           {/* Only under `next dev`: the way along the route run faster, or backwards. */}
           {live && cheatState && !bare && (
-            <CheatOverlay
-              banner={cheat.banner}
-              state={cheatState}
-              kmh={live.speed * 3.6}
-              onOff={() => cheat.toggle()}
-              onMode={cheat.toggle}
-              onSteer={ride.steerCheat}
-              onTune={ride.tuneCheat}
-            />
+            <CheatOverlay banner={cheat.banner} state={cheatState} onSteer={ride.steerCheat} />
           )}
           {process.env.NODE_ENV === "development" && live && (
             <DevWarp onWarp={ride.setWarp} hidden={bare} />

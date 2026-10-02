@@ -15,18 +15,24 @@ Rulle reads no body data (ADR 0013, 0031).
 - **A second code, WATT.** Typed on the ride screen, it turns on with the
   same fanfare; typed again it is off, and the other code goes over to the
   other. Five taps on the rider still turn SPURT on, and whichever is on
-  off; on a touch screen a press on the badge goes between the two. None
+  off; on a touch screen a press on the panel goes between the two. None
   of its letters is a key of the ride's.
 - **The keys set the watts.** W/S or ↑/↓ step 10 W, or 0.1 W/kg when the
-  badge shows watts per kilo; held, they step on after 0.4 s every 0.1 s
+  panel shows watts per kilo; held, they step on after 0.4 s every 0.1 s
   (`watt-dial.ts`, pure). From 0 to 1500 W. A/D or ←/→ steer as on SPURT.
   It starts at the watts that hold the speed the rider is shown at, so the
   bike does not jump, and at 100 W from a standstill or a descent.
 - **The avatar's weight**, 30 to 120 kg, starting at Rulle's own 70, is
-  set with a button either side of it on the badge. In watts per kilo the
+  set with a button either side of it on the panel. In watts per kilo the
   W/kg stays as the weight changes and the watts follow; in watts the
   watts stay. It is held in the browser for the ride and kept nowhere: not
   saved, not sent, not on the next ride.
+- **One set of numbers at a time.** While either code is on, the watts,
+  the time and the body's tiles make way for the cheat's own panel in
+  their place, at their size (`ride-numbers.tsx`, `cheat-panel.tsx`): on
+  SPURT the speed, on WATT the watts, the other unit, the speed and the
+  avatar's weight, each with a press over to the other code and a cross.
+  Turned off, the tiles come back. What is recorded is unchanged by it.
 - **The road decides the speed.** The avatar is ridden through Rulle's
   physics (`nextSpeed`, now with a mass of its own) on the slope where it
   is shown, so a heavy avatar climbs slower than a light one at the same
