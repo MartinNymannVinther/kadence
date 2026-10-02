@@ -7,15 +7,15 @@ import type { Batches } from "./props";
 import { CHUNK, drawnHeight } from "./terrain";
 import { plant, type TreeShapes } from "./trees";
 import { streamStrips } from "./water";
-import { MAPPED, madeUpBuildings } from "./made-up-buildings";
+import { madeUpBuildings } from "./made-up-buildings";
 import { family } from "./woods";
 
 /**
  * What stands on the real land round a route that comes with Kadence
  * (ADR 0035), chunk by chunk: its buildings where OpenStreetMap has them,
- * which is within 650 metres of the road; beyond that, where no one's
- * house is drawn, a town filled with houses and a farmyard with its farm,
- * of the same making. The tree rows and the hedges along their lines, the
+ * as far from the road as its file says (700 metres, or the whole land:
+ * ADR 0046); beyond that, where no one's house is drawn, a town filled
+ * with houses and a farmyard with its farm, of the same making. The tree rows and the hedges along their lines, the
  * streams, the wind turbines. In a city (ADR 0036) its street trees, and
  * blocks of flats as high as the city's own where the map gives a
  * building no storeys. Sorted into chunks once, when the ride begins.
@@ -110,7 +110,7 @@ export class LandScenery {
       }
       x /= ring.length;
       y /= ring.length;
-      if (ground.nearest(x, -y, MAPPED + 100).d > MAPPED)
+      if (ground.nearest(x, -y, land.reach + 100).d > land.reach)
         bucket(key(x, -y)).farms.push({ x, z: -y, seed: area.id });
     }
     for (const t of land.turbines) bucket(key(t.x, -t.y)).turbines.push({ x: t.x, z: -t.y });
@@ -143,10 +143,15 @@ export class LandScenery {
           const near = this.ground.nearest(b.x, b.z, 220);
           return { ...b, far: near.d, road: this.roadAt(near.index, near.d) };
         }),
-      ...madeUpBuildings(this.ground, this.usual, cx, cz, found?.farms ?? [], free).map((b) => ({
-        ...b,
-        far: MAPPED,
-      })),
+      ...madeUpBuildings(
+        this.ground,
+        this.usual,
+        cx,
+        cz,
+        found?.farms ?? [],
+        free,
+        this.land.reach,
+      ).map((b) => ({ ...b, far: this.land.reach })),
     ];
     const meshes: THREE.Mesh[] = [];
     const buildings = buildingsMesh(

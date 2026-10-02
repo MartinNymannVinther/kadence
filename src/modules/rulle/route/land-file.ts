@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 /**
- * A land file as it is written (ADR 0035, 0036, 0037): the kinds of what
- * covers the land, of its buildings, their roofs and its bridges and
- * tunnels, each kept as its number; and the schema a file is read with,
+ * A land file as it is written (ADR 0035, 0036, 0037, 0046): the kinds of
+ * what covers the land, of its buildings, their roofs, its bridges and
+ * tunnels and its roads, each kept as its number; and the schema a file is read with,
  * every list capped. `scripts/rulle-land.ts` writes it; `readLand`
  * (`land.ts`) reads it for a course. Pure.
  */
@@ -40,6 +40,12 @@ export const LAND_KINDS = {
    * motorway, a path, a railway, water, or a wildlife crossing's green.
    */
   structures: ["road", "motorway", "path", "rail", "water", "green"],
+  /**
+   * The roads round the route (ADR 0046), widest first: a main road, a
+   * minor one or a town's street, a service road or a drive, a farm
+   * track, a cycle path, a footpath.
+   */
+  roads: ["main", "minor", "service", "track", "cycle", "foot"],
 } as const;
 
 export type AreaKind = (typeof LAND_KINDS.areas)[number];
@@ -47,6 +53,10 @@ export type LineKind = (typeof LAND_KINDS.lines)[number];
 export type BuildingKind = (typeof LAND_KINDS.buildings)[number];
 export type RoofShape = (typeof LAND_KINDS.roofs)[number];
 export type StructureKind = (typeof LAND_KINDS.structures)[number];
+export type RoadKind = (typeof LAND_KINDS.roads)[number];
+
+/** How far from the road a land file's buildings reach when it does not say (ADR 0035). */
+export const MAPPED = 700;
 
 const flat = z.array(z.number().finite()).max(200_000);
 
@@ -101,6 +111,20 @@ export const landFileSchema = z.object({
     .array(z.tuple([z.number().int().min(0), z.number().int().min(1).max(3), flat]))
     .max(5_000)
     .default([]),
+  /**
+   * The roads round the route but the route's own (ADR 0046): their kind,
+   * whether they are unpaved (1) or not (0), and their line.
+   */
+  roads: z
+    .array(z.tuple([z.number().int().min(0), z.number().int().min(0).max(1), flat]))
+    .max(30_000)
+    .default([]),
+  /**
+   * How far from the road, metres, every building the map has is in the
+   * file; beyond it the landscape makes them up (ADR 0046). A file that
+   * does not say has them out to `MAPPED`.
+   */
+  reach: z.number().positive().max(10_000).default(MAPPED),
 });
 
 /** A land file as it is written: what the script makes, and `readLand` reads. */

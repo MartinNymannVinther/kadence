@@ -61,6 +61,15 @@ describe("today's little things", () => {
     expect(seenSchema.parse(before)).toMatchObject({ cobbles: 0, moto: 0 });
   });
 
+  it("counts the hill sprints' lines crossed, after the finish, and none on a ride kept from before", () => {
+    const seen = { ...nothingSeen(), finish: 1, hill: 3, cows: 2 };
+    expect(
+      littleThings({ rec: ride(60), ascentM: null, seen, allOnTarget: null }).map((t) => t.key),
+    ).toEqual(["finish", "hill", "cows"]);
+    const { hill: _, ...before } = nothingSeen();
+    expect(seenSchema.parse(before).hill).toBe(0);
+  });
+
   it("makes the pauses stops and cups: a short one is only a drink from the bottle", () => {
     const rec = ride(3600, [
       [100, 110],

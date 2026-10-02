@@ -2974,6 +2974,10 @@
         "name": "B&U DM 2026 · Vejle",
         "about": "The championship lap: down Sleldevej and up Vardevej to the finish on Vejledalen."
       },
+      "tour-de-himmelfart-2026": {
+        "name": "Tour de Himmelfart 2026 · Queen stage",
+        "about": "Stage 5 in Odder: out to Tvenstrup, up Pederstrupvej to the hill sprint at Pederstrup, down through Balle Findal and home to the finish on Vestermarken."
+      },
       "vejle": {
         "name": "Vejle Fjord and Kiddesvej",
         "about": "Along the fjord, up Munkebjerg and home over Kiddesvej."
@@ -2996,6 +3000,7 @@
       "eudem": "Elevation: EU-DEM (Copernicus)",
       "terrain": "Terrain: EU-DEM (Copernicus), SRTM (USGS), ETOPO1 (NOAA), via Mapzen",
       "buDm2026": "Course: B&U DM 2026, Vejle Cykelklub",
+      "tourDeHimmelfart2026": "Course: Tour de Himmelfart 2026, Odder Cykel Klub",
       "futureRacing2026": "Course: Future Racing 2026, DCU District Sjælland, CC Hillerød and ABC København",
       "montreal2026": "Circuit: 2026 Road World Championships, Montréal, drawn from the organiser's map",
       "terrainCanada": "Terrain and heights: CDEM © Natural Resources Canada (Open Government Licence – Canada), via Mapzen"
@@ -3058,6 +3063,7 @@
       "cafe": "CAFÉ",
       "stand": "SODA · 10 KR.",
       "finish": "FINISH",
+      "hill": "HILL SPRINT",
       "feed": "FEED ZONE",
       "litter": "LITTER ZONE",
       "standIn": {
@@ -3111,6 +3117,7 @@
       "title": "Today's little things",
       "himmelbjerg": "{metres} m of climbing – that is Himmelbjerget, Denmark's famous 147-metre hill, {times, number} times.",
       "finish": "{count, plural, one {Across the finish line once.} other {Across the finish line # times.}}",
+      "hill": "{count, plural, one {Across the hill sprint's line once.} other {Across the hill sprint's line # times.}}",
       "cobbles": "{count, plural, one {Over the cobbles once. You felt it in your teeth.} other {Over the cobbles # times. You felt it in your teeth.}}",
       "moto": "{count, plural, one {A race marshal on a motorbike hooted past.} other {# race marshals on motorbikes hooted past.}}",
       "cargoOvertaken": "{count, plural, one {Overtaken by an electric cargo bike. It does 25.} other {Overtaken by # electric cargo bikes. They do 25.}}",

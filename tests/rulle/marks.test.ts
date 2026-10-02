@@ -11,6 +11,11 @@ describe("an organiser's marks", () => {
     expect(markKind("Feedzone")).toBe("feed");
     expect(markKind("Zone de ravitaillement")).toBe("feed");
     expect(markKind("Litterzone")).toBe("litter");
+    expect(markKind("Dropzone på Findalsvej")).toBe("litter");
+    expect(markKind("Bakkespurt Pederstrup")).toBe("hill");
+    expect(markKind("Bjergspurt")).toBe("hill");
+    expect(markKind("Hill sprint")).toBe("hill");
+    expect(markKind("Grand Prix de la Montagne")).toBe("hill");
     expect(markKind("Målstregen")).toBe("finish");
     expect(markKind("Arrivée")).toBe("finish");
     expect(markKind("Podie")).toBe("podium");
@@ -61,5 +66,17 @@ describe("an organiser's marks", () => {
     // The lap starts at the finish line.
     const line = course.marks.filter((m) => m.kind === "finish").map((m) => m.along);
     expect(line.some((d) => d < 60 || d > course.length - 60)).toBe(true);
+  });
+
+  it("are the queen stage's hill sprint on Pederstrup and its two drop zones (ADR 0046)", () => {
+    const course = buildCourse(
+      readRouteGpx(readFileSync("public/rulle/routes/tour-de-himmelfart-2026-odder.gpx", "utf8")),
+    );
+    expect(course.marks.map((m) => [m.kind, Math.round(m.along / 100) / 10])).toEqual([
+      // The organiser's route sheet: the hill sprint at 6.4 km, and the map's drop zones.
+      ["hill", 6.4],
+      ["litter", 10.7],
+      ["litter", 15],
+    ]);
   });
 });

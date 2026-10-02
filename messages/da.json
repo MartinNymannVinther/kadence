@@ -2974,6 +2974,10 @@
         "name": "B&U DM 2026 · Vejle",
         "about": "DM-omgangen: ned ad Sleldevej og op ad Vardevej til målet på Vejledalen."
       },
+      "tour-de-himmelfart-2026": {
+        "name": "Tour de Himmelfart 2026 · Kongeetapen",
+        "about": "5. etape i Odder: ud til Tvenstrup, op ad Pederstrupvej til bakkespurten på Pederstrup, ned gennem Balle Findal og hjem til målet på Vestermarken."
+      },
       "vejle": {
         "name": "Vejle Fjord og Kiddesvej",
         "about": "Langs fjorden, op ad Munkebjerg og hjem over Kiddesvej."
@@ -2996,6 +3000,7 @@
       "eudem": "Højder: EU-DEM (Copernicus)",
       "terrain": "Terræn: EU-DEM (Copernicus), SRTM (USGS), ETOPO1 (NOAA), via Mapzen",
       "buDm2026": "Ruten: B&U DM 2026, Vejle Cykelklub",
+      "tourDeHimmelfart2026": "Ruten: Tour de Himmelfart 2026, Odder Cykel Klub",
       "futureRacing2026": "Ruten: Future Racing 2026, DCU Distrikt Sjælland, CC Hillerød og ABC København",
       "montreal2026": "Rundstrækningen: VM 2026 Montréal, tegnet efter arrangørens kort",
       "terrainCanada": "Terræn og højder: CDEM © Natural Resources Canada (Open Government Licence – Canada), via Mapzen"
@@ -3058,6 +3063,7 @@
       "cafe": "CAFÉ",
       "stand": "SODAVAND · 10 KR.",
       "finish": "MÅL",
+      "hill": "BAKKESPURT",
       "feed": "LANGNINGSZONE",
       "litter": "AFFALDSZONE",
       "standIn": {
@@ -3111,6 +3117,7 @@
       "title": "Dagens små ting",
       "himmelbjerg": "{metres} højdemeter – det er {times, number} gange Himmelbjerget.",
       "finish": "{count, plural, one {Over målstregen én gang.} other {Over målstregen # gange.}}",
+      "hill": "{count, plural, one {Over stregen i bakkespurten én gang.} other {Over stregen i bakkespurten # gange.}}",
       "cobbles": "{count, plural, one {Over brostenene én gang. Det kunne mærkes i tænderne.} other {Over brostenene # gange. Det kunne mærkes i tænderne.}}",
       "moto": "{count, plural, one {En løbsmarshal på motorcykel dyttede forbi.} other {# løbsmarshaller på motorcykel dyttede forbi.}}",
       "cargoOvertaken": "{count, plural, one {Overhalet af en el-ladcykel. Den kører 25.} other {Overhalet af # el-ladcykler. De kører 25.}}",

@@ -35,6 +35,7 @@ export {
   COVER_CELL,
   LAND_KINDS,
   landFileSchema,
+  MAPPED,
   readLand,
   type AreaKind,
   type BuildingKind,
@@ -42,6 +43,7 @@ export {
   type Land,
   type LandFile,
   type LineKind,
+  type RoadKind,
   type StructureKind,
 } from "./route/land";
 export {

@@ -3,6 +3,7 @@ import { chalkOf, flagsOf, type Course, type Heard, type Seen } from "@/modules/
 import { ChalkClimb } from "./chalk-climb";
 import { Farmyard, herdsHere } from "./farmyard";
 import type { Ground } from "./ground";
+import { HillSprints } from "./hill-sprint";
 import { PauseScene, type Pause } from "./pause-scene";
 import type { RiderFigure } from "./rider";
 import { groundPoint } from "./road-point";
@@ -12,7 +13,8 @@ import { Visitors } from "./visitors";
 /**
  * The small things on the way (ADR 0034), gathered for the world: what
  * passes on the road, the other riders on it (ADR 0035), the herds and
- * the flags, the chalk climb, and the pauses spent at a café. Everything here is for the corner of the eye —
+ * the flags, the chalk climb, the hill sprints an organiser marks (ADR
+ * 0046), and the pauses spent at a café. Everything here is for the corner of the eye —
  * none of it touches the numbers or the bar — and what the rider met is
  * told to the page as it happens, for "today's little things".
  */
@@ -33,6 +35,8 @@ export type SceneWords = {
   cafe: string;
   stand: string;
   finish: string;
+  /** Over a hill sprint's line (ADR 0046). */
+  hill: string;
   /** Race day's zones (ADR 0036). */
   feed: string;
   litter: string;
@@ -45,6 +49,7 @@ export const NO_WORDS: SceneWords = {
   cafe: "",
   stand: "",
   finish: "",
+  hill: "",
   feed: "",
   litter: "",
 };
@@ -67,6 +72,7 @@ export class SmallThings {
   private readonly traffic: Traffic;
   private readonly farmyard: Farmyard;
   private readonly chalk: ChalkClimb | null;
+  private readonly hills: HillSprints | null;
   private readonly pauses: PauseScene;
 
   constructor(
@@ -91,6 +97,13 @@ export class SmallThings {
     const chalk = chalkOf(course);
     this.chalk = chalk
       ? new ChalkClimb(course, ground, material, chalk, words, () => hooks.sound("cheer"))
+      : null;
+    const hills = course.marks.filter((m) => m.kind === "hill").map((m) => m.along);
+    this.hills = hills.length
+      ? new HillSprints(course, ground, material, hills, words.hill, {
+          crossed: () => hooks.seen("hill", 1),
+          ring: () => hooks.sound("cheer"),
+        })
       : null;
     // A stop goes on the right, unless a herd's field or a flag is there
     // already, or a lake or the sea is; then on the left, unless that is wet.
@@ -120,6 +133,7 @@ export class SmallThings {
     );
     this.group.add(this.visitors.group, this.traffic.group, this.farmyard.group, this.pauses.group);
     if (this.chalk) this.group.add(this.chalk.group);
+    if (this.hills) this.group.add(this.hills.group);
   }
 
   /** One frame of it all; what the pause asks of the camera and the bike. */
@@ -139,6 +153,7 @@ export class SmallThings {
     );
     this.farmyard.frame(moment.distance, eye, seconds);
     this.chalk?.frame(moment.distance, seconds);
+    this.hills?.frame(moment.distance, seconds);
     return this.pauses.frame(moment.pause, moment.distance, seconds, rider);
   }
 
@@ -147,6 +162,7 @@ export class SmallThings {
     this.traffic.dispose();
     this.farmyard.dispose();
     this.chalk?.dispose();
+    this.hills?.dispose();
     this.pauses.dispose();
     this.material.dispose();
   }

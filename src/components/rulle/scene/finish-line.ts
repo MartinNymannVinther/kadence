@@ -158,7 +158,7 @@ function barrier(course: Course, ground: Ground, at: number, side: number): THRE
 }
 
 /** Someone watching: facing the road, in a jacket of `color`, maybe with both arms up. */
-function person(
+export function person(
   foot: THREE.Vector3,
   yaw: number,
   color: string,
