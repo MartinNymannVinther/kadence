@@ -4,28 +4,41 @@ import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, X } from "lucide-rea
 import { useTranslations } from "next-intl";
 import { useRef, useSyncExternalStore, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
-import type { Push } from "./ride/cheat";
+import { CheatWattBadge, type WattTune } from "./cheat-watt-badge";
+import type { CheatMode, CheatState, Push } from "./ride/cheat";
 
 /**
- * The cheat code on the screen (ADR 0045): as it comes on, a banner in an
- * old arcade machine's manner — what it is, the keys, and that only the
- * landscape is cheated; while it is on, the bike's speed in big digits
- * and a cross that turns it off; and on a touch screen four pads, held
- * down, for the speed and the steering.
+ * The cheat codes on the screen (ADR 0045, 0048): as one comes on, a
+ * banner in an old arcade machine's manner — what it is, the keys, and
+ * that only the landscape is cheated; while SPURT is on, the bike's speed
+ * in big digits, and while WATT is, its watts (`CheatWattBadge`), each
+ * with a press over to the other and a cross that turns it off; and on a
+ * touch screen four pads, held down, for the speed or the watts and the
+ * steering.
  */
 export function CheatOverlay({
   banner,
+  state,
   kmh,
   onOff,
+  onMode,
   onSteer,
+  onTune,
 }: {
-  banner: boolean;
+  banner: CheatMode | null;
+  state: NonNullable<CheatState>;
   /** The speed shown, km/h. */
   kmh: number;
   onOff: () => void;
+  onMode: (mode: CheatMode) => void;
   onSteer: (throttle: Push, steer: Push) => void;
+  onTune: (change: WattTune) => void;
 }) {
   const t = useTranslations("rulle.cheat");
+  const watts = state.mode === "watts";
+  /** The banner's words for the code that came on. */
+  const said = (key: "on" | "keys" | "touch" | "honest") =>
+    banner === "watts" ? t(`${key}Watts`) : t(key);
   const touch = useSyncExternalStore(subscribe, coarse, () => false);
   const held = useRef({ throttle: 0 as Push, steer: 0 as Push });
   const hold = (axis: "throttle" | "steer", value: Push) => {
@@ -59,30 +72,42 @@ export function CheatOverlay({
             <p className="text-sticky text-4xl font-black tracking-[0.3em] uppercase">
               {t("title")}
             </p>
-            <p className="text-background mt-1 text-lg font-semibold">{t("on")}</p>
-            <p className="text-background/85 mt-3 text-sm">{touch ? t("touch") : t("keys")}</p>
-            <p className="text-background/70 mt-2 text-xs">{t("honest")}</p>
+            <p className="text-background mt-1 text-lg font-semibold">{said("on")}</p>
+            <p className="text-background/85 mt-3 text-sm">{said(touch ? "touch" : "keys")}</p>
+            <p className="text-background/70 mt-2 text-xs">{said("honest")}</p>
           </div>
         </div>
       )}
-      <div className="bg-foreground/85 absolute top-3 left-1/2 flex -translate-x-1/2 items-center gap-3 rounded-xl py-1.5 pr-1.5 pl-4 shadow-[var(--surface-shadow)]">
-        <span className="text-sticky text-xs font-black tracking-[0.25em] uppercase">
-          {t("badge")}
-        </span>
-        <span className="text-background text-ride-value leading-none font-black tabular-nums">
-          {Math.round(kmh)}
-        </span>
-        <span className="text-background/80 text-ride-label">{t("unit")}</span>
-        <Button
-          size="icon-sm"
-          variant="ghost"
-          className="text-background/80 hover:text-foreground"
-          aria-label={t("off")}
-          onClick={onOff}
-        >
-          <X />
-        </Button>
-      </div>
+      {watts ? (
+        <CheatWattBadge state={state} kmh={kmh} onTune={onTune} onMode={onMode} onOff={onOff} />
+      ) : (
+        <div className="bg-foreground/85 absolute top-3 left-1/2 flex -translate-x-1/2 items-center gap-3 rounded-xl py-1.5 pr-1.5 pl-4 shadow-[var(--surface-shadow)]">
+          <span className="text-sticky text-xs font-black tracking-[0.25em] uppercase">
+            {t("badge")}
+          </span>
+          <span className="text-background text-ride-value leading-none font-black tabular-nums">
+            {Math.round(kmh)}
+          </span>
+          <span className="text-background/80 text-ride-label">{t("unit")}</span>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="text-background/80 hover:text-foreground"
+            onClick={() => onMode("watts")}
+          >
+            {t("toWatts")}
+          </Button>
+          <Button
+            size="icon-sm"
+            variant="ghost"
+            className="text-background/80 hover:text-foreground"
+            aria-label={t("off")}
+            onClick={onOff}
+          >
+            <X />
+          </Button>
+        </div>
+      )}
       {touch && (
         <>
           <div className="absolute top-1/2 left-3 flex -translate-y-1/2 gap-3">
@@ -90,8 +115,8 @@ export function CheatOverlay({
             {pad("steer", 1, t("right"), <ChevronRight />)}
           </div>
           <div className="absolute top-1/2 right-3 flex -translate-y-1/2 flex-col gap-3">
-            {pad("throttle", 1, t("faster"), <ChevronUp />)}
-            {pad("throttle", -1, t("slower"), <ChevronDown />)}
+            {pad("throttle", 1, watts ? t("more") : t("faster"), <ChevronUp />)}
+            {pad("throttle", -1, watts ? t("less") : t("slower"), <ChevronDown />)}
           </div>
         </>
       )}

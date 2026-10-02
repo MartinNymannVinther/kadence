@@ -1,9 +1,14 @@
 import { swayAt } from "@/modules/rulle";
+import { nextSpeed } from "@/modules/rulle/physics";
+import { WattDial, type WattUnit } from "./watt-dial";
 
 /**
  * The cheat code's bike (ADR 0045): typed SPURT, or the rider tapped five
  * times, and the keys hold the bike's speed and its line on the road — up
  * to 120 km/h, from kerb to kerb. Let go, and it keeps the speed it has.
+ * Typed WATT (ADR 0048), the keys set the watts instead (`watt-dial.ts`),
+ * and the bike goes as fast as those watts take an avatar of the weight
+ * chosen up the road and down it.
  * Only where the rider is shown moves, as with the developer's warp: the
  * watts, the heart rate, the cadence, the time and the distance recorded
  * are what was ridden, and the trainer never feels it. Turned off, the
@@ -28,8 +33,16 @@ export const CHEAT = {
 /** A key held one way or the other, or neither. */
 export type Push = -1 | 0 | 1;
 
+/** SPURT holds the speed, WATT the watts. */
+export type CheatMode = "speed" | "watts";
+
+/** What the screen shows of the cheat: null while it is off. */
+export type CheatState = { mode: CheatMode; watts: number; kg: number; unit: WattUnit } | null;
+
 export class Cheat {
   on = false;
+  mode: CheatMode = "speed";
+  readonly dial = new WattDial();
   /** Faster (1), slower (-1), or holding the speed (0). */
   throttle: Push = 0;
   /** Right (1), left (-1), or straight on (0). */
@@ -39,27 +52,40 @@ export class Cheat {
   private leaning = 0;
   private shift = 0;
 
-  /** Turns the cheat on or off; on, from the speed and the place the rider is shown at. */
-  toggle(speed: number, shown: number): void {
-    this.on = !this.on;
+  /**
+   * The code for `mode` typed: off if it is the one on, on — or over to it
+   * from the other — if not. On, from the speed and the place the rider is
+   * shown at; WATT from the watts that hold that speed on `grade`.
+   */
+  toggle(speed: number, shown: number, mode: CheatMode = "speed", grade = 0): void {
+    const switching = this.on && this.mode !== mode;
+    this.on = switching || !this.on;
     this.throttle = 0;
     this.steer = 0;
+    this.dial.hold(0);
     if (!this.on) return;
-    this.bikeSpeed = Math.max(0, Math.min(CHEAT.top, speed));
+    if (!switching) this.bikeSpeed = Math.max(0, Math.min(CHEAT.top, speed));
+    this.mode = mode;
+    if (mode === "watts") this.dial.startFrom(this.bikeSpeed, grade);
     this.bikeLine ??= swayAt(shown);
   }
 
   /**
    * `seconds` ridden at `speed` (the true one), the rider shown `shown`
-   * metres along: the speed and the line under the keys, and the place
-   * shown running ahead of the ridden one, or behind it.
+   * metres along where the road climbs `grade`: the speed and the line
+   * under the keys, and the place shown running ahead of the ridden one,
+   * or behind it.
    */
-  advance(speed: number, shown: number, seconds: number): void {
-    if (this.on) {
+  advance(speed: number, shown: number, seconds: number, grade = 0): void {
+    if (this.on && this.mode === "watts") {
+      this.dial.advance(seconds);
+      const { watts, massKg } = this.dial;
+      this.bikeSpeed = nextSpeed(this.bikeSpeed, watts, grade, seconds, massKg);
+    } else if (this.on) {
       const change = this.throttle > 0 ? CHEAT.faster : this.throttle < 0 ? -CHEAT.slower : 0;
       this.bikeSpeed = Math.max(0, Math.min(CHEAT.top, this.bikeSpeed + change * seconds));
-      this.shift += (this.bikeSpeed - speed) * seconds;
     }
+    if (this.on) this.shift += (this.bikeSpeed - speed) * seconds;
     const lean = this.on ? -this.steer * CHEAT.lean : 0;
     this.leaning += (lean - this.leaning) * (1 - Math.exp(-seconds * CHEAT.leanRate));
     if (this.bikeLine === null) return;
@@ -77,11 +103,19 @@ export class Cheat {
     this.bikeLine = Math.abs(gap) <= step ? null : this.bikeLine + Math.sign(gap) * step;
   }
 
-  /** What the keys hold now; nothing while the cheat is off. */
+  /** What the keys hold now; nothing while the cheat is off. Up and down are watts on WATT. */
   hold(throttle: Push, steer: Push): void {
     if (!this.on) return;
     this.throttle = throttle;
     this.steer = steer;
+    if (this.mode === "watts") this.dial.hold(throttle);
+  }
+
+  /** What the screen shows of it. */
+  state(): CheatState {
+    if (!this.on) return null;
+    const { watts, kg, unit } = this.dial;
+    return { mode: this.mode, watts, kg, unit };
   }
 
   /** Where the rider is shown, ridden `distance` in at `speed`, `since` seconds after the last step. */

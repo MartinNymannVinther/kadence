@@ -21,10 +21,19 @@ export class Shown {
   readonly warp = new Warp();
   readonly cheat = new Cheat();
 
-  /** `seconds` more ridden at `speed`, `distance` in: the shifts run on. */
-  advance(distance: number, speed: number, seconds: number): void {
+  /**
+   * `seconds` more ridden at `speed`, `distance` in: the shifts run on.
+   * `gradeAt` is the road's climb at a place, for the WATT cheat's avatar.
+   */
+  advance(
+    distance: number,
+    speed: number,
+    seconds: number,
+    gradeAt?: (at: number) => number,
+  ): void {
     this.warp.advance(speed, seconds);
-    this.cheat.advance(speed, this.place(distance, speed), seconds);
+    const place = this.place(distance, speed);
+    this.cheat.advance(speed, place, seconds, gradeAt?.(place) ?? 0);
   }
 
   /** Where the rider is shown: ridden `distance` in at `speed`, `since` seconds after the last step. */

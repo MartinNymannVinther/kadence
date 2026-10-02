@@ -9,13 +9,16 @@
  * never shown: Rulle reads no body data (ADR 0013, 0031). A light rider
  * climbs a little slower on the screen than on the road; the watts, which
  * are what is recorded and what the load is computed from, are the
- * rider's own.
+ * rider's own. Only the WATT cheat code's avatar rides another mass, the
+ * weight chosen for it on the screen and kept nowhere (ADR 0048).
  *
  * Pure: no browser, no database.
  */
 
 export const PHYSICS = {
   massKg: 78,
+  /** The bike's share of it, kg. */
+  bikeKg: 8,
   /** Drag area, m²: a rider on the hoods. */
   cda: 0.35,
   /** Rolling resistance of a road tyre on asphalt. */
@@ -31,22 +34,28 @@ export const PHYSICS = {
   maxStep: 0.05,
 } as const;
 
-/** The force against the rider at `speed` on `grade`, newtons (negative downhill when it pulls). */
-export function resistance(speed: number, grade: number): number {
-  const { massKg: m, g, crr, cda, rho } = PHYSICS;
+/** The force against `m` kg at `speed` on `grade`, newtons (negative downhill when it pulls). */
+export function resistance(speed: number, grade: number, m: number = PHYSICS.massKg): number {
+  const { g, crr, cda, rho } = PHYSICS;
   const theta = Math.atan(grade);
   return m * g * Math.sin(theta) + crr * m * g * Math.cos(theta) + 0.5 * rho * cda * speed * speed;
 }
 
-/** The speed after `seconds` of `watts` on `grade`, starting from `speed`. */
-export function nextSpeed(speed: number, watts: number, grade: number, seconds: number): number {
+/** The speed after `seconds` of `watts` on `grade`, starting from `speed`, for `massKg` of rider and bike. */
+export function nextSpeed(
+  speed: number,
+  watts: number,
+  grade: number,
+  seconds: number,
+  massKg: number = PHYSICS.massKg,
+): number {
   let v = Math.max(0, speed);
   let left = Math.max(0, seconds);
   const push = Math.max(0, watts);
   while (left > 1e-9) {
     const dt = Math.min(left, PHYSICS.maxStep);
     const drive = push / Math.max(v, PHYSICS.minDriveSpeed);
-    const accel = (drive - resistance(v, grade)) / PHYSICS.massKg;
+    const accel = (drive - resistance(v, grade, massKg)) / massKg;
     v = Math.min(PHYSICS.maxSpeed, Math.max(0, v + accel * dt));
     left -= dt;
   }

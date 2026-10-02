@@ -1,4 +1,5 @@
 import type { Band, Block, BlockNow, Standing } from "@/modules/rulle";
+import type { CheatState } from "./cheat";
 import type { SensorsNow } from "./sensors";
 import type { Status } from "./engine";
 
@@ -19,8 +20,8 @@ export type Live = SensorsNow & {
   /** Where and how fast the rider is shown: what the cheat code or the warp show, not what is recorded. */
   speed: number;
   distance: number;
-  /** Whether the cheat code is on. */
-  cheat: boolean;
+  /** The cheat code, and on WATT its watts and avatar; null while it is off. */
+  cheat: CheatState;
   intensity: number;
   erg: boolean;
   /** The watts ridden, one average per TRACE_SECONDS of the plan. */

@@ -223,7 +223,7 @@ export class RideEngine {
           : "free",
       speed: this.shown.speed(this.speed),
       distance: this.shown.place(this.distance, this.speed),
-      cheat: this.shown.cheat.on,
+      cheat: this.shown.cheat.state(),
       intensity: this.intensity,
       erg: this.erg,
       trace: this.trace.values,
@@ -284,7 +284,7 @@ export class RideEngine {
       : (this.blockWatts() ?? DRAWN_WATTS);
     this.speed = nextSpeed(this.speed, watts, courseAt(this.course, this.distance).grade, dt);
     this.distance += this.speed * dt;
-    this.shown.advance(this.distance, this.speed, dt);
+    this.shown.advance(this.distance, this.speed, dt, (at) => courseAt(this.course, at).grade);
   }
 
   private blockWatts(): number | null {

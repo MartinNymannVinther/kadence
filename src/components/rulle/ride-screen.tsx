@@ -125,8 +125,9 @@ export function RideScreen({
     return () => observer.disconnect();
   }, [shown, bare]);
 
-  const cheating = live?.cheat ?? false;
-  const cheat = useCheat(live !== null && !ending, cheating, ride, beeps);
+  const cheatState = live?.cheat ?? null;
+  const cheating = cheatState !== null;
+  const cheat = useCheat(live !== null && !ending, cheatState?.mode ?? null, ride, beeps);
   useRideKeys(live !== null && !ending, {
     " ": () => (live?.status === "paused" ? ride.resume() : ride.pause()),
     // While the cheat is on, the arrows steer the bike and leave the session alone.
@@ -230,12 +231,15 @@ export function RideScreen({
             </div>
           )}
           {/* Only under `next dev`: the way along the route run faster, or backwards. */}
-          {live && cheating && !bare && (
+          {live && cheatState && !bare && (
             <CheatOverlay
               banner={cheat.banner}
+              state={cheatState}
               kmh={live.speed * 3.6}
-              onOff={cheat.toggle}
+              onOff={() => cheat.toggle()}
+              onMode={cheat.toggle}
               onSteer={ride.steerCheat}
+              onTune={ride.tuneCheat}
             />
           )}
           {process.env.NODE_ENV === "development" && live && (

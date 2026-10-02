@@ -5,7 +5,7 @@ import { nothingSeen, type Course, type Seen, type SessionTimeline } from "@/mod
 import type { TrainerLink } from "../bluetooth/trainer-link";
 import type { Moment } from "../scene/world";
 import type { Beeps } from "./beeps";
-import type { Push } from "./cheat";
+import type { CheatMode, Push } from "./cheat";
 import { RideEngine, type Live } from "./engine";
 import type { ShownAt } from "./shown";
 import { keepRide, type RideMeta } from "./ride-store";
@@ -166,18 +166,26 @@ export function useRide(options: RideOptions) {
       act((ride) => {
         ride.shown.warp.factor = factor;
       }),
-    /** The cheat code on or off (ADR 0045); the page hears whether it is on. */
-    toggleCheat: (): boolean => {
+    /** A cheat code typed (ADR 0045, 0048): on, off or over to the other; the page hears which is on. */
+    toggleCheat: (mode: CheatMode): CheatMode | null => {
       const ride = engine.current;
-      if (!ride) return false;
+      if (!ride) return null;
       const now = Date.now();
       const { speed, distance } = ride.live(now);
-      ride.shown.cheat.toggle(speed, distance);
+      ride.shown.cheat.toggle(speed, distance, mode, ride.positionAt(now).grade);
       draw();
-      return ride.shown.cheat.on;
+      return ride.shown.cheat.state()?.mode ?? null;
     },
-    /** What the cheat's keys hold now: faster or slower, left or right. */
+    /** What the cheat's keys hold now: faster or slower (more or fewer watts), left or right. */
     steerCheat: (throttle: Push, steer: Push) => engine.current?.shown.cheat.hold(throttle, steer),
+    /** The WATT dial's buttons: watts or watts per kilo, the avatar heavier or lighter. */
+    tuneCheat: (change: "unit" | "heavier" | "lighter") => {
+      const dial = engine.current?.shown.cheat.dial;
+      if (!dial) return;
+      if (change === "unit") dial.toggleUnit();
+      else dial.weigh(change === "heavier" ? 1 : -1);
+      draw();
+    },
   };
 }
 
