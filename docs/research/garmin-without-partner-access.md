@@ -74,7 +74,7 @@ The rider connects Garmin to the relay once; Garmin pushes every ride to the rel
 - **Aggregators** fail dogmas 1 and 2: a monthly fee per installation and no self-hosting. Open Wearables, the open one, needs each deployment's own Garmin keys.
 - **Data protection.** The relay is a service the rider chooses, a controller in its own right, and belongs in the second table of `docs/subprocessors.md` before it is used. The rider and the guardian are told who the relay is and where it works, that it receives what the rider ticks on Garmin's consent screen while Kadence reads rides only, that deleting in Kadence deletes nothing at the relay, and how to disconnect. Kadence does not send a rider to a service whose terms exclude them.
 
-### 3.1 What the two relays answered, in writing, on 2026-09-29 and 30
+### 3.1 What the two relays answered, in writing, 2026-09-29 to 10-02
 
 Both answered by e-mail the same day they were asked. The answers are given here in Kadence's words, not theirs: a private letter is not quoted in a public repository without its writer's yes.
 
@@ -90,7 +90,12 @@ Both answered by e-mail the same day they were asked. The answers are given here
   - **No conditions** for rides that came to Tredict from Garmin.
   - **Riders and parents are Kadence's to tell**, and the data protection is Kadence's to keep, the tokens' safekeeping included.
   - He asked how many riders Kadence expects to use it now.
-- What it means: the automatic way from a Garmin through Tredict costs a rider Tredict's full access and a sign-in there every fortnight. Without the full access Kadence can read only the list, not the ride.
+- A third answer, 2026-10-02:
+  - **Start with the riders' own tokens**, and move to an OAuth connection if the winter's test succeeds and more riders come.
+  - **Full access can come three ways**: the rider buys it; a coach assigns it from their own Tredict account, three months per rider at the least, from packages bought at a discount; or, if it reaches many athletes across the country, a Partner API or cheaper invoicing on terms of their own. Every new Tredict user has two months of full access free (also on Tredict's price page, which gives USD 49 for twelve months).
+  - **A sleeping token** answers 401 with a body that asks the person to sign in to Tredict's web app, which wakes it; Kadence can tell that from a token that is gone.
+  - **The list with `extendedSummary=1`** carries the ride's figures without the file: time, moving time, distance, ascent, position, speed, heart rate, power and cadence (each with its maximum), calories, temperature and more. Tredict's documentation names the parameter; whether it answers for a rider without full access is not said there, and the price page says the Personal API's "detailed data" needs full access. To ask.
+- What it means: with full access, assigned by a coach or bought, Kadence gets the original file; the two free months and one three-month assignment cover a winter from November to March. Without full access Kadence may still get each ride's figures from the list, if that holds, which is enough for the hours, the load and the match to the planned session, but not for the curves and the map. Either way the rider signs in to Tredict every fortnight.
 
 **intervals.icu** (David Tinker, two hours after the question):
 
