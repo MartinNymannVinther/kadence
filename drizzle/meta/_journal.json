@@ -134,6 +134,13 @@
       "when": 1790880529687,
       "tag": "0018_rider_sets_uci_id",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1791017614725,
+      "tag": "0019_clubs",
+      "breakpoints": true
     }
   ]
 }

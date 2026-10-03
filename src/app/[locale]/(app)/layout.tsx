@@ -9,6 +9,7 @@ import { withOrgContext } from "@/core/db/tenant";
 import { redirect } from "@/i18n/navigation";
 import { DemoBanner } from "@/components/demo-banner";
 import { isDemoWorkspace } from "@/modules/demo/service";
+import { orgImageUrls } from "@/modules/team/images";
 import { refreshOwnRacesLater } from "@/modules/results/own";
 import { refreshStaleRaces } from "@/modules/results/refresh";
 import { whoAmI } from "@/modules/team/access";
@@ -42,7 +43,11 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   // The owner sees how many people are waiting at the door; nobody else
   // is told there is a door.
-  const attention = (await ownerAccessSummary())?.pending ?? 0;
+  const owner = await ownerAccessSummary();
+  const attention = owner?.pending ?? 0;
+  // Only the installation's owner creates workspaces (ADR 0048).
+  const canCreate = owner !== null;
+  const logo = context ? (await orgImageUrls(context)).logo : null;
   const t = await getTranslations("app.nav");
   const demo = context ? await isDemoWorkspace(context.orgId) : false;
   const me = context ? await whoAmI(context.orgId, context.userId) : null;
@@ -76,6 +81,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             userName={session.user.name}
             userEmail={session.user.email}
             organization={organization?.name ?? ""}
+            logo={logo}
+            canCreate={canCreate}
             attention={attention}
             isCoach={isCoach}
             rides={rides}
@@ -88,6 +95,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           userName={session.user.name}
           userEmail={session.user.email}
           organization={organization?.name ?? ""}
+          logo={logo}
+          canCreate={canCreate}
           attention={attention}
           isCoach={isCoach}
           rides={rides}

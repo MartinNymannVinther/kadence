@@ -180,6 +180,31 @@ It is never set from a request, and it is not the same thing as owning a
 workspace: it says who may admit new workspaces to this installation,
 nothing more.
 
+### Many clubs on one installation
+
+When the installation hosts several clubs (ADR 0048), a club is a
+workspace and comes in the same way: an application, your approval, and
+the approved registration creates the club with its first coach as owner.
+Only the installation's owner can create further workspaces; anyone else
+can create one only while they belong to none.
+
+Under Indstillinger → Installation the owner sees each club in figures:
+coaches, riders, parents, when someone was last in, the space their files
+take and the AI calls of the last day. Never a name, a session or a
+check-in; the database function behind the page hands over nothing else.
+There is no "sign in as". A club that wants help invites you as a coach
+for a while, which shows in its member list and in the log.
+
+A club's own owner deletes it from Indstillinger → Arbejdsrum. If that
+owner has left and the club asks you in writing, delete it from a
+checkout with `pnpm script scripts/delete-club.ts <org id> "<name>"
+"<why>"`; the reason stays in the log.
+
+When you host for clubs, the club is the data controller and you are its
+processor: have a data processing agreement in place before the first
+rider's data arrives, and keep `/terms` and `docs/subprocessors.md` in
+step.
+
 ## 6. The demo, if you want one
 
 `DEMO` defaults to `off`, and while it is off `/demo` answers 404 and no

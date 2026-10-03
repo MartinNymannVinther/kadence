@@ -291,6 +291,7 @@
       "security": "Security",
       "about": "About",
       "access": "Access",
+      "installation": "Installation",
       "workspace": "Workspace",
       "ai": "AI",
       "data": "Data",
@@ -361,7 +362,49 @@
         "failed": "The workspace was not deleted. Try again.",
         "notOwner": "Only the workspace owner can delete it.",
         "nameMismatch": "That name does not match. Type the workspace's name exactly."
+      },
+      "images": {
+        "title": "Logo and picture",
+        "body": "The club's logo sits by its name in the menu, and the picture sits at the top of the Today page for everyone in the club. The picture is made smaller in your browser before it is sent, and details such as a GPS position are removed.",
+        "logo": "Logo",
+        "cover": "Club picture",
+        "logoHint": "Square works best. PNG, JPEG or WebP.",
+        "coverHint": "A wide picture, from a race or a training ride for example. PNG, JPEG or WebP.",
+        "choose": "Choose picture",
+        "replace": "Change picture",
+        "remove": "Remove",
+        "uploading": "Sending …",
+        "none": "No picture yet.",
+        "saved": "The picture is saved.",
+        "removed": "The picture is removed.",
+        "errors": {
+          "format": "The file is not a PNG, JPEG or WebP image.",
+          "tooLarge": "The picture is too large, even after scaling. Try a smaller one.",
+          "dimensions": "The picture is too wide or too tall. Try a smaller one.",
+          "forbidden": "Only the team's coaches can change the logo and picture.",
+          "generic": "The picture could not be saved. Try again in a moment."
+        }
       }
+    },
+    "installation": {
+      "title": "Installation",
+      "subtitle": "The clubs on this installation, in figures. People's names, training and check-ins belong in the clubs themselves.",
+      "totals": "{clubs, plural, one {# club} other {# clubs}} with {coaches, plural, one {# coach} other {# coaches}}, {riders, plural, one {# rider} other {# riders}} and {parents, plural, one {# parent} other {# parents}}.",
+      "none": "There are no clubs on the installation yet.",
+      "club": "Club",
+      "coaches": "Coaches",
+      "riders": "Riders",
+      "parents": "Parents",
+      "lastSeen": "Last active",
+      "files": "Files",
+      "ai": "AI calls (day)",
+      "created": "Created {date}",
+      "never": "Not yet",
+      "megabytes": "{mb, number} MB",
+      "privacy": "You see figures and the clubs' names, which is all the database hands over here.",
+      "newClub": "A new club comes in through an application you approve.",
+      "toAccess": "Go to Access",
+      "help": "If a club wants help, it can invite you as a coach for a while. It shows in its member list and in the log, and the club removes you again afterwards."
     },
     "ai": {
       "title": "AI",

@@ -26,11 +26,17 @@ export function OrgSwitcher({
   triggerClassName,
   align = "start",
   label,
+  canCreate = false,
 }: {
   triggerClassName?: string;
   align?: "start" | "end" | "center";
   /** Overrides the trigger text; the 2a lockup already names the active org. */
   label?: string;
+  /**
+   * Only the installation's owner creates workspaces (ADR 0048); a new club
+   * comes in through an approved application.
+   */
+  canCreate?: boolean;
 }) {
   const t = useTranslations("app.orgSwitcher");
   const router = useRouter();
@@ -94,11 +100,15 @@ export function OrgSwitcher({
               </DropdownMenuItem>
             ))}
           </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => setDialogOpen(true)}>
-            <Plus data-slot="icon" />
-            {t("create")}
-          </DropdownMenuItem>
+          {canCreate && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setDialogOpen(true)}>
+                <Plus data-slot="icon" />
+                {t("create")}
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
       <DialogContent className="sm:max-w-sm">

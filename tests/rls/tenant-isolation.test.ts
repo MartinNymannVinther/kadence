@@ -367,6 +367,12 @@ describe("rls coverage (guards future tables)", () => {
     // append-only guard would otherwise keep forever. Checks itself that
     // the caller coaches the team, like delete_workspace.
     "erase_rider",
+    // The installation's overview for its owner (drizzle/0019, docs/adr/0048):
+    // one row per workspace with counts only — no name of a person, no
+    // training, no check-in. It takes no arguments and refuses everyone
+    // whose app.user_id is not the installation's owner; tests/core/
+    // platform-overview.test.ts proves both.
+    "platform_overview",
     // Whose upload key a hash is, for a ride file that arrives with a key
     // and nobody signed in (drizzle/0014, docs/adr/0029). It is
     // device_link_owner's question asked of a key: the key's id, the team,

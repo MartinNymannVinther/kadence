@@ -291,6 +291,7 @@
       "security": "Sikkerhed",
       "about": "Om",
       "access": "Adgang",
+      "installation": "Installation",
       "workspace": "Arbejdsrum",
       "ai": "AI",
       "data": "Data",
@@ -361,7 +362,49 @@
         "failed": "Arbejdsrummet blev ikke slettet. Prøv igen.",
         "notOwner": "Kun ejeren af arbejdsrummet kan slette det.",
         "nameMismatch": "Navnet passer ikke. Skriv arbejdsrummets navn præcis som det står."
+      },
+      "images": {
+        "title": "Logo og billede",
+        "body": "Klubbens logo står ved navnet i menuen, og billedet står øverst på I dag-siden for alle i klubben. Billedet bliver gjort mindre i din browser, før det sendes, og oplysninger som GPS-position bliver fjernet.",
+        "logo": "Logo",
+        "cover": "Stemningsbillede",
+        "logoHint": "Kvadratisk virker bedst. PNG, JPEG eller WebP.",
+        "coverHint": "Et bredt billede, fx fra et løb eller en træning. PNG, JPEG eller WebP.",
+        "choose": "Vælg billede",
+        "replace": "Skift billede",
+        "remove": "Fjern",
+        "uploading": "Sender …",
+        "none": "Intet billede endnu.",
+        "saved": "Billedet er gemt.",
+        "removed": "Billedet er fjernet.",
+        "errors": {
+          "format": "Filen er ikke et PNG-, JPEG- eller WebP-billede.",
+          "tooLarge": "Billedet er for stort, også efter skalering. Prøv et mindre billede.",
+          "dimensions": "Billedet er for stort i bredde eller højde. Prøv et mindre billede.",
+          "forbidden": "Kun holdets trænere kan skifte logo og billede.",
+          "generic": "Billedet kunne ikke gemmes. Prøv igen om lidt."
+        }
       }
+    },
+    "installation": {
+      "title": "Installation",
+      "subtitle": "Klubberne på denne installation, i tal. Navne på personer, træning og check-ins hører til i klubberne selv.",
+      "totals": "{clubs, plural, one {# klub} other {# klubber}} med {coaches, plural, one {# træner} other {# trænere}}, {riders, plural, one {# rytter} other {# ryttere}} og {parents, plural, one {# forælder} other {# forældre}}.",
+      "none": "Der er ingen klubber på installationen endnu.",
+      "club": "Klub",
+      "coaches": "Trænere",
+      "riders": "Ryttere",
+      "parents": "Forældre",
+      "lastSeen": "Sidst aktiv",
+      "files": "Filer",
+      "ai": "AI-kald (døgn)",
+      "created": "Oprettet {date}",
+      "never": "Endnu ikke",
+      "megabytes": "{mb, number} MB",
+      "privacy": "Du ser tal og klubbernes navne, og det er alt, databasen giver fra sig her.",
+      "newClub": "En ny klub kommer ind gennem en ansøgning, som du godkender.",
+      "toAccess": "Gå til Adgang",
+      "help": "Vil en klub have hjælp, kan den invitere dig som træner for en tid. Det står i dens medlemsliste og i loggen, og klubben fjerner dig igen bagefter."
     },
     "ai": {
       "title": "AI",

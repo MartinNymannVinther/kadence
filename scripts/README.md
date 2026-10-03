@@ -26,6 +26,20 @@ It is a script and not a feature because setting someone else's password
 outside the login flow is exactly the capability an attacker wants. It
 belongs on the machine that already has database credentials.
 
+## delete-club.ts
+
+Deletes a club when its own owner cannot: the owner has left, and someone
+the club answers for has asked in writing (ADR 0048).
+
+```
+pnpm script scripts/delete-club.ts                                   # lists the clubs
+pnpm script scripts/delete-club.ts <org id> "<the club's name>" "<why>"
+```
+
+The name must be typed exactly. Everything the club owns goes, with the
+audit rows about it, as when its owner deletes it; one line stays in the
+log saying the installation did it, and why.
+
 ## grant-owner.ts
 
 Names the installation's owner: the one account that may admit new
