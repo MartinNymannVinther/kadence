@@ -1,5 +1,6 @@
 import { diffDays } from "@/core/dates";
 import type { ComplianceColour } from "./compliance";
+import { midZoneFlag, type MidZoneInput } from "./intensity-flag";
 import type { WellbeingStatus } from "./wellbeing";
 
 /**
@@ -33,6 +34,7 @@ export const TRAINING_KINDS = [
   "longest_ride",
   "strength_spacing",
   "compliance",
+  "mid_zone",
 ] as const;
 /** Kinds computed from the check-ins: health data, read with the 'wellbeing' scope (drizzle/0013). */
 export const WELLBEING_KINDS = [
@@ -87,6 +89,8 @@ export interface GuardrailInput {
   sleepMinimum?: number | null;
   /** The colours of the week's planned sessions so far. */
   compliance?: readonly ComplianceColour[];
+  /** The last four weeks' sessions in three zones, when the team uses "Lav intensitet først". */
+  intensity?: MidZoneInput | null;
 }
 
 const round1 = (value: number) => Math.round(value * 10) / 10;
@@ -273,6 +277,7 @@ export function guardrails(input: GuardrailInput): Flag[] {
     painFlag(input.latestPain),
     sleepFlag(input.sleepHours ?? [], input.sleepMinimum),
     complianceFlag(input.compliance ?? []),
+    midZoneFlag(input.intensity),
   ].filter((flag): flag is Flag => flag !== null);
   return flags.sort((a, b) => SEVERITY_ORDER[a.severity] - SEVERITY_ORDER[b.severity]);
 }

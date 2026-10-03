@@ -134,6 +134,48 @@
       "when": 1790880529687,
       "tag": "0018_rider_sets_uci_id",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1791017614725,
+      "tag": "0019_clubs",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1791018896429,
+      "tag": "0020_guidance",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1791019854729,
+      "tag": "0021_rider_workouts",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1791020528760,
+      "tag": "0022_club_championship",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1791021444996,
+      "tag": "0023_coaches_room",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1791022914266,
+      "tag": "0024_low_intensity_first",
+      "breakpoints": true
     }
   ]
 }

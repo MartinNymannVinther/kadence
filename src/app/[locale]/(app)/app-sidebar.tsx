@@ -16,17 +16,29 @@ export async function AppSidebar({
   userName,
   userEmail,
   organization,
+  logo = null,
+  canCreate = false,
   attention = 0,
   isCoach = false,
   rides = false,
+  club = false,
+  counts = {},
   toggle,
 }: {
   userName: string;
   userEmail: string;
   organization: string;
+  /** The club's logo, when it has one (ADR 0048). */
+  logo?: string | null;
+  /** The installation's owner may create workspaces; nobody else sees the button. */
+  canCreate?: boolean;
   /** Items waiting for the installation's owner; zero for everyone else. */
   attention?: number;
   isCoach?: boolean;
+  /** The club keeps a club championship (ADR 0051). */
+  club?: boolean;
+  /** Counts beside menu items (ADR 0052). */
+  counts?: Partial<Record<string, number>>;
   /** A rider or a coach: Rulle is in the navigation. */
   rides?: boolean;
   /** The control that folds the rail away; rendered next to the lockup. */
@@ -45,13 +57,14 @@ export async function AppSidebar({
           aria-label="Kadence"
           className="block w-fit transition-opacity hover:opacity-80"
         >
-          <WordmarkLockup organization={organization} />
+          <WordmarkLockup organization={organization} logo={logo} />
         </Link>
         {toggle}
       </div>
-      <SidebarNav isCoach={isCoach} rides={rides} />
+      <SidebarNav isCoach={isCoach} rides={rides} club={club} counts={counts} />
       <div className="flex flex-col gap-1.5 px-3 pt-1 pb-3">
         <OrgSwitcher
+          canCreate={canCreate}
           triggerClassName="text-sidebar-foreground hover:bg-sidebar-hover h-auto w-full justify-between rounded-[9px] px-3 py-2.5 text-sm font-normal"
           label={switchLabel}
         />

@@ -1,6 +1,6 @@
 # ADR 0039: Races from Cykling Danmark, for the coach
 
-Status: accepted · Date: 2026-10-01 · Builds on 0011, 0013, 0018 · Amends 0013 (a rider's own placings, for the coach)
+Status: accepted · Date: 2026-10-01 · Builds on 0011, 0013, 0018 · Amends 0013 (a rider's own placings, for the coach) · Amended by ADR 0051 (the club championship shows its own results to the club)
 
 ## Context
 

@@ -18,7 +18,8 @@ const TITLES = { bike: "newTitleBike", strength: "newTitleStrength" } as const;
 /**
  * A new template for the library — a coach's to write. `?sport=` opens
  * the builder on that sport, which can still be changed in the form, and
- * `?ai=1` with "Byg med AI" open (ADR 0038).
+ * `?ai=1` with "Byg med AI" open (ADR 0038). `?mine=1` is a rider's own
+ * session (ADR 0050), which the rider writes for themselves.
  */
 export default async function NewTemplatePage({
   searchParams,
@@ -36,6 +37,7 @@ export default async function NewTemplatePage({
   const search = await searchParams;
   const asked = search.sport;
   const sport = asked === "bike" || asked === "strength" ? asked : undefined;
+  const mine = search.mine === "1" && me?.rider ? me.rider : null;
 
   return (
     <div className="flex min-w-0 flex-col gap-5">
@@ -49,9 +51,11 @@ export default async function NewTemplatePage({
       <PageHeader
         size="detail"
         title={t(sport ? TITLES[sport] : "newTitle")}
-        subtitle={t("newSubtitle")}
+        subtitle={t(mine ? "own.newSubtitle" : "newSubtitle")}
       />
-      {me?.isCoach ? (
+      {mine ? (
+        <TemplateEditor sport={sport} riderId={mine.id} assist={false} />
+      ) : me?.isCoach ? (
         <TemplateEditor sport={sport} assistOpen={search.ai === "1"} />
       ) : (
         <EmptyState title={t("coachOnlyTitle")} hint={t("coachOnlyBody")} />

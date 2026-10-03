@@ -12,7 +12,9 @@ import {
   type MonthDeviation,
   type SeasonPlanMonth,
 } from "@/modules/dcu";
+import type { Paradigm } from "@/modules/paradigms";
 import { requireWriteFor } from "@/modules/team/access";
+import { teamParadigm } from "@/modules/team/settings";
 import { riderClass } from "./class";
 
 export { riderClass };
@@ -21,8 +23,25 @@ export { riderClass };
  * A rider's season plan (ADR 0014, 0015): twelve months from October,
  * filled from DCU's hours for the rider's class and year in it, then the
  * coach's to change. Every read comes with DCU's number beside the plan's,
- * so a deviation is always in view.
+ * so a deviation is always in view. A team that plans without DCU
+ * (ADR 0049) starts from empty months, and no number stands beside them.
  */
+
+/**
+ * The twelve months a new plan starts with: the paradigm's hours, phases
+ * and notes, or, without a paradigm, the same months at nought hours and
+ * with no note — the coach's own to fill.
+ */
+export function startingMonths(
+  basis: ClassBasis,
+  seasonStartYear: number,
+  paradigm: Paradigm | null,
+): SeasonPlanMonth[] {
+  const months = buildSeasonPlan(basis, seasonStartYear).months;
+  return paradigm
+    ? months.map((m) => ({ ...m, hours: paradigm.monthHours(basis, m.month) }))
+    : months.map((m) => ({ ...m, hours: 0, note: "" }));
+}
 
 const monthSchema = z.object({
   month: z.number().int().min(1).max(12),
@@ -42,11 +61,17 @@ export type SeasonPlanView = {
   seasonStartYear: number;
   basis: ClassBasis;
   months: SeasonPlanMonth[];
+  /** Empty when the team plans without DCU. */
   deviations: MonthDeviation[];
+  /** Whether the team plans by DCU (ADR 0049), so DCU's numbers stand beside the plan. */
+  guided: boolean;
   note: string;
 };
 
-function view(row: typeof seasonPlans.$inferSelect): SeasonPlanView | null {
+function view(
+  row: typeof seasonPlans.$inferSelect,
+  paradigm: Paradigm | null,
+): SeasonPlanView | null {
   if (!isClassBasis(row.basis)) return null;
   const parsed = SeasonMonthsInput.safeParse(row.months);
   if (!parsed.success) return null;
@@ -56,7 +81,8 @@ function view(row: typeof seasonPlans.$inferSelect): SeasonPlanView | null {
     seasonStartYear: row.seasonStartYear,
     basis: row.basis,
     months: parsed.data,
-    deviations: compareToDcu(parsed.data, row.basis),
+    deviations: paradigm ? compareToDcu(parsed.data, row.basis) : [],
+    guided: paradigm !== null,
     note: row.note,
   };
 }
@@ -73,7 +99,7 @@ export async function getSeasonPlan(
       .where(
         and(eq(seasonPlans.riderId, riderId), eq(seasonPlans.seasonStartYear, seasonStartYear)),
       );
-    return row ? view(row) : null;
+    return row ? view(row, await teamParadigm(tx, ctx.orgId)) : null;
   });
 }
 
@@ -90,10 +116,10 @@ export async function createSeasonPlan(
     if (!rider) throw new Refused("notFound");
     const chosen = basis ?? riderClass(rider, seasonStartYear).basis;
     if (!chosen) throw new Refused("invalid", "noDcuClass");
-    const plan = buildSeasonPlan(chosen, seasonStartYear);
+    const months = startingMonths(chosen, seasonStartYear, await teamParadigm(tx, ctx.orgId));
     const [row] = await tx
       .insert(seasonPlans)
-      .values({ orgId: ctx.orgId, riderId, seasonStartYear, basis: chosen, months: plan.months })
+      .values({ orgId: ctx.orgId, riderId, seasonStartYear, basis: chosen, months })
       .onConflictDoNothing()
       .returning({ id: seasonPlans.id });
     if (!row) throw new Refused("conflict", "planExists");
@@ -130,11 +156,8 @@ export async function resetSeasonPlan(
     const [row] = await tx.select().from(seasonPlans).where(eq(seasonPlans.id, planId));
     if (!row) throw new Refused("notFound");
     await requireWriteFor(tx, ctx, row.riderId);
-    const plan = buildSeasonPlan(basis, row.seasonStartYear);
-    await tx
-      .update(seasonPlans)
-      .set({ basis, months: plan.months })
-      .where(eq(seasonPlans.id, planId));
+    const months = startingMonths(basis, row.seasonStartYear, await teamParadigm(tx, ctx.orgId));
+    await tx.update(seasonPlans).set({ basis, months }).where(eq(seasonPlans.id, planId));
   });
 }
 

@@ -93,6 +93,10 @@ export async function scheduleTemplate(
     const sport = template.sport as Sport;
     const structure = readStructure(template.structure, sport);
     const unique = [...new Set(riderIds)];
+    // A rider's own session goes into that rider's calendar only; for
+    // anyone else a coach takes it into the library first (ADR 0050).
+    if (template.riderId && unique.some((id) => id !== template.riderId))
+      throw new Refused("forbidden", "ownTemplate");
     if (unique.length > 1) await requireCoach(tx, ctx);
     const days = daysOf(onDate, repeat, unique.length);
     const seriesKey = repeat ? randomUUID() : null;

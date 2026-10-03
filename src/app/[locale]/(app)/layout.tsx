@@ -9,12 +9,15 @@ import { withOrgContext } from "@/core/db/tenant";
 import { redirect } from "@/i18n/navigation";
 import { DemoBanner } from "@/components/demo-banner";
 import { isDemoWorkspace } from "@/modules/demo/service";
+import { orgImageUrls } from "@/modules/team/images";
 import { refreshOwnRacesLater } from "@/modules/results/own";
 import { refreshStaleRaces } from "@/modules/results/refresh";
 import { whoAmI } from "@/modules/team/access";
 import { AppSidebar } from "./app-sidebar";
 import { MobileHeader } from "./mobile-header";
 import { SidebarShell, SidebarToggle } from "./sidebar-shell";
+import { getTeamSettings } from "@/modules/team/settings";
+import { unreadThreadCount } from "@/modules/community/service";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await getSession();
@@ -42,7 +45,11 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   // The owner sees how many people are waiting at the door; nobody else
   // is told there is a door.
-  const attention = (await ownerAccessSummary())?.pending ?? 0;
+  const owner = await ownerAccessSummary();
+  const attention = owner?.pending ?? 0;
+  // Only the installation's owner creates workspaces (ADR 0048).
+  const canCreate = owner !== null;
+  const logo = context ? (await orgImageUrls(context)).logo : null;
   const t = await getTranslations("app.nav");
   const demo = context ? await isDemoWorkspace(context.orgId) : false;
   const me = context ? await whoAmI(context.orgId, context.userId) : null;
@@ -54,6 +61,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   else if (context && me?.rider) after(() => refreshOwnRacesLater(context));
   // Rulle is for riding, and for a coach trying a session on the trainer (ADR 0033).
   const rides = Boolean(me?.isCoach || me?.rider);
+  // The club championship is in the menu once the club has turned it on (ADR 0051).
+  const club = context ? (await getTeamSettings(context)).clubChampionship : false;
+  // Threads with something new in Trænerrummet, for a coach (ADR 0052).
+  const counts = context && isCoach ? { coaches: await unreadThreadCount(context) } : {};
 
   // Read on the server so the first paint is already the layout this
   // person left behind, rather than a rail that appears and vanishes.
@@ -76,9 +87,13 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             userName={session.user.name}
             userEmail={session.user.email}
             organization={organization?.name ?? ""}
+            logo={logo}
+            canCreate={canCreate}
             attention={attention}
             isCoach={isCoach}
             rides={rides}
+            club={club}
+            counts={counts}
             toggle={<SidebarToggle placement="sidebar" />}
           />
         }
@@ -88,9 +103,13 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           userName={session.user.name}
           userEmail={session.user.email}
           organization={organization?.name ?? ""}
+          logo={logo}
+          canCreate={canCreate}
           attention={attention}
           isCoach={isCoach}
           rides={rides}
+          club={club}
+          counts={counts}
         />
         {children}
       </SidebarShell>

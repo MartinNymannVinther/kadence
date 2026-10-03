@@ -17,6 +17,8 @@ const PROTECTED_PREFIXES = [
   "/help",
   "/onboarding",
   "/rulle",
+  "/club",
+  "/coaches",
 ];
 
 /** Pathname with any locale prefix removed, e.g. /en/login → /login. */

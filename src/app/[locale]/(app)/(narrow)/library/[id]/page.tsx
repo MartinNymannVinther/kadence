@@ -43,8 +43,11 @@ export default async function TemplatePage({ params }: { params: Promise<{ id: s
   const [me, template] = await Promise.all([whoAmI(ctx.orgId, ctx.userId), getTemplate(ctx, id)]);
   if (!template) notFound();
   const isCoach = Boolean(me?.isCoach);
-  const editable = isCoach && template.source === "own";
-  const riders = await ridersToPlanFor(ctx, me);
+  // A rider's own session is the rider's to change (ADR 0050); the team's, a coach's.
+  const own = template.riderId !== null;
+  const editable = own ? me?.rider?.id === template.riderId : isCoach && template.source === "own";
+  const allRiders = await ridersToPlanFor(ctx, me);
+  const riders = own ? allRiders.filter((r) => r.id === template.riderId) : allRiders;
   const sport = template.sport as "bike" | "strength" | "other";
   const card = {
     id: template.id,
@@ -68,18 +71,23 @@ export default async function TemplatePage({ params }: { params: Promise<{ id: s
       <PageHeader
         size="detail"
         title={template.name}
-        subtitle={template.source === "dcu" ? t("dcuSubtitle") : undefined}
+        subtitle={
+          template.source === "dcu" ? t("dcuSubtitle") : own ? t("own.detailSubtitle") : undefined
+        }
         kicker={template.source === "dcu" ? <Badge variant="secondary">DCU</Badge> : undefined}
       />
-      <TemplateActions
-        template={card}
-        riders={riders}
-        isCoach={isCoach}
-        today={todayInCopenhagen()}
-        showEdit={false}
-      />
+      {!own && (
+        <TemplateActions
+          template={card}
+          riders={riders}
+          isCoach={isCoach}
+          today={todayInCopenhagen()}
+          showEdit={false}
+        />
+      )}
       {editable ? (
         <TemplateEditor
+          assist={!own}
           template={{
             id: template.id,
             name: template.name,

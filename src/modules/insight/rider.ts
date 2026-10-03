@@ -1,8 +1,11 @@
 import { addDaysIso, mondayOf } from "@/core/dates";
 import type { CheckinRow, RiderRow } from "@/core/db/schema";
-import { LONGEST_RIDE, seasonStartYear, weeklyCorridor, type WeeklyCorridor } from "@/modules/dcu";
+import { seasonStartYear, type WeeklyCorridor } from "@/modules/dcu";
+import { DCU_2025, profileFor, type GuidanceId, type Paradigm } from "@/modules/paradigms";
 import {
+  MID_ZONE_WEEKS,
   compliance,
+  countIntensity,
   forecastForm,
   guardrails,
   loadSeries,
@@ -13,6 +16,8 @@ import {
   type Flag,
   type FlagKind,
   type Forecast,
+  type IntensityRace,
+  type IntensitySession,
   type LoadDay,
   type ResolvedFlag,
   type Severity,
@@ -46,6 +51,8 @@ export type RiderInsight = {
   name: string;
   category: string;
   basis: string | null;
+  /** The paradigm the team plans by (ADR 0049); "none" without one. */
+  guidance: GuidanceId;
   week: { monday: string; plannedHours: number; plannedBikeHours: number; total: WeekTotal | null };
   corridor: WeeklyCorridor | null;
   series: LoadDay[];
@@ -71,11 +78,18 @@ export function riderInsight(
   wellbeingVisible: boolean,
   races: readonly InsightRace[] = [],
   resolutions: readonly InsightResolution[] = [],
+  /** The team's paradigm (ADR 0049); null leaves the corridor and the longest ride out. */
+  paradigm: Paradigm | null = DCU_2025,
+  /**
+   * The planned bike sessions and races of the last four weeks, when the
+   * team uses "Lav intensitet først" (ADR 0053); null leaves its flag out.
+   */
+  intensity: { sessions: IntensitySession[]; races: IntensityRace[] } | null = null,
 ): RiderInsight {
   const monday = mondayOf(todayIso);
   const sunday = addDaysIso(monday, 6);
   const klass = riderClass(rider, seasonStartYear(todayIso));
-  const corridor = klass.basis ? weeklyCorridor(klass.basis, monday) : null;
+  const corridor = paradigm && klass.basis ? paradigm.weeklyCorridor(klass.basis, monday) : null;
 
   const from = addDaysIso(todayIso, -(SERIES_DAYS + WARMUP_DAYS));
   const all = loadSeries(
@@ -139,6 +153,8 @@ export function riderInsight(
   );
   const age = Number(todayIso.slice(0, 4)) - rider.birthYear;
   const latest = checks.at(-1);
+  const profile = intensity ? profileFor(Number(todayIso.slice(5, 7))) : null;
+  const windowFrom = addDaysIso(monday, -7 * (MID_ZONE_WEEKS - 1));
 
   const flags = guardrails({
     bikeHours:
@@ -147,8 +163,8 @@ export function riderInsight(
     previousWeeksHours: previous,
     longestRide: longest,
     longestRideLimit:
-      klass.category === "U17" || klass.category === "U19" || klass.category === "U23"
-        ? LONGEST_RIDE[klass.category]
+      paradigm && (klass.category === "U17" || klass.category === "U19" || klass.category === "U23")
+        ? paradigm.longestRide(klass.category)
         : null,
     strengthDates,
     wellbeing,
@@ -156,6 +172,13 @@ export function riderInsight(
     sleepHours: wellbeingVisible ? lastSeven : [],
     sleepMinimum: age < 18 ? 8 : null,
     compliance: colours,
+    intensity:
+      intensity && profile
+        ? {
+            count: countIntensity(intensity.sessions, intensity.races, windowFrom, sunday),
+            midMax: profile.midMax,
+          }
+        : null,
   });
   const { open, resolved } = splitResolved(flags, resolutions);
 
@@ -164,6 +187,7 @@ export function riderInsight(
     name: rider.name,
     category: klass.category,
     basis: klass.basis,
+    guidance: paradigm?.id ?? "none",
     week: {
       monday,
       plannedHours: openPlanned.reduce((s, p) => s + p.plannedMinutes / 60, 0),

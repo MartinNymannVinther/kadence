@@ -14,3 +14,6 @@ export * from "./results";
 export * from "./resets";
 export * from "./ai";
 export * from "./demo";
+export * from "./club";
+export * from "./championship";
+export * from "./community";

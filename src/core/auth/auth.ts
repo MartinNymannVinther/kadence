@@ -1,11 +1,15 @@
 import { passkey } from "@better-auth/passkey";
-import { eq } from "drizzle-orm";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { APIError, createAuthMiddleware, getSessionFromCtx } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
 import { organization, twoFactor } from "better-auth/plugins";
 import { platformRoleForNewUser } from "@/core/access/service";
+import {
+  canCreateWorkspace,
+  defaultWorkspaceId,
+  markWorkspaceUsed,
+} from "@/core/access/workspaces";
 import { recordAuthEvent } from "@/core/audit/events";
 import { authDb } from "@/core/db/client";
 import * as schema from "@/core/db/schema";
@@ -21,16 +25,6 @@ import {
 } from "./signup";
 
 const baseUrl = new URL(env.BETTER_AUTH_URL);
-
-/** First membership of the user, used as the initial active organization. */
-async function getDefaultOrganizationId(userId: string): Promise<string | null> {
-  const rows = await authDb
-    .select({ organizationId: schema.memberships.organizationId })
-    .from(schema.memberships)
-    .where(eq(schema.memberships.userId, userId))
-    .limit(1);
-  return rows[0]?.organizationId ?? null;
-}
 
 export const auth = betterAuth({
   appName: "Kadence",
@@ -73,7 +67,7 @@ export const auth = betterAuth({
       await recordAuthEvent({
         action: "auth.password_reset",
         actorUserId: user.id,
-        orgId: await getDefaultOrganizationId(user.id),
+        orgId: await defaultWorkspaceId(user.id),
         entityType: "users",
         entityId: user.id,
       });
@@ -109,7 +103,7 @@ export const auth = betterAuth({
         before: async (session) => ({
           data: {
             ...session,
-            activeOrganizationId: await getDefaultOrganizationId(session.userId),
+            activeOrganizationId: await defaultWorkspaceId(session.userId),
           },
         }),
         after: async (session) => {
@@ -145,6 +139,14 @@ export const auth = betterAuth({
       }
     }),
     after: createAuthMiddleware(async (ctx) => {
+      // The club opened last is the one the next login opens (ADR 0048).
+      // Before the coach-only trim below, which answers set-active itself.
+      if (ctx.path === "/organization/set-active") {
+        const returned = ctx.context.returned as { id?: unknown } | null | undefined;
+        const session = ctx.context.session ?? (await getSessionFromCtx(ctx));
+        const orgId = returned && !(returned instanceof Error) ? returned.id : null;
+        if (session && typeof orgId === "string") await markWorkspaceUsed(session.user.id, orgId);
+      }
       // The team's invitations and addresses are the coaches' (coach-only.ts).
       if (COACH_ONLY_PATHS.has(ctx.path)) {
         const returned = ctx.context.returned;
@@ -178,6 +180,12 @@ export const auth = betterAuth({
       // with it (drizzle/0003); the plugin's own delete would leave the
       // riders' check-ins in the trail.
       disableOrganizationDeletion: true,
+      // A new club comes in through the owner's approval (ADR 0048).
+      allowUserToCreateOrganization: async (user) => canCreateWorkspace(user.id),
+      // A club with forty riders, their parents and the coaches is past
+      // Better Auth's default of 100 members.
+      membershipLimit: 500,
+      invitationLimit: 200,
       schema: {
         organization: { modelName: "organizations" },
         member: { modelName: "memberships" },

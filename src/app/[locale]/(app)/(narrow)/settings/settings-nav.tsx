@@ -37,6 +37,7 @@ export function SettingsNav({
     ? [
         ...ITEMS.slice(0, 3),
         { href: "/settings/access", key: "access" } as const,
+        { href: "/settings/installation", key: "installation" } as const,
         ...ITEMS.slice(3),
       ]
     : ITEMS;

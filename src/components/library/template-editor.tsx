@@ -21,7 +21,13 @@ export function TemplateEditor({
   template,
   sport,
   assistOpen = false,
+  riderId,
+  assist = true,
 }: {
+  /** A rider's own session (ADR 0050); absent for the team's library. */
+  riderId?: string;
+  /** "Byg med AI" is a coach's (ADR 0038). */
+  assist?: boolean;
   /** The sport a new template starts on. */
   sport?: "bike" | "strength";
   /** "Byg med AI" open on arrival (`?ai=1`). */
@@ -55,7 +61,7 @@ export function TemplateEditor({
     }
     setProblem(null);
     const { title, plannedKm: _km, ...rest } = checked.value;
-    const input = { name: title, ...rest };
+    const input = { name: title, ...rest, ...(riderId ? { riderId } : {}) };
     if (template) {
       await run(() => updateTemplateAction({ templateId: template.id, ...input }), {
         success: common("saved"),
@@ -75,7 +81,12 @@ export function TemplateEditor({
       className="grid max-w-5xl gap-5 lg:grid-cols-[minmax(0,1fr)_17rem] lg:gap-x-6"
     >
       <div className="flex min-w-0 flex-col gap-5">
-        <SessionFields draft={draft} onChange={setDraft} assist assistOpen={assistOpen} />
+        <SessionFields
+          draft={draft}
+          onChange={setDraft}
+          assist={assist}
+          assistOpen={assist && assistOpen}
+        />
       </div>
       <div className="max-lg:hidden lg:row-span-3">
         <div className="sticky top-6">

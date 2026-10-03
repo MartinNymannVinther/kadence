@@ -2,10 +2,10 @@ import { addDaysIso } from "@/core/dates";
 import {
   CORRIDOR_BAND,
   COUNTS_TOWARD_DCU_HOURS,
-  monthHours,
   seasonStartYear,
   type ClassBasis,
 } from "@/modules/dcu";
+import { DCU_2025, type Paradigm } from "@/modules/paradigms";
 
 /**
  * How much a rider rides against the season plan, in four numbers that
@@ -50,6 +50,8 @@ export type Volume = {
   done: number;
   /** Done, plus the bike sessions still to ride from today on: where the range is heading. */
   expected: number;
+  /** Whether the team plans by a paradigm (ADR 0049); without, `dcu` is always null. */
+  guided: boolean;
 };
 
 export type VolumeState = "under" | "inside" | "over";
@@ -80,14 +82,20 @@ export function volumeOf(input: {
   sessions: ReadonlyArray<VolumeSession>;
   activities: ReadonlyArray<VolumeActivity>;
   today: string;
+  /** The team's paradigm (ADR 0049); null leaves the reference number out. */
+  paradigm?: Paradigm | null;
 }): Volume {
-  let dcu: number | null = 0;
+  const paradigm = input.paradigm === undefined ? DCU_2025 : input.paradigm;
+  let dcu: number | null = paradigm ? 0 : null;
   let goal: number | null = 0;
   for (const day of days(input.range)) {
     const [year, month] = day.split("-").map(Number) as [number, number];
     const frame = input.frameOf(seasonStartYear(day));
     const share = 1 / daysInMonth(year, month);
-    dcu = dcu === null || !frame.basis ? null : dcu + monthHours(frame.basis, month) * share;
+    dcu =
+      dcu === null || !frame.basis || !paradigm
+        ? null
+        : dcu + paradigm.monthHours(frame.basis, month) * share;
     const planned = frame.goal?.find((m) => m.month === month);
     goal = goal === null || !planned ? null : goal + planned.hours * share;
   }
@@ -111,6 +119,7 @@ export function volumeOf(input: {
     planned,
     done,
     expected: done + ahead,
+    guided: paradigm !== null,
   };
 }
 

@@ -17,15 +17,27 @@ export function MobileHeader({
   userName,
   userEmail,
   organization,
+  logo = null,
+  canCreate = false,
   attention = 0,
   isCoach = false,
   rides = false,
+  club = false,
+  counts = {},
 }: {
   userName: string;
   userEmail: string;
   organization: string;
+  /** The club's logo, when it has one (ADR 0048). */
+  logo?: string | null;
+  /** The installation's owner may create workspaces; nobody else sees the button. */
+  canCreate?: boolean;
   attention?: number;
   isCoach?: boolean;
+  /** The club keeps a club championship (ADR 0051). */
+  club?: boolean;
+  /** Counts beside menu items (ADR 0052). */
+  counts?: Partial<Record<string, number>>;
   rides?: boolean;
 }) {
   const t = useTranslations("app.nav");
@@ -45,11 +57,18 @@ export function MobileHeader({
             <SheetContent side="left" className="bg-sidebar w-[262px]">
               <SheetTitle className="sr-only">{t("menuTitle")}</SheetTitle>
               <div className="px-4 pt-5 pb-3">
-                <WordmarkLockup organization={organization} />
+                <WordmarkLockup organization={organization} logo={logo} />
               </div>
-              <SidebarNav onNavigate={() => setOpen(false)} isCoach={isCoach} rides={rides} />
+              <SidebarNav
+                onNavigate={() => setOpen(false)}
+                isCoach={isCoach}
+                rides={rides}
+                club={club}
+                counts={counts}
+              />
               <div className="flex flex-col gap-1.5 px-3 pt-1 pb-3">
                 <OrgSwitcher
+                  canCreate={canCreate}
                   triggerClassName="text-sidebar-foreground hover:bg-sidebar-hover h-auto w-full justify-between rounded-[9px] px-3 py-2.5 text-sm font-normal"
                   label={tOrg("switch")}
                 />

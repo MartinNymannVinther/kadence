@@ -48,9 +48,18 @@ export function Wordmark({ className, tone }: { className?: string; tone?: "bran
 
 /**
  * Sidebar lockup: mark and wordmark over the workspace name, the way the
- * app identifies both product and tenant in one block.
+ * app identifies both product and tenant in one block. A club that has
+ * uploaded a logo (ADR 0048) has it beside its name; the family's mark
+ * stays where it is.
  */
-export function WordmarkLockup({ organization }: { organization?: string }) {
+export function WordmarkLockup({
+  organization,
+  logo,
+}: {
+  organization?: string;
+  /** URL of the club's logo, when it has one. */
+  logo?: string | null;
+}) {
   return (
     <span className="flex items-center gap-2.5">
       <HaijMark className="h-5" />
@@ -59,8 +68,14 @@ export function WordmarkLockup({ organization }: { organization?: string }) {
           {PRODUCT_NAME}
         </span>
         {organization ? (
-          <span className="text-meta mt-1 truncate text-xs leading-none font-normal">
-            {organization}
+          <span className="text-meta mt-1 flex min-w-0 items-center gap-1.5 text-xs leading-none font-normal">
+            {logo ? (
+              // The image is the club's own, served behind its login; next/image
+              // would fetch it without the session and get nothing.
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={logo} alt="" className="size-4 shrink-0 rounded-sm object-contain" />
+            ) : null}
+            <span className="truncate">{organization}</span>
           </span>
         ) : null}
       </span>

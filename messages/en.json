@@ -182,10 +182,13 @@
       "today": "Today",
       "calendar": "Calendar",
       "riders": "Riders",
+      "coaches": "Coaches' room",
       "library": "Workout library",
       "season": "Season",
+      "club": "Club champion",
       "parents": "Parents",
-      "rulle": "Rulle"
+      "rulle": "Rulle",
+      "guides": "Guides and calculators"
     },
     "orgSwitcher": {
       "label": "Workspace",
@@ -291,6 +294,7 @@
       "security": "Security",
       "about": "About",
       "access": "Access",
+      "installation": "Installation",
       "workspace": "Workspace",
       "ai": "AI",
       "data": "Data",
@@ -361,7 +365,49 @@
         "failed": "The workspace was not deleted. Try again.",
         "notOwner": "Only the workspace owner can delete it.",
         "nameMismatch": "That name does not match. Type the workspace's name exactly."
+      },
+      "images": {
+        "title": "Logo and picture",
+        "body": "The club's logo sits by its name in the menu, and the picture sits at the top of the Today page for everyone in the club. The picture is made smaller in your browser before it is sent, and details such as a GPS position are removed.",
+        "logo": "Logo",
+        "cover": "Club picture",
+        "logoHint": "Square works best. PNG, JPEG or WebP.",
+        "coverHint": "A wide picture, from a race or a training ride for example. PNG, JPEG or WebP.",
+        "choose": "Choose picture",
+        "replace": "Change picture",
+        "remove": "Remove",
+        "uploading": "Sending …",
+        "none": "No picture yet.",
+        "saved": "The picture is saved.",
+        "removed": "The picture is removed.",
+        "errors": {
+          "format": "The file is not a PNG, JPEG or WebP image.",
+          "tooLarge": "The picture is too large, even after scaling. Try a smaller one.",
+          "dimensions": "The picture is too wide or too tall. Try a smaller one.",
+          "forbidden": "Only the team's coaches can change the logo and picture.",
+          "generic": "The picture could not be saved. Try again in a moment."
+        }
       }
+    },
+    "installation": {
+      "title": "Installation",
+      "subtitle": "The clubs on this installation, in figures. People's names, training and check-ins belong in the clubs themselves.",
+      "totals": "{clubs, plural, one {# club} other {# clubs}} with {coaches, plural, one {# coach} other {# coaches}}, {riders, plural, one {# rider} other {# riders}} and {parents, plural, one {# parent} other {# parents}}.",
+      "none": "There are no clubs on the installation yet.",
+      "club": "Club",
+      "coaches": "Coaches",
+      "riders": "Riders",
+      "parents": "Parents",
+      "lastSeen": "Last active",
+      "files": "Files",
+      "ai": "AI calls (day)",
+      "created": "Created {date}",
+      "never": "Not yet",
+      "megabytes": "{mb, number} MB",
+      "privacy": "You see figures and the clubs' names, which is all the database hands over here.",
+      "newClub": "A new club comes in through an application you approve.",
+      "toAccess": "Go to Access",
+      "help": "If a club wants help, it can invite you as a coach for a while. It shows in its member list and in the log, and the club removes you again afterwards."
     },
     "ai": {
       "title": "AI",
@@ -530,6 +576,15 @@
       "coachOnly": "Only coaches can change them.",
       "kindTitle": "What kind of team",
       "kindBody": "Used for the team's defaults. Each rider's class still comes from their birth year.",
+      "guidanceTitle": "Training basis",
+      "guidanceBody": "Kadence can guide the team by DCU's recommendations for each class: the hours in the season plan, the week's range and the longest ride. You can turn it off and on whenever you like.",
+      "guidance": "Guided by DCU's recommendations",
+      "guidanceHint": "When on, the season plan starts from DCU's hours and the week is shown against DCU's range. When off, you set your own hours, and the points about DCU's range and the longest ride go away. Pain, wellbeing, sleep, the week-to-week rise and the classes' race rules stay, whichever you choose.",
+      "lowIntensity": "Measure sessions against \"Low intensity first\"",
+      "lowIntensityHint": "A profile from the research that sits on top of the hours, with or without DCU. From November to February at least 75–80 % of the bike sessions sit in the low zone, at most 10 % in the middle zone and the rest in the high zone. When the middle zone grows large over the last four weeks, it appears among the possible points of attention. The spread is always shown in the season plan.",
+      "clubTitle": "Club championship",
+      "club": "Club championship in Kadence",
+      "clubHint": "Off by default. When on, the club gets a page with the season's rounds, the standings and the club champions over the years. It is the only place where riders and parents see placings.",
       "kinds": {
         "U17": "U17",
         "U19": "U19",
@@ -540,7 +595,7 @@
       "weight": "Allow weight for riders under 19",
       "weightHint": "Off by default. A focus on weight and W/kg can lead to low energy availability and eating disorders in young people, as Team Danmark's ATK warns. Only turn it on for a good reason.",
       "ai": "May the AI read the riders' data",
-      "aiHint": "Off by default. The riders' training and check-ins are health data about young people. If you turn it on, the AI may read them when a coach asks for a week proposal or a summary of who needs attention. It never writes anything itself.",
+      "aiHint": "Off by default. The riders' training and check-ins are health data about young people. If you turn it on, the AI may read them when a coach asks for a week proposal or a summary of the week's points of attention. It never writes anything itself.",
       "on": "On",
       "off": "Off"
     }
@@ -675,8 +730,8 @@
         "body": "Every session gets a load. With a power meter it is worked out from power, otherwise from heart rate, and otherwise from how hard the session felt (RPE from 1 to 10) times the minutes. The last works for every session, strength too. An hour at threshold counts 100, and an easy hour at RPE 3 about 17. Fitness is what the last six weeks have built. Fatigue is what the last week has cost. Freshness is fitness minus fatigue: above zero you are rested, below zero tired, and a little below zero is normal in the middle of a training week."
       },
       "warnings": {
-        "title": "Warnings",
-        "body": "Kadence shows the coach when a week goes past the limits, but does not decide. The warnings are: hours on the bike above or below DCU's range for the week, more than 15 % more hours than the last weeks, a ride longer than DCU's limit (U17 at most 4 hours or 120 km, U19 at most 5 hours or 150 km), strength sessions less than 48 hours apart, too little sleep, pain on ATK's pain ladder, and check-ins in the yellow or red zone. Each warning has a word for how much it matters: \"Act now\", \"Take a look\" or \"Good to know\"."
+        "title": "Points of attention",
+        "body": "Kadence shows the coach when a week goes past the limits, and the coach decides what happens. The points are: hours on the bike above or below DCU's range for the week, more than 15 % more hours than the last weeks, a ride longer than DCU's limit (U17 at most 4 hours or 120 km, U19 at most 5 hours or 150 km), strength sessions less than 48 hours apart, too little sleep, pain on ATK's pain ladder, and check-ins in the yellow or red zone. Each point has a word for how much it matters: \"Important now\", \"Worth a look\" or \"Good to know\"."
       },
       "checkin": {
         "title": "Check-in and wellbeing zones",
@@ -708,7 +763,7 @@
       },
       "ai": {
         "title": "The AI",
-        "body": "The AI may propose, never decide. It can read a coach's shorthand like \"3x10 min Z4 / 5 min rest\" into steps (the rules manage most of it without any language model), propose a week for a rider, and write a short summary of who needs attention. Nothing goes in the calendar until a coach presses. It never writes to a rider and never deletes anything. Week proposals and the summary read the riders' data, so they only work if the team has turned on \"May the AI read the riders' data\" under Settings → Team. Without a language model everything else works as before."
+        "body": "The AI proposes, and the coach decides. It can read a coach's shorthand like \"3x10 min Z4 / 5 min rest\" into steps (the rules manage most of it without any language model), propose a week for a rider, and write a short summary of the week's points of attention. Nothing goes in the calendar until a coach presses. It never writes to a rider and never deletes anything. Week proposals and the summary read the riders' data, so they only work if the team has turned on \"May the AI read the riders' data\" under Settings → Team. Without a language model everything else works as before."
       }
     }
   },
@@ -849,7 +904,8 @@
       "bike": "On the bike against the season plan",
       "bikeFor": "On the bike against the season plan, {basis}",
       "of": "{done} of {planned} h",
-      "strength": "Strength: {done} of {planned, plural, one {# session} other {# sessions}} done. DCU recommends {dcu} a week."
+      "strength": "Strength: {done} of {planned, plural, one {# session} other {# sessions}} done. DCU recommends {dcu} a week.",
+      "strengthOwn": "Strength: {done} of {planned, plural, one {# session} other {# sessions}} done."
     },
     "actions": {
       "addSession": "Add session",
@@ -1067,6 +1123,21 @@
   },
   "library": {
     "title": "Workout library",
+    "own": {
+      "titleRider": "My sessions",
+      "subtitleRider": "Sessions you built yourself. Your coach can see them and take them into the team's library.",
+      "titleCoach": "Riders' own sessions",
+      "subtitleCoach": "Sessions the riders built themselves. Take one into the team's library so the whole team can use it.",
+      "emptyRider": "The sessions you build yourself will be here. Start with the buttons above.",
+      "emptyCoach": "When a rider builds sessions of their own, they appear here.",
+      "schedule": "Put in the calendar",
+      "edit": "Edit",
+      "adopt": "Take into the team's library",
+      "adopted": "Taken into the library",
+      "adoptedNow": "The session is now in the team's library.",
+      "newSubtitle": "Your own session. You can put it in your calendar, and your coach can see it.",
+      "detailSubtitle": "A rider's own session."
+    },
     "subtitle": "The team's sessions and programmes, ready to put in the calendar.",
     "newBike": "New bike session",
     "newStrength": "New strength session",
@@ -1743,44 +1814,45 @@
     "ahead": "If the plan is ridden",
     "today": "Today",
     "readoutAhead": "{date}, if the plan is ridden: fitness {fitness} · fatigue {fatigue} · freshness {form}",
-    "aheadRace": "If {name} rides what is planned, freshness is expected to be {form} at {title} ({priority} race, {date}). A forecast to plan with, not a target.",
+    "aheadRace": "If {name} rides what is planned, freshness is expected to be {form} at {title} ({priority} race, {date}). A forecast to plan with.",
     "aheadNoRace": "The dashed lines show where the curves are heading over the next {days, plural, one {# day} other {# days}} if the plan is ridden.",
     "you": "you"
   },
   "insight": {
-    "title": "Needs attention",
-    "subtitle": "From the week's hours, the check-ins and DCU's ranges. Suggestions for who to talk to, not rules.",
-    "riderTitle": "Warnings",
-    "noFlags": "No warnings this week.",
-    "allCalm": "No warnings this week. The team looks to be in balance.",
-    "allResolved": "Every warning this week has been resolved.",
-    "othersCalm": "{count, plural, one {# more rider has no warnings.} other {# more riders have no warnings.}}",
+    "title": "Possible points of attention",
+    "subtitle": "From the week's hours, the check-ins and DCU's ranges.",
+    "riderTitle": "Points of attention",
+    "noFlags": "The week looks calm.",
+    "allCalm": "The team looks to be in balance this week.",
+    "allResolved": "Every point this week has been resolved.",
+    "othersCalm": "{count, plural, one {# more rider looks to be in balance.} other {# more riders look to be in balance.}}",
     "modelNote": "The wellbeing zones follow Kolding Talent's wellbeing model from Team Danmark's guide for parents: yellow for a while means a conversation between rider, parent and coach within 14 days, and red means professionals should be involved. Kadence never diagnoses.",
     "basis": "{category} year {year}",
     "severity": {
-      "alert": "Act now",
-      "warn": "Take a look",
+      "alert": "Important now",
+      "warn": "Worth a look",
       "info": "Good to know"
     },
     "action": {
-      "talk": "Have a talk within 14 days",
-      "help": "Seek professional help"
+      "talk": "A talk within 14 days",
+      "help": "Professional help is recommended"
     },
     "flag": {
       "hours_above_corridor": "The week is {hours} h on the bike, ridden and planned, above DCU's range of {high} h for {klass}.",
       "hours_below_corridor": "The week is {hours} h on the bike, ridden and planned, below DCU's range of at least {low} h for {klass}.",
       "ramp": "The week is {hours} h on the bike, {percent} % more than the average of {average} h in the last weeks. More than {limit} % from week to week raises the risk of injury.",
-      "longest_ride": "The longest ride this week was {hours} h. DCU says at most {limitHours} h or {limitKm} km for the class.",
-      "longest_ride_km": "The longest ride this week was {hours} h and {km} km. DCU says at most {limitHours} h or {limitKm} km for the class.",
-      "strength_spacing": "The strength sessions on {first} and {second} are too close. DCU recommends at least 48 hours between them.",
+      "longest_ride": "The longest ride this week was {hours} h. DCU recommends at most {limitHours} h or {limitKm} km for the class.",
+      "longest_ride_km": "The longest ride this week was {hours} h and {km} km. DCU recommends at most {limitHours} h or {limitKm} km for the class.",
+      "strength_spacing": "The strength sessions on {first} and {second} are close together. DCU recommends at least 48 hours between them.",
       "wellbeing_talk": "{days, plural, one {Check-ins in the yellow zone on # day in the last three weeks.} other {Check-ins in the yellow zone on # days in the last three weeks.}}",
       "wellbeing_help_red": "A check-in in the red zone in the last seven days.",
       "wellbeing_help_long": "{days, plural, one {Check-ins in the yellow zone three weeks running (# day).} other {Check-ins in the yellow zone three weeks running (# days).}}",
-      "pain_2": "Pain at step 2: when training starts and the next day. ATK says: cut training by at least half, skip races, and have a therapist look at it.",
-      "pain_3": "Pain at step 3: during training or in everyday life. ATK says: pause what hurts until a physiotherapist or doctor has looked at it.",
+      "pain_2": "Pain at step 2: when training starts and the next day. ATK recommends cutting training by at least half, skipping races, and having a therapist look at it.",
+      "pain_3": "Pain at step 3: during training or in everyday life. ATK recommends a pause from what hurts until a physiotherapist or doctor has looked at it.",
       "sleep_short": "{nights, plural, one {Sleep has averaged {average} h over the last night, under {limit} h.} other {Sleep has averaged {average} h over the last # nights, under {limit} h.}}",
       "sleep_below_minimum": "{nights, plural, one {Sleep has averaged {average} h over the last night. 14–17-year-olds need at least {minimum} h.} other {Sleep has averaged {average} h over the last # nights. 14–17-year-olds need at least {minimum} h.}}",
-      "compliance": "{red} of {judged} sessions this week have not gone as planned. Perhaps the plan does not fit the week.",
+      "compliance": "{red} of {judged} sessions this week went differently from the plan. Perhaps the plan can be fitted to the week.",
+      "mid_zone": "The middle zone holds {mid} % of the {sessions} sessions and race days over the last four weeks. \"Low intensity first\" puts at most {limit} % there from November to February.",
       "signs": "Signs: {signs}"
     },
     "sign": {
@@ -1800,7 +1872,7 @@
       "show": "Show",
       "hide": "Hide",
       "undo": "Undo",
-      "weekNote": "A resolution lasts the week unless the numbers get clearly worse. If the same thing comes up next week, it is a new warning. The Monday brief and the tips see only what is not resolved; the week draft sees every warning, because it plans load."
+      "weekNote": "A resolution lasts the week unless the numbers get clearly worse. If the same thing comes up next week, it is a new point. The Monday brief and the tips see the points still open; the week draft sees every point, because it plans load."
     }
   },
   "wellbeing": {
@@ -2170,7 +2242,7 @@
       "byTime": "The curves line up by time from the start, because at least one ride has no speed.",
       "tooFew": "There are not two rides to compare",
       "tooFewHint": "You can only see riders whose training you have access to.",
-      "note": "Riders are in the team's order, not by number. No ranking: it is the same ride seen from several saddles."
+      "note": "Riders are in the team's order: it is the same ride seen from several saddles."
     },
     "plan": {
       "title": "The plan against the ride: {title}",
@@ -2200,7 +2272,7 @@
         "over": "Over",
         "none": "No target"
       },
-      "note": "Averages over the step's seconds against the target at the rider's current thresholds. Under and over are numbers, not grades: a step over target in a VO2 set can be right, and one under can be wise."
+      "note": "Averages over the step's seconds against the target at the rider's current thresholds. Under and over are numbers to read in context: a step over target in a VO2 set can be right, and one under can be wise."
     }
   },
   "season": {
@@ -2231,9 +2303,11 @@
     "none": {
       "title": "No season plan yet",
       "body": "The plan is filled with DCU's hours for the class, month by month from October to September. Afterwards you can change anything, and the deviation from DCU always stands beside it.",
+      "bodyOwn": "The team plans without DCU's hours, so the plan starts empty, month by month from October to September. You type in the hours yourself.",
       "readOnly": "There is no season plan for this season yet. The coach or the rider can make one."
     },
     "create": "Create from DCU",
+    "createOwn": "Create an empty plan",
     "created": "The season plan is made from DCU.",
     "basisLabel": "Plan from",
     "pickBasis": "Choose a class",
@@ -2241,6 +2315,7 @@
     "noClass": "The rider is not in one of DCU's classes (U17 to U23) this season. Choose the class the plan should build on.",
     "basis": "{category} year {year}",
     "basisNow": "The plan builds on DCU's hours for {basis}.",
+    "basisOwn": "The team plans with its own hours. The rider is {basis}.",
     "reset": {
       "button": "Fill again from DCU",
       "title": "Fill the plan again from DCU?",
@@ -2303,7 +2378,33 @@
     "planNote": "Note for the season",
     "planNotePlaceholder": "E.g. the season's goals, or why the plan differs from DCU",
     "totals": "The season in total: goal {plan} h · planned {scheduled} h · done {ridden} h · DCU {dcu} h",
+    "totalsOwn": "The season in total: goal {plan} h · planned {scheduled} h · done {ridden} h",
     "readOnlyNote": "You can see the plan. The coach and the rider can change it.",
+    "intensity": {
+      "title": "Intensity week by week",
+      "body": "Each bike session counts once, in the zone it is planned for: low, middle or high. A race day counts as a hard session. Strength and other training are left out.",
+      "zones": "The zones fold together like this: Z1–Z2 low, Z3–Z4 middle and Z5–Z7 high.",
+      "low": "Low",
+      "mid": "Middle",
+      "high": "High",
+      "week": "Week {week}",
+      "thisWeek": "this week",
+      "bar": "{low} low, {mid} middle and {high} high sessions",
+      "races": "{count, plural, one {# race day} other {# race days}}",
+      "unknown": "{count, plural, one {# session without a target} other {# sessions without a target}}",
+      "empty": "No bike sessions in the plan",
+      "recent": "The last four weeks: {low} % low, {mid} % middle and {high} % high, of {sessions} sessions and race days.",
+      "recentNone": "The last four weeks have no sessions with a target yet.",
+      "dcu": "DCU's year wheel for {month}: {share} of the volume at higher intensity, tempo included. DCU counts hours; here sessions are counted.",
+      "dcuShare": {
+        "1": "at least 10 %",
+        "2": "about 15–20 %",
+        "11": "0 %",
+        "12": "about 10 %"
+      },
+      "profile": "Low intensity first: at least {lowMin}–{lowTarget} % low, at most {midMax} % middle and the rest high from November to February.",
+      "profileOff": "You can measure the sessions against the profile \"Low intensity first\" under Settings → Team."
+    },
     "chart": {
       "title": "Hours per month",
       "planned": "Goal",
@@ -2312,11 +2413,12 @@
       "dcu": "DCU",
       "label": "Hours on the bike per month in the season: goal, planned, done and DCU's hours",
       "readout": "{month}: goal {plan} h · planned {scheduled} h · done {ridden} h · DCU {dcu} h",
+      "readoutOwn": "{month}: goal {plan} h · planned {scheduled} h · done {ridden} h",
       "hint": "Point at a month, or use the arrow keys, to see the numbers."
     },
     "reference": {
       "title": "DCU's recommendations",
-      "body": "The hours are DCU's road training recommendations for 2025. Only hours on the bike count, not strength, running or anything else.",
+      "body": "The hours are DCU's road training recommendations for 2025. Only hours on the bike count; strength, running and the rest are counted apart.",
       "phasesTitle": "The season's phases",
       "zonesTitle": "Zones: Kadence's and DCU's",
       "zonesBody": "Kadence's seven zones are Kadence's own and are worked out from FTP and threshold heart rate. DCU uses five heart-rate bands in percent of heart-rate reserve: working pulse minus resting pulse, divided by maximum pulse minus resting pulse. They are shown here for comparison.",
@@ -2434,7 +2536,7 @@
       "ask": "Write a summary",
       "thinking": "Thinking …",
       "title": "Summary from the AI",
-      "nothing": "No riders need attention, so there is nothing to summarise.",
+      "nothing": "The week looks calm, so there is nothing to summarise.",
       "noSummary": "The AI has nothing to add to the list.",
       "off": "A short summary from the AI needs the team to have turned on \"May the AI read the riders' data\".",
       "offLink": "Settings → Team"
@@ -2676,7 +2778,7 @@
   "coachGuide": {
     "title": "Coach guide",
     "intro": "Advice for coaches of U17, U19 and U23 riders, gathered from DCU, Team Danmark, DIF, Anti Doping Danmark and the law. In Kadence's own words, with links to the originals.",
-    "note": "The guide is guidance, not rules. Kadence enforces none of it; you, the rider and the parents decide. With injury and illness, the doctor does.",
+    "note": "The guide is guidance for you. You, the rider and the parents decide, and with injury and illness, the doctor does.",
     "contents": "Contents",
     "sources": "Sources",
     "opensElsewhere": "(opens on another site)",
@@ -2720,8 +2822,8 @@
         "title": "Volume and season",
         "intro": "Kadence plans from DCU's recommended hours for the rider's class and year and shows a corridor around them.",
         "points": {
-          "1": "Train neither much more nor much less than the recommendations. They are guidance for the coach, not a rule.",
-          "2": "In U17 the most important thing is not to train too much, because too much volume kills motivation. In U19 it is natural to raise the volume 10–15 % a year.",
+          "1": "Stay close to the recommendations, both up and down. They are guidance for you as a coach.",
+          "2": "In U17 the most important thing is to keep the volume moderate, so the motivation lasts. In U19 it is natural to raise the volume 10–15 % a year.",
           "3": "Avoid big jumps in volume, on training camps too. Build in lighter weeks, because recovery is often what releases the progress.",
           "4": "Do not stop completely in the winter. October is a break and free riding, and then the build starts again."
         }
@@ -2732,7 +2834,7 @@
         "points": {
           "1": "From November to mid-March, 2–3 strength sessions a week with at least 48 hours between them are recommended, then 1 a week. U17 and U19 riders should reach at least 30 sessions over the winter.",
           "2": "Strength training is not dangerous for young people and does not stunt growth. Give free-weight lifts time for technique before the load goes up.",
-          "3": "Start with controlled repetitions, not to failure. DCU's own texts disagree on a few points, and Kadence shows the differences rather than hiding them.",
+          "3": "Start with controlled repetitions with strength in reserve. DCU's own texts disagree on a few points, and Kadence shows the differences openly.",
           "4": "During the growth spurt, keep an extra eye on pain at the knee and the heel."
         }
       },
@@ -2743,7 +2845,7 @@
           "1": "The growth spurt typically starts around 10½–11 for girls and 12½–13 for boys, but for boys anything from 10½ to 16. It lasts 2–2½ years.",
           "2": "The skeleton is not fully developed until around age 20, and some boys grow until they are 20–22.",
           "3": "Technique and coordination can wobble during the spurt. Turn down jumps in load, and take pain at the knee (Osgood-Schlatter) and heel (Sever) seriously.",
-          "4": "A rider born late in the year can be almost a year younger than a teammate in the same class. Record height in Kadence and judge development, not just results."
+          "4": "A rider born late in the year can be almost a year younger than a teammate in the same class. Record height in Kadence and judge development alongside results."
         }
       },
       "injury": {
@@ -2772,7 +2874,7 @@
         "intro": "Cycling is a sport where talk about weight can do great harm. Kadence therefore has stricter defaults than most.",
         "points": {
           "1": "Team Danmark recommends, as a starting point, not weighing athletes under 18. Kadence goes further: no weight and no W/kg for riders under 19 unless the team turns it on.",
-          "2": "Never comment on weight, body, food choices or portions, not even as a joke, and never talk about a rider's weight where others can hear. Every measurement needs a purpose and a conversation afterwards.",
+          "2": "Leave weight, body, food choices and portions alone, also as a joke, and talk about a rider's weight only in private. Every measurement needs a purpose and a conversation afterwards.",
           "3": "A Danish study from 2022 found signs of eating disorders in 23 % of female and 11 % of male elite athletes, and in even more at sub-elite level. Coaches' comments about weight loss were named as a trigger.",
           "4": "Signs of too little energy include a falling return from training, many injuries and infections, mood swings, and irregular or missing periods. The rider does not have to have lost weight. Refer to a doctor or sports dietitian, and do not calculate it yourself.",
           "5": "A missing period always goes to the doctor. Be open about the subject so riders dare to talk about it."
@@ -2803,7 +2905,7 @@
         "title": "School, exams and transitions",
         "intro": "Most U17 and U19 riders are in school, and school has to fit with the sport.",
         "points": {
-          "1": "Put the school timetable and exams in the calendar, and lower the load and the expectations in exam periods.",
+          "1": "Put the school timetable and exams in the calendar. In exam periods, a lower load and lower expectations help.",
           "2": "The first months of a new upper-secondary school are hard. A couple of months with markedly less training can work wonders.",
           "3": "National-squad riders can apply for sporting approval for upper-secondary school with an extended programme and moved hand-ins and exams. The deadline is in January.",
           "4": "Agents make contact as early as U17 and U19. DCU offers independent advice on contracts."
@@ -2833,20 +2935,20 @@
   },
   "coachTips": {
     "title": "Advice for the coach",
-    "subtitle": "From what is happening on the team right now. Advice, not rules.",
+    "subtitle": "From what is happening on the team right now.",
     "dismiss": "Hide this tip",
     "readMore": "Read more in the coach guide",
     "stageTooLong": "{title} ({date}) lasts {days, plural, one {# day} other {# days}}. DCU allows at most {limit, plural, one {# day} other {# days}} of stage racing for {category}.",
-    "raceSoon": "{title} ({date}) is coming up. Check the class's distance and gearing limits, and keep the day before easy.",
-    "campSoon": "The camp {title} ({date}): avoid big jumps in volume, and make sure the riders eat enough when the buffet is the same every day.",
-    "examSoon": "{title} ({date}): lower the load and the expectations in the exam period.",
-    "wellbeing": "One or more riders have been struggling for a while. Have a talk, and look at the whole environment, not only the rider.",
-    "newClassU17": "New U17 riders: the most important thing is not to train too much. Races are at most {u17Road} km, and there is a gearing limit.",
+    "raceSoon": "{title} ({date}) is coming up. The class's distance and gearing limits are worth a check, and an easy day before helps.",
+    "campSoon": "The camp {title} ({date}): volume does best when it rises evenly, and it is good to keep an eye on whether the riders eat enough when the buffet is the same every day.",
+    "examSoon": "{title} ({date}): in the exam period, a lower load and lower expectations help.",
+    "wellbeing": "One or more riders have been struggling for a while. A talk can help, and it can be good to look at the whole environment around the rider.",
+    "newClassU17": "New U17 riders: the most important thing is a moderate volume. Races are at most {u17Road} km, and there is a gearing limit.",
     "newClassU19": "New U19 riders: races get longer and the gearing limit goes. Raise the volume with care, 10–15 % a year.",
     "newClassU23": "New U23 riders: it is fine to be a little under DCU's hours in the first years. They have four years to reach them.",
     "childCertificate": "The team has first-year U17 riders who may be 14. Coaches then need a child certificate by law, and DIF recommends one for everyone coaching young people under 18.",
     "strengthWinter": "The strength season has started: 2–3 sessions a week with at least 48 hours between them, and at least 30 sessions over the winter for U17 and U19.",
-    "weightOn": "The team records weight for riders under 19. Never comment on weight or food, and never talk about a rider's weight where others can hear.",
+    "weightOn": "The team records weight for riders under 19. Leave weight and food out of your talks with the riders, and talk about a rider's weight only in private.",
     "heat": "Summer heat: drink steadily, think of salt on long rides, and move the hard sessions to the morning or evening."
   },
   "records": {
@@ -2917,7 +3019,7 @@
       "trial": "You're trying the session with the rider's watts. A trial ride is not saved.",
       "fromTeam": "A session from the team's library",
       "fromDcu": "A standard session from DCU",
-      "whenNote": "DCU puts it: {when}. A guide, not a rule.",
+      "whenNote": "DCU puts it: {when}. Meant as a guide.",
       "source": "Source: {source}. The warm-up, pauses and cool-down are Kadence's.",
       "pickOther": "Choose another session",
       "pickTitle": "Choose a session",
@@ -3159,6 +3261,802 @@
       "slower": "Slower",
       "left": "Left",
       "right": "Right"
+    }
+  },
+  "club": {
+    "title": "Club champion",
+    "subtitle": "The club's own championship: the rounds, the standings and the club champions over the years. It is the only place in Kadence where placings are shown.",
+    "seasons": "Championships",
+    "rounds": "Rounds",
+    "noRounds": "The rounds appear here once the coach has added them.",
+    "noRoundsCoach": "Add the season's first round above.",
+    "off": {
+      "title": "The club championship is turned off",
+      "body": "The club championship can be turned on under Settings → Team, if the club wants to keep its championship here.",
+      "link": "Go to Team"
+    },
+    "none": {
+      "title": "No championship yet",
+      "body": "When the coach creates the season's championship, it appears here.",
+      "coach": "Create the season's championship above to get started."
+    },
+    "standings": {
+      "empty": "The standings appear once the first round has been ridden.",
+      "cheer": "Thanks to everyone who rode. Here are the standings after the season's rounds.",
+      "improvement": "The year's biggest improvement: {name} rode {course} {percent, number} % faster than last year.",
+      "points": "{points, plural, one {# point} other {# points}} · {rounds, plural, one {# round} other {# rounds}}",
+      "class": {
+        "U17": "U17",
+        "U19": "U19",
+        "U23": "U23",
+        "open": "Open"
+      }
+    },
+    "round": {
+      "noResults": "The results appear once the coach has entered them.",
+      "record": "Personal best",
+      "dnf": "Did not finish",
+      "dns": "Withdrew",
+      "remove": "Remove the round",
+      "removeTitle": "Remove the round?",
+      "removeBody": "The round and its results are removed from the championship.",
+      "removed": "The round is removed.",
+      "kind": {
+        "tt": "Time trial",
+        "hill": "Hill climb",
+        "road": "Road race",
+        "crit": "Criterium",
+        "other": "Other"
+      },
+      "class": {
+        "U17": "U17",
+        "U19": "U19",
+        "U23": "U23",
+        "open": "Open"
+      }
+    },
+    "editor": {
+      "open": "Enter results",
+      "hintTime": "Type the time as mm:ss or h:mm:ss. The fastest in each class comes first.",
+      "hintPlace": "Type the placing in each class.",
+      "name": "Name",
+      "class": "Class",
+      "time": "Time",
+      "place": "Placing",
+      "status": "Status",
+      "remove": "Remove the line",
+      "addRider": "Add rider",
+      "addGuest": "Add guest",
+      "save": "Save results",
+      "cancel": "Cancel",
+      "saved": "The results are saved.",
+      "badTime": "The time for {name} should be written as mm:ss.",
+      "badPlace": "The placing for {name} should be a whole number.",
+      "classes": {
+        "U17": "U17",
+        "U19": "U19",
+        "U23": "U23",
+        "open": "Open"
+      },
+      "statuses": {
+        "finished": "Finished",
+        "dnf": "Did not finish",
+        "dns": "Withdrew"
+      }
+    },
+    "forms": {
+      "season": "Season",
+      "title": "Name",
+      "defaultTitle": "Club championship {year}",
+      "create": "Create championship",
+      "created": "The championship is created.",
+      "date": "Date",
+      "kind": "Kind",
+      "roundTitle": "Round",
+      "roundTitleHint": "e.g. The club time trial",
+      "measure": "Decided by",
+      "byTime": "Time",
+      "byPlace": "Placing",
+      "addRound": "Add round",
+      "roundAdded": "The round is added.",
+      "crown": "Crown club champions",
+      "crowned": "The club champions are now on the roll of honour.",
+      "championTitle": "Club champion"
+    },
+    "honour": {
+      "title": "Club champions over the years",
+      "empty": "The first club champion will be written here.",
+      "defaultTitle": "Club champion",
+      "year": "Year",
+      "class": "Class",
+      "name": "Name",
+      "add": "Add",
+      "added": "The club champion is on the roll of honour.",
+      "remove": "Remove from the roll of honour",
+      "removed": "The line is removed.",
+      "classes": {
+        "U17": "U17",
+        "U19": "U19",
+        "U23": "U23",
+        "open": "Open"
+      }
+    }
+  },
+  "community": {
+    "title": "The coaches' room",
+    "subtitle": "Coaches across the clubs sharing experience and advice. Only coaches have access, and there are no private messages.",
+    "categories": "Categories",
+    "all": "All",
+    "unread": "New since last time",
+    "locked": "Locked",
+    "former": "Former coach",
+    "writeFromTeam": "You write in the coaches' room as coach of the team you have open. Switch to a team you coach to write.",
+    "empty": {
+      "title": "No threads yet",
+      "body": "Start the first thread above. A question about winter strength training is a good beginning."
+    },
+    "category": {
+      "training": "Training",
+      "strength": "Strength",
+      "wellbeing": "Wellbeing",
+      "races": "Races and rules",
+      "equipment": "Equipment",
+      "dcu": "The DCU corner"
+    },
+    "reports": {
+      "title": "{count, plural, one {# report waiting} other {# reports waiting}}",
+      "thread": "A thread",
+      "post": "A reply",
+      "gone": "The post no longer exists"
+    },
+    "compose": {
+      "title": "New thread",
+      "category": "Category",
+      "subject": "Subject",
+      "body": "Text",
+      "bodyHint": "What would you like to share or ask?",
+      "rule": "Share experience about the training, and keep riders' names out of it.",
+      "attach": "Attach a session from the library",
+      "post": "Share",
+      "posted": "The thread is shared."
+    },
+    "thread": {
+      "reply": "Reply",
+      "replyHint": "Write a reply",
+      "replied": "Your reply is shared.",
+      "take": "Take into my library",
+      "taken": "The session is now in your team's library.",
+      "hiddenNote": "Hidden by the installation's owner. Only the author and the owner can see it.",
+      "lockedNote": "The thread is locked, so no more replies can be written."
+    },
+    "report": {
+      "open": "Report",
+      "reason": "What is wrong? (optional)",
+      "send": "Send report",
+      "sent": "Thank you. The installation's owner will look at it.",
+      "cancel": "Cancel"
+    },
+    "moderate": {
+      "hide": "Hide",
+      "show": "Show again",
+      "hidden": "The post is hidden.",
+      "shown": "The post is shown again.",
+      "lock": "Lock the thread",
+      "unlock": "Open the thread",
+      "locked": "The thread is locked.",
+      "unlocked": "The thread is open again.",
+      "handle": "Handled",
+      "handled": "The report is marked as handled."
+    }
+  },
+  "open": {
+    "nav": {
+      "hub": "Guides and calculators",
+      "toApp": "Go to Kadence",
+      "login": "Sign in"
+    },
+    "footer": "Kadence is open source training planning for young road cyclists, their coaches and their parents. These pages are open to everyone, and what you type into the calculators stays in your browser.",
+    "terms": "Terms and privacy",
+    "back": "Guides and calculators",
+    "sources": "Sources",
+    "opensElsewhere": "(opens on another site)",
+    "contents": "Contents",
+    "updated": "Written in October 2026. DCU's rules change from season to season, so DCU's own pages always have the last word.",
+    "experience": "Experience from the sport",
+    "experienceNote": "No rule says this. It is experience from the sport and our own reading, so take it as good guesses."
+  },
+  "guides": {
+    "hub": {
+      "title": "Guides and calculators",
+      "intro": "For riders, parents and coaches. Written in Kadence's own words, with the sources under each section.",
+      "calculators": "Calculators",
+      "guides": "Guides",
+      "open": "Open",
+      "items": {
+        "energy": {
+          "title": "Energy for the race",
+          "body": "How much energy a race takes, and what to eat and drink before, during and after."
+        },
+        "gearing": {
+          "title": "Gearing for the young classes",
+          "body": "Work out the bike's biggest gear and see whether it stays within the limit for U11 to U17."
+        },
+        "classes": {
+          "title": "The classes and the way on",
+          "body": "The difference between U15, U17, U19 and U23, and how riders move on to a junior team."
+        },
+        "equipment": {
+          "title": "Equipment: where the speed is",
+          "body": "What buys speed for the money, and what is mostly for show. With watts, prices and sources."
+        },
+        "food": {
+          "title": "Food and drink",
+          "body": "Everyday food and race-day food, recipes for homemade energy, teeth and supplements."
+        }
+      },
+      "fromParents": "About the sport, for parents: the classes and the way on, equipment, food and drink, and calculators for energy and gearing.",
+      "fromHelp": "Guides and calculators for riders, parents and coaches: the classes, equipment, food and drink, energy for the race and gearing."
+    },
+    "classes": {
+      "title": "The classes and the way on",
+      "intro": "What the difference is between U15, U17, U19 and U23, what it costs, and how riders move on. For parents and riders who are new to the sport.",
+      "sections": {
+        "age": {
+          "title": "The class follows the calendar year",
+          "intro": "A rider's class is set by the year in which the rider turns an age, and it stays the same all year.",
+          "points": {
+            "1": "U15 are those turning 13 and 14 this year. U17 turn 15 and 16, U19 turn 17 and 18, and U23 turn 19 to 22.",
+            "2": "Each class spans two birth years, and U23 four. A rider is therefore always in the first or second year of the class. The class changes on 1 January.",
+            "3": "A rider born late in the year can be almost a year younger than a classmate. It shows clearly in U15 and U17, where the body grows a lot.",
+            "4": "In ordinary Danish races U23 riders race with the seniors: men in Herre A, B, C or D and women in Dame A or B, by points. U23 has a class of its own at the national championships and in UCI races."
+          }
+        },
+        "distances": {
+          "title": "How far they race",
+          "intro": "DCU sets a longest distance for each class. It grows a lot from U17 to U19.",
+          "points": {
+            "1": "U15 race at most 45 km on the road and 15 km in a time trial.",
+            "2": "U17 race at most {u17Road} km on the road and {u17Tt} km in a time trial.",
+            "3": "U19 men race {u19mMin}–{u19mMax} km on the road, and U19 women {u19wMin}–{u19wMax} km. The time trial is up to {u19Tt} km.",
+            "4": "In UCI junior races abroad a one-day race is at most 140 km for men and 100 km for women."
+          }
+        },
+        "licence": {
+          "title": "Licence, trial tickets and what it costs",
+          "intro": "Licensed races need a licence from DCU. A rider can try it first.",
+          "points": {
+            "1": "The licence is free up to and including U15. From U17 it costs DKK 1,080 in Jutland and on Funen and DKK 1,215 on Zealand (2026). After 15 July the price is lower.",
+            "2": "With a trial ticket a rider under U17 who belongs to a DCU club can ride three races without a licence for DKK 10 a race.",
+            "3": "The rider needs their own liability and accident insurance. It is worth checking whether the family's insurance covers licensed races.",
+            "4": "The entry fee is typically DKK 90–190, and a timing chip can be rented for DKK 50. Entering before the deadline is cheapest; a late entry often costs double."
+          }
+        },
+        "raceDay": {
+          "title": "Race day: bike, radio and bottles",
+          "intro": "The young classes have their own rules for equipment and help on the way.",
+          "points": {
+            "1": "U11 to U17 race on an ordinary road bike. Time trial bikes, aero bars, disc wheels and wheels with fewer than 12 spokes are for the older classes.",
+            "2": "The youth classes always race without radios.",
+            "3": "Feeding during the race is allowed only in races over 100 km. A U17 rider therefore carries their bottles from the start.",
+            "4": "Riders may give each other food, drink and tools on the way.",
+            "5": "The youth championships for U11 to U17 require at least three finished licensed road races, and to ride the road race a rider must have started the time trial."
+          }
+        },
+        "abroad": {
+          "title": "What opens up in U19 and U23",
+          "intro": "From the year a rider turns 17, the UCI's international races open up.",
+          "points": {
+            "1": "U17 riders can ride national races abroad. The club reports the entry to DCU, and the country's own rules apply, gearing included.",
+            "2": "Juniors in U19 ride the Nations Cup, the European and the World Championships for the national team. The Nations Cup decides how many riders Denmark may send to the Worlds.",
+            "3": "U19 rides with free gearing. The limit went in 2023, when the UCI scrapped the junior limit.",
+            "4": "U23 riders race with the seniors in Denmark and have races of their own on the UCI calendar, such as the Nations Cup and the Tour de l'Avenir."
+          }
+        },
+        "teams": {
+          "title": "Teams, changing club and two dates",
+          "intro": "Many riders move from their club to a junior team when they reach U19. The rules give young riders peace until a sensible time to be approached.",
+          "points": {
+            "1": "U17 and younger ride for their club and in the club's kit. A DCU U19 team has four to nine U19 riders.",
+            "2": "A team may approach a rider under 18 or the parents about next season from 15 June at the earliest. An agreement can be signed from 1 September of the year before at the earliest, by both rider and parent.",
+            "3": "For a second-year U17 rider that means: approaches from 15 June, signing from 1 September, and the first race for the team when the season starts in U19.",
+            "4": "DCU recommends a written agreement and a list of equipment showing what belongs to the rider and what is to be handed back."
+          }
+        },
+        "nationalTeam": {
+          "title": "The national team and talent work",
+          "intro": "DCU runs a talent pathway over eight seasons: U17, U19 and U23.",
+          "points": {
+            "1": "In U17 there is a broad national squad of around 30 riders with winter camps. It is chosen on an assessment of potential and the points table, and during the season the performances in races count.",
+            "2": "In U19 the squad is also around 30 riders. They send in their training and get feedback from the national coach. DCU sets no result targets for U19 and U23.",
+            "3": "DCU describes talent as more than physique: the will to train, patience, and the ability to make sport, school and life fit together.",
+            "4": "Young riders sign contracts earlier and earlier. DCU offers impartial guidance and says it rarely costs anything to wait a little with the big career moves."
+          }
+        },
+        "school": {
+          "title": "School and sport",
+          "intro": "There are schemes that make school and cycling easier to combine.",
+          "points": {
+            "1": "Team Danmark's schemes at upper secondary school require a place in DCU's national squad in U17, U19 or U23 and an individual assessment. They offer, for example, four years of upper secondary school and flexible absence for training.",
+            "2": "From 2026 to 2029 a trial lets Team Danmark pupils take stx or hhx in three years with fewer subjects. 19 schools take part.",
+            "3": "In years 7 to 9 many of Team Danmark's elite municipalities have sports classes with morning training, and several boarding schools have cycling on the timetable.",
+            "4": "DCU itself mentions that longer schooling has a price too: a rider can lose their classmates and finishes a year later."
+          }
+        },
+        "unwritten": {
+          "title": "The unwritten",
+          "intro": "How riders get onto a junior team is in no rulebook. Here is what the sport usually tells.",
+          "points": {
+            "1": "Junior teams typically look at results from U17, such as the youth championships, youth stage races and rounds of the U19 cup, and increasingly at power data. Attitude and the will to learn matter a lot too.",
+            "2": "The big moves usually happen in two places: after the second year in U17, from club to junior team, and after the second year in U19, to a continental team, an elite team or a development team abroad.",
+            "3": "The first offer is rarely the only one. Many riders break through late, and DCU's own message is that waiting a little can pay off.",
+            "4": "It is a good idea to ask what being on the team costs: own contribution, equipment and travel. There are no public figures for it."
+          }
+        },
+        "gearing": {
+          "title": "Gearing in the young classes",
+          "intro": "Up to and including U17 the classes have a limit on how big the biggest gear may be.",
+          "points": {
+            "1": "The limit is {u17Gear, number} m per pedal turn in U17, {u15Gear, number} m in U15 and {u13Gear, number} m in U13 and U11. U19 and older ride with free gearing.",
+            "2": "The tyre counts: a 28 mm tyre can take a bike over the limit that passes on 25 mm tyres. The gearing calculator works it out for your bike."
+          }
+        }
+      }
+    },
+    "equipment": {
+      "title": "Equipment: where the speed is",
+      "intro": "What buys the most speed for the money, and what is mostly for show. The figures are watts saved by a rider alone in the wind at 40 km/h, from wind tunnel and lab tests.",
+      "adults": "Nearly all the measurements were made on adult riders, so for smaller riders the figures are an order of magnitude.",
+      "sections": {
+        "bunch": {
+          "title": "First: the bunch",
+          "intro": "In a bunch riders shelter each other, and that puts everything else in perspective.",
+          "points": {
+            "1": "In the middle of a tight bunch a rider has only 5–10 % of the air resistance they would have alone. Second in a line has around 60 %.",
+            "2": "In a road race a good place in the bunch therefore matters more than any piece of equipment, and it is something riders train.",
+            "3": "Aero equipment matters most in time trials, breakaways and crosswinds. Rolling resistance and a clean chain matter as much in the bunch as alone."
+          }
+        },
+        "free": {
+          "title": "The free and the cheap",
+          "intro": "The first watts cost next to nothing.",
+          "points": {
+            "1": "A clean, lubricated chain: a chain left uncleaned after a ride in the rain costs around 6 W, and after a muddy ride around 12 W. Degreaser and lube cost DKK 100–300.",
+            "2": "A lower, narrower position when the rider is in the wind saves 8–35 W. A bike fit can help, but practising the position matters most.",
+            "3": "Clothes that fit close: an open, flapping vest cost 10 W in the wind tunnel. A race number pinned flat and tight follows the same logic.",
+            "4": "Tyre pressure for the road: on a rough road the bike gets slower when the pressure is too high. How much that matters for a junior on Danish asphalt has not been measured."
+          }
+        },
+        "tyres": {
+          "title": "Tyres and tubes",
+          "intro": "This is where most is gained per krone, and the gain holds in the bunch too.",
+          "points": {
+            "1": "Fast race tyres instead of cheap training tyres save around 20 W for a pair at 40 km/h. A pair costs around DKK 800–950.",
+            "2": "Latex tubes instead of ordinary butyl save 5–6 W for a pair and cost around DKK 200. They are almost as fast as tubeless, but lose air faster and need pumping before every ride.",
+            "3": "Fast tyres often have a thinner tread. Many therefore train on sturdy tyres and race on fast ones.",
+            "4": "Wider tyres are not automatically slower. Pumped to the same comfort, 23 to 32 mm roll almost the same."
+          }
+        },
+        "kit": {
+          "title": "Clothing, helmet and overshoes",
+          "intro": "What flaps costs. What fits close is fast.",
+          "points": {
+            "1": "A skinsuit instead of a loose jersey and shorts saved around 10 W. Riders must race in the club's approved kit, so it takes a skinsuit in the club's design. Choose the right size; a suit that is too small works less well.",
+            "2": "Aero overshoes saved around 6 W and cost DKK 420–480.",
+            "3": "An aero road helmet saved 4.5 W on average against a vented helmet. When the helmet needs replacing anyway, the extra cost is small. The price says nothing about how well a helmet protects; independent helmet tests do.",
+            "4": "The helmet must be CE approved with a chin strap, and it is replaced after a crash, even with no visible damage."
+          }
+        },
+        "wheels": {
+          "title": "Wheels and bike",
+          "intro": "The expensive equipment gives less per krone than many think.",
+          "points": {
+            "1": "Deep carbon wheels saved 4.6–6.6 W against shallow wheels and cost DKK 8,700–17,600. The test found almost no link between price and speed.",
+            "2": "A new aero bike saved 17–32 W against a ten-year-old aluminium bike, wheels and bars included. It costs DKK 70,000–110,000.",
+            "3": "A bike must weigh at least 6.8 kg. An extra kilo costs around 1.2 seconds per km on a 5 % climb, so weight matters less on Danish roads than many think.",
+            "4": "From 2026 rims may be at most 65 mm deep in road races, and handlebars must be at least 40 cm wide. Wheels in road races must be UCI approved or traditional: a metal rim under 25 mm and at least 20 steel spokes."
+          }
+        },
+        "cosmetic": {
+          "title": "What is mostly for show",
+          "intro": "It is perfectly fine to buy something because it looks good or gives joy. It just does not make the rider faster.",
+          "points": {
+            "1": "A more expensive groupset, from Shimano 105 to Dura-Ace, is around 550 g lighter and costs around DKK 17,000 more. It brings no measured gain in watts; shifting is as precise at all three levels.",
+            "2": "A ceramic bottom bracket saved 0.03 W against a good steel one.",
+            "3": "Oversized pulley wheels save at least 2.4 W according to their maker. Nobody else has measured it."
+          }
+        },
+        "training": {
+          "title": "Training tools",
+          "intro": "A power meter does not make the bike faster. Its value is in the training.",
+          "points": {
+            "1": "Two small studies on adults found the same improvement whether intervals were set by heart rate or by power. A heart rate strap at DKK 356–699 is the cheapest start, and a chest strap measures more precisely than a watch.",
+            "2": "A power meter makes sense when the coach uses watts to steer the training, and for learning to pace a time trial. A smart trainer already measures watts indoors.",
+            "3": "Pedal power meters cost around DKK 2,400–5,500. Cheaper brands such as Magene also make power meters, heart rate straps and bike computers; we have seen no independent tests of their accuracy."
+          }
+        },
+        "used": {
+          "title": "Buying used",
+          "intro": "Growing riders often change bikes, and used can be a good buy.",
+          "points": {
+            "1": "Choose the frame size for the rider's measurements now, not one to grow into. Seat post and stem can adjust a little; a frame that is too big never gets smaller.",
+            "2": "Signs of a crash: new bar tape or new cables on an otherwise older bike, scuffs on bars, levers and saddle, and a bent derailleur hanger.",
+            "3": "Carbon can be tested by tapping lightly with a coin along the tubes: sound carbon gives a clear note, damaged carbon a dead one. If the bike has crashed, have a carbon workshop look at it before buying.",
+            "4": "A repaired carbon part no longer counts as UCI approved without the maker's consent. Check too that wheels and bars meet the rules, and that the gearing can be kept within the limit."
+          }
+        }
+      },
+      "value": {
+        "title": "Most speed per krone",
+        "intro": "Watts saved by a rider alone at 40 km/h. 10 W is around 17 seconds in a 15 km time trial. The gains cannot simply be added together.",
+        "measure": "Change",
+        "price": "Price",
+        "watts": "Saved alone",
+        "inBunch": "In the bunch",
+        "free": "Free",
+        "priceRange": "DKK {low, number, integer}–{high, number, integer}",
+        "priceOne": "about DKK {price, number, integer}",
+        "wattsRange": "{low, number}–{high, number} W",
+        "wattsOne": "about {watts, number} W",
+        "none": "none measured",
+        "claim": "{watts, number} W (maker's claim)",
+        "bunch": {
+          "all": "all of it",
+          "some": "some",
+          "little": "a little",
+          "none": "–"
+        },
+        "rows": {
+          "chain": "Clean and lube the chain, especially after rain",
+          "position": "Lower, narrower position in the wind",
+          "flapping": "Clothes that do not flap",
+          "latex": "Latex tubes instead of butyl",
+          "tyres": "Fast tyres instead of cheap ones",
+          "overshoes": "Aero overshoes",
+          "helmet": "Aero helmet instead of vented",
+          "skinsuit": "Skinsuit instead of a loose jersey (club design)",
+          "wheels": "Deep carbon wheels instead of shallow",
+          "bike": "New aero bike instead of old aluminium",
+          "pulleys": "Oversized pulley wheels",
+          "groupset": "Dearer groupset (105 to Dura-Ace)",
+          "ceramic": "Ceramic bottom bracket"
+        }
+      }
+    },
+    "food": {
+      "title": "Food and drink for young riders",
+      "intro": "What young riders need day to day and on race day, how to make the energy yourself, and how to look after their teeth. For parents and riders.",
+      "sections": {
+        "everyday": {
+          "title": "Everyday food",
+          "intro": "Growing riders need energy enough for training, school and growing. Ordinary food covers most of it.",
+          "points": {
+            "1": "Team Danmark recommends 5–7 g of carbohydrate per kg of body weight a day with less than 1½ hours of training, and 7–10 g per kg with more.",
+            "2": "On days with hard training over 1½ hours, half the plate can be carbohydrate, a quarter protein and a quarter vegetables. On lighter days the Danish Food Administration's Y plate fits: 2/5 carbohydrate, 1/5 protein and 2/5 vegetables.",
+            "3": "Growing teenagers are advised 1.2–2.0 g of protein per kg a day. Most get it from ordinary food, spread over the day's meals.",
+            "4": "Breakfast before morning training helps. If eating early is hard, a small portion and a sports drink during the session can do it."
+          }
+        },
+        "timing": {
+          "title": "Before, during and after",
+          "intro": "When the food is eaten matters almost as much as what.",
+          "points": {
+            "1": "A main meal 3–4 hours before training or racing, or a snack 1–2 hours before with easy carbohydrate, a little protein, little fat and little fibre.",
+            "2": "Under 45 minutes, water is enough. From 1 to 2½ hours, 30–60 g of carbohydrate an hour is advised, and on long races up to 90 g once the gut is used to it. The energy calculator works it out for a race.",
+            "3": "Straight after: 1–1.2 g of carbohydrate per kg and 10–20 g of protein, and a main meal within 1–2 hours.",
+            "4": "Ordinary food can easily give 50 g of carbohydrate: two bananas, two slices of bread, 2.5 dl of cooked rice or 1 dl of raisins."
+          }
+        },
+        "fluid": {
+          "title": "Fluid and salt",
+          "intro": "In Danish weather riders typically sweat 0.7–1.2 litres an hour, and more in the heat.",
+          "points": {
+            "1": "For training over an hour or in the heat: at least 1–2 dl every quarter of an hour, and 2–3 dl with heavy sweating. The body can take up around 1–1.5 litres an hour.",
+            "2": "Weight lost in sweat should be at most 2 % of body weight below 25 °C and 1 % above 30 °C. A rider can weigh before and after a session and then knows their sweat rate.",
+            "3": "For hard training over an hour, 500–700 mg of sodium per litre helps. Urine should be pale yellow and clear.",
+            "4": "Drink no more than you sweat. A rider who gains weight during a session has drunk too much, and a lot of fluid with too little salt can be dangerous."
+          }
+        },
+        "homemade": {
+          "title": "Homemade energy",
+          "intro": "Sports drink, rice cakes and bars can be made at home for a fraction of the price.",
+          "points": {
+            "1": "Ordinary sugar is already half glucose and half fructose, a mix the body takes up well on long races. Two parts sugar to one part glucose gives the ratio 2:1.",
+            "2": "Sports drink should have 4–8 % carbohydrate (40–80 g per litre) and 500–700 mg of sodium per litre. In the heat fluid matters most, so use the weaker bottle and eat the rest.",
+            "3": "For comparison, a bought gel with 25 g of carbohydrate costs DKK 25–30, and a homemade rice cake with 32 g DKK 0.40–1.40."
+          }
+        },
+        "safety": {
+          "title": "Keeping it safe in a jersey pocket",
+          "intro": "In a jersey pocket food is close to body temperature, so homemade food is treated as fresh food.",
+          "points": {
+            "1": "Cooked rice can form toxins if it cools slowly. The Danish Food Administration advises cooling from 56 to 10 °C within four hours, so cool rice cakes quickly in small portions.",
+            "2": "Make rice cakes the evening before, keep them in the fridge, and take them straight from there. Eat them within the first couple of hours of the ride, and in the heat within the first hour. That is Kadence's suggestion from the USDA's rule of thumb.",
+            "3": "Baked oat bars are dry and keep better at room temperature. Store them airtight and eat them within a few days.",
+            "4": "Mix sports drink on the day, and rinse and dry the bottle after use."
+          }
+        },
+        "teeth": {
+          "title": "Teeth",
+          "intro": "Sugar many times a day, acid and a dry mouth during training make riders prone to cavities and erosion.",
+          "points": {
+            "1": "Among the athletes at the London 2012 Olympics, 55 % had cavities and 45 % erosion, although most brushed twice a day.",
+            "2": "Rinse the mouth with water after gels and sports drink, and drink in bigger gulps rather than many small sips.",
+            "3": "Brush with fluoride toothpaste (1450 ppm) morning and evening, and spit without rinsing, so the fluoride works longer. High-fluoride toothpaste (5000 ppm) needs a prescription and is given from age 16.",
+            "4": "Tell the dentist that the rider trains a lot and uses sports products. Municipal dental care in Denmark is free until the age of 22.",
+            "5": "Sugar for training is needed to perform. See dental care as a way of managing the risk, and drink water day to day."
+          }
+        },
+        "supplements": {
+          "title": "Supplements and caffeine",
+          "intro": "Ordinary, varied food covers what young riders need.",
+          "points": {
+            "1": "Anti Doping Danmark writes that the vast majority of children and young people have no need for supplements.",
+            "2": "Supplements can contain substances on the doping list that are not on the label. Among popular supplements the risk of a contaminated product is 10–15 %, and close to 50 % for tablets (Team Danmark). The rider is always responsible.",
+            "3": "If supplements are used anyway, choose products tested by, for example, Informed-Sport or the Kölner Liste, and keep the batch number and the receipt.",
+            "4": "Caffeine: for those under 18 the limit is 3 mg per kg of body weight a day and at a time, with cola, coffee and caffeinated gels added together. For a 55 kg rider that is 165 mg."
+          }
+        },
+        "lowEnergy": {
+          "title": "When the energy falls short",
+          "intro": "When the body gets too little energy for its training, it is called relative energy deficiency in sport (REDs). It affects girls and boys alike, and it mostly happens without anyone meaning it to.",
+          "points": {
+            "1": "It typically arises when training grows, when school and cycling both need fitting in, when appetite goes after hard sessions, or when the rider does not get to eat on long rides.",
+            "2": "It rarely shows on the scales, because the body lowers its metabolism. Signs in both sexes: growth slows, training gives less, the rider is often tired, ill or injured, has mood swings or sleeps badly. A resting heart rate under 50 can be a sign in young people.",
+            "3": "In girls, periods can stop or become irregular. In boys, sex drive can drop and morning erections become fewer.",
+            "4": "Talk about energy, recovery and being able to keep training, and leave weight and body shape out of it. Say what you have noticed, and suggest a talk with a sports dietitian or a doctor.",
+            "5": "See a doctor straight away for fainting or dizziness when the rider stands up."
+          }
+        }
+      },
+      "recipes": {
+        "ingredients": "You need",
+        "method": "Method",
+        "items": {
+          "drink": {
+            "title": "Everyday bottle, about 6 % (1 litre)",
+            "ingredients": {
+              "1": "40 g sugar",
+              "2": "2 dl orange juice",
+              "3": "8 dl water",
+              "4": "1.5 g salt (about ¼ tsp)"
+            },
+            "method": "Stir the sugar and salt into the water, and pour in the juice.",
+            "carbs": "58–60 g of carbohydrate and 590 mg of sodium per litre. A 750 ml bottle gives 43–45 g of carbohydrate.",
+            "price": "DKK 4–7 per litre. With 60 g of sugar and a little lemon instead of juice it costs around DKK 0.50."
+          },
+          "fuel": {
+            "title": "Fuel bottle, about 8 % (750 ml)",
+            "ingredients": {
+              "1": "42 g sugar",
+              "2": "20 g glucose",
+              "3": "1.2 g salt",
+              "4": "Water up to 750 ml"
+            },
+            "method": "Stir everything into a little lukewarm water, and top up with cold. For races over 2½ hours.",
+            "carbs": "60 g of carbohydrate (8 %) at a ratio of about 2:1 and 470 mg of sodium. With 60 g of sugar alone the ratio is 1:1.",
+            "price": "DKK 1–2.50 per bottle, against DKK 15–20 for the same carbohydrate from bought powder."
+          },
+          "riceCakes": {
+            "title": "Sweet rice cakes (10 pieces)",
+            "ingredients": {
+              "1": "250 g pudding rice",
+              "2": "About 5 dl water",
+              "3": "60 g sugar",
+              "4": "100 g pitted dates, chopped",
+              "5": "1 g salt",
+              "6": "Cinnamon or vanilla to taste"
+            },
+            "method": "Cook the rice under a lid until soft and the water is absorbed, stirring often. Stir in the sugar, dates, salt and spice while the rice is warm. Press it into a 20 × 20 cm dish lined with baking paper, cool quickly, and cut into 10 pieces. Wrap each in baking paper or foil.",
+            "carbs": "31–33 g of carbohydrate per piece.",
+            "price": "Around DKK 1.35 per piece. Without dates and with 120 g of sugar in all, DKK 0.42."
+          },
+          "oatBars": {
+            "title": "Baked oat bars (8 bars)",
+            "ingredients": {
+              "1": "200 g rolled oats",
+              "2": "100 g honey",
+              "3": "100 g pitted dates, chopped",
+              "4": "50 g butter",
+              "5": "1 g salt"
+            },
+            "method": "Melt the butter and honey, and fold in the oats, dates and salt. Press into a 20 × 20 cm tin lined with baking paper, and bake at 175 °C for 20–25 minutes until golden. Cut into 8 bars while warm.",
+            "carbs": "32–34 g of carbohydrate per bar. The bars have fat and fibre, so they suit long, easy rides and before the start best.",
+            "price": "DKK 3–4 per bar, against DKK 17–22 for a bought energy bar."
+          }
+        }
+      }
+    }
+  },
+  "calculators": {
+    "gearing": {
+      "title": "Gearing for the young classes",
+      "intro": "Work out the bike's biggest gear and see whether it stays within DCU's limit. Everything stays in your browser.",
+      "class": "Class",
+      "classes": {
+        "U11": "U11",
+        "U13": "U13",
+        "U15": "U15",
+        "U17": "U17",
+        "U19": "U19 and older"
+      },
+      "tyre": "Tyre",
+      "tyreOption": "{mm} mm",
+      "tyreCustom": "Measured circumference",
+      "circumference": "Circumference in mm",
+      "circumferenceHint": "Measure the wheel's circumference with the tyre pumped to race pressure.",
+      "ring": "Biggest chainring",
+      "cog": "Smallest sprocket",
+      "teeth": "T",
+      "result": {
+        "title": "The bike's biggest gear",
+        "gear": "{ring} × {cog} gives {rollout, number, ::.00} m per pedal turn.",
+        "limit": "The limit in {class} is {limit, number, ::.00} m.",
+        "free": "U19 and older ride with free gearing, so every gear is legal.",
+        "within": "Within the limit, {cm, number, integer} cm under.",
+        "close": "Within the limit, but only {cm, number, integer} cm under. Tyre pressure and wear can move it a few centimetres, so measure the bike with the tyres and pressure it races on.",
+        "over": "{cm, number, integer} cm over the limit.",
+        "wayBack": "With {cog} teeth at the back the chainring can have at most {largestRing} teeth. With {ring} teeth at the front the smallest sprocket needs at least {smallestCog} teeth.",
+        "invalid": "Type whole teeth: the chainring between 20 and 60 and the sprocket between 9 and 52."
+      },
+      "table": {
+        "title": "Biggest chainring for each smallest sprocket",
+        "caption": "For {class} with the chosen circumference of {circumference} mm.",
+        "cog": "Smallest sprocket",
+        "ring": "Biggest chainring",
+        "rollout": "Rollout",
+        "teeth": "{n} T",
+        "metres": "{rollout, number, ::.00} m"
+      },
+      "products": {
+        "title": "Parts that can help",
+        "intro": "Junior cassettes start at 14 teeth or more. The list is neutral, and Kadence has no deals with the shops. The prices were seen in October 2026.",
+        "speeds": "{speeds}-speed",
+        "cassetteFits": "{small}-{large}: chainring up to {ring} T",
+        "chainringFits": "{big}-{small}: smallest sprocket {cog} T",
+        "fitsFree": "{a}-{b}",
+        "price": "about {price} ({shop})",
+        "noPrice": "Price not checked",
+        "link": "See the product",
+        "forClass": "The figures are for {class} with the chosen circumference.",
+        "items": {
+          "micheK12": "For a Shimano 12-speed HG freehub. Shops disagree on whether it works with SRAM AXS, so ask in the shop.",
+          "reconJunior": "For a Shimano 11-speed HG freehub, and for SRAM XDR with an adapter.",
+          "dubied": "Comes for Shimano 12-speed, SRAM XDR and Campagnolo 12-speed. The price is for Shimano and Campagnolo; XDR costs 239 euros.",
+          "micheLight": "11-speed for Shimano.",
+          "shimanoR8000": "11-speed for Shimano. Whether it is still made is unclear.",
+          "michePrimato": "10-speed for Shimano and Campagnolo.",
+          "mageneQed": "Chainrings for Magene's own power meter cranksets, for Shimano 11- and 12-speed. The smallest big ring is 50 T, so they pair with a junior cassette, such as 50 × 16 in U15."
+        }
+      },
+      "alternative": {
+        "title": "Or a smaller chainring",
+        "body": "DCU also suggests a smaller chainring and an ordinary 12-speed cassette: 38/11 or 34/10 in U17, 34/11 or 31/10 in U15, and 32/11 or 29/10 in U13 and U11. The suggestions are worked out for 25 mm tyres. Ask DCU or the chief commissaire before rebuilding the bike."
+      },
+      "measure": {
+        "title": "How the commissaire measures",
+        "steps": {
+          "1": "The bike is put in its biggest gear: biggest chainring and smallest sprocket.",
+          "2": "One pedal is set straight down over a mark on the floor.",
+          "3": "The bike is rolled slowly backwards, so the rear wheel turns the cranks.",
+          "4": "When the pedal has turned once, the distance is measured. It must be within the limit."
+        },
+        "note": "This is how it is done in practice in several countries; DCU's rules do not go into the method in detail. In a time trial the gear check must be done at least 10 minutes before the start."
+      },
+      "rules": {
+        "title": "Good to know",
+        "locked": "Locking out the biggest gears with the limit screw is not allowed (\"låst gear\"). The bike must meet the limit in its actual biggest gear.",
+        "ecycling": "The limits also apply in e-cycling for the same age groups.",
+        "abroad": "Abroad, the country's own rules apply.",
+        "circumference": "The circumferences are Garmin's figures for a 700C wheel. The real circumference depends on the tyre's brand, the rim, the pressure and wear."
+      }
+    },
+    "energy": {
+      "title": "Energy for the race",
+      "intro": "Work out how much energy the race takes, and what to eat and drink before, during and after. Everything stays in your browser.",
+      "race": "The race",
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "temperature": "Temperature",
+      "celsius": "°C",
+      "method": {
+        "label": "How do you want to estimate the effort?",
+        "watts": "Average power",
+        "speed": "Speed (time trial)",
+        "heartRate": "Average heart rate",
+        "met": "Kind of race"
+      },
+      "watts": "Average power",
+      "wattsHint": "Use the average with zeros from a similar race or ride.",
+      "kmh": "Average speed",
+      "kmhUnit": "km/h",
+      "climb": "Metres climbed",
+      "position": {
+        "label": "Position",
+        "hoods": "Hands on the hoods",
+        "drops": "Hands in the drops",
+        "timeTrial": "Low, flat back"
+      },
+      "bikeKg": "Bike weight",
+      "bpm": "Average heart rate",
+      "age": "Age",
+      "sex": {
+        "label": "Formula for",
+        "female": "Girls",
+        "male": "Boys"
+      },
+      "raceKind": {
+        "label": "Kind of race",
+        "fast": "Fast ride, 22–26 km/h",
+        "racing": "Racing in a bunch",
+        "solo": "Alone above 32 km/h"
+      },
+      "weight": "Weight (optional)",
+      "weightHint": "The weight stays in your browser. Without it you still get the plan for the race; the meal before and after is worked out per kg.",
+      "kg": "kg",
+      "gut": {
+        "label": "Have you practised eating a lot of carbohydrate in training?",
+        "yes": "Yes",
+        "no": "Not yet"
+      },
+      "food": "Bottles and food",
+      "bottle": "Bottle size",
+      "bottleOption": "{ml} ml",
+      "mix": {
+        "label": "In the bottle",
+        "water": "Water",
+        "drink": "Sports drink, about 6 %",
+        "fuel": "Fuel bottle, about 8 %"
+      },
+      "piece": "Grams of carbohydrate per rice cake, gel or bar",
+      "pieceHint": "A homemade rice cake has around 32 g, a gel typically 25 g.",
+      "hoursBefore": "Hours from meal to start",
+      "result": {
+        "energy": "Energy",
+        "kcal": "About {low, number, integer}–{high, number, integer} kcal",
+        "work": "{kj, number, integer} kJ of work at {watts, number, integer} W on average.",
+        "needsWeight": "Type the weight to use this method.",
+        "none": "Type the duration and the effort to see an estimate.",
+        "energyNote": "An estimate with uncertainty: the body's efficiency on the bike is 18–23 %, and it has not been measured in 15–18-year-olds.",
+        "carbs": "Carbohydrate during the race",
+        "water": "Under 45 minutes, water is enough.",
+        "small": "Up to 75 minutes, small amounts are enough, or rinsing the mouth with sports drink.",
+        "carbsRange": "{low}–{high} g an hour. The plan counts on {target} g an hour, {total} g in all.",
+        "single": "One kind of sugar is enough, such as sports drink, rice cakes or gels.",
+        "multiple": "Above 60 g an hour takes glucose and fructose together. Ordinary sugar is both, or use 2 parts sugar to 1 part glucose.",
+        "coverage": "That covers around {low, number, integer}–{high, number, integer} % of the energy the race takes. The body takes the rest from its stores, which is entirely normal.",
+        "fluid": "Fluid and salt",
+        "fluidRange": "{low, number, ::.0}–{high, number, ::.0} litres an hour.",
+        "sodium": "{low, number, integer}–{high, number, integer} mg of sodium an hour. 1 g of salt gives around 400 mg of sodium.",
+        "loss": "You can lose up to {kg, number, ::.0} kg in sweat before performance suffers. Drink no more than you sweat.",
+        "weighIn": "Weigh yourself before and after your next long ride. Then the plan can be more precise.",
+        "plan": "The plan",
+        "bottles": "{bottles, plural, one {# bottle} other {# bottles}} of {ml} ml",
+        "fromBottles": "The bottles give {grams} g of carbohydrate.",
+        "pieces": "{pieces, plural, =0 {The bottles cover the carbohydrate.} one {# piece of food for the rest.} other {# pieces of food for the rest.}}",
+        "before": "Before the race",
+        "beforeBody": "Around {carbs} g of carbohydrate {hours, plural, one {# hour} other {# hours}} before the start, and {low, number, integer}–{high, number, integer} ml to drink 2–4 hours before.",
+        "beforeNote": "A main meal 3–4 hours before or a snack 1–2 hours before, with little fat and fibre.",
+        "after": "After the race",
+        "afterBody": "{low, number, integer}–{high, number, integer} g of carbohydrate and {pLow, number, integer}–{pHigh, number, integer} g of protein straight after, and 1.25–1.5 litres of fluid for every kilo lost.",
+        "afterNote": "If you ride again within 8 hours, repeat the carbohydrate every hour for the first four hours.",
+        "weightMissing": "Type the weight to see the meal before and after the race."
+      },
+      "warnings": {
+        "heartRateAge": "The heart rate formula was made on 18–45-year-olds riding steadily. For younger riders and races with sprints the estimate is less certain.",
+        "speedSolo": "The speed method holds when you ride alone, as in a time trial. In a bunch the shelter saves so much that speed says too little about the effort.",
+        "heat": "Above 25 °C: drink more, and think of salt. Above 30 °C the weight lost in sweat should be at most 1 %.",
+        "capped": "Without practice the gut typically takes 60 g an hour, so the plan stops there. Practise more on long training rides if you want to go towards 90 g.",
+        "practise": "Practise the plan on long training rides over the next 2–4 weeks before using it in a race."
+      },
+      "about": {
+        "title": "About the calculation",
+        "points": {
+          "1": "From power, energy is work divided by the body's efficiency of 18–23 % (Hopker 2009). From speed the cycling power equation is used (Martin 1998), from heart rate Keytel's formula (2005), and from the kind of race MET values (Compendium 2024). Heart rate and kind of race are shown with ±15 %, which is Kadence's own choice.",
+          "2": "Carbohydrate per hour follows Thomas 2016, Jeukendrup 2014 and Team Danmark. No source has figures for teenagers, so Kadence stops at 60 g an hour without practice and suggests at most 90 g.",
+          "3": "Fluid and salt follow Team Danmark and the ACSM. The step between 25 and 30 °C is Kadence's own.",
+          "4": "The calculator is a planning tool and is not medical advice."
+        }
+      }
     }
   }
 }

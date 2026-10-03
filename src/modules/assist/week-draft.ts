@@ -54,6 +54,8 @@ export type WeekDraft = { sessions: DraftSession[]; note: string };
 
 type Context = {
   monday: string;
+  /** Whether the team plans by DCU (ADR 0049); without, the model is told nothing of DCU's hours. */
+  guided: boolean;
   category: string;
   basis: string | null;
   phase: string;
@@ -68,11 +70,15 @@ type Context = {
 
 export function weekDraftPrompt(c: Context, locale: string) {
   const system = [
-    "You are an experienced Danish youth cycling coach drafting one week of training for one rider, following Cycling Denmark's (DCU) recommendations for the rider's age class.",
+    c.guided
+      ? "You are an experienced Danish youth cycling coach drafting one week of training for one rider, following Cycling Denmark's (DCU) recommendations for the rider's age class."
+      : "You are an experienced Danish youth cycling coach drafting one week of training for one rider.",
     'Answer with one JSON object: {"sessions": [{"date": "YYYY-MM-DD", "sport": "bike"|"strength"|"other", "title": "", "minutes": n, "templateId": "" , "workout": "", "why": ""}], "note": ""}.',
     "For a bike session, write the workout in the coach's shorthand, e.g. '15 min opvarmning, 3x10 min Z4 / 5 min pause, 10 min nedkørsel' or '2 t Z2'. Zones: 1 recovery, 2 endurance, 3 tempo, 4 threshold (AT), 5 VO2max, 6 anaerobic, 7 sprint.",
     "For a strength session, use a templateId from the library when one fits (DCU's strength programmes are there); otherwise leave it empty.",
-    "Aim the week's bike hours at DCU's target and stay inside its corridor. Follow the phase. Keep strength sessions at least 48 hours apart. Give at least one rest day. Keep the day before an A race easy, and lighten exam days.",
+    c.guided
+      ? "Aim the week's bike hours at DCU's target and stay inside its corridor. Follow the phase. Keep strength sessions at least 48 hours apart. Give at least one rest day. Keep the day before an A race easy, and lighten exam days."
+      : "The team plans without a federation's hour model (ADR 0049): keep the week's bike hours close to the last weeks' and rise at most 15 % from week to week. Keep strength sessions at least 48 hours apart. Give at least one rest day. Keep the day before an A race easy, and lighten exam days.",
     "Never mention the rider's weight, body or food portions.",
     "Do not repeat sessions already planned. Respect the guardrails: if the rider shows signs of fatigue, pain or poor wellbeing, plan less and say so in the note.",
     "why: one short sentence per session a 16-year-old understands. note: two sentences at most for the coach.",
@@ -80,10 +86,14 @@ export function weekDraftPrompt(c: Context, locale: string) {
     languageRule(locale),
   ].join(" ");
   const user = [
-    `Week starting ${c.monday}. Class: ${c.category}${c.basis ? ` (${c.basis})` : ""}. DCU phase: ${c.phase}.`,
-    c.corridor
-      ? `DCU bike hours this week: target ${c.corridor.target.toFixed(1)}, corridor ${c.corridor.low.toFixed(1)}–${c.corridor.high.toFixed(1)}.`
-      : "No DCU hours for this rider's class.",
+    c.guided
+      ? `Week starting ${c.monday}. Class: ${c.category}${c.basis ? ` (${c.basis})` : ""}. DCU phase: ${c.phase}.`
+      : `Week starting ${c.monday}. Class: ${c.category}.`,
+    c.guided
+      ? c.corridor
+        ? `DCU bike hours this week: target ${c.corridor.target.toFixed(1)}, corridor ${c.corridor.low.toFixed(1)}–${c.corridor.high.toFixed(1)}.`
+        : "No DCU hours for this rider's class."
+      : "The team sets its own hours.",
     raceRulesLine(c.category),
     `Strength this time of year: ${c.strength.min}–${c.strength.max} sessions a week.`,
     `Bike hours the last weeks: ${c.recentWeeks.map((h) => h.toFixed(1)).join(", ") || "none recorded"}.`,
@@ -216,8 +226,9 @@ export async function proposeWeek(
     const templates = await tx
       .select()
       .from(workoutTemplates)
-      .where(eq(workoutTemplates.archived, false));
-    return { rider, planned, events, templates };
+      // The team's library; riders' own sessions are theirs (ADR 0050).
+      .where(and(eq(workoutTemplates.archived, false), isNull(workoutTemplates.riderId)));
+    return { rider, planned, events, templates, guided: settings.guidance !== "none" };
   });
   if (!loaded) return null;
   if (!(await modelConfigured(ctx))) throw new NoModel();
@@ -230,12 +241,14 @@ export async function proposeWeek(
   });
   const strength = strengthFrequency(input.monday);
   const phase = phaseOf(Number(input.monday.slice(5, 7)));
+  const guided = loaded.guided;
   const context: Context = {
     monday: input.monday,
+    guided,
     category: klass.category,
     basis: klass.basis,
     phase: `${phase} — ${PHASE_INFO[phase].description}`,
-    corridor: klass.basis ? weeklyCorridor(klass.basis, input.monday) : null,
+    corridor: guided && klass.basis ? weeklyCorridor(klass.basis, input.monday) : null,
     strength: { min: strength.perWeekMin, max: strength.perWeekMax },
     planned: planned.map((p) => ({
       date: p.onDate,

@@ -38,6 +38,7 @@ import { listSessions } from "@/modules/training/sessions";
 import { readStructure } from "@/modules/workouts/structure";
 import { weekDates, weekFrom } from "@/modules/training/week";
 import { getCheckin, listCheckins } from "@/modules/wellbeing/checkins";
+import { orgImageUrls } from "@/modules/team/images";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("today");
@@ -149,9 +150,19 @@ export default async function TodayPage({
         })
       : [];
   const nothing = !me || (!me.isCoach && !me.rider && me.children.length === 0);
+  const cover = (await orgImageUrls(ctx)).cover;
 
   return (
     <div className="flex max-w-3xl flex-col gap-8">
+      {cover && (
+        // The club's own picture (ADR 0048), behind its login.
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={cover}
+          alt=""
+          className="border-border -mb-3 h-32 w-full rounded-xl border object-cover sm:h-40"
+        />
+      )}
       <PageHeader
         title={t("title")}
         subtitle={<span className="first-letter:uppercase">{dayLong(today, locale)}</span>}

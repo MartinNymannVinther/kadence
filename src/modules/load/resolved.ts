@@ -37,6 +37,8 @@ export const MATERIAL_STEP = {
   km: 10,
   /** The seven-night sleep average, in hours. */
   sleep: 0.5,
+  /** The middle zone's share of the sessions, in points of percent. */
+  midShare: 10,
 } as const;
 
 const RANK: Record<Severity, number> = { info: 0, warn: 1, alert: 2 };
@@ -50,7 +52,8 @@ const EPSILON = 1e-9;
  * five points steeper, a ride half an hour or ten kilometres longer, a
  * strength pair the coach has not seen, a red check-in after a long
  * yellow, a higher rung of the pain ladder, half an hour less sleep on
- * the average, one more red session. Yellow days growing is not worse —
+ * the average, one more red session, ten points more of the sessions in
+ * the middle zone. Yellow days growing is not worse —
  * the talk was had — and the escalation of a yellow run is another kind
  * (wellbeing_help), which no resolution of wellbeing_talk covers.
  */
@@ -83,6 +86,8 @@ export function worseThan(flag: Flag, seen: Flag["values"]): boolean {
       return less("average", MATERIAL_STEP.sleep);
     case "compliance":
       return more("red", 1);
+    case "mid_zone":
+      return more("mid", MATERIAL_STEP.midShare);
   }
 }
 

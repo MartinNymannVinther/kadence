@@ -275,6 +275,9 @@ describe("rls coverage (guards future tables)", () => {
     "access_invitations",
     // Throwaway by definition, deleted whole when it expires.
     "demo_workspaces",
+    // Where a coach last read a thread in Trænerrummet (ADR 0052): their
+    // own marker, rewritten on every visit, not something anybody owns.
+    "community_reads",
   ];
 
   it("every domain table has an audit trigger", async () => {
@@ -343,7 +346,14 @@ describe("rls coverage (guards future tables)", () => {
     "app_can_read_rider",
     "app_can_write_rider",
     "app_is_coach",
+    // Whether the caller coaches a team anywhere on the installation, for
+    // Trænerrummet (drizzle/0023, docs/adr/0052): true or false about the
+    // caller, read from their own memberships, and nothing else.
+    "app_is_coach_somewhere",
     "app_is_guardian_of",
+    // Whether the caller owns the installation, for Trænerrummet's
+    // moderation: true or false about the caller, and nothing else.
+    "app_is_platform_owner",
     "app_is_rider_self",
     // Links a new member to the rider or guardian row a coach prepared,
     // for an invitation the caller accepted to their own address.
@@ -367,6 +377,12 @@ describe("rls coverage (guards future tables)", () => {
     // append-only guard would otherwise keep forever. Checks itself that
     // the caller coaches the team, like delete_workspace.
     "erase_rider",
+    // The installation's overview for its owner (drizzle/0019, docs/adr/0048):
+    // one row per workspace with counts only — no name of a person, no
+    // training, no check-in. It takes no arguments and refuses everyone
+    // whose app.user_id is not the installation's owner; tests/core/
+    // platform-overview.test.ts proves both.
+    "platform_overview",
     // Whose upload key a hash is, for a ride file that arrives with a key
     // and nobody signed in (drizzle/0014, docs/adr/0029). It is
     // device_link_owner's question asked of a key: the key's id, the team,
