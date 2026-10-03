@@ -9,7 +9,14 @@ import { SourceLinks } from "./source-links";
  * written rules says so above its points. The numbers in the words come
  * from the modules that own them (`guideNumbers`).
  */
-export function GuideView({ guide }: { guide: GuideId }) {
+export function GuideView({
+  guide,
+  extra = {},
+}: {
+  guide: GuideId;
+  /** Content shown inside a section, after its points: the food guide's recipes. */
+  extra?: Partial<Record<string, React.ReactNode>>;
+}) {
   const t = useTranslations(`guides.${guide}`);
   const open = useTranslations("open");
   const values = guideNumbers();
@@ -59,6 +66,7 @@ export function GuideView({ guide }: { guide: GuideId }) {
               <li key={p}>{text(`sections.${section.id}.points.${p + 1}`)}</li>
             ))}
           </ul>
+          {extra[section.id]}
           <SourceLinks ids={section.sources} />
         </section>
       ))}

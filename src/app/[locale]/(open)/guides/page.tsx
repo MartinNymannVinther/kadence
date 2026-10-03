@@ -16,6 +16,7 @@ const CALCULATORS = [
 const GUIDES = [
   { key: "classes", href: "/guides/classes" },
   { key: "equipment", href: "/guides/equipment" },
+  { key: "food", href: "/guides/food" },
 ] as const;
 
 /**

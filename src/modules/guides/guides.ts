@@ -13,7 +13,7 @@ import type { GuideSourceId } from "./sources";
  * Pure: imports nothing from the database.
  */
 
-export type GuideId = "classes" | "equipment";
+export type GuideId = "classes" | "equipment" | "food";
 
 export type GuideSection = {
   id: string;
@@ -55,10 +55,46 @@ export const EQUIPMENT_GUIDE: readonly GuideSection[] = [
   { id: "used", points: 4, sources: ["dcuRules2026"] },
 ];
 
+/**
+ * Food and drink (docs/research/ernaering.md). The section on low energy
+ * availability is health advice to parents about minors; it went live
+ * only after a sports dietitian had read it (ADR 0047).
+ */
+export const FOOD_GUIDE: readonly GuideSection[] = [
+  { id: "everyday", points: 4, sources: ["tdFood2026", "thomas2016", "desbrow2021"] },
+  { id: "timing", points: 4, sources: ["tdFood2026", "thomas2016"] },
+  { id: "fluid", points: 4, sources: ["tdFood2026", "tdFluid", "thomas2016"] },
+  { id: "homemade", points: 3, sources: ["tdFood2026", "jeukendrup2014"] },
+  { id: "safety", points: 4, sources: ["fvstCooling", "usdaDangerZone"] },
+  {
+    id: "teeth",
+    points: 5,
+    sources: [
+      "needleman2013",
+      "needleman2015",
+      "gallagher2018",
+      "dentistsSport",
+      "kkTeeth",
+      "ismFreeDental",
+    ],
+  },
+  { id: "supplements", points: 4, sources: ["addSupplements", "tdSupplementsBuy", "dtuCaffeine"] },
+  { id: "lowEnergy", points: 5, sources: ["tdRems", "ioc2023Reds", "tdFood2026"] },
+];
+
 export const GUIDES: Record<GuideId, readonly GuideSection[]> = {
   classes: CLASSES_GUIDE,
   equipment: EQUIPMENT_GUIDE,
+  food: FOOD_GUIDE,
 };
+
+/** The food guide's recipes and how many ingredients each lists. */
+export const RECIPES = [
+  { id: "drink", ingredients: 4 },
+  { id: "fuel", ingredients: 4 },
+  { id: "riceCakes", ingredients: 6 },
+  { id: "oatBars", ingredients: 5 },
+] as const;
 
 /**
  * The numbers the guides' words name, from the modules that own them, so

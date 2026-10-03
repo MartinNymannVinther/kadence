@@ -3201,10 +3201,14 @@
         "equipment": {
           "title": "Equipment: where the speed is",
           "body": "What buys speed for the money, and what is mostly for show. With watts, prices and sources."
+        },
+        "food": {
+          "title": "Food and drink",
+          "body": "Everyday food and race-day food, recipes for homemade energy, teeth and supplements."
         }
       },
-      "fromParents": "About the sport, for parents: the classes and the way on, equipment, and calculators for energy and gearing.",
-      "fromHelp": "Guides and calculators for riders, parents and coaches: the classes, equipment, energy for the race and gearing."
+      "fromParents": "About the sport, for parents: the classes and the way on, equipment, food and drink, and calculators for energy and gearing.",
+      "fromHelp": "Guides and calculators for riders, parents and coaches: the classes, equipment, food and drink, energy for the race and gearing."
     },
     "classes": {
       "title": "The classes and the way on",
@@ -3428,6 +3432,150 @@
           "pulleys": "Oversized pulley wheels",
           "groupset": "Dearer groupset (105 to Dura-Ace)",
           "ceramic": "Ceramic bottom bracket"
+        }
+      }
+    },
+    "food": {
+      "title": "Food and drink for young riders",
+      "intro": "What young riders need day to day and on race day, how to make the energy yourself, and how to look after their teeth. For parents and riders.",
+      "sections": {
+        "everyday": {
+          "title": "Everyday food",
+          "intro": "Growing riders need energy enough for training, school and growing. Ordinary food covers most of it.",
+          "points": {
+            "1": "Team Danmark recommends 5–7 g of carbohydrate per kg of body weight a day with less than 1½ hours of training, and 7–10 g per kg with more.",
+            "2": "On days with hard training over 1½ hours, half the plate can be carbohydrate, a quarter protein and a quarter vegetables. On lighter days the Danish Food Administration's Y plate fits: 2/5 carbohydrate, 1/5 protein and 2/5 vegetables.",
+            "3": "Growing teenagers are advised 1.2–2.0 g of protein per kg a day. Most get it from ordinary food, spread over the day's meals.",
+            "4": "Breakfast before morning training helps. If eating early is hard, a small portion and a sports drink during the session can do it."
+          }
+        },
+        "timing": {
+          "title": "Before, during and after",
+          "intro": "When the food is eaten matters almost as much as what.",
+          "points": {
+            "1": "A main meal 3–4 hours before training or racing, or a snack 1–2 hours before with easy carbohydrate, a little protein, little fat and little fibre.",
+            "2": "Under 45 minutes, water is enough. From 1 to 2½ hours, 30–60 g of carbohydrate an hour is advised, and on long races up to 90 g once the gut is used to it. The energy calculator works it out for a race.",
+            "3": "Straight after: 1–1.2 g of carbohydrate per kg and 10–20 g of protein, and a main meal within 1–2 hours.",
+            "4": "Ordinary food can easily give 50 g of carbohydrate: two bananas, two slices of bread, 2.5 dl of cooked rice or 1 dl of raisins."
+          }
+        },
+        "fluid": {
+          "title": "Fluid and salt",
+          "intro": "In Danish weather riders typically sweat 0.7–1.2 litres an hour, and more in the heat.",
+          "points": {
+            "1": "For training over an hour or in the heat: at least 1–2 dl every quarter of an hour, and 2–3 dl with heavy sweating. The body can take up around 1–1.5 litres an hour.",
+            "2": "Weight lost in sweat should be at most 2 % of body weight below 25 °C and 1 % above 30 °C. A rider can weigh before and after a session and then knows their sweat rate.",
+            "3": "For hard training over an hour, 500–700 mg of sodium per litre helps. Urine should be pale yellow and clear.",
+            "4": "Drink no more than you sweat. A rider who gains weight during a session has drunk too much, and a lot of fluid with too little salt can be dangerous."
+          }
+        },
+        "homemade": {
+          "title": "Homemade energy",
+          "intro": "Sports drink, rice cakes and bars can be made at home for a fraction of the price.",
+          "points": {
+            "1": "Ordinary sugar is already half glucose and half fructose, a mix the body takes up well on long races. Two parts sugar to one part glucose gives the ratio 2:1.",
+            "2": "Sports drink should have 4–8 % carbohydrate (40–80 g per litre) and 500–700 mg of sodium per litre. In the heat fluid matters most, so use the weaker bottle and eat the rest.",
+            "3": "For comparison, a bought gel with 25 g of carbohydrate costs DKK 25–30, and a homemade rice cake with 32 g DKK 0.40–1.40."
+          }
+        },
+        "safety": {
+          "title": "Keeping it safe in a jersey pocket",
+          "intro": "In a jersey pocket food is close to body temperature, so homemade food is treated as fresh food.",
+          "points": {
+            "1": "Cooked rice can form toxins if it cools slowly. The Danish Food Administration advises cooling from 56 to 10 °C within four hours, so cool rice cakes quickly in small portions.",
+            "2": "Make rice cakes the evening before, keep them in the fridge, and take them straight from there. Eat them within the first couple of hours of the ride, and in the heat within the first hour. That is Kadence's suggestion from the USDA's rule of thumb.",
+            "3": "Baked oat bars are dry and keep better at room temperature. Store them airtight and eat them within a few days.",
+            "4": "Mix sports drink on the day, and rinse and dry the bottle after use."
+          }
+        },
+        "teeth": {
+          "title": "Teeth",
+          "intro": "Sugar many times a day, acid and a dry mouth during training make riders prone to cavities and erosion.",
+          "points": {
+            "1": "Among the athletes at the London 2012 Olympics, 55 % had cavities and 45 % erosion, although most brushed twice a day.",
+            "2": "Rinse the mouth with water after gels and sports drink, and drink in bigger gulps rather than many small sips.",
+            "3": "Brush with fluoride toothpaste (1450 ppm) morning and evening, and spit without rinsing, so the fluoride works longer. High-fluoride toothpaste (5000 ppm) needs a prescription and is given from age 16.",
+            "4": "Tell the dentist that the rider trains a lot and uses sports products. Municipal dental care in Denmark is free until the age of 22.",
+            "5": "Sugar for training is needed to perform. See dental care as a way of managing the risk, and drink water day to day."
+          }
+        },
+        "supplements": {
+          "title": "Supplements and caffeine",
+          "intro": "Ordinary, varied food covers what young riders need.",
+          "points": {
+            "1": "Anti Doping Danmark writes that the vast majority of children and young people have no need for supplements.",
+            "2": "Supplements can contain substances on the doping list that are not on the label. Among popular supplements the risk of a contaminated product is 10–15 %, and close to 50 % for tablets (Team Danmark). The rider is always responsible.",
+            "3": "If supplements are used anyway, choose products tested by, for example, Informed-Sport or the Kölner Liste, and keep the batch number and the receipt.",
+            "4": "Caffeine: for those under 18 the limit is 3 mg per kg of body weight a day and at a time, with cola, coffee and caffeinated gels added together. For a 55 kg rider that is 165 mg."
+          }
+        },
+        "lowEnergy": {
+          "title": "When the energy falls short",
+          "intro": "When the body gets too little energy for its training, it is called relative energy deficiency in sport (REDs). It affects girls and boys alike, and it mostly happens without anyone meaning it to.",
+          "points": {
+            "1": "It typically arises when training grows, when school and cycling both need fitting in, when appetite goes after hard sessions, or when the rider does not get to eat on long rides.",
+            "2": "It rarely shows on the scales, because the body lowers its metabolism. Signs in both sexes: growth slows, training gives less, the rider is often tired, ill or injured, has mood swings or sleeps badly. A resting heart rate under 50 can be a sign in young people.",
+            "3": "In girls, periods can stop or become irregular. In boys, sex drive can drop and morning erections become fewer.",
+            "4": "Talk about energy, recovery and being able to keep training, and leave weight and body shape out of it. Say what you have noticed, and suggest a talk with a sports dietitian or a doctor.",
+            "5": "See a doctor straight away for fainting or dizziness when the rider stands up."
+          }
+        }
+      },
+      "recipes": {
+        "ingredients": "You need",
+        "method": "Method",
+        "items": {
+          "drink": {
+            "title": "Everyday bottle, about 6 % (1 litre)",
+            "ingredients": {
+              "1": "40 g sugar",
+              "2": "2 dl orange juice",
+              "3": "8 dl water",
+              "4": "1.5 g salt (about ¼ tsp)"
+            },
+            "method": "Stir the sugar and salt into the water, and pour in the juice.",
+            "carbs": "58–60 g of carbohydrate and 590 mg of sodium per litre. A 750 ml bottle gives 43–45 g of carbohydrate.",
+            "price": "DKK 4–7 per litre. With 60 g of sugar and a little lemon instead of juice it costs around DKK 0.50."
+          },
+          "fuel": {
+            "title": "Fuel bottle, about 8 % (750 ml)",
+            "ingredients": {
+              "1": "42 g sugar",
+              "2": "20 g glucose",
+              "3": "1.2 g salt",
+              "4": "Water up to 750 ml"
+            },
+            "method": "Stir everything into a little lukewarm water, and top up with cold. For races over 2½ hours.",
+            "carbs": "60 g of carbohydrate (8 %) at a ratio of about 2:1 and 470 mg of sodium. With 60 g of sugar alone the ratio is 1:1.",
+            "price": "DKK 1–2.50 per bottle, against DKK 15–20 for the same carbohydrate from bought powder."
+          },
+          "riceCakes": {
+            "title": "Sweet rice cakes (10 pieces)",
+            "ingredients": {
+              "1": "250 g pudding rice",
+              "2": "About 5 dl water",
+              "3": "60 g sugar",
+              "4": "100 g pitted dates, chopped",
+              "5": "1 g salt",
+              "6": "Cinnamon or vanilla to taste"
+            },
+            "method": "Cook the rice under a lid until soft and the water is absorbed, stirring often. Stir in the sugar, dates, salt and spice while the rice is warm. Press it into a 20 × 20 cm dish lined with baking paper, cool quickly, and cut into 10 pieces. Wrap each in baking paper or foil.",
+            "carbs": "31–33 g of carbohydrate per piece.",
+            "price": "Around DKK 1.35 per piece. Without dates and with 120 g of sugar in all, DKK 0.42."
+          },
+          "oatBars": {
+            "title": "Baked oat bars (8 bars)",
+            "ingredients": {
+              "1": "200 g rolled oats",
+              "2": "100 g honey",
+              "3": "100 g pitted dates, chopped",
+              "4": "50 g butter",
+              "5": "1 g salt"
+            },
+            "method": "Melt the butter and honey, and fold in the oats, dates and salt. Press into a 20 × 20 cm tin lined with baking paper, and bake at 175 °C for 20–25 minutes until golden. Cut into 8 bars while warm.",
+            "carbs": "32–34 g of carbohydrate per bar. The bars have fat and fibre, so they suit long, easy rides and before the start best.",
+            "price": "DKK 3–4 per bar, against DKK 17–22 for a bought energy bar."
+          }
         }
       }
     }

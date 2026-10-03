@@ -5,7 +5,7 @@ import { GEAR_PRODUCTS } from "@/modules/calc/gear-products";
 import { GEAR_CLASSES, YOUTH_GEARING } from "@/modules/dcu/gearing";
 import { RACE_RULES } from "@/modules/dcu/races";
 import { VALUE_ROWS } from "@/modules/guides/equipment-value";
-import { GUIDES, guideNumbers } from "@/modules/guides/guides";
+import { GUIDES, guideNumbers, RECIPES } from "@/modules/guides/guides";
 import { GUIDE_SOURCES } from "@/modules/guides/sources";
 
 /**
@@ -21,6 +21,7 @@ type Section = { title: string; intro: string; points: Record<string, string> };
 type Catalogue = {
   guides: Record<string, { sections: Record<string, Section> }> & {
     equipment: { value: { rows: Record<string, string>; bunch: Record<string, string> } };
+    food: { recipes: { items: Record<string, Record<string, unknown>> } };
   };
   calculators: {
     gearing: { classes: Record<string, string>; products: { items: Record<string, string> } };
@@ -65,6 +66,16 @@ for (const [lang, messages] of [
       for (const product of GEAR_PRODUCTS)
         expect(catalogue.calculators.gearing.products.items[product.id]).toBeTruthy();
       for (const c of GEAR_CLASSES) expect(catalogue.calculators.gearing.classes[c]).toBeTruthy();
+    });
+
+    it("has every recipe's words, ingredient for ingredient", () => {
+      const items = catalogue.guides.food.recipes.items;
+      expect(Object.keys(items).sort()).toEqual(RECIPES.map((r) => r.id).sort());
+      for (const recipe of RECIPES) {
+        const words = items[recipe.id]!;
+        for (const k of ["title", "method", "carbs", "price"]) expect(words[k]).toBeTruthy();
+        expect(Object.keys(words.ingredients as object)).toHaveLength(recipe.ingredients);
+      }
     });
   });
 }

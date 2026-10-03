@@ -3201,10 +3201,14 @@
         "equipment": {
           "title": "Udstyr: hvor er der mest at hente",
           "body": "Hvad der giver fart for pengene, og hvad der mest er pynt. Med watt, priser og kilder."
+        },
+        "food": {
+          "title": "Mad og drikke",
+          "body": "Mad i hverdagen og på løbsdagen, opskrifter på hjemmelavet energi, tænder og kosttilskud."
         }
       },
-      "fromParents": "Viden om sporten til forældre: klasserne og vejen videre, udstyr, og beregnere til energi og gearing.",
-      "fromHelp": "Guides og beregnere til ryttere, forældre og trænere: klasserne, udstyr, energi til løbet og gearing."
+      "fromParents": "Viden om sporten til forældre: klasserne og vejen videre, udstyr, mad og drikke, og beregnere til energi og gearing.",
+      "fromHelp": "Guides og beregnere til ryttere, forældre og trænere: klasserne, udstyr, mad og drikke, energi til løbet og gearing."
     },
     "classes": {
       "title": "Klasserne og vejen videre",
@@ -3428,6 +3432,150 @@
           "pulleys": "Store pulleyhjul",
           "groupset": "Dyrere gruppesæt (105 til Dura-Ace)",
           "ceramic": "Keramisk krankleje"
+        }
+      }
+    },
+    "food": {
+      "title": "Mad og drikke til unge ryttere",
+      "intro": "Hvad unge ryttere har brug for i hverdagen og på løbsdagen, hvordan du laver energien selv, og hvordan tænderne holder. Til forældre og ryttere.",
+      "sections": {
+        "everyday": {
+          "title": "Mad til hverdag",
+          "intro": "Unge ryttere i vækst skal have energi nok til træning, skole og til at vokse. Almindelig mad dækker det meste.",
+          "points": {
+            "1": "Team Danmark anbefaler 5–7 g kulhydrat pr. kg kropsvægt om dagen ved under 1½ times træning og 7–10 g pr. kg ved mere.",
+            "2": "På dage med hård træning over 1½ time kan halvdelen af tallerkenen være kulhydrat, en fjerdedel protein og en fjerdedel grønt. På lettere dage passer Fødevarestyrelsens Y-tallerken: 2/5 kulhydrat, 1/5 protein og 2/5 grønt.",
+            "3": "Unge i vækst anbefales 1,2–2,0 g protein pr. kg om dagen. De fleste får det gennem almindelig mad, fordelt over dagens måltider.",
+            "4": "Morgenmad før morgentræning hjælper. Er det svært at spise tidligt, kan en lille portion og en sportsdrik under passet gøre det."
+          }
+        },
+        "timing": {
+          "title": "Før, under og efter",
+          "intro": "Hvornår der spises, betyder næsten lige så meget som hvad.",
+          "points": {
+            "1": "Et hovedmåltid 3–4 timer før træning eller løb, eller et mellemmåltid 1–2 timer før med let kulhydrat, lidt protein, lidt fedt og få fibre.",
+            "2": "Under 45 minutter er vand nok. Fra 1 til 2½ time anbefales 30–60 g kulhydrat i timen, og på lange løb op til 90 g, når maven er vant til det. Energiberegneren regner det ud for et løb.",
+            "3": "Lige efter: 1–1,2 g kulhydrat pr. kg og 10–20 g protein, og et hovedmåltid inden for 1–2 timer.",
+            "4": "Almindelig mad kan sagtens give 50 g kulhydrat: to bananer, to skiver brød, 2,5 dl kogt ris eller 1 dl rosiner."
+          }
+        },
+        "fluid": {
+          "title": "Væske og salt",
+          "intro": "I dansk vejr sveder ryttere typisk 0,7–1,2 liter i timen, og mere i varme.",
+          "points": {
+            "1": "Ved træning over en time eller i varme: mindst 1–2 dl hvert kvarter, og 2–3 dl ved meget sved. Kroppen kan optage omkring 1–1,5 liter i timen.",
+            "2": "Vægttabet i sved bør højst være 2 % af kropsvægten under 25 °C og 1 % over 30 °C. Rytteren kan veje sig før og efter et pas og kender så sin svedrate.",
+            "3": "Ved hård træning over en time hjælper 500–700 mg natrium pr. liter. Urinen skal være lys gul og klar.",
+            "4": "Drik højst det, du sveder. Tager rytteren på under et pas, er det for meget, og meget væske med for lidt salt kan være farligt."
+          }
+        },
+        "homemade": {
+          "title": "Hjemmelavet energi",
+          "intro": "Sportsdrik, riskager og barer kan laves hjemme for en brøkdel af prisen.",
+          "points": {
+            "1": "Almindeligt sukker er allerede halvt glukose og halvt fruktose, og den blanding optager kroppen godt på lange løb. To dele sukker og én del druesukker giver forholdet 2:1.",
+            "2": "Sportsdrik bør have 4–8 % kulhydrat (40–80 g pr. liter) og 500–700 mg natrium pr. liter. Er det varmt, er væsken vigtigst, så brug den svage dunk og spis resten.",
+            "3": "Til sammenligning koster en købt gel med 25 g kulhydrat 25–30 kr., og en hjemmelavet riskage med 32 g 0,40–1,40 kr."
+          }
+        },
+        "safety": {
+          "title": "Holdbarhed i trøjelommen",
+          "intro": "I en trøjelomme er maden tæt på kropstemperatur, så hjemmelavet mad behandles som frisk mad.",
+          "points": {
+            "1": "Kogte ris kan danne giftstoffer, hvis de køles langsomt. Fødevarestyrelsen anbefaler at køle fra 56 til 10 °C på højst fire timer, så køl riskagerne hurtigt i små portioner.",
+            "2": "Lav riskagerne aftenen før, opbevar dem i køleskabet, og tag dem direkte derfra. Spis dem inden for de første par timer af turen og i varme inden for den første time. Det er Kadences forslag ud fra USDA's tommelfingerregel.",
+            "3": "Bagte havrebarer er tørre og tåler stuetemperatur bedre. Opbevar dem lufttæt, og spis dem inden for få dage.",
+            "4": "Bland sportsdrikken samme dag, og skyl og tør dunken efter brug."
+          }
+        },
+        "teeth": {
+          "title": "Tænder",
+          "intro": "Sukker mange gange om dagen, syre og en tør mund under træning gør ryttere udsatte for huller og syreskader.",
+          "points": {
+            "1": "Blandt atleterne ved OL i London i 2012 havde 55 % huller og 45 % syreskader, selvom de fleste børstede to gange om dagen.",
+            "2": "Skyl munden med vand efter gel og sportsdrik, og drik i større slurke frem for mange små tår.",
+            "3": "Børst med fluortandpasta (1450 ppm) morgen og aften, og spyt ud uden at skylle efter, så fluoren virker længere. Højfluortandpasta (5000 ppm) kræver recept og gives fra 16 år.",
+            "4": "Fortæl tandlægen, at rytteren træner meget og bruger sportsprodukter. Den kommunale tandpleje er gratis, til man fylder 22.",
+            "5": "Sukker til træning er nødvendigt for at kunne præstere. Se tandplejen som en måde at styre risikoen på, og drik vand i hverdagen."
+          }
+        },
+        "supplements": {
+          "title": "Kosttilskud og koffein",
+          "intro": "Almindelig, varieret mad dækker det, unge ryttere har brug for.",
+          "points": {
+            "1": "Anti Doping Danmark skriver, at langt de fleste børn og unge ikke har brug for kosttilskud.",
+            "2": "Kosttilskud kan indeholde stoffer fra dopinglisten, som ikke står på pakken. Blandt populære tilskud er risikoen for et forurenet produkt 10–15 %, og tæt på 50 % for tabletter (Team Danmark). Rytteren har selv ansvaret.",
+            "3": "Bruges tilskud alligevel, så vælg produkter, der er testet af fx Informed-Sport eller Kölner Liste, og gem batchnummer og kvittering.",
+            "4": "Koffein: for unge under 18 er grænsen 3 mg pr. kg kropsvægt om dagen og pr. gang, med cola, kaffe og gel med koffein lagt sammen. For en rytter på 55 kg er det 165 mg."
+          }
+        },
+        "lowEnergy": {
+          "title": "Når energien ikke slår til",
+          "intro": "Får kroppen for lidt energi i forhold til træningen, hedder det relativ energimangel i sport (REDs). Det rammer både piger og drenge, og det sker oftest, uden at nogen har villet det.",
+          "points": {
+            "1": "Det opstår typisk, når træningen vokser, når skole og cykling skal passes, når appetitten forsvinder efter hårde pas, eller når rytteren ikke får spist på lange ture.",
+            "2": "Det kan sjældent ses på vægten, fordi kroppen sænker sit stofskifte. Tegn hos begge køn: væksten går langsommere, træningen giver mindre, rytteren er ofte træt, syg eller skadet, har humørsvingninger eller sover dårligt. En hvilepuls under 50 kan være et tegn hos unge.",
+            "3": "Hos piger kan menstruationen udeblive eller blive uregelmæssig. Hos drenge kan sexlysten blive mindre og morgenerektionerne færre.",
+            "4": "Tal om energi, restitution og om at blive ved med at kunne træne, og lad vægt og kropsform ligge. Fortæl, hvad du har set, og foreslå en snak med en sportsdiætist eller læge.",
+            "5": "Søg læge med det samme ved besvimelse eller svimmelhed, når rytteren rejser sig."
+          }
+        }
+      },
+      "recipes": {
+        "ingredients": "Det skal du bruge",
+        "method": "Sådan gør du",
+        "items": {
+          "drink": {
+            "title": "Hverdagsdunk, ca. 6 % (1 liter)",
+            "ingredients": {
+              "1": "40 g sukker",
+              "2": "2 dl appelsinjuice",
+              "3": "8 dl vand",
+              "4": "1,5 g salt (ca. ¼ tsk.)"
+            },
+            "method": "Rør sukker og salt ud i vandet, og hæld juicen i.",
+            "carbs": "58–60 g kulhydrat og 590 mg natrium pr. liter. En dunk på 750 ml giver 43–45 g kulhydrat.",
+            "price": "4–7 kr. pr. liter. Med 60 g sukker og lidt citron i stedet for juice koster den omkring 0,50 kr."
+          },
+          "fuel": {
+            "title": "Brændstofdunk, ca. 8 % (750 ml)",
+            "ingredients": {
+              "1": "42 g sukker",
+              "2": "20 g druesukker",
+              "3": "1,2 g salt",
+              "4": "Vand op til 750 ml"
+            },
+            "method": "Rør det hele ud i lidt lunkent vand, og fyld op med koldt. Til løb over 2½ time.",
+            "carbs": "60 g kulhydrat (8 %) i forholdet omkring 2:1 og 470 mg natrium. Med 60 g sukker alene bliver forholdet 1:1.",
+            "price": "1–2,50 kr. pr. dunk, mod 15–20 kr. for den samme mængde kulhydrat fra købt pulver."
+          },
+          "riceCakes": {
+            "title": "Søde riskager (10 stk.)",
+            "ingredients": {
+              "1": "250 g grødris",
+              "2": "Omkring 5 dl vand",
+              "3": "60 g sukker",
+              "4": "100 g udstenede dadler, hakket",
+              "5": "1 g salt",
+              "6": "Kanel eller vanilje efter smag"
+            },
+            "method": "Kog risene under låg, til de er møre og vandet er suget op, og rør ofte. Rør sukker, dadler, salt og krydderi i, mens risene er varme. Tryk massen ud i et fad på 20 × 20 cm med bagepapir, køl hurtigt ned, og skær i 10 stykker. Pak hvert stykke i bagepapir eller folie.",
+            "carbs": "31–33 g kulhydrat pr. stk.",
+            "price": "Omkring 1,35 kr. pr. stk. Uden dadler og med 120 g sukker i alt koster de 0,42 kr."
+          },
+          "oatBars": {
+            "title": "Bagte havrebarer (8 stk.)",
+            "ingredients": {
+              "1": "200 g havregryn",
+              "2": "100 g honning",
+              "3": "100 g udstenede dadler, hakket",
+              "4": "50 g smør",
+              "5": "1 g salt"
+            },
+            "method": "Smelt smør og honning, og vend havregryn, dadler og salt i. Tryk massen ud i en form på 20 × 20 cm med bagepapir, og bag ved 175 °C i 20–25 minutter, til barerne er gyldne. Skær i 8 barer, mens de er lune.",
+            "carbs": "32–34 g kulhydrat pr. bar. Barerne har fedt og fibre, så de passer bedst til lange, rolige ture og før start.",
+            "price": "3–4 kr. pr. bar, mod 17–22 kr. for en købt energibar."
+          }
         }
       }
     }

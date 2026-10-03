@@ -36,7 +36,20 @@ export type OwnSourceId =
   | "keytel2005"
   | "compendium2024"
   | "thomas2016"
-  | "jeukendrup2014";
+  | "jeukendrup2014"
+  | "tdFood2026"
+  | "tdSupplementsBuy"
+  | "dtuCaffeine"
+  | "fvstCooling"
+  | "usdaDangerZone"
+  | "dentistsSport"
+  | "dentistsErosion"
+  | "kkTeeth"
+  | "ismFreeDental"
+  | "needleman2013"
+  | "needleman2015"
+  | "gallagher2018"
+  | "desbrow2021";
 
 export type GuideSourceId = CoachSourceId | OwnSourceId;
 
@@ -200,6 +213,86 @@ const OWN: Record<OwnSourceId, CoachSource> = {
     publisher: "Sports Medicine",
     year: 2014,
     url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC4008807/",
+  },
+  tdFood2026: {
+    title: "Kost og elitesport – basal sportsernæring",
+    publisher: "Team Danmark",
+    year: 2026,
+    url: "https://www.teamdanmark.dk/media/b3hlper2/kostogelitesport_2026.pdf",
+  },
+  tdSupplementsBuy: {
+    title: "Anskaffelse af kosttilskud",
+    publisher: "Team Danmark",
+    year: null,
+    url: "https://www.teamdanmark.dk/til-atleter/sportsernaering/kosttilskud/anskaffelse",
+  },
+  dtuCaffeine: {
+    title: "Risikovurdering af koffein i energidrikke",
+    publisher: "DTU Fødevareinstituttet for Fødevarestyrelsen",
+    year: 2023,
+    url: "https://foedevarestyrelsen.dk/Media/638191330374579437/Risikovurdering%20koffein%20i%20energidrikke.pdf",
+  },
+  fvstCooling: {
+    title: "Nedkøling af fødevarer",
+    publisher: "Fødevarestyrelsen",
+    year: null,
+    url: "https://foedevarestyrelsen.dk/kost-og-foedevarer/start-og-drift-af-foedevarevirksomhed/hygiejne-og-indretning/haandtering-af-foedevarer-hygiejne-og-nedkoeling/nedkoeling-af-foedevarer",
+  },
+  usdaDangerZone: {
+    title: '"Danger Zone" (40 °F–140 °F)',
+    publisher: "USDA Food Safety and Inspection Service",
+    year: null,
+    url: "https://www.fsis.usda.gov/food-safety/safe-food-handling-and-preparation/food-safety-basics/danger-zone-40f-140f",
+  },
+  dentistsSport: {
+    title: "Tandlæger advarer: Sportsdrikke og energibarer kan skade tænderne",
+    publisher: "Tandlægeforeningen",
+    year: null,
+    url: "https://www.tandlaegeforeningen.dk/til-tandlaeger/til-dine-patienter/livsstil/sukker-skader-taenderne/sukker-i-sportsernaeringsprodukter/",
+  },
+  dentistsErosion: {
+    title: "Erosioner – syreskader på tænderne",
+    publisher: "Tandlægeforeningen",
+    year: null,
+    url: "https://www.tandlaegeforeningen.dk/til-tandlaeger/til-dine-patienter/tandsygdomme-gener-og-behandlinger/a-f/erosioner-syreskader-paa-taenderne/",
+  },
+  kkTeeth: {
+    title: "Sunde tænder",
+    publisher: "Københavns Kommune, Tandplejen",
+    year: null,
+    url: "https://tandplejen.kk.dk/taender-og-tandpleje/sunde-taender",
+  },
+  ismFreeDental: {
+    title: "Ny ordning om gratis tandpleje for 18-21-årige træder i kraft i dag",
+    publisher: "Indenrigs- og Sundhedsministeriet",
+    year: 2022,
+    url: "https://www.ism.dk/nyheder/2022/juli/ny-ordning-om-gratis-tandpleje-for-18-21-aarige-traeder-i-kraft-i-dag-",
+  },
+  needleman2013: {
+    title:
+      "Oral health and impact on performance of athletes at the London 2012 Olympic Games (Needleman m.fl.)",
+    publisher: "British Journal of Sports Medicine",
+    year: 2013,
+    url: "https://doi.org/10.1136/bjsports-2013-092891",
+  },
+  needleman2015: {
+    title: "Oral health and elite sport performance (Needleman m.fl.)",
+    publisher: "British Journal of Sports Medicine",
+    year: 2015,
+    url: "https://doi.org/10.1136/bjsports-2014-093804",
+  },
+  gallagher2018: {
+    title:
+      "Oral health and performance impacts in elite and professional athletes (Gallagher m.fl.)",
+    publisher: "Community Dentistry and Oral Epidemiology",
+    year: 2018,
+    url: "https://doi.org/10.1111/cdoe.12392",
+  },
+  desbrow2021: {
+    title: "Youth Athlete Development and Nutrition (Desbrow)",
+    publisher: "Gatorade Sports Science Institute",
+    year: 2021,
+    url: "https://www.gssiweb.org/sports-science-exchange/article/youth-athlete-development-and-nutrition",
   },
 };
 
