@@ -18,7 +18,9 @@ export default defineConfig({
   test: {
     environment: "node",
     include: [
-      "tests/{dcu,load,fit,workouts,charts,coach,files,rulle,results,club,paradigms}/**/*.test.ts",
+      "tests/{dcu,load,fit,workouts,charts,coach,files,rulle,results,paradigms}/**/*.test.ts",
+      // The championship's arithmetic only; tests/club/championship.test.ts needs the database.
+      "tests/club/standings.test.ts",
     ],
   },
 });
