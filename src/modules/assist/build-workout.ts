@@ -16,6 +16,7 @@ import {
   type BuiltWorkout,
 } from "./build-workout-answer";
 import { buildWorkoutPrompt } from "./build-workout-prompt";
+import { teamParadigm } from "@/modules/team/settings";
 
 export type { BuiltWorkout, BuildSport };
 
@@ -60,7 +61,10 @@ export async function proposeBuiltWorkout(
   input: BuildInput,
   locale: string,
 ): Promise<{ proposal: BuiltWorkout; engine: string } | null> {
-  await withOrgContext(ctx, (tx) => requireCoach(tx, ctx));
+  const guided = await withOrgContext(ctx, async (tx) => {
+    await requireCoach(tx, ctx);
+    return (await teamParadigm(tx, ctx.orgId)) !== null;
+  });
   const current = currentSession(input.sport, input.current);
   if (input.sport === "bike" && !current) {
     const byRules = parseWorkoutText(input.text);
@@ -70,7 +74,7 @@ export async function proposeBuiltWorkout(
           title: "",
           description: "",
           structure: byRules,
-          notes: workoutNotes(byRules, input.category),
+          notes: workoutNotes(byRules, input.category, guided),
           via: "rules",
         },
         engine: "rules",
@@ -80,9 +84,9 @@ export async function proposeBuiltWorkout(
   const { data, engine } = await askForJson(
     ctx,
     "build_workout",
-    buildWorkoutPrompt({ ...input, current, locale }),
+    buildWorkoutPrompt({ ...input, current, locale, guided }),
     { maxTokens: input.sport === "strength" ? 3000 : 2000 },
   );
-  const proposal = sanitizeBuilt(input.sport, data, input.category);
+  const proposal = sanitizeBuilt(input.sport, data, input.category, guided);
   return proposal ? { proposal, engine } : null;
 }

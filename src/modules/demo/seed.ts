@@ -56,7 +56,12 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
   const raceYear = raceYearOf(season);
   const rnd = random(7);
 
-  await saveTeamSettings(ctx, { teamKind: "U19", aiOnRiderData: false, allowYouthWeight: false });
+  await saveTeamSettings(ctx, {
+    teamKind: "U19",
+    aiOnRiderData: false,
+    allowYouthWeight: false,
+    guidance: "dcu-2025",
+  });
   await installDcuProgrammes(ctx, l);
 
   const templates: Record<string, string> = {};

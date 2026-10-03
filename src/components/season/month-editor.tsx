@@ -20,7 +20,8 @@ export function MonthEditor({
   onChange,
 }: {
   month: PlanMonth;
-  dcu: number;
+  /** Null when the team plans without DCU (ADR 0049). */
+  dcu: number | null;
   onChange: (month: PlanMonth) => void;
 }) {
   const t = useTranslations("season");
@@ -43,16 +44,18 @@ export function MonthEditor({
             max={200}
             step="any"
             value={month.hours}
-            aria-describedby={`${ids.hours}-dcu`}
+            aria-describedby={dcu === null ? undefined : `${ids.hours}-dcu`}
             className="max-sm:h-11 tabular-nums"
             onChange={(e) =>
               onChange({ ...month, hours: Math.max(0, Number(e.target.value) || 0) })
             }
           />
-          <span id={`${ids.hours}-dcu`} className="flex flex-col gap-1 pt-0.5">
-            <span className="text-meta text-xs">{t("dcuHours", { hours: dcu })}</span>
-            <DeviationChip planned={month.hours} dcu={dcu} />
-          </span>
+          {dcu !== null && (
+            <span id={`${ids.hours}-dcu`} className="flex flex-col gap-1 pt-0.5">
+              <span className="text-meta text-xs">{t("dcuHours", { hours: dcu })}</span>
+              <DeviationChip planned={month.hours} dcu={dcu} />
+            </span>
+          )}
         </div>
         <div className="flex flex-col gap-1">
           <label htmlFor={ids.phase} className="text-label text-xs font-medium">

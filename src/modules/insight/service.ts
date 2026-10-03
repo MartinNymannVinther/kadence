@@ -5,6 +5,7 @@ import { FORECAST_MAX_DAYS, type FlagKind, type Severity } from "@/modules/load"
 import { gather } from "./gather";
 import { resolutionsFor } from "./resolutions";
 import { riderInsight, SERIES_DAYS, WARMUP_DAYS, type RiderInsight } from "./rider";
+import { teamParadigm } from "@/modules/team/settings";
 
 /**
  * The insight for the pages: one rider's load and guardrails, or the whole
@@ -36,6 +37,7 @@ export async function getInsights(
       riderIds: options.riderIds,
       aheadTo: addDaysIso(today, FORECAST_MAX_DAYS),
     });
+    const paradigm = await teamParadigm(tx, ctx.orgId);
     const resolutions = await resolutionsFor(
       tx,
       data.riders.map((r) => r.id),
@@ -63,6 +65,7 @@ export async function getInsights(
             severity: r.severity as Severity,
             seen: r.seen,
           })),
+        paradigm,
       );
     });
     return insights.sort(

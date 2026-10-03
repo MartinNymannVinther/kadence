@@ -6,8 +6,11 @@ export type SeasonPlanData = {
   id: string;
   basis: string;
   months: PlanMonth[];
-  /** DCU's hours for each month of the basis, in the plan's order. */
-  dcu: number[];
+  /**
+   * DCU's hours for each month of the basis, in the plan's order; null when
+   * the team plans without DCU (ADR 0049).
+   */
+  dcu: number[] | null;
   note: string;
 };
 

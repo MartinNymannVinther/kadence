@@ -12,6 +12,7 @@ import { installDcuProgrammes } from "@/modules/training/dcu-library";
 import { listTemplates } from "@/modules/training/templates";
 import { listCheckins, saveCheckin } from "@/modules/wellbeing/checkins";
 import { addMeasurement } from "@/modules/wellbeing/measurements";
+import { getTeamSettings, saveTeamSettings } from "@/modules/team/settings";
 import { adminPool } from "../helpers/db";
 import { insertSql, seedPerson } from "../helpers/rows";
 
@@ -67,6 +68,34 @@ describe("DCU in the library", () => {
       "dcu-strength-u23-2016",
     ]);
     await expect(installDcuProgrammes(LEA, "da")).rejects.toMatchObject({ code: "forbidden" });
+  });
+});
+
+describe("planning without DCU (ADR 0049)", () => {
+  const own = { teamKind: "mixed", aiOnRiderData: false, allowYouthWeight: false } as const;
+
+  it("a coach turns DCU off; the plan starts empty and nothing stands beside it", async () => {
+    expect((await getTeamSettings(COACH)).guidance).toBe("dcu-2025");
+    await saveTeamSettings(COACH, { ...own, guidance: "none" });
+    try {
+      await createSeasonPlan(COACH, "s_lea", 2030);
+      const plan = (await getSeasonPlan(COACH, "s_lea", 2030))!;
+      expect(plan.guided).toBe(false);
+      expect(plan.deviations).toEqual([]);
+      expect(plan.months.every((m) => m.hours === 0 && m.note === "")).toBe(true);
+    } finally {
+      // Back to no settings row at all, as the rest of this file expects.
+      await admin.query("delete from team_settings where org_id = $1", [ORG]);
+    }
+    const again = (await getSeasonPlan(COACH, "s_lea", 2030))!;
+    expect(again.guided).toBe(true);
+    expect(again.deviations).toHaveLength(12);
+  });
+
+  it("only a coach changes it", async () => {
+    await expect(saveTeamSettings(LEA, { ...own, guidance: "none" })).rejects.toMatchObject({
+      code: "forbidden",
+    });
   });
 });
 

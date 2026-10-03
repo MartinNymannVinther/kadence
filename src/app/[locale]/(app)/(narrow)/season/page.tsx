@@ -23,6 +23,7 @@ import { getSeasonPlan, riderClass } from "@/modules/season/plans";
 import { seasonVolumes, teamSeasonVolumes } from "@/modules/season/volumes";
 import { whoAmI } from "@/modules/team/access";
 import { getRiders } from "@/modules/team/riders";
+import { getTeamSettings } from "@/modules/team/settings";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("season");
@@ -118,7 +119,12 @@ export default async function SeasonPage({ searchParams }: { searchParams: Searc
       rider: visible.length > 1 ? (query.rider ?? rider.id) : null,
       season: (query.season ?? season) === current ? null : String(query.season ?? season),
     });
-  const dcu = plan ? plan.months.map((m) => monthHours(plan.basis as ClassBasis, m.month)) : [];
+  // DCU's number beside the plan, when the team plans by DCU (ADR 0049).
+  const dcu =
+    plan && plan.guided
+      ? plan.months.map((m) => monthHours(plan.basis as ClassBasis, m.month))
+      : null;
+  const guided = plan ? plan.guided : (await getTeamSettings(ctx)).guidance !== "none";
   const tBasis = (k: "basis", v: Record<string, string | number>) => t(k, v);
 
   return (
@@ -179,17 +185,17 @@ export default async function SeasonPage({ searchParams }: { searchParams: Searc
                   {t("chart.title")}
                 </h2>
                 <p className="text-meta text-2sm">
-                  {t("basisNow", { basis: basisText(plan.basis, tBasis) })}
+                  {t(guided ? "basisNow" : "basisOwn", { basis: basisText(plan.basis, tBasis) })}
                 </p>
               </div>
-              {canWrite && <ResetPlan planId={plan.id} basis={plan.basis} />}
+              {canWrite && guided && <ResetPlan planId={plan.id} basis={plan.basis} />}
             </div>
             <div className="border-border bg-card rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5">
               <SeasonChart
                 months={plan.months.map((m, i) => ({
                   month: m.month,
                   planned: m.hours,
-                  dcu: dcu[i] ?? 0,
+                  dcu: dcu ? (dcu[i] ?? 0) : null,
                   scheduled: scheduled.find((r) => r.month === m.month)?.hours ?? 0,
                   ridden: ridden.find((r) => r.month === m.month)?.hours ?? 0,
                 }))}
@@ -215,23 +221,26 @@ export default async function SeasonPage({ searchParams }: { searchParams: Searc
           riderId={rider.id}
           seasonStartYear={season}
           riderBasis={riderClass(rider, season).basis}
+          guided={guided}
         />
       ) : (
         <EmptyState title={t("none.title")} hint={t("none.readOnly")} />
       )}
 
-      <section
-        aria-labelledby="season-reference"
-        className="border-border flex flex-col gap-4 border-t pt-6"
-      >
-        <div className="flex flex-col gap-1">
-          <h2 id="season-reference" className="text-lg font-semibold">
-            {t("reference.title")}
-          </h2>
-          <p className="text-meta text-2sm leading-relaxed">{t("reference.body")}</p>
-        </div>
-        <DcuReference />
-      </section>
+      {guided && (
+        <section
+          aria-labelledby="season-reference"
+          className="border-border flex flex-col gap-4 border-t pt-6"
+        >
+          <div className="flex flex-col gap-1">
+            <h2 id="season-reference" className="text-lg font-semibold">
+              {t("reference.title")}
+            </h2>
+            <p className="text-meta text-2sm leading-relaxed">{t("reference.body")}</p>
+          </div>
+          <DcuReference />
+        </section>
+      )}
     </div>
   );
 }

@@ -11,7 +11,8 @@ import {
   type TrainingBlockRow,
 } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
-import { seasonStartYear, weeklyCorridor } from "@/modules/dcu";
+import { seasonStartYear } from "@/modules/dcu";
+import { teamParadigm } from "@/modules/team/settings";
 import { blockWeeks, previewWeeks, type WeekPreview } from "@/modules/load/blocks";
 import { weeklyTotals } from "@/modules/load/fitness";
 import { riderClass } from "@/modules/season/class";
@@ -211,6 +212,7 @@ export async function previewBlock(ctx: OrgContext, input: ApplyInputT): Promise
         ),
       );
     const season = seasonStartYear(start);
+    const paradigm = await teamParadigm(tx, ctx.orgId);
     return riderRows.map((rider) => {
       const klass = riderClass(rider, season);
       const previous = weeklyTotals(
@@ -232,7 +234,8 @@ export async function previewBlock(ctx: OrgContext, input: ApplyInputT): Promise
         weeks: previewWeeks(
           weeks,
           start,
-          (monday) => (klass.basis ? weeklyCorridor(klass.basis, monday) : null),
+          (monday) =>
+            klass.basis && paradigm ? paradigm.weeklyCorridor(klass.basis, monday) : null,
           previous,
         ),
       };

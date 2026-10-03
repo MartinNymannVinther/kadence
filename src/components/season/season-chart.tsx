@@ -11,7 +11,8 @@ export type SeasonChartMonth = {
   month: number;
   planned: number;
   scheduled: number;
-  dcu: number;
+  /** Null when the team plans without DCU (ADR 0049): no tick, no legend. */
+  dcu: number | null;
   ridden: number;
 };
 
@@ -39,13 +40,14 @@ export function SeasonChart({ months }: { months: SeasonChartMonth[] }) {
   const hover = useHoverIndex(n, center);
   const peak = Math.max(
     10,
-    ...months.map((m) => Math.max(m.planned, m.scheduled, m.dcu, m.ridden)),
+    ...months.map((m) => Math.max(m.planned, m.scheduled, m.dcu ?? 0, m.ridden)),
   );
   const ticks = niceTicks(0, peak, 3);
   const y = linearScale([0, ticks.at(-1)!], [PLOT, 6]);
   const bar = Math.max(4, Math.min(16, (slot - 6) / 2));
   const shown = hover.index !== null ? months[hover.index] : null;
   const hours = (v: number) => num(v, locale, 1);
+  const guided = months.some((m) => m.dcu !== null);
 
   return (
     <figure className="flex min-w-0 flex-col gap-2">
@@ -54,18 +56,27 @@ export function SeasonChart({ months }: { months: SeasonChartMonth[] }) {
           { key: "planned", label: t("planned"), mark: "bar", color: PLANNED },
           { key: "scheduled", label: t("scheduled"), mark: "outline", color: RIDDEN },
           { key: "ridden", label: t("ridden"), mark: "bar", color: RIDDEN },
-          { key: "dcu", label: t("dcu"), mark: "tick", color: "var(--foreground)" },
+          ...(guided
+            ? [{ key: "dcu", label: t("dcu"), mark: "tick" as const, color: "var(--foreground)" }]
+            : []),
         ]}
       />
       <p className="text-2sm min-h-5 font-medium tabular-nums" aria-live="polite">
         {shown
-          ? t("readout", {
-              month: monthLong(shown.month, locale),
-              plan: hours(shown.planned),
-              scheduled: hours(shown.scheduled),
-              dcu: hours(shown.dcu),
-              ridden: hours(shown.ridden),
-            })
+          ? shown.dcu === null
+            ? t("readoutOwn", {
+                month: monthLong(shown.month, locale),
+                plan: hours(shown.planned),
+                scheduled: hours(shown.scheduled),
+                ridden: hours(shown.ridden),
+              })
+            : t("readout", {
+                month: monthLong(shown.month, locale),
+                plan: hours(shown.planned),
+                scheduled: hours(shown.scheduled),
+                dcu: hours(shown.dcu),
+                ridden: hours(shown.ridden),
+              })
           : t("hint")}
       </p>
       <div ref={ref} className="w-full">
@@ -110,24 +121,28 @@ export function SeasonChart({ months }: { months: SeasonChartMonth[] }) {
                     strokeWidth={1.5}
                   />
                 )}
-                <line
-                  x1={c - bar - 3}
-                  x2={c + bar + 3}
-                  y1={y(m.dcu)}
-                  y2={y(m.dcu)}
-                  stroke="var(--card)"
-                  strokeWidth={5}
-                  strokeLinecap="round"
-                />
-                <line
-                  x1={c - bar - 3}
-                  x2={c + bar + 3}
-                  y1={y(m.dcu)}
-                  y2={y(m.dcu)}
-                  stroke="var(--foreground)"
-                  strokeWidth={2.5}
-                  strokeLinecap="round"
-                />
+                {m.dcu !== null && (
+                  <>
+                    <line
+                      x1={c - bar - 3}
+                      x2={c + bar + 3}
+                      y1={y(m.dcu)}
+                      y2={y(m.dcu)}
+                      stroke="var(--card)"
+                      strokeWidth={5}
+                      strokeLinecap="round"
+                    />
+                    <line
+                      x1={c - bar - 3}
+                      x2={c + bar + 3}
+                      y1={y(m.dcu)}
+                      y2={y(m.dcu)}
+                      stroke="var(--foreground)"
+                      strokeWidth={2.5}
+                      strokeLinecap="round"
+                    />
+                  </>
+                )}
                 <text x={c} y={PLOT + AXIS - 4} textAnchor="middle" className="fill-meta text-2xs">
                   {monthLong(m.month, locale).slice(0, slot < 30 ? 1 : 3)}
                 </text>

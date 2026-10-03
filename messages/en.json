@@ -573,6 +573,10 @@
       "coachOnly": "Only coaches can change them.",
       "kindTitle": "What kind of team",
       "kindBody": "Used for the team's defaults. Each rider's class still comes from their birth year.",
+      "guidanceTitle": "Training basis",
+      "guidanceBody": "Kadence can guide the team by DCU's recommendations for each class: the hours in the season plan, the week's range and the longest ride. You can turn it off and on whenever you like.",
+      "guidance": "Guided by DCU's recommendations",
+      "guidanceHint": "When on, the season plan starts from DCU's hours and the week is shown against DCU's range. When off, you set your own hours, and the points about DCU's range and the longest ride go away. Pain, wellbeing, sleep, the week-to-week rise and the classes' race rules stay, whichever you choose.",
       "kinds": {
         "U17": "U17",
         "U19": "U19",
@@ -892,7 +896,8 @@
       "bike": "On the bike against the season plan",
       "bikeFor": "On the bike against the season plan, {basis}",
       "of": "{done} of {planned} h",
-      "strength": "Strength: {done} of {planned, plural, one {# session} other {# sessions}} done. DCU recommends {dcu} a week."
+      "strength": "Strength: {done} of {planned, plural, one {# session} other {# sessions}} done. DCU recommends {dcu} a week.",
+      "strengthOwn": "Strength: {done} of {planned, plural, one {# session} other {# sessions}} done."
     },
     "actions": {
       "addSession": "Add session",
@@ -2274,9 +2279,11 @@
     "none": {
       "title": "No season plan yet",
       "body": "The plan is filled with DCU's hours for the class, month by month from October to September. Afterwards you can change anything, and the deviation from DCU always stands beside it.",
+      "bodyOwn": "The team plans without DCU's hours, so the plan starts empty, month by month from October to September. You type in the hours yourself.",
       "readOnly": "There is no season plan for this season yet. The coach or the rider can make one."
     },
     "create": "Create from DCU",
+    "createOwn": "Create an empty plan",
     "created": "The season plan is made from DCU.",
     "basisLabel": "Plan from",
     "pickBasis": "Choose a class",
@@ -2284,6 +2291,7 @@
     "noClass": "The rider is not in one of DCU's classes (U17 to U23) this season. Choose the class the plan should build on.",
     "basis": "{category} year {year}",
     "basisNow": "The plan builds on DCU's hours for {basis}.",
+    "basisOwn": "The team plans with its own hours. The rider is {basis}.",
     "reset": {
       "button": "Fill again from DCU",
       "title": "Fill the plan again from DCU?",
@@ -2346,6 +2354,7 @@
     "planNote": "Note for the season",
     "planNotePlaceholder": "E.g. the season's goals, or why the plan differs from DCU",
     "totals": "The season in total: goal {plan} h · planned {scheduled} h · done {ridden} h · DCU {dcu} h",
+    "totalsOwn": "The season in total: goal {plan} h · planned {scheduled} h · done {ridden} h",
     "readOnlyNote": "You can see the plan. The coach and the rider can change it.",
     "chart": {
       "title": "Hours per month",
@@ -2355,6 +2364,7 @@
       "dcu": "DCU",
       "label": "Hours on the bike per month in the season: goal, planned, done and DCU's hours",
       "readout": "{month}: goal {plan} h · planned {scheduled} h · done {ridden} h · DCU {dcu} h",
+      "readoutOwn": "{month}: goal {plan} h · planned {scheduled} h · done {ridden} h",
       "hint": "Point at a month, or use the arrow keys, to see the numbers."
     },
     "reference": {

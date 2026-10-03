@@ -38,11 +38,19 @@ const STRENGTH = [
   "Use only the equipment the coach mentions; when none is mentioned, choose exercises an ordinary fitness centre has. Write exercise names in the language of the answer.",
 ];
 
-/** DCU's frame for the class, from Kadence's own copy of DCU's numbers. */
-export function classLine(sport: BuildSport, category: DcuCategory | null): string | null {
+/**
+ * DCU's frame for the class, from Kadence's own copy of DCU's numbers. A
+ * team that plans without DCU (ADR 0049) is told the class and not DCU's
+ * longest ride; DCU's strength programmes are library content and stay.
+ */
+export function classLine(
+  sport: BuildSport,
+  category: DcuCategory | null,
+  guided = true,
+): string | null {
   if (!category) return null;
   if (sport === "bike") {
-    const limit = LONGEST_RIDE[category];
+    const limit = guided ? LONGEST_RIDE[category] : null;
     return limit
       ? `The riders are ${category}. DCU says a ${category} rider never rides longer than ${limit.hours} hours or ${limit.km} km in training.`
       : `The riders are ${category}.`;
@@ -64,11 +72,13 @@ export function buildWorkoutPrompt(input: {
   category: DcuCategory | null;
   current: BikeStructure | StrengthStructure | null;
   locale: string;
+  /** Whether the team plans by DCU (ADR 0049); true unless said otherwise. */
+  guided?: boolean;
 }): LlmMessage[] {
   const system = [
     ...(input.sport === "bike" ? BIKE : STRENGTH),
     ...COMMON,
-    classLine(input.sport, input.category),
+    classLine(input.sport, input.category, input.guided ?? true),
     input.current
       ? "The session the coach has built so far is given as JSON. Change it as the coach asks and answer with the whole session, keeping what the coach did not ask to change."
       : null,

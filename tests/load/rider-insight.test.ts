@@ -72,6 +72,23 @@ describe("a rider's insight", () => {
     expect(kinds).toContain("longest_ride");
   });
 
+  it("without a paradigm, the corridor and the longest ride go, and the ramp stays (ADR 0049)", () => {
+    const acts: InsightActivity[] = [];
+    for (let d = 120; d >= 7; d -= 2) acts.push(ride(addDaysIso(TODAY, -d), 1.5, 70));
+    acts.push(
+      ride("2026-12-07", 6, 300, 170),
+      ride("2026-12-08", 5, 250),
+      ride("2026-12-09", 5, 250),
+    );
+    const insight = riderInsight(rider, acts, [], [], TODAY, true, [], [], null);
+    expect(insight.corridor).toBeNull();
+    expect(insight.guidance).toBe("none");
+    const kinds = insight.flags.map((f) => f.kind);
+    expect(kinds).not.toContain("hours_above_corridor");
+    expect(kinds).not.toContain("longest_ride");
+    expect(kinds).toContain("ramp");
+  });
+
   it("counts planned bike hours still to come toward the week", () => {
     const sessions: InsightSession[] = [
       {

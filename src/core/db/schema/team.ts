@@ -40,10 +40,18 @@ export const teamSettings = pgTable(
     aiOnRiderData: boolean("ai_on_rider_data").notNull().default(false),
     /** Whether weight may be recorded for riders under 19. Off by default (docs/adr/0013). */
     allowYouthWeight: boolean("allow_youth_weight").notNull().default(false),
+    /**
+     * The model the team plans by: DCU's 2025 recommendations, or none
+     * (docs/adr/0049). Coaches change it whenever they like.
+     */
+    guidance: text("guidance").notNull().default("dcu-2025"),
     updatedBy: text("updated_by").references(() => users.id, { onDelete: "set null" }),
     ...timestamps,
   },
-  (t) => [check("team_settings_kind", sql`${t.teamKind} in ('U17','U19','U23','mixed')`)],
+  (t) => [
+    check("team_settings_kind", sql`${t.teamKind} in ('U17','U19','U23','mixed')`),
+    check("team_settings_guidance", sql`${t.guidance} in ('dcu-2025','none')`),
+  ],
 );
 
 /**

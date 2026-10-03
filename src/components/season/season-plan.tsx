@@ -71,12 +71,18 @@ export function SeasonPlan({
     <form onSubmit={save} className="flex flex-col gap-3">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-2sm">
-          {t("totals", {
-            plan: total(shown.map((m) => m.hours)),
-            dcu: total(plan.dcu),
-            scheduled: total(scheduled.map((r) => r.hours)),
-            ridden: total(ridden.map((r) => r.hours)),
-          })}
+          {plan.dcu
+            ? t("totals", {
+                plan: total(shown.map((m) => m.hours)),
+                dcu: total(plan.dcu),
+                scheduled: total(scheduled.map((r) => r.hours)),
+                ridden: total(ridden.map((r) => r.hours)),
+              })
+            : t("totalsOwn", {
+                plan: total(shown.map((m) => m.hours)),
+                scheduled: total(scheduled.map((r) => r.hours)),
+                ridden: total(ridden.map((r) => r.hours)),
+              })}
         </p>
         {canWrite && !editing && (
           <Button type="button" variant="outline" className="max-sm:h-11" onClick={start}>
@@ -91,14 +97,14 @@ export function SeasonPlan({
             <MonthEditor
               key={month.month}
               month={month}
-              dcu={plan.dcu[i] ?? 0}
+              dcu={plan.dcu ? (plan.dcu[i] ?? 0) : null}
               onChange={(next) => setMonths((all) => all.map((m, j) => (j === i ? next : m)))}
             />
           ) : (
             <MonthRow
               key={month.month}
               month={month}
-              dcu={plan.dcu[i] ?? 0}
+              dcu={plan.dcu ? (plan.dcu[i] ?? 0) : null}
               ridden={riddenOf(month.month)}
               scheduled={scheduledOf(month.month)}
             />

@@ -573,6 +573,10 @@
       "coachOnly": "Kun trænere kan ændre dem.",
       "kindTitle": "Hvad slags hold",
       "kindBody": "Bruges til holdets standarder. Hver rytters klasse kommer stadig fra fødselsåret.",
+      "guidanceTitle": "Træningsgrundlag",
+      "guidanceBody": "Kadence kan guide holdet efter DCU's anbefalinger for hver klasse: timerne i sæsonplanen, ugens ramme og den længste tur. Du kan slå det fra og til, når du vil.",
+      "guidance": "Guidet af DCU's anbefalinger",
+      "guidanceHint": "Slået til starter sæsonplanen fra DCU's timer, og ugen vises mod DCU's ramme. Slået fra lægger du dine egne timer, og punkterne om DCU's ramme og den længste tur forsvinder. Smerter, trivsel, søvn, stigningen fra uge til uge og klassernes løbsregler bliver, uanset valget.",
       "kinds": {
         "U17": "U17",
         "U19": "U19",
@@ -892,7 +896,8 @@
       "bike": "På cyklen mod sæsonplanen",
       "bikeFor": "På cyklen mod sæsonplanen, {basis}",
       "of": "{done} af {planned} t",
-      "strength": "Styrke: {done} af {planned} pas udført. DCU anbefaler {dcu} om ugen."
+      "strength": "Styrke: {done} af {planned} pas udført. DCU anbefaler {dcu} om ugen.",
+      "strengthOwn": "Styrke: {done} af {planned} pas udført."
     },
     "actions": {
       "addSession": "Tilføj pas",
@@ -2274,9 +2279,11 @@
     "none": {
       "title": "Ingen sæsonplan endnu",
       "body": "Planen fyldes ud med DCU's timer for årgangen, måned for måned fra oktober til september. Bagefter kan I rette alt, og afvigelsen fra DCU står altid ved siden af.",
+      "bodyOwn": "Holdet planlægger uden DCU's timer, så planen starter tom, måned for måned fra oktober til september. Du skriver selv timerne ind.",
       "readOnly": "Der er ingen sæsonplan for den her sæson endnu. Træneren eller rytteren kan lave en."
     },
     "create": "Opret fra DCU",
+    "createOwn": "Opret tom plan",
     "created": "Sæsonplanen er lavet ud fra DCU.",
     "basisLabel": "Plan ud fra",
     "pickBasis": "Vælg årgang",
@@ -2284,6 +2291,7 @@
     "noClass": "Rytteren er ikke i en af DCU's årgange (U17 til U23) i denne sæson. Vælg den årgang, planen skal bygge på.",
     "basis": "{category} {year}. år",
     "basisNow": "Planen bygger på DCU's timer for {basis}.",
+    "basisOwn": "Holdet planlægger med egne timer. Rytteren er {basis}.",
     "reset": {
       "button": "Fyld ud igen fra DCU",
       "title": "Fyld planen ud igen fra DCU?",
@@ -2346,6 +2354,7 @@
     "planNote": "Note til sæsonen",
     "planNotePlaceholder": "Fx sæsonens mål, eller hvorfor planen afviger fra DCU",
     "totals": "Sæsonen i alt: mål {plan} t · planlagt {scheduled} t · udført {ridden} t · DCU {dcu} t",
+    "totalsOwn": "Sæsonen i alt: mål {plan} t · planlagt {scheduled} t · udført {ridden} t",
     "readOnlyNote": "Du kan se planen. Træneren og rytteren kan rette den.",
     "chart": {
       "title": "Timer pr. måned",
@@ -2355,6 +2364,7 @@
       "dcu": "DCU",
       "label": "Timer på cyklen pr. måned i sæsonen: mål, planlagt, udført og DCU's timer",
       "readout": "{month}: mål {plan} t · planlagt {scheduled} t · udført {ridden} t · DCU {dcu} t",
+      "readoutOwn": "{month}: mål {plan} t · planlagt {scheduled} t · udført {ridden} t",
       "hint": "Peg på en måned, eller brug piletasterne, for at se tallene."
     },
     "reference": {

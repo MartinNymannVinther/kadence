@@ -1,0 +1,2 @@
+ALTER TABLE "team_settings" ADD COLUMN "guidance" text DEFAULT 'dcu-2025' NOT NULL;--> statement-breakpoint
+ALTER TABLE "team_settings" ADD CONSTRAINT "team_settings_guidance" CHECK ("team_settings"."guidance" in ('dcu-2025','none'));

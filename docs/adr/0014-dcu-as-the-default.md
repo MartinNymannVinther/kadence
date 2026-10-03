@@ -1,6 +1,6 @@
 # ADR 0014: DCU's recommendations are the default, and deviations show
 
-Status: accepted · Date: 2026-09-27
+Status: accepted · Date: 2026-09-27 · Amended by ADR 0049 (DCU becomes a choice the team can turn off)
 
 ## Context
 
