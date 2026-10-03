@@ -17,6 +17,7 @@ import { AppSidebar } from "./app-sidebar";
 import { MobileHeader } from "./mobile-header";
 import { SidebarShell, SidebarToggle } from "./sidebar-shell";
 import { getTeamSettings } from "@/modules/team/settings";
+import { unreadThreadCount } from "@/modules/community/service";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await getSession();
@@ -62,6 +63,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const rides = Boolean(me?.isCoach || me?.rider);
   // The club championship is in the menu once the club has turned it on (ADR 0051).
   const club = context ? (await getTeamSettings(context)).clubChampionship : false;
+  // Threads with something new in Trænerrummet, for a coach (ADR 0052).
+  const counts = context && isCoach ? { coaches: await unreadThreadCount(context) } : {};
 
   // Read on the server so the first paint is already the layout this
   // person left behind, rather than a rail that appears and vanishes.
@@ -90,6 +93,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             isCoach={isCoach}
             rides={rides}
             club={club}
+            counts={counts}
             toggle={<SidebarToggle placement="sidebar" />}
           />
         }
@@ -105,6 +109,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           isCoach={isCoach}
           rides={rides}
           club={club}
+          counts={counts}
         />
         {children}
       </SidebarShell>

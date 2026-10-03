@@ -182,6 +182,7 @@
       "today": "Today",
       "calendar": "Calendar",
       "riders": "Riders",
+      "coaches": "Coaches' room",
       "library": "Workout library",
       "season": "Season",
       "club": "Club champion",
@@ -3350,6 +3351,73 @@
         "U23": "U23",
         "open": "Open"
       }
+    }
+  },
+  "community": {
+    "title": "The coaches' room",
+    "subtitle": "Coaches across the clubs sharing experience and advice. Only coaches have access, and there are no private messages.",
+    "categories": "Categories",
+    "all": "All",
+    "unread": "New since last time",
+    "locked": "Locked",
+    "former": "Former coach",
+    "writeFromTeam": "You write in the coaches' room as coach of the team you have open. Switch to a team you coach to write.",
+    "empty": {
+      "title": "No threads yet",
+      "body": "Start the first thread above. A question about winter strength training is a good beginning."
+    },
+    "category": {
+      "training": "Training",
+      "strength": "Strength",
+      "wellbeing": "Wellbeing",
+      "races": "Races and rules",
+      "equipment": "Equipment",
+      "dcu": "The DCU corner"
+    },
+    "reports": {
+      "title": "{count, plural, one {# report waiting} other {# reports waiting}}",
+      "thread": "A thread",
+      "post": "A reply",
+      "gone": "The post no longer exists"
+    },
+    "compose": {
+      "title": "New thread",
+      "category": "Category",
+      "subject": "Subject",
+      "body": "Text",
+      "bodyHint": "What would you like to share or ask?",
+      "rule": "Share experience about the training, and keep riders' names out of it.",
+      "attach": "Attach a session from the library",
+      "post": "Share",
+      "posted": "The thread is shared."
+    },
+    "thread": {
+      "reply": "Reply",
+      "replyHint": "Write a reply",
+      "replied": "Your reply is shared.",
+      "take": "Take into my library",
+      "taken": "The session is now in your team's library.",
+      "hiddenNote": "Hidden by the installation's owner. Only the author and the owner can see it.",
+      "lockedNote": "The thread is locked, so no more replies can be written."
+    },
+    "report": {
+      "open": "Report",
+      "reason": "What is wrong? (optional)",
+      "send": "Send report",
+      "sent": "Thank you. The installation's owner will look at it.",
+      "cancel": "Cancel"
+    },
+    "moderate": {
+      "hide": "Hide",
+      "show": "Show again",
+      "hidden": "The post is hidden.",
+      "shown": "The post is shown again.",
+      "lock": "Lock the thread",
+      "unlock": "Open the thread",
+      "locked": "The thread is locked.",
+      "unlocked": "The thread is open again.",
+      "handle": "Handled",
+      "handled": "The report is marked as handled."
     }
   }
 }

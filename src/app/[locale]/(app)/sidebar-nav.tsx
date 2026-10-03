@@ -21,6 +21,7 @@ const ITEMS = [
   { href: "/season", key: "season", coach: false, rides: false, club: false },
   { href: "/club", key: "club", coach: false, rides: false, club: true },
   { href: "/riders", key: "riders", coach: true, rides: false, club: false },
+  { href: "/coaches", key: "coaches", coach: true, rides: false, club: false },
   { href: "/parents", key: "parents", coach: false, rides: false, club: false },
   { href: "/help", key: "help", coach: false, rides: false, club: false },
 ] as const;
@@ -39,6 +40,7 @@ export function SidebarNav({
   isCoach = false,
   rides = false,
   club = false,
+  counts = {},
 }: {
   onNavigate?: () => void;
   /** The team's list of riders is the coaches' page (ADR 0010). */
@@ -47,6 +49,8 @@ export function SidebarNav({
   rides?: boolean;
   /** The club keeps a club championship (ADR 0051). */
   club?: boolean;
+  /** Something new behind an item, e.g. unread threads in Trænerrummet (ADR 0052). */
+  counts?: Partial<Record<string, number>>;
 }) {
   const t = useTranslations("app.nav");
   const pathname = usePathname();
@@ -63,9 +67,10 @@ export function SidebarNav({
             href={item.href}
             onClick={onNavigate}
             aria-current={active ? "page" : undefined}
-            className={navItemClass(active)}
+            className={cn(navItemClass(active), counts[item.key] ? "flex items-center" : "")}
           >
             {t(item.key)}
+            {counts[item.key] ? <CountPill count={counts[item.key]!} /> : null}
           </Link>
         );
       })}

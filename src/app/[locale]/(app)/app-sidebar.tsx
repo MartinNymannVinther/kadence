@@ -22,6 +22,7 @@ export async function AppSidebar({
   isCoach = false,
   rides = false,
   club = false,
+  counts = {},
   toggle,
 }: {
   userName: string;
@@ -36,6 +37,8 @@ export async function AppSidebar({
   isCoach?: boolean;
   /** The club keeps a club championship (ADR 0051). */
   club?: boolean;
+  /** Counts beside menu items (ADR 0052). */
+  counts?: Partial<Record<string, number>>;
   /** A rider or a coach: Rulle is in the navigation. */
   rides?: boolean;
   /** The control that folds the rail away; rendered next to the lockup. */
@@ -58,7 +61,7 @@ export async function AppSidebar({
         </Link>
         {toggle}
       </div>
-      <SidebarNav isCoach={isCoach} rides={rides} club={club} />
+      <SidebarNav isCoach={isCoach} rides={rides} club={club} counts={counts} />
       <div className="flex flex-col gap-1.5 px-3 pt-1 pb-3">
         <OrgSwitcher
           canCreate={canCreate}

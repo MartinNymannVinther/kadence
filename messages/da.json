@@ -182,6 +182,7 @@
       "today": "I dag",
       "calendar": "Kalender",
       "riders": "Ryttere",
+      "coaches": "Trænerrummet",
       "library": "Træningsbibliotek",
       "season": "Sæson",
       "club": "Klubmester",
@@ -3350,6 +3351,73 @@
         "U23": "U23",
         "open": "Åben"
       }
+    }
+  },
+  "community": {
+    "title": "Trænerrummet",
+    "subtitle": "Trænerne på tværs af klubberne, der deler erfaringer og råd. Kun trænere har adgang, og der er ingen private beskeder.",
+    "categories": "Kategorier",
+    "all": "Alle",
+    "unread": "Nyt siden sidst",
+    "locked": "Låst",
+    "former": "Tidligere træner",
+    "writeFromTeam": "Du skriver i Trænerrummet som træner for det hold, du har åbent. Skift til et hold, du træner, for at skrive.",
+    "empty": {
+      "title": "Ingen tråde endnu",
+      "body": "Start den første tråd ovenfor. Et spørgsmål om vinterens styrketræning er en god begyndelse."
+    },
+    "category": {
+      "training": "Træning",
+      "strength": "Styrke",
+      "wellbeing": "Trivsel",
+      "races": "Løb og regler",
+      "equipment": "Udstyr",
+      "dcu": "DCU-hjørnet"
+    },
+    "reports": {
+      "title": "{count, plural, one {# anmeldelse venter} other {# anmeldelser venter}}",
+      "thread": "En tråd",
+      "post": "Et svar",
+      "gone": "Indlægget findes ikke længere"
+    },
+    "compose": {
+      "title": "Ny tråd",
+      "category": "Kategori",
+      "subject": "Overskrift",
+      "body": "Tekst",
+      "bodyHint": "Hvad vil du dele eller spørge om?",
+      "rule": "Del erfaringer om træningen, og hold rytternes navne ude af det.",
+      "attach": "Vedhæft et pas fra biblioteket",
+      "post": "Del",
+      "posted": "Tråden er delt."
+    },
+    "thread": {
+      "reply": "Svar",
+      "replyHint": "Skriv et svar",
+      "replied": "Dit svar er delt.",
+      "take": "Tag med i mit bibliotek",
+      "taken": "Passet er nu i dit holds bibliotek.",
+      "hiddenNote": "Skjult af installationens ejer. Kun forfatteren og ejeren kan se det.",
+      "lockedNote": "Tråden er låst, så der kan ikke skrives flere svar."
+    },
+    "report": {
+      "open": "Anmeld",
+      "reason": "Hvad er der galt? (valgfrit)",
+      "send": "Send anmeldelse",
+      "sent": "Tak. Installationens ejer ser på det.",
+      "cancel": "Annullér"
+    },
+    "moderate": {
+      "hide": "Skjul",
+      "show": "Vis igen",
+      "hidden": "Indlægget er skjult.",
+      "shown": "Indlægget vises igen.",
+      "lock": "Lås tråden",
+      "unlock": "Åbn tråden",
+      "locked": "Tråden er låst.",
+      "unlocked": "Tråden er åben igen.",
+      "handle": "Behandlet",
+      "handled": "Anmeldelsen er markeret som behandlet."
     }
   }
 }

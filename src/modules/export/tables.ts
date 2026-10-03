@@ -82,5 +82,8 @@ export const EXPORT_TABLES: ExportTable[] = [
  * - `access_requests` and `access_invitations`: they belong to the
  *   installation, not to any workspace, and describe people who are not
  *   users of it. The application role cannot read them anyway.
+ * - Trænerrummet's threads, replies, reports and read markers (ADR 0052):
+ *   they belong to the installation's room, not to a workspace, and a
+ *   club's export would otherwise carry other clubs' coaches' words.
  */
 export const MEMBERS_SHEET = "Brugere";

@@ -275,6 +275,9 @@ describe("rls coverage (guards future tables)", () => {
     "access_invitations",
     // Throwaway by definition, deleted whole when it expires.
     "demo_workspaces",
+    // Where a coach last read a thread in Trænerrummet (ADR 0052): their
+    // own marker, rewritten on every visit, not something anybody owns.
+    "community_reads",
   ];
 
   it("every domain table has an audit trigger", async () => {
@@ -343,7 +346,14 @@ describe("rls coverage (guards future tables)", () => {
     "app_can_read_rider",
     "app_can_write_rider",
     "app_is_coach",
+    // Whether the caller coaches a team anywhere on the installation, for
+    // Trænerrummet (drizzle/0023, docs/adr/0052): true or false about the
+    // caller, read from their own memberships, and nothing else.
+    "app_is_coach_somewhere",
     "app_is_guardian_of",
+    // Whether the caller owns the installation, for Trænerrummet's
+    // moderation: true or false about the caller, and nothing else.
+    "app_is_platform_owner",
     "app_is_rider_self",
     // Links a new member to the rider or guardian row a coach prepared,
     // for an invitation the caller accepted to their own address.

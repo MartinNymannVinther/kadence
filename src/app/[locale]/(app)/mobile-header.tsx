@@ -23,6 +23,7 @@ export function MobileHeader({
   isCoach = false,
   rides = false,
   club = false,
+  counts = {},
 }: {
   userName: string;
   userEmail: string;
@@ -35,6 +36,8 @@ export function MobileHeader({
   isCoach?: boolean;
   /** The club keeps a club championship (ADR 0051). */
   club?: boolean;
+  /** Counts beside menu items (ADR 0052). */
+  counts?: Partial<Record<string, number>>;
   rides?: boolean;
 }) {
   const t = useTranslations("app.nav");
@@ -61,6 +64,7 @@ export function MobileHeader({
                 isCoach={isCoach}
                 rides={rides}
                 club={club}
+                counts={counts}
               />
               <div className="flex flex-col gap-1.5 px-3 pt-1 pb-3">
                 <OrgSwitcher

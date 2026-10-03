@@ -162,6 +162,13 @@
       "when": 1791020528760,
       "tag": "0022_club_championship",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1791021444996,
+      "tag": "0023_coaches_room",
+      "breakpoints": true
     }
   ]
 }
