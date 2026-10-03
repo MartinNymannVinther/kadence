@@ -5,7 +5,7 @@ godkendes først, og derefter bygges der bølge for bølge, hver på sin egen
 branch og med sin egen PR.
 
 Det, der var en ren rettelse, er allerede lavet (afsnit 0). Resten venter
-på et ja. Afsnit 11 samler de spørgsmål, kun Martin kan svare på.
+på et ja. Afsnit 11 samler Martins svar på planens spørgsmål.
 
 Researchen bag planen ligger i `docs/research/`:
 
@@ -801,35 +801,46 @@ klubber. C kommer før G.
 
 ---
 
-## 11. Spørgsmål til Martin
+## 11. Afgjort 3. oktober 2026
 
-1. **Klub eller hold?** Er én klub ét arbejdsrum, hvor trænerne ser alle
-   klubbens ryttere? Eller skal trænere kunne begrænses til deres egen
-   gruppe?
-2. **Hosting for klubber:** gratis den første vinter? Og hvem er
-   databehandler juridisk, Haij eller dit firma?
-3. **Klubmester:** kun klubbens egne afdelinger, eller også point fra
-   rigtige løb fra DCU's resultater? Det sidste virker kun for ryttere
-   med UCI-ID, og forsøget med resultater kører stadig kun for Benjamin.
-4. **DCU-valget:** for hele holdet (forslaget) eller for den enkelte
-   træner?
-5. **Paradigmer:** hvilket alternativ skal bygges først (se 4a)?
-6. **Trænerrummet:** må DCU's folk være med som verificeret
-   organisation (afsnit 3, punkt 3)?
-7. **Offentlige sider:** dogme syv handler om, hvad der kommer i vinduet.
-   Er det i orden, at beregnerne og guiderne ligger åbent på
-   kadence.haij.dk, så længe de ikke bliver vist frem på haij.dk før
-   vinteren?
-8. **"Megane":** hvilket mærke tænkte du på? Vi har fundet Miche, Recon,
-   E.Dubied og Shimano CS-R8000 14-28, men intet, der hedder Megane.
-9. **Tre ting til DCU, når I taler sammen** (de står ikke i reglerne):
-   - Hvad dækker "låst gear"? Er en cykel, der kun kører på den lille
-     klinge, lovlig?
-   - Må U17-ryttere køre med fri gearing ved U19-DM i enkeltstart?
-   - Hvordan og hvor ofte måler kommissærerne?
-10. **Energiberegneren og mad-guiden:** er loftet på 60 g/t for U17 og
-    for ryttere uden mavetræning i orden? Og skal vi have en
-    sportsdiætist fra Team Danmark eller DIF til at læse afsnittet om
-    REDs igennem, før det går live?
-11. **Paradigmer og rettigheder:** må vi spørge BDR og SCF om lov til at
-    bruge deres tal, med kilde, i Kadence?
+Martin sagde ja til planen og til alle buddene herunder. Hans eneste
+rettelse var punkt 8.
+
+1. **Klub eller hold:** én klub er ét arbejdsrum, og alle trænere ser
+   alle ryttere. Begrænsning til en gruppe kommer først, når en rigtig
+   klub beder om det.
+2. **Hosting:** gratis for de første klubber gennem vinteren 2026–27, med
+   en databehandleraftale fra dag ét. Databehandler er Martins firma,
+   indtil Haij eventuelt bliver en juridisk enhed. Prisen fastsættes
+   efter vinteren.
+3. **Klubmester:** kun klubbens egne afdelinger. Point fra DCU's
+   resultater kan komme senere som et tilvalg.
+4. **DCU-valget:** for hele holdet. Alle holdets trænere kan ændre det,
+   og den enkelte sæsonplan kan afvige.
+5. **Paradigmer:** "Lav intensitet først" bygges først, derefter BDR 2009
+   og så SCF 2025.
+6. **Trænerrummet:** DCU's folk må være med som verificeret organisation
+   med et DCU-hjørne. De får samme rettigheder som trænerne og ingen
+   adgang til klubbernes data.
+7. **Offentlige sider:** beregnere og guides ligger åbent på
+   kadence.haij.dk. De vises ikke frem på haij.dk før efter vinteren.
+8. **Produkter:** Martin mente **Magene** (magene.com). Magene laver
+   billige wattmålere, pulsbælter, cykelcomputere, hometrainere og
+   QED-klinger (50-34, 52-36 og 53-39, 110 BCD, til Magenes egne
+   kranksæt). Den mindste klinge er 50 T, så Magene løser ikke grænsen
+   alene, men sammen med en junior-kassette, fx 50 × 16 = 6,58 m i U15.
+   Magene står i gearingberegnerens produktliste og i udstyrsguiden under
+   træningsværktøjer.
+9. **Spørgsmålene til DCU** tager Martin med til den første snak.
+   Indtil da er beregneren forsigtig:
+   - Den behandler det som forbudt at låse gear med stopskruen.
+   - Den viser U17's grænse for U17-ryttere uanset løb.
+   - Den forklarer målemetoden med en note om, at DCU ikke har beskrevet
+     den.
+10. **Energi og mad:** loftet på 60 g/t for U17 og for ryttere uden
+    mavetræning er godkendt. Beregneren kan gå live med det samme.
+    Mad-guiden går først live, når en sportsdiætist har læst afsnittet om
+    REDs igennem. Derfor ligger den i sin egen PR.
+11. **Rettigheder:** Claude skriver kladder til BDR og SCF på engelsk, som
+    Martin sender. Indtil de svarer, linker Kadence kun til deres
+    materiale.
