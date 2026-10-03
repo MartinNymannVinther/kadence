@@ -69,3 +69,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0048](0048-many-clubs-on-one-installation.md)                             | Many clubs on one installation: only the owner creates workspaces, an overview in figures, logo and picture | → 0002, 0003, 0004             |
 | [0049](0049-dcu-as-a-choice.md)                                            | DCU's guidance as a team's choice, and the shape a training paradigm takes                                  | → 0014, 0015, 0040             |
 | [0050](0050-a-riders-own-sessions.md)                                      | A rider's own sessions: built by the rider, read by the coach, taken into the library as a copy             | → 0010, 0011, 0038             |
+| [0051](0051-the-club-championship.md)                                      | The club championship: the club's own rounds, standings and roll of honour, the one place with placings     | → 0013, 0039                   |

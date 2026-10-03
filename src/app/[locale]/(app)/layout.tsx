@@ -16,6 +16,7 @@ import { whoAmI } from "@/modules/team/access";
 import { AppSidebar } from "./app-sidebar";
 import { MobileHeader } from "./mobile-header";
 import { SidebarShell, SidebarToggle } from "./sidebar-shell";
+import { getTeamSettings } from "@/modules/team/settings";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await getSession();
@@ -59,6 +60,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   else if (context && me?.rider) after(() => refreshOwnRacesLater(context));
   // Rulle is for riding, and for a coach trying a session on the trainer (ADR 0033).
   const rides = Boolean(me?.isCoach || me?.rider);
+  // The club championship is in the menu once the club has turned it on (ADR 0051).
+  const club = context ? (await getTeamSettings(context)).clubChampionship : false;
 
   // Read on the server so the first paint is already the layout this
   // person left behind, rather than a rail that appears and vanishes.
@@ -86,6 +89,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             attention={attention}
             isCoach={isCoach}
             rides={rides}
+            club={club}
             toggle={<SidebarToggle placement="sidebar" />}
           />
         }
@@ -100,6 +104,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           attention={attention}
           isCoach={isCoach}
           rides={rides}
+          club={club}
         />
         {children}
       </SidebarShell>

@@ -88,6 +88,20 @@ export function TeamSettingsForm({
         </Card>
         <Card>
           <CardHeader>
+            <CardTitle>{t("clubTitle")}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <SwitchRow
+              label={t("club")}
+              hint={t("clubHint")}
+              checked={draft.clubChampionship}
+              stateText={draft.clubChampionship ? t("on") : t("off")}
+              onChange={(clubChampionship) => setDraft({ ...draft, clubChampionship })}
+            />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
             <CardTitle>{t("youthTitle")}</CardTitle>
           </CardHeader>
           <CardContent className="divide-hairline flex flex-col divide-y">

@@ -22,6 +22,7 @@ export function MobileHeader({
   attention = 0,
   isCoach = false,
   rides = false,
+  club = false,
 }: {
   userName: string;
   userEmail: string;
@@ -32,6 +33,8 @@ export function MobileHeader({
   canCreate?: boolean;
   attention?: number;
   isCoach?: boolean;
+  /** The club keeps a club championship (ADR 0051). */
+  club?: boolean;
   rides?: boolean;
 }) {
   const t = useTranslations("app.nav");
@@ -53,7 +56,12 @@ export function MobileHeader({
               <div className="px-4 pt-5 pb-3">
                 <WordmarkLockup organization={organization} logo={logo} />
               </div>
-              <SidebarNav onNavigate={() => setOpen(false)} isCoach={isCoach} rides={rides} />
+              <SidebarNav
+                onNavigate={() => setOpen(false)}
+                isCoach={isCoach}
+                rides={rides}
+                club={club}
+              />
               <div className="flex flex-col gap-1.5 px-3 pt-1 pb-3">
                 <OrgSwitcher
                   canCreate={canCreate}

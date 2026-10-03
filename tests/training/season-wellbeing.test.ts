@@ -72,7 +72,12 @@ describe("DCU in the library", () => {
 });
 
 describe("planning without DCU (ADR 0049)", () => {
-  const own = { teamKind: "mixed", aiOnRiderData: false, allowYouthWeight: false } as const;
+  const own = {
+    teamKind: "mixed",
+    aiOnRiderData: false,
+    allowYouthWeight: false,
+    clubChampionship: false,
+  } as const;
 
   it("a coach turns DCU off; the plan starts empty and nothing stands beside it", async () => {
     expect((await getTeamSettings(COACH)).guidance).toBe("dcu-2025");

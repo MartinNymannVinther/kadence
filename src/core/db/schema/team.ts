@@ -46,6 +46,8 @@ export const teamSettings = pgTable(
      * (docs/adr/0049). Coaches change it whenever they like.
      */
     guidance: text("guidance").notNull().default("dcu-2025"),
+    /** Whether the club keeps a club championship in Kadence (docs/adr/0051). Off by default. */
+    clubChampionship: boolean("club_championship").notNull().default(false),
     updatedBy: text("updated_by").references(() => users.id, { onDelete: "set null" }),
     ...timestamps,
   },

@@ -1,6 +1,6 @@
 # ADR 0013: Youth defaults — no weight, no leaderboards, school in the calendar
 
-Status: accepted · Date: 2026-09-27
+Status: accepted · Date: 2026-09-27 · Amended by ADR 0051 (the club championship, the one place riders see placings)
 
 ## Context
 

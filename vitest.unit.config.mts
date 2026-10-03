@@ -17,6 +17,8 @@ export default defineConfig({
   },
   test: {
     environment: "node",
-    include: ["tests/{dcu,load,fit,workouts,charts,coach,files,rulle,results}/**/*.test.ts"],
+    include: [
+      "tests/{dcu,load,fit,workouts,charts,coach,files,rulle,results,club,paradigms}/**/*.test.ts",
+    ],
   },
 });

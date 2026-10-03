@@ -184,6 +184,7 @@
       "riders": "Riders",
       "library": "Workout library",
       "season": "Season",
+      "club": "Club champion",
       "parents": "Parents",
       "rulle": "Rulle"
     },
@@ -577,6 +578,9 @@
       "guidanceBody": "Kadence can guide the team by DCU's recommendations for each class: the hours in the season plan, the week's range and the longest ride. You can turn it off and on whenever you like.",
       "guidance": "Guided by DCU's recommendations",
       "guidanceHint": "When on, the season plan starts from DCU's hours and the week is shown against DCU's range. When off, you set your own hours, and the points about DCU's range and the longest ride go away. Pain, wellbeing, sleep, the week-to-week rise and the classes' race rules stay, whichever you choose.",
+      "clubTitle": "Club championship",
+      "club": "Club championship in Kadence",
+      "clubHint": "Off by default. When on, the club gets a page with the season's rounds, the standings and the club champions over the years. It is the only place where riders and parents see placings.",
       "kinds": {
         "U17": "U17",
         "U19": "U19",
@@ -3227,6 +3231,125 @@
       "slower": "Slower",
       "left": "Left",
       "right": "Right"
+    }
+  },
+  "club": {
+    "title": "Club champion",
+    "subtitle": "The club's own championship: the rounds, the standings and the club champions over the years. It is the only place in Kadence where placings are shown.",
+    "seasons": "Championships",
+    "rounds": "Rounds",
+    "noRounds": "The rounds appear here once the coach has added them.",
+    "noRoundsCoach": "Add the season's first round above.",
+    "off": {
+      "title": "The club championship is turned off",
+      "body": "The club championship can be turned on under Settings → Team, if the club wants to keep its championship here.",
+      "link": "Go to Team"
+    },
+    "none": {
+      "title": "No championship yet",
+      "body": "When the coach creates the season's championship, it appears here.",
+      "coach": "Create the season's championship above to get started."
+    },
+    "standings": {
+      "empty": "The standings appear once the first round has been ridden.",
+      "cheer": "Thanks to everyone who rode. Here are the standings after the season's rounds.",
+      "improvement": "The year's biggest improvement: {name} rode {course} {percent, number} % faster than last year.",
+      "points": "{points, plural, one {# point} other {# points}} · {rounds, plural, one {# round} other {# rounds}}",
+      "class": {
+        "U17": "U17",
+        "U19": "U19",
+        "U23": "U23",
+        "open": "Open"
+      }
+    },
+    "round": {
+      "noResults": "The results appear once the coach has entered them.",
+      "record": "Personal best",
+      "dnf": "Did not finish",
+      "dns": "Withdrew",
+      "remove": "Remove the round",
+      "removeTitle": "Remove the round?",
+      "removeBody": "The round and its results are removed from the championship.",
+      "removed": "The round is removed.",
+      "kind": {
+        "tt": "Time trial",
+        "hill": "Hill climb",
+        "road": "Road race",
+        "crit": "Criterium",
+        "other": "Other"
+      },
+      "class": {
+        "U17": "U17",
+        "U19": "U19",
+        "U23": "U23",
+        "open": "Open"
+      }
+    },
+    "editor": {
+      "open": "Enter results",
+      "hintTime": "Type the time as mm:ss or h:mm:ss. The fastest in each class comes first.",
+      "hintPlace": "Type the placing in each class.",
+      "name": "Name",
+      "class": "Class",
+      "time": "Time",
+      "place": "Placing",
+      "status": "Status",
+      "remove": "Remove the line",
+      "addRider": "Add rider",
+      "addGuest": "Add guest",
+      "save": "Save results",
+      "cancel": "Cancel",
+      "saved": "The results are saved.",
+      "badTime": "The time for {name} should be written as mm:ss.",
+      "badPlace": "The placing for {name} should be a whole number.",
+      "classes": {
+        "U17": "U17",
+        "U19": "U19",
+        "U23": "U23",
+        "open": "Open"
+      },
+      "statuses": {
+        "finished": "Finished",
+        "dnf": "Did not finish",
+        "dns": "Withdrew"
+      }
+    },
+    "forms": {
+      "season": "Season",
+      "title": "Name",
+      "defaultTitle": "Club championship {year}",
+      "create": "Create championship",
+      "created": "The championship is created.",
+      "date": "Date",
+      "kind": "Kind",
+      "roundTitle": "Round",
+      "roundTitleHint": "e.g. The club time trial",
+      "measure": "Decided by",
+      "byTime": "Time",
+      "byPlace": "Placing",
+      "addRound": "Add round",
+      "roundAdded": "The round is added.",
+      "crown": "Crown club champions",
+      "crowned": "The club champions are now on the roll of honour.",
+      "championTitle": "Club champion"
+    },
+    "honour": {
+      "title": "Club champions over the years",
+      "empty": "The first club champion will be written here.",
+      "defaultTitle": "Club champion",
+      "year": "Year",
+      "class": "Class",
+      "name": "Name",
+      "add": "Add",
+      "added": "The club champion is on the roll of honour.",
+      "remove": "Remove from the roll of honour",
+      "removed": "The line is removed.",
+      "classes": {
+        "U17": "U17",
+        "U19": "U19",
+        "U23": "U23",
+        "open": "Open"
+      }
     }
   }
 }

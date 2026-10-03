@@ -14,14 +14,15 @@ import { cn } from "@/lib/utils";
  * where `onNavigate` lets the sheet close itself.
  */
 const ITEMS = [
-  { href: "/today", key: "today", coach: false, rides: false },
-  { href: "/calendar", key: "calendar", coach: false, rides: false },
-  { href: "/library", key: "library", coach: false, rides: false },
-  { href: "/rulle", key: "rulle", coach: false, rides: true },
-  { href: "/season", key: "season", coach: false, rides: false },
-  { href: "/riders", key: "riders", coach: true, rides: false },
-  { href: "/parents", key: "parents", coach: false, rides: false },
-  { href: "/help", key: "help", coach: false, rides: false },
+  { href: "/today", key: "today", coach: false, rides: false, club: false },
+  { href: "/calendar", key: "calendar", coach: false, rides: false, club: false },
+  { href: "/library", key: "library", coach: false, rides: false, club: false },
+  { href: "/rulle", key: "rulle", coach: false, rides: true, club: false },
+  { href: "/season", key: "season", coach: false, rides: false, club: false },
+  { href: "/club", key: "club", coach: false, rides: false, club: true },
+  { href: "/riders", key: "riders", coach: true, rides: false, club: false },
+  { href: "/parents", key: "parents", coach: false, rides: false, club: false },
+  { href: "/help", key: "help", coach: false, rides: false, club: false },
 ] as const;
 
 export function navItemClass(active: boolean): string {
@@ -37,19 +38,24 @@ export function SidebarNav({
   onNavigate,
   isCoach = false,
   rides = false,
+  club = false,
 }: {
   onNavigate?: () => void;
   /** The team's list of riders is the coaches' page (ADR 0010). */
   isCoach?: boolean;
   /** Rulle is for those who ride, and for coaches trying a session. */
   rides?: boolean;
+  /** The club keeps a club championship (ADR 0051). */
+  club?: boolean;
 }) {
   const t = useTranslations("app.nav");
   const pathname = usePathname();
 
   return (
     <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-2">
-      {ITEMS.filter((item) => (isCoach || !item.coach) && (rides || !item.rides)).map((item) => {
+      {ITEMS.filter(
+        (item) => (isCoach || !item.coach) && (rides || !item.rides) && (club || !item.club),
+      ).map((item) => {
         const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
         return (
           <Link

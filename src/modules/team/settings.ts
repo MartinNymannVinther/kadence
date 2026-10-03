@@ -19,11 +19,12 @@ export const TeamSettingsInput = z.object({
   aiOnRiderData: z.boolean(),
   allowYouthWeight: z.boolean(),
   guidance: z.enum(GUIDANCE_IDS as [GuidanceId, ...GuidanceId[]]),
+  clubChampionship: z.boolean(),
 });
 
 export type TeamSettings = Pick<
   TeamSettingsRow,
-  "teamKind" | "aiOnRiderData" | "allowYouthWeight"
+  "teamKind" | "aiOnRiderData" | "allowYouthWeight" | "clubChampionship"
 > & {
   guidance: GuidanceId;
 };
@@ -33,6 +34,7 @@ export const DEFAULT_TEAM_SETTINGS: TeamSettings = {
   aiOnRiderData: false,
   allowYouthWeight: false,
   guidance: DEFAULT_GUIDANCE,
+  clubChampionship: false,
 };
 
 export async function getTeamSettings(ctx: OrgContext): Promise<TeamSettings> {
@@ -48,6 +50,7 @@ export async function getTeamSettings(ctx: OrgContext): Promise<TeamSettings> {
           aiOnRiderData: row.aiOnRiderData,
           allowYouthWeight: row.allowYouthWeight,
           guidance: isGuidanceId(row.guidance) ? row.guidance : DEFAULT_GUIDANCE,
+          clubChampionship: row.clubChampionship,
         }
       : DEFAULT_TEAM_SETTINGS;
   });

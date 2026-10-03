@@ -21,6 +21,7 @@ export async function AppSidebar({
   attention = 0,
   isCoach = false,
   rides = false,
+  club = false,
   toggle,
 }: {
   userName: string;
@@ -33,6 +34,8 @@ export async function AppSidebar({
   /** Items waiting for the installation's owner; zero for everyone else. */
   attention?: number;
   isCoach?: boolean;
+  /** The club keeps a club championship (ADR 0051). */
+  club?: boolean;
   /** A rider or a coach: Rulle is in the navigation. */
   rides?: boolean;
   /** The control that folds the rail away; rendered next to the lockup. */
@@ -55,7 +58,7 @@ export async function AppSidebar({
         </Link>
         {toggle}
       </div>
-      <SidebarNav isCoach={isCoach} rides={rides} />
+      <SidebarNav isCoach={isCoach} rides={rides} club={club} />
       <div className="flex flex-col gap-1.5 px-3 pt-1 pb-3">
         <OrgSwitcher
           canCreate={canCreate}

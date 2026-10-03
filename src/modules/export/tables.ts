@@ -46,6 +46,12 @@ export const EXPORT_TABLES: ExportTable[] = [
   { table: "training_blocks", sheet: "Blokke", orderBy: "name" },
   { table: "training_block_items", sheet: "Blokkens pas", orderBy: "block_id, day, sort" },
   { table: "team_settings", sheet: "Indstillinger" },
+  // The club championship (ADR 0051): the club's own seasons, rounds,
+  // results and roll of honour.
+  { table: "club_championships", sheet: "Klubmesterskaber", orderBy: "season" },
+  { table: "club_championship_rounds", sheet: "Afdelinger", orderBy: "held_on" },
+  { table: "club_championship_entries", sheet: "Resultater", orderBy: "round_id, class" },
+  { table: "club_champions", sheet: "Klubmestre", orderBy: "year, class" },
   // The club's logo and picture (ADR 0048): which, what type, how big,
   // who and when. The image itself does not fit a spreadsheet cell; it is
   // one click away under Settings → Workspace, and the club has the file.

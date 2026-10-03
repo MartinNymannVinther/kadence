@@ -61,6 +61,7 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
     aiOnRiderData: false,
     allowYouthWeight: false,
     guidance: "dcu-2025",
+    clubChampionship: false,
   });
   await installDcuProgrammes(ctx, l);
 

@@ -184,6 +184,7 @@
       "riders": "Ryttere",
       "library": "Træningsbibliotek",
       "season": "Sæson",
+      "club": "Klubmester",
       "parents": "Forældre",
       "rulle": "Rulle"
     },
@@ -577,6 +578,9 @@
       "guidanceBody": "Kadence kan guide holdet efter DCU's anbefalinger for hver klasse: timerne i sæsonplanen, ugens ramme og den længste tur. Du kan slå det fra og til, når du vil.",
       "guidance": "Guidet af DCU's anbefalinger",
       "guidanceHint": "Slået til starter sæsonplanen fra DCU's timer, og ugen vises mod DCU's ramme. Slået fra lægger du dine egne timer, og punkterne om DCU's ramme og den længste tur forsvinder. Smerter, trivsel, søvn, stigningen fra uge til uge og klassernes løbsregler bliver, uanset valget.",
+      "clubTitle": "Klubmesterskab",
+      "club": "Klubmesterskab i Kadence",
+      "clubHint": "Slået fra som standard. Slået til får klubben en side med sæsonens afdelinger, stillingen og klubmestre gennem tiden. Det er det eneste sted, hvor ryttere og forældre ser placeringer.",
       "kinds": {
         "U17": "U17",
         "U19": "U19",
@@ -3227,6 +3231,125 @@
       "slower": "Langsommere",
       "left": "Til venstre",
       "right": "Til højre"
+    }
+  },
+  "club": {
+    "title": "Klubmester",
+    "subtitle": "Klubbens eget mesterskab: afdelingerne, stillingen og klubmestre gennem tiden. Det er det eneste sted i Kadence, hvor placeringer står.",
+    "seasons": "Mesterskaber",
+    "rounds": "Afdelinger",
+    "noRounds": "Afdelingerne står her, når træneren har lagt dem ind.",
+    "noRoundsCoach": "Læg sæsonens første afdeling ind ovenfor.",
+    "off": {
+      "title": "Klubmesterskabet er slået fra",
+      "body": "Klubmesterskabet kan slås til under Indstillinger → Holdet, hvis klubben vil holde sit mesterskab her.",
+      "link": "Gå til Holdet"
+    },
+    "none": {
+      "title": "Intet mesterskab endnu",
+      "body": "Når træneren opretter sæsonens mesterskab, står det her.",
+      "coach": "Opret sæsonens mesterskab ovenfor for at komme i gang."
+    },
+    "standings": {
+      "empty": "Stillingen kommer, når den første afdeling er kørt.",
+      "cheer": "Tak til alle, der kørte med. Her er stillingen efter sæsonens afdelinger.",
+      "improvement": "Årets fremgang: {name} kørte {course} {percent, number} % hurtigere end sidste år.",
+      "points": "{points, plural, one {# point} other {# point}} · {rounds, plural, one {# afdeling} other {# afdelinger}}",
+      "class": {
+        "U17": "U17",
+        "U19": "U19",
+        "U23": "U23",
+        "open": "Åben"
+      }
+    },
+    "round": {
+      "noResults": "Resultaterne kommer, når træneren har skrevet dem ind.",
+      "record": "Personlig rekord",
+      "dnf": "Udgik",
+      "dns": "Meldte afbud",
+      "remove": "Fjern afdelingen",
+      "removeTitle": "Fjern afdelingen?",
+      "removeBody": "Afdelingen og dens resultater bliver fjernet fra mesterskabet.",
+      "removed": "Afdelingen er fjernet.",
+      "kind": {
+        "tt": "Enkeltstart",
+        "hill": "Bjergspurt",
+        "road": "Linjeløb",
+        "crit": "Kriterium",
+        "other": "Andet"
+      },
+      "class": {
+        "U17": "U17",
+        "U19": "U19",
+        "U23": "U23",
+        "open": "Åben"
+      }
+    },
+    "editor": {
+      "open": "Skriv resultater",
+      "hintTime": "Skriv tiden som mm:ss eller t:mm:ss. Den hurtigste i hver klasse bliver nummer et.",
+      "hintPlace": "Skriv placeringen i hver klasse.",
+      "name": "Navn",
+      "class": "Klasse",
+      "time": "Tid",
+      "place": "Placering",
+      "status": "Status",
+      "remove": "Fjern linjen",
+      "addRider": "Tilføj rytter",
+      "addGuest": "Tilføj gæst",
+      "save": "Gem resultater",
+      "cancel": "Annullér",
+      "saved": "Resultaterne er gemt.",
+      "badTime": "Tiden for {name} skal skrives som mm:ss.",
+      "badPlace": "Placeringen for {name} skal være et helt tal.",
+      "classes": {
+        "U17": "U17",
+        "U19": "U19",
+        "U23": "U23",
+        "open": "Åben"
+      },
+      "statuses": {
+        "finished": "I mål",
+        "dnf": "Udgik",
+        "dns": "Meldte afbud"
+      }
+    },
+    "forms": {
+      "season": "Sæson",
+      "title": "Navn",
+      "defaultTitle": "Klubmesterskab {year}",
+      "create": "Opret mesterskab",
+      "created": "Mesterskabet er oprettet.",
+      "date": "Dato",
+      "kind": "Slags",
+      "roundTitle": "Afdeling",
+      "roundTitleHint": "fx Klubbens enkeltstart",
+      "measure": "Afgøres efter",
+      "byTime": "Tid",
+      "byPlace": "Placering",
+      "addRound": "Tilføj afdeling",
+      "roundAdded": "Afdelingen er tilføjet.",
+      "crown": "Kår klubmestre",
+      "crowned": "Klubmestrene står nu på æreslisten.",
+      "championTitle": "Klubmester"
+    },
+    "honour": {
+      "title": "Klubmestre gennem tiden",
+      "empty": "Den første klubmester bliver skrevet her.",
+      "defaultTitle": "Klubmester",
+      "year": "År",
+      "class": "Klasse",
+      "name": "Navn",
+      "add": "Tilføj",
+      "added": "Klubmesteren er skrevet på æreslisten.",
+      "remove": "Fjern fra æreslisten",
+      "removed": "Linjen er fjernet.",
+      "classes": {
+        "U17": "U17",
+        "U19": "U19",
+        "U23": "U23",
+        "open": "Åben"
+      }
     }
   }
 }
