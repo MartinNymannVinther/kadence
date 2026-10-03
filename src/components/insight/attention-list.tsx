@@ -9,7 +9,7 @@ import { resolvedGroups } from "./resolved-groups";
 import { WellbeingAction } from "./wellbeing-action";
 
 /**
- * "Kræver opmærksomhed": the coach's riders with something worth a look
+ * "Mulige opmærksomhedspunkter": the coach's riders with something worth a look
  * this week, the most serious first (src/modules/insight/service.ts), and
  * the wellbeing actions at the top of each. The list is the guardrails'
  * own — no model involved — so it is there on every Monday, AI or not.
