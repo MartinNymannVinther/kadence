@@ -594,7 +594,7 @@
       "weight": "Tillad vægt for ryttere under 19",
       "weightHint": "Slået fra som standard. Fokus på vægt og W/kg kan give lav energitilgængelighed og spiseforstyrrelser hos unge, som Team Danmarks ATK advarer om. Slå det kun til, hvis der er en god grund.",
       "ai": "Må AI'en læse rytternes data",
-      "aiHint": "Slået fra som standard. Rytternes træning og check-ins er helbredsdata om unge mennesker. Slår I det til, må AI'en læse dem, når en træner beder om et ugeforslag eller et resumé af, hvem der kræver opmærksomhed. Den skriver aldrig selv noget.",
+      "aiHint": "Slået fra som standard. Rytternes træning og check-ins er helbredsdata om unge mennesker. Slår I det til, må AI'en læse dem, når en træner beder om et ugeforslag eller et resumé af ugens opmærksomhedspunkter. Den skriver aldrig selv noget.",
       "on": "Slået til",
       "off": "Slået fra"
     }
@@ -729,8 +729,8 @@
         "body": "Hvert pas får en belastning. Med wattmåler regnes den ud fra watt, ellers fra puls, og ellers fra hvor hårdt passet føltes (RPE fra 1 til 10) gange minutterne. Det sidste virker for alle pas, også styrke. En time i tærskeltempo tæller 100, og en let time på RPE 3 tæller omkring 17. Kondition er det, de seneste seks uger har bygget op. Træthed er det, den seneste uge har kostet. Friskhed er kondition minus træthed: over nul er man udhvilet, under nul træt, og lidt under nul er normalt midt i en træningsuge."
       },
       "warnings": {
-        "title": "Advarsler",
-        "body": "Kadence viser træneren, når en uge går ud over rammerne, men bestemmer ikke. Advarslerne er: timer på cyklen over eller under DCU's ramme for ugen, mere end 15 % flere timer end de seneste uger, en tur længere end DCU's grænse (U17 højst 4 timer eller 120 km, U19 højst 5 timer eller 150 km), styrkepas med under 48 timer imellem, for lidt søvn, smerter efter ATK's smertetrappe og check-ins i gul eller rød zone. Hver advarsel har et ord for, hvor meget den betyder: \"Handl nu\", \"Se på det\" eller \"Godt at vide\"."
+        "title": "Opmærksomhedspunkter",
+        "body": "Kadence viser træneren, når en uge går ud over rammerne, og træneren beslutter, hvad der skal ske. Opmærksomhedspunkterne er: timer på cyklen over eller under DCU's ramme for ugen, mere end 15 % flere timer end de seneste uger, en tur længere end DCU's grænse (U17 højst 4 timer eller 120 km, U19 højst 5 timer eller 150 km), styrkepas med under 48 timer imellem, for lidt søvn, smerter efter ATK's smertetrappe og check-ins i gul eller rød zone. Hvert punkt har et ord for, hvor meget det betyder: \"Vigtigt nu\", \"Værd at se på\" eller \"Godt at vide\"."
       },
       "checkin": {
         "title": "Check-in og trivselszoner",
@@ -762,7 +762,7 @@
       },
       "ai": {
         "title": "AI'en",
-        "body": "AI'en må foreslå, aldrig bestemme. Den kan læse en træners kortform som \"3x10 min Z4 / 5 min pause\" til trin (reglerne klarer det meste uden nogen sprogmodel), foreslå en uge for en rytter og skrive et kort resumé af, hvem der kræver opmærksomhed. Intet lægges i kalenderen, før en træner trykker. Den skriver aldrig til en rytter og sletter aldrig noget. Ugeforslag og resumé læser rytternes data, så de virker kun, hvis holdet har slået \"Må AI'en læse rytternes data\" til under Indstillinger → Holdet. Uden en sprogmodel virker alt andet som før."
+        "body": "AI'en foreslår, og træneren bestemmer. Den kan læse en træners kortform som \"3x10 min Z4 / 5 min pause\" til trin (reglerne klarer det meste uden nogen sprogmodel), foreslå en uge for en rytter og skrive et kort resumé af ugens opmærksomhedspunkter. Intet lægges i kalenderen, før en træner trykker. Den skriver aldrig til en rytter og sletter aldrig noget. Ugeforslag og resumé læser rytternes data, så de virker kun, hvis holdet har slået \"Må AI'en læse rytternes data\" til under Indstillinger → Holdet. Uden en sprogmodel virker alt andet som før."
       }
     }
   },
@@ -1813,44 +1813,44 @@
     "ahead": "Efter planen",
     "today": "I dag",
     "readoutAhead": "{date}, efter planen: kondition {fitness} · træthed {fatigue} · friskhed {form}",
-    "aheadRace": "Kører {name} det, der er planlagt, ventes friskheden {form} ved {title} ({priority}-løb, {date}). Det er en forudsigelse at planlægge efter, ikke et mål.",
+    "aheadRace": "Kører {name} det, der er planlagt, ventes friskheden {form} ved {title} ({priority}-løb, {date}). Det er en forudsigelse at planlægge efter.",
     "aheadNoRace": "De stiplede linjer viser, hvor kurverne går hen de næste {days, plural, one {# dag} other {# dage}}, hvis det planlagte bliver kørt.",
     "you": "du"
   },
   "insight": {
-    "title": "Kræver opmærksomhed",
-    "subtitle": "Ud fra ugens timer, check-ins og DCU's rammer. Forslag til, hvem du skal tale med, ikke regler.",
-    "riderTitle": "Advarsler",
-    "noFlags": "Ingen advarsler i denne uge.",
-    "allCalm": "Ingen advarsler i denne uge. Holdet ser ud til at være i balance.",
-    "allResolved": "Alle advarsler i denne uge er afklaret.",
-    "othersCalm": "{count, plural, one {# rytter mere har ingen advarsler.} other {# ryttere mere har ingen advarsler.}}",
+    "title": "Mulige opmærksomhedspunkter",
+    "subtitle": "Ud fra ugens timer, check-ins og DCU's rammer.",
+    "riderTitle": "Opmærksomhedspunkter",
+    "noFlags": "Ugen ser rolig ud.",
+    "allCalm": "Holdet ser ud til at være i balance i denne uge.",
+    "allResolved": "Alle punkter i denne uge er afklaret.",
+    "othersCalm": "{count, plural, one {# rytter mere ser ud til at være i balance.} other {# ryttere mere ser ud til at være i balance.}}",
     "modelNote": "Trivselszonerne følger Kolding Talents trivselsmodel fra Team Danmarks forældreguide: gul zone i en periode betyder en snak mellem rytter, forælder og træner inden for 14 dage, og rød zone betyder, at der skal hjælp fra fagfolk ind over. Kadence stiller aldrig en diagnose.",
     "basis": "{category} {year}. år",
     "severity": {
-      "alert": "Handl nu",
-      "warn": "Se på det",
+      "alert": "Vigtigt nu",
+      "warn": "Værd at se på",
       "info": "Godt at vide"
     },
     "action": {
-      "talk": "Tag en snak inden for 14 dage",
-      "help": "Søg professionel hjælp"
+      "talk": "En snak inden for 14 dage",
+      "help": "Hjælp fra fagfolk anbefales"
     },
     "flag": {
       "hours_above_corridor": "Ugen er {hours} timer på cyklen, kørt og planlagt, over DCU's ramme på {high} timer for {klass}.",
       "hours_below_corridor": "Ugen er {hours} timer på cyklen, kørt og planlagt, under DCU's ramme på mindst {low} timer for {klass}.",
       "ramp": "Ugen er {hours} timer på cyklen, {percent} % mere end snittet på {average} timer i de seneste uger. Mere end {limit} % fra uge til uge øger risikoen for skader.",
-      "longest_ride": "Den længste tur i ugen var {hours} timer. DCU siger højst {limitHours} timer eller {limitKm} km for årgangen.",
-      "longest_ride_km": "Den længste tur i ugen var {hours} timer og {km} km. DCU siger højst {limitHours} timer eller {limitKm} km for årgangen.",
-      "strength_spacing": "Styrkepassene {first} og {second} ligger for tæt. DCU anbefaler mindst 48 timer imellem.",
+      "longest_ride": "Den længste tur i ugen var {hours} timer. DCU anbefaler højst {limitHours} timer eller {limitKm} km for årgangen.",
+      "longest_ride_km": "Den længste tur i ugen var {hours} timer og {km} km. DCU anbefaler højst {limitHours} timer eller {limitKm} km for årgangen.",
+      "strength_spacing": "Styrkepassene {first} og {second} ligger tæt. DCU anbefaler mindst 48 timer imellem.",
       "wellbeing_talk": "Check-ins i gul zone {days, plural, one {# dag} other {# dage}} de seneste tre uger.",
       "wellbeing_help_red": "Et check-in i rød zone de seneste syv dage.",
       "wellbeing_help_long": "Check-ins i gul zone tre uger i træk ({days, plural, one {# dag} other {# dage}}).",
-      "pain_2": "Smerte på trin 2: når træningen starter og dagen efter. ATK siger: skær træningen mindst til det halve, spring løb over, og få en behandler til at se på det.",
-      "pain_3": "Smerte på trin 3: under træning eller i hverdagen. ATK siger: pause fra det, der gør ondt, til en fysioterapeut eller læge har set på det.",
+      "pain_2": "Smerte på trin 2: når træningen starter og dagen efter. ATK anbefaler at skære træningen mindst ned til det halve, springe løb over og få en behandler til at se på det.",
+      "pain_3": "Smerte på trin 3: under træning eller i hverdagen. ATK anbefaler pause fra det, der gør ondt, til en fysioterapeut eller læge har set på det.",
       "sleep_short": "Søvnen har i snit været {average} timer de seneste {nights, plural, one {# nat} other {# nætter}}, under {limit} timer.",
       "sleep_below_minimum": "Søvnen har i snit været {average} timer de seneste {nights, plural, one {# nat} other {# nætter}}. 14–17-årige har brug for mindst {minimum} timer.",
-      "compliance": "{red} af {judged} pas i denne uge er ikke gået som planlagt. Måske passer planen ikke til ugen.",
+      "compliance": "{red} af {judged} pas i denne uge gik anderledes end planlagt. Måske kan planen tilpasses ugen.",
       "mid_zone": "Mellemzonen fylder {mid} % af de {sessions} pas og løbsdage de sidste fire uger. \"Lav intensitet først\" lægger højst {limit} % der fra november til februar.",
       "signs": "Tegn: {signs}"
     },
@@ -1871,7 +1871,7 @@
       "show": "Vis",
       "hide": "Skjul",
       "undo": "Fortryd",
-      "weekNote": "En afklaring gælder ugen ud, medmindre tallene bliver tydeligt værre. Dukker det samme op i næste uge, er det en ny advarsel. Mandagsoverblikket og tipsene ser kun det, der ikke er afklaret; forslaget til ugen ser alle advarsler, fordi det planlægger belastning."
+      "weekNote": "En afklaring gælder ugen ud, medmindre tallene bliver tydeligt værre. Dukker det samme op i næste uge, er det et nyt punkt. Mandagsoverblikket og tipsene ser de punkter, der stadig er åbne; forslaget til ugen ser alle punkter, fordi det planlægger belastning."
     }
   },
   "wellbeing": {
@@ -2241,7 +2241,7 @@
       "byTime": "Kurverne ligger efter tid fra start, fordi mindst én tur ikke har fart.",
       "tooFew": "Der er ikke to ture at sammenligne",
       "tooFewHint": "Du kan kun se ryttere, hvis træning du har adgang til.",
-      "note": "Rytterne står i holdets rækkefølge, ikke efter tal. Ingen rangliste: det er den samme tur set fra flere sadler."
+      "note": "Rytterne står i holdets rækkefølge: det er den samme tur set fra flere sadler."
     },
     "plan": {
       "title": "Planen mod turen: {title}",
@@ -2271,7 +2271,7 @@
         "over": "Over",
         "none": "Intet mål"
       },
-      "note": "Gennemsnit over trinnets sekunder mod målet ved rytterens nuværende tærskler. Under og over er tal, ikke karakterer: et trin over målet i en VO2-serie kan være rigtigt, og et under kan være klogt."
+      "note": "Gennemsnit over trinnets sekunder mod målet ved rytterens nuværende tærskler. Under og over er tal at læse i sammenhæng: et trin over målet i en VO2-serie kan være rigtigt, og et under kan være klogt."
     }
   },
   "season": {
@@ -2417,7 +2417,7 @@
     },
     "reference": {
       "title": "DCU's anbefalinger",
-      "body": "Timerne er DCU's træningsanbefalinger for landevej 2025. Kun timer på cyklen tæller med, ikke styrke, løb eller andet.",
+      "body": "Timerne er DCU's træningsanbefalinger for landevej 2025. Kun timer på cyklen tæller med; styrke, løb og andet står for sig.",
       "phasesTitle": "Sæsonens faser",
       "zonesTitle": "Zoner: Kadences og DCU's",
       "zonesBody": "Kadences syv zoner er Kadences egne og regnes ud fra FTP og tærskelpuls. DCU bruger fem pulsbånd i procent af pulsreserven, altså arbejdspuls minus hvilepuls, delt med maks. puls minus hvilepuls. De står her til sammenligning.",
@@ -2535,7 +2535,7 @@
       "ask": "Skriv et resumé",
       "thinking": "Tænker …",
       "title": "Resumé fra AI'en",
-      "nothing": "Ingen ryttere kræver opmærksomhed, så der er intet at opsummere.",
+      "nothing": "Ugen ser rolig ud, så der er intet at opsummere.",
       "noSummary": "AI'en har ikke noget at tilføje til listen.",
       "off": "Et kort resumé fra AI'en kræver, at holdet har slået \"Må AI'en læse rytternes data\" til.",
       "offLink": "Indstillinger → Holdet"
@@ -2777,7 +2777,7 @@
   "coachGuide": {
     "title": "Trænerguide",
     "intro": "Gode råd til trænere for U17-, U19- og U23-ryttere, samlet fra DCU, Team Danmark, DIF, Anti Doping Danmark og loven. Skrevet med Kadences egne ord, med links til originalerne.",
-    "note": "Guiden er vejledning, ikke regler. Kadence håndhæver intet af det her; det er dig, rytteren og forældrene, der beslutter. Ved skader og sygdom er det lægen.",
+    "note": "Guiden er vejledning til dig. Det er dig, rytteren og forældrene, der beslutter, og ved skader og sygdom er det lægen.",
     "contents": "Indhold",
     "sources": "Kilder",
     "opensElsewhere": "(åbner på en anden side)",
@@ -2821,8 +2821,8 @@
         "title": "Mængde og sæson",
         "intro": "Kadence planlægger ud fra DCU's anbefalede timer for rytterens klasse og år og viser en korridor omkring dem.",
         "points": {
-          "1": "Træn hverken meget mere eller meget mindre end anbefalingerne. De er vejledning til træneren, ikke en regel.",
-          "2": "I U17 er det vigtigste ikke at træne for meget, for for meget mængde tager lysten. I U19 er det naturligt at hæve mængden 10–15 % om året.",
+          "1": "Hold dig tæt på anbefalingerne, både op og ned. De er vejledning til dig som træner.",
+          "2": "I U17 er det vigtigste at holde mængden moderat, så lysten bliver ved. I U19 er det naturligt at hæve mængden 10–15 % om året.",
           "3": "Undgå store spring i mængden, også på træningslejr. Læg lettere uger ind, for det er ofte restitutionen, der udløser fremgangen.",
           "4": "Stop ikke helt om vinteren. Oktober er pause og fri cykling, og derefter bygges der op igen."
         }
@@ -2833,7 +2833,7 @@
         "points": {
           "1": "Fra november til midt i marts anbefales 2–3 styrkepas om ugen med mindst 48 timer imellem, derefter 1 om ugen. U17 og U19 bør nå mindst 30 pas over vinteren.",
           "2": "Styrketræning er ikke farlig for unge og hæmmer ikke væksten. Giv tid til teknikken i øvelser med frie vægte, før belastningen sættes op.",
-          "3": "Start med kontrollerede gentagelser, ikke til udmattelse. DCU's egne tekster er uenige på et par punkter, og Kadence viser forskellene i stedet for at skjule dem.",
+          "3": "Start med kontrollerede gentagelser med kræfter i reserve. DCU's egne tekster er uenige på et par punkter, og Kadence viser forskellene åbent.",
           "4": "I vækstspurten skal du holde ekstra øje med smerter ved knæ og hæl."
         }
       },
@@ -2844,7 +2844,7 @@
           "1": "Vækstspurten begynder typisk omkring 10½–11 år for piger og 12½–13 år for drenge, men for drenge kan det være alt fra 10½ til 16 år. Den varer 2–2½ år.",
           "2": "Skelettet er først færdigudviklet omkring 20-årsalderen, og nogle drenge vokser, til de er 20–22.",
           "3": "Teknik og koordination kan svinge i spurten. Skru ned for spring i belastningen, og tag smerter ved knæ (Osgood-Schlatter) og hæl (Sever) alvorligt.",
-          "4": "En rytter født sidst på året kan være næsten et år yngre end en årgangskammerat. Mål højden i Kadence, og vurder udviklingen, ikke kun resultaterne."
+          "4": "En rytter født sidst på året kan være næsten et år yngre end en årgangskammerat. Mål højden i Kadence, og vurder udviklingen sammen med resultaterne."
         }
       },
       "injury": {
@@ -2873,7 +2873,7 @@
         "intro": "Cykling er en idræt, hvor snak om vægt kan gøre stor skade. Kadence har derfor strammere standarder end de fleste.",
         "points": {
           "1": "Team Danmark anbefaler som udgangspunkt ikke at veje atleter under 18 år. Kadence går videre: ingen vægt og ingen W/kg for ryttere under 19, medmindre holdet selv slår det til.",
-          "2": "Kommenter aldrig vægt, krop, madvalg eller portioner, heller ikke i sjov, og tal aldrig om en rytters vægt, hvor andre kan høre det. Enhver måling skal have et formål og følges op af en samtale.",
+          "2": "Lad vægt, krop, madvalg og portioner ligge, også i sjov, og tal kun om en rytters vægt i enrum. Enhver måling skal have et formål og følges op af en samtale.",
           "3": "Et dansk studie fra 2022 fandt tegn på spiseforstyrrelse hos 23 % af de kvindelige og 11 % af de mandlige eliteudøvere og hos endnu flere i subeliten. Kommentarer om vægttab fra trænere blev nævnt som en udløser.",
           "4": "Tegn på for lidt energi er blandt andet faldende udbytte af træningen, mange skader og infektioner, humørsvingninger og uregelmæssig eller udeblevet menstruation. Rytteren behøver ikke at have tabt sig. Henvis til læge eller sportsdiætist, og regn ikke selv på det.",
           "5": "Udeblevet menstruation skal altid til lægen. Vær åben om emnet, så rytterne tør tale om det."
@@ -2904,7 +2904,7 @@
         "title": "Skole, eksamen og overgange",
         "intro": "De fleste ryttere i U17 og U19 går i skole, og skolen skal kunne hænge sammen med sporten.",
         "points": {
-          "1": "Læg skoleskema og eksamener i kalenderen, og sænk belastningen og forventningerne i eksamensperioder.",
+          "1": "Læg skoleskema og eksamener i kalenderen. I eksamensperioder hjælper en lavere belastning og lavere forventninger.",
           "2": "De første måneder på en ny ungdomsuddannelse er hårde. Et par måneder med markant mindre træning kan gøre underværker.",
           "3": "Landsholdsryttere kan søge sportslig godkendelse til en gymnasial uddannelse med forlænget forløb og flyttede afleveringer og eksamener. Fristen ligger i januar.",
           "4": "Agenter tager kontakt allerede i U17 og U19. DCU tilbyder uafhængig rådgivning om kontrakter."
@@ -2934,20 +2934,20 @@
   },
   "coachTips": {
     "title": "Råd til træneren",
-    "subtitle": "Ud fra det, der sker på holdet lige nu. Råd, ikke regler.",
+    "subtitle": "Ud fra det, der sker på holdet lige nu.",
     "dismiss": "Skjul rådet",
     "readMore": "Læs mere i trænerguiden",
     "stageTooLong": "{title} ({date}) varer {days} dage. DCU tillader højst {limit} dage i etapeløb for {category}.",
-    "raceSoon": "{title} ({date}) nærmer sig. Tjek klassens distance- og udvekslingsgrænser, og hold dagen før let.",
-    "campSoon": "Lejren {title} ({date}): undgå store spring i mængden, og hold øje med, at rytterne spiser nok, når buffeten er den samme hver dag.",
-    "examSoon": "{title} ({date}): sænk belastningen og forventningerne i eksamensperioden.",
-    "wellbeing": "En eller flere ryttere har haft det svært i et stykke tid. Tag en snak, og se på hele miljøet, ikke kun rytteren.",
-    "newClassU17": "Nye U17-ryttere: det vigtigste er ikke at træne for meget. Løbene er højst {u17Road} km, og der er en udvekslingsgrænse.",
+    "raceSoon": "{title} ({date}) nærmer sig. Klassens distance- og udvekslingsgrænser er værd at tjekke, og en let dag før hjælper.",
+    "campSoon": "Lejren {title} ({date}): mængden har det bedst med at stige jævnt, og det er godt at holde øje med, at rytterne spiser nok, når buffeten er den samme hver dag.",
+    "examSoon": "{title} ({date}): i eksamensperioden hjælper en lavere belastning og lavere forventninger.",
+    "wellbeing": "En eller flere ryttere har haft det svært i et stykke tid. En snak kan hjælpe, og det kan være godt at se på hele miljøet omkring rytteren.",
+    "newClassU17": "Nye U17-ryttere: det vigtigste er en moderat mængde. Løbene er højst {u17Road} km, og der er en udvekslingsgrænse.",
     "newClassU19": "Nye U19-ryttere: løbene bliver længere, og udvekslingsgrænsen falder væk. Hæv mængden med omtanke, 10–15 % om året.",
     "newClassU23": "Nye U23-ryttere: det er i orden at ligge lidt under DCU's timer de første år. De har fire år til at nå dem.",
     "childCertificate": "Holdet har førsteårs U17-ryttere, som kan være 14 år. Så skal trænere have børneattest efter loven, og DIF anbefaler den for alle, der træner unge under 18.",
     "strengthWinter": "Styrkesæsonen er i gang: 2–3 pas om ugen med mindst 48 timer imellem, og mindst 30 pas over vinteren for U17 og U19.",
-    "weightOn": "Holdet registrerer vægt for ryttere under 19. Kommenter aldrig vægt eller mad, og tal aldrig om en rytters vægt, hvor andre hører det.",
+    "weightOn": "Holdet registrerer vægt for ryttere under 19. Lad vægt og mad ligge i snakken med rytterne, og tal kun om en rytters vægt i enrum.",
     "heat": "Sommervarme: drik løbende, tænk salt med på lange ture, og flyt de hårde pas til morgen eller aften."
   },
   "records": {
@@ -3018,7 +3018,7 @@
       "trial": "Du prøver passet med rytterens watt. En prøvetur gemmes ikke.",
       "fromTeam": "Pas fra holdets bibliotek",
       "fromDcu": "Standardpas fra DCU",
-      "whenNote": "DCU sætter det: {when}. Det er en rettesnor, ikke en regel.",
+      "whenNote": "DCU sætter det: {when}. Det er tænkt som en rettesnor.",
       "source": "Kilde: {source}. Opvarmning, pauser og nedkørsel er Kadences.",
       "pickOther": "Vælg et andet pas",
       "pickTitle": "Vælg pas",

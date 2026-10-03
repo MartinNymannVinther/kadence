@@ -594,7 +594,7 @@
       "weight": "Allow weight for riders under 19",
       "weightHint": "Off by default. A focus on weight and W/kg can lead to low energy availability and eating disorders in young people, as Team Danmark's ATK warns. Only turn it on for a good reason.",
       "ai": "May the AI read the riders' data",
-      "aiHint": "Off by default. The riders' training and check-ins are health data about young people. If you turn it on, the AI may read them when a coach asks for a week proposal or a summary of who needs attention. It never writes anything itself.",
+      "aiHint": "Off by default. The riders' training and check-ins are health data about young people. If you turn it on, the AI may read them when a coach asks for a week proposal or a summary of the week's points of attention. It never writes anything itself.",
       "on": "On",
       "off": "Off"
     }
@@ -729,8 +729,8 @@
         "body": "Every session gets a load. With a power meter it is worked out from power, otherwise from heart rate, and otherwise from how hard the session felt (RPE from 1 to 10) times the minutes. The last works for every session, strength too. An hour at threshold counts 100, and an easy hour at RPE 3 about 17. Fitness is what the last six weeks have built. Fatigue is what the last week has cost. Freshness is fitness minus fatigue: above zero you are rested, below zero tired, and a little below zero is normal in the middle of a training week."
       },
       "warnings": {
-        "title": "Warnings",
-        "body": "Kadence shows the coach when a week goes past the limits, but does not decide. The warnings are: hours on the bike above or below DCU's range for the week, more than 15 % more hours than the last weeks, a ride longer than DCU's limit (U17 at most 4 hours or 120 km, U19 at most 5 hours or 150 km), strength sessions less than 48 hours apart, too little sleep, pain on ATK's pain ladder, and check-ins in the yellow or red zone. Each warning has a word for how much it matters: \"Act now\", \"Take a look\" or \"Good to know\"."
+        "title": "Points of attention",
+        "body": "Kadence shows the coach when a week goes past the limits, and the coach decides what happens. The points are: hours on the bike above or below DCU's range for the week, more than 15 % more hours than the last weeks, a ride longer than DCU's limit (U17 at most 4 hours or 120 km, U19 at most 5 hours or 150 km), strength sessions less than 48 hours apart, too little sleep, pain on ATK's pain ladder, and check-ins in the yellow or red zone. Each point has a word for how much it matters: \"Important now\", \"Worth a look\" or \"Good to know\"."
       },
       "checkin": {
         "title": "Check-in and wellbeing zones",
@@ -762,7 +762,7 @@
       },
       "ai": {
         "title": "The AI",
-        "body": "The AI may propose, never decide. It can read a coach's shorthand like \"3x10 min Z4 / 5 min rest\" into steps (the rules manage most of it without any language model), propose a week for a rider, and write a short summary of who needs attention. Nothing goes in the calendar until a coach presses. It never writes to a rider and never deletes anything. Week proposals and the summary read the riders' data, so they only work if the team has turned on \"May the AI read the riders' data\" under Settings → Team. Without a language model everything else works as before."
+        "body": "The AI proposes, and the coach decides. It can read a coach's shorthand like \"3x10 min Z4 / 5 min rest\" into steps (the rules manage most of it without any language model), propose a week for a rider, and write a short summary of the week's points of attention. Nothing goes in the calendar until a coach presses. It never writes to a rider and never deletes anything. Week proposals and the summary read the riders' data, so they only work if the team has turned on \"May the AI read the riders' data\" under Settings → Team. Without a language model everything else works as before."
       }
     }
   },
@@ -1813,44 +1813,44 @@
     "ahead": "If the plan is ridden",
     "today": "Today",
     "readoutAhead": "{date}, if the plan is ridden: fitness {fitness} · fatigue {fatigue} · freshness {form}",
-    "aheadRace": "If {name} rides what is planned, freshness is expected to be {form} at {title} ({priority} race, {date}). A forecast to plan with, not a target.",
+    "aheadRace": "If {name} rides what is planned, freshness is expected to be {form} at {title} ({priority} race, {date}). A forecast to plan with.",
     "aheadNoRace": "The dashed lines show where the curves are heading over the next {days, plural, one {# day} other {# days}} if the plan is ridden.",
     "you": "you"
   },
   "insight": {
-    "title": "Needs attention",
-    "subtitle": "From the week's hours, the check-ins and DCU's ranges. Suggestions for who to talk to, not rules.",
-    "riderTitle": "Warnings",
-    "noFlags": "No warnings this week.",
-    "allCalm": "No warnings this week. The team looks to be in balance.",
-    "allResolved": "Every warning this week has been resolved.",
-    "othersCalm": "{count, plural, one {# more rider has no warnings.} other {# more riders have no warnings.}}",
+    "title": "Possible points of attention",
+    "subtitle": "From the week's hours, the check-ins and DCU's ranges.",
+    "riderTitle": "Points of attention",
+    "noFlags": "The week looks calm.",
+    "allCalm": "The team looks to be in balance this week.",
+    "allResolved": "Every point this week has been resolved.",
+    "othersCalm": "{count, plural, one {# more rider looks to be in balance.} other {# more riders look to be in balance.}}",
     "modelNote": "The wellbeing zones follow Kolding Talent's wellbeing model from Team Danmark's guide for parents: yellow for a while means a conversation between rider, parent and coach within 14 days, and red means professionals should be involved. Kadence never diagnoses.",
     "basis": "{category} year {year}",
     "severity": {
-      "alert": "Act now",
-      "warn": "Take a look",
+      "alert": "Important now",
+      "warn": "Worth a look",
       "info": "Good to know"
     },
     "action": {
-      "talk": "Have a talk within 14 days",
-      "help": "Seek professional help"
+      "talk": "A talk within 14 days",
+      "help": "Professional help is recommended"
     },
     "flag": {
       "hours_above_corridor": "The week is {hours} h on the bike, ridden and planned, above DCU's range of {high} h for {klass}.",
       "hours_below_corridor": "The week is {hours} h on the bike, ridden and planned, below DCU's range of at least {low} h for {klass}.",
       "ramp": "The week is {hours} h on the bike, {percent} % more than the average of {average} h in the last weeks. More than {limit} % from week to week raises the risk of injury.",
-      "longest_ride": "The longest ride this week was {hours} h. DCU says at most {limitHours} h or {limitKm} km for the class.",
-      "longest_ride_km": "The longest ride this week was {hours} h and {km} km. DCU says at most {limitHours} h or {limitKm} km for the class.",
-      "strength_spacing": "The strength sessions on {first} and {second} are too close. DCU recommends at least 48 hours between them.",
+      "longest_ride": "The longest ride this week was {hours} h. DCU recommends at most {limitHours} h or {limitKm} km for the class.",
+      "longest_ride_km": "The longest ride this week was {hours} h and {km} km. DCU recommends at most {limitHours} h or {limitKm} km for the class.",
+      "strength_spacing": "The strength sessions on {first} and {second} are close together. DCU recommends at least 48 hours between them.",
       "wellbeing_talk": "{days, plural, one {Check-ins in the yellow zone on # day in the last three weeks.} other {Check-ins in the yellow zone on # days in the last three weeks.}}",
       "wellbeing_help_red": "A check-in in the red zone in the last seven days.",
       "wellbeing_help_long": "{days, plural, one {Check-ins in the yellow zone three weeks running (# day).} other {Check-ins in the yellow zone three weeks running (# days).}}",
-      "pain_2": "Pain at step 2: when training starts and the next day. ATK says: cut training by at least half, skip races, and have a therapist look at it.",
-      "pain_3": "Pain at step 3: during training or in everyday life. ATK says: pause what hurts until a physiotherapist or doctor has looked at it.",
+      "pain_2": "Pain at step 2: when training starts and the next day. ATK recommends cutting training by at least half, skipping races, and having a therapist look at it.",
+      "pain_3": "Pain at step 3: during training or in everyday life. ATK recommends a pause from what hurts until a physiotherapist or doctor has looked at it.",
       "sleep_short": "{nights, plural, one {Sleep has averaged {average} h over the last night, under {limit} h.} other {Sleep has averaged {average} h over the last # nights, under {limit} h.}}",
       "sleep_below_minimum": "{nights, plural, one {Sleep has averaged {average} h over the last night. 14–17-year-olds need at least {minimum} h.} other {Sleep has averaged {average} h over the last # nights. 14–17-year-olds need at least {minimum} h.}}",
-      "compliance": "{red} of {judged} sessions this week have not gone as planned. Perhaps the plan does not fit the week.",
+      "compliance": "{red} of {judged} sessions this week went differently from the plan. Perhaps the plan can be fitted to the week.",
       "mid_zone": "The middle zone holds {mid} % of the {sessions} sessions and race days over the last four weeks. \"Low intensity first\" puts at most {limit} % there from November to February.",
       "signs": "Signs: {signs}"
     },
@@ -1871,7 +1871,7 @@
       "show": "Show",
       "hide": "Hide",
       "undo": "Undo",
-      "weekNote": "A resolution lasts the week unless the numbers get clearly worse. If the same thing comes up next week, it is a new warning. The Monday brief and the tips see only what is not resolved; the week draft sees every warning, because it plans load."
+      "weekNote": "A resolution lasts the week unless the numbers get clearly worse. If the same thing comes up next week, it is a new point. The Monday brief and the tips see the points still open; the week draft sees every point, because it plans load."
     }
   },
   "wellbeing": {
@@ -2241,7 +2241,7 @@
       "byTime": "The curves line up by time from the start, because at least one ride has no speed.",
       "tooFew": "There are not two rides to compare",
       "tooFewHint": "You can only see riders whose training you have access to.",
-      "note": "Riders are in the team's order, not by number. No ranking: it is the same ride seen from several saddles."
+      "note": "Riders are in the team's order: it is the same ride seen from several saddles."
     },
     "plan": {
       "title": "The plan against the ride: {title}",
@@ -2271,7 +2271,7 @@
         "over": "Over",
         "none": "No target"
       },
-      "note": "Averages over the step's seconds against the target at the rider's current thresholds. Under and over are numbers, not grades: a step over target in a VO2 set can be right, and one under can be wise."
+      "note": "Averages over the step's seconds against the target at the rider's current thresholds. Under and over are numbers to read in context: a step over target in a VO2 set can be right, and one under can be wise."
     }
   },
   "season": {
@@ -2417,7 +2417,7 @@
     },
     "reference": {
       "title": "DCU's recommendations",
-      "body": "The hours are DCU's road training recommendations for 2025. Only hours on the bike count, not strength, running or anything else.",
+      "body": "The hours are DCU's road training recommendations for 2025. Only hours on the bike count; strength, running and the rest are counted apart.",
       "phasesTitle": "The season's phases",
       "zonesTitle": "Zones: Kadence's and DCU's",
       "zonesBody": "Kadence's seven zones are Kadence's own and are worked out from FTP and threshold heart rate. DCU uses five heart-rate bands in percent of heart-rate reserve: working pulse minus resting pulse, divided by maximum pulse minus resting pulse. They are shown here for comparison.",
@@ -2535,7 +2535,7 @@
       "ask": "Write a summary",
       "thinking": "Thinking …",
       "title": "Summary from the AI",
-      "nothing": "No riders need attention, so there is nothing to summarise.",
+      "nothing": "The week looks calm, so there is nothing to summarise.",
       "noSummary": "The AI has nothing to add to the list.",
       "off": "A short summary from the AI needs the team to have turned on \"May the AI read the riders' data\".",
       "offLink": "Settings → Team"
@@ -2777,7 +2777,7 @@
   "coachGuide": {
     "title": "Coach guide",
     "intro": "Advice for coaches of U17, U19 and U23 riders, gathered from DCU, Team Danmark, DIF, Anti Doping Danmark and the law. In Kadence's own words, with links to the originals.",
-    "note": "The guide is guidance, not rules. Kadence enforces none of it; you, the rider and the parents decide. With injury and illness, the doctor does.",
+    "note": "The guide is guidance for you. You, the rider and the parents decide, and with injury and illness, the doctor does.",
     "contents": "Contents",
     "sources": "Sources",
     "opensElsewhere": "(opens on another site)",
@@ -2821,8 +2821,8 @@
         "title": "Volume and season",
         "intro": "Kadence plans from DCU's recommended hours for the rider's class and year and shows a corridor around them.",
         "points": {
-          "1": "Train neither much more nor much less than the recommendations. They are guidance for the coach, not a rule.",
-          "2": "In U17 the most important thing is not to train too much, because too much volume kills motivation. In U19 it is natural to raise the volume 10–15 % a year.",
+          "1": "Stay close to the recommendations, both up and down. They are guidance for you as a coach.",
+          "2": "In U17 the most important thing is to keep the volume moderate, so the motivation lasts. In U19 it is natural to raise the volume 10–15 % a year.",
           "3": "Avoid big jumps in volume, on training camps too. Build in lighter weeks, because recovery is often what releases the progress.",
           "4": "Do not stop completely in the winter. October is a break and free riding, and then the build starts again."
         }
@@ -2833,7 +2833,7 @@
         "points": {
           "1": "From November to mid-March, 2–3 strength sessions a week with at least 48 hours between them are recommended, then 1 a week. U17 and U19 riders should reach at least 30 sessions over the winter.",
           "2": "Strength training is not dangerous for young people and does not stunt growth. Give free-weight lifts time for technique before the load goes up.",
-          "3": "Start with controlled repetitions, not to failure. DCU's own texts disagree on a few points, and Kadence shows the differences rather than hiding them.",
+          "3": "Start with controlled repetitions with strength in reserve. DCU's own texts disagree on a few points, and Kadence shows the differences openly.",
           "4": "During the growth spurt, keep an extra eye on pain at the knee and the heel."
         }
       },
@@ -2844,7 +2844,7 @@
           "1": "The growth spurt typically starts around 10½–11 for girls and 12½–13 for boys, but for boys anything from 10½ to 16. It lasts 2–2½ years.",
           "2": "The skeleton is not fully developed until around age 20, and some boys grow until they are 20–22.",
           "3": "Technique and coordination can wobble during the spurt. Turn down jumps in load, and take pain at the knee (Osgood-Schlatter) and heel (Sever) seriously.",
-          "4": "A rider born late in the year can be almost a year younger than a teammate in the same class. Record height in Kadence and judge development, not just results."
+          "4": "A rider born late in the year can be almost a year younger than a teammate in the same class. Record height in Kadence and judge development alongside results."
         }
       },
       "injury": {
@@ -2873,7 +2873,7 @@
         "intro": "Cycling is a sport where talk about weight can do great harm. Kadence therefore has stricter defaults than most.",
         "points": {
           "1": "Team Danmark recommends, as a starting point, not weighing athletes under 18. Kadence goes further: no weight and no W/kg for riders under 19 unless the team turns it on.",
-          "2": "Never comment on weight, body, food choices or portions, not even as a joke, and never talk about a rider's weight where others can hear. Every measurement needs a purpose and a conversation afterwards.",
+          "2": "Leave weight, body, food choices and portions alone, also as a joke, and talk about a rider's weight only in private. Every measurement needs a purpose and a conversation afterwards.",
           "3": "A Danish study from 2022 found signs of eating disorders in 23 % of female and 11 % of male elite athletes, and in even more at sub-elite level. Coaches' comments about weight loss were named as a trigger.",
           "4": "Signs of too little energy include a falling return from training, many injuries and infections, mood swings, and irregular or missing periods. The rider does not have to have lost weight. Refer to a doctor or sports dietitian, and do not calculate it yourself.",
           "5": "A missing period always goes to the doctor. Be open about the subject so riders dare to talk about it."
@@ -2904,7 +2904,7 @@
         "title": "School, exams and transitions",
         "intro": "Most U17 and U19 riders are in school, and school has to fit with the sport.",
         "points": {
-          "1": "Put the school timetable and exams in the calendar, and lower the load and the expectations in exam periods.",
+          "1": "Put the school timetable and exams in the calendar. In exam periods, a lower load and lower expectations help.",
           "2": "The first months of a new upper-secondary school are hard. A couple of months with markedly less training can work wonders.",
           "3": "National-squad riders can apply for sporting approval for upper-secondary school with an extended programme and moved hand-ins and exams. The deadline is in January.",
           "4": "Agents make contact as early as U17 and U19. DCU offers independent advice on contracts."
@@ -2934,20 +2934,20 @@
   },
   "coachTips": {
     "title": "Advice for the coach",
-    "subtitle": "From what is happening on the team right now. Advice, not rules.",
+    "subtitle": "From what is happening on the team right now.",
     "dismiss": "Hide this tip",
     "readMore": "Read more in the coach guide",
     "stageTooLong": "{title} ({date}) lasts {days, plural, one {# day} other {# days}}. DCU allows at most {limit, plural, one {# day} other {# days}} of stage racing for {category}.",
-    "raceSoon": "{title} ({date}) is coming up. Check the class's distance and gearing limits, and keep the day before easy.",
-    "campSoon": "The camp {title} ({date}): avoid big jumps in volume, and make sure the riders eat enough when the buffet is the same every day.",
-    "examSoon": "{title} ({date}): lower the load and the expectations in the exam period.",
-    "wellbeing": "One or more riders have been struggling for a while. Have a talk, and look at the whole environment, not only the rider.",
-    "newClassU17": "New U17 riders: the most important thing is not to train too much. Races are at most {u17Road} km, and there is a gearing limit.",
+    "raceSoon": "{title} ({date}) is coming up. The class's distance and gearing limits are worth a check, and an easy day before helps.",
+    "campSoon": "The camp {title} ({date}): volume does best when it rises evenly, and it is good to keep an eye on whether the riders eat enough when the buffet is the same every day.",
+    "examSoon": "{title} ({date}): in the exam period, a lower load and lower expectations help.",
+    "wellbeing": "One or more riders have been struggling for a while. A talk can help, and it can be good to look at the whole environment around the rider.",
+    "newClassU17": "New U17 riders: the most important thing is a moderate volume. Races are at most {u17Road} km, and there is a gearing limit.",
     "newClassU19": "New U19 riders: races get longer and the gearing limit goes. Raise the volume with care, 10–15 % a year.",
     "newClassU23": "New U23 riders: it is fine to be a little under DCU's hours in the first years. They have four years to reach them.",
     "childCertificate": "The team has first-year U17 riders who may be 14. Coaches then need a child certificate by law, and DIF recommends one for everyone coaching young people under 18.",
     "strengthWinter": "The strength season has started: 2–3 sessions a week with at least 48 hours between them, and at least 30 sessions over the winter for U17 and U19.",
-    "weightOn": "The team records weight for riders under 19. Never comment on weight or food, and never talk about a rider's weight where others can hear.",
+    "weightOn": "The team records weight for riders under 19. Leave weight and food out of your talks with the riders, and talk about a rider's weight only in private.",
     "heat": "Summer heat: drink steadily, think of salt on long rides, and move the hard sessions to the morning or evening."
   },
   "records": {
@@ -3018,7 +3018,7 @@
       "trial": "You're trying the session with the rider's watts. A trial ride is not saved.",
       "fromTeam": "A session from the team's library",
       "fromDcu": "A standard session from DCU",
-      "whenNote": "DCU puts it: {when}. A guide, not a rule.",
+      "whenNote": "DCU puts it: {when}. Meant as a guide.",
       "source": "Source: {source}. The warm-up, pauses and cool-down are Kadence's.",
       "pickOther": "Choose another session",
       "pickTitle": "Choose a session",

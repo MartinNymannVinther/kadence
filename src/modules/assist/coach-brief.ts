@@ -27,6 +27,7 @@ export function briefPrompt(riders: BriefRider[], locale: string) {
     'Answer with one JSON object: {"summary": ""}. Three to five short sentences: who to talk to first and why, and one thing that is going well if the data shows it.',
     "Do not diagnose, do not give medical advice, and never suggest pushing through pain or poor wellbeing — suggest a conversation, and professional help when a flag says help.",
     "Never comment on a rider's weight, body, food or portions: Team Danmark advises against it, and comments on weight are a known trigger of eating disorders in young athletes.",
+    "Write as a helpful colleague who respects that the coach knows the riders and decides: offer possibilities rather than orders, and say things plainly and positively rather than as negations.",
     "Use the riders' first names. Do not invent anything the flags do not say.",
     DATA_RULE,
     languageRule(locale),
