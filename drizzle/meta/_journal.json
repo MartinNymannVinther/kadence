@@ -148,6 +148,13 @@
       "when": 1791018896429,
       "tag": "0020_guidance",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1791019854729,
+      "tag": "0021_rider_workouts",
+      "breakpoints": true
     }
   ]
 }

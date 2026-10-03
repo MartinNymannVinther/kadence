@@ -1115,6 +1115,21 @@
   },
   "library": {
     "title": "Træningsbibliotek",
+    "own": {
+      "titleRider": "Mine pas",
+      "subtitleRider": "Pas, du selv har bygget. Din træner kan se dem og tage dem med i holdets bibliotek.",
+      "titleCoach": "Rytternes egne pas",
+      "subtitleCoach": "Pas, rytterne selv har bygget. Tag et ind i holdets bibliotek, så hele holdet kan bruge det.",
+      "emptyRider": "Her kommer de pas, du selv bygger. Start med knapperne ovenfor.",
+      "emptyCoach": "Når en rytter bygger sine egne pas, står de her.",
+      "schedule": "Læg i kalenderen",
+      "edit": "Ret",
+      "adopt": "Tag ind i holdets bibliotek",
+      "adopted": "Taget ind i biblioteket",
+      "adoptedNow": "Passet er nu i holdets bibliotek.",
+      "newSubtitle": "Dit eget pas. Du kan lægge det i din kalender, og din træner kan se det.",
+      "detailSubtitle": "En rytters eget pas."
+    },
     "subtitle": "Holdets pas og programmer, klar til at lægge i kalenderen.",
     "newBike": "Nyt cykelpas",
     "newStrength": "Nyt styrkepas",

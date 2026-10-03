@@ -104,7 +104,8 @@ export async function proposeGroupWeek(
     const templates = await tx
       .select()
       .from(workoutTemplates)
-      .where(eq(workoutTemplates.archived, false));
+      // The team's library; riders' own sessions are theirs (ADR 0050).
+      .where(and(eq(workoutTemplates.archived, false), isNull(workoutTemplates.riderId)));
     return { events, templates, guided };
   });
   if (!(await modelConfigured(ctx))) throw new NoModel();

@@ -12,7 +12,8 @@ import { Link, redirect } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { whoAmI } from "@/modules/team/access";
 import { listBlocks } from "@/modules/training/blocks";
-import { listTemplates } from "@/modules/training/templates";
+import { listOwnTemplates, listTemplates } from "@/modules/training/templates";
+import { OwnTemplates } from "@/components/library/own-templates";
 import { ridersToPlanFor } from "./riders-for";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -39,12 +40,18 @@ export default async function LibraryPage({
   const t = await getTranslations("library");
   const me = await whoAmI(ctx.orgId, ctx.userId);
   const showArchived = (await searchParams).archived === "1";
-  const [templates, riders, blocks] = await Promise.all([
+  const isCoach = Boolean(me?.isCoach);
+  const [templates, riders, blocks, own] = await Promise.all([
     listTemplates(ctx, showArchived),
     ridersToPlanFor(ctx, me),
     listBlocks(ctx),
+    // A rider's own sessions, and for a coach every rider's (ADR 0050).
+    isCoach || me?.rider
+      ? listOwnTemplates(ctx, isCoach ? {} : { riderId: me!.rider!.id })
+      : Promise.resolve([]),
   ]);
-  const isCoach = Boolean(me?.isCoach);
+  const adopted = new Set(templates.map((tpl) => tpl.copiedFrom).filter(Boolean));
+  const ownMode = isCoach ? ("coach" as const) : me?.rider ? ("rider" as const) : null;
 
   return (
     <div className="flex min-w-0 flex-col gap-6">
@@ -94,6 +101,55 @@ export default async function LibraryPage({
         isCoach={isCoach}
         today={todayInCopenhagen()}
       />
+      {ownMode && (
+        <section aria-labelledby="library-own" className="flex flex-col gap-3">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <div className="flex flex-col gap-0.5">
+              <h2 id="library-own" className="text-lg font-semibold">
+                {t(ownMode === "rider" ? "own.titleRider" : "own.titleCoach")}
+              </h2>
+              <p className="text-meta text-2sm">
+                {t(ownMode === "rider" ? "own.subtitleRider" : "own.subtitleCoach")}
+              </p>
+            </div>
+            {ownMode === "rider" && (
+              <div className="flex flex-wrap gap-2">
+                <Link
+                  href="/library/new?sport=bike&mine=1"
+                  className={cn(buttonVariants({ variant: "outline" }), "max-sm:h-11")}
+                >
+                  <Bike data-icon="inline-start" />
+                  {t("newBike")}
+                </Link>
+                <Link
+                  href="/library/new?sport=strength&mine=1"
+                  className={cn(buttonVariants({ variant: "outline" }), "max-sm:h-11")}
+                >
+                  <Dumbbell data-icon="inline-start" />
+                  {t("newStrength")}
+                </Link>
+              </div>
+            )}
+          </div>
+          <OwnTemplates
+            mode={ownMode}
+            riders={riders}
+            today={todayInCopenhagen()}
+            templates={own.map((tpl) => ({
+              id: tpl.id,
+              name: tpl.name,
+              sport: tpl.sport,
+              description: tpl.description,
+              plannedMinutes: tpl.plannedMinutes,
+              source: tpl.source,
+              archived: tpl.archived,
+              riderId: tpl.riderId!,
+              riderName: tpl.riderName,
+              adopted: adopted.has(tpl.id),
+            }))}
+          />
+        </section>
+      )}
       <section aria-labelledby="library-blocks" className="flex flex-col gap-3">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <div className="flex flex-col gap-0.5">

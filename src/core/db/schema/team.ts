@@ -12,6 +12,7 @@ import {
   text,
   timestamp,
   uniqueIndex,
+  type AnyPgColumn,
 } from "drizzle-orm/pg-core";
 import { domainId, invitations, users } from "./foundation";
 import { tenant, timestamps } from "./shared";
@@ -313,10 +314,21 @@ export const workoutTemplates = pgTable(
     sourceKey: text("source_key"),
     archived: boolean("archived").notNull().default(false),
     createdBy: text("created_by").references(() => users.id, { onDelete: "set null" }),
+    /**
+     * A rider's own session (docs/adr/0050): null for the team's library.
+     * The rider writes it; the coaches and, when the rider shares training,
+     * the parents read it (drizzle/0021).
+     */
+    riderId: text("rider_id").references(() => riders.id, { onDelete: "cascade" }),
+    /** The rider's session a coach took into the team's library, when it is a copy of one. */
+    copiedFrom: text("copied_from").references((): AnyPgColumn => workoutTemplates.id, {
+      onDelete: "set null",
+    }),
     ...timestamps,
   },
   (t) => [
     index("workout_templates_org_idx").on(t.orgId, t.sport),
+    index("workout_templates_rider_idx").on(t.orgId, t.riderId),
     uniqueIndex("workout_templates_source_key_uq")
       .on(t.orgId, t.sourceKey)
       .where(sql`${t.sourceKey} is not null`),

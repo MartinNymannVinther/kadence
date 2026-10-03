@@ -24,7 +24,7 @@ import { getRiders } from "@/modules/team/riders";
 import { listUnplanned } from "@/modules/training/activities";
 import { listEvents } from "@/modules/training/events";
 import { listSessions } from "@/modules/training/sessions";
-import { listTemplates } from "@/modules/training/templates";
+import { listOwnTemplates, listTemplates } from "@/modules/training/templates";
 import { weekDates, weekFrom } from "@/modules/training/week";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -106,10 +106,15 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
     canWrite ? listTemplates(ctx) : Promise.resolve([]),
     volumesFor(ctx, riderIds, range, today),
   ]);
+  // A rider plans their own sessions into their own calendar too (ADR 0050).
+  const ownTemplates =
+    canWrite && !teamView && me.rider?.id === rider.id
+      ? await listOwnTemplates(ctx, { riderId: rider.id })
+      : [];
   const events = withResults(eventRows.map(toEventCard), results);
   // Kadence has no scheduled job: a coach's visit is when the races are read again.
   if (me.isCoach) after(() => refreshStaleRaces(ctx, riderIds));
-  const templateOptions = templates.map((tpl) => ({
+  const templateOptions = [...ownTemplates, ...templates].map((tpl) => ({
     id: tpl.id,
     name: tpl.name,
     sport: tpl.sport,

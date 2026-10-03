@@ -1115,6 +1115,21 @@
   },
   "library": {
     "title": "Workout library",
+    "own": {
+      "titleRider": "My sessions",
+      "subtitleRider": "Sessions you built yourself. Your coach can see them and take them into the team's library.",
+      "titleCoach": "Riders' own sessions",
+      "subtitleCoach": "Sessions the riders built themselves. Take one into the team's library so the whole team can use it.",
+      "emptyRider": "The sessions you build yourself will be here. Start with the buttons above.",
+      "emptyCoach": "When a rider builds sessions of their own, they appear here.",
+      "schedule": "Put in the calendar",
+      "edit": "Edit",
+      "adopt": "Take into the team's library",
+      "adopted": "Taken into the library",
+      "adoptedNow": "The session is now in the team's library.",
+      "newSubtitle": "Your own session. You can put it in your calendar, and your coach can see it.",
+      "detailSubtitle": "A rider's own session."
+    },
     "subtitle": "The team's sessions and programmes, ready to put in the calendar.",
     "newBike": "New bike session",
     "newStrength": "New strength session",
