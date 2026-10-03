@@ -180,20 +180,33 @@ $$;
 -- After that: the author changes the words; only the installation's owner
 -- hides, shows or locks; nobody changes who wrote it. When an account or a
 -- club is deleted, the foreign key cuts the link and the name goes with it.
+-- That SET NULL runs from the delete's own referential trigger, so this
+-- guard sees it one level down (pg_trigger_depth() > 1); an UPDATE written
+-- by hand is at depth 1 and falls through to the checks below. Only the
+-- link and the names change on that path; the rest stays as it was.
 CREATE OR REPLACE FUNCTION community_guard() RETURNS trigger
 LANGUAGE plpgsql SET search_path = pg_catalog, public, pg_temp AS $$
 DECLARE
   v_owner boolean := app_is_platform_owner();
   v_author boolean := OLD.author_user_id IS NOT NULL AND OLD.author_user_id = app_current_user_id();
 BEGIN
-  IF NEW.author_user_id IS NULL AND OLD.author_user_id IS NOT NULL THEN
-    NEW.author_name := '';
-    NEW.club_name := '';
-    RETURN NEW;
+  IF pg_trigger_depth() > 1 THEN
+    IF NEW.author_user_id IS NULL AND OLD.author_user_id IS NOT NULL THEN
+      NEW := OLD;
+      NEW.author_user_id := NULL;
+      NEW.author_name := '';
+      NEW.club_name := '';
+      RETURN NEW;
+    END IF;
+    IF NEW.author_org_id IS NULL AND OLD.author_org_id IS NOT NULL THEN
+      NEW := OLD;
+      NEW.author_org_id := NULL;
+      NEW.club_name := '';
+      RETURN NEW;
+    END IF;
   END IF;
-  IF NEW.author_org_id IS NULL AND OLD.author_org_id IS NOT NULL THEN
-    NEW.club_name := '';
-    RETURN NEW;
+  IF NEW.id IS DISTINCT FROM OLD.id OR NEW.created_at IS DISTINCT FROM OLD.created_at THEN
+    RAISE EXCEPTION 'a post keeps its id and its time' USING ERRCODE = '42501';
   END IF;
   IF NEW.author_user_id IS DISTINCT FROM OLD.author_user_id
      OR NEW.author_org_id IS DISTINCT FROM OLD.author_org_id
@@ -209,14 +222,24 @@ BEGIN
     IF NEW.locked IS DISTINCT FROM OLD.locked AND NOT v_owner THEN
       RAISE EXCEPTION 'only the installation owner moderates' USING ERRCODE = '42501';
     END IF;
-    -- A reply moves last_post_at; the words are the author's.
+    -- A reply moves last_post_at to the moment it is written, never further,
+    -- so nobody pins a thread to the top or buries another's.
+    IF NEW.last_post_at IS DISTINCT FROM OLD.last_post_at THEN
+      NEW.last_post_at := greatest(OLD.last_post_at, now());
+    END IF;
+    -- The words are the author's.
     IF (NEW.title IS DISTINCT FROM OLD.title OR NEW.body IS DISTINCT FROM OLD.body
         OR NEW.workout IS DISTINCT FROM OLD.workout OR NEW.category IS DISTINCT FROM OLD.category)
        AND NOT v_author THEN
       RAISE EXCEPTION 'only the author changes the words' USING ERRCODE = '42501';
     END IF;
-  ELSIF NEW.body IS DISTINCT FROM OLD.body AND NOT v_author THEN
-    RAISE EXCEPTION 'only the author changes the words' USING ERRCODE = '42501';
+  ELSE
+    IF NEW.thread_id IS DISTINCT FROM OLD.thread_id THEN
+      RAISE EXCEPTION 'a reply stays in its thread' USING ERRCODE = '42501';
+    END IF;
+    IF NEW.body IS DISTINCT FROM OLD.body AND NOT v_author THEN
+      RAISE EXCEPTION 'only the author changes the words' USING ERRCODE = '42501';
+    END IF;
   END IF;
   RETURN NEW;
 END

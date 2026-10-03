@@ -111,6 +111,37 @@ describe("Trænerrummet", () => {
     const rename = (c: Client) =>
       c.query("update community_threads set author_name = 'x' where id = $1", [threadId]);
     expect(await expectSqlError(asApp(app, A, rename))).toBe("42501");
+    // Cutting the author off by hand is not the way past the guard: only a
+    // deleted account's own foreign key does that.
+    const unsign = (c: Client) =>
+      c.query(
+        "update community_threads set author_user_id = null, body = 'ændret', hidden_at = now() where id = $1",
+        [threadId],
+      );
+    expect(await expectSqlError(asApp(app, B, unsign))).toBe("42501");
+    const orphan = (c: Client) =>
+      c.query("update community_threads set author_org_id = null where id = $1", [threadId]);
+    expect(await expectSqlError(asApp(app, B, orphan))).toBe("42501");
+    // A reply stays in its thread, and no thread is pinned into the future.
+    const elsewhere = insertSql("community_threads", {
+      id: "room_other",
+      category: "races",
+      title: "Låst",
+      body: "x",
+      locked: true,
+    });
+    await admin.query(elsewhere.text, elsewhere.values);
+    const move = (c: Client) =>
+      c.query("update community_posts set thread_id = 'room_other' where author_user_id = $1", [
+        B.userId,
+      ]);
+    expect(await expectSqlError(asApp(app, B, move))).toBe("42501");
+    const pin = (c: Client) =>
+      c.query(
+        "update community_threads set last_post_at = '2100-01-01' where id = $1 returning last_post_at < now() + interval '1 minute' as fair",
+        [threadId],
+      );
+    expect((await asApp(app, B, pin)).rows[0]).toEqual({ fair: true });
   });
 
   it("only the owner moderates; a hidden thread is gone for the others", async () => {
