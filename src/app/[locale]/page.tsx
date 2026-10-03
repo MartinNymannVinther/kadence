@@ -32,12 +32,19 @@ export default async function HomePage() {
     return null;
   }
   const t = await getTranslations("landing");
+  const openPages = await getTranslations("open");
 
   return (
     <div className="bg-background flex min-h-svh flex-col">
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-5">
         <Wordmark className="text-xl" />
         <nav className="flex items-center gap-2">
+          <Link
+            href="/guides"
+            className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "max-sm:hidden")}
+          >
+            {openPages("nav.hub")}
+          </Link>
           <Link href="/login" className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}>
             {t("nav.login")}
           </Link>

@@ -66,3 +66,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0044](0044-a-better-builder.md)                                           | A better builder: building blocks for the bike, exercise suggestions, the session at a glance            | → 0014, 0015, 0016, 0038       |
 | [0045](0045-rulle-the-land-alone-a-sound-a-cheat-code-people-and-towns.md) | Rulle: the land alone, a sound under the ride, a cheat code, and people and towns of their own           | → 0013, 0033, 0034, 0036       |
 | [0046](0046-rulle-the-queen-stage-in-odder.md)                             | Rulle's queen stage in Odder: all of its buildings, the roads round it, the hill sprint                  | → 0013, 0034, 0035, 0036, 0037 |
+| [0047](0047-open-guides-and-calculators.md)                                | Open guides and calculators, without an account: classes, equipment, energy for a race, gearing          | → 0013, 0021                   |

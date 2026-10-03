@@ -185,7 +185,8 @@
       "library": "Træningsbibliotek",
       "season": "Sæson",
       "parents": "Forældre",
-      "rulle": "Rulle"
+      "rulle": "Rulle",
+      "guides": "Viden og beregnere"
     },
     "orgSwitcher": {
       "label": "Arbejdsrum",
@@ -3159,6 +3160,468 @@
       "slower": "Langsommere",
       "left": "Til venstre",
       "right": "Til højre"
+    }
+  },
+  "open": {
+    "nav": {
+      "hub": "Viden og beregnere",
+      "toApp": "Til Kadence",
+      "login": "Log ind"
+    },
+    "footer": "Kadence er open source træningsplanlægning for unge landevejsryttere, deres trænere og forældre. Siderne her er åbne for alle, og det, du skriver i beregnerne, bliver i din browser.",
+    "terms": "Vilkår og privatliv",
+    "back": "Viden og beregnere",
+    "sources": "Kilder",
+    "opensElsewhere": "(åbner på en anden side)",
+    "contents": "Indhold",
+    "updated": "Skrevet i oktober 2026. DCU's regler ændrer sig fra sæson til sæson, så DCU's egne sider har altid det sidste ord.",
+    "experience": "Erfaring fra miljøet",
+    "experienceNote": "Det her står i ingen regler. Det er erfaring fra miljøet og vores egen læsning, så tag det som gode bud."
+  },
+  "guides": {
+    "hub": {
+      "title": "Viden og beregnere",
+      "intro": "Til ryttere, forældre og trænere. Skrevet med Kadences egne ord, med kilderne under hvert afsnit.",
+      "calculators": "Beregnere",
+      "guides": "Guides",
+      "open": "Åbn",
+      "items": {
+        "energy": {
+          "title": "Energi til løbet",
+          "body": "Hvor meget energi et løb koster, og hvad du kan spise og drikke før, under og efter."
+        },
+        "gearing": {
+          "title": "Gearing for de unge klasser",
+          "body": "Regn cyklens største gear ud, og se om det holder sig inden for grænsen i U11 til U17."
+        },
+        "classes": {
+          "title": "Klasserne og vejen videre",
+          "body": "Forskellen på U15, U17, U19 og U23, og hvordan ryttere kommer videre til et juniorhold."
+        },
+        "equipment": {
+          "title": "Udstyr: hvor er der mest at hente",
+          "body": "Hvad der giver fart for pengene, og hvad der mest er pynt. Med watt, priser og kilder."
+        }
+      },
+      "fromParents": "Viden om sporten til forældre: klasserne og vejen videre, udstyr, og beregnere til energi og gearing.",
+      "fromHelp": "Guides og beregnere til ryttere, forældre og trænere: klasserne, udstyr, energi til løbet og gearing."
+    },
+    "classes": {
+      "title": "Klasserne og vejen videre",
+      "intro": "Hvad forskellen er på U15, U17, U19 og U23, hvad det koster, og hvordan ryttere kommer videre. Til forældre og ryttere, der er nye i sporten.",
+      "sections": {
+        "age": {
+          "title": "Klassen følger kalenderåret",
+          "intro": "En rytters klasse afgøres af det år, rytteren fylder, og den er den samme hele året.",
+          "points": {
+            "1": "U15 er dem, der fylder 13 og 14 i år. U17 fylder 15 og 16, U19 fylder 17 og 18, og U23 fylder 19 til 22.",
+            "2": "Hver klasse er to årgange, og U23 er fire. En rytter er derfor altid første eller andet års i sin klasse. Klassen skifter 1. januar.",
+            "3": "En rytter født sent på året kan være næsten et år yngre end en årgangskammerat. Det kan ses tydeligt i U15 og U17, hvor kroppen vokser meget.",
+            "4": "I almindelige danske løb kører U23-ryttere med seniorerne: drengene i Herre A, B, C eller D og pigerne i Dame A eller B, efter point. U23 har sin egen klasse til DM og i UCI-løb."
+          }
+        },
+        "distances": {
+          "title": "Hvor langt de kører",
+          "intro": "DCU sætter en længste distance for hver klasse. Den vokser meget fra U17 til U19.",
+          "points": {
+            "1": "U15 kører højst 45 km i linjeløb og 15 km i enkeltstart.",
+            "2": "U17 kører højst {u17Road} km i linjeløb og {u17Tt} km i enkeltstart.",
+            "3": "U19-drenge kører linjeløb på {u19mMin}–{u19mMax} km, og U19-piger på {u19wMin}–{u19wMax} km. Enkeltstarten er op til {u19Tt} km.",
+            "4": "I UCI's juniorløb i udlandet er et endagsløb højst 140 km for drenge og 100 km for piger."
+          }
+        },
+        "licence": {
+          "title": "Licens, klippekort og hvad det koster",
+          "intro": "Til licensløb skal rytteren have en licens fra DCU. Man kan prøve det af først.",
+          "points": {
+            "1": "Licensen er gratis til og med U15. Fra U17 koster den 1.080 kr. i Jylland og på Fyn og 1.215 kr. på Sjælland (2026). Efter 15. juli er prisen lavere.",
+            "2": "Med et klippekort kan en rytter under U17, som er medlem af en DCU-klub, køre tre løb uden licens for 10 kr. pr. løb.",
+            "3": "Rytteren skal selv have en ansvars- og ulykkesforsikring. Det er værd at tjekke, om familiens forsikring dækker licensløb.",
+            "4": "Startgebyret er typisk 90–190 kr., og en tidtagningschip kan lejes for 50 kr. En tilmelding før fristen er billigst; en efteranmeldelse koster ofte det dobbelte."
+          }
+        },
+        "raceDay": {
+          "title": "Løbsdagen: cykel, radio og flasker",
+          "intro": "De unge klasser har deres egne regler for udstyr og hjælp undervejs.",
+          "points": {
+            "1": "U11 til U17 kører på almindelig racercykel. Enkeltstartscykel, styrbøjle, skivehjul og hjul med færre end 12 eger er forbeholdt de ældre klasser.",
+            "2": "Ungdomsklasserne kører altid uden radio.",
+            "3": "Forplejning undervejs er kun tilladt i løb over 100 km. En U17-rytter har derfor sine flasker med fra start.",
+            "4": "Rytterne må gerne give hinanden mad, drikke og værktøj undervejs.",
+            "5": "B&U-DM for U11 til U17 kræver mindst tre gennemførte licensløb på landevej, og for at køre linjeløbet skal rytteren have startet i enkeltstarten."
+          }
+        },
+        "abroad": {
+          "title": "Hvad der åbner sig i U19 og U23",
+          "intro": "Fra det år, rytteren fylder 17, åbner UCI's internationale løb sig.",
+          "points": {
+            "1": "U17-ryttere kan køre nationale løb i udlandet. Klubben melder tilmeldingen til DCU, og landets egne regler gælder, også for gearing.",
+            "2": "Juniorerne i U19 kører Nations Cup, EM og VM for landsholdet. Nations Cup afgør, hvor mange ryttere Danmark må stille med til VM.",
+            "3": "U19 kører med fri gearing. Grænsen forsvandt i 2023, da UCI afskaffede juniorgrænsen.",
+            "4": "U23-ryttere kører med seniorerne i Danmark og har deres egne løb i UCI's kalender, fx Nations Cup og Tour de l'Avenir."
+          }
+        },
+        "teams": {
+          "title": "Hold, klubskifte og to datoer",
+          "intro": "Mange ryttere skifter fra deres klub til et juniorhold, når de bliver U19. Reglerne giver de unge ro til at blive kontaktet på et fornuftigt tidspunkt.",
+          "points": {
+            "1": "U17 og yngre kører for deres klub og i klubbens tøj. Et DCU U19-team har fire til ni U19-ryttere.",
+            "2": "Et hold må tidligst kontakte en rytter under 18 eller forældrene om næste sæson 15. juni. En aftale kan tidligst skrives under 1. september året før, af både rytter og forælder.",
+            "3": "For en andet års U17-rytter betyder det: henvendelser fra 15. juni, underskrift fra 1. september og første løb for holdet, når sæsonen starter som U19.",
+            "4": "DCU anbefaler en skriftlig aftale og en liste over udstyr, der viser, hvad der er rytterens, og hvad der skal afleveres igen."
+          }
+        },
+        "nationalTeam": {
+          "title": "Landsholdet og talentarbejdet",
+          "intro": "DCU arbejder med et talentforløb over otte sæsoner: U17, U19 og U23.",
+          "points": {
+            "1": "I U17 er der en bred landsholdstrup på omkring 30 ryttere med samlinger om vinteren. Den udtages ud fra en vurdering af potentiale og pointstatistikken, og i sæsonen tæller præstationerne i løbene.",
+            "2": "I U19 er truppen også omkring 30 ryttere. De sender deres træning ind og får respons fra landstræneren. DCU sætter ingen resultatmål for U19 og U23.",
+            "3": "DCU beskriver talent som mere end fysik: træningsvilje, tålmodighed og evnen til at få sport, skole og liv til at hænge sammen.",
+            "4": "Unge skriver kontrakter tidligere og tidligere. DCU tilbyder uvildig vejledning og siger, at det sjældent koster noget at vente lidt med de store karriereskift."
+          }
+        },
+        "school": {
+          "title": "Skole og sport",
+          "intro": "Der findes ordninger, der gør det lettere at få skole og cykling til at gå op.",
+          "points": {
+            "1": "Team Danmarks ordninger på gymnasiet kræver en plads i DCU's landsholdstrup i U17, U19 eller U23 og en individuel vurdering. De giver fx mulighed for fire års gymnasium og fleksibelt fravær til træning.",
+            "2": "Fra 2026 til 2029 kører et forsøg, hvor Team Danmark-elever kan tage stx eller hhx på tre år med færre fag. 19 skoler er med.",
+            "3": "I 7.–9. klasse har mange af Team Danmarks elitekommuner idrætsklasser med morgentræning, og flere efterskoler har cykling på skemaet.",
+            "4": "DCU nævner selv, at forlænget uddannelse også har en pris: man kan miste sine klassekammerater og bliver et år senere færdig."
+          }
+        },
+        "unwritten": {
+          "title": "Det uskrevne",
+          "intro": "Hvordan ryttere kommer på et juniorhold, står ikke i reglerne. Her er det, miljøet typisk fortæller.",
+          "points": {
+            "1": "Juniorholdene ser typisk på resultater fra U17, fx B&U-DM, ungdomsetapeløb og U19-cuppens afdelinger, og i stigende grad på wattdata. Holdning og lyst til at lære betyder også meget.",
+            "2": "De store skift sker typisk to steder: efter andet år i U17, fra klub til juniorhold, og efter andet år i U19, til et kontinentalhold, et elitehold eller et udenlandsk udviklingshold.",
+            "3": "Det første tilbud er sjældent det eneste. Mange ryttere slår igennem sent, og DCU's eget budskab er, at det kan betale sig at vente lidt.",
+            "4": "Det er en god idé at spørge, hvad det koster at være på holdet: egenbetaling, udstyr og rejser. Der findes ingen offentlige tal for det."
+          }
+        },
+        "gearing": {
+          "title": "Udveksling i de unge klasser",
+          "intro": "Til og med U17 har klasserne en grænse for, hvor stort det største gear må være.",
+          "points": {
+            "1": "Grænsen er {u17Gear, number} m pr. pedalomgang i U17, {u15Gear, number} m i U15 og {u13Gear, number} m i U13 og U11. U19 og ældre kører med fri gearing.",
+            "2": "Dækket tæller med: et 28 mm-dæk kan sende en cykel over grænsen, som holder med 25 mm-dæk. Gearingberegneren regner det ud for jeres cykel."
+          }
+        }
+      }
+    },
+    "equipment": {
+      "title": "Udstyr: hvor er der mest at hente",
+      "intro": "Hvad der giver mest fart for pengene, og hvad der mest er pynt. Tallene er watt sparet for en rytter alene i vinden ved 40 km/t, fra vindtunnel- og laboratorietests.",
+      "adults": "Næsten alle målingerne er lavet på voksne ryttere, så for mindre ryttere er tallene en størrelsesorden.",
+      "sections": {
+        "bunch": {
+          "title": "Først: feltet",
+          "intro": "I et felt skærmer rytterne for hinanden, og det sætter alt andet i perspektiv.",
+          "points": {
+            "1": "Midt i et tæt felt har en rytter kun 5–10 % af den luftmodstand, rytteren ville have alene. Nummer to på en række har omkring 60 %.",
+            "2": "I et linjeløb betyder en god placering i feltet derfor mere end noget stykke udstyr, og det er noget, man træner.",
+            "3": "Aero-udstyr betyder mest i enkeltstart, i udbrud og i sidevind. Rullemodstand og en ren kæde betyder det samme i feltet som alene."
+          }
+        },
+        "free": {
+          "title": "Det gratis og det billige",
+          "intro": "De første watt koster næsten ingenting.",
+          "points": {
+            "1": "En ren og smurt kæde: en kæde, der ikke er renset efter en tur i regn, koster omkring 6 W, og efter en mudret tur omkring 12 W. Affedter og smøremiddel koster 100–300 kr.",
+            "2": "En lavere og smallere position, når rytteren er i vinden, sparer 8–35 W. En bikefit kan hjælpe, men det vigtigste er at øve stillingen.",
+            "3": "Tøj, der sidder tæt: en åben, blafrende vest kostede 10 W i vindtunnelen. Et rygnummer sat fladt og stramt følger samme logik.",
+            "4": "Dæktryk efter vejen: på en ru vej bliver cyklen langsommere, når trykket bliver for højt. Hvor meget det betyder for en junior på dansk asfalt, har ingen målt."
+          }
+        },
+        "tyres": {
+          "title": "Dæk og slanger",
+          "intro": "Her er der mest at hente pr. krone, og gevinsten gælder også i feltet.",
+          "points": {
+            "1": "Hurtige løbsdæk frem for billige træningsdæk sparer omkring 20 W for et par ved 40 km/t. Et par koster omkring 800–950 kr.",
+            "2": "Latexslanger frem for almindelige butylslanger sparer 5–6 W for et par og koster omkring 200 kr. De er næsten lige så hurtige som tubeless, men taber luft hurtigere og skal pumpes før hver tur.",
+            "3": "Hurtige dæk har ofte en tyndere slidbane. Mange kører derfor på robuste dæk til træning og hurtige dæk til løb.",
+            "4": "Bredere dæk er ikke automatisk langsommere. Pumpet til samme komfort ruller 23 til 32 mm næsten ens."
+          }
+        },
+        "kit": {
+          "title": "Tøj, hjelm og skoovertræk",
+          "intro": "Det, der blafrer, koster. Det, der sidder tæt, er hurtigt.",
+          "points": {
+            "1": "En skinsuit frem for løs trøje og bukser sparede omkring 10 W. Rytteren skal køre i klubbens godkendte dragt, så det kræver, at klubben har en skinsuit i sit design. Vælg den rigtige størrelse; en for lille dragt virker dårligere.",
+            "2": "Aero-skoovertræk sparede omkring 6 W og koster 420–480 kr.",
+            "3": "En aero-landevejshjelm sparede i snit 4,5 W i forhold til en ventileret hjelm. Når hjelmen alligevel skal skiftes, er merprisen lille. Prisen siger intet om, hvor godt en hjelm beskytter; uafhængige hjelmtests gør.",
+            "4": "Hjelmen skal være CE-godkendt med hagerem, og den skiftes efter et styrt, også når der ikke er synlige skader."
+          }
+        },
+        "wheels": {
+          "title": "Hjul og cykel",
+          "intro": "Det dyre udstyr giver mindre pr. krone, end mange tror.",
+          "points": {
+            "1": "Dybe kulfiberhjul sparede 4,6–6,6 W i forhold til lave hjul og koster 8.700–17.600 kr. Der var næsten ingen sammenhæng mellem pris og fart i testen.",
+            "2": "En ny aero-cykel sparede 17–32 W i forhold til en ti år gammel aluminiumscykel, hjul og styr medregnet. Det koster 70.000–110.000 kr.",
+            "3": "En cykel skal veje mindst 6,8 kg. Et kilo ekstra koster omkring 1,2 sekund pr. km på en stigning på 5 %, så vægt betyder mindre på danske ruter, end mange tror.",
+            "4": "Fra 2026 må fælge højst være 65 mm dybe i linjeløb, og styret skal være mindst 40 cm bredt. Hjul i linjeløb skal være UCI-godkendte eller traditionelle: metalfælg under 25 mm og mindst 20 ståleger."
+          }
+        },
+        "cosmetic": {
+          "title": "Det, der mest er pynt",
+          "intro": "Det er helt i orden at købe noget, fordi det er pænt eller giver glæde. Det gør bare ikke rytteren hurtigere.",
+          "points": {
+            "1": "Et dyrere gruppesæt, fra Shimano 105 til Dura-Ace, er omkring 550 g lettere og koster omkring 17.000 kr. mere. Det giver ingen målt watt-gevinst; skiftene er lige præcise i alle tre niveauer.",
+            "2": "Et keramisk krankleje sparede 0,03 W i forhold til et godt stålleje.",
+            "3": "Store pulleyhjul skal ifølge producenten spare mindst 2,4 W. Det er ikke målt af andre."
+          }
+        },
+        "training": {
+          "title": "Træningsværktøjer",
+          "intro": "En wattmåler gør ikke cyklen hurtigere. Værdien ligger i træningen.",
+          "points": {
+            "1": "To små studier på voksne fandt samme fremgang, uanset om intervallerne blev styret efter puls eller watt. Et pulsbælte til 356–699 kr. er den billigste start, og et brystbælte måler mere præcist end et ur.",
+            "2": "En wattmåler giver mening, når træneren bruger watt til at styre træningen, og til at lære at fordele kræfterne i en enkeltstart. En smart-hometrainer måler allerede watt indendørs.",
+            "3": "Wattmålere i pedalerne koster omkring 2.400–5.500 kr. Billigere mærker som Magene laver også wattmålere, pulsbælter og cykelcomputere; vi har ikke set uafhængige tests af deres præcision."
+          }
+        },
+        "used": {
+          "title": "At købe brugt",
+          "intro": "Ryttere i vækst skifter ofte cykel, og brugt kan være et godt køb.",
+          "points": {
+            "1": "Vælg rammestørrelse efter rytterens mål nu og ikke til at vokse ind i. Sadelpind og frempind kan justere lidt; en for stor ramme bliver ikke mindre.",
+            "2": "Tegn på styrt: nyt styrbånd eller nye kabler på en ellers ældre cykel, skrammer på styr, greb og sadel, og en bøjet gearhænger.",
+            "3": "Kulfiber kan testes ved at banke let med en mønt langs rørene: sund kulfiber giver en klar lyd, skadet kulfiber en død lyd. Har cyklen været i styrt, så få den set af et kulfiberværksted før købet.",
+            "4": "En repareret kulfiberdel regnes ikke længere for UCI-godkendt uden producentens samtykke. Tjek også, at hjul og styr overholder reglerne, og at gearingen kan holdes inden for grænsen."
+          }
+        }
+      },
+      "value": {
+        "title": "Mest fart pr. krone",
+        "intro": "Watt sparet for en rytter alene ved 40 km/t. 10 W er omkring 17 sekunder på en enkeltstart på 15 km. Gevinsterne kan ikke uden videre lægges sammen.",
+        "measure": "Tiltag",
+        "price": "Pris",
+        "watts": "Sparet alene",
+        "inBunch": "I feltet",
+        "free": "Gratis",
+        "priceRange": "{low, number, integer}–{high, number, integer} kr.",
+        "priceOne": "ca. {price, number, integer} kr.",
+        "wattsRange": "{low, number}–{high, number} W",
+        "wattsOne": "ca. {watts, number} W",
+        "none": "ingen målt",
+        "claim": "{watts, number} W (producentens påstand)",
+        "bunch": {
+          "all": "hele gevinsten",
+          "some": "en del",
+          "little": "lidt",
+          "none": "–"
+        },
+        "rows": {
+          "chain": "Rens og smør kæden, især efter regn",
+          "position": "Lavere og smallere position i vinden",
+          "flapping": "Tøj, der ikke blafrer",
+          "latex": "Latexslanger frem for butyl",
+          "tyres": "Hurtige dæk frem for billige",
+          "overshoes": "Aero-skoovertræk",
+          "helmet": "Aero-hjelm frem for ventileret",
+          "skinsuit": "Skinsuit frem for løs trøje (klubbens design)",
+          "wheels": "Dybe kulfiberhjul frem for lave",
+          "bike": "Ny aero-cykel frem for gammel aluminium",
+          "pulleys": "Store pulleyhjul",
+          "groupset": "Dyrere gruppesæt (105 til Dura-Ace)",
+          "ceramic": "Keramisk krankleje"
+        }
+      }
+    }
+  },
+  "calculators": {
+    "gearing": {
+      "title": "Gearing for de unge klasser",
+      "intro": "Regn cyklens største gear ud, og se om det holder sig inden for DCU's grænse. Alt bliver i din browser.",
+      "class": "Klasse",
+      "classes": {
+        "U11": "U11",
+        "U13": "U13",
+        "U15": "U15",
+        "U17": "U17",
+        "U19": "U19 og ældre"
+      },
+      "tyre": "Dæk",
+      "tyreOption": "{mm} mm",
+      "tyreCustom": "Målt omkreds",
+      "circumference": "Omkreds i mm",
+      "circumferenceHint": "Mål hjulets omkreds med dækket pumpet op til løbstryk.",
+      "ring": "Største klinge",
+      "cog": "Mindste tandhjul",
+      "teeth": "T",
+      "result": {
+        "title": "Cyklens største gear",
+        "gear": "{ring} × {cog} giver {rollout, number, ::.00} m pr. pedalomgang.",
+        "limit": "Grænsen i {class} er {limit, number, ::.00} m.",
+        "free": "U19 og ældre kører med fri gearing, så alle gear er lovlige.",
+        "within": "Inden for grænsen, {cm, number, integer} cm under.",
+        "close": "Inden for grænsen, men kun {cm, number, integer} cm under. Dæktryk og slid kan flytte et par centimeter, så mål cyklen med de dæk og det tryk, der køres løb på.",
+        "over": "{cm, number, integer} cm over grænsen.",
+        "wayBack": "Med {cog} tænder bagpå kan klingen højst have {largestRing} tænder. Med {ring} tænder foran skal det mindste tandhjul have mindst {smallestCog} tænder.",
+        "invalid": "Skriv hele tænder: klingen mellem 20 og 60 og tandhjulet mellem 9 og 52."
+      },
+      "table": {
+        "title": "Største klinge til hvert mindste tandhjul",
+        "caption": "For {class} med den valgte omkreds på {circumference} mm.",
+        "cog": "Mindste tandhjul",
+        "ring": "Største klinge",
+        "rollout": "Udvikling",
+        "teeth": "{n} T",
+        "metres": "{rollout, number, ::.00} m"
+      },
+      "products": {
+        "title": "Dele, der kan hjælpe",
+        "intro": "Junior-kassetter starter på 14 tænder eller mere. Listen er neutral, og Kadence har ingen aftaler med forhandlerne. Priserne er set i oktober 2026.",
+        "speeds": "{speeds}-speed",
+        "cassetteFits": "{small}-{large}: klinge op til {ring} T",
+        "chainringFits": "{big}-{small}: mindste tandhjul {cog} T",
+        "fitsFree": "{a}-{b}",
+        "price": "ca. {price} ({shop})",
+        "noPrice": "Pris ikke tjekket",
+        "link": "Se produktet",
+        "forClass": "Tallene gælder {class} med den valgte omkreds.",
+        "items": {
+          "micheK12": "Til Shimano 12-speed HG-friløb. Butikkerne er uenige om, hvorvidt den virker med SRAM AXS, så spørg i butikken.",
+          "reconJunior": "Til Shimano 11-speed HG-friløb og til SRAM XDR med en adapter.",
+          "dubied": "Fås til Shimano 12-speed, SRAM XDR og Campagnolo 12-speed. Prisen er for Shimano og Campagnolo; XDR koster 239 euro.",
+          "micheLight": "11-speed til Shimano.",
+          "shimanoR8000": "11-speed til Shimano. Det er uvist, om den stadig produceres.",
+          "michePrimato": "10-speed til Shimano og Campagnolo.",
+          "mageneQed": "Klinger til Magenes egne kranksæt med wattmåler, til Shimano 11- og 12-speed. Den mindste store klinge er 50 T, så de passer sammen med en junior-kassette, fx 50 × 16 i U15."
+        }
+      },
+      "alternative": {
+        "title": "Eller en mindre klinge",
+        "body": "DCU foreslår også en mindre klinge foran og en almindelig 12-speed-kassette: 38/11 eller 34/10 i U17, 34/11 eller 31/10 i U15 og 32/11 eller 29/10 i U13 og U11. Forslagene er regnet for 25 mm-dæk. Spørg DCU eller chefkommissæren, før cyklen bygges om."
+      },
+      "measure": {
+        "title": "Sådan måler kommissæren",
+        "steps": {
+          "1": "Cyklen sættes i sit største gear: største klinge og mindste tandhjul.",
+          "2": "En pedal stilles lodret ned over et mærke på gulvet.",
+          "3": "Cyklen trilles langsomt baglæns, så baghjulet trækker kranken rundt.",
+          "4": "Når pedalen har drejet én omgang, måles afstanden. Den skal være inden for grænsen."
+        },
+        "note": "Sådan gøres det i praksis i flere lande; DCU's regler går ikke i detaljer med metoden. Ved en enkeltstart skal gearkontrollen være overstået senest 10 minutter før start."
+      },
+      "rules": {
+        "title": "Godt at vide",
+        "locked": "Det er ikke tilladt at låse de største gear med stopskruen (\"låst gear\"). Cyklen skal overholde grænsen i sit faktisk største gear.",
+        "ecycling": "Grænserne gælder også i e-cykling for de samme årgange.",
+        "abroad": "I udlandet gælder landets egne regler.",
+        "circumference": "Omkredsene er Garmins tal for et 700C-hjul. Den rigtige omkreds afhænger af dækmærke, fælg, tryk og slid."
+      }
+    },
+    "energy": {
+      "title": "Energi til løbet",
+      "intro": "Regn ud, hvor meget energi løbet koster, og hvad du kan spise og drikke før, under og efter. Alt bliver i din browser.",
+      "race": "Løbet",
+      "hours": "Timer",
+      "minutes": "Minutter",
+      "temperature": "Temperatur",
+      "celsius": "°C",
+      "method": {
+        "label": "Hvordan vil du anslå indsatsen?",
+        "watts": "Gennemsnitswatt",
+        "speed": "Fart (enkeltstart)",
+        "heartRate": "Gennemsnitspuls",
+        "met": "Løbstype"
+      },
+      "watts": "Gennemsnitswatt",
+      "wattsHint": "Brug gennemsnittet med nuller fra et lignende løb eller en lignende tur.",
+      "kmh": "Gennemsnitsfart",
+      "kmhUnit": "km/t",
+      "climb": "Højdemeter",
+      "position": {
+        "label": "Stilling",
+        "hoods": "Hænderne på grebene",
+        "drops": "Hænderne i bøjlen",
+        "timeTrial": "Lav, flad ryg"
+      },
+      "bikeKg": "Cyklens vægt",
+      "bpm": "Gennemsnitspuls",
+      "age": "Alder",
+      "sex": {
+        "label": "Formlen for",
+        "female": "Piger",
+        "male": "Drenge"
+      },
+      "raceKind": {
+        "label": "Løbstype",
+        "fast": "Hurtig tur, 22–26 km/t",
+        "racing": "Løb i et felt",
+        "solo": "Alene over 32 km/t"
+      },
+      "weight": "Vægt (valgfri)",
+      "weightHint": "Vægten bliver i din browser. Uden den får du stadig planen for løbet; måltidet før og efter regnes pr. kg.",
+      "kg": "kg",
+      "gut": {
+        "label": "Har du øvet dig i at spise meget kulhydrat på træning?",
+        "yes": "Ja",
+        "no": "Ikke endnu"
+      },
+      "food": "Dunke og mad",
+      "bottle": "Dunkens størrelse",
+      "bottleOption": "{ml} ml",
+      "mix": {
+        "label": "I dunken",
+        "water": "Vand",
+        "drink": "Sportsdrik, ca. 6 %",
+        "fuel": "Brændstofdunk, ca. 8 %"
+      },
+      "piece": "Gram kulhydrat pr. riskage, gel eller bar",
+      "pieceHint": "En hjemmelavet riskage har omkring 32 g, en gel typisk 25 g.",
+      "hoursBefore": "Timer fra måltid til start",
+      "result": {
+        "energy": "Energiforbrug",
+        "kcal": "Cirka {low, number, integer}–{high, number, integer} kcal",
+        "work": "{kj, number, integer} kJ arbejde ved {watts, number, integer} W i snit.",
+        "needsWeight": "Skriv vægten for at bruge denne metode.",
+        "none": "Skriv varighed og indsats for at se et skøn.",
+        "energyNote": "Et skøn med usikkerhed: kroppens effektivitet på cyklen er 18–23 %, og den er ikke målt hos 15–18-årige.",
+        "carbs": "Kulhydrat under løbet",
+        "water": "Under 45 minutter er vand nok.",
+        "small": "Op til 75 minutter er små mængder nok, eller at skylle munden med sportsdrik.",
+        "carbsRange": "{low}–{high} g i timen. Planen regner med {target} g i timen, {total} g i alt.",
+        "single": "Én slags sukker er nok, fx sportsdrik, riskager eller geler.",
+        "multiple": "Over 60 g i timen kræver glukose og fruktose sammen. Almindeligt sukker er begge dele, eller brug 2 dele sukker og 1 del druesukker.",
+        "coverage": "Det dækker omkring {low, number, integer}–{high, number, integer} % af den energi, løbet koster. Resten tager kroppen fra sine lagre, og det er helt normalt.",
+        "fluid": "Væske og salt",
+        "fluidRange": "{low, number, ::.0}–{high, number, ::.0} liter i timen.",
+        "sodium": "{low, number, integer}–{high, number, integer} mg natrium i timen. 1 g salt giver omkring 400 mg natrium.",
+        "loss": "Du kan tabe op til {kg, number, ::.0} kg i sved, før det går ud over præstationen. Drik højst det, du sveder.",
+        "weighIn": "Vej dig før og efter næste lange tur. Så kan planen blive mere præcis.",
+        "plan": "Planen",
+        "bottles": "{bottles, plural, one {# dunk} other {# dunke}} på {ml} ml",
+        "fromBottles": "Dunkene giver {grams} g kulhydrat.",
+        "pieces": "{pieces, plural, =0 {Dunkene dækker kulhydratet.} one {# stk. mad til resten.} other {# stk. mad til resten.}}",
+        "before": "Før løbet",
+        "beforeBody": "Omkring {carbs} g kulhydrat {hours, plural, one {# time} other {# timer}} før start, og {low, number, integer}–{high, number, integer} ml at drikke 2–4 timer før.",
+        "beforeNote": "Et hovedmåltid 3–4 timer før eller et mellemmåltid 1–2 timer før, med lidt fedt og få fibre.",
+        "after": "Efter løbet",
+        "afterBody": "{low, number, integer}–{high, number, integer} g kulhydrat og {pLow, number, integer}–{pHigh, number, integer} g protein lige efter, og 1,25–1,5 liter væske for hvert kilo, du har tabt.",
+        "afterNote": "Kører du igen inden for 8 timer, så gentag kulhydratet hver time de første fire timer.",
+        "weightMissing": "Skriv vægten for at se måltidet før og efter løbet."
+      },
+      "warnings": {
+        "heartRateAge": "Pulsformlen er lavet på 18–45-årige, der kører jævnt. For yngre ryttere og løb med spurter er skønnet mere usikkert.",
+        "speedSolo": "Fartmetoden gælder, når du kører alene, som i en enkeltstart. I et felt sparer læ så meget, at farten siger for lidt om indsatsen.",
+        "heat": "Over 25 °C: drik mere, og tænk salt med. Over 30 °C bør vægttabet i sved højst være 1 %.",
+        "capped": "Uden øvelse kan maven typisk tage 60 g i timen, så planen stopper der. Øv mere på de lange træningsture, hvis du vil op mod 90 g.",
+        "practise": "Øv planen på de lange træningsture de næste 2–4 uger, før du bruger den i et løb."
+      },
+      "about": {
+        "title": "Om beregningen",
+        "points": {
+          "1": "Energien regnes fra watt som arbejde delt med kroppens effektivitet på 18–23 % (Hopker 2009). Fra fart bruges cyklingens kraftligning (Martin 1998), fra puls Keytels formel (2005) og fra løbstype MET-tal (Compendium 2024). Puls og løbstype vises med ±15 %, som er Kadences eget valg.",
+          "2": "Kulhydrat pr. time følger Thomas 2016, Jeukendrup 2014 og Team Danmark. Ingen kilde har tal for teenagere, så Kadence stopper ved 60 g i timen uden øvelse og foreslår højst 90 g.",
+          "3": "Væske og salt følger Team Danmark og ACSM. Overgangen mellem 25 og 30 °C er Kadences egen.",
+          "4": "Beregneren er et redskab til planlægning og er ikke medicinsk rådgivning."
+        }
+      }
     }
   }
 }

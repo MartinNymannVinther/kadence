@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GuidesCard } from "@/components/guides/guides-card";
 import { BookOpen } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -67,6 +68,10 @@ export default async function HelpPage() {
           <p className="mt-1.5 text-reading leading-relaxed">{t(`howTo.${key}.body`)}</p>
         </section>
       ))}
+
+      <div className="mt-10">
+        <GuidesCard body="fromHelp" />
+      </div>
 
       <p className="border-border bg-card text-meta mt-10 rounded-xl border p-4 text-sm">
         {t("closing")}
