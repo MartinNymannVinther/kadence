@@ -21,6 +21,7 @@ import { listEvents } from "@/modules/training/events";
 import { listSessions } from "@/modules/training/sessions";
 import { weekDates, weekFrom } from "@/modules/training/week";
 import { listCheckins } from "@/modules/wellbeing/checkins";
+import { GuidesCard } from "@/components/guides/guides-card";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("parents");
@@ -110,6 +111,8 @@ export default async function ParentsPage({
       ))}
       {waiting && <EmptyState title={t("waitingTitle")} hint={t("waitingBody")} />}
       {hidden && <EmptyState title={t("hiddenTitle")} hint={t("hiddenBody")} />}
+
+      <GuidesCard body="fromParents" />
 
       <section aria-labelledby="parent-guide" className="flex flex-col gap-4">
         <ParentGuide />

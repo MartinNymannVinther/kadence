@@ -9,9 +9,10 @@ import { cn } from "@/lib/utils";
  * The app navigation. Text only, per the 2a handoff, in the rhythm a
  * week is lived in: today, the calendar and the workout library a week
  * is planned from, Rulle for the days indoors (riders and coaches, ADR
- * 0033), the season, the team (coaches only), the parents' page, and
- * help. Rendered in the desktop sidebar and inside the mobile sheet,
- * where `onNavigate` lets the sheet close itself.
+ * 0033), the season, the team (coaches only), the parents' page, the
+ * open guides and calculators (ADR 0047), and help. Rendered in the
+ * desktop sidebar and inside the mobile sheet, where `onNavigate` lets
+ * the sheet close itself.
  */
 const ITEMS = [
   { href: "/today", key: "today", coach: false, rides: false, club: false },
@@ -23,6 +24,7 @@ const ITEMS = [
   { href: "/riders", key: "riders", coach: true, rides: false, club: false },
   { href: "/coaches", key: "coaches", coach: true, rides: false, club: false },
   { href: "/parents", key: "parents", coach: false, rides: false, club: false },
+  { href: "/guides", key: "guides", coach: false, rides: false, club: false },
   { href: "/help", key: "help", coach: false, rides: false, club: false },
 ] as const;
 

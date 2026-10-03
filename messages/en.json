@@ -187,7 +187,8 @@
       "season": "Season",
       "club": "Club champion",
       "parents": "Parents",
-      "rulle": "Rulle"
+      "rulle": "Rulle",
+      "guides": "Guides and calculators"
     },
     "orgSwitcher": {
       "label": "Workspace",
@@ -3446,6 +3447,616 @@
       "unlocked": "The thread is open again.",
       "handle": "Handled",
       "handled": "The report is marked as handled."
+    }
+  },
+  "open": {
+    "nav": {
+      "hub": "Guides and calculators",
+      "toApp": "Go to Kadence",
+      "login": "Sign in"
+    },
+    "footer": "Kadence is open source training planning for young road cyclists, their coaches and their parents. These pages are open to everyone, and what you type into the calculators stays in your browser.",
+    "terms": "Terms and privacy",
+    "back": "Guides and calculators",
+    "sources": "Sources",
+    "opensElsewhere": "(opens on another site)",
+    "contents": "Contents",
+    "updated": "Written in October 2026. DCU's rules change from season to season, so DCU's own pages always have the last word.",
+    "experience": "Experience from the sport",
+    "experienceNote": "No rule says this. It is experience from the sport and our own reading, so take it as good guesses."
+  },
+  "guides": {
+    "hub": {
+      "title": "Guides and calculators",
+      "intro": "For riders, parents and coaches. Written in Kadence's own words, with the sources under each section.",
+      "calculators": "Calculators",
+      "guides": "Guides",
+      "open": "Open",
+      "items": {
+        "energy": {
+          "title": "Energy for the race",
+          "body": "How much energy a race takes, and what to eat and drink before, during and after."
+        },
+        "gearing": {
+          "title": "Gearing for the young classes",
+          "body": "Work out the bike's biggest gear and see whether it stays within the limit for U11 to U17."
+        },
+        "classes": {
+          "title": "The classes and the way on",
+          "body": "The difference between U15, U17, U19 and U23, and how riders move on to a junior team."
+        },
+        "equipment": {
+          "title": "Equipment: where the speed is",
+          "body": "What buys speed for the money, and what is mostly for show. With watts, prices and sources."
+        },
+        "food": {
+          "title": "Food and drink",
+          "body": "Everyday food and race-day food, recipes for homemade energy, teeth and supplements."
+        }
+      },
+      "fromParents": "About the sport, for parents: the classes and the way on, equipment, food and drink, and calculators for energy and gearing.",
+      "fromHelp": "Guides and calculators for riders, parents and coaches: the classes, equipment, food and drink, energy for the race and gearing."
+    },
+    "classes": {
+      "title": "The classes and the way on",
+      "intro": "What the difference is between U15, U17, U19 and U23, what it costs, and how riders move on. For parents and riders who are new to the sport.",
+      "sections": {
+        "age": {
+          "title": "The class follows the calendar year",
+          "intro": "A rider's class is set by the year in which the rider turns an age, and it stays the same all year.",
+          "points": {
+            "1": "U15 are those turning 13 and 14 this year. U17 turn 15 and 16, U19 turn 17 and 18, and U23 turn 19 to 22.",
+            "2": "Each class spans two birth years, and U23 four. A rider is therefore always in the first or second year of the class. The class changes on 1 January.",
+            "3": "A rider born late in the year can be almost a year younger than a classmate. It shows clearly in U15 and U17, where the body grows a lot.",
+            "4": "In ordinary Danish races U23 riders race with the seniors: men in Herre A, B, C or D and women in Dame A or B, by points. U23 has a class of its own at the national championships and in UCI races."
+          }
+        },
+        "distances": {
+          "title": "How far they race",
+          "intro": "DCU sets a longest distance for each class. It grows a lot from U17 to U19.",
+          "points": {
+            "1": "U15 race at most 45 km on the road and 15 km in a time trial.",
+            "2": "U17 race at most {u17Road} km on the road and {u17Tt} km in a time trial.",
+            "3": "U19 men race {u19mMin}–{u19mMax} km on the road, and U19 women {u19wMin}–{u19wMax} km. The time trial is up to {u19Tt} km.",
+            "4": "In UCI junior races abroad a one-day race is at most 140 km for men and 100 km for women."
+          }
+        },
+        "licence": {
+          "title": "Licence, trial tickets and what it costs",
+          "intro": "Licensed races need a licence from DCU. A rider can try it first.",
+          "points": {
+            "1": "The licence is free up to and including U15. From U17 it costs DKK 1,080 in Jutland and on Funen and DKK 1,215 on Zealand (2026). After 15 July the price is lower.",
+            "2": "With a trial ticket a rider under U17 who belongs to a DCU club can ride three races without a licence for DKK 10 a race.",
+            "3": "The rider needs their own liability and accident insurance. It is worth checking whether the family's insurance covers licensed races.",
+            "4": "The entry fee is typically DKK 90–190, and a timing chip can be rented for DKK 50. Entering before the deadline is cheapest; a late entry often costs double."
+          }
+        },
+        "raceDay": {
+          "title": "Race day: bike, radio and bottles",
+          "intro": "The young classes have their own rules for equipment and help on the way.",
+          "points": {
+            "1": "U11 to U17 race on an ordinary road bike. Time trial bikes, aero bars, disc wheels and wheels with fewer than 12 spokes are for the older classes.",
+            "2": "The youth classes always race without radios.",
+            "3": "Feeding during the race is allowed only in races over 100 km. A U17 rider therefore carries their bottles from the start.",
+            "4": "Riders may give each other food, drink and tools on the way.",
+            "5": "The youth championships for U11 to U17 require at least three finished licensed road races, and to ride the road race a rider must have started the time trial."
+          }
+        },
+        "abroad": {
+          "title": "What opens up in U19 and U23",
+          "intro": "From the year a rider turns 17, the UCI's international races open up.",
+          "points": {
+            "1": "U17 riders can ride national races abroad. The club reports the entry to DCU, and the country's own rules apply, gearing included.",
+            "2": "Juniors in U19 ride the Nations Cup, the European and the World Championships for the national team. The Nations Cup decides how many riders Denmark may send to the Worlds.",
+            "3": "U19 rides with free gearing. The limit went in 2023, when the UCI scrapped the junior limit.",
+            "4": "U23 riders race with the seniors in Denmark and have races of their own on the UCI calendar, such as the Nations Cup and the Tour de l'Avenir."
+          }
+        },
+        "teams": {
+          "title": "Teams, changing club and two dates",
+          "intro": "Many riders move from their club to a junior team when they reach U19. The rules give young riders peace until a sensible time to be approached.",
+          "points": {
+            "1": "U17 and younger ride for their club and in the club's kit. A DCU U19 team has four to nine U19 riders.",
+            "2": "A team may approach a rider under 18 or the parents about next season from 15 June at the earliest. An agreement can be signed from 1 September of the year before at the earliest, by both rider and parent.",
+            "3": "For a second-year U17 rider that means: approaches from 15 June, signing from 1 September, and the first race for the team when the season starts in U19.",
+            "4": "DCU recommends a written agreement and a list of equipment showing what belongs to the rider and what is to be handed back."
+          }
+        },
+        "nationalTeam": {
+          "title": "The national team and talent work",
+          "intro": "DCU runs a talent pathway over eight seasons: U17, U19 and U23.",
+          "points": {
+            "1": "In U17 there is a broad national squad of around 30 riders with winter camps. It is chosen on an assessment of potential and the points table, and during the season the performances in races count.",
+            "2": "In U19 the squad is also around 30 riders. They send in their training and get feedback from the national coach. DCU sets no result targets for U19 and U23.",
+            "3": "DCU describes talent as more than physique: the will to train, patience, and the ability to make sport, school and life fit together.",
+            "4": "Young riders sign contracts earlier and earlier. DCU offers impartial guidance and says it rarely costs anything to wait a little with the big career moves."
+          }
+        },
+        "school": {
+          "title": "School and sport",
+          "intro": "There are schemes that make school and cycling easier to combine.",
+          "points": {
+            "1": "Team Danmark's schemes at upper secondary school require a place in DCU's national squad in U17, U19 or U23 and an individual assessment. They offer, for example, four years of upper secondary school and flexible absence for training.",
+            "2": "From 2026 to 2029 a trial lets Team Danmark pupils take stx or hhx in three years with fewer subjects. 19 schools take part.",
+            "3": "In years 7 to 9 many of Team Danmark's elite municipalities have sports classes with morning training, and several boarding schools have cycling on the timetable.",
+            "4": "DCU itself mentions that longer schooling has a price too: a rider can lose their classmates and finishes a year later."
+          }
+        },
+        "unwritten": {
+          "title": "The unwritten",
+          "intro": "How riders get onto a junior team is in no rulebook. Here is what the sport usually tells.",
+          "points": {
+            "1": "Junior teams typically look at results from U17, such as the youth championships, youth stage races and rounds of the U19 cup, and increasingly at power data. Attitude and the will to learn matter a lot too.",
+            "2": "The big moves usually happen in two places: after the second year in U17, from club to junior team, and after the second year in U19, to a continental team, an elite team or a development team abroad.",
+            "3": "The first offer is rarely the only one. Many riders break through late, and DCU's own message is that waiting a little can pay off.",
+            "4": "It is a good idea to ask what being on the team costs: own contribution, equipment and travel. There are no public figures for it."
+          }
+        },
+        "gearing": {
+          "title": "Gearing in the young classes",
+          "intro": "Up to and including U17 the classes have a limit on how big the biggest gear may be.",
+          "points": {
+            "1": "The limit is {u17Gear, number} m per pedal turn in U17, {u15Gear, number} m in U15 and {u13Gear, number} m in U13 and U11. U19 and older ride with free gearing.",
+            "2": "The tyre counts: a 28 mm tyre can take a bike over the limit that passes on 25 mm tyres. The gearing calculator works it out for your bike."
+          }
+        }
+      }
+    },
+    "equipment": {
+      "title": "Equipment: where the speed is",
+      "intro": "What buys the most speed for the money, and what is mostly for show. The figures are watts saved by a rider alone in the wind at 40 km/h, from wind tunnel and lab tests.",
+      "adults": "Nearly all the measurements were made on adult riders, so for smaller riders the figures are an order of magnitude.",
+      "sections": {
+        "bunch": {
+          "title": "First: the bunch",
+          "intro": "In a bunch riders shelter each other, and that puts everything else in perspective.",
+          "points": {
+            "1": "In the middle of a tight bunch a rider has only 5–10 % of the air resistance they would have alone. Second in a line has around 60 %.",
+            "2": "In a road race a good place in the bunch therefore matters more than any piece of equipment, and it is something riders train.",
+            "3": "Aero equipment matters most in time trials, breakaways and crosswinds. Rolling resistance and a clean chain matter as much in the bunch as alone."
+          }
+        },
+        "free": {
+          "title": "The free and the cheap",
+          "intro": "The first watts cost next to nothing.",
+          "points": {
+            "1": "A clean, lubricated chain: a chain left uncleaned after a ride in the rain costs around 6 W, and after a muddy ride around 12 W. Degreaser and lube cost DKK 100–300.",
+            "2": "A lower, narrower position when the rider is in the wind saves 8–35 W. A bike fit can help, but practising the position matters most.",
+            "3": "Clothes that fit close: an open, flapping vest cost 10 W in the wind tunnel. A race number pinned flat and tight follows the same logic.",
+            "4": "Tyre pressure for the road: on a rough road the bike gets slower when the pressure is too high. How much that matters for a junior on Danish asphalt has not been measured."
+          }
+        },
+        "tyres": {
+          "title": "Tyres and tubes",
+          "intro": "This is where most is gained per krone, and the gain holds in the bunch too.",
+          "points": {
+            "1": "Fast race tyres instead of cheap training tyres save around 20 W for a pair at 40 km/h. A pair costs around DKK 800–950.",
+            "2": "Latex tubes instead of ordinary butyl save 5–6 W for a pair and cost around DKK 200. They are almost as fast as tubeless, but lose air faster and need pumping before every ride.",
+            "3": "Fast tyres often have a thinner tread. Many therefore train on sturdy tyres and race on fast ones.",
+            "4": "Wider tyres are not automatically slower. Pumped to the same comfort, 23 to 32 mm roll almost the same."
+          }
+        },
+        "kit": {
+          "title": "Clothing, helmet and overshoes",
+          "intro": "What flaps costs. What fits close is fast.",
+          "points": {
+            "1": "A skinsuit instead of a loose jersey and shorts saved around 10 W. Riders must race in the club's approved kit, so it takes a skinsuit in the club's design. Choose the right size; a suit that is too small works less well.",
+            "2": "Aero overshoes saved around 6 W and cost DKK 420–480.",
+            "3": "An aero road helmet saved 4.5 W on average against a vented helmet. When the helmet needs replacing anyway, the extra cost is small. The price says nothing about how well a helmet protects; independent helmet tests do.",
+            "4": "The helmet must be CE approved with a chin strap, and it is replaced after a crash, even with no visible damage."
+          }
+        },
+        "wheels": {
+          "title": "Wheels and bike",
+          "intro": "The expensive equipment gives less per krone than many think.",
+          "points": {
+            "1": "Deep carbon wheels saved 4.6–6.6 W against shallow wheels and cost DKK 8,700–17,600. The test found almost no link between price and speed.",
+            "2": "A new aero bike saved 17–32 W against a ten-year-old aluminium bike, wheels and bars included. It costs DKK 70,000–110,000.",
+            "3": "A bike must weigh at least 6.8 kg. An extra kilo costs around 1.2 seconds per km on a 5 % climb, so weight matters less on Danish roads than many think.",
+            "4": "From 2026 rims may be at most 65 mm deep in road races, and handlebars must be at least 40 cm wide. Wheels in road races must be UCI approved or traditional: a metal rim under 25 mm and at least 20 steel spokes."
+          }
+        },
+        "cosmetic": {
+          "title": "What is mostly for show",
+          "intro": "It is perfectly fine to buy something because it looks good or gives joy. It just does not make the rider faster.",
+          "points": {
+            "1": "A more expensive groupset, from Shimano 105 to Dura-Ace, is around 550 g lighter and costs around DKK 17,000 more. It brings no measured gain in watts; shifting is as precise at all three levels.",
+            "2": "A ceramic bottom bracket saved 0.03 W against a good steel one.",
+            "3": "Oversized pulley wheels save at least 2.4 W according to their maker. Nobody else has measured it."
+          }
+        },
+        "training": {
+          "title": "Training tools",
+          "intro": "A power meter does not make the bike faster. Its value is in the training.",
+          "points": {
+            "1": "Two small studies on adults found the same improvement whether intervals were set by heart rate or by power. A heart rate strap at DKK 356–699 is the cheapest start, and a chest strap measures more precisely than a watch.",
+            "2": "A power meter makes sense when the coach uses watts to steer the training, and for learning to pace a time trial. A smart trainer already measures watts indoors.",
+            "3": "Pedal power meters cost around DKK 2,400–5,500. Cheaper brands such as Magene also make power meters, heart rate straps and bike computers; we have seen no independent tests of their accuracy."
+          }
+        },
+        "used": {
+          "title": "Buying used",
+          "intro": "Growing riders often change bikes, and used can be a good buy.",
+          "points": {
+            "1": "Choose the frame size for the rider's measurements now, not one to grow into. Seat post and stem can adjust a little; a frame that is too big never gets smaller.",
+            "2": "Signs of a crash: new bar tape or new cables on an otherwise older bike, scuffs on bars, levers and saddle, and a bent derailleur hanger.",
+            "3": "Carbon can be tested by tapping lightly with a coin along the tubes: sound carbon gives a clear note, damaged carbon a dead one. If the bike has crashed, have a carbon workshop look at it before buying.",
+            "4": "A repaired carbon part no longer counts as UCI approved without the maker's consent. Check too that wheels and bars meet the rules, and that the gearing can be kept within the limit."
+          }
+        }
+      },
+      "value": {
+        "title": "Most speed per krone",
+        "intro": "Watts saved by a rider alone at 40 km/h. 10 W is around 17 seconds in a 15 km time trial. The gains cannot simply be added together.",
+        "measure": "Change",
+        "price": "Price",
+        "watts": "Saved alone",
+        "inBunch": "In the bunch",
+        "free": "Free",
+        "priceRange": "DKK {low, number, integer}–{high, number, integer}",
+        "priceOne": "about DKK {price, number, integer}",
+        "wattsRange": "{low, number}–{high, number} W",
+        "wattsOne": "about {watts, number} W",
+        "none": "none measured",
+        "claim": "{watts, number} W (maker's claim)",
+        "bunch": {
+          "all": "all of it",
+          "some": "some",
+          "little": "a little",
+          "none": "–"
+        },
+        "rows": {
+          "chain": "Clean and lube the chain, especially after rain",
+          "position": "Lower, narrower position in the wind",
+          "flapping": "Clothes that do not flap",
+          "latex": "Latex tubes instead of butyl",
+          "tyres": "Fast tyres instead of cheap ones",
+          "overshoes": "Aero overshoes",
+          "helmet": "Aero helmet instead of vented",
+          "skinsuit": "Skinsuit instead of a loose jersey (club design)",
+          "wheels": "Deep carbon wheels instead of shallow",
+          "bike": "New aero bike instead of old aluminium",
+          "pulleys": "Oversized pulley wheels",
+          "groupset": "Dearer groupset (105 to Dura-Ace)",
+          "ceramic": "Ceramic bottom bracket"
+        }
+      }
+    },
+    "food": {
+      "title": "Food and drink for young riders",
+      "intro": "What young riders need day to day and on race day, how to make the energy yourself, and how to look after their teeth. For parents and riders.",
+      "sections": {
+        "everyday": {
+          "title": "Everyday food",
+          "intro": "Growing riders need energy enough for training, school and growing. Ordinary food covers most of it.",
+          "points": {
+            "1": "Team Danmark recommends 5–7 g of carbohydrate per kg of body weight a day with less than 1½ hours of training, and 7–10 g per kg with more.",
+            "2": "On days with hard training over 1½ hours, half the plate can be carbohydrate, a quarter protein and a quarter vegetables. On lighter days the Danish Food Administration's Y plate fits: 2/5 carbohydrate, 1/5 protein and 2/5 vegetables.",
+            "3": "Growing teenagers are advised 1.2–2.0 g of protein per kg a day. Most get it from ordinary food, spread over the day's meals.",
+            "4": "Breakfast before morning training helps. If eating early is hard, a small portion and a sports drink during the session can do it."
+          }
+        },
+        "timing": {
+          "title": "Before, during and after",
+          "intro": "When the food is eaten matters almost as much as what.",
+          "points": {
+            "1": "A main meal 3–4 hours before training or racing, or a snack 1–2 hours before with easy carbohydrate, a little protein, little fat and little fibre.",
+            "2": "Under 45 minutes, water is enough. From 1 to 2½ hours, 30–60 g of carbohydrate an hour is advised, and on long races up to 90 g once the gut is used to it. The energy calculator works it out for a race.",
+            "3": "Straight after: 1–1.2 g of carbohydrate per kg and 10–20 g of protein, and a main meal within 1–2 hours.",
+            "4": "Ordinary food can easily give 50 g of carbohydrate: two bananas, two slices of bread, 2.5 dl of cooked rice or 1 dl of raisins."
+          }
+        },
+        "fluid": {
+          "title": "Fluid and salt",
+          "intro": "In Danish weather riders typically sweat 0.7–1.2 litres an hour, and more in the heat.",
+          "points": {
+            "1": "For training over an hour or in the heat: at least 1–2 dl every quarter of an hour, and 2–3 dl with heavy sweating. The body can take up around 1–1.5 litres an hour.",
+            "2": "Weight lost in sweat should be at most 2 % of body weight below 25 °C and 1 % above 30 °C. A rider can weigh before and after a session and then knows their sweat rate.",
+            "3": "For hard training over an hour, 500–700 mg of sodium per litre helps. Urine should be pale yellow and clear.",
+            "4": "Drink no more than you sweat. A rider who gains weight during a session has drunk too much, and a lot of fluid with too little salt can be dangerous."
+          }
+        },
+        "homemade": {
+          "title": "Homemade energy",
+          "intro": "Sports drink, rice cakes and bars can be made at home for a fraction of the price.",
+          "points": {
+            "1": "Ordinary sugar is already half glucose and half fructose, a mix the body takes up well on long races. Two parts sugar to one part glucose gives the ratio 2:1.",
+            "2": "Sports drink should have 4–8 % carbohydrate (40–80 g per litre) and 500–700 mg of sodium per litre. In the heat fluid matters most, so use the weaker bottle and eat the rest.",
+            "3": "For comparison, a bought gel with 25 g of carbohydrate costs DKK 25–30, and a homemade rice cake with 32 g DKK 0.40–1.40."
+          }
+        },
+        "safety": {
+          "title": "Keeping it safe in a jersey pocket",
+          "intro": "In a jersey pocket food is close to body temperature, so homemade food is treated as fresh food.",
+          "points": {
+            "1": "Cooked rice can form toxins if it cools slowly. The Danish Food Administration advises cooling from 56 to 10 °C within four hours, so cool rice cakes quickly in small portions.",
+            "2": "Make rice cakes the evening before, keep them in the fridge, and take them straight from there. Eat them within the first couple of hours of the ride, and in the heat within the first hour. That is Kadence's suggestion from the USDA's rule of thumb.",
+            "3": "Baked oat bars are dry and keep better at room temperature. Store them airtight and eat them within a few days.",
+            "4": "Mix sports drink on the day, and rinse and dry the bottle after use."
+          }
+        },
+        "teeth": {
+          "title": "Teeth",
+          "intro": "Sugar many times a day, acid and a dry mouth during training make riders prone to cavities and erosion.",
+          "points": {
+            "1": "Among the athletes at the London 2012 Olympics, 55 % had cavities and 45 % erosion, although most brushed twice a day.",
+            "2": "Rinse the mouth with water after gels and sports drink, and drink in bigger gulps rather than many small sips.",
+            "3": "Brush with fluoride toothpaste (1450 ppm) morning and evening, and spit without rinsing, so the fluoride works longer. High-fluoride toothpaste (5000 ppm) needs a prescription and is given from age 16.",
+            "4": "Tell the dentist that the rider trains a lot and uses sports products. Municipal dental care in Denmark is free until the age of 22.",
+            "5": "Sugar for training is needed to perform. See dental care as a way of managing the risk, and drink water day to day."
+          }
+        },
+        "supplements": {
+          "title": "Supplements and caffeine",
+          "intro": "Ordinary, varied food covers what young riders need.",
+          "points": {
+            "1": "Anti Doping Danmark writes that the vast majority of children and young people have no need for supplements.",
+            "2": "Supplements can contain substances on the doping list that are not on the label. Among popular supplements the risk of a contaminated product is 10–15 %, and close to 50 % for tablets (Team Danmark). The rider is always responsible.",
+            "3": "If supplements are used anyway, choose products tested by, for example, Informed-Sport or the Kölner Liste, and keep the batch number and the receipt.",
+            "4": "Caffeine: for those under 18 the limit is 3 mg per kg of body weight a day and at a time, with cola, coffee and caffeinated gels added together. For a 55 kg rider that is 165 mg."
+          }
+        },
+        "lowEnergy": {
+          "title": "When the energy falls short",
+          "intro": "When the body gets too little energy for its training, it is called relative energy deficiency in sport (REDs). It affects girls and boys alike, and it mostly happens without anyone meaning it to.",
+          "points": {
+            "1": "It typically arises when training grows, when school and cycling both need fitting in, when appetite goes after hard sessions, or when the rider does not get to eat on long rides.",
+            "2": "It rarely shows on the scales, because the body lowers its metabolism. Signs in both sexes: growth slows, training gives less, the rider is often tired, ill or injured, has mood swings or sleeps badly. A resting heart rate under 50 can be a sign in young people.",
+            "3": "In girls, periods can stop or become irregular. In boys, sex drive can drop and morning erections become fewer.",
+            "4": "Talk about energy, recovery and being able to keep training, and leave weight and body shape out of it. Say what you have noticed, and suggest a talk with a sports dietitian or a doctor.",
+            "5": "See a doctor straight away for fainting or dizziness when the rider stands up."
+          }
+        }
+      },
+      "recipes": {
+        "ingredients": "You need",
+        "method": "Method",
+        "items": {
+          "drink": {
+            "title": "Everyday bottle, about 6 % (1 litre)",
+            "ingredients": {
+              "1": "40 g sugar",
+              "2": "2 dl orange juice",
+              "3": "8 dl water",
+              "4": "1.5 g salt (about ¼ tsp)"
+            },
+            "method": "Stir the sugar and salt into the water, and pour in the juice.",
+            "carbs": "58–60 g of carbohydrate and 590 mg of sodium per litre. A 750 ml bottle gives 43–45 g of carbohydrate.",
+            "price": "DKK 4–7 per litre. With 60 g of sugar and a little lemon instead of juice it costs around DKK 0.50."
+          },
+          "fuel": {
+            "title": "Fuel bottle, about 8 % (750 ml)",
+            "ingredients": {
+              "1": "42 g sugar",
+              "2": "20 g glucose",
+              "3": "1.2 g salt",
+              "4": "Water up to 750 ml"
+            },
+            "method": "Stir everything into a little lukewarm water, and top up with cold. For races over 2½ hours.",
+            "carbs": "60 g of carbohydrate (8 %) at a ratio of about 2:1 and 470 mg of sodium. With 60 g of sugar alone the ratio is 1:1.",
+            "price": "DKK 1–2.50 per bottle, against DKK 15–20 for the same carbohydrate from bought powder."
+          },
+          "riceCakes": {
+            "title": "Sweet rice cakes (10 pieces)",
+            "ingredients": {
+              "1": "250 g pudding rice",
+              "2": "About 5 dl water",
+              "3": "60 g sugar",
+              "4": "100 g pitted dates, chopped",
+              "5": "1 g salt",
+              "6": "Cinnamon or vanilla to taste"
+            },
+            "method": "Cook the rice under a lid until soft and the water is absorbed, stirring often. Stir in the sugar, dates, salt and spice while the rice is warm. Press it into a 20 × 20 cm dish lined with baking paper, cool quickly, and cut into 10 pieces. Wrap each in baking paper or foil.",
+            "carbs": "31–33 g of carbohydrate per piece.",
+            "price": "Around DKK 1.35 per piece. Without dates and with 120 g of sugar in all, DKK 0.42."
+          },
+          "oatBars": {
+            "title": "Baked oat bars (8 bars)",
+            "ingredients": {
+              "1": "200 g rolled oats",
+              "2": "100 g honey",
+              "3": "100 g pitted dates, chopped",
+              "4": "50 g butter",
+              "5": "1 g salt"
+            },
+            "method": "Melt the butter and honey, and fold in the oats, dates and salt. Press into a 20 × 20 cm tin lined with baking paper, and bake at 175 °C for 20–25 minutes until golden. Cut into 8 bars while warm.",
+            "carbs": "32–34 g of carbohydrate per bar. The bars have fat and fibre, so they suit long, easy rides and before the start best.",
+            "price": "DKK 3–4 per bar, against DKK 17–22 for a bought energy bar."
+          }
+        }
+      }
+    }
+  },
+  "calculators": {
+    "gearing": {
+      "title": "Gearing for the young classes",
+      "intro": "Work out the bike's biggest gear and see whether it stays within DCU's limit. Everything stays in your browser.",
+      "class": "Class",
+      "classes": {
+        "U11": "U11",
+        "U13": "U13",
+        "U15": "U15",
+        "U17": "U17",
+        "U19": "U19 and older"
+      },
+      "tyre": "Tyre",
+      "tyreOption": "{mm} mm",
+      "tyreCustom": "Measured circumference",
+      "circumference": "Circumference in mm",
+      "circumferenceHint": "Measure the wheel's circumference with the tyre pumped to race pressure.",
+      "ring": "Biggest chainring",
+      "cog": "Smallest sprocket",
+      "teeth": "T",
+      "result": {
+        "title": "The bike's biggest gear",
+        "gear": "{ring} × {cog} gives {rollout, number, ::.00} m per pedal turn.",
+        "limit": "The limit in {class} is {limit, number, ::.00} m.",
+        "free": "U19 and older ride with free gearing, so every gear is legal.",
+        "within": "Within the limit, {cm, number, integer} cm under.",
+        "close": "Within the limit, but only {cm, number, integer} cm under. Tyre pressure and wear can move it a few centimetres, so measure the bike with the tyres and pressure it races on.",
+        "over": "{cm, number, integer} cm over the limit.",
+        "wayBack": "With {cog} teeth at the back the chainring can have at most {largestRing} teeth. With {ring} teeth at the front the smallest sprocket needs at least {smallestCog} teeth.",
+        "invalid": "Type whole teeth: the chainring between 20 and 60 and the sprocket between 9 and 52."
+      },
+      "table": {
+        "title": "Biggest chainring for each smallest sprocket",
+        "caption": "For {class} with the chosen circumference of {circumference} mm.",
+        "cog": "Smallest sprocket",
+        "ring": "Biggest chainring",
+        "rollout": "Rollout",
+        "teeth": "{n} T",
+        "metres": "{rollout, number, ::.00} m"
+      },
+      "products": {
+        "title": "Parts that can help",
+        "intro": "Junior cassettes start at 14 teeth or more. The list is neutral, and Kadence has no deals with the shops. The prices were seen in October 2026.",
+        "speeds": "{speeds}-speed",
+        "cassetteFits": "{small}-{large}: chainring up to {ring} T",
+        "chainringFits": "{big}-{small}: smallest sprocket {cog} T",
+        "fitsFree": "{a}-{b}",
+        "price": "about {price} ({shop})",
+        "noPrice": "Price not checked",
+        "link": "See the product",
+        "forClass": "The figures are for {class} with the chosen circumference.",
+        "items": {
+          "micheK12": "For a Shimano 12-speed HG freehub. Shops disagree on whether it works with SRAM AXS, so ask in the shop.",
+          "reconJunior": "For a Shimano 11-speed HG freehub, and for SRAM XDR with an adapter.",
+          "dubied": "Comes for Shimano 12-speed, SRAM XDR and Campagnolo 12-speed. The price is for Shimano and Campagnolo; XDR costs 239 euros.",
+          "micheLight": "11-speed for Shimano.",
+          "shimanoR8000": "11-speed for Shimano. Whether it is still made is unclear.",
+          "michePrimato": "10-speed for Shimano and Campagnolo.",
+          "mageneQed": "Chainrings for Magene's own power meter cranksets, for Shimano 11- and 12-speed. The smallest big ring is 50 T, so they pair with a junior cassette, such as 50 × 16 in U15."
+        }
+      },
+      "alternative": {
+        "title": "Or a smaller chainring",
+        "body": "DCU also suggests a smaller chainring and an ordinary 12-speed cassette: 38/11 or 34/10 in U17, 34/11 or 31/10 in U15, and 32/11 or 29/10 in U13 and U11. The suggestions are worked out for 25 mm tyres. Ask DCU or the chief commissaire before rebuilding the bike."
+      },
+      "measure": {
+        "title": "How the commissaire measures",
+        "steps": {
+          "1": "The bike is put in its biggest gear: biggest chainring and smallest sprocket.",
+          "2": "One pedal is set straight down over a mark on the floor.",
+          "3": "The bike is rolled slowly backwards, so the rear wheel turns the cranks.",
+          "4": "When the pedal has turned once, the distance is measured. It must be within the limit."
+        },
+        "note": "This is how it is done in practice in several countries; DCU's rules do not go into the method in detail. In a time trial the gear check must be done at least 10 minutes before the start."
+      },
+      "rules": {
+        "title": "Good to know",
+        "locked": "Locking out the biggest gears with the limit screw is not allowed (\"låst gear\"). The bike must meet the limit in its actual biggest gear.",
+        "ecycling": "The limits also apply in e-cycling for the same age groups.",
+        "abroad": "Abroad, the country's own rules apply.",
+        "circumference": "The circumferences are Garmin's figures for a 700C wheel. The real circumference depends on the tyre's brand, the rim, the pressure and wear."
+      }
+    },
+    "energy": {
+      "title": "Energy for the race",
+      "intro": "Work out how much energy the race takes, and what to eat and drink before, during and after. Everything stays in your browser.",
+      "race": "The race",
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "temperature": "Temperature",
+      "celsius": "°C",
+      "method": {
+        "label": "How do you want to estimate the effort?",
+        "watts": "Average power",
+        "speed": "Speed (time trial)",
+        "heartRate": "Average heart rate",
+        "met": "Kind of race"
+      },
+      "watts": "Average power",
+      "wattsHint": "Use the average with zeros from a similar race or ride.",
+      "kmh": "Average speed",
+      "kmhUnit": "km/h",
+      "climb": "Metres climbed",
+      "position": {
+        "label": "Position",
+        "hoods": "Hands on the hoods",
+        "drops": "Hands in the drops",
+        "timeTrial": "Low, flat back"
+      },
+      "bikeKg": "Bike weight",
+      "bpm": "Average heart rate",
+      "age": "Age",
+      "sex": {
+        "label": "Formula for",
+        "female": "Girls",
+        "male": "Boys"
+      },
+      "raceKind": {
+        "label": "Kind of race",
+        "fast": "Fast ride, 22–26 km/h",
+        "racing": "Racing in a bunch",
+        "solo": "Alone above 32 km/h"
+      },
+      "weight": "Weight (optional)",
+      "weightHint": "The weight stays in your browser. Without it you still get the plan for the race; the meal before and after is worked out per kg.",
+      "kg": "kg",
+      "gut": {
+        "label": "Have you practised eating a lot of carbohydrate in training?",
+        "yes": "Yes",
+        "no": "Not yet"
+      },
+      "food": "Bottles and food",
+      "bottle": "Bottle size",
+      "bottleOption": "{ml} ml",
+      "mix": {
+        "label": "In the bottle",
+        "water": "Water",
+        "drink": "Sports drink, about 6 %",
+        "fuel": "Fuel bottle, about 8 %"
+      },
+      "piece": "Grams of carbohydrate per rice cake, gel or bar",
+      "pieceHint": "A homemade rice cake has around 32 g, a gel typically 25 g.",
+      "hoursBefore": "Hours from meal to start",
+      "result": {
+        "energy": "Energy",
+        "kcal": "About {low, number, integer}–{high, number, integer} kcal",
+        "work": "{kj, number, integer} kJ of work at {watts, number, integer} W on average.",
+        "needsWeight": "Type the weight to use this method.",
+        "none": "Type the duration and the effort to see an estimate.",
+        "energyNote": "An estimate with uncertainty: the body's efficiency on the bike is 18–23 %, and it has not been measured in 15–18-year-olds.",
+        "carbs": "Carbohydrate during the race",
+        "water": "Under 45 minutes, water is enough.",
+        "small": "Up to 75 minutes, small amounts are enough, or rinsing the mouth with sports drink.",
+        "carbsRange": "{low}–{high} g an hour. The plan counts on {target} g an hour, {total} g in all.",
+        "single": "One kind of sugar is enough, such as sports drink, rice cakes or gels.",
+        "multiple": "Above 60 g an hour takes glucose and fructose together. Ordinary sugar is both, or use 2 parts sugar to 1 part glucose.",
+        "coverage": "That covers around {low, number, integer}–{high, number, integer} % of the energy the race takes. The body takes the rest from its stores, which is entirely normal.",
+        "fluid": "Fluid and salt",
+        "fluidRange": "{low, number, ::.0}–{high, number, ::.0} litres an hour.",
+        "sodium": "{low, number, integer}–{high, number, integer} mg of sodium an hour. 1 g of salt gives around 400 mg of sodium.",
+        "loss": "You can lose up to {kg, number, ::.0} kg in sweat before performance suffers. Drink no more than you sweat.",
+        "weighIn": "Weigh yourself before and after your next long ride. Then the plan can be more precise.",
+        "plan": "The plan",
+        "bottles": "{bottles, plural, one {# bottle} other {# bottles}} of {ml} ml",
+        "fromBottles": "The bottles give {grams} g of carbohydrate.",
+        "pieces": "{pieces, plural, =0 {The bottles cover the carbohydrate.} one {# piece of food for the rest.} other {# pieces of food for the rest.}}",
+        "before": "Before the race",
+        "beforeBody": "Around {carbs} g of carbohydrate {hours, plural, one {# hour} other {# hours}} before the start, and {low, number, integer}–{high, number, integer} ml to drink 2–4 hours before.",
+        "beforeNote": "A main meal 3–4 hours before or a snack 1–2 hours before, with little fat and fibre.",
+        "after": "After the race",
+        "afterBody": "{low, number, integer}–{high, number, integer} g of carbohydrate and {pLow, number, integer}–{pHigh, number, integer} g of protein straight after, and 1.25–1.5 litres of fluid for every kilo lost.",
+        "afterNote": "If you ride again within 8 hours, repeat the carbohydrate every hour for the first four hours.",
+        "weightMissing": "Type the weight to see the meal before and after the race."
+      },
+      "warnings": {
+        "heartRateAge": "The heart rate formula was made on 18–45-year-olds riding steadily. For younger riders and races with sprints the estimate is less certain.",
+        "speedSolo": "The speed method holds when you ride alone, as in a time trial. In a bunch the shelter saves so much that speed says too little about the effort.",
+        "heat": "Above 25 °C: drink more, and think of salt. Above 30 °C the weight lost in sweat should be at most 1 %.",
+        "capped": "Without practice the gut typically takes 60 g an hour, so the plan stops there. Practise more on long training rides if you want to go towards 90 g.",
+        "practise": "Practise the plan on long training rides over the next 2–4 weeks before using it in a race."
+      },
+      "about": {
+        "title": "About the calculation",
+        "points": {
+          "1": "From power, energy is work divided by the body's efficiency of 18–23 % (Hopker 2009). From speed the cycling power equation is used (Martin 1998), from heart rate Keytel's formula (2005), and from the kind of race MET values (Compendium 2024). Heart rate and kind of race are shown with ±15 %, which is Kadence's own choice.",
+          "2": "Carbohydrate per hour follows Thomas 2016, Jeukendrup 2014 and Team Danmark. No source has figures for teenagers, so Kadence stops at 60 g an hour without practice and suggests at most 90 g.",
+          "3": "Fluid and salt follow Team Danmark and the ACSM. The step between 25 and 30 °C is Kadence's own.",
+          "4": "The calculator is a planning tool and is not medical advice."
+        }
+      }
     }
   }
 }
