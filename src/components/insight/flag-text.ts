@@ -75,6 +75,8 @@ export function flagSentence(flag: Flag, t: Translate, { locale, klass }: FlagCo
       });
     case "compliance":
       return t("compliance", { red: n(v.red), judged: n(v.judged) });
+    case "mid_zone":
+      return t("mid_zone", { mid: n(v.mid), sessions: n(v.sessions), limit: n(v.limit) });
   }
 }
 

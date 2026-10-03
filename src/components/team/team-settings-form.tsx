@@ -14,7 +14,8 @@ const KINDS = ["U17", "U19", "U23", "mixed"] as const;
 
 /**
  * The team's own settings, one save: what kind of team it is, whether the
- * team is guided by DCU's recommendations (on, ADR 0049), whether weight
+ * team is guided by DCU's recommendations (on, ADR 0049) and measures its
+ * sessions against "Lav intensitet først" (off, ADR 0053), whether weight
  * may be recorded for riders under 19 (off, ADR 0013), and whether the AI
  * may read the riders' data (off).
  */
@@ -76,13 +77,20 @@ export function TeamSettingsForm({
             <CardTitle>{t("guidanceTitle")}</CardTitle>
             <CardDescription>{t("guidanceBody")}</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="divide-hairline flex flex-col divide-y">
             <SwitchRow
               label={t("guidance")}
               hint={t("guidanceHint")}
               checked={draft.guidance === "dcu-2025"}
               stateText={draft.guidance === "dcu-2025" ? t("on") : t("off")}
               onChange={(on) => setDraft({ ...draft, guidance: on ? "dcu-2025" : "none" })}
+            />
+            <SwitchRow
+              label={t("lowIntensity")}
+              hint={t("lowIntensityHint")}
+              checked={draft.lowIntensityFirst}
+              stateText={draft.lowIntensityFirst ? t("on") : t("off")}
+              onChange={(lowIntensityFirst) => setDraft({ ...draft, lowIntensityFirst })}
             />
           </CardContent>
         </Card>

@@ -13,4 +13,5 @@ export const FLAG_SECTION: Record<string, GuideSectionId> = {
   sleep_short: "sleepFood",
   sleep_below_minimum: "sleepFood",
   compliance: "role",
+  mid_zone: "volume",
 };

@@ -6,6 +6,7 @@ import { RiderSwitch } from "@/components/common/rider-switch";
 import { basisText } from "@/components/season/basis-text";
 import { CreatePlan } from "@/components/season/create-plan";
 import { DcuReference } from "@/components/season/dcu-reference";
+import { IntensityWeeks } from "@/components/season/intensity-weeks";
 import { ResetPlan } from "@/components/season/reset-plan";
 import { SeasonChart } from "@/components/season/season-chart";
 import { SeasonPlan } from "@/components/season/season-plan";
@@ -19,6 +20,7 @@ import { todayInCopenhagen } from "@/core/dates";
 import { Link, redirect } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { monthHours, seasonStartYear, type ClassBasis } from "@/modules/dcu";
+import { intensityWeeks } from "@/modules/season/intensity";
 import { getSeasonPlan, riderClass } from "@/modules/season/plans";
 import { seasonVolumes, teamSeasonVolumes } from "@/modules/season/volumes";
 import { whoAmI } from "@/modules/team/access";
@@ -39,7 +41,8 @@ type Search = Promise<Record<string, string | string[] | undefined>>;
  * sees their own, a parent their child's without a pen; `?season=` moves a
  * season back or forward — the coming one is planned in September. A
  * coach's `?view=team` shows every rider's month and season so far in the
- * four numbers (ADR 0040).
+ * four numbers (ADR 0040). In this season, the weeks around today show
+ * how the bike sessions spread over three zones (ADR 0053).
  */
 export default async function SeasonPage({ searchParams }: { searchParams: Search }) {
   const ctx = await getOrgContext();
@@ -105,9 +108,11 @@ export default async function SeasonPage({ searchParams }: { searchParams: Searc
     visible.find((r) => r.id === param("rider")) ??
     visible.find((r) => r.id === me.rider?.id) ??
     visible[0]!;
-  const [plan, volumes] = await Promise.all([
+  const [plan, volumes, intensity] = await Promise.all([
     getSeasonPlan(ctx, rider.id, season),
     seasonVolumes(ctx, rider.id, season, today),
+    // The weeks around today belong to this season only (ADR 0053).
+    season === current ? intensityWeeks(ctx, rider.id, today) : null,
   ]);
   // The four numbers' two calendar sides, month by month (ADR 0040).
   const tenth = (v: number) => Math.round(v * 10) / 10;
@@ -225,6 +230,10 @@ export default async function SeasonPage({ searchParams }: { searchParams: Searc
         />
       ) : (
         <EmptyState title={t("none.title")} hint={t("none.readOnly")} />
+      )}
+
+      {intensity && (
+        <IntensityWeeks data={intensity} today={today} guided={guided} isCoach={me.isCoach} />
       )}
 
       {guided && (

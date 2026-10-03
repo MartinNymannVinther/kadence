@@ -20,11 +20,12 @@ export const TeamSettingsInput = z.object({
   allowYouthWeight: z.boolean(),
   guidance: z.enum(GUIDANCE_IDS as [GuidanceId, ...GuidanceId[]]),
   clubChampionship: z.boolean(),
+  lowIntensityFirst: z.boolean(),
 });
 
 export type TeamSettings = Pick<
   TeamSettingsRow,
-  "teamKind" | "aiOnRiderData" | "allowYouthWeight" | "clubChampionship"
+  "teamKind" | "aiOnRiderData" | "allowYouthWeight" | "clubChampionship" | "lowIntensityFirst"
 > & {
   guidance: GuidanceId;
 };
@@ -35,6 +36,7 @@ export const DEFAULT_TEAM_SETTINGS: TeamSettings = {
   allowYouthWeight: false,
   guidance: DEFAULT_GUIDANCE,
   clubChampionship: false,
+  lowIntensityFirst: false,
 };
 
 export async function getTeamSettings(ctx: OrgContext): Promise<TeamSettings> {
@@ -51,6 +53,7 @@ export async function getTeamSettings(ctx: OrgContext): Promise<TeamSettings> {
           allowYouthWeight: row.allowYouthWeight,
           guidance: isGuidanceId(row.guidance) ? row.guidance : DEFAULT_GUIDANCE,
           clubChampionship: row.clubChampionship,
+          lowIntensityFirst: row.lowIntensityFirst,
         }
       : DEFAULT_TEAM_SETTINGS;
   });
@@ -62,13 +65,24 @@ export async function getTeamSettings(ctx: OrgContext): Promise<TeamSettings> {
  * one. Everyone on the team reads the setting (drizzle/0003).
  */
 export async function teamParadigm(tx: AppTransaction, orgId: string): Promise<Paradigm | null> {
+  return (await teamPlanning(tx, orgId)).paradigm;
+}
+
+/**
+ * The paradigm, and whether the team lays "Lav intensitet først" on top
+ * of it (docs/adr/0053), read the same way.
+ */
+export async function teamPlanning(
+  tx: AppTransaction,
+  orgId: string,
+): Promise<{ paradigm: Paradigm | null; lowIntensityFirst: boolean }> {
   const [row] = await tx
-    .select({ guidance: teamSettings.guidance })
+    .select({ guidance: teamSettings.guidance, lowIntensityFirst: teamSettings.lowIntensityFirst })
     .from(teamSettings)
     .where(eq(teamSettings.orgId, orgId))
     .limit(1);
   const guidance = row && isGuidanceId(row.guidance) ? row.guidance : DEFAULT_GUIDANCE;
-  return paradigmFor(guidance);
+  return { paradigm: paradigmFor(guidance), lowIntensityFirst: row?.lowIntensityFirst ?? false };
 }
 
 export async function saveTeamSettings(

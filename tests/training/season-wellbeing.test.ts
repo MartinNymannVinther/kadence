@@ -77,6 +77,7 @@ describe("planning without DCU (ADR 0049)", () => {
     aiOnRiderData: false,
     allowYouthWeight: false,
     clubChampionship: false,
+    lowIntensityFirst: false,
   } as const;
 
   it("a coach turns DCU off; the plan starts empty and nothing stands beside it", async () => {

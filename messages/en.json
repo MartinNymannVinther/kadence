@@ -579,6 +579,8 @@
       "guidanceBody": "Kadence can guide the team by DCU's recommendations for each class: the hours in the season plan, the week's range and the longest ride. You can turn it off and on whenever you like.",
       "guidance": "Guided by DCU's recommendations",
       "guidanceHint": "When on, the season plan starts from DCU's hours and the week is shown against DCU's range. When off, you set your own hours, and the points about DCU's range and the longest ride go away. Pain, wellbeing, sleep, the week-to-week rise and the classes' race rules stay, whichever you choose.",
+      "lowIntensity": "Measure sessions against \"Low intensity first\"",
+      "lowIntensityHint": "A profile from the research that sits on top of the hours, with or without DCU. From November to February at least 75–80 % of the bike sessions sit in the low zone, at most 10 % in the middle zone and the rest in the high zone. When the middle zone grows large over the last four weeks, it appears among the possible points of attention. The spread is always shown in the season plan.",
       "clubTitle": "Club championship",
       "club": "Club championship in Kadence",
       "clubHint": "Off by default. When on, the club gets a page with the season's rounds, the standings and the club champions over the years. It is the only place where riders and parents see placings.",
@@ -1849,6 +1851,7 @@
       "sleep_short": "{nights, plural, one {Sleep has averaged {average} h over the last night, under {limit} h.} other {Sleep has averaged {average} h over the last # nights, under {limit} h.}}",
       "sleep_below_minimum": "{nights, plural, one {Sleep has averaged {average} h over the last night. 14–17-year-olds need at least {minimum} h.} other {Sleep has averaged {average} h over the last # nights. 14–17-year-olds need at least {minimum} h.}}",
       "compliance": "{red} of {judged} sessions this week have not gone as planned. Perhaps the plan does not fit the week.",
+      "mid_zone": "The middle zone holds {mid} % of the {sessions} sessions and race days over the last four weeks. \"Low intensity first\" puts at most {limit} % there from November to February.",
       "signs": "Signs: {signs}"
     },
     "sign": {
@@ -2376,6 +2379,31 @@
     "totals": "The season in total: goal {plan} h · planned {scheduled} h · done {ridden} h · DCU {dcu} h",
     "totalsOwn": "The season in total: goal {plan} h · planned {scheduled} h · done {ridden} h",
     "readOnlyNote": "You can see the plan. The coach and the rider can change it.",
+    "intensity": {
+      "title": "Intensity week by week",
+      "body": "Each bike session counts once, in the zone it is planned for: low, middle or high. A race day counts as a hard session. Strength and other training are left out.",
+      "zones": "The zones fold together like this: Z1–Z2 low, Z3–Z4 middle and Z5–Z7 high.",
+      "low": "Low",
+      "mid": "Middle",
+      "high": "High",
+      "week": "Week {week}",
+      "thisWeek": "this week",
+      "bar": "{low} low, {mid} middle and {high} high sessions",
+      "races": "{count, plural, one {# race day} other {# race days}}",
+      "unknown": "{count, plural, one {# session without a target} other {# sessions without a target}}",
+      "empty": "No bike sessions in the plan",
+      "recent": "The last four weeks: {low} % low, {mid} % middle and {high} % high, of {sessions} sessions and race days.",
+      "recentNone": "The last four weeks have no sessions with a target yet.",
+      "dcu": "DCU's year wheel for {month}: {share} of the volume at higher intensity, tempo included. DCU counts hours; here sessions are counted.",
+      "dcuShare": {
+        "1": "at least 10 %",
+        "2": "about 15–20 %",
+        "11": "0 %",
+        "12": "about 10 %"
+      },
+      "profile": "Low intensity first: at least {lowMin}–{lowTarget} % low, at most {midMax} % middle and the rest high from November to February.",
+      "profileOff": "You can measure the sessions against the profile \"Low intensity first\" under Settings → Team."
+    },
     "chart": {
       "title": "Hours per month",
       "planned": "Goal",

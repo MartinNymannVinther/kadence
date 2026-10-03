@@ -11,6 +11,12 @@ export function paradigmFor(guidance: GuidanceId): Paradigm | null {
 
 export { DCU_2025 } from "./dcu-2025";
 export {
+  LOW_INTENSITY_FIRST,
+  PROFILE_MONTHS,
+  profileFor,
+  type IntensityProfile,
+} from "./low-intensity-first";
+export {
   DEFAULT_GUIDANCE,
   GUIDANCE_IDS,
   isGuidanceId,

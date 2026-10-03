@@ -48,6 +48,11 @@ export const teamSettings = pgTable(
     guidance: text("guidance").notNull().default("dcu-2025"),
     /** Whether the club keeps a club championship in Kadence (docs/adr/0051). Off by default. */
     clubChampionship: boolean("club_championship").notNull().default(false),
+    /**
+     * Whether the team measures its sessions against the intensity profile
+     * "Lav intensitet først" on top of its hours (docs/adr/0053). Off by default.
+     */
+    lowIntensityFirst: boolean("low_intensity_first").notNull().default(false),
     updatedBy: text("updated_by").references(() => users.id, { onDelete: "set null" }),
     ...timestamps,
   },
@@ -258,7 +263,7 @@ export const flagResolutions = pgTable(
     index("flag_resolutions_org_week_idx").on(t.orgId, t.weekMonday),
     check(
       "flag_resolutions_kind",
-      sql`${t.kind} in ('hours_above_corridor','hours_below_corridor','ramp','longest_ride','strength_spacing','compliance','wellbeing_talk','wellbeing_help','pain','sleep_short','sleep_below_minimum')`,
+      sql`${t.kind} in ('hours_above_corridor','hours_below_corridor','ramp','longest_ride','strength_spacing','compliance','wellbeing_talk','wellbeing_help','pain','sleep_short','sleep_below_minimum','mid_zone')`,
     ),
     check("flag_resolutions_severity", sql`${t.severity} in ('info','warn','alert')`),
     check("flag_resolutions_monday", sql`extract(isodow from ${t.weekMonday}) = 1`),

@@ -579,6 +579,8 @@
       "guidanceBody": "Kadence kan guide holdet efter DCU's anbefalinger for hver klasse: timerne i sæsonplanen, ugens ramme og den længste tur. Du kan slå det fra og til, når du vil.",
       "guidance": "Guidet af DCU's anbefalinger",
       "guidanceHint": "Slået til starter sæsonplanen fra DCU's timer, og ugen vises mod DCU's ramme. Slået fra lægger du dine egne timer, og punkterne om DCU's ramme og den længste tur forsvinder. Smerter, trivsel, søvn, stigningen fra uge til uge og klassernes løbsregler bliver, uanset valget.",
+      "lowIntensity": "Mål pasene mod \"Lav intensitet først\"",
+      "lowIntensityHint": "En profil fra forskningen, som lægger sig oven på timerne, med eller uden DCU. Fra november til februar ligger mindst 75–80 % af cykelpasene i lav zone, højst 10 % i mellemzonen og resten i høj zone. Fylder mellemzonen meget de sidste fire uger, kommer det på listen over mulige opmærksomhedspunkter. Fordelingen står altid i sæsonplanen.",
       "clubTitle": "Klubmesterskab",
       "club": "Klubmesterskab i Kadence",
       "clubHint": "Slået fra som standard. Slået til får klubben en side med sæsonens afdelinger, stillingen og klubmestre gennem tiden. Det er det eneste sted, hvor ryttere og forældre ser placeringer.",
@@ -1849,6 +1851,7 @@
       "sleep_short": "Søvnen har i snit været {average} timer de seneste {nights, plural, one {# nat} other {# nætter}}, under {limit} timer.",
       "sleep_below_minimum": "Søvnen har i snit været {average} timer de seneste {nights, plural, one {# nat} other {# nætter}}. 14–17-årige har brug for mindst {minimum} timer.",
       "compliance": "{red} af {judged} pas i denne uge er ikke gået som planlagt. Måske passer planen ikke til ugen.",
+      "mid_zone": "Mellemzonen fylder {mid} % af de {sessions} pas og løbsdage de sidste fire uger. \"Lav intensitet først\" lægger højst {limit} % der fra november til februar.",
       "signs": "Tegn: {signs}"
     },
     "sign": {
@@ -2376,6 +2379,31 @@
     "totals": "Sæsonen i alt: mål {plan} t · planlagt {scheduled} t · udført {ridden} t · DCU {dcu} t",
     "totalsOwn": "Sæsonen i alt: mål {plan} t · planlagt {scheduled} t · udført {ridden} t",
     "readOnlyNote": "Du kan se planen. Træneren og rytteren kan rette den.",
+    "intensity": {
+      "title": "Intensitet uge for uge",
+      "body": "Hvert cykelpas tæller én gang i den zone, det er lagt i: lav, mellem eller høj. En løbsdag tæller som et hårdt pas. Styrke og anden træning er ikke med.",
+      "zones": "Zonerne lægges sammen sådan: Z1–Z2 er lav, Z3–Z4 mellem og Z5–Z7 høj.",
+      "low": "Lav",
+      "mid": "Mellem",
+      "high": "Høj",
+      "week": "Uge {week}",
+      "thisWeek": "denne uge",
+      "bar": "{low} lave, {mid} mellem og {high} høje pas",
+      "races": "{count, plural, one {# løbsdag} other {# løbsdage}}",
+      "unknown": "{count, plural, one {# pas uden mål} other {# pas uden mål}}",
+      "empty": "Ingen cykelpas i planen",
+      "recent": "De sidste fire uger: {low} % lav, {mid} % mellem og {high} % høj, af {sessions} pas og løbsdage.",
+      "recentNone": "De sidste fire uger har endnu ingen pas med et mål.",
+      "dcu": "DCU's årshjul for {month}: {share} af mængden med højere intensitet, tempo medregnet. DCU tæller timer, og her tælles pas.",
+      "dcuShare": {
+        "1": "mindst 10 %",
+        "2": "omkring 15–20 %",
+        "11": "0 %",
+        "12": "omkring 10 %"
+      },
+      "profile": "Lav intensitet først: mindst {lowMin}–{lowTarget} % lav, højst {midMax} % mellem og resten høj fra november til februar.",
+      "profileOff": "Du kan måle pasene mod profilen \"Lav intensitet først\" under Indstillinger → Holdet."
+    },
     "chart": {
       "title": "Timer pr. måned",
       "planned": "Mål",
