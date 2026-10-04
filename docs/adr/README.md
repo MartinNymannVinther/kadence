@@ -67,3 +67,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0045](0045-rulle-the-land-alone-a-sound-a-cheat-code-people-and-towns.md) | Rulle: the land alone, a sound under the ride, a cheat code, and people and towns of their own           | → 0013, 0033, 0034, 0036       |
 | [0046](0046-rulle-the-queen-stage-in-odder.md)                             | Rulle's queen stage in Odder: all of its buildings, the roads round it, the hill sprint                  | → 0013, 0034, 0035, 0036, 0037 |
 | [0048](0048-rulle-a-watt-cheat-code.md)                                    | Rulle: a WATT cheat code — the watts or W/kg set by the keys, an avatar's weight kept nowhere            | → 0013, 0033, 0045             |
+| [0049](0049-rulle-the-challenger.md)                                       | Rulle: the challenger, a race for two kilometres now and then, a slipstream behind him                   | → 0034, 0045, 0048             |
