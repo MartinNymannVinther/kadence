@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import type { Posture } from "@/modules/rulle";
+import { RIDER_KIT, type Kit } from "./kits";
 import { PALETTE } from "./palette";
 import { BB, CRANK, RoadBike } from "./road-bike";
 import { riderHead } from "./rider-head";
@@ -42,9 +43,37 @@ const lambert = (color: string) => new THREE.MeshLambertMaterial({ color, flatSh
 /** A round shape, `top` as wide as its foot is 1, eight-sided: a tapered limb, a torso. */
 const tapered = (top: number) => new THREE.CylinderGeometry(top, 1, 1, 8);
 
+/** The figure's materials, in a kit's colours. */
+function kitMaterials(kit: Kit) {
+  return {
+    jersey: lambert(kit.jersey),
+    light: lambert(kit.sleeve),
+    band: lambert(kit.band),
+    shorts: lambert(kit.shorts),
+    skin: lambert(kit.skin),
+    helmet: lambert(kit.helmet),
+    dark: lambert(PALETTE.dark),
+    bidon: lambert(PALETTE.bidon),
+    shoe: lambert(kit.shoe),
+    sock: lambert(kit.sock),
+    glove: lambert(kit.glove),
+    lens: new THREE.MeshLambertMaterial({
+      color: kit.lens,
+      flatShading: true,
+      side: THREE.DoubleSide,
+    }),
+    shadow: new THREE.MeshBasicMaterial({
+      color: "#000000",
+      transparent: true,
+      opacity: 0.16,
+      depthWrite: false,
+    }),
+  };
+}
+
 export class RiderFigure {
   readonly group = new THREE.Group();
-  private readonly bike = new RoadBike();
+  private readonly bike: RoadBike;
   private readonly legs: {
     thigh: THREE.Mesh;
     /** Bare from where the shorts end, above the knee, and the knee round. */
@@ -79,29 +108,7 @@ export class RiderFigure {
   private stopped = 0;
   /** How far the right hand is on its way from the bar to the mouth, 0 to 1. */
   private lift = 0;
-  private readonly materials = {
-    jersey: lambert(PALETTE.jersey),
-    light: lambert(PALETTE.jerseyLight),
-    shorts: lambert(PALETTE.shorts),
-    skin: lambert(PALETTE.skin),
-    helmet: lambert(PALETTE.helmet),
-    dark: lambert(PALETTE.dark),
-    bidon: lambert(PALETTE.bidon),
-    shoe: lambert(PALETTE.shoe),
-    sock: lambert(PALETTE.sock),
-    glove: lambert(PALETTE.glove),
-    lens: new THREE.MeshLambertMaterial({
-      color: PALETTE.lens,
-      flatShading: true,
-      side: THREE.DoubleSide,
-    }),
-    shadow: new THREE.MeshBasicMaterial({
-      color: "#000000",
-      transparent: true,
-      opacity: 0.16,
-      depthWrite: false,
-    }),
-  };
+  private readonly materials: ReturnType<typeof kitMaterials>;
   private readonly unit = new THREE.CylinderGeometry(1, 1, 1, 8);
   private readonly shapes = {
     torso: tapered(1.25),
@@ -113,7 +120,10 @@ export class RiderFigure {
     knee: new THREE.IcosahedronGeometry(0.05, 0),
   };
 
-  constructor() {
+  /** In the rider's own kit, or another's: the challenger's (ADR 0049). */
+  constructor(kit: Kit = RIDER_KIT) {
+    this.materials = kitMaterials(kit);
+    this.bike = new RoadBike(kit);
     const m = this.materials;
     const shadow = new THREE.Mesh(new THREE.CircleGeometry(0.5, 12), m.shadow);
     shadow.rotation.x = -Math.PI / 2;
@@ -124,7 +134,7 @@ export class RiderFigure {
 
     // The body, placed for its posture every frame (`pose`).
     this.torso = new THREE.Mesh(this.shapes.torso, m.jersey);
-    this.band = new THREE.Mesh(this.unit, m.light);
+    this.band = new THREE.Mesh(this.unit, m.band);
     this.shorts = new THREE.Mesh(this.shapes.pelvis, m.shorts);
     this.neck = new THREE.Mesh(this.unit, m.skin);
     this.head.add(riderHead(m));

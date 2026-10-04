@@ -3144,7 +3144,8 @@
       "title": "Spol",
       "back": "Baglæns",
       "times": "{factor}×",
-      "hint": "Kun under udvikling. Komma og punktum skifter farten, B vender retningen."
+      "hint": "Kun under udvikling. Komma og punktum skifter farten, B vender retningen, G kalder udfordreren frem.",
+      "challenge": "Kald udfordreren frem"
     },
     "cheat": {
       "title": "Snydekode",
@@ -3176,6 +3177,21 @@
       "less": "Færre watt",
       "kgUnit": "kg",
       "speed": "Fart"
+    },
+    "challenge": {
+      "title": "Udfordring",
+      "on": "En rytter i rødt og hvidt kører op på siden af dig. Om kap de næste 2 km.",
+      "onHill": "En rytter i rødt og hvidt kører op på siden af dig. Om kap op ad bakken, 2 km.",
+      "draft": "Sidder du på hans hjul, tager han vinden for dig. Angriber du, sætter han sig på dit.",
+      "honest": "Kun landskabet kører om kap. Turen gemmes, som du kørte den.",
+      "badge": "Om kap",
+      "left": "{km} km",
+      "ahead": "{m} m foran",
+      "behind": "{m} m bagud",
+      "level": "side om side",
+      "won": "Du vandt",
+      "lost": "Han vandt",
+      "margin": "med {m} m"
     }
   }
 }

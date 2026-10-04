@@ -1,5 +1,6 @@
 import type { Band, Block, BlockNow, Standing } from "@/modules/rulle";
 import type { CheatState } from "./cheat";
+import type { RaceLive } from "./race";
 import type { SensorsNow } from "./sensors";
 import type { Status } from "./engine";
 
@@ -22,6 +23,8 @@ export type Live = SensorsNow & {
   distance: number;
   /** The cheat code, and on WATT its watts and avatar; null while it is off. */
   cheat: CheatState;
+  /** The challenger's race (ADR 0049): on, or just over; null with none. */
+  race: RaceLive;
   intensity: number;
   erg: boolean;
   /** The watts ridden, one average per TRACE_SECONDS of the plan. */

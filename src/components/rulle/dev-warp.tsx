@@ -1,6 +1,6 @@
 "use client";
 
-import { Rewind } from "lucide-react";
+import { Rewind, Swords } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -10,15 +10,19 @@ import { WARPS } from "./ride/warp";
  * Development only (`next dev`): the rider's way along the route run
  * faster — two, four, eight or twenty times — or backwards, to look at a
  * route without riding it. "," and "." step the speed down and up, B
- * turns the way round. Never drawn in a build that is shipped; `hidden`
+ * turns the way round, and G calls the challenger up (ADR 0049). Never
+ * drawn in a build that is shipped; `hidden`
  * with nothing but the rider and the land on screen, its keys still at
  * work.
  */
 export function DevWarp({
   onWarp,
+  onChallenge,
   hidden = false,
 }: {
   onWarp: (factor: number) => void;
+  /** The challenger, called up now rather than ten kilometres on (ADR 0049). */
+  onChallenge: () => void;
   hidden?: boolean;
 }) {
   const t = useTranslations("rulle.dev");
@@ -37,9 +41,9 @@ export function DevWarp({
     warp.current(nextBack ? -factor : factor);
   };
 
-  const latest = useRef({ step, back, choose });
+  const latest = useRef({ step, back, choose, challenge: onChallenge });
   useEffect(() => {
-    latest.current = { step, back, choose };
+    latest.current = { step, back, choose, challenge: onChallenge };
   });
 
   useEffect(() => {
@@ -49,6 +53,7 @@ export function DevWarp({
       if (event.key === ".") go(Math.min(WARPS.length - 1, now + 1), backwards);
       else if (event.key === ",") go(Math.max(0, now - 1), backwards);
       else if (event.key.toLowerCase() === "b") go(now, !backwards);
+      else if (event.key.toLowerCase() === "g") latest.current.challenge();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -86,6 +91,9 @@ export function DevWarp({
           {t("times", { factor })}
         </Button>
       ))}
+      <Button size="xs" variant="outline" aria-label={t("challenge")} onClick={onChallenge}>
+        <Swords />
+      </Button>
     </div>
   );
 }

@@ -21,12 +21,13 @@ const DRAW_MS = 250;
 /** The ride is put aside in the browser this often. */
 const KEEP_MS = 10_000;
 
-/** Where the landscape shows the rider: the place, and the cheat's line and lean (ADR 0045). */
+/** Where the landscape shows the rider: the place, the cheat's line and lean (ADR 0045), the challenger. */
 const shown = (at: ShownAt) => ({
   distance: at.distance,
   line: at.line,
   lean: at.lean,
   cheat: at.cheat,
+  challenger: at.challenger,
 });
 
 export type RideOptions = {
@@ -162,6 +163,11 @@ export function useRide(options: RideOptions) {
     finish: () => act((ride, now) => ride.finish(now)),
     setIntensity: (value: number) => act((ride) => ride.setIntensity(value)),
     setErg: (on: boolean) => act((ride) => ride.setErg(on)),
+    /** Development only: the challenger now (ADR 0049), wherever the rider is. */
+    challenge: () =>
+      act((ride, now) =>
+        ride.shown.race.begin(ride.positionAt(now).distance, ride.live(now).speed),
+      ),
     /** Development only: times the rider's speed along the route, negative backwards. */
     setWarp: (factor: number) =>
       act((ride) => {

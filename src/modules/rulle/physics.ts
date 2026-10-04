@@ -36,20 +36,33 @@ export const PHYSICS = {
   maxStep: 0.05,
 } as const;
 
-/** The force against `m` kg at `speed` on `grade`, newtons (negative downhill when it pulls). */
-export function resistance(speed: number, grade: number, m: number = PHYSICS.massKg): number {
+/**
+ * The force against `m` kg at `speed` on `grade`, newtons (negative downhill when it pulls);
+ * `drag` is the share of the air still pushed through: less than 1 in another rider's wheel.
+ */
+export function resistance(
+  speed: number,
+  grade: number,
+  m: number = PHYSICS.massKg,
+  drag = 1,
+): number {
   const { g, crr, cda, rho } = PHYSICS;
   const theta = Math.atan(grade);
-  return m * g * Math.sin(theta) + crr * m * g * Math.cos(theta) + 0.5 * rho * cda * speed * speed;
+  const air = 0.5 * rho * cda * drag * speed * speed;
+  return m * g * Math.sin(theta) + crr * m * g * Math.cos(theta) + air;
 }
 
-/** The speed after `seconds` of `watts` on `grade`, starting from `speed`, for `massKg` of rider and bike. */
+/**
+ * The speed after `seconds` of `watts` on `grade`, starting from `speed`, for `massKg` of
+ * rider and bike and a `drag` share of the air (`resistance`).
+ */
 export function nextSpeed(
   speed: number,
   watts: number,
   grade: number,
   seconds: number,
   massKg: number = PHYSICS.massKg,
+  drag = 1,
 ): number {
   let v = Math.max(0, speed);
   let left = Math.max(0, seconds);
@@ -57,7 +70,7 @@ export function nextSpeed(
   while (left > 1e-9) {
     const dt = Math.min(left, PHYSICS.maxStep);
     const drive = push / Math.max(v, PHYSICS.minDriveSpeed);
-    const accel = (drive - resistance(v, grade, massKg)) / massKg;
+    const accel = (drive - resistance(v, grade, massKg, drag)) / massKg;
     v = Math.min(PHYSICS.maxSpeed, Math.max(0, v + accel * dt));
     left -= dt;
   }

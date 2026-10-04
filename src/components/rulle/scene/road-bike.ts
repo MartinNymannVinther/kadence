@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { RIDER_KIT, type Kit } from "./kits";
 import { PALETTE as P } from "./palette";
 import { painted } from "./props";
 import { bar, box, merged, rod, v } from "./shapes";
@@ -55,20 +56,20 @@ function aero(a: THREE.Vector3, b: THREE.Vector3, deep: number, narrow: number, 
   return painted(geometry.translate(middle.x, middle.y, middle.z), color);
 }
 
-function frame(): THREE.BufferGeometry[] {
+function frame(kit: Kit): THREE.BufferGeometry[] {
   const along = (a: THREE.Vector3, b: THREE.Vector3, t: number) => a.clone().lerp(b, t);
   const parts = [
-    aero(BB, SEAT, 0.03, 0.016, P.bikeFrame),
-    aero(SEAT, HEAD_TOP, 0.024, 0.014, P.bikeFrame),
-    aero(BB, HEAD_FOOT, 0.038, 0.019, P.bikeFrame),
-    // The maker's band on the down tube, in the rider's moss.
-    aero(along(BB, HEAD_FOOT, 0.55), along(BB, HEAD_FOOT, 0.78), 0.039, 0.0195, P.jersey),
-    aero(v(0, 0.91, -0.36), HEAD_FOOT, 0.034, 0.02, P.bikeFrame),
-    aero(SEAT, POST, 0.026, 0.011, P.bikeFrame),
+    aero(BB, SEAT, 0.03, 0.016, kit.frame),
+    aero(SEAT, HEAD_TOP, 0.024, 0.014, kit.frame),
+    aero(BB, HEAD_FOOT, 0.038, 0.019, kit.frame),
+    // The maker's band on the down tube.
+    aero(along(BB, HEAD_FOOT, 0.55), along(BB, HEAD_FOOT, 0.78), 0.039, 0.0195, kit.accent),
+    aero(v(0, 0.91, -0.36), HEAD_FOOT, 0.034, 0.02, kit.fork),
+    aero(SEAT, POST, 0.026, 0.011, kit.frame),
     // The one-piece cockpit: the stem, and the tops flat as a wing.
-    aero(v(0, 0.91, -0.365), CLAMP, 0.02, 0.018, P.bikeFrame),
-    aero(v(-0.2, 0.94, -0.46), v(0.2, 0.94, -0.46), 0.03, 0.009, P.bikeFrame),
-    box(0.07, 0.035, 0.05, P.bikeFrame, 0, 0.72, -0.415),
+    aero(v(0, 0.91, -0.365), CLAMP, 0.02, 0.018, kit.frame),
+    aero(v(-0.2, 0.94, -0.46), v(0.2, 0.94, -0.46), 0.03, 0.009, kit.frame),
+    box(0.07, 0.035, 0.05, kit.fork, 0, 0.72, -0.415),
     // A short saddle: a narrow nose, a wide back.
     box(0.06, 0.026, 0.15, P.saddle, 0, 0.934, 0.14),
     box(0.14, 0.03, 0.1, P.saddle, 0, 0.937, 0.255),
@@ -87,24 +88,18 @@ function frame(): THREE.BufferGeometry[] {
   for (const side of [-1, 1]) {
     const x = (p: THREE.Vector3) => (side > 0 ? p : mirror(p));
     parts.push(
-      aero(v(side * 0.03, BB.y, BB.z), x(v(0.055, WHEEL, REAR.z)), 0.016, 0.01, P.bikeFrame),
-      aero(
-        v(side * 0.022, STAYS.y, STAYS.z),
-        x(v(0.055, WHEEL, REAR.z)),
-        0.014,
-        0.008,
-        P.bikeFrame,
-      ),
+      aero(v(side * 0.03, BB.y, BB.z), x(v(0.055, WHEEL, REAR.z)), 0.016, 0.01, kit.frame),
+      aero(v(side * 0.022, STAYS.y, STAYS.z), x(v(0.055, WHEEL, REAR.z)), 0.014, 0.008, kit.frame),
       aero(
         v(side * 0.03, HEAD_FOOT.y, HEAD_FOOT.z),
         x(v(0.05, WHEEL, FRONT.z)),
         0.024,
         0.011,
-        P.bikeFrame,
+        kit.fork,
       ),
-      ...path(BAR.map(x), 0.013, P.barTape),
-      ...path(DROP.map(x), 0.013, P.barTape),
-      ...path(DROP_END.map(x), 0.013, P.barTape),
+      ...path(BAR.map(x), 0.013, kit.tape),
+      ...path(DROP.map(x), 0.013, kit.tape),
+      ...path(DROP_END.map(x), 0.013, kit.tape),
       // The brake hood, standing up and forward from where the bar turns down.
       rod(x(v(0.205, 0.95, -0.52)), x(v(0.205, 0.978, -0.555)), 0.018, P.dark, 6),
     );
@@ -174,8 +169,8 @@ export class RoadBike {
   private readonly crankset: THREE.Group;
   private readonly geometries: THREE.BufferGeometry[] = [];
 
-  constructor() {
-    this.group.add(this.mesh(merged(frame())));
+  constructor(kit: Kit = RIDER_KIT) {
+    this.group.add(this.mesh(merged(frame(kit))));
     for (const hub of [REAR, FRONT]) {
       const pivot = new THREE.Group();
       pivot.position.copy(hub);

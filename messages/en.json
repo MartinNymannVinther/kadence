@@ -3144,7 +3144,8 @@
       "title": "Warp",
       "back": "Backwards",
       "times": "{factor}×",
-      "hint": "Development only. Comma and full stop change the speed, B turns the way round."
+      "hint": "Development only. Comma and full stop change the speed, B turns the way round, G calls up the challenger.",
+      "challenge": "Call up the challenger"
     },
     "cheat": {
       "title": "Cheat code",
@@ -3176,6 +3177,21 @@
       "less": "Fewer watts",
       "kgUnit": "kg",
       "speed": "Speed"
+    },
+    "challenge": {
+      "title": "Challenge",
+      "on": "A rider in red and white comes up beside you. A race over the next 2 km.",
+      "onHill": "A rider in red and white comes up beside you. A race up the hill, 2 km.",
+      "draft": "In his wheel, he takes the wind for you. Attack, and he gets on yours.",
+      "honest": "Only the landscape races. The ride is saved as you rode it.",
+      "badge": "Race",
+      "left": "{km} km",
+      "ahead": "{m} m ahead",
+      "behind": "{m} m behind",
+      "level": "side by side",
+      "won": "You won",
+      "lost": "He won",
+      "margin": "by {m} m"
     }
   }
 }

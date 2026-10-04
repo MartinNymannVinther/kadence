@@ -11,6 +11,7 @@ import { EndDialog } from "./end-dialog";
 import { IntervalBar } from "./interval-bar";
 import { RideControls } from "./ride-controls";
 import { RouteMap } from "./route-map";
+import { RaceBanner } from "./race-banner";
 import { RideNumbers } from "./ride-numbers";
 import { RouteProfile } from "./route-profile";
 import type { Beeps } from "./ride/beeps";
@@ -235,8 +236,9 @@ export function RideScreen({
           {live && cheatState && !bare && (
             <CheatOverlay banner={cheat.banner} state={cheatState} onSteer={ride.steerCheat} />
           )}
+          {live?.race && !bare && <RaceBanner race={live.race} beeps={beeps} />}
           {process.env.NODE_ENV === "development" && live && (
-            <DevWarp onWarp={ride.setWarp} hidden={bare} />
+            <DevWarp onWarp={ride.setWarp} onChallenge={ride.challenge} hidden={bare} />
           )}
         </div>
         {live && !bare && (
