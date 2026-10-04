@@ -50,6 +50,8 @@ export const PALETTE = {
   tyre: "#2a2927",
   // The rider's road bike and kit, up close (`road-bike.ts`, `rider.ts`).
   rim: "#232528",
+  rimBand: "#8e9498",
+  bikeFrame: "#2c3034",
   alloy: "#b9bcbf",
   barTape: "#ece8df",
   saddle: "#262422",

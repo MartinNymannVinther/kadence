@@ -37,12 +37,12 @@ const ANCHORS: Record<Posture, Anchor> = {
     helmet: -0.35,
   },
   standing: {
-    hips: v(0, 1.05, 0.02),
-    shoulders: v(0, 1.42, -0.4),
-    head: v(0, 1.55, -0.5),
+    hips: v(0, 1.09, 0.03),
+    shoulders: v(0, 1.45, -0.42),
+    head: v(0, 1.58, -0.53),
     hand: v(0.205, 0.985, -0.545),
     hipWidth: 0.1,
-    helmet: -0.5,
+    helmet: -0.3,
   },
   tuck: {
     hips: v(0, 0.97, 0.24),
@@ -66,7 +66,10 @@ export type Pose = {
 };
 
 /** How far the bike rocks from side to side out of the saddle, radians. */
-const ROCK = 0.11;
+const ROCK = 0.16;
+/** Out of the saddle, how far the hips drop and move over the pedal pushing down, metres. */
+const DIP = 0.04;
+const SHIFT = 0.035;
 /** The bike's own axis, front to back, that it rocks about. */
 const ALONG = new THREE.Vector3(0, 0, 1);
 /** How much of the rock the rider stands against, staying upright over it. */
@@ -91,7 +94,9 @@ export function poseOf(blend: Blend, crank: number, cadence: number): Pose {
   const roll = blend.standing * ROCK * Math.cos(crank) * pedalling;
   const sway = -roll * UPRIGHT + Math.sin(crank) * 0.012 * pedalling * (1 - blend.standing);
   const hips = mix((a) => a.hips);
-  hips.y -= blend.standing * 0.025 * Math.abs(Math.cos(crank)) * pedalling;
+  hips.y -= blend.standing * DIP * Math.abs(Math.cos(crank)) * pedalling;
+  // The weight goes onto the pedal pushing down: the right at a turn of nothing.
+  hips.x += blend.standing * SHIFT * Math.cos(crank) * pedalling;
   const turn = (p: THREE.Vector3) => p.sub(hips).applyAxisAngle(ALONG, sway).add(hips);
   // The hands stay on the bar, whichever way the body goes.
   const hand = mix((a) => a.hand);
