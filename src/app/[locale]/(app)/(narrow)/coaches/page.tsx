@@ -11,7 +11,7 @@ import { formatDay } from "@/core/dates";
 import { Link, redirect } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { openReports } from "@/modules/community/moderation";
-import { CATEGORIES, listThreads, type Category } from "@/modules/community/service";
+import { CATEGORIES, listThreads, roomKind, type Category } from "@/modules/community/service";
 import { whoAmI } from "@/modules/team/access";
 import { listTemplates } from "@/modules/training/templates";
 
@@ -24,7 +24,8 @@ export async function generateMetadata(): Promise<Metadata> {
  * Trænerrummet (ADR 0052): the coaches on the installation, across clubs,
  * sharing what they know. Threads newest-active first, narrowed by
  * category, with a new thread at the top; the owner's open reports above
- * all. Riders and parents never get here.
+ * all. Riders and parents never get here. A demo has a room of its own,
+ * with example threads, and says so (ADR 0054).
  */
 export default async function CoachesRoomPage({
   searchParams,
@@ -43,14 +44,21 @@ export default async function CoachesRoomPage({
   const threads = await listThreads(ctx, category);
   if (threads === null) notFound();
   const me = await whoAmI(ctx.orgId, ctx.userId);
-  const [templates, reports] = await Promise.all([
+  const [templates, reports, room] = await Promise.all([
     me?.isCoach ? listTemplates(ctx) : Promise.resolve([]),
     openReports(ctx),
+    roomKind(ctx),
   ]);
 
   return (
     <div className="flex min-w-0 max-w-3xl flex-col gap-6">
       <PageHeader title={t("title")} subtitle={t("subtitle")} />
+
+      {room === "demo" && (
+        <p className="bg-secondary rounded-xl px-4 py-3 text-2sm leading-relaxed">
+          {t("demoNote")}
+        </p>
+      )}
 
       {reports.length > 0 && (
         <section className="bg-warning-tint flex flex-col gap-2 rounded-xl p-4">

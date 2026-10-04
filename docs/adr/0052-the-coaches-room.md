@@ -1,6 +1,6 @@
 # ADR 0052: Trænerrummet, a room for coaches across clubs
 
-Status: accepted · Date: 2026-10-03
+Status: accepted · Date: 2026-10-03 · Amended by ADR 0054 (a demo is kept out of the room and has one of its own)
 
 ## Context
 

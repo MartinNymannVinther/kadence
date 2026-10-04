@@ -19,6 +19,7 @@ import { domainId, organizations, users } from "./foundation";
  * somewhere reads or writes; riders and parents never do; there are no
  * private messages. The database stamps who wrote a post and for which
  * club, from the session, and only the installation's owner moderates.
+ * A demo never sees that room; it gets one of its own (docs/adr/0054).
  */
 
 const stamped = {
@@ -49,10 +50,17 @@ export const communityThreads = pgTable(
     workout: jsonb("workout"),
     locked: boolean("locked").notNull().default(false),
     lastPostAt: timestamp("last_post_at", { withTimezone: true }).notNull().defaultNow(),
+    /**
+     * Set for a thread in a demo's own room (docs/adr/0054): the demo
+     * workspace it belongs to, and it goes with the demo. Null for the
+     * installation's room, which no demo sees.
+     */
+    demoOrgId: text("demo_org_id").references(() => organizations.id, { onDelete: "cascade" }),
     ...stamped,
   },
   (t) => [
     index("community_threads_recent_idx").on(t.lastPostAt),
+    index("community_threads_demo_idx").on(t.demoOrgId),
     check(
       "community_threads_category",
       sql`${t.category} in ('training','strength','wellbeing','races','equipment','dcu')`,

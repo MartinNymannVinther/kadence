@@ -73,3 +73,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0051](0051-the-club-championship.md)                                      | The club championship: the club's own rounds, standings and roll of honour, the one place with placings     | → 0013, 0039                   |
 | [0052](0052-the-coaches-room.md)                                           | Trænerrummet: a room for coaches across clubs, signed by the database, moderated by the owner               | → 0002, 0003, 0048             |
 | [0053](0053-low-intensity-first.md)                                        | "Lav intensitet først": sessions in three zones by their goal, and a profile a team may lay on its hours    | → 0026, 0049                   |
+| [0054](0054-every-feature-in-the-demo.md)                                  | Every part of the product in the demo, and the demo kept out of Trænerrummet                                | → 0005, 0052                   |

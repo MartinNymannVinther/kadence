@@ -3385,6 +3385,7 @@
   "community": {
     "title": "The coaches' room",
     "subtitle": "Coaches across the clubs sharing experience and advice. Only coaches have access, and there are no private messages.",
+    "demoNote": "This is the demo's own coaches' room. The threads are examples from made-up coaches in made-up clubs, and what you write stays in your demo. In Kadence, the coaches of every club on the installation share one room.",
     "categories": "Categories",
     "all": "All",
     "unread": "New since last time",
