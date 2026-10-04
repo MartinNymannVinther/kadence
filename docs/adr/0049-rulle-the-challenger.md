@@ -38,15 +38,19 @@ slipstream that makes it easier behind him.
   clear of him on the road; at the line who won and by how much, a
   cowbell for a win. His figure is the rider's own (`RiderFigure`,
   `RoadBike`) in his colours (`kits.ts`), out of the saddle in his attack
-  and his sprint. Under `next dev`, G calls him up at once.
+  and his sprint.
+- **A cheat code, JOHAN**, calls him up at once, wherever the rider is,
+  in ERG too: asked for, he comes. The H in it is the code's while it is
+  typed, not the ride's speed. Under `next dev`, G does the same.
 
 ## Trade-offs accepted
 
-- **A real rider's look, not the rider.** He is drawn from a photo of a
-  real young rider, so he has no name, no face and no maker's logo: a
-  rider in a red jersey with a white band, black shorts, white helmet,
-  socks and shoes, on a black bike with a yellow fork. The photo is not
-  in the repository.
+- **A real rider's look, and a first name.** He is drawn from a photo of
+  a real young rider, so he has no face and no maker's logo: a rider in a
+  red jersey with a white band, black shorts, white helmet, socks and
+  shoes, on a black bike with a yellow fork. The screen calls him a rider
+  in red and white; only the code that calls him is a first name, which
+  is in the open source. The photo is not in the repository.
 - **A race is a ranking of one.** ADR 0013 keeps leaderboards out of
   Kadence. This is a rider against a figure in the landscape: nothing is
   kept, counted or shown to anyone else.
@@ -54,8 +58,9 @@ slipstream that makes it easier behind him.
   Kadence is for; most will lose most races. A rider beats him by
   sprinting from his wheel well over his 800 W, or by the cheat codes,
   which race only the landscape too.
-- **Not in ERG.** A rider in a planned session with the watts held never
-  meets him; the coach's session goes first.
+- **Not in ERG by chance.** A rider in a planned session with the watts
+  held never meets him unless they type JOHAN; the coach's session goes
+  first.
 - **Indoor speed only.** The slipstream moves the rider on the screen,
   not on the record: an indoor ride's distance stays the physics' answer
   to the watts ridden.

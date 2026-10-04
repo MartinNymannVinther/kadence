@@ -163,7 +163,7 @@ export function useRide(options: RideOptions) {
     finish: () => act((ride, now) => ride.finish(now)),
     setIntensity: (value: number) => act((ride) => ride.setIntensity(value)),
     setErg: (on: boolean) => act((ride) => ride.setErg(on)),
-    /** Development only: the challenger now (ADR 0049), wherever the rider is. */
+    /** The challenger now (ADR 0049), wherever the rider is: the JOHAN code, and G under `next dev`. */
     challenge: () =>
       act((ride, now) =>
         ride.shown.race.begin(ride.positionAt(now).distance, ride.live(now).speed),
