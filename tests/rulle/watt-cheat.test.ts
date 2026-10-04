@@ -25,15 +25,18 @@ function run(cheat: Cheat, seconds: number, grade = 0, speed = 8) {
 }
 
 describe("the WATT dial", () => {
-  it("steps ten watts at a time, between nothing and 1500", () => {
+  it("steps five watts at a time, onto round fives, between nothing and 1500", () => {
     const dial = new WattDial();
     dial.watts = 200;
     dial.step(1);
-    expect(dial.watts).toBe(210);
-    dial.watts = 1495;
+    expect(dial.watts).toBe(205);
+    dial.watts = 212;
+    dial.step(-1);
+    expect(dial.watts).toBe(205);
+    dial.watts = 1498;
     dial.step(1);
     expect(dial.watts).toBe(WATT_DIAL.most);
-    dial.watts = 4;
+    dial.watts = 2;
     dial.step(-1);
     expect(dial.watts).toBe(0);
   });
@@ -53,17 +56,17 @@ describe("the WATT dial", () => {
     const dial = new WattDial();
     dial.watts = 200;
     dial.hold(1);
-    expect(dial.watts).toBe(210);
+    expect(dial.watts).toBe(205);
     for (let i = 0; i < 3; i++) dial.advance(0.1);
-    expect(dial.watts).toBe(210);
+    expect(dial.watts).toBe(205);
     for (let i = 0; i < 7; i++) dial.advance(0.1);
     // Held a second: the steps at 0.4, 0.5 … 1.0 s.
-    expect(dial.watts).toBe(280);
+    expect(dial.watts).toBe(240);
     dial.hold(1);
-    expect(dial.watts).toBe(280);
+    expect(dial.watts).toBe(240);
     dial.hold(0);
     dial.advance(1);
-    expect(dial.watts).toBe(280);
+    expect(dial.watts).toBe(240);
   });
 
   it("takes over at the watts that hold the speed it was going, and from a standstill gently", () => {
@@ -136,8 +139,8 @@ describe("the WATT cheat code's bike", () => {
     cheat.toggle(8, 0, "watts", 0);
     const before = cheat.dial.watts;
     cheat.hold(1, 0);
-    expect(cheat.dial.watts).toBe(before + 10);
-    expect(cheat.state()).toEqual({ mode: "watts", watts: before + 10, kg: 70, unit: "w" });
+    expect(cheat.dial.watts).toBe(before + 5);
+    expect(cheat.state()).toEqual({ mode: "watts", watts: before + 5, kg: 70, unit: "w" });
   });
 });
 

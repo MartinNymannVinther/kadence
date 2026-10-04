@@ -6,6 +6,7 @@ import type { TrainerLink } from "../bluetooth/trainer-link";
 import type { Moment } from "../scene/world";
 import type { Beeps } from "./beeps";
 import type { CheatMode, Push } from "./cheat";
+import type { WattTune } from "./watt-dial";
 import { RideEngine, type Live } from "./engine";
 import type { ShownAt } from "./shown";
 import { keepRide, type RideMeta } from "./ride-store";
@@ -178,12 +179,18 @@ export function useRide(options: RideOptions) {
     },
     /** What the cheat's keys hold now: faster or slower (more or fewer watts), left or right. */
     steerCheat: (throttle: Push, steer: Push) => engine.current?.shown.cheat.hold(throttle, steer),
-    /** The WATT dial's buttons: watts or watts per kilo, the avatar heavier or lighter. */
-    tuneCheat: (change: "unit" | "heavier" | "lighter") => {
+    /** The WATT dial's buttons: a step, watts or watts per kilo, the avatar heavier or lighter. */
+    tuneCheat: (change: WattTune) => {
       const dial = engine.current?.shown.cheat.dial;
       if (!dial) return;
       if (change === "unit") dial.toggleUnit();
+      else if (change === "more" || change === "less") dial.step(change === "more" ? 1 : -1);
       else dial.weigh(change === "heavier" ? 1 : -1);
+      draw();
+    },
+    /** A WATT button held up or down, or let go: it steps on as a held key does. */
+    pushCheat: (push: Push) => {
+      engine.current?.shown.cheat.dial.hold(push);
       draw();
     },
   };

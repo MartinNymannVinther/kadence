@@ -4,12 +4,15 @@ import { PHYSICS, resistance } from "@/modules/rulle/physics";
  * The WATT cheat code's dial (ADR 0048): the watts the avatar rides at,
  * set in watts or in watts per kilo of an avatar whose weight is chosen
  * on the screen — the avatar's, never the rider's, and kept nowhere but
- * here for as long as the ride lasts. A key pressed is one step; held, it
- * steps on after a moment, the way a held key types. No React and no
- * browser in it.
+ * here for as long as the ride lasts. A key or a button pressed is one
+ * step; held, it steps on after a moment, the way a held key types. No
+ * React and no browser in it.
  */
 
 export type WattUnit = "w" | "wkg";
+
+/** What the panel's buttons do: a step either way, the unit, the avatar's weight. */
+export type WattTune = "more" | "less" | "unit" | "heavier" | "lighter";
 
 export const WATT_DIAL = {
   /** The most and the least it rides at, W. */
@@ -17,8 +20,8 @@ export const WATT_DIAL = {
   least: 0,
   /** Where it starts when the speed it takes over from is held by less. */
   floor: 100,
-  /** One step of the keys: 10 W, or 0.1 W/kg. */
-  step: { w: 10, wkg: 0.1 },
+  /** One step of the keys and the buttons: 5 W, or 0.1 W/kg. */
+  step: { w: 5, wkg: 0.1 },
   /** Seconds a key is held before it steps on, and between the steps after. */
   delay: 0.4,
   every: 0.1,

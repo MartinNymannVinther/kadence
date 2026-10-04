@@ -203,6 +203,7 @@ export function RideScreen({
               onCheatOff={() => cheat.toggle()}
               onCheatMode={cheat.toggle}
               onCheatTune={ride.tuneCheat}
+              onCheatPush={ride.pushCheat}
             />
           </div>
         )}

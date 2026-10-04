@@ -2,8 +2,8 @@
 
 import type { Thresholds } from "@/modules/load";
 import { CheatPanel } from "./cheat-panel";
-import type { WattTune } from "./cheat-watt-badge";
-import type { CheatMode } from "./ride/cheat";
+import type { CheatMode, Push } from "./ride/cheat";
+import type { WattTune } from "./ride/watt-dial";
 import type { Live } from "./ride/live";
 import { BlockTile, BodyTile, WattTile } from "./ride-tiles";
 
@@ -19,12 +19,14 @@ export function RideNumbers({
   onCheatOff,
   onCheatMode,
   onCheatTune,
+  onCheatPush,
 }: {
   live: Live;
   rider: Thresholds | null;
   onCheatOff: () => void;
   onCheatMode: (mode: CheatMode) => void;
   onCheatTune: (change: WattTune) => void;
+  onCheatPush: (push: Push) => void;
 }) {
   if (live.cheat)
     return (
@@ -35,6 +37,7 @@ export function RideNumbers({
           onOff={onCheatOff}
           onMode={onCheatMode}
           onTune={onCheatTune}
+          onPush={onCheatPush}
         />
       </div>
     );
