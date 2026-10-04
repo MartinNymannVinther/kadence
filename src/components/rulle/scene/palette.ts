@@ -48,6 +48,16 @@ export const PALETTE = {
   helmet: "#f3f0ea",
   frame: "#3b4043",
   tyre: "#2a2927",
+  // The rider's road bike and kit, up close (`road-bike.ts`, `rider.ts`).
+  rim: "#232528",
+  alloy: "#b9bcbf",
+  barTape: "#ece8df",
+  saddle: "#262422",
+  bidon: "#ece8df",
+  shoe: "#2a2826",
+  sock: "#f3f0ea",
+  glove: "#33312e",
+  lens: "#1d2226",
   // The small things on the way (ADR 0034), as muted as the rest.
   cargoBox: "#b08a5a",
   raincoat: "#d6a84a",

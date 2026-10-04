@@ -1,14 +1,19 @@
 import * as THREE from "three";
 import type { Posture } from "@/modules/rulle";
 import { PALETTE } from "./palette";
+import { BB, CRANK, RoadBike } from "./road-bike";
+import { riderHead } from "./rider-head";
 import { poseOf, twoBones, type Blend } from "./rider-pose";
 
 /**
- * The rider on the screen: a low-poly cyclist in Kadence's moss green,
- * pedalling at the cadence the trainer measures and rolling at the speed
- * the physics gives. The legs follow the pedals, and the arms the bar, by
- * two-bone inverse kinematics, so they bend as limbs do rather than
- * swinging stiffly. Local coordinates face -z, like a camera; y is up.
+ * The rider on the screen: a low-poly cyclist in Kadence's moss green on
+ * a road bike (`RoadBike`), pedalling at the cadence the trainer measures
+ * and rolling at the speed the physics gives. The legs follow the pedals,
+ * and the arms the bar, by two-bone inverse kinematics, so they bend as
+ * limbs do rather than swinging stiffly. A rider in a road kit: a jersey
+ * broader at the shoulders with a band across it, bib shorts, a long
+ * helmet with its vents, sunglasses, gloves, white socks and road shoes.
+ * Local coordinates face -z, like a camera; y is up.
  *
  * The rider sits, stands on a steep climb with the bike rocking under
  * them, or tucks on a fast descent (`postureAt`), easing from one to the
@@ -20,32 +25,49 @@ import { poseOf, twoBones, type Blend } from "./rider-pose";
 /** Riding; stopped with a foot down and the bottle; or gone to the table, the bike parked. */
 export type Stop = "riding" | "bottle" | "parked";
 
-const WHEEL = 0.34;
-const CRANK = 0.17;
 const THIGH = 0.47;
 const SHIN = 0.46;
 const UPPER_ARM = 0.27;
 const FOREARM = 0.22;
-const BB = new THREE.Vector3(0, 0.3, 0.05);
 const UP = new THREE.Vector3(0, 1, 0);
 /** Knees bend forward; elbows out, down and back. */
 const KNEE_POLE = new THREE.Vector3(0, 0.3, -1);
 const ELBOW_POLE = (side: number) => new THREE.Vector3(side * 0.7, -0.4, 0.6);
 /** How quickly the rider eases from one posture to the next, per second. */
 const EASE = 3;
+/** The shoe's toe a little down on the pedal, radians. */
+const TOE = -0.17;
 
 const lambert = (color: string) => new THREE.MeshLambertMaterial({ color, flatShading: true });
+/** A round shape, `top` as wide as its foot is 1, eight-sided: a tapered limb, a torso. */
+const tapered = (top: number) => new THREE.CylinderGeometry(top, 1, 1, 8);
 
 export class RiderFigure {
   readonly group = new THREE.Group();
-  private readonly wheels: THREE.Mesh[] = [];
-  private readonly legs: { thigh: THREE.Mesh; shin: THREE.Mesh; side: number }[] = [];
-  private readonly arms: { upper: THREE.Mesh; lower: THREE.Mesh; side: number }[] = [];
+  private readonly bike = new RoadBike();
+  private readonly legs: {
+    thigh: THREE.Mesh;
+    /** Bare from where the shorts end, above the knee, and the knee round. */
+    knee: THREE.Mesh;
+    cap: THREE.Mesh;
+    shin: THREE.Mesh;
+    sock: THREE.Mesh;
+    shoe: THREE.Mesh;
+    side: number;
+  }[] = [];
+  private readonly arms: {
+    upper: THREE.Mesh;
+    lower: THREE.Mesh;
+    glove: THREE.Mesh;
+    side: number;
+  }[] = [];
   private readonly body = new THREE.Group();
   private readonly torso: THREE.Mesh;
+  private readonly band: THREE.Mesh;
   private readonly shorts: THREE.Mesh;
-  private readonly head: THREE.Mesh;
-  private readonly helmet: THREE.Mesh;
+  private readonly neck: THREE.Mesh;
+  /** The head, its helmet and its glasses, tilted together. */
+  private readonly head = new THREE.Group();
   private readonly bottle: THREE.Mesh;
   private readonly shadow: THREE.Mesh;
   private crank = 0;
@@ -63,8 +85,16 @@ export class RiderFigure {
     shorts: lambert(PALETTE.shorts),
     skin: lambert(PALETTE.skin),
     helmet: lambert(PALETTE.helmet),
-    frame: lambert(PALETTE.frame),
-    tyre: lambert(PALETTE.tyre),
+    dark: lambert(PALETTE.dark),
+    bidon: lambert(PALETTE.bidon),
+    shoe: lambert(PALETTE.shoe),
+    sock: lambert(PALETTE.sock),
+    glove: lambert(PALETTE.glove),
+    lens: new THREE.MeshLambertMaterial({
+      color: PALETTE.lens,
+      flatShading: true,
+      side: THREE.DoubleSide,
+    }),
     shadow: new THREE.MeshBasicMaterial({
       color: "#000000",
       transparent: true,
@@ -72,7 +102,16 @@ export class RiderFigure {
       depthWrite: false,
     }),
   };
-  private readonly unit = new THREE.CylinderGeometry(1, 1, 1, 6);
+  private readonly unit = new THREE.CylinderGeometry(1, 1, 1, 8);
+  private readonly shapes = {
+    torso: tapered(1.25),
+    thigh: tapered(0.72),
+    shin: tapered(0.68),
+    shoe: new THREE.BoxGeometry(0.075, 0.055, 0.25),
+    glove: new THREE.IcosahedronGeometry(0.038, 0),
+    pelvis: new THREE.IcosahedronGeometry(1, 1),
+    knee: new THREE.IcosahedronGeometry(0.05, 0),
+  };
 
   constructor() {
     const m = this.materials;
@@ -80,55 +119,35 @@ export class RiderFigure {
     shadow.rotation.x = -Math.PI / 2;
     shadow.scale.set(0.9, 1.9, 1);
     shadow.position.y = 0.02;
-    this.group.add(shadow);
+    this.group.add(shadow, this.bike.group);
     this.shadow = shadow;
 
-    for (const z of [0.52, -0.5]) {
-      const wheel = new THREE.Mesh(new THREE.TorusGeometry(WHEEL, 0.032, 4, 14), m.tyre);
-      wheel.rotation.y = Math.PI / 2;
-      wheel.position.set(0, WHEEL, z);
-      const pivot = new THREE.Group();
-      pivot.position.copy(wheel.position);
-      wheel.position.set(0, 0, 0);
-      pivot.add(wheel);
-      this.group.add(pivot);
-      this.wheels.push(wheel);
-    }
-    const frame: [THREE.Vector3, THREE.Vector3][] = [
-      [new THREE.Vector3(0, WHEEL, 0.52), BB],
-      [BB, new THREE.Vector3(0, 0.86, 0.2)],
-      [new THREE.Vector3(0, WHEEL, 0.52), new THREE.Vector3(0, 0.86, 0.2)],
-      [new THREE.Vector3(0, 0.86, 0.2), new THREE.Vector3(0, 0.84, -0.4)],
-      [BB, new THREE.Vector3(0, 0.84, -0.4)],
-      [new THREE.Vector3(0, 0.84, -0.4), new THREE.Vector3(0, WHEEL, -0.5)],
-      [new THREE.Vector3(0, 0.84, -0.4), new THREE.Vector3(0, 0.95, -0.46)],
-      [new THREE.Vector3(-0.21, 0.95, -0.47), new THREE.Vector3(0.21, 0.95, -0.47)],
-    ];
-    for (const [a, b] of frame) this.group.add(this.tube(a, b, 0.022, m.frame));
-
     // The body, placed for its posture every frame (`pose`).
-    this.torso = new THREE.Mesh(this.unit, m.jersey);
-    this.shorts = new THREE.Mesh(this.unit, m.shorts);
-    this.head = new THREE.Mesh(new THREE.IcosahedronGeometry(0.12, 0), m.skin);
-    this.helmet = new THREE.Mesh(
-      new THREE.SphereGeometry(0.135, 7, 4, 0, Math.PI * 2, 0, Math.PI / 2),
-      m.helmet,
-    );
-    this.body.add(this.torso, this.shorts, this.head, this.helmet);
+    this.torso = new THREE.Mesh(this.shapes.torso, m.jersey);
+    this.band = new THREE.Mesh(this.unit, m.light);
+    this.shorts = new THREE.Mesh(this.shapes.pelvis, m.shorts);
+    this.neck = new THREE.Mesh(this.unit, m.skin);
+    this.head.add(riderHead(m));
+    this.body.add(this.torso, this.band, this.shorts, this.neck, this.head);
     for (const side of [-1, 1]) {
       const upper = new THREE.Mesh(this.unit, m.light);
       const lower = new THREE.Mesh(this.unit, m.skin);
-      this.body.add(upper, lower);
-      this.arms.push({ upper, lower, side });
+      const glove = new THREE.Mesh(this.shapes.glove, m.glove);
+      this.body.add(upper, lower, glove);
+      this.arms.push({ upper, lower, glove, side });
     }
-    this.bottle = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.2, 6), m.jersey);
+    this.bottle = new THREE.Mesh(new THREE.CylinderGeometry(0.033, 0.033, 0.2, 8), m.bidon);
     this.body.add(this.bottle);
     this.group.add(this.body);
     for (const side of [-1, 1]) {
-      const thigh = new THREE.Mesh(this.unit, m.shorts);
-      const shin = new THREE.Mesh(this.unit, m.skin);
-      this.group.add(thigh, shin);
-      this.legs.push({ thigh, shin, side });
+      const thigh = new THREE.Mesh(this.shapes.thigh, m.shorts);
+      const knee = new THREE.Mesh(this.unit, m.skin);
+      const cap = new THREE.Mesh(this.shapes.knee, m.skin);
+      const shin = new THREE.Mesh(this.shapes.shin, m.skin);
+      const sock = new THREE.Mesh(this.unit, m.sock);
+      const shoe = new THREE.Mesh(this.shapes.shoe, m.shoe);
+      this.group.add(thigh, knee, cap, shin, sock, shoe);
+      this.legs.push({ thigh, knee, cap, shin, sock, shoe, side });
     }
     this.pose();
   }
@@ -140,7 +159,9 @@ export class RiderFigure {
     const away = stop === "parked";
     this.body.visible = !away;
     this.shadow.visible = !away;
-    for (const leg of this.legs) leg.thigh.visible = leg.shin.visible = !away;
+    for (const leg of this.legs)
+      for (const part of [leg.thigh, leg.knee, leg.cap, leg.shin, leg.sock, leg.shoe])
+        part.visible = !away;
     this.pose();
   }
 
@@ -151,7 +172,7 @@ export class RiderFigure {
   animate(seconds: number, cadence: number, speed: number, posture: Posture = "seated"): void {
     this.crank = (this.crank + (cadence / 60) * 2 * Math.PI * seconds) % (2 * Math.PI);
     this.cadence = cadence;
-    for (const wheel of this.wheels) wheel.rotation.x -= (speed / WHEEL) * seconds;
+    this.bike.turn(speed * seconds, this.crank);
     const aim = this.stop === "riding" ? posture : "seated";
     const k = Math.min(1, seconds * EASE);
     for (const p of ["seated", "standing", "tuck"] as const)
@@ -164,11 +185,14 @@ export class RiderFigure {
   }
 
   dispose(): void {
-    this.group.traverse((child) => {
-      if (child instanceof THREE.Mesh && child.geometry !== this.unit) child.geometry.dispose();
+    const shared = new Set<THREE.BufferGeometry>([this.unit, ...Object.values(this.shapes)]);
+    this.body.traverse((child) => {
+      if (child instanceof THREE.Mesh && !shared.has(child.geometry)) child.geometry.dispose();
     });
-    this.unit.dispose();
+    this.shadow.geometry.dispose();
+    for (const geometry of shared) geometry.dispose();
     for (const material of Object.values(this.materials)) material.dispose();
+    this.bike.dispose();
   }
 
   private pose(): void {
@@ -187,21 +211,35 @@ export class RiderFigure {
             BB.y - CRANK * Math.sin(angle),
             BB.z - CRANK * Math.cos(angle),
           );
-      const knee = twoBones(hip, foot, THIGH, SHIN, KNEE_POLE);
-      this.place(leg.thigh, hip, knee, 0.07);
-      this.place(leg.shin, knee, foot, 0.05);
+      const ankle = foot.clone().add(new THREE.Vector3(0, 0.05, 0.045));
+      const knee = twoBones(hip, ankle, THIGH, SHIN, KNEE_POLE);
+      this.place(leg.thigh, hip, hip.clone().lerp(knee, 0.84), 0.072);
+      this.place(leg.knee, hip.clone().lerp(knee, 0.8), knee, 0.053);
+      leg.cap.position.copy(knee);
+      this.place(leg.shin, knee, ankle, 0.052);
+      this.place(leg.sock, knee.clone().lerp(ankle, 0.8), ankle, 0.046);
+      // The shoe on the pedal: the cleat under the ball of the foot, the heel behind.
+      leg.shoe.position.copy(foot).add(new THREE.Vector3(0, 0.03, 0.055));
+      leg.shoe.rotation.x = down ? 0 : TOE;
     }
     const along = new THREE.Vector3().subVectors(pose.shoulders, pose.hips).normalize();
-    this.place(this.torso, pose.hips, pose.shoulders, 0.17);
+    this.place(this.torso, pose.hips, pose.shoulders, 0.15, 0.115);
+    const at = (f: number) => pose.hips.clone().lerp(pose.shoulders, f);
+    // The band a hair wider than the jersey where it runs round it.
+    this.place(this.band, at(0.5), at(0.6), 0.177, 0.136);
+    // The pelvis in bib shorts, round over the saddle and over the jersey's hem.
+    this.shorts.position.copy(pose.hips).addScaledVector(along, 0.03);
+    this.shorts.quaternion.setFromUnitVectors(UP, along);
+    this.shorts.scale.set(0.155, 0.12, 0.15);
     this.place(
-      this.shorts,
-      pose.hips.clone().add(new THREE.Vector3(0, 0.01, 0.01)),
-      pose.hips.clone().addScaledVector(along, 0.1),
-      0.18,
+      this.neck,
+      at(0.95),
+      pose.head.clone().add(new THREE.Vector3(0, -0.05, 0.03)),
+      0.045,
     );
+    // The head tips with the body only a little: the rider looks up the road.
     this.head.position.copy(pose.head);
-    this.helmet.position.copy(pose.head).add(new THREE.Vector3(0, 0.02, 0.01));
-    this.helmet.rotation.x = pose.helmet;
+    this.head.rotation.x = pose.helmet * 0.4;
     for (const arm of this.arms) {
       const lift = arm.side > 0 ? this.lift : 0;
       const shoulder = pose.shoulders.clone().add(new THREE.Vector3(arm.side * 0.16, -0.02, 0.02));
@@ -209,8 +247,9 @@ export class RiderFigure {
       const mouth = pose.head.clone().add(new THREE.Vector3(0.07, -0.06, -0.04));
       const hand = pose.hands[arm.side > 0 ? 1 : 0]!.clone().lerp(mouth, lift);
       const elbow = twoBones(shoulder, hand, UPPER_ARM, FOREARM, ELBOW_POLE(arm.side));
-      this.place(arm.upper, shoulder, elbow, 0.045);
-      this.place(arm.lower, elbow, hand, 0.04);
+      this.place(arm.upper, shoulder, elbow, 0.048);
+      this.place(arm.lower, elbow, hand, 0.038);
+      arm.glove.position.copy(hand);
       if (arm.side > 0) {
         this.bottle.visible = this.stop === "bottle";
         this.bottle.position.copy(hand).add(new THREE.Vector3(0, 0.02, 0));
@@ -219,17 +258,18 @@ export class RiderFigure {
     }
   }
 
-  private tube(a: THREE.Vector3, b: THREE.Vector3, radius: number, material: THREE.Material) {
-    const mesh = new THREE.Mesh(this.unit, material);
-    this.place(mesh, a, b, radius);
-    return mesh;
-  }
-
-  private place(mesh: THREE.Mesh, a: THREE.Vector3, b: THREE.Vector3, radius: number): void {
+  /** A shape from `a` to `b`, `radius` across and `depth` (if other) front to back. */
+  private place(
+    mesh: THREE.Mesh,
+    a: THREE.Vector3,
+    b: THREE.Vector3,
+    radius: number,
+    depth = radius,
+  ): void {
     const along = new THREE.Vector3().subVectors(b, a);
     const length = along.length() || 1e-3;
     mesh.position.copy(a).addScaledVector(along, 0.5);
     mesh.quaternion.setFromUnitVectors(UP, along.divideScalar(length));
-    mesh.scale.set(radius, length, radius);
+    mesh.scale.set(radius, length, depth);
   }
 }
