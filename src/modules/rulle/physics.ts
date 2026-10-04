@@ -2,8 +2,10 @@
  * Rulle's physics, in one dimension: the rider is a distance along the
  * course, and the speed there comes from the watts against what a road
  * puts up — the slope pulling the mass back, the tyres rolling, the air.
- * The equations every riding app uses; the numbers are a rider on the
- * hoods of a road bike on good asphalt.
+ * The equations every riding app uses; the numbers are a rider low on
+ * the drops of a road bike on good asphalt, so 420 W on the flat is about
+ * 47 km/h — what a rider expects of an indoor ride, a little quicker than
+ * the same watts on the hoods outside.
  *
  * The mass is a fixed standard, 70 kg of rider and 8 of bike, and it is
  * never shown: Rulle reads no body data (ADR 0013, 0031). A light rider
@@ -19,8 +21,8 @@ export const PHYSICS = {
   massKg: 78,
   /** The bike's share of it, kg. */
   bikeKg: 8,
-  /** Drag area, m²: a rider on the hoods. */
-  cda: 0.35,
+  /** Drag area, m²: a rider low on the drops (on the hoods it is nearer 0.35). */
+  cda: 0.28,
   /** Rolling resistance of a road tyre on asphalt. */
   crr: 0.004,
   /** Air density at sea level, 15 °C, kg/m³. */
