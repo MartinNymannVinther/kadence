@@ -46,17 +46,23 @@ function challenge(engine: RideEngine, seconds: number) {
 const over = (said: RaceLive[]) => said.find((r) => r?.phase === "over");
 
 describe("the challenger's race", () => {
-  it("only comes of itself to a rider who sets their own watts", () => {
+  it("only comes to a free ride, of himself or called by name, never into a session", () => {
     const k = Array.from({ length: 50 }, (_, i) => i).find((i) => challengeIn(course, i))!;
     const start = challengeIn(course, k)!.at;
-    const held = new Race(course);
+    const session = new Race(course);
     const free = new Race(course);
     for (let at = start - 50; at < start + 50; at++) {
-      held.advance(at, 10, 250, 0.1, false);
+      session.advance(at, 10, 250, 0.1, false);
       free.advance(at, 10, 250, 0.1, true);
     }
-    expect(held.live()).toBeNull();
+    expect(session.live()).toBeNull();
     expect(free.live()?.phase).toBe("countdown");
+    session.call();
+    expect(session.live()).toBeNull();
+    const called = new Race(course);
+    called.advance(100, 10, 250, 0.1, true);
+    called.call();
+    expect(called.live()?.phase).toBe("countdown");
   });
 
   it("counts down from ten alongside at the rider's speed, then starts level", () => {
@@ -86,13 +92,13 @@ describe("the challenger's race", () => {
     expect(raced.engine.recording!.power).toEqual(plain.engine.recording!.power);
   });
 
-  it("stays with a strong rider, wheel to wheel, and comes round in the sprint", () => {
+  it("goes wheel to wheel with a rider on 480 W, each in the other's slipstream, and wins the sprint", () => {
     const raced = setup(480);
     raced.ride(0, 5);
     challenge(raced.engine, 5);
     raced.ride(5, 200);
     const together = raced.said
-      .slice(40)
+      .slice(45)
       .filter((r) => r?.phase === "racing" && r.left > 250)
       .map((r) => (r?.phase === "racing" ? r.gap : 0));
     expect(together.length).toBeGreaterThan(30);
@@ -100,32 +106,14 @@ describe("the challenger's race", () => {
     expect(over(raced.said)).toMatchObject({ phase: "over", won: false });
   });
 
-  it("holds the wheel of a rider who attacks him, and comes round in the sprint", () => {
+  it("rides his own watts whatever the rider does: an attack he does not answer wins", () => {
     const raced = setup(480);
     raced.ride(0, 5);
     challenge(raced.engine, 5);
     raced.ride(5, 125);
-    raced.ride(125, 200, 700);
-    const attack = raced.said
-      .slice(128)
-      .filter((r) => r?.phase === "racing" && r.left > 250)
-      .map((r) => (r?.phase === "racing" ? r.gap : 0));
-    expect(attack.length).toBeGreaterThan(5);
-    for (const gap of attack) {
-      expect(gap).toBeGreaterThan(0);
-      expect(gap).toBeLessThan(2.5);
-    }
-    expect(over(raced.said)).toMatchObject({ phase: "over", won: false });
-  });
-
-  it("is beaten by a rider who goes long, far harder than his sprint", () => {
-    const raced = setup(480);
-    raced.ride(0, 5);
-    challenge(raced.engine, 5);
-    raced.ride(5, 130);
-    raced.ride(130, 200, 1300);
+    raced.ride(125, 200, 1000);
     const result = over(raced.said);
     expect(result).toMatchObject({ phase: "over", won: true });
-    expect(result?.phase === "over" && result.margin).toBeGreaterThan(5);
+    expect(result?.phase === "over" && result.margin).toBeGreaterThan(50);
   });
 });

@@ -1,10 +1,9 @@
 import * as THREE from "three";
-import type { Posture } from "@/modules/rulle";
 import { RIDER_KIT, type Kit } from "./kits";
 import { kitMaterials, type KitMaterials } from "./rider-materials";
 import { BB, CRANK, RoadBike } from "./road-bike";
 import { riderHead } from "./rider-head";
-import { poseOf, twoBones, type Blend } from "./rider-pose";
+import { poseOf, POSTURES, twoBones, type Blend, type FigurePosture } from "./rider-pose";
 
 /**
  * The rider on the screen: a low-poly cyclist in Kadence's moss green on
@@ -34,6 +33,8 @@ const UP = new THREE.Vector3(0, 1, 0);
 /** Knees bend forward; elbows out, down and back. */
 const KNEE_POLE = new THREE.Vector3(0, 0.3, -1);
 const ELBOW_POLE = (side: number) => new THREE.Vector3(side * 0.7, -0.4, 0.6);
+/** In the aero posture, the elbows straight down and back, under the shoulders. */
+const AERO_ELBOW_POLE = (side: number) => new THREE.Vector3(side * 0.25, -0.6, 0.75);
 /** How quickly the rider eases from one posture to the next, per second. */
 const EASE = 3;
 /** The shoe's toe a little down on the pedal, radians. */
@@ -76,7 +77,7 @@ export class RiderFigure {
   private readonly shadow: THREE.Mesh;
   private crank = 0;
   private cadence = 0;
-  private blend: Blend = { seated: 1, standing: 0, tuck: 0 };
+  private blend: Blend = { seated: 1, standing: 0, tuck: 0, aero: 0 };
   /** The bike's lean from side to side out of the saddle, radians, to the left positive. */
   roll = 0;
   private stop: Stop = "riding";
@@ -156,14 +157,18 @@ export class RiderFigure {
    * Moves the legs and wheels on by `seconds` at this cadence and speed,
    * easing toward `posture`; stopped, the rider sits.
    */
-  animate(seconds: number, cadence: number, speed: number, posture: Posture = "seated"): void {
+  animate(
+    seconds: number,
+    cadence: number,
+    speed: number,
+    posture: FigurePosture = "seated",
+  ): void {
     this.crank = (this.crank + (cadence / 60) * 2 * Math.PI * seconds) % (2 * Math.PI);
     this.cadence = cadence;
     this.bike.turn(speed * seconds, this.crank);
     const aim = this.stop === "riding" ? posture : "seated";
     const k = Math.min(1, seconds * EASE);
-    for (const p of ["seated", "standing", "tuck"] as const)
-      this.blend[p] += ((p === aim ? 1 : 0) - this.blend[p]) * k;
+    for (const p of POSTURES) this.blend[p] += ((p === aim ? 1 : 0) - this.blend[p]) * k;
     this.stopped += seconds;
     // Stopped: a drink every five seconds or so, the bottle at the mouth for a moment.
     const drinking = this.stop === "bottle" && this.stopped % 5 > 1.2 && this.stopped % 5 < 3.4;
@@ -237,7 +242,8 @@ export class RiderFigure {
       // The right hand to the mouth with the bottle, when stopped.
       const mouth = pose.head.clone().add(new THREE.Vector3(0.07, -0.06, -0.04));
       const hand = pose.hands[arm.side > 0 ? 1 : 0]!.clone().lerp(mouth, lift);
-      const elbow = twoBones(shoulder, hand, UPPER_ARM, FOREARM, ELBOW_POLE(arm.side));
+      const pole = ELBOW_POLE(arm.side).lerp(AERO_ELBOW_POLE(arm.side), pose.aero);
+      const elbow = twoBones(shoulder, hand, UPPER_ARM, FOREARM, pole);
       this.place(arm.upper, shoulder, elbow, 0.048);
       const sleeve = (f: number) => shoulder.clone().lerp(elbow, f);
       arm.stripes.forEach((band, i) =>

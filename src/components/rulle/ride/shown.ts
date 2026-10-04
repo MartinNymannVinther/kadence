@@ -32,7 +32,7 @@ export class Shown {
 
   /**
    * `seconds` more ridden at `speed` on `watts`, `distance` in: the shifts
-   * run on. `free` when the rider sets their own watts, for the challenger.
+   * run on. `free` on a ride with no session, where the challenger may come.
    */
   advance(distance: number, speed: number, seconds: number, watts = 0, free = false): void {
     this.warp.advance(speed, seconds);

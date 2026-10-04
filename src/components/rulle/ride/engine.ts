@@ -286,7 +286,7 @@ export class RideEngine {
       : (this.blockWatts() ?? DRAWN_WATTS);
     this.speed = nextSpeed(this.speed, watts, courseAt(this.course, this.distance).grade, dt);
     this.distance += this.speed * dt;
-    this.shown.advance(this.distance, this.speed, dt, watts, this.target() === null);
+    this.shown.advance(this.distance, this.speed, dt, watts, this.timeline === null);
   }
 
   private blockWatts(): number | null {

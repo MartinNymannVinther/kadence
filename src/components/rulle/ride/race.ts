@@ -6,7 +6,6 @@ import {
   draft,
   nextSpeed,
   PHYSICS,
-  resistance,
   swayAt,
   type ChallengerAt,
   type ChallengeStart,
@@ -17,12 +16,12 @@ import {
  * The challenger's race (ADR 0049), where the rider is shown: when the
  * rider comes to a place he turns up (`challengeIn`), he comes up beside
  * them, rides at their speed while ten seconds are counted down, and
- * races them for two kilometres on his own plan of watts, sitting on
- * their wheel when they attack. Behind him the rider pushes less
- * air, and is shown going faster for it: a shift like the cheat code's
- * (`shown.ts`), so what is recorded is still what was ridden. A trainer
- * holding the session's watts leaves nothing to race with, so he only
- * turns up where the rider sets their own. No React and no browser in it.
+ * races them for two kilometres on his own plan of watts, whatever they
+ * do. Behind him the rider pushes less air, and is shown going faster for
+ * it: a shift like the cheat code's (`shown.ts`), so what is recorded is
+ * still what was ridden; behind the rider, so does he. He only comes on a
+ * free ride, never into a session — of himself, or called by JOHAN. No
+ * React and no browser in it.
  */
 
 /** What the screen shows of a race: counted down; on, with what is left and the gap; or over, and who won. */
@@ -36,8 +35,6 @@ export type RaceLive =
 const ALONGSIDE = 0.55;
 /** How fast he moves across the road, metres a second. */
 const ACROSS = 1.2;
-/** He sits this far behind a wheel he follows, metres. */
-const WHEEL = 1;
 /** He comes up from this far behind, and closes up to the rider's side this fast at most. */
 const COMES_UP = { behind: 5, closing: 1.5 };
 /** Seconds the result stays up, and he with it, after the line; and the watts he eases to. */
@@ -50,8 +47,6 @@ type Running = {
   count: number;
   /** Where it ends, set at the start: Infinity while counting down. */
   end: number;
-  /** His watts at the start, which he builds up from. */
-  from: number;
   him: number;
   v: number;
   seconds: number;
@@ -67,6 +62,9 @@ export class Race {
   private next: ChallengeStart | null = null;
   private run: Running | null = null;
   private rider = 0;
+  private speedNow = 0;
+  /** Whether the ride is free, no session in it: where he may come. */
+  private free = false;
 
   constructor(private readonly course: Course) {}
 
@@ -87,7 +85,6 @@ export class Race {
       start: { at: rider, hill },
       count: CHALLENGE.countdown,
       end: Infinity,
-      from: 0,
       him: rider - COMES_UP.behind,
       v: speed,
       seconds: 0,
@@ -97,15 +94,22 @@ export class Race {
     };
   }
 
+  /** Called by name (JOHAN): he comes now, on a free ride; into a session, not at all. */
+  call(): void {
+    if (this.free) this.begin(this.rider, this.speedNow);
+  }
+
   /**
    * `seconds` more, the rider shown at `rider` going `speed` on `watts`;
-   * `free` when the rider sets their own watts, and he may turn up.
+   * `free` on a ride with no session, where he may come.
    */
   advance(rider: number, speed: number, watts: number, seconds: number, free: boolean): void {
     // Where the rider was at the last step, as he still is: the two are compared there.
     const was = this.rider;
     const moved = seconds > 0 ? (rider - was) / seconds : speed;
     this.rider = rider;
+    this.speedNow = speed;
+    this.free = free;
     if (!this.run) this.schedule(rider, speed, free);
     const run = this.run;
     if (!run || seconds <= 0) return;
@@ -124,7 +128,7 @@ export class Race {
     // Both from where they were before either moved: the one behind is in the other's wheel.
     const ahead = was - run.him;
     const air = draft(-ahead);
-    this.ride(run, ahead, moved, seconds);
+    this.ride(run, ahead, seconds);
     // The rider in his wheel pushes less air; out of it, back to their own speed.
     run.bonus =
       air < 1
@@ -155,7 +159,7 @@ export class Race {
     const run = this.run;
     if (!run) return null;
     const on = !run.over && run.count === 0;
-    const sprinting = on && (run.end - run.him <= 200 || run.seconds < CHALLENGE.build);
+    const sprinting = on && (run.end - run.him <= 200 || run.seconds < 7);
     return {
       distance: run.him + run.v * since,
       finish: run.count > 0 ? null : run.end,
@@ -166,16 +170,10 @@ export class Race {
     };
   }
 
-  /** His step: his plan, or faster to get on the rider's wheel when they are ahead. */
-  private ride(run: Running, ahead: number, riderSpeed: number, seconds: number): void {
-    const grade = this.grade(run.him);
-    const air = draft(ahead);
-    const go = (watts: number) => nextSpeed(run.v, watts, grade, seconds, CHALLENGE.massKg, air);
-    let v = go(challengerWatts(run.seconds, run.end - run.him, run.from));
-    if (ahead > WHEEL + 0.2) {
-      const wanted = riderSpeed + 0.6 * (ahead - WHEEL);
-      v = Math.max(v, Math.min(go(CHALLENGE.chaseWatts), wanted));
-    }
+  /** His step: his watts, in the rider's wheel when they are ahead of him. */
+  private ride(run: Running, ahead: number, seconds: number): void {
+    const watts = challengerWatts(run.seconds, run.end - run.him);
+    const v = nextSpeed(run.v, watts, this.grade(run.him), seconds, CHALLENGE.massKg, draft(ahead));
     run.v = v;
     run.him += v * seconds;
     run.seconds += seconds;
@@ -187,8 +185,7 @@ export class Race {
 
   /**
    * The countdown: up beside the rider and then at their very speed; at
-   * its end the race is on, two kilometres from there, and he starts from
-   * the watts that held that speed.
+   * its end the race is on, two kilometres from there.
    */
   private countDown(
     run: Running,
@@ -204,8 +201,6 @@ export class Race {
     if (run.count > 0) return;
     run.end = rider + CHALLENGE.length;
     run.seconds = 0;
-    const holding = run.v * resistance(run.v, this.grade(run.him), CHALLENGE.massKg);
-    run.from = Math.max(100, holding);
   }
 
   /** The stretch the rider is in, and whether he turns up in it now. */
@@ -218,7 +213,7 @@ export class Race {
     const next = this.next;
     if (!next || rider < next.at) return;
     this.next = null;
-    // A trainer holding the watts leaves nothing to race with: he lets the rider be.
+    // A session is the coach's: he only comes on a free ride.
     if (free) this.begin(rider, speed, next.hill);
   }
 

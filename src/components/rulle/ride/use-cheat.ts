@@ -10,7 +10,8 @@ import type { CheatMode, Push } from "./cheat";
  * fanfare; then W/S or ↑/↓ for the speed, or on WATT for the watts, and
  * A/D or ←/→ to steer, held down, while the arrows leave the session
  * alone. The same code again, or five more taps, and it is off; the other
- * code goes over to it. JOHAN calls the challenger up at once.
+ * code goes over to it. JOHAN calls the challenger up at once, on a free
+ * ride; in a session it does nothing.
  *
  * A letter that carries on a code being typed is the code's: the H in
  * JOHAN does not show the speed. This hook's keys are heard before the

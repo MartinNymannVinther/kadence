@@ -10,11 +10,12 @@ import { courseAt, type Course } from "./route/course";
  * stretch: the same ride meets him in the same places.
  *
  * He comes up alongside and rides at the rider's speed while ten seconds
- * are counted down; then he builds over ten seconds from the watts that
- * held that speed to 900 W, rides 460 W for a minute, 360 W from there,
- * and 800 W for the last 200 metres — at about 66 kg, 7 W/kg for the
- * minute — and sits on the rider's wheel when they attack. Behind another
- * rider either of them pushes less air (`draft`). Pure.
+ * are counted down; then he rides his own watts whatever the rider does:
+ * 800 W for the first 7 seconds and 460 W for the rest of the first
+ * minute — about 7 W/kg at 66 kg — 360 W from there, and 800 W for the
+ * last 200 metres. Behind another rider either of them pushes less air
+ * (`draft`), so the one in the other's wheel goes faster on the same
+ * watts. Pure.
  */
 
 export const CHALLENGE = {
@@ -22,9 +23,8 @@ export const CHALLENGE = {
   every: 10_000,
   /** The race, metres from the start. */
   length: 2000,
-  /** Seconds counted down alongside before the start, and over which he builds to 900 W after it. */
+  /** Seconds counted down alongside before the start. */
   countdown: 10,
-  build: 10,
   /** The chance he turns up in a stretch with a climb in it, and in one without. */
   hill: 0.2,
   flat: 0.1,
@@ -36,8 +36,6 @@ export const CHALLENGE = {
   beforeFoot: 150,
   /** He and his bike, kg: 460 W is about 7 W/kg. */
   massKg: 66 + 8,
-  /** The most he pushes to stay on a wheel. */
-  chaseWatts: 1100,
 } as const;
 
 /** Where he is for the landscape: on the road, how fast, and his legs; and the line. */
@@ -79,14 +77,14 @@ export function challengeIn(course: Course, k: number): ChallengeStart | null {
 }
 
 /**
- * His watts, `seconds` after the start with `left` metres to go, having
- * started on `from` watts: built up to 900 W over ten seconds, then a
- * minute at 460 W, 360 W, and 800 W for the last 200 metres.
+ * His watts, `seconds` after the start with `left` metres to go: 800 W for
+ * 7 seconds, 460 W to the end of the first minute, 360 W, and 800 W for
+ * the last 200 metres. The same whatever the rider does.
  */
-export function challengerWatts(seconds: number, left: number, from = 0): number {
+export function challengerWatts(seconds: number, left: number): number {
   if (left <= 200) return 800;
-  if (seconds < CHALLENGE.build) return from + ((900 - from) * seconds) / CHALLENGE.build;
-  if (seconds < CHALLENGE.build + 60) return 460;
+  if (seconds < 7) return 800;
+  if (seconds < 60) return 460;
   return 360;
 }
 

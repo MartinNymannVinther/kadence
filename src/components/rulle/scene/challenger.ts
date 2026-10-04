@@ -8,8 +8,9 @@ import { RiderFigure } from "./rider";
 /**
  * The challenger on the road (ADR 0049): the rider's own figure and bike
  * in his red and white, placed where the race has him — beside the
- * rider, in their wheel or ahead of them — low and aero on the flat, out
- * of the saddle as he builds from the start and in the sprint; and the
+ * rider, in their wheel or ahead of them — flat and aero where the road
+ * would have him in the saddle, out of it in his first seconds and in the
+ * sprint; and the
  * line where the race ends (`ChallengeLine`). Made the first time he
  * comes, and hidden between races.
  */
@@ -52,7 +53,7 @@ export class ChallengerScene {
       0,
     );
     this.road = postureAt(this.course, at.distance, at.speed, at.cadence, this.road);
-    const posture = at.standing ? "standing" : this.road === "seated" ? "tuck" : this.road;
+    const posture = at.standing ? "standing" : this.road === "seated" ? "aero" : this.road;
     figure.animate(seconds, at.cadence, at.speed, posture);
     bike.rotation.z = figure.roll;
   }

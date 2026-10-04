@@ -6,12 +6,18 @@ import type { Posture } from "@/modules/rulle";
  * postures (`postureAt`): in the saddle with the hands on the hoods; out
  * of the saddle, hips over the cranks, the bike rocking from side to side
  * under a rider who stays upright, once each pedal stroke; and tucked, a
- * flat back and the hands in the drops. In the bike's own coordinates:
+ * flat back and the hands in the drops — and a fourth no road calls for,
+ * the challenger's (ADR 0049): flat and aero, the upper arms straight
+ * down and the forearms forward along the tops. In the bike's own coordinates:
  * facing -z, y up, x to the rider's right. The legs and arms are hung
  * from these points by `twoBones`.
  */
 
-export type Blend = Record<Posture, number>;
+/** The postures a figure rides in: the road's (`Posture`), and the challenger's aero one. */
+export type FigurePosture = Posture | "aero";
+export const POSTURES: readonly FigurePosture[] = ["seated", "standing", "tuck", "aero"];
+
+export type Blend = Record<FigurePosture, number>;
 
 type Anchor = {
   hips: THREE.Vector3;
@@ -27,7 +33,7 @@ type Anchor = {
 
 const v = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z);
 
-const ANCHORS: Record<Posture, Anchor> = {
+const ANCHORS: Record<FigurePosture, Anchor> = {
   seated: {
     hips: v(0, 0.98, 0.19),
     shoulders: v(0, 1.36, -0.27),
@@ -52,6 +58,14 @@ const ANCHORS: Record<Posture, Anchor> = {
     hipWidth: 0.085,
     helmet: -0.85,
   },
+  aero: {
+    hips: v(0, 1.0, 0.15),
+    shoulders: v(0, 1.16, -0.35),
+    head: v(0, 1.27, -0.49),
+    hand: v(0.09, 0.975, -0.55),
+    hipWidth: 0.085,
+    helmet: -0.25,
+  },
 };
 
 export type Pose = {
@@ -63,6 +77,8 @@ export type Pose = {
   helmet: number;
   /** The bike's lean, radians, positive to the left. */
   roll: number;
+  /** How much of the aero posture is in it, 0 to 1: the elbows go down and back for it. */
+  aero: number;
 };
 
 /** How far the bike rocks from side to side out of the saddle, radians. */
@@ -82,12 +98,11 @@ const UPRIGHT = 0.8;
 export function poseOf(blend: Blend, crank: number, cadence: number): Pose {
   const mix = (pick: (a: Anchor) => THREE.Vector3) => {
     const out = new THREE.Vector3();
-    for (const posture of ["seated", "standing", "tuck"] as const)
-      out.addScaledVector(pick(ANCHORS[posture]), blend[posture]);
+    for (const posture of POSTURES) out.addScaledVector(pick(ANCHORS[posture]), blend[posture]);
     return out;
   };
   const num = (pick: (a: Anchor) => number) =>
-    (["seated", "standing", "tuck"] as const).reduce((s, p) => s + pick(ANCHORS[p]) * blend[p], 0);
+    POSTURES.reduce((s, p) => s + pick(ANCHORS[p]) * blend[p], 0);
   const pedalling = Math.min(1, cadence / 60);
   // Out of the saddle the bike leans away from the foot pushing down, and the
   // hips dip with each stroke; in it, only a little sway.
@@ -108,6 +123,7 @@ export function poseOf(blend: Blend, crank: number, cadence: number): Pose {
     hipWidth: num((a) => a.hipWidth),
     helmet: num((a) => a.helmet),
     roll,
+    aero: blend.aero,
   };
 }
 

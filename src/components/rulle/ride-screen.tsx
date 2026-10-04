@@ -238,7 +238,7 @@ export function RideScreen({
           )}
           {live?.race && !bare && <RaceBanner race={live.race} beeps={beeps} />}
           {process.env.NODE_ENV === "development" && live && (
-            <DevWarp onWarp={ride.setWarp} onChallenge={ride.challenge} hidden={bare} />
+            <DevWarp onWarp={ride.setWarp} onChallenge={ride.summon} hidden={bare} />
           )}
         </div>
         {live && !bare && (
