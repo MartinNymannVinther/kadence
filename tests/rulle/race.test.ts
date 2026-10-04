@@ -46,7 +46,7 @@ function challenge(engine: RideEngine, seconds: number) {
 const over = (said: RaceLive[]) => said.find((r) => r?.phase === "over");
 
 describe("the challenger's race", () => {
-  it("only comes to a rider who sets their own watts", () => {
+  it("only comes of itself to a rider who sets their own watts", () => {
     const k = Array.from({ length: 50 }, (_, i) => i).find((i) => challengeIn(course, i))!;
     const start = challengeIn(course, k)!.at;
     const held = new Race(course);
@@ -56,16 +56,28 @@ describe("the challenger's race", () => {
       free.advance(at, 10, 250, 0.1, true);
     }
     expect(held.live()).toBeNull();
-    expect(free.live()?.phase).toBe("racing");
+    expect(free.live()?.phase).toBe("countdown");
+  });
+
+  it("counts down from ten alongside at the rider's speed, then starts level", () => {
+    const raced = setup(300);
+    raced.ride(0, 5);
+    challenge(raced.engine, 5);
+    raced.ride(5, 16);
+    const counts = raced.said.slice(5, 15).map((r) => (r?.phase === "countdown" ? r.count : 0));
+    expect(counts).toEqual([10, 9, 8, 7, 6, 5, 4, 3, 2, 1]);
+    const start = raced.said[15];
+    expect(start?.phase).toBe("racing");
+    expect(Math.abs(start?.phase === "racing" ? start.gap : 99)).toBeLessThan(1);
   });
 
   it("rides away from a rider on 200 W and wins, and what is recorded is what was ridden", () => {
     const plain = setup(200);
-    plain.ride(0, 260);
+    plain.ride(0, 280);
     const raced = setup(200);
     raced.ride(0, 5);
     challenge(raced.engine, 5);
-    raced.ride(5, 260);
+    raced.ride(5, 280);
     const result = over(raced.said);
     expect(result).toMatchObject({ phase: "over", won: false });
     expect(result?.phase === "over" && result.margin).toBeGreaterThan(50);
@@ -74,18 +86,18 @@ describe("the challenger's race", () => {
     expect(raced.engine.recording!.power).toEqual(plain.engine.recording!.power);
   });
 
-  it("attacks a strong rider, who works back up to him in his slipstream", () => {
+  it("stays with a strong rider, wheel to wheel, and comes round in the sprint", () => {
     const raced = setup(480);
     raced.ride(0, 5);
     challenge(raced.engine, 5);
-    raced.ride(5, 125);
-    const gapAt = (second: number) => {
-      const r = raced.said[second];
-      return r?.phase === "racing" ? r.gap : NaN;
-    };
-    // His 900 W and his minute put him well clear; the rider on 480 W comes back.
-    expect(gapAt(40)).toBeLessThan(-20);
-    expect(Math.abs(gapAt(124))).toBeLessThan(4);
+    raced.ride(5, 200);
+    const together = raced.said
+      .slice(40)
+      .filter((r) => r?.phase === "racing" && r.left > 250)
+      .map((r) => (r?.phase === "racing" ? r.gap : 0));
+    expect(together.length).toBeGreaterThan(30);
+    for (const gap of together) expect(Math.abs(gap)).toBeLessThan(3);
+    expect(over(raced.said)).toMatchObject({ phase: "over", won: false });
   });
 
   it("holds the wheel of a rider who attacks him, and comes round in the sprint", () => {
@@ -95,20 +107,23 @@ describe("the challenger's race", () => {
     raced.ride(5, 125);
     raced.ride(125, 200, 700);
     const attack = raced.said
-      .slice(126)
+      .slice(128)
       .filter((r) => r?.phase === "racing" && r.left > 250)
       .map((r) => (r?.phase === "racing" ? r.gap : 0));
     expect(attack.length).toBeGreaterThan(5);
-    for (const gap of attack) expect(Math.abs(gap)).toBeLessThan(2.5);
+    for (const gap of attack) {
+      expect(gap).toBeGreaterThan(0);
+      expect(gap).toBeLessThan(2.5);
+    }
     expect(over(raced.said)).toMatchObject({ phase: "over", won: false });
   });
 
-  it("is beaten by a rider who sprints from his wheel far harder than his 800 W", () => {
+  it("is beaten by a rider who goes long, far harder than his sprint", () => {
     const raced = setup(480);
     raced.ride(0, 5);
     challenge(raced.engine, 5);
     raced.ride(5, 130);
-    raced.ride(130, 200, 1500);
+    raced.ride(130, 200, 1300);
     const result = over(raced.said);
     expect(result).toMatchObject({ phase: "over", won: true });
     expect(result?.phase === "over" && result.margin).toBeGreaterThan(5);

@@ -18,14 +18,20 @@ slipstream that makes it easier behind him.
   its foot, so the race goes up it; without, one time in ten, somewhere
   along it. Fixed by the route and the stretch: the same ride meets him
   in the same places.
-- **His race**, two kilometres: 900 W for 7 seconds, 460 W for a minute,
-  360 W from there, and 800 W for the last 200 metres, at 66 kg and a bike
-  — about 7 W/kg for the minute. When the rider is ahead of him he rides
-  as hard as he must, up to 1100 W, to sit a metre behind them; his
-  sprint still comes at 200 metres.
+- **The count, then his race**: he comes up beside the rider and rides at
+  their very speed while ten seconds are counted down; then two
+  kilometres. He builds over ten seconds from the watts that held that
+  speed to 900 W — no jump — rides 460 W for a minute, 360 W from there,
+  and 800 W for the last 200 metres, at 66 kg and a bike: about 7 W/kg
+  for the minute. When the rider is ahead of him he rides as hard as he
+  must, up to 1100 W, to sit a metre behind them; his sprint still comes
+  at 200 metres.
 - **The slipstream**: behind another rider, either of them pushes about
   two thirds of the air a wheel's length back, rising to all of it eight
-  metres back; none alongside. `nextSpeed` takes the share.
+  metres back; none alongside, wheels overlapping. `nextSpeed` takes the
+  share. Who is behind whom is judged where both were before the step,
+  and what the wheel gives the rider fades out of it, never below their
+  own speed.
 - **Only where the rider is shown** (`ride/race.ts`), like the cheat
   codes: his place, and the rider's gain in his wheel, are a shift on the
   landscape. What is recorded — watts, time, distance — is what was
@@ -36,9 +42,14 @@ slipstream that makes it easier behind him.
 - **On the screen**: a call in the cheat code's arcade manner as he comes,
   with a fanfare; the distance left and the gap in the road's top corner,
   clear of him on the road; at the line who won and by how much, a
-  cowbell for a win. His figure is the rider's own (`RiderFigure`,
-  `RoadBike`) in his colours (`kits.ts`), out of the saddle in his attack
-  and his sprint.
+  cowbell for a win; a beep for each of the last three of the count and a
+  whistle for the start. An arch over the road in red and white, with the
+  word for the finish and a checkered line, stands where the race ends
+  (`challenge-line.ts`). His figure is the rider's own (`RiderFigure`,
+  `RoadBike`) in his kit (`kits.ts`): a smooth aero helmet with its
+  straps, white bands round the sleeves, red and white at the shorts' leg
+  ends, a number on the seat post; low and aero on the flat, out of the
+  saddle as he builds and in the sprint.
 - **A cheat code, JOHAN**, calls him up at once, wherever the rider is,
   in ERG too: asked for, he comes. The H in it is the code's while it is
   typed, not the ride's speed. Under `next dev`, G does the same.
@@ -46,9 +57,9 @@ slipstream that makes it easier behind him.
 ## Trade-offs accepted
 
 - **A real rider's look, and a first name.** He is drawn from a photo of
-  a real young rider, so he has no face and no maker's logo: a rider in a
-  red jersey with a white band, black shorts, white helmet, socks and
-  shoes, on a black bike with a yellow fork. The screen calls him a rider
+  a real young rider, so he has no face and no maker's logo, and his
+  number has no digits: a rider in red and white, in a white aero helmet,
+  on a black bike with a yellow fork. The screen calls him a rider
   in red and white; only the code that calls him is a first name, which
   is in the open source. The photo is not in the repository.
 - **A race is a ranking of one.** ADR 0013 keeps leaderboards out of

@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { courseAt, postureAt, type ChallengerAt, type Course, type Posture } from "@/modules/rulle";
+import { ChallengeLine } from "./challenge-line";
 import { CHALLENGER_KIT } from "./kits";
 import { castShadows } from "./props";
 import { RiderFigure } from "./rider";
@@ -7,19 +8,26 @@ import { RiderFigure } from "./rider";
 /**
  * The challenger on the road (ADR 0049): the rider's own figure and bike
  * in his red and white, placed where the race has him — beside the
- * rider, in their wheel or ahead of them — out of the saddle in his
- * attack and in the sprint. Made the first time he comes, and hidden
- * between races.
+ * rider, in their wheel or ahead of them — low and aero on the flat, out
+ * of the saddle as he builds from the start and in the sprint; and the
+ * line where the race ends (`ChallengeLine`). Made the first time he
+ * comes, and hidden between races.
  */
 export class ChallengerScene {
   readonly group = new THREE.Group();
   private figure: RiderFigure | null = null;
-  private posture: Posture = "seated";
+  /** The posture the road calls for, and the one he rides in: aero where it says the saddle. */
+  private road: Posture = "seated";
+  private readonly line: ChallengeLine;
 
   constructor(
     private readonly course: Course,
     private readonly shaded: boolean,
-  ) {}
+    finishWord: string,
+  ) {
+    this.line = new ChallengeLine(course, finishWord);
+    this.group.add(this.line.group);
+  }
 
   /** Him at `at`, or nobody; `pointAt` is a point on the road, metres along and right of the middle. */
   frame(
@@ -27,9 +35,11 @@ export class ChallengerScene {
     seconds: number,
     pointAt: (distance: number, offset: number) => THREE.Vector3,
   ): void {
-    this.group.visible = at !== null;
+    this.line.place(at?.finish ?? null);
+    if (this.figure) this.figure.group.visible = at !== null;
     if (!at) return;
     const figure = (this.figure ??= this.make());
+    figure.group.visible = true;
     const bike = figure.group;
     const along = new THREE.Vector3().subVectors(
       pointAt(at.distance + 2, at.line),
@@ -41,15 +51,15 @@ export class ChallengerScene {
       Math.atan2(-along.x, -along.z),
       0,
     );
-    this.posture = at.standing
-      ? "standing"
-      : postureAt(this.course, at.distance, at.speed, at.cadence, this.posture);
-    figure.animate(seconds, at.cadence, at.speed, this.posture);
+    this.road = postureAt(this.course, at.distance, at.speed, at.cadence, this.road);
+    const posture = at.standing ? "standing" : this.road === "seated" ? "tuck" : this.road;
+    figure.animate(seconds, at.cadence, at.speed, posture);
     bike.rotation.z = figure.roll;
   }
 
   dispose(): void {
     this.figure?.dispose();
+    this.line.dispose();
   }
 
   private make(): RiderFigure {

@@ -3180,8 +3180,8 @@
     },
     "challenge": {
       "title": "Challenge",
-      "on": "A rider in red and white comes up beside you. A race over the next 2 km.",
-      "onHill": "A rider in red and white comes up beside you. A race up the hill, 2 km.",
+      "on": "A rider in red and white comes up beside you. A race over 2 km once the count is down.",
+      "onHill": "A rider in red and white comes up beside you. A race up the hill, 2 km, once the count is down.",
       "draft": "In his wheel, he takes the wind for you. Attack, and he gets on yours.",
       "honest": "Only the landscape races. The ride is saved as you rode it.",
       "badge": "Race",
@@ -3191,7 +3191,8 @@
       "level": "side by side",
       "won": "You won",
       "lost": "He won",
-      "margin": "by {m} m"
+      "margin": "by {m} m",
+      "go": "Go"
     }
   }
 }

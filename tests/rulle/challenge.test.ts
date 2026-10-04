@@ -63,15 +63,16 @@ describe("where the challenger turns up", () => {
 });
 
 describe("the challenger's watts and his wheel", () => {
-  it("rides 900 W for 7 s, 460 W for a minute, 360 W, and 800 W for the last 200 m", () => {
-    expect(challengerWatts(0, 2000)).toBe(900);
-    expect(challengerWatts(6.9, 1950)).toBe(900);
-    expect(challengerWatts(7, 1900)).toBe(460);
-    expect(challengerWatts(66.9, 1200)).toBe(460);
-    expect(challengerWatts(67, 1100)).toBe(360);
-    expect(challengerWatts(150, 201)).toBe(360);
-    expect(challengerWatts(150, 200)).toBe(800);
-    expect(challengerWatts(5, 150)).toBe(800);
+  it("builds to 900 W over 10 s from where he started, then 460 W for a minute, 360 W, and 800 W for the last 200 m", () => {
+    expect(challengerWatts(0, 2000, 200)).toBe(200);
+    expect(challengerWatts(5, 1950, 200)).toBeCloseTo(550, 9);
+    expect(challengerWatts(9.99, 1900, 200)).toBeCloseTo(899.3, 1);
+    expect(challengerWatts(10, 1900, 200)).toBe(460);
+    expect(challengerWatts(69.9, 1200, 200)).toBe(460);
+    expect(challengerWatts(70, 1100, 200)).toBe(360);
+    expect(challengerWatts(150, 201, 200)).toBe(360);
+    expect(challengerWatts(150, 200, 200)).toBe(800);
+    expect(challengerWatts(5, 150, 200)).toBe(800);
   });
 
   it("is about 7 W/kg for the minute at his weight", () => {

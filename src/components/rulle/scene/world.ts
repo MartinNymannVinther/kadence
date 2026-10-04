@@ -143,7 +143,7 @@ export class World {
     this.listener = new Listener(course, options.land ?? null, city !== null, hooks.hear);
     if (this.shaded) castShadows(this.rider.group);
     this.rider.group.rotation.order = "YXZ";
-    this.challenger = new ChallengerScene(course, this.shaded);
+    this.challenger = new ChallengerScene(course, this.shaded, words.finish);
     this.scene.add(this.land.group, this.small.group, this.rider.group, this.lines.group);
     this.scene.add(this.challenger.group);
     this.finish = options.finish

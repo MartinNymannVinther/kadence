@@ -9,17 +9,22 @@ import { courseAt, type Course } from "./route/course";
  * time in ten, somewhere along it. Where is fixed by the route and the
  * stretch: the same ride meets him in the same places.
  *
- * He rides a plan of his own — 900 W for 7 seconds, 460 W for a minute,
- * 360 W from there, and 800 W for the last 200 metres — at about 66 kg,
- * 7 W/kg for the minute, and sits on the rider's wheel when they attack.
- * Behind another rider either of them pushes less air (`draft`). Pure.
+ * He comes up alongside and rides at the rider's speed while ten seconds
+ * are counted down; then he builds over ten seconds from the watts that
+ * held that speed to 900 W, rides 460 W for a minute, 360 W from there,
+ * and 800 W for the last 200 metres — at about 66 kg, 7 W/kg for the
+ * minute — and sits on the rider's wheel when they attack. Behind another
+ * rider either of them pushes less air (`draft`). Pure.
  */
 
 export const CHALLENGE = {
   /** Metres between the stretches he may turn up in. */
   every: 10_000,
-  /** The race, metres. */
+  /** The race, metres from the start. */
   length: 2000,
+  /** Seconds counted down alongside before the start, and over which he builds to 900 W after it. */
+  countdown: 10,
+  build: 10,
   /** The chance he turns up in a stretch with a climb in it, and in one without. */
   hill: 0.2,
   flat: 0.1,
@@ -35,9 +40,11 @@ export const CHALLENGE = {
   chaseWatts: 1100,
 } as const;
 
-/** Where he is for the landscape: on the road, how fast, and his legs. */
+/** Where he is for the landscape: on the road, how fast, and his legs; and the line. */
 export type ChallengerAt = {
   distance: number;
+  /** Where the race ends, metres ridden: the line across the road; null before the start. */
+  finish: number | null;
   /** Metres right of the road's middle. */
   line: number;
   speed: number;
@@ -71,21 +78,26 @@ export function challengeIn(course: Course, k: number): ChallengeStart | null {
   return { at: from + hash(k, 29, seed) * (to - from), hill: false };
 }
 
-/** His watts, `seconds` into the race with `left` metres to go. */
-export function challengerWatts(seconds: number, left: number): number {
+/**
+ * His watts, `seconds` after the start with `left` metres to go, having
+ * started on `from` watts: built up to 900 W over ten seconds, then a
+ * minute at 460 W, 360 W, and 800 W for the last 200 metres.
+ */
+export function challengerWatts(seconds: number, left: number, from = 0): number {
   if (left <= 200) return 800;
-  if (seconds < 7) return 900;
-  if (seconds < 67) return 460;
+  if (seconds < CHALLENGE.build) return from + ((900 - from) * seconds) / CHALLENGE.build;
+  if (seconds < CHALLENGE.build + 60) return 460;
   return 360;
 }
 
 /**
  * The share of the air a rider `behind` metres behind another still
  * pushes through: about two thirds a wheel's length back, all of it
- * alongside or eight metres back.
+ * alongside — wheels overlapping, less than half a metre — or eight
+ * metres back.
  */
 export function draft(behind: number): number {
-  if (behind < 0.3 || behind >= 8) return 1;
+  if (behind < 0.5 || behind >= 8) return 1;
   if (behind <= 3) return 0.67;
   return 0.67 + ((behind - 3) / 5) * 0.33;
 }

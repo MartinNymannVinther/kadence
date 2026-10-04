@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import type { Posture } from "@/modules/rulle";
 import { RIDER_KIT, type Kit } from "./kits";
-import { PALETTE } from "./palette";
+import { kitMaterials, type KitMaterials } from "./rider-materials";
 import { BB, CRANK, RoadBike } from "./road-bike";
 import { riderHead } from "./rider-head";
 import { poseOf, twoBones, type Blend } from "./rider-pose";
@@ -39,37 +39,8 @@ const EASE = 3;
 /** The shoe's toe a little down on the pedal, radians. */
 const TOE = -0.17;
 
-const lambert = (color: string) => new THREE.MeshLambertMaterial({ color, flatShading: true });
 /** A round shape, `top` as wide as its foot is 1, eight-sided: a tapered limb, a torso. */
 const tapered = (top: number) => new THREE.CylinderGeometry(top, 1, 1, 8);
-
-/** The figure's materials, in a kit's colours. */
-function kitMaterials(kit: Kit) {
-  return {
-    jersey: lambert(kit.jersey),
-    light: lambert(kit.sleeve),
-    band: lambert(kit.band),
-    shorts: lambert(kit.shorts),
-    skin: lambert(kit.skin),
-    helmet: lambert(kit.helmet),
-    dark: lambert(PALETTE.dark),
-    bidon: lambert(PALETTE.bidon),
-    shoe: lambert(kit.shoe),
-    sock: lambert(kit.sock),
-    glove: lambert(kit.glove),
-    lens: new THREE.MeshLambertMaterial({
-      color: kit.lens,
-      flatShading: true,
-      side: THREE.DoubleSide,
-    }),
-    shadow: new THREE.MeshBasicMaterial({
-      color: "#000000",
-      transparent: true,
-      opacity: 0.16,
-      depthWrite: false,
-    }),
-  };
-}
 
 export class RiderFigure {
   readonly group = new THREE.Group();
@@ -82,12 +53,16 @@ export class RiderFigure {
     shin: THREE.Mesh;
     sock: THREE.Mesh;
     shoe: THREE.Mesh;
+    /** The shorts' leg ends, where the kit has them. */
+    hems: THREE.Mesh[];
     side: number;
   }[] = [];
   private readonly arms: {
     upper: THREE.Mesh;
     lower: THREE.Mesh;
     glove: THREE.Mesh;
+    /** Bands round the sleeve, where the kit has them. */
+    stripes: THREE.Mesh[];
     side: number;
   }[] = [];
   private readonly body = new THREE.Group();
@@ -108,7 +83,7 @@ export class RiderFigure {
   private stopped = 0;
   /** How far the right hand is on its way from the bar to the mouth, 0 to 1. */
   private lift = 0;
-  private readonly materials: ReturnType<typeof kitMaterials>;
+  private readonly materials: KitMaterials;
   private readonly unit = new THREE.CylinderGeometry(1, 1, 1, 8);
   private readonly shapes = {
     torso: tapered(1.25),
@@ -137,14 +112,15 @@ export class RiderFigure {
     this.band = new THREE.Mesh(this.unit, m.band);
     this.shorts = new THREE.Mesh(this.shapes.pelvis, m.shorts);
     this.neck = new THREE.Mesh(this.unit, m.skin);
-    this.head.add(riderHead(m));
+    this.head.add(riderHead(m, kit.helmetStyle));
     this.body.add(this.torso, this.band, this.shorts, this.neck, this.head);
     for (const side of [-1, 1]) {
       const upper = new THREE.Mesh(this.unit, m.light);
       const lower = new THREE.Mesh(this.unit, m.skin);
       const glove = new THREE.Mesh(this.shapes.glove, m.glove);
-      this.body.add(upper, lower, glove);
-      this.arms.push({ upper, lower, glove, side });
+      const stripes = kit.sleeveStripe ? [0, 1].map(() => new THREE.Mesh(this.unit, m.stripe)) : [];
+      this.body.add(upper, lower, glove, ...stripes);
+      this.arms.push({ upper, lower, glove, stripes, side });
     }
     this.bottle = new THREE.Mesh(new THREE.CylinderGeometry(0.033, 0.033, 0.2, 8), m.bidon);
     this.body.add(this.bottle);
@@ -156,8 +132,9 @@ export class RiderFigure {
       const shin = new THREE.Mesh(this.shapes.shin, m.skin);
       const sock = new THREE.Mesh(this.unit, m.sock);
       const shoe = new THREE.Mesh(this.shapes.shoe, m.shoe);
-      this.group.add(thigh, knee, cap, shin, sock, shoe);
-      this.legs.push({ thigh, knee, cap, shin, sock, shoe, side });
+      const hems = kit.hem ? [m.hemUpper, m.hemLower].map((c) => new THREE.Mesh(this.unit, c)) : [];
+      this.group.add(thigh, knee, cap, shin, sock, shoe, ...hems);
+      this.legs.push({ thigh, knee, cap, shin, sock, shoe, hems, side });
     }
     this.pose();
   }
@@ -170,7 +147,7 @@ export class RiderFigure {
     this.body.visible = !away;
     this.shadow.visible = !away;
     for (const leg of this.legs)
-      for (const part of [leg.thigh, leg.knee, leg.cap, leg.shin, leg.sock, leg.shoe])
+      for (const part of [leg.thigh, leg.knee, leg.cap, leg.shin, leg.sock, leg.shoe, ...leg.hems])
         part.visible = !away;
     this.pose();
   }
@@ -224,6 +201,10 @@ export class RiderFigure {
       const ankle = foot.clone().add(new THREE.Vector3(0, 0.05, 0.045));
       const knee = twoBones(hip, ankle, THIGH, SHIN, KNEE_POLE);
       this.place(leg.thigh, hip, hip.clone().lerp(knee, 0.84), 0.072);
+      const thigh = (f: number) => hip.clone().lerp(knee, f);
+      leg.hems.forEach((hem, i) =>
+        this.place(hem, thigh(0.7 + i * 0.07), thigh(0.77 + i * 0.07), 0.06),
+      );
       this.place(leg.knee, hip.clone().lerp(knee, 0.8), knee, 0.053);
       leg.cap.position.copy(knee);
       this.place(leg.shin, knee, ankle, 0.052);
@@ -258,6 +239,10 @@ export class RiderFigure {
       const hand = pose.hands[arm.side > 0 ? 1 : 0]!.clone().lerp(mouth, lift);
       const elbow = twoBones(shoulder, hand, UPPER_ARM, FOREARM, ELBOW_POLE(arm.side));
       this.place(arm.upper, shoulder, elbow, 0.048);
+      const sleeve = (f: number) => shoulder.clone().lerp(elbow, f);
+      arm.stripes.forEach((band, i) =>
+        this.place(band, sleeve(0.5 + i * 0.2), sleeve(0.58 + i * 0.2), 0.051),
+      );
       this.place(arm.lower, elbow, hand, 0.038);
       arm.glove.position.copy(hand);
       if (arm.side > 0) {

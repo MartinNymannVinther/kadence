@@ -85,6 +85,8 @@ function frame(kit: Kit): THREE.BufferGeometry[] {
     box(0.022, 0.045, 0.065, P.dark, -0.065, WHEEL - 0.05, REAR.z - 0.05),
     box(0.022, 0.045, 0.065, P.dark, -0.065, WHEEL - 0.045, FRONT.z + 0.05),
   ];
+  // A race number on the seat post, under the saddle, flat to either side.
+  if (kit.plate) parts.push(box(0.005, 0.07, 0.1, P.paper, 0, 0.862, 0.25));
   for (const side of [-1, 1]) {
     const x = (p: THREE.Vector3) => (side > 0 ? p : mirror(p));
     parts.push(
