@@ -1,17 +1,16 @@
 import {
   CHALLENGE,
   challengeIn,
-  challengerEffort,
-  challengerWatts,
   courseAt,
   draft,
   nextSpeed,
   PHYSICS,
-  swayAt,
   type ChallengerAt,
   type ChallengeStart,
   type Course,
+  type Rival as Who,
 } from "@/modules/rulle";
+import { ALONGSIDE, Challenger, rivalOf, type Rival } from "./rivals";
 import { Warp } from "./warp";
 
 /**
@@ -19,25 +18,23 @@ import { Warp } from "./warp";
  * rider comes to a place he turns up (`challengeIn`), he comes up beside
  * them, rides at their speed while ten seconds are counted down, and
  * races them for two kilometres on his own plan of watts, whatever they
- * do. Behind him the rider pushes less air, and is shown going faster for
- * it: a shift like the cheat code's (`shown.ts`), so what is recorded is
- * still what was ridden; behind the rider, so does he. Under the
- * developer's warp he runs on as the rider does, faster or backwards, from
- * his own speed (`warp.ts`). He only comes on a free ride, never into a
- * session — of himself, or called by JOHAN. No React and no browser in it.
+ * do — or, called by HYLDTOFT, the sprinter does, on the rider's wheel
+ * (ADR 0050); each his own way (`rivals.ts`). Behind him the rider pushes
+ * less air, and is shown going faster for it: a shift like the cheat
+ * code's (`shown.ts`), so what is recorded is still what was ridden;
+ * behind the rider, so does he. Under the developer's warp he runs on as
+ * the rider does, faster or backwards, from his own speed (`warp.ts`). He
+ * only comes on a free ride, never into a session — of himself, or called
+ * by JOHAN or HYLDTOFT. No React and no browser in it.
  */
 
 /** What the screen shows of a race: counted down; on, with what is left and the gap; or over, and who won. */
 export type RaceLive =
-  | { phase: "countdown"; count: number; hill: boolean }
+  | { phase: "countdown"; count: number; hill: boolean; who: Who }
   | { phase: "racing"; left: number; gap: number; hill: boolean; seconds: number }
   | { phase: "over"; won: boolean; margin: number }
   | null;
 
-/** Metres right of the road's middle he rides alongside on: the rider's left. */
-const ALONGSIDE = 0.55;
-/** How fast he moves across the road, metres a second. */
-const ACROSS = 1.2;
 /** He comes up from this far behind, and closes up to the rider's side this fast at most. */
 const COMES_UP = { behind: 5, closing: 1.5 };
 /** Seconds the result stays up, and he with it, after the line; and the watts he eases to. */
@@ -46,6 +43,7 @@ const EASY = 180;
 
 type Running = {
   start: ChallengeStart;
+  rival: Rival;
   /** Seconds still to count down; 0 once the race is on. */
   count: number;
   /** Where it ends, set at the start: Infinity while counting down. */
@@ -90,9 +88,10 @@ export class Race {
   }
 
   /** Has him come up now, at `rider` metres, whatever the stretch says: the scheduled start, and a test's. */
-  begin(rider: number, speed: number, hill = false): void {
+  begin(rider: number, speed: number, hill = false, rival: Rival = new Challenger()): void {
     this.run = {
       start: { at: rider, hill },
+      rival,
       count: CHALLENGE.countdown,
       end: Infinity,
       him: rider - COMES_UP.behind,
@@ -105,9 +104,9 @@ export class Race {
     };
   }
 
-  /** Called by name (JOHAN): he comes now, on a free ride; into a session, not at all. */
-  call(): void {
-    if (this.free) this.begin(this.rider, this.speedNow);
+  /** Called by name (JOHAN, HYLDTOFT): he comes now, on a free ride; into a session, not at all. */
+  call(who: Who = "challenger"): void {
+    if (this.free) this.begin(this.rider, this.speedNow, false, rivalOf(who));
   }
 
   /**
@@ -135,7 +134,7 @@ export class Race {
     const run = this.run;
     if (!run || seconds <= 0) return;
     if (run.over) {
-      run.v = nextSpeed(run.v, EASY, this.grade(run.him), seconds, CHALLENGE.massKg);
+      run.v = nextSpeed(run.v, EASY, this.grade(run.him), seconds, run.rival.massKg);
       this.move(run, this.travel(run.v), seconds);
       run.over.left -= seconds;
       if (run.over.left <= 0) this.run = null;
@@ -150,7 +149,7 @@ export class Race {
     const ahead = was - run.him;
     const air = draft(-ahead);
     this.air = air;
-    this.ride(run, ahead, seconds);
+    this.ride(run, was, seen, seconds);
     // The rider in his wheel pushes less air; out of it, back to their own speed.
     run.bonus =
       cheat !== null
@@ -171,8 +170,10 @@ export class Race {
     const run = this.run;
     if (!run) return null;
     if (run.over) return { phase: "over", won: run.over.won, margin: run.over.margin };
-    if (run.count > 0)
-      return { phase: "countdown", count: Math.ceil(run.count), hill: run.start.hill };
+    if (run.count > 0) {
+      const { hill } = run.start;
+      return { phase: "countdown", count: Math.ceil(run.count), hill, who: run.rival.who };
+    }
     const left = Math.max(0, run.end - this.rider);
     const gap = this.rider - run.him;
     return { phase: "racing", left, gap, hill: run.start.hill, seconds: run.seconds };
@@ -183,28 +184,39 @@ export class Race {
     const run = this.run;
     if (!run) return null;
     const on = !run.over && run.count === 0;
-    const effort = challengerEffort(on ? challengerWatts(run.seconds, run.end - run.him) : 0);
+    const form = on
+      ? run.rival.form()
+      : { effort: "steady" as const, cadence: run.over ? 80 : 94, jump: 0 };
     return {
       distance: run.him + run.pace * since,
       finish: run.count > 0 ? null : run.end,
       line: run.line,
       speed: run.v,
-      cadence: run.over ? 80 : effort === "steady" ? 94 : 110,
-      effort,
+      ...form,
+      who: run.rival.who,
     };
   }
 
-  /** His step: his watts, in the rider's wheel when they are ahead of him. */
-  private ride(run: Running, ahead: number, seconds: number): void {
-    const watts = challengerWatts(run.seconds, run.end - run.him);
-    const v = nextSpeed(run.v, watts, this.grade(run.him), seconds, CHALLENGE.massKg, draft(ahead));
+  /** His step, his own way (`rivals.ts`), in the rider's wheel when they are ahead of him. */
+  private ride(run: Running, rider: number, seen: number, seconds: number): void {
+    const ahead = rider - run.him;
+    const { v, pace } = run.rival.ride({
+      v: run.v,
+      him: run.him,
+      rider,
+      seen,
+      left: run.end - run.him,
+      since: run.seconds,
+      seconds,
+      grade: this.grade(run.him),
+      air: draft(ahead),
+      travel: (at) => this.travel(at),
+    });
     run.v = v;
-    this.move(run, this.travel(v), seconds);
+    this.move(run, pace, seconds);
     run.seconds += seconds;
-    // Alongside while level; in the leader's line once one is ahead.
-    const aim = Math.abs(ahead) < 2.5 ? ALONGSIDE : swayAt(run.him);
-    const step = ACROSS * seconds;
-    run.line += Math.max(-step, Math.min(step, aim - run.line));
+    const step = run.rival.across * seconds;
+    run.line += Math.max(-step, Math.min(step, run.rival.aim(ahead, run.him) - run.line));
   }
 
   /**

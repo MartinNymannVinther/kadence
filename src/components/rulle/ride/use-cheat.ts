@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import type { Rival } from "@/modules/rulle";
 import type { Beeps } from "./beeps";
 import type { CheatMode, Push } from "./cheat";
 
@@ -11,17 +12,18 @@ import type { CheatMode, Push } from "./cheat";
  * A/D or ←/→ to steer, held down, while the arrows leave the session
  * alone. The same code again, or five more taps, and it is off; the other
  * code goes over to it. JOHAN calls the challenger up at once, on a free
- * ride; in a session it does nothing.
+ * ride, and HYLDTOFT the sprinter (ADR 0050); in a session they do nothing.
  *
  * A letter that carries on a code being typed is the code's: the H in
  * JOHAN does not show the speed. This hook's keys are heard before the
  * ride's (`useRideKeys`), being called first on the ride screen.
  */
 
-const CODES: Record<string, CheatMode | "challenger"> = {
+const CODES: Record<string, CheatMode | Rival> = {
   spurt: "speed",
   watt: "watts",
   johan: "challenger",
+  hyldtoft: "sprinter",
 };
 
 /** Whether `letters` end two letters or more into a code, and short of its end. */
@@ -48,8 +50,8 @@ type Controls = {
   /** A code typed: which is on now, if any. */
   toggleCheat: (mode: CheatMode) => CheatMode | null;
   steerCheat: (throttle: Push, steer: Push) => void;
-  /** The challenger, now (ADR 0049). */
-  challenge: () => void;
+  /** The challenger or the sprinter, now (ADR 0049, 0050). */
+  challenge: (who: Rival) => void;
 };
 
 /** `on`: the code that is on, null for none. */
@@ -115,7 +117,7 @@ export function useCheat(active: boolean, on: CheatMode | null, ride: Controls, 
       held.clear();
       latest.current.ride.steerCheat(0, 0);
       const what = CODES[code]!;
-      if (what === "challenger") latest.current.ride.challenge();
+      if (what === "challenger" || what === "sprinter") latest.current.ride.challenge(what);
       else toggleRef.current(what);
     };
     const up = (event: KeyboardEvent) => {

@@ -6,12 +6,13 @@ const lambert = (color: string) => new THREE.MeshLambertMaterial({ color, flatSh
 
 /**
  * The figure's materials (`RiderFigure`), in a kit's colours: the jersey,
- * its sleeves, band and stripes, the shorts and their leg ends, skin,
+ * its lower half, its sleeves, band and stripes, the shorts and their leg ends, skin,
  * helmet, socks, shoes, gloves, lenses, the bottle and the shadow.
  */
 export function kitMaterials(kit: Kit) {
   return {
     jersey: lambert(kit.jersey),
+    lower: lambert(kit.lower ?? kit.jersey),
     light: lambert(kit.sleeve),
     band: lambert(kit.band),
     stripe: lambert(kit.sleeveStripe ?? kit.sleeve),

@@ -41,8 +41,15 @@ export const CHALLENGE = {
   standing: 700,
 } as const;
 
-/** How he rides: as the road has him; in the drops, in the saddle; or out of it, sprinting in them. */
-export type ChallengerEffort = "steady" | "drops" | "sprint";
+/**
+ * How he rides: as the road has him; in the drops, in the saddle; out of
+ * it, sprinting in them; or throwing his bike at the line (the sprinter's,
+ * ADR 0050).
+ */
+export type ChallengerEffort = "steady" | "drops" | "sprint" | "throw";
+
+/** Who races the rider: the challenger (ADR 0049), or the sprinter HYLDTOFT calls (ADR 0050). */
+export type Rival = "challenger" | "sprinter";
 
 /** Where he is for the landscape: on the road, how fast, and his legs; and the line. */
 export type ChallengerAt = {
@@ -55,6 +62,9 @@ export type ChallengerAt = {
   cadence: number;
   /** How he rides for his watts (`challengerEffort`). */
   effort: ChallengerEffort;
+  /** Metres he is up in the air: the sprinter's jump at the line. */
+  jump: number;
+  who: Rival;
 };
 
 /** A race to come: where it begins, in metres ridden, and whether up a climb. */

@@ -9,7 +9,8 @@ import type { RaceLive } from "./ride/race";
 const GO = 1.5;
 
 /**
- * The challenger's race on the screen (ADR 0049): as he comes up, a call
+ * The challenger's race on the screen (ADR 0049), or the sprinter's (ADR
+ * 0050), each with his own words: as he comes up, a call
  * in the cheat code's arcade manner — a race, how far, that his wheel
  * breaks the wind, that only the landscape races — over the count from
  * ten; "go" at the start; while it runs, the distance left and the gap in
@@ -49,12 +50,14 @@ export function RaceBanner({ race, beeps }: { race: NonNullable<RaceLive>; beeps
     return (
       <Call title={t("title")}>
         <p className="text-background mt-1 text-lg font-semibold">
-          {race.hill ? t("onHill") : t("on")}
+          {race.who === "sprinter" ? t("sprinter") : race.hill ? t("onHill") : t("on")}
         </p>
         <p className="text-sticky mt-2 text-7xl leading-none font-black tabular-nums">
           {race.count}
         </p>
-        <p className="text-background/85 mt-3 text-sm">{t("draft")}</p>
+        <p className="text-background/85 mt-3 text-sm">
+          {race.who === "sprinter" ? t("sprinterWheel") : t("draft")}
+        </p>
         <p className="text-background/70 mt-2 text-xs">{t("honest")}</p>
       </Call>
     );

@@ -1,7 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { nothingSeen, type Course, type Seen, type SessionTimeline } from "@/modules/rulle";
+import {
+  nothingSeen,
+  type Course,
+  type Rival,
+  type Seen,
+  type SessionTimeline,
+} from "@/modules/rulle";
 import type { TrainerLink } from "../bluetooth/trainer-link";
 import type { Moment } from "../scene/world";
 import type { Beeps } from "./beeps";
@@ -163,8 +169,8 @@ export function useRide(options: RideOptions) {
     finish: () => act((ride, now) => ride.finish(now)),
     setIntensity: (value: number) => act((ride) => ride.setIntensity(value)),
     setErg: (on: boolean) => act((ride) => ride.setErg(on)),
-    /** The challenger now (ADR 0049), called by the JOHAN code: on a free ride only. */
-    challenge: () => act((ride) => ride.shown.race.call()),
+    /** The challenger now (ADR 0049), called by JOHAN — or the sprinter, by HYLDTOFT (ADR 0050): on a free ride only. */
+    challenge: (who: Rival = "challenger") => act((ride) => ride.shown.race.call(who)),
     /** Development only: the challenger now, session or not (G under `next dev`). */
     summon: () =>
       act((ride, now) =>
