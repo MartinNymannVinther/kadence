@@ -345,6 +345,11 @@ describe("rls coverage (guards future tables)", () => {
     // true or false about the caller in the active workspace, and only that.
     "app_can_read_rider",
     "app_can_write_rider",
+    // Whether the active workspace is a demo, for Trænerrummet's rooms
+    // (drizzle/0025, docs/adr/0054): the caller's own active workspace id
+    // when it is one, else null, read from installation state the
+    // application role cannot read itself.
+    "app_demo_room",
     "app_is_coach",
     // Whether the caller coaches a team anywhere on the installation, for
     // Trænerrummet (drizzle/0023, docs/adr/0052): true or false about the

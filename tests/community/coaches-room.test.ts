@@ -177,3 +177,87 @@ describe("Trænerrummet", () => {
     expect(thread.posts[0]).toMatchObject({ authorName: "", clubName: "" });
   });
 });
+
+describe("a demo's own room (drizzle/0025, docs/adr/0054)", () => {
+  const DEMO = { orgId: "org_room_demo", userId: "user_room_demo" };
+  /** A real club's coach who has opened a demo: in it, the demo's room is theirs. */
+  const A_IN_DEMO = { orgId: DEMO.orgId, userId: A.userId };
+  let demoThread: string;
+
+  beforeAll(async () => {
+    await seedPerson(admin, DEMO.orgId, DEMO.userId, "owner", "Demo CK U19");
+    await admin.query(
+      `insert into memberships (id, organization_id, user_id, role) values ('mem_room_a_demo', $1, $2, 'owner')`,
+      [DEMO.orgId, A.userId],
+    );
+    await admin.query(
+      `insert into demo_workspaces (organization_id, user_id, expires_at) values ($1, $2, now() + interval '1 day')`,
+      [DEMO.orgId, DEMO.userId],
+    );
+  });
+
+  it("keeps a demo visitor out of the installation's room, reading and writing", async () => {
+    expect(await listThreads(DEMO)).toEqual([]);
+    expect(await getThread(DEMO, threadId)).toBeNull();
+    expect(await unreadThreadCount(DEMO)).toBe(0);
+    await expect(reply(DEMO, threadId, "Hej fra demoen")).rejects.toThrow();
+    await expect(
+      report(DEMO, { targetKind: "thread", targetId: threadId, reason: "x" }),
+    ).rejects.toMatchObject({ code: "forbidden" });
+    const seen = await asApp(app, DEMO, (c) =>
+      c.query("select count(*)::int as n from community_threads where demo_org_id is null"),
+    );
+    expect(seen.rows[0].n).toBe(0);
+  });
+
+  it("writes in the demo's room, which the installation's coaches never see", async () => {
+    demoThread = (
+      await createThread(DEMO, { category: "training", title: "Prøvetråd", body: "Fra demoen" })
+    ).id;
+    const row = await admin.query(
+      "select demo_org_id, author_org_id from community_threads where id = $1",
+      [demoThread],
+    );
+    expect(row.rows[0]).toEqual({ demo_org_id: DEMO.orgId, author_org_id: DEMO.orgId });
+    expect((await listThreads(DEMO))!.map((t) => t.id)).toEqual([demoThread]);
+    expect((await listThreads(A))!.map((t) => t.id)).not.toContain(demoThread);
+    expect(await getThread(A, demoThread)).toBeNull();
+    expect((await listThreads(A_IN_DEMO))!.map((t) => t.id)).toEqual([demoThread]);
+  });
+
+  it("lets only a demo's own seed sign made-up coaches, and only in that demo", async () => {
+    const insert = (c: Client, seed: boolean) =>
+      c.query(`select set_config('app.demo_seed', $1, true)`, [seed ? "on" : "off"]).then(() =>
+        c.query(
+          `insert into community_threads (category, title, body, author_name, club_name)
+             values ('dcu', 'Eksempel', 'x', 'Mette Lund', 'Fjordbyen CK')
+             returning author_user_id, author_name, club_name, demo_org_id`,
+        ),
+      );
+    expect((await asApp(app, DEMO, (c) => insert(c, true))).rows[0]).toEqual({
+      author_user_id: null,
+      author_name: "Mette Lund",
+      club_name: "Fjordbyen CK",
+      demo_org_id: DEMO.orgId,
+    });
+    expect((await asApp(app, DEMO, (c) => insert(c, false))).rows[0]).toMatchObject({
+      author_user_id: DEMO.userId,
+      club_name: "Demo CK U19",
+    });
+    expect((await asApp(app, A, (c) => insert(c, true))).rows[0]).toEqual({
+      author_user_id: A.userId,
+      author_name: "Anne Træner",
+      club_name: "Vejle CK",
+      demo_org_id: null,
+    });
+  });
+
+  it("never moves a thread between rooms, and goes with the demo", async () => {
+    const move = (c: Client) =>
+      c.query("update community_threads set demo_org_id = null where id = $1", [demoThread]);
+    expect(await expectSqlError(asApp(app, DEMO, move))).toBe("42501");
+    await admin.query("delete from organizations where id = $1", [DEMO.orgId]);
+    const left = await admin.query("select 1 from community_threads where id = $1", [demoThread]);
+    expect(left.rowCount).toBe(0);
+  });
+});

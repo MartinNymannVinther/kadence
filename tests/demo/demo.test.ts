@@ -7,6 +7,10 @@ import {
   isDemoWorkspace,
 } from "@/modules/demo/service";
 import { readAccounts, switchDemoRole } from "@/modules/demo/roles";
+import { getChampionship, listChampions, listChampionships } from "@/modules/club/service";
+import { listThreads, unreadThreadCount } from "@/modules/community/service";
+import { getTeamSettings } from "@/modules/team/settings";
+import { listOwnTemplates } from "@/modules/training/templates";
 import { whoAmI } from "@/modules/team/access";
 import { adminPool } from "../helpers/db";
 
@@ -61,6 +65,37 @@ describe("a demo workspace", () => {
     expect(seeded.rows[0].dcu).toBe(3);
   });
 
+  it("shows every part of the product: logo, own sessions, the championship, the room", async () => {
+    const coach = { orgId, userId };
+    const settings = await getTeamSettings(coach);
+    expect(settings).toMatchObject({ clubChampionship: true, lowIntensityFirst: true });
+    const images = await admin.query(
+      `select kind from org_images where org_id = $1 order by kind`,
+      [orgId],
+    );
+    expect(images.rows.map((r) => r.kind)).toEqual(["cover", "logo"]);
+    expect((await listOwnTemplates(coach)).map((t) => t.riderName)).toEqual(["Emma Holm"]);
+
+    const championships = (await listChampionships(coach))!;
+    expect(championships).toHaveLength(2);
+    const latest = (await getChampionship(coach, championships[0]!.id))!;
+    expect(latest.rounds).toHaveLength(3);
+    expect(latest.improvement?.name).toBe("Freja Dahl");
+    expect(latest.rounds.some((r) => r.entries.some((e) => e.record))).toBe(true);
+    expect((await listChampions(coach)).length).toBeGreaterThanOrEqual(8);
+
+    const threads = (await listThreads(coach))!;
+    expect(threads).toHaveLength(7);
+    expect(new Set(threads.map((t) => t.category)).size).toBe(6);
+    expect(threads.every((t) => t.authorName && t.clubName && t.unread)).toBe(true);
+    expect(await unreadThreadCount(coach)).toBe(7);
+    const inRoom = await admin.query(
+      `select count(*)::int as n, count(workout)::int as w from community_threads where demo_org_id = $1`,
+      [orgId],
+    );
+    expect(inRoom.rows[0]).toEqual({ n: 7, w: 1 });
+  });
+
   it("has a rider and her parent the visitor can switch to, and nobody else can", async () => {
     const row = await admin.query(
       `select accounts from demo_workspaces where organization_id = $1`,
@@ -89,6 +124,10 @@ describe("a demo workspace", () => {
     const user = await admin.query(`select 1 from users where id = $1`, [userId]);
     const rows = await admin.query(`select 1 from riders where org_id = $1`, [orgId]);
     expect([org.rowCount, user.rowCount, rows.rowCount]).toEqual([0, 0, 0]);
+    const room = await admin.query(`select 1 from community_threads where demo_org_id = $1`, [
+      orgId,
+    ]);
+    expect(room.rowCount).toBe(0);
     const left = await admin.query(`select count(*)::int as n from users where id = any($1)`, [
       people,
     ]);

@@ -17,6 +17,8 @@ import { createTemplate, listTemplates } from "@/modules/training/templates";
 import { saveCheckin } from "@/modules/wellbeing/checkins";
 import { parseWorkoutText } from "@/modules/workouts/parse-text";
 import { kindOf, rideFit, routeFor } from "./rides";
+import type { DemoRider } from "./club";
+import { seedShowcase } from "./showcase";
 import { sampleRideFit } from "./sample-ride";
 import { COMMENTS, EVENTS, EXAM, NOTES, pick, RIDERS, TEMPLATES, type L } from "./seed-data";
 
@@ -32,9 +34,11 @@ export type { L };
  * come in as real FIT files — routes round Østjylland, watt and pulse at
  * each rider's own threshold (`rides.ts`) — so the calendar, the records
  * and every activity page show what an upload gives; one long ride with a
- * coffee stop is the showcase. Written through the
- * ordinary services, as the demo's coach, so what the visitor sees is what
- * the product does with real rows.
+ * coffee stop is the showcase. The rest of the product comes after
+ * (showcase.ts): the club's logo and picture, a rider's own session, the
+ * club championship and Trænerrummet's example threads. Written through
+ * the ordinary services, as the demo's coach, so what the visitor sees is
+ * what the product does with real rows.
  */
 
 const WEEKS_BACK = 6;
@@ -61,8 +65,9 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
     aiOnRiderData: false,
     allowYouthWeight: false,
     guidance: "dcu-2025",
-    clubChampionship: false,
-    lowIntensityFirst: false,
+    // On in the demo so a visitor sees them; off for a new team (ADR 0051, 0053).
+    clubChampionship: true,
+    lowIntensityFirst: true,
   });
   await installDcuProgrammes(ctx, l);
 
@@ -81,6 +86,7 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
   const strength = (await listTemplates(ctx)).find((t) => t.sourceKey === "dcu-strength-u19-2016");
 
   const riderIds: string[] = [];
+  const riders: DemoRider[] = [];
   for (const r of RIDERS) {
     const birthYear = raceYear - (16 + r.u19Year);
     const { id } = await createRider(ctx, {
@@ -103,6 +109,7 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
       pick({ da: "DCU: 30 styrkepas i vinter", en: "DCU: 30 strength sessions this winter" }, l),
     );
     riderIds.push(id);
+    riders.push({ id, name: r.name, birthYear });
   }
 
   const byText = (text: string) => templates[text]!;
@@ -256,4 +263,7 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
     const session = recent[i * 7];
     if (session) await addComment(ctx, { plannedSessionId: session.id }, pick(c.coach, l));
   }
+
+  // Emma is the rider the demo's rider account becomes (roles.ts).
+  await seedShowcase(ctx, l, { today, riders, ownRiderId: riderIds[0]! });
 }

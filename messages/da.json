@@ -3385,6 +3385,7 @@
   "community": {
     "title": "Trænerrummet",
     "subtitle": "Trænerne på tværs af klubberne, der deler erfaringer og råd. Kun trænere har adgang, og der er ingen private beskeder.",
+    "demoNote": "Det her er demoens eget Trænerrum. Trådene er eksempler fra opdigtede trænere i opdigtede klubber, og det, du skriver, bliver i din demo. I Kadence deler trænerne fra alle klubberne på installationen ét rum.",
     "categories": "Kategorier",
     "all": "Alle",
     "unread": "Nyt siden sidst",

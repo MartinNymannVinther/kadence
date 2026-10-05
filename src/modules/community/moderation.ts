@@ -2,7 +2,7 @@ import { desc, eq, isNull, sql } from "drizzle-orm";
 import { Refused } from "@/core/action";
 import { communityPosts, communityReports, communityThreads } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
-import { coachesSomewhere } from "./service";
+import { canUseRoom, isDemoRoom } from "./service";
 
 /**
  * Keeping Trænerrummet decent (docs/adr/0052): any coach reports a thread
@@ -28,7 +28,8 @@ export async function report(
   input: { targetKind: "thread" | "post"; targetId: string; reason: string },
 ): Promise<void> {
   await withOrgContext(ctx, async (tx) => {
-    if (!(await coachesSomewhere(tx))) throw new Refused("forbidden");
+    // A demo's room has nobody to report to; the database refuses it too (drizzle/0025).
+    if (!(await canUseRoom(tx)) || (await isDemoRoom(tx))) throw new Refused("forbidden");
     await tx.insert(communityReports).values({ ...input, reporterUserId: ctx.userId });
   });
 }

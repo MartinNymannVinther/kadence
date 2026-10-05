@@ -14,7 +14,8 @@ import { requireCoach } from "@/modules/team/access";
  * one installation. Reading takes coaching a team somewhere; writing takes
  * coaching the active team, which is the club a post is signed with. The
  * database stamps the author and the club (community_stamp, drizzle/0023)
- * and keeps moderation to the installation's owner.
+ * and keeps moderation to the installation's owner. A demo is kept out of
+ * that room and has one of its own, with example threads (docs/adr/0054).
  */
 
 import type { Category } from "./categories";
@@ -41,13 +42,28 @@ export type ThreadSummary = {
   hidden: boolean;
 };
 
-export async function coachesSomewhere(tx: AppTransaction): Promise<boolean> {
-  const result = await tx.execute(sql`select app_is_coach_somewhere() as ok`);
+/** Whether the session may use the room it is in: the installation's, or its demo's own. */
+export async function canUseRoom(tx: AppTransaction): Promise<boolean> {
+  const result = await tx.execute(sql`select app_can_use_room() as ok`);
   return (result.rows[0] as { ok: boolean } | undefined)?.ok === true;
 }
 
+/** Whether the active workspace is a demo, whose room is its own (drizzle/0025). */
+export async function isDemoRoom(tx: AppTransaction): Promise<boolean> {
+  const result = await tx.execute(sql`select app_demo_room() is not null as demo`);
+  return (result.rows[0] as { demo: boolean } | undefined)?.demo === true;
+}
+
 async function requireRoom(tx: AppTransaction) {
-  if (!(await coachesSomewhere(tx))) throw new Refused("forbidden");
+  if (!(await canUseRoom(tx))) throw new Refused("forbidden");
+}
+
+/** Which room the page shows: the installation's, a demo's own, or none for this person. */
+export async function roomKind(ctx: OrgContext): Promise<"installation" | "demo" | null> {
+  return withOrgContext(ctx, async (tx) => {
+    if (!(await canUseRoom(tx))) return null;
+    return (await isDemoRoom(tx)) ? "demo" : "installation";
+  });
 }
 
 export async function listThreads(
@@ -55,7 +71,7 @@ export async function listThreads(
   category?: Category,
 ): Promise<ThreadSummary[] | null> {
   return withOrgContext(ctx, async (tx) => {
-    if (!(await coachesSomewhere(tx))) return null;
+    if (!(await canUseRoom(tx))) return null;
     const rows = await tx
       .select({
         thread: communityThreads,
@@ -91,7 +107,7 @@ export async function listThreads(
 /** Threads with something new for this coach, for the count in the menu. */
 export async function unreadThreadCount(ctx: OrgContext): Promise<number> {
   return withOrgContext(ctx, async (tx) => {
-    if (!(await coachesSomewhere(tx))) return 0;
+    if (!(await canUseRoom(tx))) return 0;
     const result = await tx.execute(sql`
       select count(*)::int as n from community_threads t
       left join community_reads r on r.thread_id = t.id and r.user_id = ${ctx.userId}
@@ -128,7 +144,7 @@ export type ThreadView = {
 /** A thread with its replies; opening it marks it read. */
 export async function getThread(ctx: OrgContext, id: string): Promise<ThreadView | null> {
   return withOrgContext(ctx, async (tx) => {
-    if (!(await coachesSomewhere(tx))) return null;
+    if (!(await canUseRoom(tx))) return null;
     const [t] = await tx.select().from(communityThreads).where(eq(communityThreads.id, id));
     if (!t) return null;
     const posts = await tx

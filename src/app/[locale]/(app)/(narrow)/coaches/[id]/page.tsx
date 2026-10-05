@@ -13,7 +13,7 @@ import { getOrgContext } from "@/core/auth/session";
 import { formatDay } from "@/core/dates";
 import { Link, redirect } from "@/i18n/navigation";
 import { canModerate } from "@/modules/community/moderation";
-import { getThread } from "@/modules/community/service";
+import { getThread, roomKind } from "@/modules/community/service";
 import { whoAmI } from "@/modules/team/access";
 import { readStructure } from "@/modules/workouts/structure";
 
@@ -38,12 +38,16 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
   }
   const t = await getTranslations("community");
   const { id } = await params;
-  const [thread, me, owner] = await Promise.all([
+  const [thread, me, moderator, room] = await Promise.all([
     getThread(ctx, id),
     whoAmI(ctx.orgId, ctx.userId),
     canModerate(ctx),
+    roomKind(ctx),
   ]);
   if (!thread) notFound();
+  // A demo's room is its own: nobody to report to, nothing to moderate (ADR 0054).
+  const reportable = room === "installation";
+  const owner = moderator && reportable;
   const byline = (name: string, club: string, at: Date) =>
     `${name || t("former")}${club ? ` (${club})` : ""} · ${formatDay(at, locale)}`;
 
@@ -78,7 +82,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
           </section>
         )}
         <div className="flex flex-wrap items-start gap-2">
-          {!thread.mine && <ReportButton targetKind="thread" targetId={thread.id} />}
+          {reportable && !thread.mine && <ReportButton targetKind="thread" targetId={thread.id} />}
           {owner && (
             <Moderate
               targetKind="thread"
@@ -100,7 +104,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
             {p.hidden && <p className="text-destructive text-2sm">{t("thread.hiddenNote")}</p>}
             <p className="text-reading leading-relaxed whitespace-pre-line">{p.body}</p>
             <div className="flex flex-wrap items-start gap-2">
-              {!p.mine && <ReportButton targetKind="post" targetId={p.id} />}
+              {reportable && !p.mine && <ReportButton targetKind="post" targetId={p.id} />}
               {owner && <Moderate targetKind="post" targetId={p.id} hidden={p.hidden} />}
             </div>
           </li>
