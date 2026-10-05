@@ -3919,15 +3919,15 @@
           "within": "Within the limit",
           "free": "Free gearing"
         },
-        "over": "{cm} cm over",
-        "under": "{cm} cm under"
+        "over": "{cm, plural, =0 {less than 1 cm} other {# cm}} over",
+        "under": "{cm, plural, =0 {less than 1 cm} other {# cm}} under"
       },
       "result": {
         "explain": "{ring} teeth at the front and {cog} at the back mean the rear wheel goes round {turns, number, ::.00} times for each turn of the pedals. The wheel is {circumference, number, ::.000} m round, so the bike travels {rollout, number, ::.00} m.",
         "free": "U19 and older ride with free gearing, so every gear is legal.",
-        "within": "Within the {class} limit of {limit, number, ::.00} m, {cm, number, integer} cm under.",
-        "close": "Within the {class} limit of {limit, number, ::.00} m, but only {cm, number, integer} cm under. Tyre pressure and wear can move it a few centimetres, so measure the bike with the tyres and pressure it races on.",
-        "over": "{cm, number, integer} cm over the {class} limit of {limit, number, ::.00} m.",
+        "within": "Within the {class} limit of {limit, number, ::.00} m, {cm, plural, =0 {less than 1 cm} other {# cm}} under.",
+        "close": "Within the {class} limit of {limit, number, ::.00} m, but only {cm, plural, =0 {less than 1 cm} other {# cm}} under. Tyre pressure and wear can move it a few centimetres, so measure the bike with the tyres and pressure it races on.",
+        "over": "{cm, plural, =0 {Less than 1 cm} other {# cm}} over the {class} limit of {limit, number, ::.00} m.",
         "wayBack": "With {cog} teeth at the back the chainring can have at most {largestRing} teeth. With {ring} teeth at the front the smallest sprocket needs at least {smallestCog} teeth."
       },
       "table": {
@@ -3965,7 +3965,7 @@
           "double": "2×",
           "single": "1×",
           "noRing": "No chainring we know of has {ring} T.",
-          "gearWithin": "{ring} × {cog} gives {rollout, number, ::.00} m, {cm, number, integer} cm under the limit in {class}.",
+          "gearWithin": "{ring} × {cog} gives {rollout, number, ::.00} m, {cm, plural, =0 {less than 1 cm} other {# cm}} under the {class} limit.",
           "gearFree": "{ring} × {cog} gives {rollout, number, ::.00} m."
         },
         "drawing": {
@@ -3982,7 +3982,6 @@
         "double": "Two chainrings (2×)",
         "single": "One chainring (1×)",
         "ring": "{n} T",
-        "ringSpan": "{from}–{to} T",
         "tooBig": "Too big here: {names}.",
         "ringsLink": "See the chainrings",
         "priceFrom": "from about {price} ({shop})",

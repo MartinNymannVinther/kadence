@@ -3919,15 +3919,15 @@
           "within": "Inden for grænsen",
           "free": "Fri gearing"
         },
-        "over": "{cm} cm over",
-        "under": "{cm} cm under"
+        "over": "{cm, plural, =0 {mindre end 1 cm} other {# cm}} over",
+        "under": "{cm, plural, =0 {mindre end 1 cm} other {# cm}} under"
       },
       "result": {
         "explain": "{ring} tænder foran og {cog} bagpå betyder, at baghjulet drejer {turns, number, ::.00} gange rundt for hver pedalomgang. Hjulet er {circumference, number, ::.000} m rundt, så cyklen kører {rollout, number, ::.00} m.",
         "free": "U19 og ældre kører med fri gearing, så alle gear er lovlige.",
-        "within": "Inden for grænsen i {class} på {limit, number, ::.00} m, {cm, number, integer} cm under.",
-        "close": "Inden for grænsen i {class} på {limit, number, ::.00} m, men kun {cm, number, integer} cm under. Dæktryk og slid kan flytte et par centimeter, så mål cyklen med de dæk og det tryk, der køres løb på.",
-        "over": "{cm, number, integer} cm over grænsen i {class} på {limit, number, ::.00} m.",
+        "within": "Inden for grænsen i {class} på {limit, number, ::.00} m, {cm, plural, =0 {mindre end 1 cm} other {# cm}} under.",
+        "close": "Inden for grænsen i {class} på {limit, number, ::.00} m, men kun {cm, plural, =0 {mindre end 1 cm} other {# cm}} under. Dæktryk og slid kan flytte et par centimeter, så mål cyklen med de dæk og det tryk, der køres løb på.",
+        "over": "{cm, plural, =0 {Mindre end 1 cm} other {# cm}} over grænsen i {class} på {limit, number, ::.00} m.",
         "wayBack": "Med {cog} tænder bagpå kan klingen højst have {largestRing} tænder. Med {ring} tænder foran skal det mindste tandhjul have mindst {smallestCog} tænder."
       },
       "table": {
@@ -3965,7 +3965,7 @@
           "double": "2×",
           "single": "1×",
           "noRing": "Ingen klinge, vi kender, har {ring} T.",
-          "gearWithin": "{ring} × {cog} giver {rollout, number, ::.00} m, {cm, number, integer} cm under grænsen i {class}.",
+          "gearWithin": "{ring} × {cog} giver {rollout, number, ::.00} m, {cm, plural, =0 {mindre end 1 cm} other {# cm}} under grænsen i {class}.",
           "gearFree": "{ring} × {cog} giver {rollout, number, ::.00} m."
         },
         "drawing": {
@@ -3982,7 +3982,6 @@
         "double": "To klinger foran (2×)",
         "single": "Én klinge foran (1×)",
         "ring": "{n} T",
-        "ringSpan": "{from}–{to} T",
         "tooBig": "For store her: {names}.",
         "ringsLink": "Se klingerne",
         "priceFrom": "fra ca. {price} ({shop})",

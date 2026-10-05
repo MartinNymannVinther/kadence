@@ -23,7 +23,7 @@ export function GearingResult({
   circumferenceMm: number;
 }) {
   const t = useTranslations("calculators.gearing.result");
-  const cm = check.marginM === null ? 0 : Math.abs(check.marginM) * 100;
+  const cm = check.marginM === null ? 0 : Math.round(Math.abs(check.marginM) * 100);
   const tone =
     check.status === "over"
       ? "bg-warning-tint text-destructive"

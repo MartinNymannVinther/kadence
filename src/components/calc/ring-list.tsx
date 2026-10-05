@@ -60,19 +60,16 @@ export function RingList({ fits }: { fits: RingsFit[] }) {
   );
 }
 
-/** A family's rings that fit: each double set, or the span of single rings. */
+/** A family's rings that fit: each double set, or each size of single ring. */
 function RingRow({ fit }: { fit: RingsFit }) {
   const t = useTranslations("calculators.gearing.products");
   const locale = useLocale();
   const { family, sets } = fit;
+  // A double is a set of two rings; a single ring comes in sizes, each its own chip.
   const chips =
     family.kind === "double"
       ? sets.map(([big, small]) => `${big}-${small}`)
-      : [
-          sets.length === 1
-            ? t("ring", { n: sets[0]![0]! })
-            : t("ringSpan", { from: sets.at(-1)![0]!, to: sets[0]![0]! }),
-        ];
+      : sets.map(([n]) => t("ring", { n: n! }));
   return (
     <li className="flex flex-col gap-1">
       <p className="flex flex-wrap items-center gap-x-2 gap-y-1">
