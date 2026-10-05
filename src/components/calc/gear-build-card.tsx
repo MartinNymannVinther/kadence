@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { ORDINARY_RANGE, type Build } from "@/modules/calc/gear-build";
+import type { ChainringFamily } from "@/modules/calc/gear-products";
 import { cn } from "@/lib/utils";
 import { DrivetrainDrawing } from "./drivetrain-drawing";
 import { formatPrice } from "./format";
@@ -15,11 +16,13 @@ import { Outlink } from "./outlink";
 export function GearBuildCard({
   build,
   title,
+  kind,
   limit,
   className,
 }: {
   build: Build;
   title: string | null;
+  kind: ChainringFamily["kind"];
   limit: number | null;
   className: string;
 }) {
@@ -98,8 +101,10 @@ export function GearBuildCard({
                   {chainring.set.length === 2 ? t("double") : t("single")}
                 </span>
               </>
+            ) : kind === "double" ? (
+              t("noRingDouble", { ring: build.ring })
             ) : (
-              t("noRing", { ring: build.ring })
+              t("noRingSingle", { ring: build.ring })
             )}
           </dd>
           {chainring && (

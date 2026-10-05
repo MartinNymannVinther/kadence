@@ -114,3 +114,31 @@ describe("the sprockets drawn for a cassette", () => {
       expect(ladder[i]).toBeGreaterThanOrEqual(ladder[i - 1]!);
   });
 });
+
+describe("two rings in front or one", () => {
+  it("keeps to the kind chosen", () => {
+    expect(biggestRingUpTo(44, "double")).toBe(43);
+    expect(biggestRingUpTo(44, "single")).toBe(44);
+    expect(ringProduct(48, "single")).toMatchObject({ family: { id: "stradaLab" }, set: [48] });
+    expect(ringProduct(34, "double")).toBeNull();
+  });
+
+  it("builds with one ring when asked", () => {
+    const p = propose(50, 14, 7.33, C25, "single");
+    expect(p.kind).toBe("over");
+    if (p.kind !== "over") return;
+    expect(p.keepRing?.chainring?.family.id).toBe("stradaLab");
+    expect(p.keepCog).toMatchObject({ ring: 48, chainring: { family: { id: "stradaLab" } } });
+  });
+
+  it("says when no ring of the kind is small enough", () => {
+    // U15 with 11 T allows 34 T: no double set, but a Strada Lab 34 T.
+    expect(propose(34, 11, 6.68, C25, "double")).toMatchObject({
+      kind: "fits",
+      build: { ring: 34, chainring: null },
+    });
+    expect(propose(34, 11, 6.68, C25, "single")).toMatchObject({
+      build: { chainring: { family: { id: "stradaLab" } } },
+    });
+  });
+});

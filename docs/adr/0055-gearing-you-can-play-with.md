@@ -53,6 +53,11 @@ same day).
   chain's side, to scale, with the smallest sprocket in moss and a
   double's small ring dashed as the one that does not count — and named
   part by part with the price and shop where it was seen.
+- **Two rings in front or one, chosen first** (Martin, the same day:
+  more teaching, less confusion). The section opens with the choice, each
+  drawn and explained in a line; the build and the list of rings show
+  only that kind. When no ring of the kind chosen is small enough and
+  the other kind has one, a note says so and offers to switch.
 - **Which parts.** For 10 or 11 teeth the cassette is an ordinary one
   and no product is named. For 12 to 16 teeth one concrete cassette —
   Miche's first, another maker's only where Miche has none for that

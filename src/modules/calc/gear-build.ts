@@ -12,7 +12,8 @@ import { largestRing, rolloutM, smallestCog } from "./gearing";
  * cassette and which chainring would give it, and when the gear is over
  * the class's limit, the two nearest builds that hold — one keeping the
  * chainring, one keeping the sprocket. Built only from the parts in
- * gear-products.ts.
+ * gear-products.ts. The reader chooses two rings in front or one, and
+ * every function takes that `kind`; without it, any ring will do.
  *
  * Pure: imports nothing from the database.
  */
@@ -28,6 +29,12 @@ export const ORDINARY_RANGE: Record<number, readonly [number, number]> = {
 
 export type RingPick = { family: ChainringFamily; set: readonly number[] };
 
+/** Two rings in front, one, or either. */
+export type RingKind = ChainringFamily["kind"] | undefined;
+
+const families = (kind: RingKind) =>
+  kind === undefined ? CHAINRINGS : CHAINRINGS.filter((f) => f.kind === kind);
+
 export type Build = {
   ring: number;
   cog: number;
@@ -41,8 +48,8 @@ export type Build = {
   chainring: RingPick | null;
 };
 
-export function ringProduct(ring: number): RingPick | null {
-  for (const family of CHAINRINGS) {
+export function ringProduct(ring: number, kind?: RingKind): RingPick | null {
+  for (const family of families(kind)) {
     const set = family.sets.find(([big]) => big === ring);
     if (set) return { family, set };
   }
@@ -50,12 +57,19 @@ export function ringProduct(ring: number): RingPick | null {
 }
 
 /** The biggest ring at most `max` teeth that some product in the list carries. */
-export function biggestRingUpTo(max: number): number | null {
-  const rings = CHAINRINGS.flatMap((f) => f.sets.map(([big]) => big!)).filter((r) => r <= max);
+export function biggestRingUpTo(max: number, kind?: RingKind): number | null {
+  const rings = families(kind)
+    .flatMap((f) => f.sets.map(([big]) => big!))
+    .filter((r) => r <= max);
   return rings.length > 0 ? Math.max(...rings) : null;
 }
 
-export function buildFor(ring: number, cog: number, circumferenceMm: number): Build {
+export function buildFor(
+  ring: number,
+  cog: number,
+  circumferenceMm: number,
+  kind?: RingKind,
+): Build {
   const ordinary = ORDINARY_COGS.includes(cog);
   const twelve = ordinary ? null : cassetteFor(cog, 12);
   const eleven = ordinary ? null : cassetteFor(cog, 11);
@@ -66,7 +80,7 @@ export function buildFor(ring: number, cog: number, circumferenceMm: number): Bu
     ordinary,
     cassette: twelve ?? eleven,
     cassette11: twelve ? eleven : null,
-    chainring: ringProduct(ring),
+    chainring: ringProduct(ring, kind),
   };
 }
 
@@ -91,21 +105,24 @@ export function propose(
   cog: number,
   limitM: number | null,
   circumferenceMm: number,
+  kind?: RingKind,
 ): Proposal {
   if (limitM === null || rolloutM(ring, cog, circumferenceMm) <= limitM) {
-    const used = ringProduct(ring) ? ring : (biggestRingUpTo(ring) ?? ring);
+    const used = ringProduct(ring, kind) ? ring : (biggestRingUpTo(ring, kind) ?? ring);
     return {
       kind: "fits",
-      build: buildFor(used, cog, circumferenceMm),
+      build: buildFor(used, cog, circumferenceMm, kind),
       asked: used === ring ? null : ring,
     };
   }
   const needCog = smallestCog(ring, limitM, circumferenceMm);
-  const ringUsed = ringProduct(ring) ? ring : biggestRingUpTo(ring);
+  const ringUsed = ringProduct(ring, kind) ? ring : biggestRingUpTo(ring, kind);
   const keepRing =
-    needCog <= MAX_COG && ringUsed !== null ? buildFor(ringUsed, needCog, circumferenceMm) : null;
-  const legalRing = biggestRingUpTo(largestRing(cog, limitM, circumferenceMm));
-  const keepCog = legalRing !== null ? buildFor(legalRing, cog, circumferenceMm) : null;
+    needCog <= MAX_COG && ringUsed !== null
+      ? buildFor(ringUsed, needCog, circumferenceMm, kind)
+      : null;
+  const legalRing = biggestRingUpTo(largestRing(cog, limitM, circumferenceMm), kind);
+  const keepCog = legalRing !== null ? buildFor(legalRing, cog, circumferenceMm, kind) : null;
   return { kind: "over", keepRing, keepCog, needCog };
 }
 

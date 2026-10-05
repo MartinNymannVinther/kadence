@@ -3942,6 +3942,17 @@
       "products": {
         "title": "How the bike could be built",
         "intro": "A concrete suggestion of parts for the gear you chose, and the chainrings that fit. Kadence has no deals with the shops, and prices and chainrings were seen in October 2026.",
+        "kind": {
+          "label": "Chainrings at the front",
+          "double": "Two chainrings (2×)",
+          "single": "One chainring (1×)",
+          "doubleHelp": "As on most road bikes, with a front derailleur. Only the big ring counts at the gear check.",
+          "singleHelp": "One ring and no front derailleur. The ring can be exactly the size the class allows, but there are fewer gears.",
+          "stuckDouble": "With {cog} T at the back no 2× set we know of is small enough in {class}. With one chainring it works.",
+          "stuckSingle": "With {cog} T at the back no 1× ring we know of is small enough in {class}. With two chainrings it works.",
+          "trySingle": "See it with one chainring",
+          "tryDouble": "See it with two chainrings"
+        },
         "build": {
           "title": "A concrete suggestion",
           "fits": "Your choice holds in {class}. This is how the bike could be built:",
@@ -3964,7 +3975,8 @@
           "teeth": "{n} T",
           "double": "2×",
           "single": "1×",
-          "noRing": "No chainring we know of has {ring} T.",
+          "noRingDouble": "No 2× set we know of has a {ring} T big ring.",
+          "noRingSingle": "No 1× ring we know of has {ring} T.",
           "gearWithin": "{ring} × {cog} gives {rollout, number, ::.00} m, {cm, plural, =0 {less than 1 cm} other {# cm}} under the {class} limit.",
           "gearFree": "{ring} × {cog} gives {rollout, number, ::.00} m."
         },
@@ -3976,11 +3988,10 @@
           "labelSingle": "Drawing of the drivetrain: one {ring} T chainring at the front and a cassette from {smallest} to {largest} T at the back. The smallest sprocket is highlighted.",
           "labelDouble": "Drawing of the drivetrain: {ring} and {small} T chainrings at the front and a cassette from {smallest} to {largest} T at the back. The big chainring and the smallest sprocket are the ones that count."
         },
-        "rings": "Chainrings that fit with {cog} T at the back",
+        "ringsDouble": "2× sets that fit with {cog} T at the back",
+        "ringsSingle": "1× rings that fit with {cog} T at the back",
         "ringsLimit": "With {cog} T at the back the chainring can have at most {max} T in {class}.",
         "noRings": "None of the chainrings we know of is that small. Try a bigger sprocket at the back.",
-        "double": "Two chainrings (2×)",
-        "single": "One chainring (1×)",
         "ring": "{n} T",
         "tooBig": "Too big here: {names}.",
         "ringsLink": "See the chainrings",
