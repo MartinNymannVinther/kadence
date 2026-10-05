@@ -55,8 +55,9 @@ slipstream that makes it easier behind him.
   straps, a broad white band across the jersey and white bands round the
   sleeves, red and white at the shorts' leg ends, a number on the seat
   post, and the bars 21 cm lower and 22 cm further forward than the
-  rider's own — a short head tube and a long stem angled down — so that
-  his hands, on the hoods, are a little ahead of his face. His shoulders
+  rider's own — a short head tube and a long stem angled down — and the
+  bar turned up 20° about the stem, the hoods up with it, so that his
+  hands, on the hoods, are a little ahead of his face. His shoulders
   and head go as far down, and a third as far forward in the saddle and
   most of the way out of it, his arms reaching the rest (`Kit.bars`,
   `poseOf`). Where the road would have him in the

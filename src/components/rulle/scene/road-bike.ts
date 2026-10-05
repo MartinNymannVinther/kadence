@@ -28,8 +28,8 @@ const SEAT = v(0, 0.8, 0.175);
 const POST = v(0, 0.918, 0.205);
 const HEAD_TOP = v(0, 0.89, -0.365);
 const HEAD_FOOT = v(0, 0.72, -0.415);
-/** Where the stem meets the bar. */
-const CLAMP = v(0, 0.94, -0.46);
+/** Where the stem meets the bar, and the bar turns up about (`Kit.bars`). */
+export const CLAMP = v(0, 0.94, -0.46);
 /** On the seat tube, where the dropped seat stays meet it. */
 const STAYS = v(0, 0.66, 0.14);
 
@@ -61,7 +61,7 @@ const SHORTER_HEAD = 0.09;
 
 function frame(kit: Kit): THREE.BufferGeometry[] {
   const along = (a: THREE.Vector3, b: THREE.Vector3, t: number) => a.clone().lerp(b, t);
-  const { low, reach } = kit.bars ?? OWN_BARS;
+  const { low, reach, tilt } = kit.bars ?? OWN_BARS;
   const head = Math.min(low, SHORTER_HEAD);
   const down = (p: THREE.Vector3, by: number) => v(p.x, p.y - by, p.z);
   const parts = [
@@ -74,7 +74,12 @@ function frame(kit: Kit): THREE.BufferGeometry[] {
     aero(SEAT, POST, 0.026, 0.011, kit.frame),
     // The one-piece cockpit's stem; the rest of it is `cockpit`.
     aero(v(0, 0.91 - head, -0.365), down(CLAMP, low).setZ(CLAMP.z - reach), 0.02, 0.018, kit.frame),
-    ...cockpit(kit).map((part) => part.translate(0, -low, -reach)),
+    ...cockpit(kit).map((part) =>
+      part
+        .translate(0, -CLAMP.y, -CLAMP.z)
+        .rotateX(tilt)
+        .translate(0, CLAMP.y - low, CLAMP.z - reach),
+    ),
     box(0.07, 0.035, 0.05, kit.fork, 0, 0.72, -0.415),
     // A short saddle: a narrow nose, a wide back.
     box(0.06, 0.026, 0.15, P.saddle, 0, 0.934, 0.14),

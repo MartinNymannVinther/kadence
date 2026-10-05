@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import type { Posture } from "@/modules/rulle";
 import { OWN_BARS, type Bars } from "./kits";
+import { CLAMP } from "./road-bike";
 
 /**
  * Where the rider's body is on the bike, for a blend of the three
@@ -98,6 +99,8 @@ const ROCK = 0.16;
 /** Out of the saddle, how far the hips drop and move over the pedal pushing down, metres. */
 const DIP = 0.04;
 const SHIFT = 0.035;
+/** Across the bike, left to right: the axis the bar turns up about. */
+const ACROSS = new THREE.Vector3(1, 0, 0);
 /** The bike's own axis, front to back, that it rocks about. */
 const ALONG = new THREE.Vector3(0, 0, 1);
 /** How much of the rock the rider stands against, staying upright over it. */
@@ -132,7 +135,10 @@ export function poseOf(blend: Blend, crank: number, cadence: number, bars: Bars 
   hips.x += blend.standing * SHIFT * Math.cos(crank) * pedalling;
   const turn = (p: THREE.Vector3) => p.sub(hips).applyAxisAngle(ALONG, sway).add(hips);
   // The hands stay on the bar, whichever way the body goes.
-  const hand = upper((a) => a.hand, 1);
+  // The hands on the bar, turned up with it about the stem's clamp, and moved with it.
+  const onBar = (a: Anchor) =>
+    a.hand.clone().sub(CLAMP).applyAxisAngle(ACROSS, bars.tilt).add(CLAMP);
+  const hand = upper(onBar, 1);
   return {
     hips,
     shoulders: turn(upper((a) => a.shoulders)),

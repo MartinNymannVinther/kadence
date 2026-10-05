@@ -3,10 +3,12 @@ import { PALETTE as P } from "./palette";
 /**
  * Where a bike's bars sit against the rider's own, metres: `low` lower —
  * a short head tube and a stem angled down — and `reach` further forward,
- * on a longer stem. The rider's hands go with them (`poseOf`).
+ * on a longer stem; and `tilt`, radians the bar is turned up about where
+ * the stem holds it, the hoods and the drops with it. The rider's hands
+ * go with them (`poseOf`).
  */
-export type Bars = { low: number; reach: number };
-export const OWN_BARS: Bars = { low: 0, reach: 0 };
+export type Bars = { low: number; reach: number; tilt: number };
+export const OWN_BARS: Bars = { low: 0, reach: 0, tilt: 0 };
 
 /** A rider's colours, head to toe, and their bike's (`RiderFigure`, `RoadBike`). */
 export type Kit = {
@@ -88,5 +90,5 @@ export const CHALLENGER_KIT: Kit = {
   sleeveStripe: "#f3f0ea",
   hem: ["#f3f0ea", "#b8352f"],
   plate: true,
-  bars: { low: 0.21, reach: 0.22 },
+  bars: { low: 0.21, reach: 0.22, tilt: 0.35 },
 };
