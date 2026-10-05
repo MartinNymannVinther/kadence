@@ -34,3 +34,19 @@ export const YOUTH_GEARING: Record<GearClass, { limitM: number | null; source: s
     source: "Information_om_nye_BU_gearinger_2023.pdf; UCI Part 2 art. 2.2.023 abrogated 1.1.2023",
   },
 };
+
+/**
+ * The ages a rider turns in the racing year in each class, for the
+ * calculator's class buttons. Each class opens to riders "der i
+ * kalenderåret fylder …" (Sporstlige_regler_2026 ch. 7 § 1.18 U11,
+ * § 1.17 U13, § 1.16 U15, § 1.15 U17, § 1.6 U19; research note
+ * section 1.1). The calculator's U19 stands for every older class too,
+ * since none of them has a limit, so its upper age is open.
+ */
+export const GEAR_CLASS_AGES: Record<GearClass, { from: number; to: number | null }> = {
+  U11: { from: 9, to: 10 },
+  U13: { from: 11, to: 12 },
+  U15: { from: 13, to: 14 },
+  U17: { from: 15, to: 16 },
+  U19: { from: 17, to: null },
+};

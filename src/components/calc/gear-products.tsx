@@ -1,88 +1,148 @@
 "use client";
 
-import { ExternalLink } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
-import { GEAR_PRODUCTS, type GearProduct } from "@/modules/calc/gear-products";
-import { largestRing, smallestCog } from "@/modules/calc/gearing";
-import { formatPrice } from "./format";
+import { useState } from "react";
+import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
+import { propose } from "@/modules/calc/gear-build";
+import { ringsFor, type ChainringFamily } from "@/modules/calc/gear-products";
+import { largestRing, rolloutM } from "@/modules/calc/gearing";
+import { GearBuildCard } from "./gear-build-card";
+import { RingKindPicker } from "./ring-kind-picker";
+import { RingList } from "./ring-list";
 
 /**
- * Parts that could bring a bike within its class, as a neutral list. For
- * each version the calculator says what it allows with the class and
- * tyre chosen: the biggest chainring for a cassette's smallest sprocket,
- * or the smallest sprocket for a chainring set's big ring.
+ * How the bike could be built (ADR 0055). The reader first chooses two
+ * rings in front or one; then a concrete build for the gear on the
+ * sliders — or, when it is over the limit, the two nearest builds that
+ * hold, one keeping the chainring and one keeping the sprocket — each
+ * drawn and named part by part, and every chainring of that kind that
+ * keeps the chosen sprocket within the class. When no ring of the kind
+ * chosen is small enough and the other kind has one, it says so and
+ * offers to switch.
  */
 export function GearProducts({
+  ring,
+  cog,
   limit,
-  circumference,
+  circumferenceMm,
   className,
 }: {
+  ring: number;
+  cog: number;
   limit: number | null;
-  circumference: number;
+  circumferenceMm: number;
   className: string;
 }) {
   const t = useTranslations("calculators.gearing.products");
-  const open = useTranslations("open");
-  const locale = useLocale();
-
-  const versions = (product: GearProduct) =>
-    product.kind === "cassette"
-      ? product.ranges.map(([small, large]) =>
-          limit === null
-            ? t("fitsFree", { a: small, b: large })
-            : t("cassetteFits", { small, large, ring: largestRing(small, limit, circumference) }),
-        )
-      : product.sets.map(([big, small]) =>
-          limit === null
-            ? t("fitsFree", { a: big, b: small })
-            : t("chainringFits", { big, small, cog: smallestCog(big, limit, circumference) }),
-        );
+  const [kind, setKind] = useState<ChainringFamily["kind"]>("double");
+  const other = kind === "double" ? "single" : "double";
+  const proposal = propose(ring, cog, limit, circumferenceMm, kind);
+  const fits = ringsFor(cog, limit, circumferenceMm);
+  const mine = fits.filter((f) => f.family.kind === kind);
+  const stuck =
+    limit !== null &&
+    mine.every((f) => f.sets.length === 0) &&
+    fits.some((f) => f.family.kind === other && f.sets.length > 0);
+  const overCm =
+    limit === null ? 0 : Math.round((rolloutM(ring, cog, circumferenceMm) - limit) * 100);
 
   return (
-    <section className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5">
-      <h2 className="text-lg font-semibold">{t("title")}</h2>
-      <p className="text-reading leading-relaxed">{t("intro")}</p>
-      {limit !== null && (
-        <p className="text-meta text-2sm">{t("forClass", { class: className })}</p>
+    <section className="border-border bg-card flex flex-col gap-5 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5">
+      <div className="flex flex-col gap-1">
+        <h2 className="text-lg font-semibold">{t("title")}</h2>
+        <p className="text-meta text-2sm leading-relaxed">{t("intro")}</p>
+      </div>
+
+      <RingKindPicker value={kind} onChange={setKind} />
+      {stuck && (
+        <div className="bg-sticky text-sticky-ink flex flex-col items-start gap-2 rounded-lg p-3 text-2sm leading-relaxed">
+          <p>
+            {kind === "double"
+              ? t("kind.stuckDouble", { cog, class: className })
+              : t("kind.stuckSingle", { cog, class: className })}
+          </p>
+          <Button variant="outline" size="sm" onClick={() => setKind(other)}>
+            {other === "single" ? t("kind.trySingle") : t("kind.tryDouble")}
+          </Button>
+        </div>
       )}
-      <ul className="flex flex-col gap-3">
-        {GEAR_PRODUCTS.map((product) => (
-          <li key={product.id} className="border-border flex flex-col gap-1 border-t pt-3">
-            <p className="flex flex-wrap items-baseline gap-x-2">
-              <span className="font-semibold">{product.name}</span>
-              <span className="text-meta text-xs">{t("speeds", { speeds: product.speeds })}</span>
+
+      <div className="flex flex-col gap-3">
+        <h3 className="font-semibold">{t("build.title")}</h3>
+        {proposal.kind === "fits" ? (
+          <>
+            <p className="text-reading leading-relaxed">
+              {limit === null
+                ? t("build.fitsFree", { class: className })
+                : t("build.fits", { class: className })}
+              {proposal.asked !== null &&
+                ` ${t("build.asked", { asked: proposal.asked, used: proposal.build.ring })}`}
             </p>
-            <p className="text-2sm leading-relaxed">{t(`items.${product.id}` as "title")}</p>
-            <ul className="flex flex-wrap gap-1.5">
-              {versions(product).map((line) => (
-                <li key={line} className="bg-secondary rounded-md px-2 py-0.5 text-xs tabular-nums">
-                  {line}
-                </li>
-              ))}
-            </ul>
-            <p className="text-meta flex flex-wrap items-center gap-x-3 text-xs">
-              <span>
-                {product.price
-                  ? t("price", {
-                      price: formatPrice(product.price, locale),
-                      shop: product.price.seenAt,
-                    })
-                  : t("noPrice")}
-              </span>
-              <a
-                href={product.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="focus-ring text-primary inline-flex items-center gap-1 hover:underline"
-              >
-                {t("link")}
-                <ExternalLink aria-hidden className="size-3" />
-                <span className="sr-only">{open("opensElsewhere")}</span>
-              </a>
+            <GearBuildCard
+              build={proposal.build}
+              title={null}
+              kind={kind}
+              limit={limit}
+              className={className}
+            />
+          </>
+        ) : (
+          <>
+            <p className="text-reading leading-relaxed">
+              {t("build.over", { class: className, cm: overCm })}
             </p>
-          </li>
-        ))}
-      </ul>
+            <div className="grid gap-3 md:grid-cols-2">
+              {proposal.keepRing ? (
+                <GearBuildCard
+                  build={proposal.keepRing}
+                  title={t("build.keepRing", {
+                    ring: proposal.keepRing.ring,
+                    cog: proposal.keepRing.cog,
+                  })}
+                  kind={kind}
+                  limit={limit}
+                  className={className}
+                />
+              ) : (
+                <p className="bg-secondary rounded-lg p-3 text-2sm leading-relaxed">
+                  {t("build.keepRingNone", { ring, cog: proposal.needCog })}
+                </p>
+              )}
+              {proposal.keepCog ? (
+                <GearBuildCard
+                  build={proposal.keepCog}
+                  title={t("build.keepCog", { cog, ring: proposal.keepCog.ring })}
+                  kind={kind}
+                  limit={limit}
+                  className={className}
+                />
+              ) : (
+                <p className="bg-secondary rounded-lg p-3 text-2sm leading-relaxed">
+                  {t("build.keepCogNone", { cog })}
+                </p>
+              )}
+            </div>
+          </>
+        )}
+      </div>
+
+      {limit !== null && !stuck && (
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-1">
+            <h3 className="font-semibold">
+              {kind === "double" ? t("ringsDouble", { cog }) : t("ringsSingle", { cog })}
+            </h3>
+            <p className="text-reading leading-relaxed">
+              {t("ringsLimit", {
+                cog,
+                max: largestRing(cog, limit, circumferenceMm),
+                class: className,
+              })}
+            </p>
+          </div>
+          <RingList fits={mine} />
+        </div>
+      )}
     </section>
   );
 }

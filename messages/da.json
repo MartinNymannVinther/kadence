@@ -3871,7 +3871,7 @@
   "calculators": {
     "gearing": {
       "title": "Gearing for de unge klasser",
-      "intro": "Regn cyklens største gear ud, og se om det holder sig inden for DCU's grænse. Alt bliver i din browser.",
+      "intro": "Vælg klassen, og skru på dæk, klinge og tandhjul. Tegningen viser, hvor langt cyklen kører på én pedalomgang, og om det holder sig inden for DCU's grænse. Alt bliver i din browser.",
       "class": "Klasse",
       "classes": {
         "U11": "U11",
@@ -3880,24 +3880,55 @@
         "U17": "U17",
         "U19": "U19 og ældre"
       },
+      "picker": {
+        "ages": "{from}–{to} år",
+        "agesFrom": "{from} år og op",
+        "limit": "{limit, number, ::.00} m",
+        "free": "Fri gearing"
+      },
       "tyre": "Dæk",
       "tyreOption": "{mm} mm",
-      "tyreCustom": "Målt omkreds",
+      "tyreCustom": "Jeg har målt hjulets omkreds",
       "circumference": "Omkreds i mm",
       "circumferenceHint": "Mål hjulets omkreds med dækket pumpet op til løbstryk.",
+      "circumferenceInvalid": "Skriv en omkreds mellem 1800 og 2400 mm, så kommer tegningen igen.",
       "ring": "Største klinge",
       "cog": "Mindste tandhjul",
-      "teeth": "T",
+      "slider": {
+        "teeth": "{n} T",
+        "teethSpoken": "{n, plural, one {# tand} other {# tænder}}",
+        "tyreSpoken": "{mm} mm-dæk",
+        "fewer": "{what}: én tand færre",
+        "more": "{what}: én tand mere",
+        "narrower": "Smallere dæk",
+        "wider": "Bredere dæk"
+      },
+      "scene": {
+        "title": "Én pedalomgang",
+        "distance": "{m} m",
+        "wheel": "Baghjulet er nået {turns, number, ::.0} gange rundt",
+        "play": "Træd én omgang",
+        "metres": "{m} m",
+        "limit": "Grænse i {class}: {limit} m",
+        "label": "Cyklen kører {rollout} m på én pedalomgang, fordi baghjulet drejer {turns} gange rundt. Grænsen i {class} er {limit} m.",
+        "labelFree": "Cyklen kører {rollout} m på én pedalomgang, fordi baghjulet drejer {turns} gange rundt. Der er ingen grænse.",
+        "caption": "Tegningen er i målestok. Pedalen starter lige ned, som når kommissæren måler, og cyklen ruller én hel pedalomgang. Den grønne prik på dækket viser, hvor mange gange hjulet når rundt.",
+        "status": {
+          "over": "Over grænsen",
+          "close": "Lige ved grænsen",
+          "within": "Inden for grænsen",
+          "free": "Fri gearing"
+        },
+        "over": "{cm, plural, =0 {mindre end 1 cm} other {# cm}} over",
+        "under": "{cm, plural, =0 {mindre end 1 cm} other {# cm}} under"
+      },
       "result": {
-        "title": "Cyklens største gear",
-        "gear": "{ring} × {cog} giver {rollout, number, ::.00} m pr. pedalomgang.",
-        "limit": "Grænsen i {class} er {limit, number, ::.00} m.",
+        "explain": "{ring} tænder foran og {cog} bagpå betyder, at baghjulet drejer {turns, number, ::.00} gange rundt for hver pedalomgang. Hjulet er {circumference, number, ::.000} m rundt, så cyklen kører {rollout, number, ::.00} m.",
         "free": "U19 og ældre kører med fri gearing, så alle gear er lovlige.",
-        "within": "Inden for grænsen, {cm, number, integer} cm under.",
-        "close": "Inden for grænsen, men kun {cm, number, integer} cm under. Dæktryk og slid kan flytte et par centimeter, så mål cyklen med de dæk og det tryk, der køres løb på.",
-        "over": "{cm, number, integer} cm over grænsen.",
-        "wayBack": "Med {cog} tænder bagpå kan klingen højst have {largestRing} tænder. Med {ring} tænder foran skal det mindste tandhjul have mindst {smallestCog} tænder.",
-        "invalid": "Skriv hele tænder: klingen mellem 20 og 60 og tandhjulet mellem 9 og 52."
+        "within": "Inden for grænsen i {class} på {limit, number, ::.00} m, {cm, plural, =0 {mindre end 1 cm} other {# cm}} under.",
+        "close": "Inden for grænsen i {class} på {limit, number, ::.00} m, men kun {cm, plural, =0 {mindre end 1 cm} other {# cm}} under. Dæktryk og slid kan flytte et par centimeter, så mål cyklen med de dæk og det tryk, der køres løb på.",
+        "over": "{cm, plural, =0 {Mindre end 1 cm} other {# cm}} over grænsen i {class} på {limit, number, ::.00} m.",
+        "wayBack": "Med {cog} tænder bagpå kan klingen højst have {largestRing} tænder. Med {ring} tænder foran skal det mindste tandhjul have mindst {smallestCog} tænder."
       },
       "table": {
         "title": "Største klinge til hvert mindste tandhjul",
@@ -3909,24 +3940,73 @@
         "metres": "{rollout, number, ::.00} m"
       },
       "products": {
-        "title": "Dele, der kan hjælpe",
-        "intro": "Junior-kassetter starter på 14 tænder eller mere. Listen er neutral, og Kadence har ingen aftaler med forhandlerne. Priserne er set i oktober 2026.",
-        "speeds": "{speeds}-speed",
-        "cassetteFits": "{small}-{large}: klinge op til {ring} T",
-        "chainringFits": "{big}-{small}: mindste tandhjul {cog} T",
-        "fitsFree": "{a}-{b}",
-        "price": "ca. {price} ({shop})",
-        "noPrice": "Pris ikke tjekket",
-        "link": "Se produktet",
-        "forClass": "Tallene gælder {class} med den valgte omkreds.",
+        "title": "Sådan kan cyklen bygges",
+        "intro": "Et konkret bud på dele til det gear, du har valgt, og de klinger der passer. Kadence har ingen aftaler med forhandlerne, og priser og klinger er set i oktober 2026.",
+        "kind": {
+          "label": "Klinger foran",
+          "double": "To klinger (2×)",
+          "single": "Én klinge (1×)",
+          "doubleHelp": "Som på de fleste landevejscykler, med forskifter. Kun den store klinge tæller ved gearkontrollen.",
+          "singleHelp": "Én klinge og ingen forskifter. Klingen kan vælges i præcis den størrelse, klassen tillader, men der er færre gear.",
+          "stuckDouble": "Med {cog} T bagpå er intet 2×-sæt, vi kender, småt nok i {class}. Med én klinge foran går det.",
+          "stuckSingle": "Med {cog} T bagpå er ingen 1×-klinge, vi kender, lille nok i {class}. Med to klinger foran går det.",
+          "trySingle": "Se med én klinge foran",
+          "tryDouble": "Se med to klinger foran"
+        },
+        "build": {
+          "title": "Et konkret bud",
+          "fits": "Dit valg holder i {class}. Sådan kan cyklen bygges:",
+          "fitsFree": "{class} kører med fri gearing. Sådan kan cyklen bygges:",
+          "asked": "Ingen klinge, vi kender, har præcis {asked} T, så buddet bruger {used} T.",
+          "over": "Dit valg er {cm, number, integer} cm over grænsen i {class}. Her er to bud, der holder:",
+          "keepRing": "Behold klingen på {ring} T, og brug {cog} T bagpå",
+          "keepCog": "Behold {cog} T bagpå, og brug en klinge på {ring} T",
+          "keepRingNone": "Med {ring} T foran skal det mindste tandhjul have mindst {cog} T, og så store junior-kassetter kender vi ikke.",
+          "keepCogNone": "Med {cog} T bagpå er ingen af de klinger, vi kender, små nok.",
+          "cassette": "Kassette",
+          "ring": "Klinge",
+          "gear": "Gear",
+          "speeds": "{speeds}-speed",
+          "ordinary": "En almindelig kassette med {cog} T som mindste tandhjul. Den har cyklen sikkert allerede.",
+          "price": "ca. {price} ({shop})",
+          "priceFrom": "fra ca. {price} ({shop})",
+          "link": "Se produktet",
+          "also11": "Til 11-speed: {name} {version}.",
+          "teeth": "{n} T",
+          "double": "2×",
+          "single": "1×",
+          "noRingDouble": "Intet 2×-sæt, vi kender, har en stor klinge på {ring} T.",
+          "noRingSingle": "Ingen 1×-klinge, vi kender, har {ring} T.",
+          "gearWithin": "{ring} × {cog} giver {rollout, number, ::.00} m, {cm, plural, =0 {mindre end 1 cm} other {# cm}} under grænsen i {class}.",
+          "gearFree": "{ring} × {cog} giver {rollout, number, ::.00} m."
+        },
+        "drawing": {
+          "smallest": "Mindste tandhjul {n} T",
+          "cassette": "Kassette {smallest}-{largest}",
+          "ring": "Klinge {n} T",
+          "small": "Lille klinge {n} T tæller ikke",
+          "labelSingle": "Tegning af drivlinjen: én klinge på {ring} T foran og en kassette fra {smallest} til {largest} T bagpå. Det mindste tandhjul er fremhævet.",
+          "labelDouble": "Tegning af drivlinjen: klinger på {ring} og {small} T foran og en kassette fra {smallest} til {largest} T bagpå. Den store klinge og det mindste tandhjul er dem, der tæller."
+        },
+        "ringsDouble": "2×-sæt, der passer med {cog} T bagpå",
+        "ringsSingle": "1×-klinger, der passer med {cog} T bagpå",
+        "ringsLimit": "Med {cog} T bagpå må klingen højst have {max} T i {class}.",
+        "noRings": "Ingen af de klinger, vi kender, er så små. Prøv et større tandhjul bagpå.",
+        "ring": "{n} T",
+        "tooBig": "For store her: {names}.",
+        "ringsLink": "Se klingerne",
+        "priceFrom": "fra ca. {price} ({shop})",
         "items": {
-          "micheK12": "Til Shimano 12-speed HG-friløb. Butikkerne er uenige om, hvorvidt den virker med SRAM AXS, så spørg i butikken.",
-          "reconJunior": "Til Shimano 11-speed HG-friløb og til SRAM XDR med en adapter.",
-          "dubied": "Fås til Shimano 12-speed, SRAM XDR og Campagnolo 12-speed. Prisen er for Shimano og Campagnolo; XDR koster 239 euro.",
-          "micheLight": "11-speed til Shimano.",
-          "shimanoR8000": "11-speed til Shimano. Det er uvist, om den stadig produceres.",
-          "michePrimato": "10-speed til Shimano og Campagnolo.",
-          "mageneQed": "Klinger til Magenes egne kranksæt med wattmåler, til Shimano 11- og 12-speed. Den mindste store klinge er 50 T, så de passer sammen med en junior-kassette, fx 50 × 16 i U15."
+          "micheK12": "Til Shimanos 12-speed-friløb (HG). Butikkerne er uenige om, hvorvidt den virker med SRAM AXS, så spørg i butikken.",
+          "dubied": "Miche laver ingen 12-speed-kassette, der starter her. Dubied fås til Shimano HG, SRAM XDR og Campagnolo, men ikke alle størrelser er altid på lager. Prisen er for Shimano og Campagnolo; XDR koster 239 euro.",
+          "micheLight": "Til Shimanos 11-speed-friløb (HG)."
+        },
+        "ringNotes": {
+          "shimano": "54-40 findes kun til Dura-Ace.",
+          "grx": "Shimanos gravel-kranksæt, med mindre klinger.",
+          "sram": "50/37 findes ikke til Rival, og 43/30 er Force og Rival Wide.",
+          "stradaLab": "110 BCD med 4 bolte. Passer på Shimanos kranke fra R7000 til R9200 og på Magenes wattmåler-kranksæt P505 og P515.",
+          "sram1x": "Direct mount til SRAM's kranksæt."
         }
       },
       "alternative": {

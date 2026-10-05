@@ -1,6 +1,6 @@
 # ADR 0047: Open guides and calculators, without an account
 
-Status: accepted · Date: 2026-10-03
+Status: accepted · Date: 2026-10-03 · Amended by ADR 0055 (one suggested build instead of a neutral list of products)
 
 ## Context
 

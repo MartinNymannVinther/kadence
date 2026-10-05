@@ -3,15 +3,23 @@ import {
   checkBike,
   gearStatus,
   largestRing,
+  pitchRadiusMm,
   ringTable,
   rolloutM,
   smallestCog,
   TYRES,
   validTeeth,
+  wheelTurns,
 } from "@/modules/calc/gearing";
-import { GEAR_PRODUCTS } from "@/modules/calc/gear-products";
+import {
+  CASSETTES,
+  cassetteFor,
+  CHAINRINGS,
+  ORDINARY_COGS,
+  ringsFor,
+} from "@/modules/calc/gear-products";
 import { RACE_RULES } from "@/modules/dcu/races";
-import { GEAR_CLASSES, YOUTH_GEARING } from "@/modules/dcu/gearing";
+import { GEAR_CLASS_AGES, GEAR_CLASSES, YOUTH_GEARING } from "@/modules/dcu/gearing";
 
 /**
  * The figures in docs/research/klasser-og-gearing.md, section 3.3, worked
@@ -30,6 +38,18 @@ describe("DCU's youth gear limits", () => {
 
   it("every class carries its source", () => {
     for (const c of GEAR_CLASSES) expect(YOUTH_GEARING[c].source.length).toBeGreaterThan(10);
+  });
+
+  it("each class is two birth years, in order, and the top one runs on", () => {
+    // Sporstlige_regler_2026 ch. 7 §§ 1.15–1.18; research note 1.1.
+    expect(GEAR_CLASS_AGES.U15).toEqual({ from: 13, to: 14 });
+    expect(GEAR_CLASS_AGES.U17).toEqual({ from: 15, to: 16 });
+    expect(GEAR_CLASS_AGES.U19).toEqual({ from: 17, to: null });
+    GEAR_CLASSES.forEach((c, i) => {
+      const { from, to } = GEAR_CLASS_AGES[c];
+      expect(from).toBe(9 + 2 * i);
+      if (to !== null) expect(to).toBe(from + 1);
+    });
   });
 });
 
@@ -51,6 +71,18 @@ describe("rollout", () => {
   it("48×14 on 28 mm passes U17 by about a centimetre, which counts as close", () => {
     expect(gearStatus(rolloutM(48, 14, TYRES["28"]), 7.33)).toBe("close");
     expect(gearStatus(rolloutM(46, 14, TYRES["28"]), 7.33)).toBe("within");
+  });
+
+  it("the wheel turns chainring over sprocket times per pedal turn", () => {
+    expect(wheelTurns(50, 14)).toBeCloseTo(3.571, 3);
+    expect(rolloutM(50, 14, 2105)).toBeCloseTo((wheelTurns(50, 14) * 2105) / 1000, 9);
+  });
+
+  it("draws a chainring and a sprocket at their real size", () => {
+    // A 53 T ring's pitch diameter is about 214.4 mm; an 11 T sprocket's about 45.1 mm.
+    expect(2 * pitchRadiusMm(53)).toBeCloseTo(214.4, 1);
+    expect(2 * pitchRadiusMm(11)).toBeCloseTo(45.1, 1);
+    expect(pitchRadiusMm(50)).toBeGreaterThan(pitchRadiusMm(34));
   });
 
   it("free gearing is free", () => {
@@ -128,19 +160,66 @@ describe("input and products", () => {
   });
 
   it("every product has a source and sensible teeth", () => {
-    for (const p of GEAR_PRODUCTS) {
-      expect(p.url).toMatch(/^https:\/\//);
-      const pairs = p.kind === "cassette" ? p.ranges : p.sets;
-      expect(pairs.length).toBeGreaterThan(0);
-      for (const [a, b] of pairs) {
-        if (p.kind === "cassette") expect(a).toBeLessThan(b);
-        else expect(a).toBeGreaterThan(b);
+    for (const c of CASSETTES) {
+      expect(c.url).toMatch(/^https:\/\//);
+      expect(c.versions.length).toBeGreaterThan(0);
+      for (const [small, large] of c.versions) expect(small).toBeLessThan(large);
+    }
+    for (const f of CHAINRINGS) {
+      expect(f.url).toMatch(/^https:\/\//);
+      for (const set of f.sets) {
+        expect(set.length).toBe(f.kind === "double" ? 2 : 1);
+        if (f.kind === "double") expect(set[0]).toBeGreaterThan(set[1]!);
       }
+      // Biggest first, so the first set that fits is the one nearest the limit.
+      const bigs = f.sets.map(([big]) => big!);
+      expect(bigs).toEqual([...bigs].sort((a, b) => b - a));
     }
   });
 
   it("product ids are unique", () => {
-    const ids = GEAR_PRODUCTS.map((p) => p.id);
+    const ids = [...CASSETTES, ...CHAINRINGS].map((p) => p.id);
     expect(new Set(ids).size).toBe(ids.length);
+  });
+});
+
+describe("the suggested build", () => {
+  it("names no cassette for an ordinary 10 or 11", () => {
+    expect(ORDINARY_COGS).toEqual([10, 11]);
+    for (const cog of ORDINARY_COGS) {
+      expect(cassetteFor(cog, 12)).toBeNull();
+      expect(cassetteFor(cog, 11)).toBeNull();
+    }
+  });
+
+  it("suggests Miche first, and another maker only where Miche has none", () => {
+    expect(cassetteFor(14, 12)).toMatchObject({ cassette: { id: "micheK12" }, version: [14, 30] });
+    expect(cassetteFor(16, 12)).toMatchObject({ cassette: { id: "micheK12" }, version: [16, 30] });
+    expect(cassetteFor(13, 12)).toMatchObject({ cassette: { id: "dubied" }, version: [13, 34] });
+    expect(cassetteFor(15, 12)).toMatchObject({ cassette: { id: "dubied" }, version: [15, 28] });
+    expect(cassetteFor(12, 12)).toBeNull();
+    for (const cog of [12, 13, 14, 15, 16])
+      expect(cassetteFor(cog, 11)?.cassette.id).toBe("micheLight");
+  });
+
+  it("offers only chainrings that keep the sprocket within the class", () => {
+    // U17, 25 mm, 14 T: at most 48 T (research note 3.3).
+    const u17 = Object.fromEntries(
+      ringsFor(14, 7.33, TYRES["25"]).map((f) => [f.family.id, f.sets.map((s) => s.join("-"))]),
+    );
+    expect(u17).toEqual({
+      shimano: [],
+      grx: ["48-31", "46-30"],
+      sram: ["48-35", "46-33", "43-30"],
+      stradaLab: ["48", "46", "44", "42", "40", "38", "34"],
+      sram1x: ["46", "44", "42", "40", "38"],
+    });
+    for (const fit of ringsFor(16, 6.68, TYRES["28"]))
+      for (const [big] of fit.sets)
+        expect(rolloutM(big!, 16, TYRES["28"])).toBeLessThanOrEqual(6.68);
+  });
+
+  it("with free gearing every chainring fits", () => {
+    for (const fit of ringsFor(11, null, TYRES["25"])) expect(fit.sets).toEqual(fit.family.sets);
   });
 });

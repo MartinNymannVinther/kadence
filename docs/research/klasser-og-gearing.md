@@ -2,7 +2,7 @@
 
 Researchnotat, oktober 2026. Formålet er at samle det, forældre til en rytter i U15–U23 har brug for at vide om forskellene mellem klasserne, både de skrevne regler og de uskrevne veje, og at give et præcist grundlag for gearing (udveksling) i de små klasser. Notatet gentager ikke træningsmængder (se [`dcu-traeningsanbefalinger.md`](./dcu-traeningsanbefalinger.md)) eller forælderrollen og Team Danmarks forældreguide (se [`foraeldre-og-talentudvikling.md`](./foraeldre-og-talentudvikling.md)).
 
-**Metode.** Følgende er hentet og læst i fuld tekst: DCU's _Sportslige regler 2026_ (128 sider, endelig version 17.02.2026), DCU's _Information om nye gearregler i B&U-klasserne_ (2023), UCI's reglement del 1 (version E0225) og del 2 Road (version E0425), DCU's _Talentudviklings- og elitestrategi 2025-2028_ ("Vejen frem"), DCU's U17- og U19-kompendier (2016), DCU's B&U-udvalgs _Forældreguide til cykling – landevej_ (ca. 2016) og Team Danmarks oversigt over forbundenes kriterier for sportslig godkendelse. Dertil DCU's sider om licens, klippekort og teams, UCI's pressemeddelelse om maksimumgearing (juni 2025), fagpresse om UCI-reglerne og producent- og butikssider for kassetter. Alle sider er læst 3. oktober 2026.
+**Metode.** Følgende er hentet og læst i fuld tekst: DCU's _Sportslige regler 2026_ (128 sider, endelig version 17.02.2026), DCU's _Information om nye gearregler i B&U-klasserne_ (2023), UCI's reglement del 1 (version E0225) og del 2 Road (version E0425), DCU's _Talentudviklings- og elitestrategi 2025-2028_ ("Vejen frem"), DCU's U17- og U19-kompendier (2016), DCU's B&U-udvalgs _Forældreguide til cykling – landevej_ (ca. 2016) og Team Danmarks oversigt over forbundenes kriterier for sportslig godkendelse. Dertil DCU's sider om licens, klippekort og teams, UCI's pressemeddelelse om maksimumgearing (juni 2025), fagpresse om UCI-reglerne og producent- og butikssider for kassetter. Alle sider er læst 3. oktober 2026, undtagen dem i afsnit 3.6, som er læst 5. oktober 2026.
 
 **Mærkning.** Hvert udsagn er mærket efter, hvor sikkert det er:
 
@@ -324,7 +324,53 @@ Til SRAM AXS 12-speed findes junior-kassetter, der passer på XDR (Recon med ada
 
 **c) At blokere gearene med stopskruen** er efter vores tolkning ikke tilladt i Danmark ("låst gear", se 3.2), selvom det er almindeligt i Storbritannien [E/S].
 
-**"Megane".** Produktejeren skrev "miche, megane osv.". Vi har ikke fundet noget mærke, der hedder Megane eller ligner, som laver junior-kassetter, tandhjul eller klinger. Søgninger på dansk og engelsk gav intet. De mærker, der faktisk sælger junior-kassetter i 2026, er Miche, Recon og E.Dubied, plus Shimano CS-R8000 14-28 til 11-speed. Marchisio er lukket. IRD nævnes med en 12-28 junior-kassette i en ældre kilde [S: Velo]. Vi bør spørge produktejeren, hvad der menes, i stedet for at gætte.
+**"Megane".** Produktejeren skrev "miche, megane osv.". Den 5. oktober 2026 skrev han, at han mente **Strada Lab**, se 3.6.
+
+### 3.6 Forslag i beregneren: hvilken kassette og hvilke klinger (læst 5. okt. 2026)
+
+Beregneren foreslår én konkret kassette pr. mindste tandhjul, Miche først, som produktejeren bad om, og de klinger der holder tandhjulet inden for klassen (ADR 0055). Et mindste tandhjul på 10 eller 11 er en almindelig kassette og får ingen henvisning.
+
+**Almindelige kassetter.** SRAM AXS 12-speed på XDR starter på 10 T (10-26 til 10-36) [S: SRAM support]. Shimano 12-speed til landevej (Dura-Ace R9200, Ultegra R8100, 105 R7100) starter på 11 T [S: probikestock]. Campagnolo 12-speed starter på 11 T, Super Record 13 og Record 13 også på 10 T [S: campagnolo.com].
+
+**Miche pr. mindste tandhjul** [S: Miches gearark, linket fra hvert produkt på miche.it]:
+
+| Mindste tandhjul | Primato K12 SH (12s, Shimano HG) | Light Primato 11 SH (11s) |
+| ---------------- | -------------------------------- | ------------------------- |
+| 12 T             | ingen                            | 12-25 … 12-34             |
+| 13 T             | ingen                            | 13-25 … 13-34             |
+| 14 T             | 14-30, 14-32, 14-34              | 14-25 … 14-34             |
+| 15 T             | ingen                            | 15-25 … 15-32             |
+| 16 T             | 16-30, 16-32                     | 16-27 … 16-34             |
+
+Miches løse reservetandhjul kommer kun i faste par (11+12, 14+15, 16+17), så en 12-speed-kassette, der starter på 13 eller 15, kan heller ikke bygges af Miche-dele. Arkene siger, at et forhold uden for listen "will be replaced with a ratio from this list". Til 13 og 15 T i 12-speed foreslår beregneren derfor **E.Dubied monoblock** 13-34 og 15-28 (Shimano HG, SRAM XDR, Campagnolo; 229 €, XDR 239 €; ikke alle varianter på lager 5.10.2026) [S: edubied.com]. Light Primato 11 SH set til 63,99 € hos bike-components.de (13-30, 14-25/27/30/32, 16-27/29/30 på lager) [S]. K12 SH 14-30 set til 119,99 € hos bikable.com (dansk butik) og 999 kr. hos allbike.dk [S].
+
+**Almindelige klinger (2×) i dag** [S]:
+
+| Gruppe                           | Klinger                                          | Kilde                                    |
+| -------------------------------- | ------------------------------------------------ | ---------------------------------------- |
+| Shimano Dura-Ace R9200           | 50-34, 52-36, 54-40                              | bike-components.de                       |
+| Shimano Ultegra R8100, 105 R7100 | 50-34, 52-36                                     | bike-components.de; Shimano-spec (titel) |
+| Shimano GRX RX820-2 / RX610-2    | 48-31 / 46-30                                    | incycle.com; excelsports.com             |
+| SRAM Red E1                      | 46/33, 48/35, 50/37 (wattmåler også 52/39–56/43) | sram.com; SRAM support                   |
+| SRAM Force                       | 46/33, 48/35, 50/37, Wide 43/30                  | SRAM support                             |
+| SRAM Rival                       | 46/33, 48/35, Wide 43/30                         | SRAM support                             |
+
+Shimanos egne sider (bike.shimano.com, si.shimano.com) afviste adgang, så Shimanos tal er fra butikker.
+
+**1×-klinger.** **Strada Lab 1x Single Aluminium Chainring**: 110 BCD med 4 bolte, narrow-wide, 34, 38, 40, 42, 44, 46, 48, 50, 52 og 54 T, 599 kr. (52 og 54 T 699 kr.) hos cykler.dk; passer ifølge butikken på Shimano R7000, R8000, R9100, R7100, R8100 og R9200 og på Magenes P505 og P515 (ikke Shimanos 9270-wattmåler) [S: cykler.dk; forhandler MomentumSport]. Carbonudgaven fås i 42–56 T til 999 kr. [S: bikevaenget.dk]. **SRAM X-Sync** direct mount til Red, Force og Rival: 38, 40, 42, 44 og 46 T [S: starbike.com, powermetercity.com]. Magene laver selv kun 2×-klinger (QED 50-34, 52-36, 53-39 til Magenes egne wattmåler-kranksæt) [S: magene.com].
+
+**Hvad beregneren foreslår** (25 mm-dæk) [B]:
+
+| Mindste tandhjul | 12-speed                   | 11-speed                        |
+| ---------------- | -------------------------- | ------------------------------- |
+| 10, 11 T         | almindelig kassette        | almindelig kassette             |
+| 12 T             | ingen kendt                | Miche Light Primato 11 SH 12-25 |
+| 13 T             | E.Dubied 13-34             | Miche Light Primato 11 SH 13-30 |
+| 14 T             | Miche Primato K12 SH 14-30 | Miche Light Primato 11 SH 14-30 |
+| 15 T             | E.Dubied 15-28             | Miche Light Primato 11 SH 15-28 |
+| 16 T             | Miche Primato K12 SH 16-30 | Miche Light Primato 11 SH 16-29 |
+
+Eksempel: U17 med 14 T bagpå tillader højst 48 T. Shimano GRX 48-31 og 46-30, SRAM 48/35, 46/33 og 43/30, Strada Lab 34–48 T og SRAM X-Sync 38–46 T passer; Shimanos landevejsklinger er for store [B].
 
 ---
 
@@ -338,7 +384,6 @@ Til SRAM AXS 12-speed findes junior-kassetter, der passer på XDR (Recon med ada
 
 ## 5. Åbne spørgsmål
 
-- Hvad "Megane" henviser til (spørg produktejeren).
 - Hvad "låst gear" præcist dækker, og om en cykel kørt kun på den lille klinge eller med den store klinge fjernet er lovlig (spørg DCU's Landevejsudvalg).
 - Om U17-ryttere ved U19-DM i enkeltstart må køre med fri gearing ("cykler/udstyr som U19D", kap. 17 §5.10-5).
 - DCU beskriver ikke målemetoden, hvor ofte der kontrolleres eller en særskilt straf. Det kunne en kommissær i DCU's Kommissærudvalg bekræfte.
@@ -422,3 +467,25 @@ Til SRAM AXS 12-speed findes junior-kassetter, der passer på XDR (Recon med ada
 - E.Dubied monoblock 12s: https://edubied.com/products/dubied_monoblock_cassette_shimano_12_spd
 - Shimano Ultegra CS-R8000 14-28 (forhandler): https://aroundthecycle.com/products/new-shimano-ultegra-cs-r8000-11-speed-cassette-14-28t
 - Marchisio 11s kassetter (forhandler): https://clemenzo.com/en/marchisio/11-speed-cassettes
+
+**Forslag i beregneren (læst 5.10.2026, afsnit 3.6)**
+
+- Miche, gearark Primato K12 SH: https://api.miche.it/media/1682/miche-schede-pignoni_m20250729-primatok12sh.pdf
+- Miche, gearark Light Primato 11 SH: https://api.miche.it/media/912/miche-schede-cassette-light-primato11sh.pdf
+- Miche, landevejskassetter (producent): https://www.miche.it/en/products/cassettes-sprockets/road/
+- bike-components.de, Miche Light Primato 11 SH: https://www.bike-components.de/en/Miche/Light-Primato-Shimano-11-Speed-Cassette-p56168/
+- bikable.com, Miche Primato K12 14-30: https://bikable.com/parts/cassettes/12-speed-cassette/miche-primato-k12-14-30-12-speed-cassette-for-shimano
+- bike-components.de, Shimano Dura-Ace FC-R9200-klinger: https://www.bike-components.de/en/Shimano/Dura-Ace-FC-R9200-12-speed-Chainring-p90393/
+- bike-components.de, Shimano Ultegra FC-R8100-klinger: https://www.bike-components.de/en/Shimano/Ultegra-FC-R8100-12-speed-Chainring-p90394/
+- incycle.com, Shimano GRX FC-RX820-2 48-31: https://www.incycle.com/products/shimano-fc-rx820-2-grx-crankset-12spd-48-31t
+- excelsports.com, Shimano GRX FC-RX610-2: https://www.excelsports.com/shimano-grx-fc-rx610-2x-crankset
+- SRAM, FC-RED-E1: https://www.sram.com/en/sram/models/fc-red-e1
+- SRAM support, Force-klinger: https://support.sram.com/hc/en-us/articles/13302364679195
+- SRAM support, Rival-klinger: https://support.sram.com/hc/en-us/articles/36349921774235
+- SRAM support, XDR-kassetter: https://support.sram.com/hc/en-us/articles/6526838416283
+- starbike.com, SRAM Red/Force XPLR X-Sync direct mount: https://www.starbike.com/en/sram-red-force-xplr-x-sync-directmount-chainring/
+- powermetercity.com, SRAM Rival E1 X-Sync direct mount: https://powermetercity.com/product/sram-rival-e1-x-sync-direct-mount-chainring/
+- cykler.dk, Strada Lab 1x Single Aluminium Chainring: https://cykler.dk/products/strada-lab-1x-single-aluminium-chainring
+- bikevaenget.dk, Strada Lab 1x Single Carbon Chainring: https://bikevaenget.dk/products/strada-lab-1x-single-carbon-chainring
+- Magene, QED Lightweight Split Chainring: https://www.magene.com/en/accessories/74-qed-lightweight-split-chainring.html
+- Campagnolo, Super Record 13-kassetter: https://www.campagnolo.com/no-en/super-record-13-sprockets/CCSSUPERRECORD13.html

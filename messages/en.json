@@ -3871,7 +3871,7 @@
   "calculators": {
     "gearing": {
       "title": "Gearing for the young classes",
-      "intro": "Work out the bike's biggest gear and see whether it stays within DCU's limit. Everything stays in your browser.",
+      "intro": "Choose the class, then adjust tyre, chainring and sprocket. The drawing shows how far the bike travels on one turn of the pedals, and whether that stays within DCU's limit. Everything stays in your browser.",
       "class": "Class",
       "classes": {
         "U11": "U11",
@@ -3880,24 +3880,55 @@
         "U17": "U17",
         "U19": "U19 and older"
       },
+      "picker": {
+        "ages": "{from}–{to} years",
+        "agesFrom": "{from} and up",
+        "limit": "{limit, number, ::.00} m",
+        "free": "Free gearing"
+      },
       "tyre": "Tyre",
       "tyreOption": "{mm} mm",
-      "tyreCustom": "Measured circumference",
+      "tyreCustom": "I have measured the wheel's circumference",
       "circumference": "Circumference in mm",
       "circumferenceHint": "Measure the wheel's circumference with the tyre pumped to race pressure.",
+      "circumferenceInvalid": "Enter a circumference between 1800 and 2400 mm and the drawing comes back.",
       "ring": "Biggest chainring",
       "cog": "Smallest sprocket",
-      "teeth": "T",
+      "slider": {
+        "teeth": "{n} T",
+        "teethSpoken": "{n, plural, one {# tooth} other {# teeth}}",
+        "tyreSpoken": "{mm} mm tyre",
+        "fewer": "{what}: one tooth fewer",
+        "more": "{what}: one tooth more",
+        "narrower": "Narrower tyre",
+        "wider": "Wider tyre"
+      },
+      "scene": {
+        "title": "One turn of the pedals",
+        "distance": "{m} m",
+        "wheel": "The rear wheel has gone round {turns, number, ::.0} times",
+        "play": "Turn the pedals once",
+        "metres": "{m} m",
+        "limit": "{class} limit: {limit} m",
+        "label": "The bike travels {rollout} m on one turn of the pedals, because the rear wheel goes round {turns} times. The limit in {class} is {limit} m.",
+        "labelFree": "The bike travels {rollout} m on one turn of the pedals, because the rear wheel goes round {turns} times. There is no limit.",
+        "caption": "The drawing is to scale. The pedal starts straight down, as when the commissaire measures, and the bike rolls one whole turn of the pedals. The green dot on the tyre shows how many times the wheel goes round.",
+        "status": {
+          "over": "Over the limit",
+          "close": "Right at the limit",
+          "within": "Within the limit",
+          "free": "Free gearing"
+        },
+        "over": "{cm, plural, =0 {less than 1 cm} other {# cm}} over",
+        "under": "{cm, plural, =0 {less than 1 cm} other {# cm}} under"
+      },
       "result": {
-        "title": "The bike's biggest gear",
-        "gear": "{ring} × {cog} gives {rollout, number, ::.00} m per pedal turn.",
-        "limit": "The limit in {class} is {limit, number, ::.00} m.",
+        "explain": "{ring} teeth at the front and {cog} at the back mean the rear wheel goes round {turns, number, ::.00} times for each turn of the pedals. The wheel is {circumference, number, ::.000} m round, so the bike travels {rollout, number, ::.00} m.",
         "free": "U19 and older ride with free gearing, so every gear is legal.",
-        "within": "Within the limit, {cm, number, integer} cm under.",
-        "close": "Within the limit, but only {cm, number, integer} cm under. Tyre pressure and wear can move it a few centimetres, so measure the bike with the tyres and pressure it races on.",
-        "over": "{cm, number, integer} cm over the limit.",
-        "wayBack": "With {cog} teeth at the back the chainring can have at most {largestRing} teeth. With {ring} teeth at the front the smallest sprocket needs at least {smallestCog} teeth.",
-        "invalid": "Type whole teeth: the chainring between 20 and 60 and the sprocket between 9 and 52."
+        "within": "Within the {class} limit of {limit, number, ::.00} m, {cm, plural, =0 {less than 1 cm} other {# cm}} under.",
+        "close": "Within the {class} limit of {limit, number, ::.00} m, but only {cm, plural, =0 {less than 1 cm} other {# cm}} under. Tyre pressure and wear can move it a few centimetres, so measure the bike with the tyres and pressure it races on.",
+        "over": "{cm, plural, =0 {Less than 1 cm} other {# cm}} over the {class} limit of {limit, number, ::.00} m.",
+        "wayBack": "With {cog} teeth at the back the chainring can have at most {largestRing} teeth. With {ring} teeth at the front the smallest sprocket needs at least {smallestCog} teeth."
       },
       "table": {
         "title": "Biggest chainring for each smallest sprocket",
@@ -3909,24 +3940,73 @@
         "metres": "{rollout, number, ::.00} m"
       },
       "products": {
-        "title": "Parts that can help",
-        "intro": "Junior cassettes start at 14 teeth or more. The list is neutral, and Kadence has no deals with the shops. The prices were seen in October 2026.",
-        "speeds": "{speeds}-speed",
-        "cassetteFits": "{small}-{large}: chainring up to {ring} T",
-        "chainringFits": "{big}-{small}: smallest sprocket {cog} T",
-        "fitsFree": "{a}-{b}",
-        "price": "about {price} ({shop})",
-        "noPrice": "Price not checked",
-        "link": "See the product",
-        "forClass": "The figures are for {class} with the chosen circumference.",
+        "title": "How the bike could be built",
+        "intro": "A concrete suggestion of parts for the gear you chose, and the chainrings that fit. Kadence has no deals with the shops, and prices and chainrings were seen in October 2026.",
+        "kind": {
+          "label": "Chainrings at the front",
+          "double": "Two chainrings (2×)",
+          "single": "One chainring (1×)",
+          "doubleHelp": "As on most road bikes, with a front derailleur. Only the big ring counts at the gear check.",
+          "singleHelp": "One ring and no front derailleur. The ring can be exactly the size the class allows, but there are fewer gears.",
+          "stuckDouble": "With {cog} T at the back no 2× set we know of is small enough in {class}. With one chainring it works.",
+          "stuckSingle": "With {cog} T at the back no 1× ring we know of is small enough in {class}. With two chainrings it works.",
+          "trySingle": "See it with one chainring",
+          "tryDouble": "See it with two chainrings"
+        },
+        "build": {
+          "title": "A concrete suggestion",
+          "fits": "Your choice holds in {class}. This is how the bike could be built:",
+          "fitsFree": "{class} ride with free gearing. This is how the bike could be built:",
+          "asked": "No chainring we know of has exactly {asked} T, so the suggestion uses {used} T.",
+          "over": "Your choice is {cm, number, integer} cm over the limit in {class}. Here are two suggestions that hold:",
+          "keepRing": "Keep the {ring} T chainring and use {cog} T at the back",
+          "keepCog": "Keep {cog} T at the back and use a {ring} T chainring",
+          "keepRingNone": "With {ring} T at the front the smallest sprocket needs at least {cog} T, and we know of no junior cassette that big.",
+          "keepCogNone": "With {cog} T at the back none of the chainrings we know of is small enough.",
+          "cassette": "Cassette",
+          "ring": "Chainring",
+          "gear": "Gear",
+          "speeds": "{speeds}-speed",
+          "ordinary": "An ordinary cassette with {cog} T as the smallest sprocket. The bike probably has one already.",
+          "price": "about {price} ({shop})",
+          "priceFrom": "from about {price} ({shop})",
+          "link": "See the product",
+          "also11": "For 11-speed: {name} {version}.",
+          "teeth": "{n} T",
+          "double": "2×",
+          "single": "1×",
+          "noRingDouble": "No 2× set we know of has a {ring} T big ring.",
+          "noRingSingle": "No 1× ring we know of has {ring} T.",
+          "gearWithin": "{ring} × {cog} gives {rollout, number, ::.00} m, {cm, plural, =0 {less than 1 cm} other {# cm}} under the {class} limit.",
+          "gearFree": "{ring} × {cog} gives {rollout, number, ::.00} m."
+        },
+        "drawing": {
+          "smallest": "Smallest sprocket {n} T",
+          "cassette": "Cassette {smallest}-{largest}",
+          "ring": "Chainring {n} T",
+          "small": "Small ring {n} T does not count",
+          "labelSingle": "Drawing of the drivetrain: one {ring} T chainring at the front and a cassette from {smallest} to {largest} T at the back. The smallest sprocket is highlighted.",
+          "labelDouble": "Drawing of the drivetrain: {ring} and {small} T chainrings at the front and a cassette from {smallest} to {largest} T at the back. The big chainring and the smallest sprocket are the ones that count."
+        },
+        "ringsDouble": "2× sets that fit with {cog} T at the back",
+        "ringsSingle": "1× rings that fit with {cog} T at the back",
+        "ringsLimit": "With {cog} T at the back the chainring can have at most {max} T in {class}.",
+        "noRings": "None of the chainrings we know of is that small. Try a bigger sprocket at the back.",
+        "ring": "{n} T",
+        "tooBig": "Too big here: {names}.",
+        "ringsLink": "See the chainrings",
+        "priceFrom": "from about {price} ({shop})",
         "items": {
-          "micheK12": "For a Shimano 12-speed HG freehub. Shops disagree on whether it works with SRAM AXS, so ask in the shop.",
-          "reconJunior": "For a Shimano 11-speed HG freehub, and for SRAM XDR with an adapter.",
-          "dubied": "Comes for Shimano 12-speed, SRAM XDR and Campagnolo 12-speed. The price is for Shimano and Campagnolo; XDR costs 239 euros.",
-          "micheLight": "11-speed for Shimano.",
-          "shimanoR8000": "11-speed for Shimano. Whether it is still made is unclear.",
-          "michePrimato": "10-speed for Shimano and Campagnolo.",
-          "mageneQed": "Chainrings for Magene's own power meter cranksets, for Shimano 11- and 12-speed. The smallest big ring is 50 T, so they pair with a junior cassette, such as 50 × 16 in U15."
+          "micheK12": "For Shimano's 12-speed freehub (HG). Shops disagree on whether it works with SRAM AXS, so ask in the shop.",
+          "dubied": "Miche makes no 12-speed cassette that starts here. Dubied comes for Shimano HG, SRAM XDR and Campagnolo, but not every size is always in stock. The price is for Shimano and Campagnolo; XDR costs 239 euros.",
+          "micheLight": "For Shimano's 11-speed freehub (HG)."
+        },
+        "ringNotes": {
+          "shimano": "54-40 is Dura-Ace only.",
+          "grx": "Shimano's gravel cranksets, with smaller chainrings.",
+          "sram": "50/37 is not made for Rival, and 43/30 is Force and Rival Wide.",
+          "stradaLab": "110 BCD with 4 bolts. Fits Shimano's cranks from R7000 to R9200 and Magene's P505 and P515 power meter cranksets.",
+          "sram1x": "Direct mount for SRAM's cranksets."
         }
       },
       "alternative": {
