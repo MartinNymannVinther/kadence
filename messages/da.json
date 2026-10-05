@@ -3180,6 +3180,12 @@
     },
     "challenge": {
       "title": "Udfordring",
+      "offer": "En rytter i rødt og hvidt kører op på siden af dig og vil køre om kap de næste 2 km.",
+      "offerHill": "En rytter i rødt og hvidt kører op på siden af dig og vil køre om kap op ad bakken, 2 km.",
+      "sprinterOffer": "En lille rytter i rødt og sort kører op på siden af dig og vil køre om kap de næste 2 km.",
+      "yes": "Ja, kør",
+      "no": "Nej tak",
+      "waits": "Han venter {s} s på dit svar.",
       "on": "En rytter i rødt og hvidt kører op på siden af dig. Om kap de næste 2 km, når der er talt ned.",
       "onHill": "En rytter i rødt og hvidt kører op på siden af dig. Om kap op ad bakken, 2 km, når der er talt ned.",
       "sprinter": "En lille rytter i rødt og sort kører op på siden af dig. Om kap de næste 2 km, når der er talt ned.",

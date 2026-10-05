@@ -55,6 +55,17 @@ describe("where the challenger turns up", () => {
     }
   });
 
+  it("as the challenger or the sprinter, half the time each", () => {
+    const course = road(5, false);
+    const found = Array.from({ length: 3000 }, (_, k) => challengeIn(course, k)).filter(
+      (s) => s !== null,
+    );
+    const sprinter = found.filter((s) => s.who === "sprinter").length / found.length;
+    expect(sprinter).toBeGreaterThan(0.4);
+    expect(sprinter).toBeLessThan(0.6);
+    expect(found.every((s) => s.who === "sprinter" || s.who === "challenger")).toBe(true);
+  });
+
   it("in the same places on the same route, ride after ride", () => {
     const course = road(5, false);
     const once = Array.from({ length: 200 }, (_, k) => challengeIn(course, k));

@@ -48,7 +48,7 @@ const over = (said: RaceLive[]) => said.find((r) => r?.phase === "over");
 describe("the challenger's race", () => {
   it("only comes to a free ride, of himself or called by name, never into a session", () => {
     const k = Array.from({ length: 50 }, (_, i) => i).find((i) => challengeIn(course, i))!;
-    const start = challengeIn(course, k)!.at;
+    const { at: start, who } = challengeIn(course, k)!;
     const session = new Race(course);
     const free = new Race(course);
     for (let at = start - 50; at < start + 50; at++) {
@@ -56,13 +56,35 @@ describe("the challenger's race", () => {
       free.advance(at, 10, 250, 0.1, true);
     }
     expect(session.live()).toBeNull();
-    expect(free.live()?.phase).toBe("countdown");
+    // Of himself he offers a race; said yes to, the count begins.
+    expect(free.live()).toMatchObject({ phase: "offer", who });
+    free.answer(true);
+    free.advance(start + 50, 10, 250, 0.1, true);
+    expect(free.live()).toMatchObject({ phase: "countdown", count: 10, who });
     session.call();
     expect(session.live()).toBeNull();
     const called = new Race(course);
     called.advance(100, 10, 250, 0.1, true);
     called.call();
     expect(called.live()?.phase).toBe("countdown");
+  });
+
+  it("drops back and is gone when his offer is turned down, or not answered, with nothing to show", () => {
+    const k = Array.from({ length: 50 }, (_, i) => i).find((i) => challengeIn(course, i))!;
+    const start = challengeIn(course, k)!.at;
+    for (const answer of [false, null]) {
+      const race = new Race(course);
+      let at = start - 10;
+      const step = () => race.advance((at += 1), 10, 250, 0.1, true);
+      while (race.live()?.phase !== "offer") step();
+      if (answer !== null) race.answer(answer);
+      else for (let s = 0; s < 160; s++) step();
+      expect(race.live()).toBeNull();
+      // Still on the road for a moment, easing off behind the rider; then gone.
+      expect(race.at()).not.toBeNull();
+      for (let s = 0; s < 90; s++) step();
+      expect(race.at()).toBeNull();
+    }
   });
 
   it("counts down from ten alongside at the rider's speed, then starts level", () => {

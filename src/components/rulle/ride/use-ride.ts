@@ -16,6 +16,7 @@ import type { WattTune } from "./watt-dial";
 import { RideEngine, type Live } from "./engine";
 import type { ShownAt } from "./shown";
 import { keepRide, type RideMeta } from "./ride-store";
+import { rivalOf } from "./rivals";
 import type { Sensors } from "./sensors";
 
 /** The engine is ticked this often: the physics' steps and a second's work on time. */
@@ -171,11 +172,20 @@ export function useRide(options: RideOptions) {
     setErg: (on: boolean) => act((ride) => ride.setErg(on)),
     /** The challenger now (ADR 0049), called by JOHAN — or the sprinter, by HYLDTOFT (ADR 0050): on a free ride only. */
     challenge: (who: Rival = "challenger") => act((ride) => ride.shown.race.call(who)),
-    /** Development only: the challenger now, session or not (G under `next dev`). */
+    /** The rider's answer to an offer of a race: yes, and the count begins. */
+    answerRace: (yes: boolean) => act((ride) => ride.shown.race.answer(yes)),
+    /** Development only: an offer now, as one would come of itself — either of the two — session or not (G under `next dev`). */
     summon: () =>
-      act((ride, now) =>
-        ride.shown.race.begin(ride.positionAt(now).distance, ride.live(now).speed),
-      ),
+      act((ride, now) => {
+        const rival = rivalOf(Math.random() < 0.5 ? "challenger" : "sprinter");
+        ride.shown.race.begin(
+          ride.positionAt(now).distance,
+          ride.live(now).speed,
+          false,
+          rival,
+          true,
+        );
+      }),
     /** Development only: times the rider's speed along the route, negative backwards. */
     setWarp: (factor: number) =>
       act((ride) => {

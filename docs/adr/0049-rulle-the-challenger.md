@@ -17,8 +17,13 @@ slipstream that makes it easier behind him.
   (3.5 % over 200 m, as the cargo bike's), one time in five, 150 m before
   its foot, so the race goes up it; without, one time in ten, somewhere
   along it. Fixed by the route and the stretch: the same ride meets him
-  in the same places.
-- **The count, then his race**: he comes up beside the rider and rides at
+  in the same places. He shares the chance with the sprinter (ADR 0050):
+  which of the two turns up is fixed the same way, half the time each.
+- **An offer first**: turning up of himself, he comes up beside the
+  rider and offers a race, with a yes and a no to click, and waits 15
+  seconds. Said no to, or not answered, he eases off, drops back and is
+  gone, with nothing to show. Called by his code, he asks nothing.
+- **The count, then his race**: said yes to, he rides beside the rider at
   their very speed while ten seconds are counted down; then two
   kilometres on his own watts, whatever the rider does: 800 W for the
   first 7 seconds and 460 W to the end of the first minute — about
@@ -69,7 +74,8 @@ slipstream that makes it easier behind him.
   low over the bars, his hands in the drops (`challengerEffort`).
 - **A cheat code, JOHAN**, calls him up at once on a free ride, and does
   nothing in a session. The H in it is the code's while it is typed, not
-  the ride's speed. Under `next dev`, G calls him session or not.
+  the ride's speed. Under `next dev`, G brings an offer from him or the
+  sprinter, session or not.
 
 ## Trade-offs accepted
 

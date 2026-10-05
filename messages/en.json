@@ -3180,6 +3180,12 @@
     },
     "challenge": {
       "title": "Challenge",
+      "offer": "A rider in red and white comes up beside you and wants to race you over the next 2 km.",
+      "offerHill": "A rider in red and white comes up beside you and wants to race you up the hill, 2 km.",
+      "sprinterOffer": "A small rider in red and black comes up beside you and wants to race you over the next 2 km.",
+      "yes": "Yes, race",
+      "no": "No thanks",
+      "waits": "He waits {s} s for your answer.",
       "on": "A rider in red and white comes up beside you. A race over 2 km once the count is down.",
       "onHill": "A rider in red and white comes up beside you. A race up the hill, 2 km, once the count is down.",
       "sprinter": "A small rider in red and black comes up beside you. A race over 2 km once the count is down.",

@@ -15,8 +15,10 @@ was left to be worked out.
 ## Decision
 
 - **Called by HYLDTOFT, on a free ride only**, as JOHAN calls the
-  challenger: in a session it does nothing. He never turns up of
-  himself. The race is the challenger's — ten seconds counted down
+  challenger: in a session it does nothing. Of himself he turns up where
+  the challenger would, sharing his chance half and half, and offers a
+  race the rider can say yes or no to (ADR 0049). The race is the
+  challenger's — ten seconds counted down
   beside the rider, then two kilometres — with a rival of his own in it
   (`ride/rivals.ts`): the challenger on his plan of watts, or the
   sprinter.

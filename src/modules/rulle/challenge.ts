@@ -67,8 +67,8 @@ export type ChallengerAt = {
   who: Rival;
 };
 
-/** A race to come: where it begins, in metres ridden, and whether up a climb. */
-export type ChallengeStart = { at: number; hill: boolean };
+/** A race to come: where it begins, in metres ridden, whether up a climb, and who rides it. */
+export type ChallengeStart = { at: number; hill: boolean; who: Rival };
 
 /** Where the first climb begins between `from` and `to` metres, if one does. */
 function climbBetween(course: Course, from: number, to: number): number | null {
@@ -79,17 +79,22 @@ function climbBetween(course: Course, from: number, to: number): number | null {
   return null;
 }
 
-/** The race in stretch `k` of a ride on `course`, or null where he does not turn up. */
+/**
+ * The race in stretch `k` of a ride on `course`, or null where nobody
+ * turns up: the challenger or the sprinter (ADR 0050), half the time each.
+ */
 export function challengeIn(course: Course, k: number): ChallengeStart | null {
   const seed = Math.round(course.length);
   const from = k * CHALLENGE.every + CHALLENGE.margin;
   const to = (k + 1) * CHALLENGE.every - CHALLENGE.margin - CHALLENGE.length;
   const foot = climbBetween(course, from + CHALLENGE.beforeFoot, to);
   const roll = hash(k, 17, seed);
+  // The two share the chance: which of them it is, half the time each.
+  const who: Rival = hash(k, 37, seed) < 0.5 ? "challenger" : "sprinter";
   if (foot !== null)
-    return roll < CHALLENGE.hill ? { at: foot - CHALLENGE.beforeFoot, hill: true } : null;
+    return roll < CHALLENGE.hill ? { at: foot - CHALLENGE.beforeFoot, hill: true, who } : null;
   if (roll >= CHALLENGE.flat) return null;
-  return { at: from + hash(k, 29, seed) * (to - from), hill: false };
+  return { at: from + hash(k, 29, seed) * (to - from), hill: false, who };
 }
 
 /**

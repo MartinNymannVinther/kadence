@@ -2,6 +2,7 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import { useEffect, useRef, type ReactNode } from "react";
+import { Button } from "@/components/ui/button";
 import type { Beeps } from "./ride/beeps";
 import type { RaceLive } from "./ride/race";
 
@@ -10,7 +11,9 @@ const GO = 1.5;
 
 /**
  * The challenger's race on the screen (ADR 0049), or the sprinter's (ADR
- * 0050), each with his own words: as he comes up, a call
+ * 0050), each with his own words: as he comes up of himself, his offer of
+ * a race, with a yes and a no to click; said yes to, or called by his
+ * code, a call
  * in the cheat code's arcade manner — a race, how far, that his wheel
  * breaks the wind, that only the landscape races — over the count from
  * ten; "go" at the start; while it runs, the distance left and the gap in
@@ -18,7 +21,16 @@ const GO = 1.5;
  * much. A fanfare as he comes, a beep for each of the last three, a
  * whistle for the start, a cowbell for a win.
  */
-export function RaceBanner({ race, beeps }: { race: NonNullable<RaceLive>; beeps: Beeps }) {
+export function RaceBanner({
+  race,
+  beeps,
+  onAnswer,
+}: {
+  race: NonNullable<RaceLive>;
+  beeps: Beeps;
+  /** The rider's answer to his offer. */
+  onAnswer: (yes: boolean) => void;
+}) {
   const t = useTranslations("rulle.challenge");
   const format = useFormatter();
   const was = useRef<RaceLive>(null);
@@ -26,9 +38,13 @@ export function RaceBanner({ race, beeps }: { race: NonNullable<RaceLive>; beeps
   useEffect(() => {
     const before = was.current;
     was.current = race;
-    if (race.phase === "countdown") {
-      if (before?.phase !== "countdown") beeps.play("fanfare");
-      else if (race.count !== before.count && race.count <= 3) beeps.play("count");
+    if (race.phase === "offer") {
+      if (before?.phase !== "offer") beeps.play("fanfare");
+    } else if (race.phase === "countdown") {
+      if (before?.phase === "countdown") {
+        if (race.count !== before.count && race.count <= 3) beeps.play("count");
+        // Said yes to, he is already beside the rider: the fanfare was for his offer.
+      } else if (before?.phase !== "offer") beeps.play("fanfare");
     } else if (race.phase !== before?.phase) {
       if (race.phase === "racing") beeps.play("whistle");
       else beeps.play(race.won ? "cheer" : "fanfareOff");
@@ -43,6 +59,24 @@ export function RaceBanner({ race, beeps }: { race: NonNullable<RaceLive>; beeps
         <p className="text-background mt-1 text-lg font-semibold">
           {t("margin", { m: metres(race.margin) })}
         </p>
+      </Call>
+    );
+
+  if (race.phase === "offer")
+    return (
+      <Call title={t("title")}>
+        <p className="text-background mt-1 text-lg font-semibold">
+          {race.who === "sprinter" ? t("sprinterOffer") : race.hill ? t("offerHill") : t("offer")}
+        </p>
+        <div className="pointer-events-auto mt-4 flex justify-center gap-3">
+          <Button size="lg" onClick={() => onAnswer(true)}>
+            {t("yes")}
+          </Button>
+          <Button size="lg" variant="outline" onClick={() => onAnswer(false)}>
+            {t("no")}
+          </Button>
+        </div>
+        <p className="text-background/70 mt-3 text-xs">{t("waits", { s: race.wait })}</p>
       </Call>
     );
 

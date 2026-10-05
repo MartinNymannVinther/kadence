@@ -1,6 +1,5 @@
 import {
   CHALLENGE,
-  challengeIn,
   courseAt,
   draft,
   nextSpeed,
@@ -10,16 +9,19 @@ import {
   type Course,
   type Rival as Who,
 } from "@/modules/rulle";
+import { Encounters } from "./encounters";
 import { ALONGSIDE, Challenger, rivalOf, type Rival } from "./rivals";
 import { Warp } from "./warp";
 
 /**
  * The challenger's race (ADR 0049), where the rider is shown: when the
- * rider comes to a place he turns up (`challengeIn`), he comes up beside
- * them, rides at their speed while ten seconds are counted down, and
- * races them for two kilometres on his own plan of watts, whatever they
- * do — or, called by HYLDTOFT, the sprinter does, on the rider's wheel
- * (ADR 0050); each his own way (`rivals.ts`). Behind him the rider pushes
+ * rider comes to a place one turns up (`challengeIn`) — the challenger or
+ * the sprinter (ADR 0050), half the time each — he comes up beside them
+ * and offers a race. Said yes to, or called by his code, he rides at
+ * their speed while ten seconds are counted down, and races them for two
+ * kilometres: the challenger on his own plan of watts, whatever they do,
+ * the sprinter on their wheel; each his own way (`rivals.ts`). Said no
+ * to, or not answered, he drops back and is gone. Behind him the rider pushes
  * less air, and is shown going faster for it: a shift like the cheat
  * code's (`shown.ts`), so what is recorded is still what was ridden;
  * behind the rider, so does he. Under the developer's warp he runs on as
@@ -30,6 +32,7 @@ import { Warp } from "./warp";
 
 /** What the screen shows of a race: counted down; on, with what is left and the gap; or over, and who won. */
 export type RaceLive =
+  | { phase: "offer"; wait: number; hill: boolean; who: Who }
   | { phase: "countdown"; count: number; hill: boolean; who: Who }
   | { phase: "racing"; left: number; gap: number; hill: boolean; seconds: number }
   | { phase: "over"; won: boolean; margin: number }
@@ -37,6 +40,8 @@ export type RaceLive =
 
 /** He comes up from this far behind, and closes up to the rider's side this fast at most. */
 const COMES_UP = { behind: 5, closing: 1.5 };
+/** Seconds he waits beside the rider for an answer to his offer. */
+const OFFER = 15;
 /** Seconds the result stays up, and he with it, after the line; and the watts he eases to. */
 const AFTER = 8;
 const EASY = 180;
@@ -44,6 +49,8 @@ const EASY = 180;
 type Running = {
   start: ChallengeStart;
   rival: Rival;
+  /** Seconds he still waits for an answer; 0 once there is one, or for a race he was called to. */
+  offer: number;
   /** Seconds still to count down; 0 once the race is on. */
   count: number;
   /** Where it ends, set at the start: Infinity while counting down. */
@@ -56,13 +63,12 @@ type Running = {
   line: number;
   /** What his wheel adds to the rider's own speed, m/s: it fades out of it, and never takes away. */
   bonus: number;
-  over: { won: boolean; margin: number; left: number } | null;
+  /** At the line, or turned down: `quiet` then, with nothing to say. */
+  over: { won: boolean; margin: number; left: number; quiet?: boolean } | null;
 };
 
 export class Race {
   private shift = 0;
-  private considered = -1;
-  private next: ChallengeStart | null = null;
   private run: Running | null = null;
   private rider = 0;
   private speedNow = 0;
@@ -70,11 +76,14 @@ export class Race {
   private free = false;
   /** The share of the air the rider pushes at the last step: less in his wheel. */
   air = 1;
+  private readonly encounters: Encounters;
 
   constructor(
     private readonly course: Course,
     private readonly warp = new Warp(),
-  ) {}
+  ) {
+    this.encounters = new Encounters(course);
+  }
 
   /** Metres the rider is shown ahead for the slipstream, `since` seconds after the last step. */
   shown(since = 0): number {
@@ -87,11 +96,22 @@ export class Race {
     return this.run && !this.run.over ? speed + this.run.bonus : speed;
   }
 
-  /** Has him come up now, at `rider` metres, whatever the stretch says: the scheduled start, and a test's. */
-  begin(rider: number, speed: number, hill = false, rival: Rival = new Challenger()): void {
+  /**
+   * Has him come up now, at `rider` metres, whatever the stretch says: to
+   * `offer` a race, as of himself, or straight to the countdown, as a
+   * code or a test calls him.
+   */
+  begin(
+    rider: number,
+    speed: number,
+    hill = false,
+    rival: Rival = new Challenger(),
+    offer = false,
+  ): void {
     this.run = {
-      start: { at: rider, hill },
+      start: { at: rider, hill, who: rival.who },
       rival,
+      offer: offer ? OFFER : 0,
       count: CHALLENGE.countdown,
       end: Infinity,
       him: rider - COMES_UP.behind,
@@ -104,9 +124,17 @@ export class Race {
     };
   }
 
-  /** Called by name (JOHAN, HYLDTOFT): he comes now, on a free ride; into a session, not at all. */
+  /** Called by name (JOHAN, HYLDTOFT): he comes now, on a free ride, with no offer; into a session, not at all. */
   call(who: Who = "challenger"): void {
     if (this.free) this.begin(this.rider, this.speedNow, false, rivalOf(who));
+  }
+
+  /** The rider's answer to his offer: yes, and the count begins; no, and he drops back and is gone. */
+  answer(yes: boolean): void {
+    const run = this.run;
+    if (!run || run.offer <= 0) return;
+    run.offer = 0;
+    if (!yes) this.leave(run);
   }
 
   /**
@@ -130,7 +158,9 @@ export class Race {
     this.rider = rider;
     this.speedNow = seen;
     this.free = free;
-    if (!this.run) this.schedule(rider, speed, free);
+    const due = this.run ? null : this.encounters.due(rider);
+    // A session is the coach's: he only comes on a free ride, and asks first.
+    if (due && free) this.begin(rider, speed, due.hill, rivalOf(due.who), true);
     const run = this.run;
     if (!run || seconds <= 0) return;
     if (run.over) {
@@ -140,9 +170,18 @@ export class Race {
       if (run.over.left <= 0) this.run = null;
       return;
     }
-    if (run.count > 0) {
-      this.countDown(run, was, rider, seen, seconds);
+    if (run.offer > 0 || run.count > 0) {
+      this.alongside(run, was, seen, seconds);
       run.bonus = 0;
+      if (run.offer > 0) {
+        run.offer = Math.max(0, run.offer - seconds);
+        if (run.offer === 0) this.leave(run);
+        return;
+      }
+      run.count = Math.max(0, run.count - seconds);
+      if (run.count > 0) return;
+      run.end = rider + CHALLENGE.length;
+      run.seconds = 0;
       return;
     }
     // Both from where they were before either moved: the one behind is in the other's wheel.
@@ -169,10 +208,11 @@ export class Race {
   live(): RaceLive {
     const run = this.run;
     if (!run) return null;
-    if (run.over) return { phase: "over", won: run.over.won, margin: run.over.margin };
+    const { hill, who } = run.start;
+    if (run.over) return run.over.quiet ? null : { phase: "over", ...run.over };
+    if (run.offer > 0) return { phase: "offer", wait: Math.ceil(run.offer), hill, who };
     if (run.count > 0) {
-      const { hill } = run.start;
-      return { phase: "countdown", count: Math.ceil(run.count), hill, who: run.rival.who };
+      return { phase: "countdown", count: Math.ceil(run.count), hill, who };
     }
     const left = Math.max(0, run.end - this.rider);
     const gap = this.rider - run.him;
@@ -220,33 +260,20 @@ export class Race {
   }
 
   /**
-   * The countdown: up beside the rider and then at their very speed; at
-   * its end the race is on, two kilometres from there. Under the warp he
-   * runs on with the rider, and closes up at an unwarped pace.
+   * Through the offer and the countdown: up beside the rider and then at
+   * their very speed. Under the warp he runs on with the rider, and closes
+   * up at an unwarped pace.
    */
-  private countDown(run: Running, was: number, rider: number, seen: number, seconds: number): void {
+  private alongside(run: Running, was: number, seen: number, seconds: number): void {
     const behind = was - run.him;
     const v = Math.max(0, seen + Math.max(-1, Math.min(COMES_UP.closing, 0.8 * behind)));
     this.move(run, this.travel(seen) + v - seen, seconds);
     run.v = v;
-    run.count = Math.max(0, run.count - seconds);
-    if (run.count > 0) return;
-    run.end = rider + CHALLENGE.length;
-    run.seconds = 0;
   }
 
-  /** The stretch the rider is in, and whether he turns up in it now. */
-  private schedule(rider: number, speed: number, free: boolean): void {
-    const k = Math.floor(rider / CHALLENGE.every);
-    if (k > this.considered) {
-      this.considered = k;
-      this.next = challengeIn(this.course, k);
-    }
-    const next = this.next;
-    if (!next || rider < next.at) return;
-    this.next = null;
-    // A session is the coach's: he only comes on a free ride.
-    if (free) this.begin(rider, speed, next.hill);
+  /** Turned down: he eases off and drops back, with no result to show. */
+  private leave(run: Running): void {
+    run.over = { won: false, margin: 0, left: AFTER, quiet: true };
   }
 
   /** Metres a second he is shown going at `v`: as the rider is, faster or backwards under the warp. */

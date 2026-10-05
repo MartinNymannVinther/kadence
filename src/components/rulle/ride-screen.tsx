@@ -236,7 +236,10 @@ export function RideScreen({
           {live && cheatState && !bare && (
             <CheatOverlay banner={cheat.banner} state={cheatState} onSteer={ride.steerCheat} />
           )}
-          {live?.race && !bare && <RaceBanner race={live.race} beeps={beeps} />}
+          {/* An offer waits for an answer, so it shows even with the numbers away. */}
+          {live?.race && (!bare || live.race.phase === "offer") && (
+            <RaceBanner race={live.race} beeps={beeps} onAnswer={ride.answerRace} />
+          )}
           {process.env.NODE_ENV === "development" && live && (
             <DevWarp onWarp={ride.setWarp} onChallenge={ride.summon} hidden={bare} />
           )}
