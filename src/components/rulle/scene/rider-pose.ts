@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import type { Posture } from "@/modules/rulle";
+import { OWN_BARS, type Bars } from "./kits";
 
 /**
  * Where the rider's body is on the bike, for a blend of the three
@@ -9,7 +10,7 @@ import type { Posture } from "@/modules/rulle";
  * flat back and the hands in the drops — and a fourth no road calls for,
  * the challenger's (ADR 0049): aero on the hoods, the upper arms straight
  * down, the forearms level along the bar and the head low, flat over the
- * low front of his bike (`Kit.low`). In the bike's own coordinates:
+ * low, long front of his bike (`Kit.bars`). In the bike's own coordinates:
  * facing -z, y up, x to the rider's right. The legs and arms are hung
  * from these points by `twoBones`.
  */
@@ -61,8 +62,8 @@ const ANCHORS: Record<FigurePosture, Anchor> = {
   },
   aero: {
     hips: v(0, 0.995, 0.12),
-    shoulders: v(0, 1.235, -0.41),
-    head: v(0, 1.3, -0.56),
+    shoulders: v(0, 1.26, -0.41),
+    head: v(0, 1.32, -0.56),
     hand: v(0.2, 0.985, -0.54),
     hipWidth: 0.085,
     helmet: -0.25,
@@ -92,23 +93,24 @@ const ALONG = new THREE.Vector3(0, 0, 1);
 /** How much of the rock the rider stands against, staying upright over it. */
 const UPRIGHT = 0.8;
 
+/** Of bars further forward, the share the shoulders and the head follow; the arms reach the rest. */
+const FOLLOW = 0.5;
+
 /**
  * The pose for a blend at a turn of the cranks (0 with the right pedal at
- * the front, halfway down), pedalling at `cadence`, on a bike whose bars
- * sit `low` metres lower than the rider's own: the hands, the shoulders
- * and the head go down with them — the arms as they were, the back flatter.
+ * the front, halfway down), pedalling at `cadence`, on a bike whose `bars`
+ * sit lower and further forward than the rider's own: the hands go with
+ * them, the shoulders and the head as far down and half as far forward —
+ * the back flatter and the arms reaching longer.
  */
-export function poseOf(blend: Blend, crank: number, cadence: number, low = 0): Pose {
+export function poseOf(blend: Blend, crank: number, cadence: number, bars: Bars = OWN_BARS): Pose {
   const mix = (pick: (a: Anchor) => THREE.Vector3) => {
     const out = new THREE.Vector3();
     for (const posture of POSTURES) out.addScaledVector(pick(ANCHORS[posture]), blend[posture]);
     return out;
   };
-  const upper = (pick: (a: Anchor) => THREE.Vector3) => {
-    const at = mix(pick);
-    at.y -= low;
-    return at;
-  };
+  const upper = (pick: (a: Anchor) => THREE.Vector3, follow = FOLLOW) =>
+    mix(pick).add(new THREE.Vector3(0, -bars.low, -bars.reach * follow));
   const num = (pick: (a: Anchor) => number) =>
     POSTURES.reduce((s, p) => s + pick(ANCHORS[p]) * blend[p], 0);
   const pedalling = Math.min(1, cadence / 60);
@@ -122,7 +124,7 @@ export function poseOf(blend: Blend, crank: number, cadence: number, low = 0): P
   hips.x += blend.standing * SHIFT * Math.cos(crank) * pedalling;
   const turn = (p: THREE.Vector3) => p.sub(hips).applyAxisAngle(ALONG, sway).add(hips);
   // The hands stay on the bar, whichever way the body goes.
-  const hand = upper((a) => a.hand);
+  const hand = upper((a) => a.hand, 1);
   return {
     hips,
     shoulders: turn(upper((a) => a.shoulders)),

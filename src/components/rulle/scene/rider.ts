@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { RIDER_KIT, type Kit } from "./kits";
+import { OWN_BARS, RIDER_KIT, type Bars, type Kit } from "./kits";
 import { kitMaterials, type KitMaterials } from "./rider-materials";
 import { BB, CRANK, RoadBike } from "./road-bike";
 import { riderHead } from "./rider-head";
@@ -87,8 +87,8 @@ export class RiderFigure {
   private stopped = 0;
   /** How far the right hand is on its way from the bar to the mouth, 0 to 1. */
   private lift = 0;
-  /** How much lower the bars are than the rider's own (`Kit.low`). */
-  private readonly low: number;
+  /** Where the bars are against the rider's own (`Kit.bars`). */
+  private readonly bars: Bars;
   private readonly materials: KitMaterials;
   private readonly unit = new THREE.CylinderGeometry(1, 1, 1, 8);
   private readonly shapes = {
@@ -105,7 +105,7 @@ export class RiderFigure {
   constructor(kit: Kit = RIDER_KIT) {
     this.materials = kitMaterials(kit);
     this.bike = new RoadBike(kit);
-    this.low = kit.low ?? 0;
+    this.bars = kit.bars ?? OWN_BARS;
     const m = this.materials;
     const shadow = new THREE.Mesh(new THREE.CircleGeometry(0.5, 12), m.shadow);
     shadow.rotation.x = -Math.PI / 2;
@@ -194,7 +194,7 @@ export class RiderFigure {
   }
 
   private pose(): void {
-    const pose = poseOf(this.blend, this.crank, this.cadence, this.low);
+    const pose = poseOf(this.blend, this.crank, this.cadence, this.bars);
     this.roll = this.stop === "riding" ? pose.roll : 0;
     for (const leg of this.legs) {
       // Right pedal at the front at crank 0, going down: pedalling forward.

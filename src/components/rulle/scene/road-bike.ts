@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { RIDER_KIT, type Kit } from "./kits";
+import { OWN_BARS, RIDER_KIT, type Kit } from "./kits";
 import { PALETTE as P } from "./palette";
 import { painted } from "./props";
 import { bar, box, merged, rod, v } from "./shapes";
@@ -56,13 +56,13 @@ function aero(a: THREE.Vector3, b: THREE.Vector3, deep: number, narrow: number, 
   return painted(geometry.translate(middle.x, middle.y, middle.z), color);
 }
 
-/** Of a lower front (`Kit.low`), the most the head tube is shorter; the stem angles down for the rest. */
-const SHORTER_HEAD = 0.6;
+/** Of lower bars (`Kit.bars`), the most the head tube is shorter; the stem angles down for the rest. */
+const SHORTER_HEAD = 0.09;
 
 function frame(kit: Kit): THREE.BufferGeometry[] {
   const along = (a: THREE.Vector3, b: THREE.Vector3, t: number) => a.clone().lerp(b, t);
-  const low = kit.low ?? 0;
-  const head = low * SHORTER_HEAD;
+  const { low, reach } = kit.bars ?? OWN_BARS;
+  const head = Math.min(low, SHORTER_HEAD);
   const down = (p: THREE.Vector3, by: number) => v(p.x, p.y - by, p.z);
   const parts = [
     aero(BB, SEAT, 0.03, 0.016, kit.frame),
@@ -73,8 +73,8 @@ function frame(kit: Kit): THREE.BufferGeometry[] {
     aero(v(0, 0.91 - head, -0.36), HEAD_FOOT, 0.034, 0.02, kit.fork),
     aero(SEAT, POST, 0.026, 0.011, kit.frame),
     // The one-piece cockpit's stem; the rest of it is `cockpit`.
-    aero(v(0, 0.91 - head, -0.365), down(CLAMP, low), 0.02, 0.018, kit.frame),
-    ...cockpit(kit).map((part) => part.translate(0, -low, 0)),
+    aero(v(0, 0.91 - head, -0.365), down(CLAMP, low).setZ(CLAMP.z - reach), 0.02, 0.018, kit.frame),
+    ...cockpit(kit).map((part) => part.translate(0, -low, -reach)),
     box(0.07, 0.035, 0.05, kit.fork, 0, 0.72, -0.415),
     // A short saddle: a narrow nose, a wide back.
     box(0.06, 0.026, 0.15, P.saddle, 0, 0.934, 0.14),

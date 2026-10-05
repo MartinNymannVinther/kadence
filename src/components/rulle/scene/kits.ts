@@ -1,5 +1,13 @@
 import { PALETTE as P } from "./palette";
 
+/**
+ * Where a bike's bars sit against the rider's own, metres: `low` lower —
+ * a short head tube and a stem angled down — and `reach` further forward,
+ * on a longer stem. The rider's hands go with them (`poseOf`).
+ */
+export type Bars = { low: number; reach: number };
+export const OWN_BARS: Bars = { low: 0, reach: 0 };
+
 /** A rider's colours, head to toe, and their bike's (`RiderFigure`, `RoadBike`). */
 export type Kit = {
   jersey: string;
@@ -27,12 +35,8 @@ export type Kit = {
   hem?: readonly [string, string];
   /** A race number on the seat post. */
   plate?: boolean;
-  /**
-   * How much lower the bars sit than on the rider's own bike, metres: a
-   * short head tube and a stem angled down, for a flat back. The hands,
-   * the shoulders and the head go down with them (`poseOf`).
-   */
-  low?: number;
+  /** Bars lower and further forward than the rider's own, for a flat back. */
+  bars?: Bars;
 };
 
 /** The rider's own: Kadence's moss, on a dark bike. */
@@ -59,8 +63,8 @@ export const RIDER_KIT: Kit = {
  * bands round the sleeves, black shorts with red and white at the leg
  * ends, a smooth white aero helmet, white socks and shoes, on a black aero
  * bike with a yellow fork and head tube, a number on its post and the
- * bars slammed low, as a professional's are. Muted, like the rest of the
- * landscape.
+ * bars slammed low and far forward on a long stem. Muted, like the rest
+ * of the landscape.
  */
 export const CHALLENGER_KIT: Kit = {
   jersey: "#b8352f",
@@ -81,5 +85,5 @@ export const CHALLENGER_KIT: Kit = {
   sleeveStripe: "#f3f0ea",
   hem: ["#f3f0ea", "#b8352f"],
   plate: true,
-  low: 0.15,
+  bars: { low: 0.21, reach: 0.1 },
 };
