@@ -2,23 +2,47 @@
 
 import { Info } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { coverage } from "@/modules/calc/fuel";
 import type { RaceAnswer, RaceInput } from "@/modules/calc/race-fuel";
 
 const card =
   "border-border bg-card flex flex-col gap-2 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5";
 
-/** The calculator's answer: energy, carbohydrate, fluid and salt, the plan, and before and after. */
-export function EnergyResults({ input, answer }: { input: RaceInput; answer: RaceAnswer }) {
+/** The warnings about how the effort was estimated; those about the plan sit with the plan. */
+const EFFORT_WARNINGS = new Set(["heartRateAge", "speedSolo"]);
+
+/**
+ * What the race costs and the meals around it: the energy estimated from
+ * the effort, how much of it the rider's own plan covers, the sweat a
+ * rider may lose, and the meals before and after, which are per kg and
+ * left out without a weight.
+ */
+export function EnergyResults({
+  input,
+  answer,
+  planCarbsPerHour,
+}: {
+  input: RaceInput;
+  answer: RaceAnswer;
+  /** The carbohydrate the plan on the board gives an hour, on average. */
+  planCarbsPerHour: number;
+}) {
   const t = useTranslations("calculators.energy");
   const r = (key: string, values?: Record<string, number | string>) =>
     t(`result.${key}` as "title", values);
-  const { energy, carbs, plan } = answer;
+  const { energy } = answer;
+  const perHour =
+    energy.kind === "estimate" && answer.hours > 0
+      ? { low: energy.kcal.low / answer.hours, high: energy.kcal.high / answer.hours }
+      : null;
+  const covered = perHour ? coverage(planCarbsPerHour, perHour) : null;
+  const warnings = answer.warnings.filter((w) => EFFORT_WARNINGS.has(w));
 
   return (
     <div className="flex flex-col gap-4" aria-live="polite">
-      {answer.warnings.length > 0 && (
+      {warnings.length > 0 && (
         <ul className="flex flex-col gap-2">
-          {answer.warnings.map((w) => (
+          {warnings.map((w) => (
             <li
               key={w}
               className="bg-sticky text-sticky-ink flex items-start gap-2 rounded-md px-3 py-2 text-2sm leading-relaxed"
@@ -42,6 +66,14 @@ export function EnergyResults({ input, answer }: { input: RaceInput; answer: Rac
                 {r("work", { kj: energy.workKj, watts: energy.watts })}
               </p>
             )}
+            {covered && (
+              <p className="text-reading leading-relaxed">
+                {r("coverage", {
+                  low: covered.low * 100,
+                  high: Math.min(100, covered.high * 100),
+                })}
+              </p>
+            )}
             <p className="text-meta text-2sm leading-relaxed">{r("energyNote")}</p>
           </>
         ) : (
@@ -51,59 +83,7 @@ export function EnergyResults({ input, answer }: { input: RaceInput; answer: Rac
         )}
       </section>
 
-      <section className={card}>
-        <h2 className="text-lg font-semibold">{r("carbs")}</h2>
-        {carbs.kind === "water" || carbs.kind === "small" ? (
-          <p className="text-reading leading-relaxed">{r(carbs.kind)}</p>
-        ) : (
-          <>
-            <p className="text-reading leading-relaxed">
-              {r("carbsRange", {
-                low: carbs.low,
-                high: carbs.high,
-                target: carbs.target,
-                total: plan.carbsTotal,
-              })}
-            </p>
-            <p className="text-reading leading-relaxed">{r(carbs.kind)}</p>
-            {answer.coverage && (
-              <p className="text-meta text-2sm leading-relaxed">
-                {r("coverage", {
-                  low: answer.coverage.low * 100,
-                  high: Math.min(100, answer.coverage.high * 100),
-                })}
-              </p>
-            )}
-          </>
-        )}
-      </section>
-
-      <section className={card}>
-        <h2 className="text-lg font-semibold">{r("fluid")}</h2>
-        <p className="text-reading">
-          {r("fluidRange", { low: answer.fluid.low, high: answer.fluid.high })}
-        </p>
-        <p className="text-reading">
-          {r("sodium", { low: answer.sodium.low, high: answer.sodium.high })}
-        </p>
-        {answer.allowedLossKg !== null && (
-          <p className="text-reading leading-relaxed">{r("loss", { kg: answer.allowedLossKg })}</p>
-        )}
-        <p className="text-meta text-2sm">{r("weighIn")}</p>
-      </section>
-
-      <section className={card}>
-        <h2 className="text-lg font-semibold">{r("plan")}</h2>
-        <ul className="flex list-disc flex-col gap-1 pl-5 text-reading leading-relaxed marker:text-[var(--meta)]">
-          <li>{r("bottles", { bottles: plan.bottles, ml: input.bottleMl })}</li>
-          {plan.carbsFromBottles > 0 && (
-            <li>{r("fromBottles", { grams: plan.carbsFromBottles })}</li>
-          )}
-          {carbs.target > 0 && <li>{r("pieces", { pieces: plan.pieces })}</li>}
-        </ul>
-      </section>
-
-      {answer.before && answer.after ? (
+      {answer.before && answer.after && answer.allowedLossKg !== null ? (
         <>
           <section className={card}>
             <h2 className="text-lg font-semibold">{r("before")}</h2>
@@ -116,6 +96,13 @@ export function EnergyResults({ input, answer }: { input: RaceInput; answer: Rac
               })}
             </p>
             <p className="text-meta text-2sm leading-relaxed">{r("beforeNote")}</p>
+          </section>
+          <section className={card}>
+            <h2 className="text-lg font-semibold">{r("sweat")}</h2>
+            <p className="text-reading leading-relaxed">
+              {r("loss", { kg: answer.allowedLossKg })}
+            </p>
+            <p className="text-meta text-2sm">{r("weighIn")}</p>
           </section>
           <section className={card}>
             <h2 className="text-lg font-semibold">{r("after")}</h2>

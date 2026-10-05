@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import { SourceLinks } from "@/components/guides/source-links";
 
-const POINTS = ["1", "2", "3", "4"] as const;
+const POINTS = ["1", "2", "3", "4", "5", "6"] as const;
 
 /** How the energy calculator works and where its numbers come from (docs/research/ernaering.md, 4). */
 export function EnergyAbout() {
@@ -22,7 +22,9 @@ export function EnergyAbout() {
           "compendium2024",
           "thomas2016",
           "jeukendrup2014",
+          "tdFood2026",
           "tdFluid",
+          "usdaDangerZone",
         ]}
       />
     </section>

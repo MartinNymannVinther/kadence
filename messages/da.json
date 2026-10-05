@@ -3476,7 +3476,7 @@
       "items": {
         "energy": {
           "title": "Energi til løbet",
-          "body": "Hvor meget energi et løb koster, og hvad du kan spise og drikke før, under og efter."
+          "body": "Byg din egen plan for mad og drikke til løbet, se en rytter køre den, og regn ud, hvad løbet koster."
         },
         "gearing": {
           "title": "Gearing for de unge klasser",
@@ -4033,12 +4033,144 @@
     },
     "energy": {
       "title": "Energi til løbet",
-      "intro": "Regn ud, hvor meget energi løbet koster, og hvad du kan spise og drikke før, under og efter. Alt bliver i din browser.",
-      "race": "Løbet",
-      "hours": "Timer",
-      "minutes": "Minutter",
+      "intro": "Byg din egen plan for, hvad du spiser og drikker under løbet, og se en rytter køre den. Bagefter kan du se Kadences forslag og regne ud, hvad løbet koster. Alt bliver i din browser.",
+      "race": {
+        "title": "Løbet",
+        "duration": "Varighed",
+        "durationHours": "{h} t",
+        "durationMixed": "{h} t {m} min",
+        "durationMinutes": "{m} min",
+        "durationSpoken": "{m} minutter",
+        "shorter": "15 minutter kortere",
+        "longer": "15 minutter længere",
+        "celsiusShown": "{c} °C",
+        "celsiusSpoken": "{c} grader",
+        "colder": "En grad koldere",
+        "warmer": "En grad varmere"
+      },
       "temperature": "Temperatur",
-      "celsius": "°C",
+      "gut": {
+        "label": "Har du øvet dig i at spise meget kulhydrat på træning?",
+        "yes": "Ja",
+        "no": "Ikke endnu"
+      },
+      "builder": {
+        "title": "Byg din plan",
+        "intro": "Træk dunke og mad ind i løbets timer, eller tryk på en ting og derefter på en time. Rytteren på vejen viser, hvordan planen passer med anbefalingerne.",
+        "target": {
+          "label": "Målet i timen:",
+          "both": "{carbs} og {fluid}.",
+          "carbs": "{low}–{high} g kulhydrat",
+          "carbsOne": "omkring {high} g kulhydrat",
+          "water": "ingen kulhydrat, vand er nok",
+          "small": "lidt kulhydrat eller ingen",
+          "fluid": "{low}–{high} l væske"
+        },
+        "score": "{on} af {total, plural, one {# time} other {# timer}} i mål",
+        "scoreEmpty": "Planen er tom endnu",
+        "actions": {
+          "suggest": "Vis Kadences forslag",
+          "mine": "Tilbage til min plan",
+          "clear": "Ryd planen"
+        },
+        "suggested": "Kadences forslag er lagt ind. Flyt gerne rundt på det. Din egen plan ligger klar, når du vil have den tilbage.",
+        "pantry": {
+          "title": "Spisekammeret",
+          "hint": "Træk en ting ind i en time, eller tryk på den og så på timen.",
+          "bottles": "Dunkene",
+          "bottleOption": "{ml} ml",
+          "carbs": "{g} g kulhydrat",
+          "volume": "{ml} ml",
+          "chosen": "{item} er valgt. Tryk på en time for at lægge den der. Tryk på {item} igen for at lægge den fra dig.",
+          "dropBack": "Slip her for at tage den ud af planen."
+        },
+        "items": {
+          "water": { "name": "Vand", "note": "Kun væske" },
+          "saltWater": { "name": "Vand med salt", "note": "¼ tsk. salt pr. liter" },
+          "drink": { "name": "Sportsdrik", "note": "Ca. 6 % sukker" },
+          "fuel": { "name": "Brændstofdunk", "note": "Ca. 8 % sukker" },
+          "riceCake": { "name": "Riskage", "note": "Hjemmelavet" },
+          "gel": { "name": "Gel", "note": "Købt" },
+          "banana": { "name": "Banan", "note": "Mellemstor" },
+          "oatBar": { "name": "Havrebar", "note": "Fedt og fibre" }
+        },
+        "lane": {
+          "title": "{hour}. time",
+          "span": "{from}–{to} min",
+          "empty": "Træk noget herhen",
+          "place": "Læg {item} i {hour}. time",
+          "placeShort": "Læg her",
+          "remove": "Tag {item} ud af {hour}. time",
+          "carbsLabel": "Kulhydrat",
+          "fluidLabel": "Væske",
+          "carbs": "{g} g",
+          "fluid": "{l} l",
+          "carbState": {
+            "free": "Valgfrit",
+            "under": "For lidt",
+            "ok": "I mål",
+            "over": "Rigeligt",
+            "gut": "For meget"
+          },
+          "fluidState": {
+            "under": "For lidt",
+            "ok": "I mål",
+            "over": "Rigeligt",
+            "flood": "For meget"
+          }
+        },
+        "announce": {
+          "added": "{item} er lagt i {hour}. time.",
+          "moved": "{item} er flyttet til {hour}. time.",
+          "removed": "{item} er taget ud af {hour}. time.",
+          "full": "Der er ikke plads til mere i {hour}. time.",
+          "cleared": "Planen er tom."
+        },
+        "scene": {
+          "start": "START",
+          "finish": "MÅL",
+          "post": "{hours} t",
+          "play": "Kør løbet",
+          "stop": "Stop",
+          "during": "{hour}. time: {look}",
+          "look": {
+            "ready": "Rytteren er klar til start. Læg mad og drikke i timerne.",
+            "podium": "Alle timer i mål. Rytteren kører over stregen med armene i vejret.",
+            "good": "Rytteren kører godt.",
+            "hungry": "Rytteren er sulten. Der mangler kulhydrat.",
+            "empty": "Rytteren er sukkerkold. Der har manglet kulhydrat i mere end en time.",
+            "thirsty": "Rytteren er tørstig. Der mangler væske.",
+            "thirstyHot": "Rytteren er tørstig i varmen. Der mangler væske.",
+            "stomach": "Rytteren har ondt i maven. Der er mere kulhydrat på én time, end maven kan tage.",
+            "slosh": "Det skvulper i maven. Der er mere væske, end rytteren sveder."
+          },
+          "caption": "Rytteren er en tegning, ikke en måling. Den viser, hvordan planen passer med anbefalingerne time for time, og hvordan det kan føles, når den ikke gør."
+        },
+        "feedback": {
+          "title": "Sådan går din plan",
+          "allGood": "Alle timer passer med anbefalingen.",
+          "hour": "{hour}. time",
+          "carbsUnder": "Til nu {cum} g kulhydrat, og anbefalingen er {low}–{high} g. En riskage eller en gel mere vil passe her.",
+          "carbsOver": "Til nu {cum} g kulhydrat, mere end de {high} g, der anbefales. Det giver ikke mere fart, og maven skal kunne tage det.",
+          "gutUntrained": "{g} g kulhydrat på én time. Uden øvelse kan maven typisk tage omkring 60 g.",
+          "gutTrained": "{g} g kulhydrat på én time. Kadence foreslår højst 90 g i timen til unge ryttere.",
+          "fluidUnder": "Til nu {cum} l væske, og anbefalingen er {low}–{high} l. En dunk mere vil passe her.",
+          "fluidOver": "Til nu {cum} l væske, mere end de {high} l, du typisk sveder. Drik højst det, du sveder.",
+          "flood": "{l} l på én time er mere, end maven kan nå at tage op. Fordel dunkene over flere timer."
+        },
+        "notes": {
+          "sodium": "Planen giver {mg} mg natrium, og til et løb af den længde anbefales mindst {low} mg. Sportsdrik eller vand med salt giver det.",
+          "fuelHeat": "Det er varmt. Team Danmark foreslår sportsdrik til væsken og resten af kulhydratet som mad, for 8 % er stærkt, når du sveder meget.",
+          "riceCakeLate": "Riskager holder bedst de første 2 timer i trøjelommen og 1 time på varme dage. Senere i løbet er en gel eller en banan mere sikker.",
+          "fatFibre": "Havrebaren har fedt og fibre, som gør maven langsommere. Den passer bedst tidligt i løbet eller på rolige ture og mindre godt i finalen.",
+          "cages": "Planen har {n} dunke, og cyklen har plads til to. Resten kan du få langet op undervejs, hvor løbet tillader det.",
+          "pastFinish": "{n, plural, one {# ting ligger} other {# ting ligger}} efter mål og tæller ikke med. Gør løbet længere for at se {n, plural, one {den} other {dem}} igen."
+        }
+      },
+      "effort": {
+        "title": "Hvad koster løbet?",
+        "intro": "Hvis du vil vide det: skriv, hvor hårdt du kører, og din vægt. Så får du et skøn over energien, og hvor meget af den din plan dækker, og måltidet før og efter."
+      },
       "method": {
         "label": "Hvordan vil du anslå indsatsen?",
         "watts": "Gennemsnitswatt",
@@ -4072,70 +4204,45 @@
         "solo": "Alene over 32 km/t"
       },
       "weight": "Vægt (valgfri)",
-      "weightHint": "Vægten bliver i din browser. Uden den får du stadig planen for løbet; måltidet før og efter regnes pr. kg.",
+      "weightHint": "Vægten bliver i din browser. Planen ovenfor virker uden den; måltidet før og efter regnes pr. kg.",
       "kg": "kg",
-      "gut": {
-        "label": "Har du øvet dig i at spise meget kulhydrat på træning?",
-        "yes": "Ja",
-        "no": "Ikke endnu"
-      },
-      "food": "Dunke og mad",
-      "bottle": "Dunkens størrelse",
-      "bottleOption": "{ml} ml",
-      "mix": {
-        "label": "I dunken",
-        "water": "Vand",
-        "drink": "Sportsdrik, ca. 6 %",
-        "fuel": "Brændstofdunk, ca. 8 %"
-      },
-      "piece": "Gram kulhydrat pr. riskage, gel eller bar",
-      "pieceHint": "En hjemmelavet riskage har omkring 32 g, en gel typisk 25 g.",
       "hoursBefore": "Timer fra måltid til start",
       "result": {
         "energy": "Energiforbrug",
         "kcal": "Cirka {low, number, integer}–{high, number, integer} kcal",
         "work": "{kj, number, integer} kJ arbejde ved {watts, number, integer} W i snit.",
         "needsWeight": "Skriv vægten for at bruge denne metode.",
-        "none": "Skriv varighed og indsats for at se et skøn.",
+        "none": "Skriv indsatsen for at se et skøn.",
         "energyNote": "Et skøn med usikkerhed: kroppens effektivitet på cyklen er 18–23 %, og den er ikke målt hos 15–18-årige.",
-        "carbs": "Kulhydrat under løbet",
-        "water": "Under 45 minutter er vand nok.",
-        "small": "Op til 75 minutter er små mængder nok, eller at skylle munden med sportsdrik.",
-        "carbsRange": "{low}–{high} g i timen. Planen regner med {target} g i timen, {total} g i alt.",
-        "single": "Én slags sukker er nok, fx sportsdrik, riskager eller geler.",
         "multiple": "Over 60 g i timen kræver glukose og fruktose sammen. Almindeligt sukker er begge dele, eller brug 2 dele sukker og 1 del druesukker.",
-        "coverage": "Det dækker omkring {low, number, integer}–{high, number, integer} % af den energi, løbet koster. Resten tager kroppen fra sine lagre, og det er helt normalt.",
-        "fluid": "Væske og salt",
-        "fluidRange": "{low, number, ::.0}–{high, number, ::.0} liter i timen.",
-        "sodium": "{low, number, integer}–{high, number, integer} mg natrium i timen. 1 g salt giver omkring 400 mg natrium.",
+        "coverage": "Din plan dækker omkring {low, number, integer}–{high, number, integer} % af den energi, løbet koster. Resten tager kroppen fra sine lagre, og det er helt normalt.",
+        "sweat": "Sved",
         "loss": "Du kan tabe op til {kg, number, ::.0} kg i sved, før det går ud over præstationen. Drik højst det, du sveder.",
-        "weighIn": "Vej dig før og efter næste lange tur. Så kan planen blive mere præcis.",
-        "plan": "Planen",
-        "bottles": "{bottles, plural, one {# dunk} other {# dunke}} på {ml} ml",
-        "fromBottles": "Dunkene giver {grams} g kulhydrat.",
-        "pieces": "{pieces, plural, =0 {Dunkene dækker kulhydratet.} one {# stk. mad til resten.} other {# stk. mad til resten.}}",
+        "weighIn": "Vej dig før og efter næste lange tur. Så ved du, hvor meget du sveder.",
         "before": "Før løbet",
         "beforeBody": "Omkring {carbs} g kulhydrat {hours, plural, one {# time} other {# timer}} før start, og {low, number, integer}–{high, number, integer} ml at drikke 2–4 timer før.",
         "beforeNote": "Et hovedmåltid 3–4 timer før eller et mellemmåltid 1–2 timer før, med lidt fedt og få fibre.",
         "after": "Efter løbet",
         "afterBody": "{low, number, integer}–{high, number, integer} g kulhydrat og {pLow, number, integer}–{pHigh, number, integer} g protein lige efter, og 1,25–1,5 liter væske for hvert kilo, du har tabt.",
         "afterNote": "Kører du igen inden for 8 timer, så gentag kulhydratet hver time de første fire timer.",
-        "weightMissing": "Skriv vægten for at se måltidet før og efter løbet."
+        "weightMissing": "Skriv vægten for at se måltidet før og efter løbet, og hvor meget du kan tabe i sved."
       },
       "warnings": {
         "heartRateAge": "Pulsformlen er lavet på 18–45-årige, der kører jævnt. For yngre ryttere og løb med spurter er skønnet mere usikkert.",
         "speedSolo": "Fartmetoden gælder, når du kører alene, som i en enkeltstart. I et felt sparer læ så meget, at farten siger for lidt om indsatsen.",
         "heat": "Over 25 °C: drik mere, og tænk salt med. Over 30 °C bør vægttabet i sved højst være 1 %.",
-        "capped": "Uden øvelse kan maven typisk tage 60 g i timen, så planen stopper der. Øv mere på de lange træningsture, hvis du vil op mod 90 g.",
+        "capped": "Uden øvelse kan maven typisk tage 60 g i timen, så målet stopper der. Øv mere på de lange træningsture, hvis du vil op mod 90 g.",
         "practise": "Øv planen på de lange træningsture de næste 2–4 uger, før du bruger den i et løb."
       },
       "about": {
         "title": "Om beregningen",
         "points": {
-          "1": "Energien regnes fra watt som arbejde delt med kroppens effektivitet på 18–23 % (Hopker 2009). Fra fart bruges cyklingens kraftligning (Martin 1998), fra puls Keytels formel (2005) og fra løbstype MET-tal (Compendium 2024). Puls og løbstype vises med ±15 %, som er Kadences eget valg.",
-          "2": "Kulhydrat pr. time følger Thomas 2016, Jeukendrup 2014 og Team Danmark. Ingen kilde har tal for teenagere, så Kadence stopper ved 60 g i timen uden øvelse og foreslår højst 90 g.",
-          "3": "Væske og salt følger Team Danmark og ACSM. Overgangen mellem 25 og 30 °C er Kadences egen.",
-          "4": "Beregneren er et redskab til planlægning og er ikke medicinsk rådgivning."
+          "1": "Kulhydrat pr. time følger Thomas 2016, Jeukendrup 2014 og Team Danmark. Ingen kilde har tal for teenagere, så Kadence stopper ved 60 g i timen uden øvelse og foreslår højst 90 g.",
+          "2": "Væske og salt følger Team Danmark og ACSM: 0,4–0,8 l i timen under 25 °C og 0,8–1,2 l fra 25 °C, med 500–700 mg natrium pr. liter. Overgangen mellem 25 og 30 °C for sved er Kadences egen.",
+          "3": "Planen tjekkes time for time mod anbefalingen fra start og til den time. Maden kommer i hele stykker, så en time tæller som i mål inden for 15 g kulhydrat og en halv dunk væske, og maven får 10 g over sin grænse. Det er Kadences egne valg, og det samme er rytterens udseende.",
+          "4": "Dunke, riskager og havrebarer er regnet efter hjemmelavede opskrifter med 6 og 8 % sukker og 32–33 g pr. stk. En gel og en banan er regnet til 25 g (Maurten, Team Danmark). Riskager regnes holdbare i trøjelommen i 2 timer og 1 time fra 25 °C, ud fra USDA's tommelfingerregel.",
+          "5": "Energien regnes fra watt som arbejde delt med kroppens effektivitet på 18–23 % (Hopker 2009). Fra fart bruges cyklingens kraftligning (Martin 1998), fra puls Keytels formel (2005) og fra løbstype MET-tal (Compendium 2024). Puls og løbstype vises med ±15 %, som er Kadences eget valg.",
+          "6": "Beregneren er et redskab til planlægning og er ikke medicinsk rådgivning."
         }
       }
     }
