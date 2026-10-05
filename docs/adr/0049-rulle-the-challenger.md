@@ -63,8 +63,9 @@ slipstream that makes it easier behind him.
   road would have him in the saddle he rides a posture of his own, as in
   the photo: forward on the saddle's nose, the upper arms straight down,
   the forearms along the top of the bar and the hands on the hoods, a
-  little ahead of his face, his head down between his shoulders. He is out of
-  the saddle, over the bars, in his first seconds and in the sprint.
+  little ahead of his face, his head down between his shoulders. Over
+  600 W — his first seconds and his sprint — he is out of the saddle,
+  low over the bars, his hands in the drops.
 - **A cheat code, JOHAN**, calls him up at once on a free ride, and does
   nothing in a session. The H in it is the code's while it is typed, not
   the ride's speed. Under `next dev`, G calls him session or not.

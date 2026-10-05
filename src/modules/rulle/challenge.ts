@@ -36,6 +36,8 @@ export const CHALLENGE = {
   beforeFoot: 150,
   /** He and his bike, kg: 460 W is about 7 W/kg. */
   massKg: 66 + 8,
+  /** Over these watts — his start and his sprint — he is out of the saddle with his hands in the drops. */
+  drops: 600,
 } as const;
 
 /** Where he is for the landscape: on the road, how fast, and his legs; and the line. */
@@ -47,8 +49,8 @@ export type ChallengerAt = {
   line: number;
   speed: number;
   cadence: number;
-  /** Out of the saddle, as he is in the sprint. */
-  standing: boolean;
+  /** Over `CHALLENGE.drops` watts: out of the saddle, his hands in the drops. */
+  sprinting: boolean;
 };
 
 /** A race to come: where it begins, in metres ridden, and whether up a climb. */

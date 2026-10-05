@@ -8,18 +8,19 @@ import { CLAMP } from "./road-bike";
  * postures (`postureAt`): in the saddle with the hands on the hoods; out
  * of the saddle, hips over the cranks, the bike rocking from side to side
  * under a rider who stays upright, once each pedal stroke; and tucked, a
- * flat back and the hands in the drops — and a fourth no road calls for,
- * the challenger's (ADR 0049): forward on the saddle's nose, the upper
- * arms straight down, the forearms along the top of the bar and the hands
- * on the hoods, a little ahead of his face, his head down between his shoulders, over
- * the long front of his bike (`Kit.bars`). In the bike's own coordinates:
- * facing -z, y up, x to the rider's right. The legs and arms are hung
- * from these points by `twoBones`.
+ * flat back and the hands in the drops — and two no road calls for, the
+ * challenger's (ADR 0049): forward on the saddle's nose, the upper arms
+ * straight down, the forearms along the top of the bar and the hands on
+ * the hoods, a little ahead of his face, his head down between his
+ * shoulders, over the long front of his bike (`Kit.bars`); and his sprint,
+ * out of the saddle, low over the bars with his hands in the drops. In
+ * the bike's own coordinates: facing -z, y up, x to the rider's right.
+ * The legs and arms are hung from these points by `twoBones`.
  */
 
-/** The postures a figure rides in: the road's (`Posture`), and the challenger's aero one. */
-export type FigurePosture = Posture | "aero";
-export const POSTURES: readonly FigurePosture[] = ["seated", "standing", "tuck", "aero"];
+/** The postures a figure rides in: the road's (`Posture`), and the challenger's aero one and his sprint. */
+export type FigurePosture = Posture | "aero" | "sprint";
+export const POSTURES: readonly FigurePosture[] = ["seated", "standing", "tuck", "aero", "sprint"];
 
 export type Blend = Record<FigurePosture, number>;
 
@@ -80,6 +81,15 @@ const ANCHORS: Record<FigurePosture, Anchor> = {
     helmet: -1.5,
     follow: 0.35,
   },
+  sprint: {
+    hips: v(0, 1.08, -0.03),
+    shoulders: v(0, 1.3, -0.45),
+    head: v(0, 1.42, -0.58),
+    hand: v(0.21, 0.845, -0.5),
+    hipWidth: 0.1,
+    helmet: -0.4,
+    follow: 0.75,
+  },
 };
 
 export type Pose = {
@@ -128,12 +138,13 @@ export function poseOf(blend: Blend, crank: number, cadence: number, bars: Bars 
   const pedalling = Math.min(1, cadence / 60);
   // Out of the saddle the bike leans away from the foot pushing down, and the
   // hips dip with each stroke; in it, only a little sway.
-  const roll = blend.standing * ROCK * Math.cos(crank) * pedalling;
-  const sway = -roll * UPRIGHT + Math.sin(crank) * 0.012 * pedalling * (1 - blend.standing);
+  const up = blend.standing + blend.sprint;
+  const roll = up * ROCK * Math.cos(crank) * pedalling;
+  const sway = -roll * UPRIGHT + Math.sin(crank) * 0.012 * pedalling * (1 - up);
   const hips = mix((a) => a.hips);
-  hips.y -= blend.standing * DIP * Math.abs(Math.cos(crank)) * pedalling;
+  hips.y -= up * DIP * Math.abs(Math.cos(crank)) * pedalling;
   // The weight goes onto the pedal pushing down: the right at a turn of nothing.
-  hips.x += blend.standing * SHIFT * Math.cos(crank) * pedalling;
+  hips.x += up * SHIFT * Math.cos(crank) * pedalling;
   const turn = (p: THREE.Vector3) => p.sub(hips).applyAxisAngle(ALONG, sway).add(hips);
   // The hands stay on the bar, whichever way the body goes.
   // The hands on the bar, turned up with it about the stem's clamp, and moved with it.

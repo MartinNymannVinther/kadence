@@ -77,6 +77,26 @@ describe("the challenger's race", () => {
     expect(Math.abs(start?.phase === "racing" ? start.gap : 99)).toBeLessThan(1);
   });
 
+  it("sprints in the drops over 600 W: his first seconds and his last 200 metres, not between", () => {
+    const raced = setup(480);
+    raced.ride(0, 5);
+    challenge(raced.engine, 5);
+    const race = raced.engine.shown.race;
+    const sprinting = () => race.at(0)?.sprinting;
+    raced.ride(5, 15);
+    expect(sprinting()).toBe(false);
+    raced.ride(15, 19);
+    expect(sprinting()).toBe(true);
+    raced.ride(19, 30);
+    expect(sprinting()).toBe(false);
+    const left = () => {
+      const live = race.live();
+      return live?.phase === "racing" ? live.left : Infinity;
+    };
+    for (let s = 30; left() > 150 && s < 400; s++) raced.ride(s, s + 1);
+    expect(sprinting()).toBe(true);
+  });
+
   it("rides away from a rider on 200 W and wins, and what is recorded is what was ridden", () => {
     const plain = setup(200);
     plain.ride(0, 280);

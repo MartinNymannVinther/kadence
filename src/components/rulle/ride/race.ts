@@ -182,14 +182,14 @@ export class Race {
     const run = this.run;
     if (!run) return null;
     const on = !run.over && run.count === 0;
-    const sprinting = on && (run.end - run.him <= 200 || run.seconds < 7);
+    const sprinting = on && challengerWatts(run.seconds, run.end - run.him) > CHALLENGE.drops;
     return {
       distance: run.him + run.pace * since,
       finish: run.count > 0 ? null : run.end,
       line: run.line,
       speed: run.v,
       cadence: run.over ? 80 : sprinting ? 110 : 94,
-      standing: sprinting,
+      sprinting,
     };
   }
 
