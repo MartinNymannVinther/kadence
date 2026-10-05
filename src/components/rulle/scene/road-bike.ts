@@ -115,9 +115,20 @@ function disc(r: number, w: number, color: string, at = v(0, 0, 0), x = 0) {
   return painted(geometry.translate(x, at.y, at.z), color);
 }
 
+/** Spokes on a wheel, and the angle between two of them. */
+const SPOKES = 12;
+const SPOKE_GAP = (Math.PI * 2) / SPOKES;
+/**
+ * A wheel turning more than this share of the gap between two spokes in
+ * one frame looks, to the eye, to turn slowly or backwards — the
+ * wagon-wheel effect — so above it the spokes give way to a blur.
+ */
+const BLUR_FROM = 0.35;
+
 /**
  * A wheel about its own hub: a thin tyre on a deep rim with a light band
- * on either face, twelve bladed spokes, the hub, and the brake's rotor.
+ * on either face, the hub, and the brake's rotor; its spokes apart
+ * (`spokes`), so they can give way to a blur at speed.
  */
 function wheel(): THREE.BufferGeometry {
   const ring = (radius: number, tube: number, flat: number, color: string) =>
@@ -132,12 +143,6 @@ function wheel(): THREE.BufferGeometry {
         .translate(side * 0.0146, 0, 0),
       P.rimBand,
     );
-  const spokes: THREE.BufferGeometry[] = [];
-  for (let i = 0; i < 12; i++) {
-    const a = (i / 12) * Math.PI * 2;
-    const hub = v(i % 2 ? 0.025 : -0.025, 0, 0);
-    spokes.push(bar(hub, v(0, Math.sin(a) * 0.222, Math.cos(a) * 0.222), 0.005, P.dark));
-  }
   return merged([
     ring(WHEEL - 0.013, 0.013, 1, P.tyre),
     ring(0.268, 0.05, 0.28, P.rim),
@@ -146,8 +151,18 @@ function wheel(): THREE.BufferGeometry {
     disc(0.02, 0.09, P.alloy),
     disc(0.08, 0.004, P.alloy, v(0, 0, 0), -0.045),
     disc(0.035, 0.006, P.dark, v(0, 0, 0), -0.045),
-    ...spokes,
   ]);
+}
+
+/** The bladed spokes, hub to rim. */
+function spokes(): THREE.BufferGeometry {
+  const parts: THREE.BufferGeometry[] = [];
+  for (let i = 0; i < SPOKES; i++) {
+    const a = i * SPOKE_GAP;
+    const hub = v(i % 2 ? 0.025 : -0.025, 0, 0);
+    parts.push(bar(hub, v(0, Math.sin(a) * 0.222, Math.cos(a) * 0.222), 0.005, P.dark));
+  }
+  return merged(parts);
 }
 
 /** The cranks about the bottom bracket: the right arm forward at a turn of nothing, the left back. */
@@ -168,6 +183,16 @@ export class RoadBike {
     flatShading: true,
   });
   private readonly wheels: THREE.Group[] = [];
+  /** Each wheel's spokes, and the blur that stands for them at speed. */
+  private readonly spokes: THREE.Mesh[] = [];
+  private readonly blurs: THREE.Mesh[] = [];
+  private readonly blur = new THREE.MeshBasicMaterial({
+    color: P.dark,
+    transparent: true,
+    opacity: 0.28,
+    depthWrite: false,
+    side: THREE.DoubleSide,
+  });
   private readonly crankset: THREE.Group;
   private readonly geometries: THREE.BufferGeometry[] = [];
 
@@ -177,8 +202,17 @@ export class RoadBike {
       const pivot = new THREE.Group();
       pivot.position.copy(hub);
       pivot.add(this.mesh(wheel()));
-      this.group.add(pivot);
+      const spoked = this.mesh(spokes());
+      const blurred = new THREE.Mesh(new THREE.CircleGeometry(0.222, 32), this.blur);
+      blurred.rotation.y = Math.PI / 2;
+      blurred.visible = false;
+      this.geometries.push(blurred.geometry);
+      pivot.add(spoked);
+      this.group.add(pivot, blurred);
+      blurred.position.copy(hub);
       this.wheels.push(pivot);
+      this.spokes.push(spoked);
+      this.blurs.push(blurred);
     }
     this.crankset = new THREE.Group();
     this.crankset.position.copy(BB);
@@ -186,15 +220,24 @@ export class RoadBike {
     this.group.add(this.crankset);
   }
 
-  /** The wheels rolled on by `metres`, and the cranks at `crank` (0: the right pedal forward). */
+  /**
+   * The wheels rolled on by `metres` since the last frame — their spokes a
+   * blur when that turns them too far for the eye — and the cranks at
+   * `crank` (0: the right pedal forward).
+   */
   turn(metres: number, crank: number): void {
-    for (const wheel of this.wheels) wheel.rotation.x -= metres / WHEEL;
+    const step = metres / WHEEL;
+    const blurred = Math.abs(step) > SPOKE_GAP * BLUR_FROM;
+    for (const wheel of this.wheels) wheel.rotation.x -= step;
+    for (const spoked of this.spokes) spoked.visible = !blurred;
+    for (const blur of this.blurs) blur.visible = blurred;
     this.crankset.rotation.x = -crank;
   }
 
   dispose(): void {
     for (const geometry of this.geometries) geometry.dispose();
     this.material.dispose();
+    this.blur.dispose();
   }
 
   private mesh(geometry: THREE.BufferGeometry): THREE.Mesh {
