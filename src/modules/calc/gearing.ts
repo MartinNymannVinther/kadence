@@ -109,6 +109,23 @@ export function ringTable(
   });
 }
 
+/** A bicycle chain's pitch, half an inch, in millimetres. */
+export const CHAIN_PITCH_MM = 12.7;
+
+/**
+ * The pitch radius of a chainring or sprocket: where the chain's pins sit
+ * on a wheel of `teeth` teeth, so the drawing's rings grow with the
+ * teeth chosen. r = pitch ÷ (2 · sin(180° ÷ teeth)).
+ */
+export function pitchRadiusMm(teeth: number): number {
+  return CHAIN_PITCH_MM / (2 * Math.sin(Math.PI / teeth));
+}
+
+/** How many times the rear wheel turns for one turn of the pedals. */
+export function wheelTurns(ring: number, cog: number): number {
+  return ring / cog;
+}
+
 export function validTeeth(ring: number, cog: number): boolean {
   return (
     Number.isInteger(ring) &&

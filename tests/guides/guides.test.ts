@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import da from "../../messages/da.json";
 import en from "../../messages/en.json";
-import { GEAR_PRODUCTS } from "@/modules/calc/gear-products";
+import { CASSETTES, CHAINRINGS } from "@/modules/calc/gear-products";
 import { GEAR_CLASSES, YOUTH_GEARING } from "@/modules/dcu/gearing";
 import { RACE_RULES } from "@/modules/dcu/races";
 import { VALUE_ROWS } from "@/modules/guides/equipment-value";
@@ -24,7 +24,10 @@ type Catalogue = {
     food: { recipes: { items: Record<string, Record<string, unknown>> } };
   };
   calculators: {
-    gearing: { classes: Record<string, string>; products: { items: Record<string, string> } };
+    gearing: {
+      classes: Record<string, string>;
+      products: { items: Record<string, string>; ringNotes: Record<string, string> };
+    };
   };
 };
 
@@ -63,8 +66,10 @@ for (const [lang, messages] of [
         expect(value.rows[row.id]).toBeTruthy();
         expect(value.bunch[row.inBunch]).toBeTruthy();
       }
-      for (const product of GEAR_PRODUCTS)
-        expect(catalogue.calculators.gearing.products.items[product.id]).toBeTruthy();
+      for (const cassette of CASSETTES)
+        expect(catalogue.calculators.gearing.products.items[cassette.id]).toBeTruthy();
+      for (const family of CHAINRINGS)
+        expect(catalogue.calculators.gearing.products.ringNotes[family.id]).toBeTruthy();
       for (const c of GEAR_CLASSES) expect(catalogue.calculators.gearing.classes[c]).toBeTruthy();
     });
 
