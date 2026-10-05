@@ -1,5 +1,6 @@
 import type { FuelItemId } from "@/modules/calc/fuel-items";
 import { cn } from "@/lib/utils";
+import { MealIcon } from "./energy-meal-icon";
 
 /**
  * The colours of the pantry, one for each thing, used for its icon and
@@ -15,6 +16,21 @@ export const ITEM_COLOUR: Record<FuelItemId, string> = {
   gel: "#f2c230",
   banana: "#e8c22a",
   oatBar: "#b07a3f",
+  oats: "#d9c8a8",
+  milk: "#9fc6e0",
+  whiteBread: "#e8bf72",
+  ryeBread: "#8a6248",
+  pasta: "#f0cf5a",
+  rice: "#cfd8dc",
+  potatoes: "#c89a5b",
+  raisins: "#7a4a5e",
+  juice: "#f7a531",
+  honey: "#f2b705",
+  skyr: "#a9c7e8",
+  cocoaMilk: "#8a5a3c",
+  chicken: "#e3a76f",
+  egg: "#e9dcb8",
+  cheese: "#f2cc55",
 };
 
 function Bottle({ colour, salt }: { colour: string; salt?: boolean }) {
@@ -123,7 +139,7 @@ function OatBar() {
   );
 }
 
-/** One thing from the pantry drawn small: a bottle in its drink's colour, a rice cake in foil, a gel, a banana, an oat bar. */
+/** One thing from the pantry drawn small: a bottle in its drink's colour, a rice cake in foil, a gel, a banana, an oat bar, or a meal. */
 export function ItemIcon({ id, className }: { id: FuelItemId; className?: string }) {
   return (
     <svg viewBox="0 0 32 32" aria-hidden className={cn("size-8 shrink-0", className)}>
@@ -135,6 +151,7 @@ export function ItemIcon({ id, className }: { id: FuelItemId; className?: string
       {id === "gel" && <Gel />}
       {id === "banana" && <Banana />}
       {id === "oatBar" && <OatBar />}
+      <MealIcon id={id} />
     </svg>
   );
 }

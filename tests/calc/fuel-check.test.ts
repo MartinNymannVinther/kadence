@@ -1,24 +1,51 @@
 import { describe, expect, it } from "vitest";
-import { checkPlan, lanesFor, type FuelRace, type Plan } from "@/modules/calc/fuel-check";
-import { FUEL_ITEM_IDS, itemContent } from "@/modules/calc/fuel-items";
+import { checkPlan, lanesFor, type FuelRace, type Lanes } from "@/modules/calc/fuel-check";
+import { itemContent, MEAL_ITEM_IDS, RIDE_ITEM_IDS } from "@/modules/calc/fuel-items";
 
 const RACE: FuelRace = { minutes: 120, celsius: 18, gutTrained: false, bottleMl: 750 };
 
 describe("the pantry", () => {
   it("counts bottles by their size and food by the piece (ernaering.md, section 2)", () => {
-    expect(itemContent("drink", 750)).toEqual({ carbs: 45, fluidL: 0.75, sodiumMg: 443 });
-    expect(itemContent("drink", 500)).toEqual({ carbs: 30, fluidL: 0.5, sodiumMg: 295 });
+    expect(itemContent("drink", 750)).toEqual({
+      carbs: 45,
+      protein: 0,
+      fluidL: 0.75,
+      sodiumMg: 443,
+    });
+    expect(itemContent("drink", 500)).toEqual({
+      carbs: 30,
+      protein: 0,
+      fluidL: 0.5,
+      sodiumMg: 295,
+    });
     expect(itemContent("fuel", 750).carbs).toBe(60);
     expect(itemContent("saltWater", 1000 as 750).sodiumMg).toBe(590);
-    expect(itemContent("riceCake", 750)).toEqual({ carbs: 32, fluidL: 0, sodiumMg: 39 });
+    expect(itemContent("riceCake", 750)).toEqual({
+      carbs: 32,
+      protein: 0,
+      fluidL: 0,
+      sodiumMg: 39,
+    });
     expect(itemContent("gel", 500).carbs).toBe(25);
     expect(itemContent("banana", 500).carbs).toBe(25);
     expect(itemContent("oatBar", 500).carbs).toBe(33);
   });
 
-  it("has eight things, four of them bottles", () => {
-    expect(FUEL_ITEM_IDS).toHaveLength(8);
-    expect(FUEL_ITEM_IDS.filter((id) => itemContent(id, 750).fluidL > 0)).toHaveLength(4);
+  it("has eight things for the bike, four of them bottles, and sixteen meals", () => {
+    expect(RIDE_ITEM_IDS).toHaveLength(8);
+    expect(RIDE_ITEM_IDS.filter((id) => itemContent(id, 750).fluidL > 0)).toHaveLength(4);
+    expect(MEAL_ITEM_IDS).toHaveLength(16);
+  });
+
+  it("counts the meals from the food database per portion, matching Team Danmark's 50 g list", () => {
+    // Team Danmark: 2 slices of bread (100 g), 2½ dl cooked rice (150 g), 1 dl raisins (60 g),
+    // 2½ dl oats (75 g) and 2 bananas (240 g) each give about 50 g.
+    expect(itemContent("whiteBread", 750).carbs).toBe(49);
+    expect(itemContent("rice", 750).carbs).toBe(57);
+    expect(itemContent("raisins", 750).carbs).toBe(45);
+    expect(itemContent("oats", 750).carbs).toBe(44);
+    expect(itemContent("banana", 750).carbs * 2).toBe(50);
+    expect(itemContent("cocoaMilk", 750)).toMatchObject({ carbs: 23, protein: 9, fluidL: 0.25 });
   });
 });
 
@@ -68,7 +95,7 @@ describe("checking a plan hour by hour", () => {
   });
 
   it("gives the stomach 60 g an hour without practice and 90 g with, 10 g over either", () => {
-    const hour = (items: Plan[number]) => checkPlan(RACE, [items, ["drink"]]).lanes[0]!;
+    const hour = (items: Lanes[number]) => checkPlan(RACE, [items, ["drink"]]).lanes[0]!;
     expect(hour(["drink", "gel"]).carbState).toBe("ok"); // 70 g
     expect(hour(["drink", "riceCake"])).toMatchObject({ carbState: "gut", mood: "stomach" }); // 77 g
     const trained = checkPlan({ ...RACE, gutTrained: true }, [["drink", "riceCake"], ["drink"]]);
@@ -145,7 +172,7 @@ describe("the notes under a plan", () => {
   });
 
   it("does not count what lies after a shortened finish, and says so", () => {
-    const plan: Plan = [["drink"], ["drink"], ["gel", "gel"], [], [], []];
+    const plan: Lanes = [["drink"], ["drink"], ["gel", "gel"], [], [], []];
     const check = checkPlan(RACE, plan);
     expect(check.lanes).toHaveLength(2);
     expect(check.totals.pieces).toBe(0);

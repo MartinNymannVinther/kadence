@@ -1,17 +1,16 @@
-import { carbsPerHour, fluidPerHour } from "./fuel";
+import { carbsPerHour, fluidPerHour, type CarbAdvice } from "./fuel";
+import { gutCapFor } from "./fuel-day";
 import {
   CARB_SLACK_G,
   clampMinutes,
   GUT_SLACK_G,
-  gutCapFor,
   HOT_CELSIUS,
-  laneContent,
   lanesFor,
   riceCakeUntilMinutes,
   type FuelRace,
-  type Plan,
+  type Lanes,
 } from "./fuel-check";
-import type { FuelItemId } from "./fuel-items";
+import { contentOf, type FuelItemId } from "./fuel-items";
 
 /**
  * Kadence's own plan for a race, for the rider who wants to see one
@@ -58,11 +57,13 @@ function options(
   return out;
 }
 
-export function suggestPlan(race: FuelRace): Plan {
+export function suggestPlan(
+  race: FuelRace,
+  advice: CarbAdvice = carbsPerHour(clampMinutes(race.minutes) / 60, race.gutTrained),
+): Lanes {
   const minutes = clampMinutes(race.minutes);
   const hours = minutes / 60;
   const lanes = lanesFor(minutes);
-  const advice = carbsPerHour(hours, race.gutTrained);
   const fluid = fluidPerHour(race.celsius);
   const litres = race.bottleMl / 1000;
   const gutCap = gutCapFor(race.gutTrained);
@@ -89,7 +90,7 @@ export function suggestPlan(race: FuelRace): Plan {
     let best: Option | null = null;
     let bestScore = Infinity;
     for (const option of options(bottles, kind, water, lane.fromMin < riceUntil)) {
-      const carbs = laneContent(option.items, race.bottleMl).carbs;
+      const carbs = contentOf(option.items, race.bottleMl).carbs;
       if (carbs > gutCap + GUT_SLACK_G) continue;
       const cum = cumCarbs + carbs;
       const miss = cum < low || cum > high ? 1000 : 0;

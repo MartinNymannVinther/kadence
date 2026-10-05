@@ -1,32 +1,37 @@
 "use client";
 
+import { Info } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { NumberField } from "@/components/workouts/number-field";
-import type { Position, RaceKind, Sex } from "@/modules/calc/energy";
-import type { Method, RaceInput } from "@/modules/calc/race-fuel";
+import type { Position, RaceKind } from "@/modules/calc/energy";
+import type { Method, RaceInput, Warning } from "@/modules/calc/race-fuel";
 import { FieldSelect } from "./field-select";
 
 type Set = <K extends keyof RaceInput>(key: K, value: RaceInput[K]) => void;
 
-const card =
-  "border-border bg-card grid gap-3 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:grid-cols-2 sm:p-5";
+const card = "grid gap-3 sm:grid-cols-2";
 
 /**
- * What the race costs, for the rider who wants to know: the effort by one
- * of four ways and the weight, which stays in the browser and is needed
- * for every way but watts and for the meals before and after.
+ * How hard the session is, by one of four ways, for the estimate of what
+ * the body uses. Weight, age and sex come from the class and sex chosen
+ * at the top, so none of them is asked for here.
  */
-export function EnergyInputs({ input, set }: { input: RaceInput; set: Set }) {
-  const t = useTranslations("calculators.energy");
+export function EnergyInputs({
+  input,
+  set,
+  warnings,
+}: {
+  input: RaceInput;
+  set: Set;
+  /** What makes the estimate less certain: a heart rate formula made on adults, speed in a bunch. */
+  warnings: readonly Warning[];
+}) {
+  const t = useTranslations("calculators.energy.effort");
+  const w = useTranslations("calculators.energy.warnings");
 
   return (
-    <section className={card} aria-labelledby="energy-effort">
-      <div className="flex flex-col gap-1 sm:col-span-2">
-        <h2 id="energy-effort" className="text-lg font-semibold">
-          {t("effort.title")}
-        </h2>
-        <p className="text-meta text-2sm leading-relaxed">{t("effort.intro")}</p>
-      </div>
+    <div className={card}>
+      <p className="text-meta text-2sm leading-relaxed sm:col-span-2">{t("intro")}</p>
       <div className="sm:col-span-2">
         <FieldSelect<Method>
           label={t("method.label")}
@@ -93,22 +98,6 @@ export function EnergyInputs({ input, set }: { input: RaceInput; set: Set }) {
             onChange={(v) => set("bpm", v)}
             max={220}
           />
-          <NumberField
-            label={t("age")}
-            value={input.age}
-            onChange={(v) => set("age", v)}
-            min={10}
-            max={80}
-          />
-          <FieldSelect<Sex>
-            label={t("sex.label")}
-            value={input.sex}
-            onChange={(s) => set("sex", s)}
-            options={(["female", "male"] as const).map((s) => ({
-              value: s,
-              label: t(`sex.${s}`),
-            }))}
-          />
         </>
       )}
       {input.method === "met" && (
@@ -122,25 +111,15 @@ export function EnergyInputs({ input, set }: { input: RaceInput; set: Set }) {
           }))}
         />
       )}
-      <div className="flex flex-col gap-1 sm:col-span-2">
-        <NumberField
-          label={t("weight")}
-          value={input.weightKg}
-          onChange={(v) => set("weightKg", v)}
-          onClear={() => set("weightKg", null)}
-          min={25}
-          max={120}
-          suffix={t("kg")}
-        />
-        <p className="text-meta text-xs">{t("weightHint")}</p>
-      </div>
-      <NumberField
-        label={t("hoursBefore")}
-        value={input.hoursBefore}
-        onChange={(v) => set("hoursBefore", v)}
-        min={1}
-        max={4}
-      />
-    </section>
+      {warnings.map((warning) => (
+        <p
+          key={warning}
+          className="bg-sticky text-sticky-ink flex items-start gap-2 rounded-md px-3 py-2 text-2sm leading-relaxed sm:col-span-2"
+        >
+          <Info aria-hidden className="mt-0.5 size-4 shrink-0" />
+          {w(warning as "heartRateAge")}
+        </p>
+      ))}
+    </div>
   );
 }

@@ -3475,8 +3475,8 @@
       "open": "Open",
       "items": {
         "energy": {
-          "title": "Energy for the race",
-          "body": "Build your own plan for food and drink in the race, watch a rider ride it, and work out what the race costs."
+          "title": "Energy for racing and training",
+          "body": "Build your own plan for food and drink before, during and after, and see how it fits what the body uses."
         },
         "gearing": {
           "title": "Gearing for the young classes",
@@ -3496,7 +3496,7 @@
         }
       },
       "fromParents": "About the sport, for parents: the classes and the way on, equipment, food and drink, and calculators for energy and gearing.",
-      "fromHelp": "Guides and calculators for riders, parents and coaches: the classes, equipment, food and drink, energy for the race and gearing."
+      "fromHelp": "Guides and calculators for riders, parents and coaches: the classes, equipment, food and drink, energy for racing and training, and gearing."
     },
     "classes": {
       "title": "The classes and the way on",
@@ -4032,10 +4032,31 @@
       }
     },
     "energy": {
-      "title": "Energy for the race",
-      "intro": "Build your own plan for what you eat and drink during the race, and watch a rider ride it. Then you can see Kadence's suggestion and work out what the race costs. Everything stays in your browser.",
-      "race": {
-        "title": "The race",
+      "title": "Energy for racing and training",
+      "intro": "Build your own plan for what you eat and drink before, during and after a race or a training session. The chart shows how the plan fits what the body uses and what the stomach can take. Everything stays in your browser.",
+      "setup": {
+        "title": "What are you doing?",
+        "session": "Race or training",
+        "race": "Race",
+        "training": "Training",
+        "intensity": {
+          "label": "How hard",
+          "easy": "Easy",
+          "tempo": "Tempo",
+          "intervals": "Intervals"
+        },
+        "class": "Class",
+        "ages": "{from}–{to} years",
+        "classHint": "The goals are worked out for a typical rider in the class. If you are big or small for your age, choose the class above or below.",
+        "rider": {
+          "female": "a typical {riderClass} girl",
+          "male": "a typical {riderClass} boy"
+        },
+        "sex": {
+          "label": "Girl or boy",
+          "female": "Girl",
+          "male": "Boy"
+        },
         "duration": "Duration",
         "durationHours": "{h} h",
         "durationMixed": "{h} h {m} min",
@@ -4043,206 +4064,310 @@
         "durationSpoken": "{m} minutes",
         "shorter": "15 minutes shorter",
         "longer": "15 minutes longer",
+        "temperature": "Temperature",
         "celsiusShown": "{c} °C",
         "celsiusSpoken": "{c} degrees",
         "colder": "One degree colder",
-        "warmer": "One degree warmer"
-      },
-      "temperature": "Temperature",
-      "gut": {
-        "label": "Have you practised eating a lot of carbohydrate in training?",
-        "yes": "Yes",
-        "no": "Not yet"
+        "warmer": "One degree warmer",
+        "gut": {
+          "label": "Have you practised eating a lot of carbohydrate in training?",
+          "yes": "Yes",
+          "no": "Not yet"
+        },
+        "next": {
+          "label": "What comes next?",
+          "rest": {
+            "title": "Rest or an easy day",
+            "body": "Tomorrow is an easy day."
+          },
+          "hard": {
+            "title": "Hard or a race tomorrow",
+            "body": "The stores need to be full again by tomorrow."
+          },
+          "soon": {
+            "title": "Hard again within 8 hours",
+            "body": "Such as two races in a day, or a stage early tomorrow."
+          }
+        }
       },
       "builder": {
         "title": "Build your plan",
-        "intro": "Drag bottles and food into the hours of the race, or tap a thing and then an hour. The rider on the road shows how the plan fits the recommendations.",
-        "target": {
-          "label": "The goal each hour:",
-          "both": "{carbs} and {fluid}.",
-          "carbs": "{low}–{high} g of carbohydrate",
-          "carbsOne": "around {high} g of carbohydrate",
-          "water": "no carbohydrate, water is enough",
-          "small": "a little carbohydrate or none",
-          "fluid": "{low}–{high} l of fluid"
-        },
-        "score": "{on} of {total, plural, one {# hour} other {# hours}} on target",
-        "scoreEmpty": "The plan is still empty",
+        "intro": "Drag food and drink from the pantry into the day, or tap a thing and then \"Put here\". Under each slot you can see how it fits the goal.",
         "actions": {
           "suggest": "Show Kadence's suggestion",
           "mine": "Back to my plan",
           "clear": "Clear the plan"
         },
         "suggested": "Kadence's suggestion is on the board. Feel free to move things around. Your own plan is kept for when you want it back.",
-        "pantry": {
-          "title": "The pantry",
-          "hint": "Drag a thing into an hour, or tap it and then the hour.",
-          "bottles": "Bottles",
-          "bottleOption": "{ml} ml",
-          "carbs": "{g} g carbohydrate",
-          "volume": "{ml} ml",
-          "chosen": "{item} is chosen. Tap an hour to put it there. Tap {item} again to put it down.",
-          "dropBack": "Drop here to take it out of the plan."
-        },
-        "items": {
-          "water": { "name": "Water", "note": "Fluid only" },
-          "saltWater": { "name": "Salted water", "note": "¼ tsp salt a litre" },
-          "drink": { "name": "Sports drink", "note": "About 6 % sugar" },
-          "fuel": { "name": "Fuel bottle", "note": "About 8 % sugar" },
-          "riceCake": { "name": "Rice cake", "note": "Homemade" },
-          "gel": { "name": "Gel", "note": "Bought" },
-          "banana": { "name": "Banana", "note": "Medium" },
-          "oatBar": { "name": "Oat bar", "note": "Fat and fibre" }
-        },
-        "lane": {
-          "title": "Hour {hour}",
-          "span": "{from}–{to} min",
-          "empty": "Drag something here",
-          "place": "Put {item} in hour {hour}",
-          "placeShort": "Put here",
-          "remove": "Take {item} out of hour {hour}",
-          "carbsLabel": "Carbohydrate",
-          "fluidLabel": "Fluid",
-          "carbs": "{g} g",
-          "fluid": "{l} l",
-          "carbState": {
-            "free": "Optional",
-            "under": "Too little",
-            "ok": "On target",
-            "over": "Plenty",
-            "gut": "Too much"
-          },
-          "fluidState": {
-            "under": "Too little",
-            "ok": "On target",
-            "over": "Plenty",
-            "flood": "Too much"
-          }
-        },
         "announce": {
-          "added": "{item} is in hour {hour}.",
-          "moved": "{item} is moved to hour {hour}.",
-          "removed": "{item} is taken out of hour {hour}.",
-          "full": "There is no room for more in hour {hour}.",
+          "added": "{item} is in.",
+          "moved": "{item} is moved.",
+          "removed": "{item} is taken out of the plan.",
+          "full": "There is no room for more in that slot.",
           "cleared": "The plan is empty."
+        }
+      },
+      "pantry": {
+        "title": "The pantry",
+        "meals": "Meals",
+        "ride": "On the bike",
+        "bottles": "Bottles",
+        "bottleOption": "{ml} ml",
+        "bottleAmount": "{ml} ml · {g} g",
+        "amount": "{g} g carbohydrate",
+        "protein": "{g} g protein",
+        "hint": "Drag a thing into a slot, or tap it and then \"Put here\".",
+        "chosen": "{item} is chosen. Tap \"Put here\" in a slot, or tap {item} again to put it down.",
+        "dropBack": "Drop here to take it out of the plan.",
+        "back": "Show the previous ones",
+        "forward": "Show more"
+      },
+      "items": {
+        "water": { "name": "Water" },
+        "saltWater": { "name": "Salted water" },
+        "drink": { "name": "Sports drink" },
+        "fuel": { "name": "Fuel bottle" },
+        "riceCake": { "name": "Rice cake" },
+        "gel": { "name": "Gel" },
+        "banana": { "name": "Banana" },
+        "oatBar": { "name": "Oat bar" },
+        "oats": { "name": "Oats" },
+        "milk": { "name": "Milk" },
+        "whiteBread": { "name": "White bread" },
+        "ryeBread": { "name": "Rye bread" },
+        "pasta": { "name": "Pasta" },
+        "rice": { "name": "Rice" },
+        "potatoes": { "name": "Potatoes" },
+        "raisins": { "name": "Raisins" },
+        "juice": { "name": "Juice" },
+        "honey": { "name": "Honey" },
+        "skyr": { "name": "Skyr" },
+        "cocoaMilk": { "name": "Chocolate milk" },
+        "chicken": { "name": "Chicken" },
+        "egg": { "name": "Egg" },
+        "cheese": { "name": "Cheese" }
+      },
+      "slot": {
+        "empty": "Drag something here",
+        "remove": "Take {item} out of {slot}",
+        "place": "Put {item} in {slot}",
+        "placeShort": "Put here"
+      },
+      "lane": {
+        "title": "Hour {hour}",
+        "span": "{from}–{to} min",
+        "carbsLabel": "Carbohydrate",
+        "fluidLabel": "Fluid",
+        "carbs": "{g} g",
+        "fluid": "{l} l",
+        "carbState": {
+          "free": "Optional",
+          "under": "Too little",
+          "ok": "On target",
+          "over": "Plenty",
+          "gut": "Too much"
         },
-        "scene": {
-          "start": "START",
-          "finish": "FINISH",
-          "post": "{hours} h",
-          "play": "Ride the race",
-          "stop": "Stop",
-          "during": "Hour {hour}: {look}",
-          "look": {
-            "ready": "The rider is ready to start. Put food and drink in the hours.",
-            "podium": "Every hour on target. The rider crosses the line with both arms in the air.",
-            "good": "The rider is riding well.",
-            "hungry": "The rider is hungry. Carbohydrate is missing.",
-            "empty": "The rider has bonked. Carbohydrate has been missing for more than an hour.",
-            "thirsty": "The rider is thirsty. Fluid is missing.",
-            "thirstyHot": "The rider is thirsty in the heat. Fluid is missing.",
-            "stomach": "The rider has a stomach ache. There is more carbohydrate in one hour than the stomach can take.",
-            "slosh": "The stomach sloshes. There is more fluid than the rider sweats."
-          },
-          "caption": "The rider is a drawing, not a measurement. It shows how the plan fits the recommendations hour by hour, and how it can feel when it does not."
-        },
-        "feedback": {
-          "title": "How your plan goes",
-          "allGood": "Every hour fits the recommendation.",
-          "hour": "Hour {hour}",
-          "carbsUnder": "{cum} g of carbohydrate so far, and the recommendation is {low}–{high} g. One more rice cake or gel would fit here.",
-          "carbsOver": "{cum} g of carbohydrate so far, more than the {high} g recommended. It gives no more speed, and the stomach has to take it.",
-          "gutUntrained": "{g} g of carbohydrate in one hour. Without practice the stomach typically takes around 60 g.",
-          "gutTrained": "{g} g of carbohydrate in one hour. Kadence suggests at most 90 g an hour for young riders.",
-          "fluidUnder": "{cum} l of fluid so far, and the recommendation is {low}–{high} l. One more bottle would fit here.",
-          "fluidOver": "{cum} l of fluid so far, more than the {high} l you typically sweat. Drink no more than you sweat.",
-          "flood": "{l} l in one hour is more than the stomach can take up. Spread the bottles over more hours."
-        },
+        "fluidState": {
+          "under": "Too little",
+          "ok": "On target",
+          "over": "Plenty",
+          "flood": "Too much"
+        }
+      },
+      "meter": {
+        "carbs": "Carbohydrate",
+        "protein": "Protein",
+        "fluid": "To drink",
+        "grams": "{g} g",
+        "litres": "{l} l",
+        "goalGrams": "The goal is {low}–{high} g",
+        "goalLitres": "The goal is {low}–{high} l",
+        "state": {
+          "ok": "On target",
+          "under": "Too little",
+          "over": "More than the goal"
+        }
+      },
+      "before": {
+        "title": "Before the start",
+        "intro": "For {rider} the goal is around {low}–{high} g of carbohydrate and {flLow}–{flHigh} l to drink, with the main meal {hours, plural, one {# hour} other {# hours}} before the start. The meal and a small snack count together.",
+        "mealAt": "The main meal",
+        "earlier": "One hour earlier",
+        "later": "One hour later",
+        "hoursBefore": "{hours, plural, one {# hour} other {# hours}} before the start",
+        "meal": "Main meal",
+        "snack": "Snack",
+        "snackWhen": "about 1 hour before the start",
         "notes": {
-          "sodium": "The plan gives {mg} mg of sodium, and a race this long calls for at least {low} mg. Sports drink or salted water gives it.",
-          "fuelHeat": "It is hot. Team Danmark suggests sports drink for the fluid and the rest of the carbohydrate as food, as 8 % is strong when you sweat a lot.",
-          "riceCakeLate": "Rice cakes keep best for the first 2 hours in a jersey pocket, and 1 hour on hot days. Later in the race a gel or a banana is safer.",
-          "fatFibre": "The oat bar has fat and fibre, which slow the stomach. It fits best early in the race or on easy rides, and less well in the finale.",
-          "cages": "The plan has {n} bottles, and the bike has room for two. You can be handed the rest on the way, where the race allows it.",
-          "pastFinish": "{n, plural, one {# thing lies} other {# things lie}} after the finish and {n, plural, one {does} other {do}} not count. Make the race longer to see {n, plural, one {it} other {them}} again."
+          "beforeFibre": "Oats and rye bread have a lot of fibre, which slows the stomach. Have them with the main meal, and keep the snack light, such as a banana or some bread with honey."
+        }
+      },
+      "during": {
+        "titleRace": "During the race",
+        "titleTraining": "During the session",
+        "target": {
+          "both": "The goal each hour is {carbs} and {fluid}.",
+          "carbs": "{low}–{high} g of carbohydrate",
+          "carbsOne": "around {high} g of carbohydrate",
+          "water": "no carbohydrate, as water is enough",
+          "small": "a little carbohydrate or none",
+          "fluid": "{low}–{high} l of fluid"
+        },
+        "effort": "How hard do you ride? It is used to work out what the body uses"
+      },
+      "budget": {
+        "title": "An hour on the bike",
+        "energy": "Energy an hour",
+        "fluid": "Fluid an hour",
+        "body": "The body uses",
+        "bodyKcal": "about {low}–{high} kcal",
+        "stomach": "The stomach can take",
+        "stomachCarbs": "around {g} g of carbohydrate = {kcal} kcal",
+        "goal": "Recommended",
+        "goalCarbs": "{low}–{high} g of carbohydrate",
+        "plan": "Your plan",
+        "planCarbs": "{g} g of carbohydrate = {kcal} kcal",
+        "sweat": "You sweat",
+        "goalFluid": "Recommended to drink",
+        "litres": "{low}–{high} l",
+        "litre": "{l} l",
+        "energyNote": "Even with a full stomach, carbohydrate covers only around {most} % of what the body uses in an hour. Your plan covers around {share} %. The body takes the rest from its stores in the muscles and liver, which is entirely normal. That is why the meals before and after count so much.",
+        "energyNoEffort": "Say how hard you ride, and the chart can show what the body uses.",
+        "fluidNote": "The recommendation is less than you sweat, because the body can stand losing a little. Around {loss} l in all can be lost in sweat before performance suffers."
+      },
+      "after": {
+        "title": "After",
+        "intro": {
+          "rest": "For {rider}: eat and drink straight after, and have a main meal within 1–2 hours.",
+          "hard": "You ride hard again tomorrow. What you eat straight after and for the rest of the day fills the stores again for it.",
+          "soon": "You ride hard again within 8 hours. Then {rider} needs carbohydrate every hour for the first four hours."
+        },
+        "now": "Straight after",
+        "nowWhen": "within the first half hour",
+        "hour": "Hour {hour} after",
+        "hourWhen": "{from}–{to} min after",
+        "sweat": "You have sweated around {low}–{high} l more than you drank. Drink {rLow}–{rHigh} l over the next hours, with a little salt in the food so the body keeps the fluid.",
+        "sweatNone": "You have drunk about what you sweated. Drink to thirst for the rest of the day.",
+        "dinner": "The main meal 1–2 hours after"
+      },
+      "plate": {
+        "elite": {
+          "title": "The Elite plate",
+          "body": "For days with 1½ hours of hard training or more, and before a hard day: half carbohydrate, such as pasta, rice or potatoes."
+        },
+        "everyday": {
+          "title": "The Y-plate",
+          "body": "For days with less training: more vegetables and a little less carbohydrate."
+        },
+        "parts": {
+          "carbs": "{share} % carbohydrate",
+          "protein": "{share} % protein",
+          "greens": "{share} % vegetables"
         }
       },
       "effort": {
-        "title": "What does the race cost?",
-        "intro": "If you want to know: type how hard you ride and your weight. Then you get an estimate of the energy, how much of it your plan covers, and the meal before and after."
-      },
-      "method": {
-        "label": "How do you want to estimate the effort?",
+        "intro": "Weight, age and sex come from the class and sex at the top. The estimate is only used for the chart of what the body uses.",
+        "method": {
+          "label": "How do you want to estimate the effort?",
+          "watts": "Average power",
+          "speed": "Speed (time trial)",
+          "heartRate": "Average heart rate",
+          "met": "Kind of race"
+        },
         "watts": "Average power",
-        "speed": "Speed (time trial)",
-        "heartRate": "Average heart rate",
-        "met": "Kind of race"
+        "wattsHint": "Use the average with zeros from a similar race or ride.",
+        "kmh": "Average speed",
+        "kmhUnit": "km/h",
+        "climb": "Metres climbed",
+        "position": {
+          "label": "Position",
+          "hoods": "Hands on the hoods",
+          "drops": "Hands in the drops",
+          "timeTrial": "Low, flat back"
+        },
+        "bikeKg": "Bike weight",
+        "kg": "kg",
+        "bpm": "Average heart rate",
+        "raceKind": {
+          "label": "Kind of race",
+          "fast": "Fast ride, 22–26 km/h",
+          "racing": "Racing in a bunch",
+          "solo": "Alone above 32 km/h"
+        }
       },
-      "watts": "Average power",
-      "wattsHint": "Use the average with zeros from a similar race or ride.",
-      "kmh": "Average speed",
-      "kmhUnit": "km/h",
-      "climb": "Metres climbed",
-      "position": {
-        "label": "Position",
-        "hoods": "Hands on the hoods",
-        "drops": "Hands in the drops",
-        "timeTrial": "Low, flat back"
+      "results": {
+        "title": "How your plan goes",
+        "before": "Before the start",
+        "during": "On the bike",
+        "after": "After",
+        "hour": "Hour {hour} on the bike",
+        "afterHour": "Hour {hour} after",
+        "onTarget": "On target",
+        "offTarget": "Not on target yet",
+        "hours": "{on} of {total, plural, one {# hour} other {# hours}} on target",
+        "allGood": "The whole plan fits the goals.",
+        "notes": {
+          "sodium": "The plan gives {mg} mg of sodium on the bike, and a ride this long calls for at least {low} mg. Sports drink or salted water gives it.",
+          "fuelHeat": "It is hot. Team Danmark suggests sports drink for the fluid and the rest of the carbohydrate as food, as 8 % is strong when you sweat a lot.",
+          "riceCakeLate": "Rice cakes keep best for the first 2 hours in a jersey pocket, and 1 hour on hot days. Later a gel or a banana is safer.",
+          "fatFibre": "The oat bar has fat and fibre, which slow the stomach. It fits best early or on easy rides, and less well in the finale.",
+          "cages": "The plan has {n} bottles, and the bike has room for two. You can be handed the rest on the way, where the race allows it.",
+          "pastFinish": "{n, plural, one {# thing lies} other {# things lie}} after the finish and {n, plural, one {does} other {do}} not count. Make the ride longer to see {n, plural, one {it} other {them}} again."
+        }
       },
-      "bikeKg": "Bike weight",
-      "bpm": "Average heart rate",
-      "age": "Age",
-      "sex": {
-        "label": "Formula for",
-        "female": "Girls",
-        "male": "Boys"
-      },
-      "raceKind": {
-        "label": "Kind of race",
-        "fast": "Fast ride, 22–26 km/h",
-        "racing": "Racing in a bunch",
-        "solo": "Alone above 32 km/h"
-      },
-      "weight": "Weight (optional)",
-      "weightHint": "The weight stays in your browser. The plan above works without it; the meal before and after is worked out per kg.",
-      "kg": "kg",
-      "hoursBefore": "Hours from meal to start",
-      "result": {
-        "energy": "Energy",
-        "kcal": "About {low, number, integer}–{high, number, integer} kcal",
-        "work": "{kj, number, integer} kJ of work at {watts, number, integer} W on average.",
-        "needsWeight": "Type the weight to use this method.",
-        "none": "Type the effort to see an estimate.",
-        "energyNote": "An estimate with uncertainty: the body's efficiency on the bike is 18–23 %, and it has not been measured in 15–18-year-olds.",
-        "multiple": "Above 60 g an hour takes glucose and fructose together. Ordinary sugar is both, or use 2 parts sugar to 1 part glucose.",
-        "coverage": "Your plan covers around {low, number, integer}–{high, number, integer} % of the energy the race takes. The body takes the rest from its stores, which is entirely normal.",
-        "sweat": "Sweat",
-        "loss": "You can lose up to {kg, number, ::.0} kg in sweat before performance suffers. Drink no more than you sweat.",
-        "weighIn": "Weigh yourself before and after your next long ride. Then you know how much you sweat.",
-        "before": "Before the race",
-        "beforeBody": "Around {carbs} g of carbohydrate {hours, plural, one {# hour} other {# hours}} before the start, and {low, number, integer}–{high, number, integer} ml to drink 2–4 hours before.",
-        "beforeNote": "A main meal 3–4 hours before or a snack 1–2 hours before, with little fat and fibre.",
-        "after": "After the race",
-        "afterBody": "{low, number, integer}–{high, number, integer} g of carbohydrate and {pLow, number, integer}–{pHigh, number, integer} g of protein straight after, and 1.25–1.5 litres of fluid for every kilo lost.",
-        "afterNote": "If you ride again within 8 hours, repeat the carbohydrate every hour for the first four hours.",
-        "weightMissing": "Type the weight to see the meal before and after the race, and how much you can lose in sweat."
+      "lines": {
+        "gutUntrained": "{g} g of carbohydrate in one hour. Without practice the stomach typically takes around 60 g.",
+        "gutTrained": "{g} g of carbohydrate in one hour. Kadence suggests at most 90 g an hour for young riders.",
+        "carbsUnder": "{cum} g of carbohydrate so far, and the recommendation is {low}–{high} g. One more rice cake or gel would fit here.",
+        "carbsEmpty": "{cum} g of carbohydrate so far, and the recommendation is {low}–{high} g. It is the second hour in a row with too little, which is where many riders bonk.",
+        "carbsOver": "{cum} g of carbohydrate so far, more than the {high} g recommended. It gives no more speed, and the stomach has to take it.",
+        "flood": "{l} l in one hour is more than the stomach can take up. Spread the bottles over more hours.",
+        "fluidUnder": "{cum} l of fluid so far, and the recommendation is {low}–{high} l. One more bottle would fit here.",
+        "fluidOver": "{cum} l of fluid so far, more than the {high} l you typically sweat. Drink no more than you sweat.",
+        "before": {
+          "carbs": {
+            "under": "{value} g of carbohydrate, and the goal is {low}–{high} g. A couple of slices of bread with honey, or a portion of pasta or rice, would fit.",
+            "over": "{value} g of carbohydrate, more than the goal of {low}–{high} g. It can sit heavy in the stomach at the start."
+          },
+          "fluid": {
+            "under": "{value} l to drink, and the goal is {low}–{high} l. A glass of juice or a bottle of water would fit.",
+            "over": "{value} l to drink, more than the {low}–{high} l needed before the start."
+          }
+        },
+        "after": {
+          "carbs": {
+            "under": "{value} g of carbohydrate, and the goal is {low}–{high} g. Chocolate milk, a banana or bread with honey would fit.",
+            "over": "{value} g of carbohydrate, more than the goal of {low}–{high} g. It does no harm, but more is not needed."
+          },
+          "protein": {
+            "under": "{value} g of protein, and the goal is {low}–{high} g. Chocolate milk, skyr or an egg would fit.",
+            "over": "{value} g of protein, more than the {low}–{high} g the body can use straight after."
+          },
+          "fluid": {
+            "under": "{value} l to drink, and the goal is {low}–{high} l. A bottle of water or a glass of chocolate milk would fit.",
+            "over": "{value} l to drink, more than the {low}–{high} l that fits straight after."
+          }
+        }
       },
       "warnings": {
         "heartRateAge": "The heart rate formula was made on 18–45-year-olds riding steadily. For younger riders and races with sprints the estimate is less certain.",
         "speedSolo": "The speed method holds when you ride alone, as in a time trial. In a bunch the shelter saves so much that speed says too little about the effort.",
-        "heat": "Above 25 °C: drink more, and think of salt. Above 30 °C the weight lost in sweat should be at most 1 %.",
+        "heat": "Above 25 °C: drink more, and think of salt. Above 30 °C the body can stand losing less in sweat.",
         "capped": "Without practice the gut typically takes 60 g an hour, so the goal stops there. Practise more on long training rides if you want to go towards 90 g.",
-        "practise": "Practise the plan on long training rides over the next 2–4 weeks before using it in a race."
+        "practise": "Practise the plan on long training rides over the next 2–4 weeks before using it in a race.",
+        "multiple": "Above 60 g an hour takes glucose and fructose together. Ordinary sugar is both, or use 2 parts sugar to 1 part glucose."
       },
       "about": {
         "title": "About the calculation",
         "points": {
-          "1": "Carbohydrate per hour follows Thomas 2016, Jeukendrup 2014 and Team Danmark. No source has figures for teenagers, so Kadence stops at 60 g an hour without practice and suggests at most 90 g.",
-          "2": "Fluid and salt follow Team Danmark and the ACSM: 0.4–0.8 l an hour below 25 °C and 0.8–1.2 l from 25 °C, with 500–700 mg of sodium a litre. The step between 25 and 30 °C for sweat is Kadence's own.",
-          "3": "The plan is checked hour by hour against the recommendation from the start to that hour. Food comes in whole pieces, so an hour counts as on target within 15 g of carbohydrate and half a bottle of fluid, and the stomach gets 10 g over its limit. These are Kadence's own choices, as is the rider's look.",
-          "4": "Bottles, rice cakes and oat bars are counted from homemade recipes with 6 and 8 % sugar and 32–33 g a piece. A gel and a banana are counted at 25 g (Maurten, Team Danmark). Rice cakes are counted as keeping in a jersey pocket for 2 hours, and 1 hour from 25 °C, after the USDA's rule of thumb.",
-          "5": "From power, energy is work divided by the body's efficiency of 18–23 % (Hopker 2009). From speed the cycling power equation is used (Martin 1998), from heart rate Keytel's formula (2005), and from the kind of race MET values (Compendium 2024). Heart rate and kind of race are shown with ±15 %, which is Kadence's own choice.",
-          "6": "The calculator is a planning tool and is not medical advice."
+          "1": "You choose class and sex instead of typing your weight. The goals before and after are worked out from what a typical rider in the class weighs, by the Nordic Nutrition Recommendations (NNR 2023). If you are big or small for your age, choose the class above or below.",
+          "2": "Carbohydrate per hour follows Thomas 2016, Jeukendrup 2014 and Team Danmark. No source has figures for teenagers, so Kadence stops at 60 g an hour without practice and suggests at most 90 g. On easy training rides Kadence counts less: 0–30 g an hour up to 2 hours and 30–60 g beyond, after Jeukendrup's advice to go down when the intensity is low.",
+          "3": "Before the start: 1–4 g of carbohydrate per kg 1–4 hours before (Thomas 2016), which Kadence reads as around 1 g per kg for each hour from the main meal to the start, and 5–10 ml of fluid per kg. After: 1–1.2 g of carbohydrate and 0.25–0.3 g of protein per kg straight after, and ½–1 l to drink (Team Danmark, Thomas 2016). If you ride hard again within 8 hours, the carbohydrate is repeated every hour for the first four hours. The plates are Team Danmark's.",
+          "4": "Sweat: 0.7–1.2 l an hour in Danish weather (Team Danmark). From 25 °C Kadence counts 1.2–2 l. What was not drunk back is replaced with 125–150 % (Thomas 2016). Fluid and salt on the bike follow Team Danmark and the ACSM.",
+          "5": "Food comes in whole pieces, so a goal counts as met within 15 g of carbohydrate and half a bottle on the bike, and within 15 g of carbohydrate, 5 g of protein and ¼ l for the meals. The stomach's limit gets 10 g. These are Kadence's own choices.",
+          "6": "The meals are counted from the Danish Food Composition Database, version 6.1 (DTU, May 2026). The portions are Team Danmark's where they exist, and otherwise Kadence's. Bottles, rice cakes and oat bars are homemade recipes with 6 and 8 % sugar and 32–33 g a piece.",
+          "7": "What the body uses is worked out from power as work divided by the body's efficiency of 18–23 % (Hopker 2009), from speed with the cycling power equation (Martin 1998), from heart rate with Keytel's formula (2005), and from the kind of race with MET values (Compendium 2024). Heart rate and kind of race are shown with ±15 %, which is Kadence's own choice.",
+          "8": "The calculator plans around a race or a session and never says what you should eat in a whole day. It is a planning tool and not medical advice."
         }
       }
     }

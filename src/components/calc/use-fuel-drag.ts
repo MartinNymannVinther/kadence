@@ -2,11 +2,12 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { FuelItemId } from "@/modules/calc/fuel-items";
+import { parseSlot, type Place, type Slot } from "@/modules/calc/fuel-plan";
 
-/** Where a thing is picked up: the pantry, or a place in one of the hours. */
-export type DragFrom = { lane: number; index: number } | null;
-/** Where it is let go: an hour, the pantry (to put it back), or nowhere. */
-export type DropAt = { lane: number } | "pantry" | null;
+/** Where a thing is picked up: the pantry, or its place in a slot. */
+export type DragFrom = Place | null;
+/** Where it is let go: a slot, the pantry (to take it out), or nowhere. */
+export type DropAt = Slot | "pantry" | null;
 export type Drag = { item: FuelItemId; from: DragFrom; x: number; y: number; over: DropAt };
 
 /** A mouse drags as soon as it moves a little. */
@@ -21,16 +22,16 @@ function dropAt(x: number, y: number): DropAt {
   const element = document.elementFromPoint(x, y)?.closest<HTMLElement>("[data-fuel-drop]");
   const value = element?.dataset.fuelDrop;
   if (value === undefined) return null;
-  return value === "pantry" ? "pantry" : { lane: Number(value) };
+  return value === "pantry" ? "pantry" : parseSlot(value);
 }
 
 /**
- * Dragging the pantry's things into the hours with pointer events, so it
+ * Dragging the pantry's things into the plan with pointer events, so it
  * works with a mouse, a pen and a finger without a library. Drop places
- * are marked `data-fuel-drop` ("pantry" or the hour's index), and the
+ * are marked `data-fuel-drop` ("pantry" or a slot's key, "during:2"), and the
  * thing follows the pointer as a ghost. A press that never becomes a drag
  * stays a click, which the caller handles as the keyboard does — choose
- * a thing, then an hour — so nothing here is the only way in.
+ * a thing, then a slot — so nothing here is the only way in.
  */
 export function useFuelDrag(onDrop: (item: FuelItemId, from: DragFrom, at: DropAt) => void) {
   const [drag, setDrag] = useState<Drag | null>(null);

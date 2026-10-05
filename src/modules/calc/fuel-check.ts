@@ -1,19 +1,13 @@
 import type { Range } from "./energy";
-import {
-  carbsPerHour,
-  fluidPerHour,
-  MAX_CARBS_PER_HOUR,
-  UNTRAINED_CAP,
-  type CarbAdvice,
-} from "./fuel";
-import { FUEL_ITEMS, itemContent, type BottleMl, type FuelItemId } from "./fuel-items";
+import { carbsPerHour, fluidPerHour, type CarbAdvice } from "./fuel";
+import { gutCapFor } from "./fuel-day";
+import { contentOf, FUEL_ITEMS, type BottleMl, type FuelItemId } from "./fuel-items";
 
 /**
- * A race plan the rider builds: what is eaten and drunk in each hour of
- * the race, held up hour by hour against the same recommendations the
- * calculator gives (fuel.ts). The rider drawn on the page takes their
- * look from this — an illustration of how the plan meets the
- * recommendations, never a forecast of how a body will feel.
+ * The hours on the bike in a plan the rider builds: what is eaten and
+ * drunk in each hour, held up hour by hour against the recommendations
+ * (fuel.ts; for training, fuel-day.ts) and against what the stomach can
+ * take.
  *
  * Pure: imports nothing from the database, and runs in the browser.
  */
@@ -60,8 +54,8 @@ export type FuelRace = {
   bottleMl: BottleMl;
 };
 
-/** One list of items for each hour of the race; lists past the finish are kept but not counted. */
-export type Plan = FuelItemId[][];
+/** One list of items for each hour on the bike; lists past the finish are kept but not counted. */
+export type Lanes = FuelItemId[][];
 
 export type Lane = { index: number; fromMin: number; toMin: number };
 
@@ -122,26 +116,9 @@ export function lanesFor(minutes: number): Lane[] {
   }));
 }
 
-export function laneContent(items: readonly FuelItemId[], bottleMl: BottleMl) {
-  let carbs = 0;
-  let fluidL = 0;
-  let sodiumMg = 0;
-  for (const id of items) {
-    const c = itemContent(id, bottleMl);
-    carbs += c.carbs;
-    fluidL += c.fluidL;
-    sodiumMg += c.sodiumMg;
-  }
-  return { carbs, fluidL, sodiumMg };
-}
-
 /** The least sodium for the whole race: the low end of the fluid range at 500 mg a litre. */
 export function sodiumLowMg(fluid: Range, hours: number): number {
   return Math.round(fluid.low * SODIUM_MG_PER_L * hours);
-}
-
-export function gutCapFor(gutTrained: boolean): number {
-  return gutTrained ? MAX_CARBS_PER_HOUR : UNTRAINED_CAP;
 }
 
 const within = (value: number, range: Range, slack: number) =>
@@ -156,10 +133,13 @@ function moodOf(carb: CarbState, fluid: FluidState, before: CarbState | null): M
   return "good";
 }
 
-export function checkPlan(race: FuelRace, plan: Plan): PlanCheck {
+export function checkPlan(
+  race: FuelRace,
+  plan: Lanes,
+  advice: CarbAdvice = carbsPerHour(clampMinutes(race.minutes) / 60, race.gutTrained),
+): PlanCheck {
   const lanes = lanesFor(race.minutes);
   const hours = clampMinutes(race.minutes) / 60;
-  const advice = carbsPerHour(hours, race.gutTrained);
   const fluid = fluidPerHour(race.celsius);
   const gutCap = gutCapFor(race.gutTrained);
   const targeted = advice.kind === "single" || advice.kind === "multiple";
@@ -170,7 +150,7 @@ export function checkPlan(race: FuelRace, plan: Plan): PlanCheck {
   let cumFluidL = 0;
   let sodiumMg = 0;
   for (const lane of lanes) {
-    const content = laneContent(plan[lane.index] ?? [], race.bottleMl);
+    const content = contentOf(plan[lane.index] ?? [], race.bottleMl);
     cumCarbs += content.carbs;
     cumFluidL += content.fluidL;
     sodiumMg += content.sodiumMg;

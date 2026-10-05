@@ -570,6 +570,54 @@ U19-rytter, 60 kg, linjeløb på 3 timer, gennemsnit 180 W, 18 °C, har øvet h�
 - Hvor længe hjemmelavede riskager holder i køleskab og i trøjelommen (ingen dansk myndighedskilde).
 - Prisen på billige (ikke-Medjool) dadler og på honning i discountbutikker.
 
+### 4.13 Byg selv-planen: klasse i stedet for vægt, måltider og træning (5. oktober 2026)
+
+Beregneren blev bygget om til en dag, rytteren selv sætter sammen: et hovedmåltid og et mellemmåltid før start, timerne på cyklen og måltiderne efter (ADR 0056). Martin bad om, at ingen skal skrive en vægt. Rytteren vælger klasse og køn, og målene regnes for en typisk rytter i klassen.
+
+**Referencevægt pr. klasse** (vises aldrig på siden). Nordic Nutrition Recommendations 2023, energikapitlet (Food & Nutrition Research 2023;67:10233, doi 10.29219/fnr.v67.10233, CC BY). Tabel 7 giver vægt efter alder for 2–17-årige, regnet fra målt højde og WHO 2007's median-BMI for alder. Tabel 10 giver Danmark, 18–24 år, regnet som vægt for højde ved BMI 23. En klasse er middelværdien af sine årgange efter DCU's aldre.
+
+| Klasse (år) | Drenge, kg                    | Piger, kg                     |
+| ----------- | ----------------------------- | ----------------------------- |
+| U15 (13–14) | (47,0 + 53,2) / 2 = 50,1      | (48,0 + 52,3) / 2 = 50,2      |
+| U17 (15–16) | (59,4 + 64,2) / 2 = 61,8      | (55,3 + 57,5) / 2 = 56,4      |
+| U19 (17–18) | (67,8 + 74,9) / 2 = 71,4      | (58,8 + 64,5) / 2 = 61,7      |
+| U23 (19–22) | 74,9 (Danmark, 18–24, BMI 23) | 64,5 (Danmark, 18–24, BMI 23) |
+
+NNR skriver selv, at børn på samme alder kan veje dobbelt så meget som hinanden. Derfor siger siden: er du stor eller lille for din alder, så vælg klassen over eller under. Tallene er en sund referencevægt, ikke målte cykelryttere.
+
+**Måltidsretterne.** Den Danske Fødevaredatabase, version 6.1, maj 2026 (DTU Fødevareinstituttet, doi 10.11583/DTU.32312844, CC BY 4.0), læst fra det udgivne datasæt (FCDB_6.1_Dataset.xlsx, arket Data_Table). Tilgængelig kulhydrat (parameter 172), protein (218), kostfibre (168), fedt (141) og natrium (201) pr. 100 g. Portionen er Team Danmarks, hvor listen med 50 g kulhydrat (2.6) har én, og ellers Kadences.
+
+| Ret        | Fødevare-id og navn              | Portion                   | Kulhydrat | Protein |
+| ---------- | -------------------------------- | ------------------------- | --------- | ------- |
+| Havregryn  | 59 Havregryn, uspec.             | 2½ dl, 75 g (TD)          | 44 g      | 10 g    |
+| Mælk       | 33 Letmælk                       | 2½ dl, 250 g              | 12 g      | 9 g     |
+| Franskbrød | 861 Franskbrød                   | 2 skiver, 100 g (TD)      | 49 g      | 9 g     |
+| Rugbrød    | 1670 Rugbrød, mørkt              | 2 skiver, 100 g           | 37 g      | 5 g     |
+| Pasta      | 1296 Pasta, kogt                 | en tallerken, 250 g       | 63 g      | 13 g    |
+| Ris        | 1973 Ris, kogte                  | 2½ dl, 150 g (TD)         | 57 g      | 5 g     |
+| Kartofler  | 801 Kartoffel, kogt              | 250 g                     | 47 g      | 4 g     |
+| Banan      | 3 Banan, rå                      | én mellemstor, 120 g (TD) | 25 g      | 1 g     |
+| Rosiner    | 880 Rosin uden kerner            | 1 dl, 60 g (TD)           | 45 g      | 2 g     |
+| Juice      | 1863 Appelsinjuice               | 2 dl, 200 g               | 20 g      | 1 g     |
+| Honning    | 1176 Honning                     | 1 spsk., 20 g             | 16 g      | 0 g     |
+| Skyr       | 1693 Skyr, 0.2 % fedt            | 150 g                     | 9 g       | 17 g    |
+| Kakaomælk  | 1205 Cacaomælk                   | 2½ dl, 250 g              | 23 g      | 9 g     |
+| Kylling    | 754 Kylling, bryst (filet), kogt | 100 g                     | 0 g       | 21 g    |
+| Æg         | 1663 Æg, høne, frilands          | ét æg, 55 g               | 1 g       | 7 g     |
+| Ost        | 1274 Ost, fast, 30+              | 2 skiver, 40 g            | 0 g       | 11 g    |
+
+Tallene passer med Team Danmarks liste: 2 skiver brød, 2½ dl kogt ris, 1 dl rosiner, 2½ dl havregryn og 2 bananer giver hver omkring 50 g. **Kadence-forslag:** en portion med mindst 6 g kostfibre eller 10 g fedt er "fedt eller fibre" og nævnes, hvis den ligger i mellemmåltidet lige før start (Team Danmark: "få kostfibre", "lidt fedt"). Det gælder havregryn og rugbrød.
+
+**Målene, og hvad der er Kadences læsning.**
+
+- Før: 1–4 g kulhydrat/kg 1–4 timer før (Thomas 2016 [19]), læst som omkring 1 g/kg for hver time fra hovedmåltidet til start, ±½ g/kg. Det er Kadences læsning. Hovedmåltid og mellemmåltid tæller sammen. Væske 5–10 ml/kg (Thomas 2016).
+- Efter: 1–1,2 g kulhydrat/kg og 0,25–0,3 g protein/kg lige efter, ½–1 l at drikke (Team Danmark [1], Thomas 2016 [19]). Med mindre end 8 timer til næste hårde pas: 1–1,2 g/kg hver time de første fire timer (Thomas 2016) og 0,5–0,7 l i timen (Team Danmark).
+- Sved: 0,7–1,2 l/t i dansk vejr (Team Danmark). Fra 25 °C er det Kadences læsning at regne med 1,2–2 l/t, fordi Team Danmark nævner op til 2 l/t. Det ikke-drukne erstattes med 125–150 % (Thomas 2016).
+- Tallerkenen efter: Elite-modellen ved 1½ times hård træning eller mere, ellers Y-modellen (Team Danmark, 1.1). Kadence-forslag: også Elite-modellen, når der kommer en hård dag bagefter.
+- Træning: tempo og intervaller følger løbets tabel (Team Danmark: 30–60 g/t ved høj intensitet over 1 time). Kadence-forslag for en rolig tur: 0–30 g/t op til 2 timer og 30–60 g/t derover. Det bygger på Jeukendrup 2014's "op til 30 g/t" ved 1–2 timer og "op til 60 g/t" ved 2–3 timer for trænede, og hans råd om at gå ned, når den absolutte intensitet er lav [24].
+- Slæk, fordi maden kommer i hele portioner (Kadence-forslag): et måltid er i mål inden for 15 g kulhydrat, 5 g protein og ¼ l.
+- Der regnes ikke dagligt indtag i g/kg (1.2). Det er sundhedsråd om mindreårige, som ADR 0047 lader vente på en sportsdiætist.
+
 ---
 
 ## 5. Åbne spørgsmål til Kadence

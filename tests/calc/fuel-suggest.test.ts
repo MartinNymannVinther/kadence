@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { checkPlan, MAX_MINUTES, MIN_MINUTES, type FuelRace } from "@/modules/calc/fuel-check";
+import { carbAdvice, DEFAULT_DAY } from "@/modules/calc/fuel-day";
 import { suggestPlan } from "@/modules/calc/fuel-suggest";
 
 /** Notes that would point out a flaw in the plan itself, as opposed to advice about the race. */
@@ -17,6 +18,28 @@ describe("Kadence's own plan", () => {
             const flaws = check.notes.filter((n) => FLAWS.includes(n));
             if (!check.podium || flaws.length > 0)
               misses.push(`${minutes} min ${celsius} °C ${gutTrained} ${bottleMl}: ${flaws}`);
+          }
+    expect(misses).toEqual([]);
+  });
+
+  it("is on target for training too, easy, tempo and in intervals", () => {
+    const misses: string[] = [];
+    for (let minutes = MIN_MINUTES; minutes <= MAX_MINUTES; minutes += 30)
+      for (const intensity of ["easy", "tempo", "intervals"] as const)
+        for (const celsius of [10, 28])
+          for (const gutTrained of [false, true]) {
+            const day = {
+              ...DEFAULT_DAY,
+              session: "training" as const,
+              intensity,
+              minutes,
+              celsius,
+              gutTrained,
+            };
+            const advice = carbAdvice(day);
+            const check = checkPlan(day, suggestPlan(day, advice), advice);
+            if (!check.podium)
+              misses.push(`${intensity} ${minutes} min ${celsius} °C ${gutTrained}`);
           }
     expect(misses).toEqual([]);
   });
