@@ -37,6 +37,10 @@ slipstream that makes it easier behind him.
   codes: his place, and the rider's gain in his wheel, are a shift on the
   landscape. What is recorded — watts, time, distance — is what was
   ridden, and a test proves it against the same ride without him.
+  Under the developer's warp (ADR 0045) he runs on as the rider does, by
+  the same rule from his own speed, forwards or backwards; the warp now
+  runs from the speed the rider is shown going — with the slipstream or
+  a cheat code in it — so the two stay a race, played faster.
 - **Only on a free ride**: a session is the coach's, so he never comes
   into one — not of himself, and not called. On a ride with no session
   he comes.

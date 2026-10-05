@@ -11,6 +11,7 @@ import {
   type ChallengeStart,
   type Course,
 } from "@/modules/rulle";
+import { Warp } from "./warp";
 
 /**
  * The challenger's race (ADR 0049), where the rider is shown: when the
@@ -19,9 +20,10 @@ import {
  * races them for two kilometres on his own plan of watts, whatever they
  * do. Behind him the rider pushes less air, and is shown going faster for
  * it: a shift like the cheat code's (`shown.ts`), so what is recorded is
- * still what was ridden; behind the rider, so does he. He only comes on a
- * free ride, never into a session — of himself, or called by JOHAN. No
- * React and no browser in it.
+ * still what was ridden; behind the rider, so does he. Under the
+ * developer's warp he runs on as the rider does, faster or backwards, from
+ * his own speed (`warp.ts`). He only comes on a free ride, never into a
+ * session — of himself, or called by JOHAN. No React and no browser in it.
  */
 
 /** What the screen shows of a race: counted down; on, with what is left and the gap; or over, and who won. */
@@ -49,6 +51,8 @@ type Running = {
   end: number;
   him: number;
   v: number;
+  /** Metres a second he is shown going: `v`, and the warp on top of it. */
+  pace: number;
   seconds: number;
   line: number;
   /** What his wheel adds to the rider's own speed, m/s: it fades out of it, and never takes away. */
@@ -68,10 +72,13 @@ export class Race {
   /** The share of the air the rider pushes at the last step: less in his wheel. */
   air = 1;
 
-  constructor(private readonly course: Course) {}
+  constructor(
+    private readonly course: Course,
+    private readonly warp = new Warp(),
+  ) {}
 
   /** Metres the rider is shown ahead for the slipstream, `since` seconds after the last step. */
-  shown(speed: number, since = 0): number {
+  shown(since = 0): number {
     const run = this.run;
     return this.shift + (run && !run.over ? run.bonus * since : 0);
   }
@@ -89,6 +96,7 @@ export class Race {
       end: Infinity,
       him: rider - COMES_UP.behind,
       v: speed,
+      pace: this.travel(speed),
       seconds: 0,
       line: ALONGSIDE,
       bonus: 0,
@@ -103,9 +111,9 @@ export class Race {
 
   /**
    * `seconds` more, the rider shown at `rider` going `speed` on `watts`;
-   * `free` on a ride with no session, where he may come. `own` when the
-   * shown speed is the rider's own: with a cheat code on it is the cheat's,
-   * which takes the slipstream itself (`air`), and nothing is added here.
+   * `free` on a ride with no session, where he may come. `cheat` is the
+   * speed a cheat code shows the rider going, while one is on: the cheat
+   * takes the slipstream itself (`air`), and nothing is added here.
    */
   advance(
     rider: number,
@@ -113,27 +121,27 @@ export class Race {
     watts: number,
     seconds: number,
     free: boolean,
-    own = true,
+    cheat: number | null = null,
   ): void {
     this.air = 1;
     // Where the rider was at the last step, as he still is: the two are compared there.
     const was = this.rider;
-    const moved = seconds > 0 ? (rider - was) / seconds : speed;
+    const seen = cheat ?? this.speed(speed);
     this.rider = rider;
-    this.speedNow = speed;
+    this.speedNow = seen;
     this.free = free;
     if (!this.run) this.schedule(rider, speed, free);
     const run = this.run;
     if (!run || seconds <= 0) return;
     if (run.over) {
       run.v = nextSpeed(run.v, EASY, this.grade(run.him), seconds, CHALLENGE.massKg);
-      run.him += run.v * seconds;
+      this.move(run, this.travel(run.v), seconds);
       run.over.left -= seconds;
       if (run.over.left <= 0) this.run = null;
       return;
     }
     if (run.count > 0) {
-      this.countDown(run, was, rider, moved, seconds);
+      this.countDown(run, was, rider, seen, seconds);
       run.bonus = 0;
       return;
     }
@@ -143,15 +151,16 @@ export class Race {
     this.air = air;
     this.ride(run, ahead, seconds);
     // The rider in his wheel pushes less air; out of it, back to their own speed.
-    run.bonus = !own
-      ? 0
-      : air < 1
-        ? Math.max(
-            0,
-            nextSpeed(speed + run.bonus, watts, this.grade(rider), seconds, PHYSICS.massKg, air) -
-              speed,
-          )
-        : run.bonus * Math.exp(-seconds / 2);
+    run.bonus =
+      cheat !== null
+        ? 0
+        : air < 1
+          ? Math.max(
+              0,
+              nextSpeed(speed + run.bonus, watts, this.grade(rider), seconds, PHYSICS.massKg, air) -
+                speed,
+            )
+          : run.bonus * Math.exp(-seconds / 2);
     this.shift += run.bonus * seconds;
     if (rider >= run.end || run.him >= run.end)
       run.over = { won: rider >= run.him, margin: Math.abs(rider - run.him), left: AFTER };
@@ -175,7 +184,7 @@ export class Race {
     const on = !run.over && run.count === 0;
     const sprinting = on && (run.end - run.him <= 200 || run.seconds < 7);
     return {
-      distance: run.him + run.v * since,
+      distance: run.him + run.pace * since,
       finish: run.count > 0 ? null : run.end,
       line: run.line,
       speed: run.v,
@@ -189,7 +198,7 @@ export class Race {
     const watts = challengerWatts(run.seconds, run.end - run.him);
     const v = nextSpeed(run.v, watts, this.grade(run.him), seconds, CHALLENGE.massKg, draft(ahead));
     run.v = v;
-    run.him += v * seconds;
+    this.move(run, this.travel(v), seconds);
     run.seconds += seconds;
     // Alongside while level; in the leader's line once one is ahead.
     const aim = Math.abs(ahead) < 2.5 ? ALONGSIDE : swayAt(run.him);
@@ -199,18 +208,14 @@ export class Race {
 
   /**
    * The countdown: up beside the rider and then at their very speed; at
-   * its end the race is on, two kilometres from there.
+   * its end the race is on, two kilometres from there. Under the warp he
+   * runs on with the rider, and closes up at an unwarped pace.
    */
-  private countDown(
-    run: Running,
-    was: number,
-    rider: number,
-    riderSpeed: number,
-    seconds: number,
-  ): void {
+  private countDown(run: Running, was: number, rider: number, seen: number, seconds: number): void {
     const behind = was - run.him;
-    run.v = Math.max(0, riderSpeed + Math.max(-1, Math.min(COMES_UP.closing, 0.8 * behind)));
-    run.him += run.v * seconds;
+    const v = Math.max(0, seen + Math.max(-1, Math.min(COMES_UP.closing, 0.8 * behind)));
+    this.move(run, this.travel(seen) + v - seen, seconds);
+    run.v = v;
     run.count = Math.max(0, run.count - seconds);
     if (run.count > 0) return;
     run.end = rider + CHALLENGE.length;
@@ -229,6 +234,16 @@ export class Race {
     this.next = null;
     // A session is the coach's: he only comes on a free ride.
     if (free) this.begin(rider, speed, next.hill);
+  }
+
+  /** Metres a second he is shown going at `v`: as the rider is, faster or backwards under the warp. */
+  private travel(v: number): number {
+    return v + this.warp.rate(v);
+  }
+
+  private move(run: Running, pace: number, seconds: number): void {
+    run.pace = pace;
+    run.him += pace * seconds;
   }
 
   private grade(at: number): number {

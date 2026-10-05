@@ -117,6 +117,26 @@ describe("the challenger's race", () => {
     expect(result?.phase === "over" && result.margin).toBeGreaterThan(50);
   });
 
+  it("runs on under the developer's warp as the rider does, forwards and back, beside them", () => {
+    for (const factor of [8, -4]) {
+      const raced = setup(300);
+      raced.engine.shown.warp.factor = 4;
+      raced.ride(0, 30);
+      raced.engine.shown.warp.factor = factor;
+      challenge(raced.engine, 30);
+      raced.ride(30, 40);
+      // The last of the countdown: still beside the rider, however far the warp took them.
+      const race = raced.engine.shown.race;
+      const rider = raced.engine.positionAt(T0 + 39_900).distance;
+      expect(Math.abs(rider - race.at(0)!.distance)).toBeLessThan(1);
+      // Then the race, on his own speed at the warp's pace: eight times it, or four back.
+      raced.ride(40, 43);
+      expect(raced.said[42]?.phase).toBe("racing");
+      const now = race.at(0)!;
+      expect(race.at(0.5)!.distance - now.distance).toBeCloseTo(0.5 * factor * now.speed, 6);
+    }
+  });
+
   it("gives the WATT avatar the slipstream on its own watts and weight, whatever the trainer reads", () => {
     /** The avatar at his weight and, after a second eased off the back, his very watts. */
     const gaps = (trainer: number) => {

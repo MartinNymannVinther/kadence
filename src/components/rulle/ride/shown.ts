@@ -27,7 +27,7 @@ export class Shown {
   readonly race: Race;
 
   constructor(private readonly course: Course) {
-    this.race = new Race(course);
+    this.race = new Race(course, this.warp);
   }
 
   /**
@@ -35,10 +35,11 @@ export class Shown {
    * run on. `free` on a ride with no session, where the challenger may come.
    */
   advance(distance: number, speed: number, seconds: number, watts = 0, free = false): void {
-    this.warp.advance(speed, seconds);
+    // The warp runs from the speed the rider is shown going, as the challenger's does from his.
+    this.warp.advance(this.speed(speed), seconds);
     // With a cheat code on, the cheat takes the slipstream on its own watts and weight.
-    const own = !this.cheat.on;
-    this.race.advance(this.place(distance, speed), speed, watts, seconds, free, own);
+    const cheat = this.cheat.on ? this.cheat.speed(speed) : null;
+    this.race.advance(this.place(distance, speed), speed, watts, seconds, free, cheat);
     const place = this.place(distance, speed);
     const grade = courseAt(this.course, place).grade;
     this.cheat.advance(speed, place, seconds, grade, this.race.air);
@@ -46,7 +47,7 @@ export class Shown {
 
   /** Where the rider is shown: ridden `distance` in at `speed`, `since` seconds after the last step. */
   place(distance: number, speed: number, since = 0): number {
-    const before = this.warp.shown(distance, speed, since) + this.race.shown(speed, since);
+    const before = this.warp.shown(distance, this.speed(speed), since) + this.race.shown(since);
     return this.cheat.shown(before, speed, since);
   }
 
