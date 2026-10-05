@@ -65,6 +65,8 @@ export class Race {
   private speedNow = 0;
   /** Whether the ride is free, no session in it: where he may come. */
   private free = false;
+  /** The share of the air the rider pushes at the last step: less in his wheel. */
+  air = 1;
 
   constructor(private readonly course: Course) {}
 
@@ -101,9 +103,19 @@ export class Race {
 
   /**
    * `seconds` more, the rider shown at `rider` going `speed` on `watts`;
-   * `free` on a ride with no session, where he may come.
+   * `free` on a ride with no session, where he may come. `own` when the
+   * shown speed is the rider's own: with a cheat code on it is the cheat's,
+   * which takes the slipstream itself (`air`), and nothing is added here.
    */
-  advance(rider: number, speed: number, watts: number, seconds: number, free: boolean): void {
+  advance(
+    rider: number,
+    speed: number,
+    watts: number,
+    seconds: number,
+    free: boolean,
+    own = true,
+  ): void {
+    this.air = 1;
     // Where the rider was at the last step, as he still is: the two are compared there.
     const was = this.rider;
     const moved = seconds > 0 ? (rider - was) / seconds : speed;
@@ -128,10 +140,12 @@ export class Race {
     // Both from where they were before either moved: the one behind is in the other's wheel.
     const ahead = was - run.him;
     const air = draft(-ahead);
+    this.air = air;
     this.ride(run, ahead, seconds);
     // The rider in his wheel pushes less air; out of it, back to their own speed.
-    run.bonus =
-      air < 1
+    run.bonus = !own
+      ? 0
+      : air < 1
         ? Math.max(
             0,
             nextSpeed(speed + run.bonus, watts, this.grade(rider), seconds, PHYSICS.massKg, air) -

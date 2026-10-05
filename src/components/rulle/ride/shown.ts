@@ -36,9 +36,12 @@ export class Shown {
    */
   advance(distance: number, speed: number, seconds: number, watts = 0, free = false): void {
     this.warp.advance(speed, seconds);
-    this.race.advance(this.place(distance, speed), speed, watts, seconds, free);
+    // With a cheat code on, the cheat takes the slipstream on its own watts and weight.
+    const own = !this.cheat.on;
+    this.race.advance(this.place(distance, speed), speed, watts, seconds, free, own);
     const place = this.place(distance, speed);
-    this.cheat.advance(speed, place, seconds, courseAt(this.course, place).grade);
+    const grade = courseAt(this.course, place).grade;
+    this.cheat.advance(speed, place, seconds, grade, this.race.air);
   }
 
   /** Where the rider is shown: ridden `distance` in at `speed`, `since` seconds after the last step. */

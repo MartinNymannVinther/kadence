@@ -72,15 +72,16 @@ export class Cheat {
 
   /**
    * `seconds` ridden at `speed` (the true one), the rider shown `shown`
-   * metres along where the road climbs `grade`: the speed and the line
-   * under the keys, and the place shown running ahead of the ridden one,
-   * or behind it.
+   * metres along where the road climbs `grade` and pushes an `air` share of
+   * the air (less in the challenger's wheel): the speed and the line under
+   * the keys, and the place shown running ahead of the ridden one, or
+   * behind it.
    */
-  advance(speed: number, shown: number, seconds: number, grade = 0): void {
+  advance(speed: number, shown: number, seconds: number, grade = 0, air = 1): void {
     if (this.on && this.mode === "watts") {
       this.dial.advance(seconds);
       const { watts, massKg } = this.dial;
-      this.bikeSpeed = nextSpeed(this.bikeSpeed, watts, grade, seconds, massKg);
+      this.bikeSpeed = nextSpeed(this.bikeSpeed, watts, grade, seconds, massKg, air);
     } else if (this.on) {
       const change = this.throttle > 0 ? CHEAT.faster : this.throttle < 0 ? -CHEAT.slower : 0;
       this.bikeSpeed = Math.max(0, Math.min(CHEAT.top, this.bikeSpeed + change * seconds));

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { RideEngine } from "@/components/rulle/ride/engine";
 import { Race, type RaceLive } from "@/components/rulle/ride/race";
 import { Sensors } from "@/components/rulle/ride/sensors";
-import { buildCourse, challengeIn, type RoutePoint } from "@/modules/rulle";
+import { buildCourse, challengeIn, challengerWatts, type RoutePoint } from "@/modules/rulle";
 
 const T0 = Date.UTC(2026, 9, 4, 17, 0, 0);
 
@@ -115,5 +115,31 @@ describe("the challenger's race", () => {
     const result = over(raced.said);
     expect(result).toMatchObject({ phase: "over", won: true });
     expect(result?.phase === "over" && result.margin).toBeGreaterThan(50);
+  });
+
+  it("gives the WATT avatar the slipstream on its own watts and weight, whatever the trainer reads", () => {
+    /** The avatar at his weight and, after a second eased off the back, his very watts. */
+    const gaps = (trainer: number) => {
+      const raced = setup(trainer);
+      raced.ride(0, 1);
+      raced.engine.shown.cheat.toggle(raced.engine.live(T0 + 1000).speed, 0, "watts", 0);
+      const dial = raced.engine.shown.cheat.dial;
+      dial.kg = 66;
+      dial.watts = 360;
+      raced.ride(1, 40);
+      challenge(raced.engine, 40);
+      for (let s = 40; s < 110; s++) {
+        const since = s - 50;
+        dial.watts = since < 0 ? 360 : since < 1 ? 200 : challengerWatts(since, 9999);
+        raced.ride(s, s + 1);
+      }
+      return raced.said.slice(50).map((r) => (r?.phase === "racing" ? r.gap : NaN));
+    };
+    const low = gaps(150);
+    // The same race to the centimetre: only rounding tells the two apart.
+    gaps(450).forEach((gap, i) => expect(gap).toBeCloseTo(low[i]!, 2));
+    // A metre and more down after easing off, and back in his wheel by his slipstream.
+    expect(Math.min(...low.slice(0, 8))).toBeLessThan(-1);
+    for (const gap of low.slice(20)) expect(Math.abs(gap)).toBeLessThan(1.5);
   });
 });

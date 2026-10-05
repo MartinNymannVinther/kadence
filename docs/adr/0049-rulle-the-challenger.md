@@ -30,7 +30,9 @@ slipstream that makes it easier behind him.
   metres back; none alongside, wheels overlapping. `nextSpeed` takes the
   share. Who is behind whom is judged where both were before the step,
   and what the wheel gives the rider fades out of it, never below their
-  own speed.
+  own speed. With a cheat code on, the cheat takes it: WATT on its own
+  watts and the avatar's weight, whatever the trainer reads, and SPURT
+  holds the speed it was given.
 - **Only where the rider is shown** (`ride/race.ts`), like the cheat
   codes: his place, and the rider's gain in his wheel, are a shift on the
   landscape. What is recorded — watts, time, distance — is what was
