@@ -195,7 +195,10 @@ export class RiderFigure {
     });
     this.shadow.geometry.dispose();
     for (const geometry of shared) geometry.dispose();
-    for (const material of Object.values(this.materials)) material.dispose();
+    for (const material of Object.values(this.materials)) {
+      material.map?.dispose();
+      material.dispose();
+    }
     this.bike.dispose();
   }
 

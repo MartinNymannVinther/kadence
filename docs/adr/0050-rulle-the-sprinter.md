@@ -40,10 +40,12 @@ was left to be worked out.
   straight, and he jumps 70 cm into the air in an arc that comes down on
   the line, his shadow left on the road. Dropped, he has no sprint.
 - **His look**: the rider's own figure and bike in his kit — a red
-  jersey, black from halfway down, red sleeves, black shorts, a white
-  road helmet and gold glasses, bare hands, white socks and shoes, a
-  black bike with deep rims and a number — drawn at 85 % of the rider's
-  size, smaller still than his weight says, as asked. No maker's names.
+  jersey, black from a third of the way up and rising into the red in a
+  crown on the chest and on the back (`jersey-pattern.ts`), red sleeves,
+  black shorts, a white road helmet and gold glasses, bare hands, white
+  socks and shoes, a black bike with deep rims and a number — drawn at
+  85 % of the rider's size, smaller still than his weight says, as
+  asked. No maker's names.
 - **His words**: his own call as he comes up — a small rider in red and
   black, who sits on your wheel and waits for the sprint, and that you
   can ride him tired before it.

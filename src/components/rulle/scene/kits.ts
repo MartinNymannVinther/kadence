@@ -21,8 +21,10 @@ export type Kit = {
   bandWidth?: number;
   /** A thin stripe either side of the band, a little apart from it, in its colour. */
   bandEdges?: boolean;
-  /** A two-tone jersey: its lower half, hips to halfway up, in this colour. */
+  /** A two-tone jersey: its lower part, from the hips to near halfway up, in this colour. */
   lower?: string;
+  /** The lower colour rising into the upper in a crown, on the chest and on the back. */
+  crown?: boolean;
   shorts: string;
   skin: string;
   helmet: string;
@@ -101,14 +103,15 @@ export const CHALLENGER_KIT: Kit = {
 };
 
 /**
- * The sprinter's (ADR 0050): a red jersey, black from halfway down, red
- * sleeves, black shorts, a white road helmet with its vents and gold
+ * The sprinter's (ADR 0050): a red jersey, black from halfway down and
+ * rising into the red in a crown on the chest and the back, red sleeves, black shorts, a white road helmet with its vents and gold
  * glasses, bare hands, white socks and shoes, on a black bike with deep
  * rims and a number on its post. No maker's names.
  */
 export const SPRINTER_KIT: Kit = {
   jersey: "#c23a30",
   lower: "#232120",
+  crown: true,
   sleeve: "#c23a30",
   band: "#c23a30",
   bandWidth: 0,
