@@ -33,18 +33,44 @@ same day).
   short of the limit; chainring and sprocket are drawn at their real
   pitch size, and a dot on each tyre lets the wheel's turns be counted.
   It plays once when the page opens and again on a button; with reduced
-  motion it shows the finished turn and moves only when asked. The sum
-  is said in one sentence underneath, and over, close or within in words
-  with an icon.
-- **One suggested build instead of a list.** For 10 or 11 teeth the
-  calculator says the cassette is an ordinary one and names no product.
-  For 12 to 16 teeth it names one concrete cassette — Miche's first,
-  another maker's only where Miche has none for that sprocket — for
-  12-speed and, where one exists, for 11-speed. Then the chainrings that
-  keep that sprocket within the class: Shimano's and SRAM's ordinary
-  double sets whose big ring is small enough, and Magene's single rings.
-  Prices stay dated with the shop they were seen at, and there are still
-  no affiliate links.
+  motion it shows the finished turn and moves only when asked.
+- **The limit is marked plainly** (Martin, the same day). The limit is a
+  solid line with its value on a label. The moment the bike passes it,
+  the distance turns the warning ink with a badge "Over grænsen", the
+  stretch beyond the limit is hatched, the bike is drawn in the warning
+  ink and a label gives the centimetres over. A finished turn within
+  the limit gives the centimetres under, in yellow and "Lige ved
+  grænsen" within 5 cm. Every state is said in words and with an icon,
+  never by colour alone.
+- **A concrete build for the gear on the sliders** (`propose` in
+  `src/modules/calc/gear-build.ts`). When the gear holds, the build is
+  that gear: a cassette and a chainring that give it, on the nearest
+  smaller ring a product carries if none carries the one chosen. When
+  it is over the limit, two builds that hold: the chosen chainring with
+  the smallest sprocket that passes, and the chosen sprocket with the
+  biggest ring that passes; where no part in the list can do it, the
+  calculator says so. Each build is drawn — the drivetrain from the
+  chain's side, to scale, with the smallest sprocket in moss and a
+  double's small ring dashed as the one that does not count — and named
+  part by part with the price and shop where it was seen.
+- **Which parts.** For 10 or 11 teeth the cassette is an ordinary one
+  and no product is named. For 12 to 16 teeth one concrete cassette —
+  Miche's first, another maker's only where Miche has none for that
+  sprocket — for 12-speed and, where one exists, for 11-speed. Miche has
+  no 12-speed cassette on 12, 13 or 15 teeth, so 13 and 15 get
+  E.Dubied's and 12 only the 11-speed. Chainrings are Shimano's and
+  SRAM's ordinary double sets, then single rings — Strada Lab's 110 BCD
+  rings, which fit Shimano's and Magene's cranks, and SRAM's X-Sync. A
+  list under the build gives every chainring that keeps the chosen
+  sprocket within the class, with a small drawing of two rings or one,
+  and names together the families whose rings are all too big. The
+  figures and their sources are in docs/research/klasser-og-gearing.md,
+  section 3.6. Prices stay dated with the shop they were seen at, and
+  there are still no affiliate links.
+- **Fewer products.** Recon, Shimano's CS-R8000 14-28, Miche's 10-speed
+  Primato and Magene's QED rings leave the calculator: each is either
+  never the first suggestion or the same sizes as Shimano's own. The
+  research note keeps them.
 
 ## Trade-offs accepted
 
@@ -53,10 +79,18 @@ same day).
   parent needs one thing to look for, not seven to compare; the others
   are still named where Miche has no cassette, and the research note
   keeps the whole list.
-- **The drawing is a drawing.** The frame is one small road frame, and
+- **The drawings are drawings.** The frame is one small road frame, and
   the wheel's size follows the tyre's circumference from Garmin's table.
-  What matters to the rule — the distance — is exact; the rest is near
-  enough to read.
+  In a build's drivetrain only the cassette's smallest and largest
+  sprockets are the real ones; those between are spaced evenly, and the
+  crank is drawn short. What matters to the rule — the distance, the
+  ring and the smallest sprocket — is exact; the rest is near enough to
+  read.
+- **A build is one way, not the way.** The first product in the list
+  that carries a ring is named, doubles before singles, so a build can
+  pair a SRAM crank with a Shimano-freehub cassette; the notes under
+  each part say what it fits, and the list below the build shows the
+  other rings.
 - **Animation costs a little.** A frame-by-frame redraw of a small SVG
   for under three seconds, only on request after the first; nothing
   moves while the reader is reading.

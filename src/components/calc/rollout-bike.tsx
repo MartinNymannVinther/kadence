@@ -49,6 +49,7 @@ export function RolloutBike({
   cog,
   wheelDeg,
   crankDeg,
+  ink = "var(--foreground)",
 }: {
   x: number;
   ground: number;
@@ -58,6 +59,8 @@ export function RolloutBike({
   cog: number;
   wheelDeg: number;
   crankDeg: number;
+  /** The frame's colour: the warning ink once the bike is past the limit. */
+  ink?: string;
 }) {
   const radius = circumferenceMm / 1000 / (2 * Math.PI);
   const px = (m: number) => x + m * scale;
@@ -164,7 +167,7 @@ export function RolloutBike({
       <polyline
         points={[at([0, 0]), at([BIKE.chainstay, -BIKE.bbDrop]), at(seat), at([0, 0])].join(" ")}
         fill="none"
-        stroke="var(--foreground)"
+        stroke={ink}
         strokeWidth={stroke}
       />
       <polyline
@@ -175,19 +178,19 @@ export function RolloutBike({
           at([BIKE.chainstay, -BIKE.bbDrop]),
         ].join(" ")}
         fill="none"
-        stroke="var(--foreground)"
+        stroke={ink}
         strokeWidth={stroke}
       />
       <polyline
         points={[at(BIKE.headBottom), at([BIKE.wheelbase, 0])].join(" ")}
         fill="none"
-        stroke="var(--foreground)"
+        stroke={ink}
         strokeWidth={stroke * 0.9}
       />
       <polyline
         points={[at(seat), at(saddle)].join(" ")}
         fill="none"
-        stroke="var(--foreground)"
+        stroke={ink}
         strokeWidth={stroke * 0.8}
       />
       <line
@@ -195,13 +198,13 @@ export function RolloutBike({
         y1={py(saddle[1] + radius)}
         x2={px(saddle[0] + 0.08)}
         y2={py(saddle[1] + radius + 0.01)}
-        stroke="var(--foreground)"
+        stroke={ink}
         strokeWidth={stroke * 1.5}
       />
       <path
         d={`M${at(BIKE.headTop)} L${at([0.87, 0.46])} Q${at([0.97, 0.47])} ${at([0.95, 0.37])} L${at([0.9, 0.34])}`}
         fill="none"
-        stroke="var(--foreground)"
+        stroke={ink}
         strokeWidth={stroke * 0.9}
       />
       <circle

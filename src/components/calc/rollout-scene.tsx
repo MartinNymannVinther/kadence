@@ -1,25 +1,30 @@
 "use client";
 
-import { Play } from "lucide-react";
+import { CircleAlert, CircleCheck, Play, TriangleAlert } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { num } from "@/components/charts/format";
 import { useWidth } from "@/components/charts/use-width";
 import { Button } from "@/components/ui/button";
-import { rolloutM, wheelTurns } from "@/modules/calc/gearing";
-import { BIKE_AHEAD_M, BIKE_BEHIND_M, BIKE_HEIGHT_M, RolloutBike } from "./rollout-bike";
+import { gearStatus, rolloutM, wheelTurns, type GearStatus } from "@/modules/calc/gearing";
+import { cn } from "@/lib/utils";
+import { RolloutDrawing } from "./rollout-drawing";
 import { usePedalStroke } from "./use-pedal-stroke";
 
-const SIDE = 8;
-const TOP = 30;
-const BELOW = 30;
+const BADGE: Record<GearStatus, { tone: string; Icon: typeof CircleCheck }> = {
+  over: { tone: "bg-destructive text-card", Icon: CircleAlert },
+  close: { tone: "bg-sticky text-sticky-ink", Icon: TriangleAlert },
+  within: { tone: "bg-secondary text-foreground", Icon: CircleCheck },
+  free: { tone: "bg-secondary text-foreground", Icon: CircleCheck },
+};
 
 /**
  * One turn of the pedals, drawn to scale: the bike stands with a pedal
  * straight down, as the commissaire sets it, turns the cranks once and
  * rolls its rollout along a ruler in metres, past or short of the
  * class's limit. A faint bike stays where it started. The distance is
- * counted as it rolls; how far past the limit is said in words beside
- * the drawing, never by its colour alone.
+ * counted as it rolls, and a badge beside it says over, close or within
+ * in words and with an icon — the moment the bike passes the limit, or
+ * when the turn is done.
  */
 export function RolloutScene({
   ring,
@@ -41,27 +46,32 @@ export function RolloutScene({
 
   const rollout = rolloutM(ring, cog, circumferenceMm);
   const turns = wheelTurns(ring, cog);
-  const from = -BIKE_BEHIND_M - 0.1;
-  const to = Math.max(8, Math.ceil(Math.max(rollout + BIKE_AHEAD_M, (limit ?? 0) + 0.8)));
-  const scale = (width - 2 * SIDE) / (to - from);
-  const X = (m: number) => SIDE + (m - from) * scale;
-  const ground = TOP + BIKE_HEIGHT_M * scale + 6;
-  const height = ground + BELOW;
-
   const travelled = progress * rollout;
-  const step = scale < 30 ? 2 : 1;
-  const ticks = Array.from({ length: Math.floor(to - 0.4) + 1 }, (_, m) => m).filter(
-    (m) => m % step === 0,
-  );
-  const limitAnchor = limit !== null && X(limit) > width - 90 ? "end" : "middle";
+  const over = limit !== null && travelled > limit;
+  const status: GearStatus | null =
+    over || progress >= 1 ? gearStatus(over ? travelled : rollout, limit) : null;
+  const badge = status ? BADGE[status] : null;
 
   return (
     <figure className="flex flex-col gap-3">
       <div className="flex flex-wrap items-end justify-between gap-3">
-        <div aria-hidden className="flex flex-col">
-          <span className="text-3xl font-semibold tabular-nums">
-            {t("distance", { m: num(travelled, locale, 2) })}
-          </span>
+        <div aria-hidden className="flex flex-col gap-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className={cn("text-3xl font-semibold tabular-nums", over && "text-destructive")}>
+              {t("distance", { m: num(travelled, locale, 2) })}
+            </span>
+            {status && badge && (
+              <span
+                className={cn(
+                  "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold",
+                  badge.tone,
+                )}
+              >
+                <badge.Icon className="size-3.5" />
+                {t(`status.${status}` as "play")}
+              </span>
+            )}
+          </div>
           <span className="text-meta text-xs tabular-nums">
             {t("wheel", { turns: progress * turns })}
           </span>
@@ -72,117 +82,18 @@ export function RolloutScene({
         </Button>
       </div>
       <div ref={ref} className="w-full">
-        <svg
-          width="100%"
-          height={height}
-          viewBox={`0 0 ${width} ${height}`}
-          role="img"
-          aria-label={
-            limit === null
-              ? t("labelFree", { rollout: num(rollout, locale, 2), turns: num(turns, locale, 2) })
-              : t("label", {
-                  rollout: num(rollout, locale, 2),
-                  turns: num(turns, locale, 2),
-                  class: className,
-                  limit: num(limit, locale, 2),
-                })
-          }
-          className="block"
-        >
-          <line
-            x1={SIDE}
-            x2={width - SIDE}
-            y1={ground}
-            y2={ground}
-            stroke="var(--input)"
-            strokeWidth={1.5}
-          />
-          {ticks.map((m) => (
-            <g key={m}>
-              <line
-                x1={X(m)}
-                x2={X(m)}
-                y1={ground}
-                y2={ground + (m === 0 ? 10 : 6)}
-                stroke={m === 0 ? "var(--foreground)" : "var(--input)"}
-                strokeWidth={m === 0 ? 2 : 1}
-              />
-              <text
-                x={X(m)}
-                y={ground + 22}
-                textAnchor="middle"
-                className={
-                  m === 0 ? "fill-foreground text-2xs font-semibold" : "fill-meta text-2xs"
-                }
-              >
-                {m === ticks.at(-1) ? t("metres", { m }) : m}
-              </text>
-            </g>
-          ))}
-          <line
-            x1={X(0)}
-            x2={X(limit === null ? travelled : Math.min(travelled, limit))}
-            y1={ground + 3}
-            y2={ground + 3}
-            stroke="var(--primary)"
-            strokeWidth={4}
-            strokeLinecap="round"
-          />
-          {limit !== null && travelled > limit && (
-            <line
-              x1={X(limit)}
-              x2={X(travelled)}
-              y1={ground + 3}
-              y2={ground + 3}
-              stroke="var(--destructive)"
-              strokeWidth={4}
-              strokeLinecap="round"
-            />
-          )}
-          {limit !== null && (
-            <g>
-              <line
-                x1={X(limit)}
-                x2={X(limit)}
-                y1={TOP - 6}
-                y2={ground + 8}
-                stroke="var(--destructive)"
-                strokeWidth={1.5}
-                strokeDasharray="4 3"
-              />
-              <text
-                x={X(limit) + (limitAnchor === "end" ? 4 : 0)}
-                y={TOP - 12}
-                textAnchor={limitAnchor}
-                className="fill-destructive text-2xs font-semibold"
-              >
-                {t("limit", { class: className, limit: num(limit, locale, 2) })}
-              </text>
-            </g>
-          )}
-          <g opacity={0.22}>
-            <RolloutBike
-              x={X(0)}
-              ground={ground}
-              scale={scale}
-              circumferenceMm={circumferenceMm}
-              ring={ring}
-              cog={cog}
-              wheelDeg={0}
-              crankDeg={0}
-            />
-          </g>
-          <RolloutBike
-            x={X(travelled)}
-            ground={ground}
-            scale={scale}
-            circumferenceMm={circumferenceMm}
-            ring={ring}
-            cog={cog}
-            wheelDeg={progress * turns * 360}
-            crankDeg={progress * 360}
-          />
-        </svg>
+        <RolloutDrawing
+          width={width}
+          ring={ring}
+          cog={cog}
+          circumferenceMm={circumferenceMm}
+          limit={limit}
+          className={className}
+          rollout={rollout}
+          turns={turns}
+          progress={progress}
+          status={status}
+        />
       </div>
       <figcaption className="text-meta text-2sm leading-relaxed">{t("caption")}</figcaption>
     </figure>

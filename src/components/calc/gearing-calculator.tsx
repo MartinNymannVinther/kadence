@@ -132,6 +132,7 @@ export function GearingCalculator() {
       </section>
 
       <GearProducts
+        ring={ring}
         cog={cog}
         limit={limit}
         circumferenceMm={valid ? circumference : TYRES[tyre]}
