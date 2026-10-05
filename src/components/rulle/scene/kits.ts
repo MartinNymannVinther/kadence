@@ -1,14 +1,15 @@
 import { PALETTE as P } from "./palette";
 
 /**
- * Where a bike's bars sit against the rider's own, metres: `low` lower —
- * a short head tube and a stem angled down — and `reach` further forward,
- * on a longer stem; and `tilt`, radians the bar is turned up about where
- * the stem holds it, the hoods and the drops with it. The rider's hands
- * go with them (`poseOf`).
+ * Where a bike's bars sit against the rider's own, metres: `low` lower
+ * and `reach` further forward, on a longer stem that climbs `rise` from
+ * the head tube to the bar — the head tube as long as that leaves it —
+ * and `tilt`, radians the bar is turned up about where the stem holds it,
+ * the hoods and the drops with it. The rider's hands go with them
+ * (`poseOf`).
  */
-export type Bars = { low: number; reach: number; tilt: number };
-export const OWN_BARS: Bars = { low: 0, reach: 0, tilt: 0 };
+export type Bars = { low: number; reach: number; rise: number; tilt: number };
+export const OWN_BARS: Bars = { low: 0, reach: 0, rise: 0.03, tilt: 0 };
 
 /** A rider's colours, head to toe, and their bike's (`RiderFigure`, `RoadBike`). */
 export type Kit = {
@@ -67,8 +68,8 @@ export const RIDER_KIT: Kit = {
  * bands round the sleeves, black shorts with red and white at the leg
  * ends, a smooth white aero helmet, white socks and shoes, on a black aero
  * bike with a yellow fork and head tube, a number on its post and the
- * bars slammed low and far forward on a long stem. Muted, like the rest
- * of the landscape.
+ * bars low and far forward on a long stem that climbs to them. Muted,
+ * like the rest of the landscape.
  */
 export const CHALLENGER_KIT: Kit = {
   jersey: "#b8352f",
@@ -90,5 +91,5 @@ export const CHALLENGER_KIT: Kit = {
   sleeveStripe: "#f3f0ea",
   hem: ["#f3f0ea", "#b8352f"],
   plate: true,
-  bars: { low: 0.21, reach: 0.22, tilt: 0.35 },
+  bars: { low: 0.1, reach: 0.22, rise: 0.085, tilt: 0.35 },
 };

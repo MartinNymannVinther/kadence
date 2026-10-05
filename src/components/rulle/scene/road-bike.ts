@@ -56,13 +56,11 @@ function aero(a: THREE.Vector3, b: THREE.Vector3, deep: number, narrow: number, 
   return painted(geometry.translate(middle.x, middle.y, middle.z), color);
 }
 
-/** Of lower bars (`Kit.bars`), the most the head tube is shorter; the stem angles down for the rest. */
-const SHORTER_HEAD = 0.09;
-
 function frame(kit: Kit): THREE.BufferGeometry[] {
   const along = (a: THREE.Vector3, b: THREE.Vector3, t: number) => a.clone().lerp(b, t);
-  const { low, reach, tilt } = kit.bars ?? OWN_BARS;
-  const head = Math.min(low, SHORTER_HEAD);
+  const { low, reach, rise, tilt } = kit.bars ?? OWN_BARS;
+  // How much shorter the head tube is than the rider's own: what the stem's climb leaves it.
+  const head = low + rise - OWN_BARS.rise;
   const down = (p: THREE.Vector3, by: number) => v(p.x, p.y - by, p.z);
   const parts = [
     aero(BB, SEAT, 0.03, 0.016, kit.frame),

@@ -54,17 +54,17 @@ slipstream that makes it easier behind him.
   `RoadBike`) in his kit (`kits.ts`): a smooth aero helmet with its
   straps, a broad white band across the jersey and white bands round the
   sleeves, red and white at the shorts' leg ends, a number on the seat
-  post, and the bars 21 cm lower and 22 cm further forward than the
-  rider's own — a short head tube and a long stem angled down — and the
-  bar turned up 20° about the stem, the hoods up with it, so that his
-  hands, on the hoods, are a little ahead of his face. His shoulders
-  and head go as far down, and a third as far forward in the saddle and
-  most of the way out of it, his arms reaching the rest (`Kit.bars`,
-  `poseOf`). Where the road would have him in the
+  post, and the bars 10 cm lower and 22 cm further forward than the
+  rider's own, on a long stem that climbs 15° to them from a head tube
+  cut almost to nothing, and the bar turned up 20° about the stem, the
+  hoods up with it, so that his hands, on the hoods, are a little ahead
+  of his face. His shoulders and head go as far down, and a third as far
+  forward in the saddle and most of the way out of it, his arms reaching
+  the rest (`Kit.bars`, `poseOf`). Where the road would have him in the
   saddle he rides a posture of his own, flat and aero — the forearms
-  along the bar, the shoulders rolled in and the head low, the back
-  almost level, about 5° — and he is out of the saddle, over the bars, in
-  his first seconds and in the sprint.
+  along the bar, the shoulders rolled in and the head low, the back about
+  15° from level — and he is out of the saddle, over the bars, in his
+  first seconds and in the sprint.
 - **A cheat code, JOHAN**, calls him up at once on a free ride, and does
   nothing in a session. The H in it is the code's while it is typed, not
   the ride's speed. Under `next dev`, G calls him session or not.
