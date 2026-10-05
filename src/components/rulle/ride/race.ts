@@ -1,6 +1,7 @@
 import {
   CHALLENGE,
   challengeIn,
+  challengerEffort,
   challengerWatts,
   courseAt,
   draft,
@@ -182,14 +183,14 @@ export class Race {
     const run = this.run;
     if (!run) return null;
     const on = !run.over && run.count === 0;
-    const sprinting = on && challengerWatts(run.seconds, run.end - run.him) > CHALLENGE.drops;
+    const effort = challengerEffort(on ? challengerWatts(run.seconds, run.end - run.him) : 0);
     return {
       distance: run.him + run.pace * since,
       finish: run.count > 0 ? null : run.end,
       line: run.line,
       speed: run.v,
-      cadence: run.over ? 80 : sprinting ? 110 : 94,
-      sprinting,
+      cadence: run.over ? 80 : effort === "steady" ? 94 : 110,
+      effort,
     };
   }
 

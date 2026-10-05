@@ -80,7 +80,7 @@ export class RiderFigure {
   private readonly shadow: THREE.Mesh;
   private crank = 0;
   private cadence = 0;
-  private blend: Blend = { seated: 1, standing: 0, tuck: 0, aero: 0, sprint: 0 };
+  private blend: Blend = { seated: 1, standing: 0, tuck: 0, aero: 0, drops: 0, sprint: 0 };
   /** The bike's lean from side to side out of the saddle, radians, to the left positive. */
   roll = 0;
   private stop: Stop = "riding";

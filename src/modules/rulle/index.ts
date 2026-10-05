@@ -60,10 +60,12 @@ export { nextSpeed, PHYSICS, resistance, steadySpeed, swayAt } from "./physics";
 export {
   CHALLENGE,
   challengeIn,
+  challengerEffort,
   challengerWatts,
   draft,
   type ChallengeStart,
   type ChallengerAt,
+  type ChallengerEffort,
 } from "./challenge";
 export {
   blockAt,

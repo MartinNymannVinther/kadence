@@ -3,6 +3,7 @@ import {
   buildCourse,
   CHALLENGE,
   challengeIn,
+  challengerEffort,
   challengerWatts,
   courseAt,
   draft,
@@ -72,6 +73,16 @@ describe("the challenger's watts and his wheel", () => {
     expect(challengerWatts(150, 201)).toBe(360);
     expect(challengerWatts(150, 200)).toBe(800);
     expect(challengerWatts(5, 150)).toBe(800);
+  });
+
+  it("rides in the drops from 500 W to 700 W, in the saddle, and out of it over 700 W", () => {
+    expect(challengerEffort(360)).toBe("steady");
+    expect(challengerEffort(460)).toBe("steady");
+    expect(challengerEffort(499)).toBe("steady");
+    expect(challengerEffort(500)).toBe("drops");
+    expect(challengerEffort(700)).toBe("drops");
+    expect(challengerEffort(701)).toBe("sprint");
+    expect(challengerEffort(800)).toBe("sprint");
   });
 
   it("is about 7 W/kg for the minute at his weight", () => {

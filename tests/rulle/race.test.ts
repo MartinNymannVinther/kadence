@@ -77,12 +77,12 @@ describe("the challenger's race", () => {
     expect(Math.abs(start?.phase === "racing" ? start.gap : 99)).toBeLessThan(1);
   });
 
-  it("sprints in the drops over 600 W: his first seconds and his last 200 metres, not between", () => {
+  it("sprints out of the saddle on his 800 W: his first seconds and his last 200 metres, not between", () => {
     const raced = setup(480);
     raced.ride(0, 5);
     challenge(raced.engine, 5);
     const race = raced.engine.shown.race;
-    const sprinting = () => race.at(0)?.sprinting;
+    const sprinting = () => race.at(0)?.effort === "sprint";
     raced.ride(5, 15);
     expect(sprinting()).toBe(false);
     raced.ride(15, 19);

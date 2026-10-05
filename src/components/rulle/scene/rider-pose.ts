@@ -12,15 +12,23 @@ import { CLAMP } from "./road-bike";
  * challenger's (ADR 0049): forward on the saddle's nose, the upper arms
  * straight down, the forearms along the top of the bar and the hands on
  * the hoods, a little ahead of his face, his head down between his
- * shoulders, over the long front of his bike (`Kit.bars`); and his sprint,
- * out of the saddle, low over the bars with his hands in the drops. In
+ * shoulders, over the long front of his bike (`Kit.bars`); in the drops,
+ * flat in the saddle; and his sprint, out of it, low over the bars with
+ * his hands in the drops. In
  * the bike's own coordinates: facing -z, y up, x to the rider's right.
  * The legs and arms are hung from these points by `twoBones`.
  */
 
-/** The postures a figure rides in: the road's (`Posture`), and the challenger's aero one and his sprint. */
-export type FigurePosture = Posture | "aero" | "sprint";
-export const POSTURES: readonly FigurePosture[] = ["seated", "standing", "tuck", "aero", "sprint"];
+/** The postures a figure rides in: the road's (`Posture`), and the challenger's own three. */
+export type FigurePosture = Posture | "aero" | "drops" | "sprint";
+export const POSTURES: readonly FigurePosture[] = [
+  "seated",
+  "standing",
+  "tuck",
+  "aero",
+  "drops",
+  "sprint",
+];
 
 export type Blend = Record<FigurePosture, number>;
 
@@ -79,6 +87,15 @@ const ANCHORS: Record<FigurePosture, Anchor> = {
     hand: v(0.2, 1.019, -0.558),
     hipWidth: 0.085,
     helmet: -1.5,
+    follow: 0.35,
+  },
+  drops: {
+    hips: v(0, 1.0, 0.06),
+    shoulders: v(0, 1.2, -0.463),
+    head: v(0, 1.29, -0.593),
+    hand: v(0.21, 0.845, -0.5),
+    hipWidth: 0.085,
+    helmet: -0.6,
     follow: 0.35,
   },
   sprint: {

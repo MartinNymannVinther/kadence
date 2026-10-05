@@ -36,9 +36,13 @@ export const CHALLENGE = {
   beforeFoot: 150,
   /** He and his bike, kg: 460 W is about 7 W/kg. */
   massKg: 66 + 8,
-  /** Over these watts — his start and his sprint — he is out of the saddle with his hands in the drops. */
-  drops: 600,
+  /** From these watts his hands are in the drops, in the saddle; over `standing`, he is out of it. */
+  drops: 500,
+  standing: 700,
 } as const;
+
+/** How he rides: as the road has him; in the drops, in the saddle; or out of it, sprinting in them. */
+export type ChallengerEffort = "steady" | "drops" | "sprint";
 
 /** Where he is for the landscape: on the road, how fast, and his legs; and the line. */
 export type ChallengerAt = {
@@ -49,8 +53,8 @@ export type ChallengerAt = {
   line: number;
   speed: number;
   cadence: number;
-  /** Over `CHALLENGE.drops` watts: out of the saddle, his hands in the drops. */
-  sprinting: boolean;
+  /** How he rides for his watts (`challengerEffort`). */
+  effort: ChallengerEffort;
 };
 
 /** A race to come: where it begins, in metres ridden, and whether up a climb. */
@@ -88,6 +92,17 @@ export function challengerWatts(seconds: number, left: number): number {
   if (seconds < 7) return 800;
   if (seconds < 60) return 460;
   return 360;
+}
+
+/**
+ * How he rides on `watts`: from 500 W to 700 W in the drops, in the
+ * saddle; over 700 W out of it, sprinting in them; below, as the road has
+ * him.
+ */
+export function challengerEffort(watts: number): ChallengerEffort {
+  if (watts > CHALLENGE.standing) return "sprint";
+  if (watts >= CHALLENGE.drops) return "drops";
+  return "steady";
 }
 
 /**
