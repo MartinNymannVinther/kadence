@@ -89,8 +89,9 @@ export class RiderFigure {
   private lift = 0;
   /** Where the bars are against the rider's own (`Kit.bars`). */
   private readonly bars: Bars;
-  /** Half the band's width, as a share of the torso's length. */
+  /** Half the band's width, as a share of the torso's length; and its thin stripes, if any. */
   private readonly halfBand: number;
+  private readonly bandEdges: THREE.Mesh[];
   private readonly materials: KitMaterials;
   private readonly unit = new THREE.CylinderGeometry(1, 1, 1, 8);
   private readonly shapes = {
@@ -120,10 +121,11 @@ export class RiderFigure {
     // The body, placed for its posture every frame (`pose`).
     this.torso = new THREE.Mesh(this.shapes.torso, m.jersey);
     this.band = new THREE.Mesh(this.unit, m.band);
+    this.bandEdges = kit.bandEdges ? [0, 1].map(() => new THREE.Mesh(this.unit, m.band)) : [];
     this.shorts = new THREE.Mesh(this.shapes.pelvis, m.shorts);
     this.neck = new THREE.Mesh(this.unit, m.skin);
     this.head.add(riderHead(m, kit.helmetStyle));
-    this.body.add(this.torso, this.band, this.shorts, this.neck, this.head);
+    this.body.add(this.torso, this.band, ...this.bandEdges, this.shorts, this.neck, this.head);
     for (const side of [-1, 1]) {
       const upper = new THREE.Mesh(this.unit, m.light);
       const lower = new THREE.Mesh(this.unit, m.skin);
@@ -230,8 +232,13 @@ export class RiderFigure {
     const along = new THREE.Vector3().subVectors(pose.shoulders, pose.hips).normalize();
     this.place(this.torso, pose.hips, pose.shoulders, 0.15, 0.115);
     const at = (f: number) => pose.hips.clone().lerp(pose.shoulders, f);
-    // The band a hair wider than the jersey where it runs round it.
-    this.place(this.band, at(0.55 - this.halfBand), at(0.55 + this.halfBand), 0.177, 0.136);
+    // The band a hair wider than the jersey where it runs round it, and a thin stripe either side.
+    const half = this.halfBand;
+    this.place(this.band, at(0.55 - half), at(0.55 + half), 0.177, 0.136);
+    this.bandEdges.forEach((edge, i) => {
+      const from = i ? 0.55 + half + 0.02 : 0.55 - half - 0.032;
+      this.place(edge, at(from), at(from + 0.012), 0.177, 0.138);
+    });
     // The pelvis in bib shorts, round over the saddle and over the jersey's hem.
     this.shorts.position.copy(pose.hips).addScaledVector(along, 0.03);
     this.shorts.quaternion.setFromUnitVectors(UP, along);

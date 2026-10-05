@@ -52,19 +52,19 @@ slipstream that makes it easier behind him.
   word for the finish and a checkered line, stands where the race ends
   (`challenge-line.ts`). His figure is the rider's own (`RiderFigure`,
   `RoadBike`) in his kit (`kits.ts`): a smooth aero helmet with its
-  straps, a broad white band across the jersey and white bands round the
-  sleeves, red and white at the shorts' leg ends, a number on the seat
-  post, and the bars 10 cm lower and 22 cm further forward than the
-  rider's own, on a long stem that climbs 15° to them from a head tube
-  cut almost to nothing, and the bar turned up 20° about the stem, the
-  hoods up with it, so that his hands, on the hoods, are a little ahead
-  of his face. His shoulders and head go as far down, and a third as far
-  forward in the saddle and most of the way out of it, his arms reaching
-  the rest (`Kit.bars`, `poseOf`). Where the road would have him in the
-  saddle he rides a posture of his own, flat and aero — the forearms
-  along the bar, the shoulders rolled in and the head low, the back about
-  15° from level — and he is out of the saddle, over the bars, in his
-  first seconds and in the sprint.
+  straps, a broad white band across the jersey with a thin stripe
+  either side of it, white bands round the sleeves, red and white at the
+  shorts' leg ends, a number on the seat post, and the bars 10 cm lower
+  and 22 cm further forward than the rider's own, on a long stem that
+  climbs 15° to them from a head tube cut almost to nothing, the bar
+  turned up 20° about the stem. His hands go with the bars, and his
+  shoulders and head as far down, and a third as far forward in the
+  saddle and most of the way out of it (`Kit.bars`, `poseOf`). Where the
+  road would have him in the saddle he rides a posture of his own, as in
+  the photo: forward on the saddle's nose, the upper arms straight down,
+  the forearms along the top of the bar and the hands together a little
+  ahead of his face, his head down between his shoulders. He is out of
+  the saddle, over the bars, in his first seconds and in the sprint.
 - **A cheat code, JOHAN**, calls him up at once on a free ride, and does
   nothing in a session. The H in it is the code's while it is typed, not
   the ride's speed. Under `next dev`, G calls him session or not.
@@ -90,6 +90,10 @@ slipstream that makes it easier behind him.
 - **His posture is a look, not his air.** His drag in the physics is
   the rider's own; the flat back is drawn, not counted, so the same
   watts at the same weight still go as fast as the rider's.
+- **A position the rules no longer allow.** Resting the forearms on the
+  bar has been banned in UCI road races since April 2021. He rides as the
+  photo shows him, as a figure in the landscape; nothing in Kadence
+  suggests a rider should.
 - **Indoor speed only.** The slipstream moves the rider on the screen,
   not on the record: an indoor ride's distance stays the physics' answer
   to the watts ridden.
