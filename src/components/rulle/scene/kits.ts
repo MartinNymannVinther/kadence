@@ -14,6 +14,8 @@ export type Kit = {
   sleeve: string;
   /** The band across the jersey's back. */
   band: string;
+  /** How wide the band is, as a share of the torso's length: a tenth, if not given. */
+  bandWidth?: number;
   shorts: string;
   skin: string;
   helmet: string;
@@ -59,7 +61,7 @@ export const RIDER_KIT: Kit = {
 };
 
 /**
- * The challenger's (ADR 0049): a red jersey with a white band and white
+ * The challenger's (ADR 0049): a red jersey with a broad white band and white
  * bands round the sleeves, black shorts with red and white at the leg
  * ends, a smooth white aero helmet, white socks and shoes, on a black aero
  * bike with a yellow fork and head tube, a number on its post and the
@@ -70,6 +72,7 @@ export const CHALLENGER_KIT: Kit = {
   jersey: "#b8352f",
   sleeve: "#b8352f",
   band: "#f3f0ea",
+  bandWidth: 0.15,
   shorts: "#262422",
   skin: "#e3c2a6",
   helmet: "#f3f0ea",
@@ -85,5 +88,5 @@ export const CHALLENGER_KIT: Kit = {
   sleeveStripe: "#f3f0ea",
   hem: ["#f3f0ea", "#b8352f"],
   plate: true,
-  bars: { low: 0.21, reach: 0.1 },
+  bars: { low: 0.21, reach: 0.22 },
 };

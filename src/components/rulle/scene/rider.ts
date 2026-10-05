@@ -89,6 +89,8 @@ export class RiderFigure {
   private lift = 0;
   /** Where the bars are against the rider's own (`Kit.bars`). */
   private readonly bars: Bars;
+  /** Half the band's width, as a share of the torso's length. */
+  private readonly halfBand: number;
   private readonly materials: KitMaterials;
   private readonly unit = new THREE.CylinderGeometry(1, 1, 1, 8);
   private readonly shapes = {
@@ -106,6 +108,7 @@ export class RiderFigure {
     this.materials = kitMaterials(kit);
     this.bike = new RoadBike(kit);
     this.bars = kit.bars ?? OWN_BARS;
+    this.halfBand = (kit.bandWidth ?? 0.1) / 2;
     const m = this.materials;
     const shadow = new THREE.Mesh(new THREE.CircleGeometry(0.5, 12), m.shadow);
     shadow.rotation.x = -Math.PI / 2;
@@ -228,7 +231,7 @@ export class RiderFigure {
     this.place(this.torso, pose.hips, pose.shoulders, 0.15, 0.115);
     const at = (f: number) => pose.hips.clone().lerp(pose.shoulders, f);
     // The band a hair wider than the jersey where it runs round it.
-    this.place(this.band, at(0.5), at(0.6), 0.177, 0.136);
+    this.place(this.band, at(0.55 - this.halfBand), at(0.55 + this.halfBand), 0.177, 0.136);
     // The pelvis in bib shorts, round over the saddle and over the jersey's hem.
     this.shorts.position.copy(pose.hips).addScaledVector(along, 0.03);
     this.shorts.quaternion.setFromUnitVectors(UP, along);

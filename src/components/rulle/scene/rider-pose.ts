@@ -31,6 +31,12 @@ type Anchor = {
   hipWidth: number;
   /** The helmet's tilt forward. */
   helmet: number;
+  /**
+   * Of bars further forward (`Kit.bars`), the share the shoulders and the
+   * head follow, the arms reaching the rest: in the saddle a third, out of
+   * it most, over the bars.
+   */
+  follow: number;
 };
 
 const v = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z);
@@ -43,6 +49,7 @@ const ANCHORS: Record<FigurePosture, Anchor> = {
     hand: v(0.205, 0.975, -0.535),
     hipWidth: 0.1,
     helmet: -0.35,
+    follow: 0.35,
   },
   standing: {
     hips: v(0, 1.09, 0.03),
@@ -51,6 +58,7 @@ const ANCHORS: Record<FigurePosture, Anchor> = {
     hand: v(0.205, 0.985, -0.545),
     hipWidth: 0.1,
     helmet: -0.3,
+    follow: 0.75,
   },
   tuck: {
     hips: v(0, 0.97, 0.24),
@@ -59,14 +67,16 @@ const ANCHORS: Record<FigurePosture, Anchor> = {
     hand: v(0.21, 0.845, -0.5),
     hipWidth: 0.085,
     helmet: -0.85,
+    follow: 0.35,
   },
   aero: {
     hips: v(0, 0.995, 0.12),
     shoulders: v(0, 1.26, -0.41),
-    head: v(0, 1.32, -0.56),
+    head: v(0, 1.32, -0.53),
     hand: v(0.2, 0.985, -0.54),
     hipWidth: 0.085,
     helmet: -0.25,
+    follow: 0.35,
   },
 };
 
@@ -93,15 +103,12 @@ const ALONG = new THREE.Vector3(0, 0, 1);
 /** How much of the rock the rider stands against, staying upright over it. */
 const UPRIGHT = 0.8;
 
-/** Of bars further forward, the share the shoulders and the head follow; the arms reach the rest. */
-const FOLLOW = 0.5;
-
 /**
  * The pose for a blend at a turn of the cranks (0 with the right pedal at
  * the front, halfway down), pedalling at `cadence`, on a bike whose `bars`
  * sit lower and further forward than the rider's own: the hands go with
- * them, the shoulders and the head as far down and half as far forward —
- * the back flatter and the arms reaching longer.
+ * them, the shoulders and the head as far down and part of the way
+ * forward (`Anchor.follow`) — the back flatter and the arms reaching longer.
  */
 export function poseOf(blend: Blend, crank: number, cadence: number, bars: Bars = OWN_BARS): Pose {
   const mix = (pick: (a: Anchor) => THREE.Vector3) => {
@@ -109,10 +116,11 @@ export function poseOf(blend: Blend, crank: number, cadence: number, bars: Bars 
     for (const posture of POSTURES) out.addScaledVector(pick(ANCHORS[posture]), blend[posture]);
     return out;
   };
-  const upper = (pick: (a: Anchor) => THREE.Vector3, follow = FOLLOW) =>
-    mix(pick).add(new THREE.Vector3(0, -bars.low, -bars.reach * follow));
   const num = (pick: (a: Anchor) => number) =>
     POSTURES.reduce((s, p) => s + pick(ANCHORS[p]) * blend[p], 0);
+  const follow = num((a) => a.follow);
+  const upper = (pick: (a: Anchor) => THREE.Vector3, share = follow) =>
+    mix(pick).add(new THREE.Vector3(0, -bars.low, -bars.reach * share));
   const pedalling = Math.min(1, cadence / 60);
   // Out of the saddle the bike leans away from the foot pushing down, and the
   // hips dip with each stroke; in it, only a little sway.

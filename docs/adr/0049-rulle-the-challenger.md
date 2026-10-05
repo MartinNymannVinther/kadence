@@ -52,16 +52,18 @@ slipstream that makes it easier behind him.
   word for the finish and a checkered line, stands where the race ends
   (`challenge-line.ts`). His figure is the rider's own (`RiderFigure`,
   `RoadBike`) in his kit (`kits.ts`): a smooth aero helmet with its
-  straps, white bands round the sleeves, red and white at the shorts' leg
-  ends, a number on the seat post, and the bars 21 cm lower and 10 cm
-  further forward than the rider's own — a short head tube and a long
-  stem angled down — which take his hands with them, and his shoulders
-  and head as far down and half as far forward (`Kit.bars`, `poseOf`).
-  Where the road would have him in the saddle he rides a posture of his
-  own, flat and aero — on the hoods, the upper arms straight down, the
-  forearms level along the bar, the shoulders rolled in and the head low,
-  the back almost level, about 6° — and he is out of the saddle in his
-  first seconds and in the sprint.
+  straps, a broad white band across the jersey and white bands round the
+  sleeves, red and white at the shorts' leg ends, a number on the seat
+  post, and the bars 21 cm lower and 22 cm further forward than the
+  rider's own — a short head tube and a long stem angled down — so that
+  his hands, on the hoods, are a little ahead of his face. His shoulders
+  and head go as far down, and a third as far forward in the saddle and
+  most of the way out of it, his arms reaching the rest (`Kit.bars`,
+  `poseOf`). Where the road would have him in the
+  saddle he rides a posture of his own, flat and aero — the forearms
+  along the bar, the shoulders rolled in and the head low, the back
+  almost level, about 5° — and he is out of the saddle, over the bars, in
+  his first seconds and in the sprint.
 - **A cheat code, JOHAN**, calls him up at once on a free ride, and does
   nothing in a session. The H in it is the code's while it is typed, not
   the ride's speed. Under `next dev`, G calls him session or not.
