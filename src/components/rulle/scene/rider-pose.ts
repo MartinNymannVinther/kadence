@@ -11,7 +11,7 @@ import { CLAMP } from "./road-bike";
  * flat back and the hands in the drops — and a fourth no road calls for,
  * the challenger's (ADR 0049): forward on the saddle's nose, the upper
  * arms straight down, the forearms along the top of the bar and the hands
- * together ahead of his face, his head down between his shoulders, over
+ * on the hoods, a little ahead of his face, his head down between his shoulders, over
  * the long front of his bike (`Kit.bars`). In the bike's own coordinates:
  * facing -z, y up, x to the rider's right. The legs and arms are hung
  * from these points by `twoBones`.
@@ -75,7 +75,7 @@ const ANCHORS: Record<FigurePosture, Anchor> = {
     hips: v(0, 1.0, 0.04),
     shoulders: v(0, 1.25, -0.463),
     head: v(0, 1.15, -0.63),
-    hand: v(0.04, 1.012, -0.582),
+    hand: v(0.2, 1.019, -0.558),
     hipWidth: 0.085,
     helmet: -1.5,
     follow: 0.35,
