@@ -53,10 +53,14 @@ slipstream that makes it easier behind him.
   (`challenge-line.ts`). His figure is the rider's own (`RiderFigure`,
   `RoadBike`) in his kit (`kits.ts`): a smooth aero helmet with its
   straps, white bands round the sleeves, red and white at the shorts' leg
-  ends, a number on the seat post. Where the road would have him in the
-  saddle he rides a posture of his own, flat and aero — the back low, the
-  upper arms straight down and the forearms forward along the tops — and
-  he is out of the saddle in his first seconds and in the sprint.
+  ends, a number on the seat post, and the bars 15 cm lower than the
+  rider's own — a short head tube and a stem angled down, as a
+  professional's — which take his hands, shoulders and head down with
+  them. Where the road would have him in the saddle he rides a posture of
+  his own, flat and aero — on the hoods, the upper arms straight down, the
+  forearms level along the bar, the shoulders rolled in and the head low,
+  the back about 12° from level — and he is out of the saddle in his first
+  seconds and in the sprint.
 - **A cheat code, JOHAN**, calls him up at once on a free ride, and does
   nothing in a session. The H in it is the code's while it is typed, not
   the ride's speed. Under `next dev`, G calls him session or not.
@@ -79,6 +83,9 @@ slipstream that makes it easier behind him.
   landscape too.
 - **Not in a session.** A rider in a planned session never meets him,
   and JOHAN does nothing there; the coach's session goes first.
+- **His posture is a look, not his air.** His drag in the physics is
+  the rider's own; the flat back is drawn, not counted, so the same
+  watts at the same weight still go as fast as the rider's.
 - **Indoor speed only.** The slipstream moves the rider on the screen,
   not on the record: an indoor ride's distance stays the physics' answer
   to the watts ridden.

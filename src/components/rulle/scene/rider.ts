@@ -33,8 +33,11 @@ const UP = new THREE.Vector3(0, 1, 0);
 /** Knees bend forward; elbows out, down and back. */
 const KNEE_POLE = new THREE.Vector3(0, 0.3, -1);
 const ELBOW_POLE = (side: number) => new THREE.Vector3(side * 0.7, -0.4, 0.6);
-/** In the aero posture, the elbows straight down and back, under the shoulders. */
-const AERO_ELBOW_POLE = (side: number) => new THREE.Vector3(side * 0.25, -0.6, 0.75);
+/** In the aero posture, the elbows straight back from the hands, tucked in under the shoulders. */
+const AERO_ELBOW_POLE = (side: number) => new THREE.Vector3(side * 0.1, -0.45, 0.9);
+/** Half the width between the shoulders; narrower, rolled in, in the aero posture. */
+const SHOULDERS = 0.16;
+const AERO_SHOULDERS = 0.13;
 /** How quickly the rider eases from one posture to the next, per second. */
 const EASE = 3;
 /** The shoe's toe a little down on the pedal, radians. */
@@ -84,6 +87,8 @@ export class RiderFigure {
   private stopped = 0;
   /** How far the right hand is on its way from the bar to the mouth, 0 to 1. */
   private lift = 0;
+  /** How much lower the bars are than the rider's own (`Kit.low`). */
+  private readonly low: number;
   private readonly materials: KitMaterials;
   private readonly unit = new THREE.CylinderGeometry(1, 1, 1, 8);
   private readonly shapes = {
@@ -100,6 +105,7 @@ export class RiderFigure {
   constructor(kit: Kit = RIDER_KIT) {
     this.materials = kitMaterials(kit);
     this.bike = new RoadBike(kit);
+    this.low = kit.low ?? 0;
     const m = this.materials;
     const shadow = new THREE.Mesh(new THREE.CircleGeometry(0.5, 12), m.shadow);
     shadow.rotation.x = -Math.PI / 2;
@@ -188,7 +194,7 @@ export class RiderFigure {
   }
 
   private pose(): void {
-    const pose = poseOf(this.blend, this.crank, this.cadence);
+    const pose = poseOf(this.blend, this.crank, this.cadence, this.low);
     this.roll = this.stop === "riding" ? pose.roll : 0;
     for (const leg of this.legs) {
       // Right pedal at the front at crank 0, going down: pedalling forward.
@@ -238,7 +244,8 @@ export class RiderFigure {
     this.head.rotation.x = pose.helmet * 0.4;
     for (const arm of this.arms) {
       const lift = arm.side > 0 ? this.lift : 0;
-      const shoulder = pose.shoulders.clone().add(new THREE.Vector3(arm.side * 0.16, -0.02, 0.02));
+      const width = SHOULDERS + (AERO_SHOULDERS - SHOULDERS) * pose.aero;
+      const shoulder = pose.shoulders.clone().add(new THREE.Vector3(arm.side * width, -0.02, 0.02));
       // The right hand to the mouth with the bottle, when stopped.
       const mouth = pose.head.clone().add(new THREE.Vector3(0.07, -0.06, -0.04));
       const hand = pose.hands[arm.side > 0 ? 1 : 0]!.clone().lerp(mouth, lift);

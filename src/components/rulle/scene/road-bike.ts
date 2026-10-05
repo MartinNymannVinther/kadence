@@ -56,19 +56,25 @@ function aero(a: THREE.Vector3, b: THREE.Vector3, deep: number, narrow: number, 
   return painted(geometry.translate(middle.x, middle.y, middle.z), color);
 }
 
+/** Of a lower front (`Kit.low`), the most the head tube is shorter; the stem angles down for the rest. */
+const SHORTER_HEAD = 0.6;
+
 function frame(kit: Kit): THREE.BufferGeometry[] {
   const along = (a: THREE.Vector3, b: THREE.Vector3, t: number) => a.clone().lerp(b, t);
+  const low = kit.low ?? 0;
+  const head = low * SHORTER_HEAD;
+  const down = (p: THREE.Vector3, by: number) => v(p.x, p.y - by, p.z);
   const parts = [
     aero(BB, SEAT, 0.03, 0.016, kit.frame),
-    aero(SEAT, HEAD_TOP, 0.024, 0.014, kit.frame),
+    aero(SEAT, down(HEAD_TOP, head), 0.024, 0.014, kit.frame),
     aero(BB, HEAD_FOOT, 0.038, 0.019, kit.frame),
     // The maker's band on the down tube.
     aero(along(BB, HEAD_FOOT, 0.55), along(BB, HEAD_FOOT, 0.78), 0.039, 0.0195, kit.accent),
-    aero(v(0, 0.91, -0.36), HEAD_FOOT, 0.034, 0.02, kit.fork),
+    aero(v(0, 0.91 - head, -0.36), HEAD_FOOT, 0.034, 0.02, kit.fork),
     aero(SEAT, POST, 0.026, 0.011, kit.frame),
-    // The one-piece cockpit: the stem, and the tops flat as a wing.
-    aero(v(0, 0.91, -0.365), CLAMP, 0.02, 0.018, kit.frame),
-    aero(v(-0.2, 0.94, -0.46), v(0.2, 0.94, -0.46), 0.03, 0.009, kit.frame),
+    // The one-piece cockpit's stem; the rest of it is `cockpit`.
+    aero(v(0, 0.91 - head, -0.365), down(CLAMP, low), 0.02, 0.018, kit.frame),
+    ...cockpit(kit).map((part) => part.translate(0, -low, 0)),
     box(0.07, 0.035, 0.05, kit.fork, 0, 0.72, -0.415),
     // A short saddle: a narrow nose, a wide back.
     box(0.06, 0.026, 0.15, P.saddle, 0, 0.934, 0.14),
@@ -99,6 +105,17 @@ function frame(kit: Kit): THREE.BufferGeometry[] {
         0.011,
         kit.fork,
       ),
+    );
+  }
+  return parts;
+}
+
+/** The bar: the tops flat as a wing, the drops in their tape and the brake hoods, at the rider's own height. */
+function cockpit(kit: Kit): THREE.BufferGeometry[] {
+  const parts = [aero(v(-0.2, 0.94, -0.46), v(0.2, 0.94, -0.46), 0.03, 0.009, kit.frame)];
+  for (const side of [-1, 1]) {
+    const x = (p: THREE.Vector3) => (side > 0 ? p : mirror(p));
+    parts.push(
       ...path(BAR.map(x), 0.013, kit.tape),
       ...path(DROP.map(x), 0.013, kit.tape),
       ...path(DROP_END.map(x), 0.013, kit.tape),

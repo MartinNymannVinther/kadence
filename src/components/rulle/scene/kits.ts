@@ -27,6 +27,12 @@ export type Kit = {
   hem?: readonly [string, string];
   /** A race number on the seat post. */
   plate?: boolean;
+  /**
+   * How much lower the bars sit than on the rider's own bike, metres: a
+   * short head tube and a stem angled down, for a flat back. The hands,
+   * the shoulders and the head go down with them (`poseOf`).
+   */
+  low?: number;
 };
 
 /** The rider's own: Kadence's moss, on a dark bike. */
@@ -52,8 +58,9 @@ export const RIDER_KIT: Kit = {
  * The challenger's (ADR 0049): a red jersey with a white band and white
  * bands round the sleeves, black shorts with red and white at the leg
  * ends, a smooth white aero helmet, white socks and shoes, on a black aero
- * bike with a yellow fork and head tube and a number on its post. Muted,
- * like the rest of the landscape.
+ * bike with a yellow fork and head tube, a number on its post and the
+ * bars slammed low, as a professional's are. Muted, like the rest of the
+ * landscape.
  */
 export const CHALLENGER_KIT: Kit = {
   jersey: "#b8352f",
@@ -74,4 +81,5 @@ export const CHALLENGER_KIT: Kit = {
   sleeveStripe: "#f3f0ea",
   hem: ["#f3f0ea", "#b8352f"],
   plate: true,
+  low: 0.15,
 };
