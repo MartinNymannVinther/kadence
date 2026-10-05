@@ -41,12 +41,12 @@ was left to be worked out.
   the line, his shadow left on the road. Dropped, he has no sprint.
 - **His look**: the rider's own figure and bike in his kit, drawn at
   85 % of the rider's size, smaller still than his weight says, as
-  asked. A red jersey, black up to a third of the way, and above it a
-  black crown on the chest and on the back: five points with a ball on
-  each, a small cross over the middle one, red stones along its band
-  (`jersey-pattern.ts`). Red sleeves, black shorts, a white road helmet
-  and gold glasses, bare hands, white socks and shoes, a black bike with
-  deep rims and a number. No maker's names.
+  asked. A jersey quartered in red and black — split down the middle of
+  the chest and the back and across halfway up, the black quarters
+  diagonal — with a soft-edged white crown in the middle of the chest
+  and of the back (`jersey-pattern.ts`). Red sleeves, black shorts, a
+  white road helmet and gold glasses, bare hands, white socks and shoes,
+  a black bike with deep rims and a number. No maker's names.
 - **His words**: his own call as he comes up — a small rider in red and
   black, who sits on your wheel and waits for the sprint, and that you
   can ride him tired before it.

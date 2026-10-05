@@ -7,14 +7,15 @@ const lambert = (color: string) => new THREE.MeshLambertMaterial({ color, flatSh
 
 /**
  * The figure's materials (`RiderFigure`), in a kit's colours: the jersey,
- * two-toned if the kit says so (`jersey-pattern.ts`), its sleeves, band and stripes, the shorts and their leg ends, skin,
+ * patterned if the kit says so (`jersey-pattern.ts`), its sleeves, band and stripes, the shorts and their leg ends, skin,
  * helmet, socks, shoes, gloves, lenses, the bottle and the shadow.
  */
 export function kitMaterials(kit: Kit) {
   return {
-    jersey: kit.lower
-      ? new THREE.MeshLambertMaterial({ map: jerseyTexture(kit), flatShading: true })
-      : lambert(kit.jersey),
+    jersey:
+      kit.quarters || kit.crown
+        ? new THREE.MeshLambertMaterial({ map: jerseyTexture(kit), flatShading: true })
+        : lambert(kit.jersey),
     /** The torso's ends, where no pattern is drawn. */
     jerseyEnds: lambert(kit.jersey),
     light: lambert(kit.sleeve),
