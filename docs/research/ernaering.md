@@ -570,9 +570,39 @@ U19-rytter, 60 kg, linjeløb på 3 timer, gennemsnit 180 W, 18 °C, har øvet h�
 - Hvor længe hjemmelavede riskager holder i køleskab og i trøjelommen (ingen dansk myndighedskilde).
 - Prisen på billige (ikke-Medjool) dadler og på honning i discountbutikker.
 
-### 4.13 Byg selv-planen: klasse i stedet for vægt, måltider og træning (5. oktober 2026)
+### 4.13 Råd for dagen: klasse i stedet for vægt, Team Danmark og DCU (5. oktober 2026)
 
-Beregneren blev bygget om til en dag, rytteren selv sætter sammen: et hovedmåltid og et mellemmåltid før start, timerne på cyklen og måltiderne efter (ADR 0056). Martin bad om, at ingen skal skrive en vægt. Rytteren vælger klasse og køn, og målene regnes for en typisk rytter i klassen.
+Beregneren blev til en side med generelle råd for den dag, rytteren vælger (ADR 0056). Der er ingen vægt at skrive. Rytteren vælger klasse og køn, og mængderne regnes for en typisk rytter i klassen. To tidligere udgaver samme dag, hvor rytteren selv byggede en plan, er droppet.
+
+**Hvad DCU og Team Danmark siger.** DCU har ingen egne kostråd. "Vejen frem" vil formalisere undervisning i kost og ernæring (traenermateriale.md, A6). DCU's egne bidrag er opladningsturen dagen før løb, "1*5 min. AT eller 1*3 max.", omkring 1 time (U17- og U19-kompendiet 2016, s. 14 og s. 17; dcu-traeningsanbefalinger.md 4.2), og restitutionsmåltidet lige efter træning i styrkeprogrammerne. Resten følger Team Danmark:
+
+- "Kost og elitesport" (2026) [1], s. 15, 27 og 33–35:
+  - Drik mindst 1½ liter om dagen, helst vand, så urinen er lys gul og klar.
+  - Sørg for fyldte glykogendepoter inden en energikrævende præstation, med kulhydrat fra pasta, ris, kartofler, brød, havregryn og tørret frugt.
+  - Før: hovedmåltid 3–4 timer før, ½–1 liter væske og et fedtfattigt mellemmåltid med letoptageligt kulhydrat og protein 1–2 timer før. Spis morgenmad før morgentræning.
+  - Forslag til måltid før træning: brød med magert pålæg, havregryn med magre mælkeprodukter, og pasta, ris eller kartofler med magert kød og grønt.
+  - Under: drik 1–2 dl hvert 15. minut og 30–60 g kulhydrat i timen ved hård træning over 1 time. Opskriften på hjemmelavet sportsdrik er 1–2 dl saft, en knivspids salt og 1 liter vand.
+  - Efter: 1 g kulhydrat og 0,25 g protein pr. kg, væske og salt, og et hovedmåltid 1–2 timer efter.
+- ATK 2.0, ernæringskapitlet (2025): sportsprodukter anbefales ikke til børn og unge (foraeldre-og-talentudvikling.md, "Ernæring"), og energidrikke med koffein frarådes (s. 182; traenermateriale.md, B1). Derfor er der ingen gel eller energibar i eksemplerne. Gelen og havrebaren er taget ud af beregneren.
+- Opskriften i eksemplet er Kadences opskrift A (2.2), fordi sukker giver kendte gram, hvor saft varierer.
+
+**Eksemplerne** (`src/modules/calc/fuel-examples.ts`) er sat sammen af portionerne nedenfor, så tallene regnes ud. Martin foreslog ris med honning til måltidet før start. De øvrige følger Team Danmarks forslag. Dagen før og hovedmåltidet efter bliver beskrevet som tallerkener uden gram.
+
+| Vindue                 | Eksempel                                      | Kulhydrat | Protein |
+| ---------------------- | --------------------------------------------- | --------- | ------- |
+| Hovedmåltid 3–4 t før  | 5 dl kogte ris og 2 spsk. honning             | 146 g     |         |
+|                        | 4 skiver franskbrød, 2 spsk. honning og juice | 150 g     |         |
+|                        | Stor tallerken pasta med kylling              | 126 g     |         |
+|                        | 2½ dl havregryn, 2½ dl mælk og en banan       | 81 g      |         |
+| Mellemmåltid 1–2 t før | En banan                                      | 25 g      |         |
+|                        | 2 skiver franskbrød og 1 spsk. honning        | 65 g      |         |
+|                        | Skyr, banan og 1 spsk. honning                | 50 g      |         |
+| Lige efter             | 2 glas kakaomælk og en banan                  | 71 g      | 19 g    |
+|                        | Skyr, banan og 1 spsk. honning                | 50 g      | 18 g    |
+|                        | 2 skiver franskbrød med ost og juice          | 69 g      | 21 g    |
+| Hver time, inden 8 t   | 2½ dl kogte ris og 1 spsk. honning            | 73 g      |         |
+|                        | 2 skiver franskbrød og juice                  | 69 g      |         |
+|                        | En banan og 1 dl rosiner                      | 70 g      |         |
 
 **Referencevægt pr. klasse** (vises aldrig på siden). Nordic Nutrition Recommendations 2023, energikapitlet (Food & Nutrition Research 2023;67:10233, doi 10.29219/fnr.v67.10233, CC BY). Tabel 7 giver vægt efter alder for 2–17-årige, regnet fra målt højde og WHO 2007's median-BMI for alder. Tabel 10 giver Danmark, 18–24 år, regnet som vægt for højde ved BMI 23. En klasse er middelværdien af sine årgange efter DCU's aldre.
 
@@ -606,16 +636,15 @@ NNR skriver selv, at børn på samme alder kan veje dobbelt så meget som hinand
 | Æg         | 1663 Æg, høne, frilands          | ét æg, 55 g               | 1 g       | 7 g     |
 | Ost        | 1274 Ost, fast, 30+              | 2 skiver, 40 g            | 0 g       | 11 g    |
 
-Tallene passer med Team Danmarks liste: 2 skiver brød, 2½ dl kogt ris, 1 dl rosiner, 2½ dl havregryn og 2 bananer giver hver omkring 50 g. **Kadence-forslag:** en portion med mindst 6 g kostfibre eller 10 g fedt er "fedt eller fibre" og nævnes, hvis den ligger i mellemmåltidet lige før start (Team Danmark: "få kostfibre", "lidt fedt"). Det gælder havregryn og rugbrød.
+Tallene passer med Team Danmarks liste: 2 skiver brød, 2½ dl kogt ris, 1 dl rosiner, 2½ dl havregryn og 2 bananer giver hver omkring 50 g. **Kadence-forslag:** en portion med mindst 6 g kostfibre eller 10 g fedt regnes som "fedt eller fibre" og bruges ikke i mellemmåltidet eller efter (Team Danmark: "få kostfibre", "lidt fedt"). Det gælder havregryn og rugbrød.
 
 **Målene, og hvad der er Kadences læsning.**
 
-- Før: 1–4 g kulhydrat/kg 1–4 timer før (Thomas 2016 [19]), læst som omkring 1 g/kg for hver time fra hovedmåltidet til start, ±½ g/kg. Det er Kadences læsning. Hovedmåltid og mellemmåltid tæller sammen. Væske 5–10 ml/kg (Thomas 2016).
-- Efter: 1–1,2 g kulhydrat/kg og 0,25–0,3 g protein/kg lige efter, ½–1 l at drikke (Team Danmark [1], Thomas 2016 [19]). Med mindre end 8 timer til næste hårde pas: 1–1,2 g/kg hver time de første fire timer (Thomas 2016) og 0,5–0,7 l i timen (Team Danmark).
-- Sved: 0,7–1,2 l/t i dansk vejr (Team Danmark). Fra 25 °C er det Kadences læsning at regne med 1,2–2 l/t, fordi Team Danmark nævner op til 2 l/t. Det ikke-drukne erstattes med 125–150 % (Thomas 2016).
-- Tallerkenen efter: Elite-modellen ved 1½ times hård træning eller mere, ellers Y-modellen (Team Danmark, 1.1). Kadence-forslag: også Elite-modellen, når der kommer en hård dag bagefter.
-- Træning: tempo og intervaller følger løbets tabel (Team Danmark: 30–60 g/t ved høj intensitet over 1 time). Kadence-forslag for en rolig tur: 0–30 g/t op til 2 timer og 30–60 g/t derover. Det bygger på Jeukendrup 2014's "op til 30 g/t" ved 1–2 timer og "op til 60 g/t" ved 2–3 timer for trænede, og hans råd om at gå ned, når den absolutte intensitet er lav [24].
-- Slæk, fordi maden kommer i hele portioner (Kadence-forslag): et måltid er i mål inden for 15 g kulhydrat, 5 g protein og ¼ l.
+- Før: 1–4 g kulhydrat/kg 1–4 timer før (Thomas 2016 [19]). Kadence læser det som omkring 1 g/kg for hver time fra hovedmåltidet til start, ±½ g/kg, med hovedmåltidet 3 timer før. Hovedmåltid og mellemmåltid tæller sammen. Væske ½–1 liter (Team Danmark).
+- Efter: 1–1,2 g kulhydrat/kg og 0,25–0,3 g protein/kg lige efter og ½–1 l at drikke (Team Danmark [1], Thomas 2016 [19]). Er der mindre end 8 timer til næste hårde pas, gentages 1–1,2 g/kg hver time de første fire timer (Thomas 2016).
+- Tallerkenen efter: Elite-modellen ved 1½ times hård træning eller mere, ellers Y-modellen (Team Danmark, 1.1). Kadence-forslag: også Elite-modellen, når der kommer en hård dag bagefter, og altid aftenen før et løb.
+- Træning: tempo og intervaller følger løbets tabel. Kadence-forslag for en rolig tur: 0–30 g/t op til 2 timer og 30–60 g/t derover. Det bygger på Jeukendrup 2014's "op til 30 g/t" ved 1–2 timer og "op til 60 g/t" ved 2–3 timer for trænede, og hans råd om at gå ned, når den absolutte intensitet er lav [24].
+- Forbruget i et feltløb: 12 MET (Compendium 2024, 01050) × referencevægt, ±15 %. Det vises kun for løb, så forholdet til mavens 60 eller 90 g i timen kan ses.
 - Der regnes ikke dagligt indtag i g/kg (1.2). Det er sundhedsråd om mindreårige, som ADR 0047 lader vente på en sportsdiætist.
 
 ---

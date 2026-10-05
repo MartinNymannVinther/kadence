@@ -27,7 +27,6 @@ export type Session = "race" | "training";
 export type Intensity = "easy" | "tempo" | "intervals";
 /** Rest or an easy day tomorrow; a hard session or a race tomorrow; another hard session within 8 hours. */
 export type Next = "rest" | "hard" | "soon";
-export type MealHours = 2 | 3 | 4;
 
 export type Day = {
   session: Session;
@@ -39,8 +38,6 @@ export type Day = {
   riderClass: RiderClass;
   sex: Sex;
   next: Next;
-  /** How long before the start the main meal is eaten. */
-  mealHours: MealHours;
 };
 
 export const DEFAULT_DAY: Day = {
@@ -53,7 +50,6 @@ export const DEFAULT_DAY: Day = {
   riderClass: "U17",
   sex: "male",
   next: "rest",
-  mealHours: 3,
 };
 
 export const gutCapFor = (gutTrained: boolean) => (gutTrained ? MAX_CARBS_PER_HOUR : UNTRAINED_CAP);
@@ -93,18 +89,19 @@ export const ABSORB_FLUID: Range = { low: 1, high: 1.5 };
 
 const times = (range: Range, by: number): Range => ({ low: range.low * by, high: range.high * by });
 
+/** The main meal comes 3–4 hours before the start (Team Danmark); the goal is read from 3. */
+export const MEAL_HOURS = 3;
+
 /**
  * Before the start: 1–4 g/kg of carbohydrate 1–4 hours before (Thomas
  * 2016), read as about 1 g/kg for each hour from the main meal to the
- * start, give or take half a gram — the main meal and a snack together.
- * And 5–10 ml/kg to drink in the last hours (Thomas 2016).
+ * start, give or take half a gram — the main meal 3–4 hours before and a
+ * snack 1–2 hours before together (Team Danmark). And 5–10 ml/kg to drink
+ * in the last hours (Thomas 2016).
  */
 export function beforeTargets(day: Day): { carbs: Range; fluid: Range } {
   const kg = referenceKg(day.riderClass, day.sex);
-  const perKg = {
-    low: Math.max(1, day.mealHours - 0.5),
-    high: Math.min(4, day.mealHours + 0.5),
-  };
+  const perKg = { low: MEAL_HOURS - 0.5, high: MEAL_HOURS + 0.5 };
   return {
     carbs: { low: Math.round(perKg.low * kg), high: Math.round(perKg.high * kg) },
     fluid: times({ low: 0.005, high: 0.01 }, kg),

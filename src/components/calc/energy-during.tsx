@@ -1,108 +1,118 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
+import { Info } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { num } from "@/components/charts/format";
-import type { Range } from "@/modules/calc/energy";
-import type { Lane, Lanes, PlanCheck } from "@/modules/calc/fuel-check";
-import { ABSORB_FLUID, sweatPerHour, type Day } from "@/modules/calc/fuel-day";
-import type { Slot } from "@/modules/calc/fuel-plan";
-import { cn } from "@/lib/utils";
+import { kcalFromMet, spread } from "@/modules/calc/energy";
+import { checkPlan, type Note } from "@/modules/calc/fuel-check";
+import { carbAdvice, type Day } from "@/modules/calc/fuel-day";
+import { contentOf } from "@/modules/calc/fuel-items";
+import { suggestPlan } from "@/modules/calc/fuel-suggest";
+import { referenceKg } from "@/modules/calc/reference-rider";
 import { EnergyBudget } from "./energy-budget";
-import { EnergyLane } from "./energy-lane";
-import { EnergyPhase } from "./energy-phase";
-import type { SlotBinding } from "./energy-slot";
+import { EnergyGoal } from "./energy-goal";
+import { ItemIcon } from "./energy-item-icon";
+import { EnergyStep } from "./energy-phase";
 
-/** An hour's share of the board; a short last hour keeps room to drop in. */
-const laneWeight = (lane: Lane) => Math.max(0.5, (lane.toMin - lane.fromMin) / 60);
+/** The notes the example can bring with it; the rest only ever came up for a plan built by hand. */
+const SHOWN: readonly Note[] = ["capped", "multiple", "practise", "heat", "cages"];
 
 /**
- * On the bike: one slot for each hour, the goal for an hour, and the
- * comparison of what the body uses with what the stomach can take and
- * what the plan gives. How the energy is estimated sits folded under it.
+ * On the bike: the goal for an hour, one way to meet it hour by hour with
+ * homemade drinks and ordinary food, the recipe for the sports drink, and
+ * — for a race — why the stomach cannot take back what the body uses.
  */
-export function EnergyDuring({
-  day,
-  lanes,
-  check,
-  quiet,
-  bind,
-  kcalPerHour,
-  allowedLossL,
-  effort,
-}: {
-  day: Day;
-  lanes: Lanes;
-  check: PlanCheck;
-  quiet: boolean;
-  bind: (slot: Slot) => SlotBinding;
-  kcalPerHour: Range | null;
-  allowedLossL: number;
-  /** The fields for the effort, folded away. */
-  effort: React.ReactNode;
-}) {
+export function EnergyDuring({ day }: { day: Day }) {
   const t = useTranslations("calculators.energy.during");
+  const g = useTranslations("calculators.energy.goal");
+  const items = useTranslations("calculators.energy.items");
+  const warnings = useTranslations("calculators.energy.warnings");
   const locale = useLocale();
-  const { advice, fluidPerHour: fluid } = check;
-  const hours = (check.lanes.at(-1)?.lane.toMin ?? 60) / 60;
-  const targeted = advice.kind === "single" || advice.kind === "multiple";
+  const advice = carbAdvice(day);
+  const lanes = suggestPlan(day, advice);
+  const check = checkPlan(day, lanes, advice);
+  const fluid = check.fluidPerHour;
   const carbs =
     advice.kind === "water"
-      ? t("target.water")
+      ? g("noCarbs")
       : advice.kind === "small"
-        ? t("target.small")
+        ? g("littleCarbs")
         : advice.low === advice.high
-          ? t("target.carbsOne", { high: advice.high })
-          : t("target.carbs", { low: advice.low, high: advice.high });
-  const columns = check.lanes.map((c) => `minmax(0,${laneWeight(c.lane)}fr)`).join(" ");
+          ? g("carbsOne", { high: advice.high })
+          : g("carbsHour", { low: advice.low, high: advice.high });
+  const notes = check.notes.filter((n) => SHOWN.includes(n));
+  const kcal =
+    day.session === "race"
+      ? spread(kcalFromMet("racing", referenceKg(day.riderClass, day.sex), 1))
+      : null;
 
   return (
-    <EnergyPhase
-      step={2}
+    <EnergyStep
+      id="energy-during"
+      when={t("when")}
       title={t(day.session === "race" ? "titleRace" : "titleTraining")}
-      intro={t("target.both", {
-        carbs,
-        fluid: t("target.fluid", {
-          low: num(fluid.low, locale, 1),
-          high: num(fluid.high, locale, 1),
-        }),
-      })}
     >
-      <div
-        className={cn(
-          "grid [grid-template-columns:var(--columns)] gap-1.5 sm:gap-2",
-          check.lanes.length > 3 && "max-sm:grid-cols-3",
-        )}
-        style={{ "--columns": columns } as React.CSSProperties}
-      >
-        {check.lanes.map((c) => (
-          <EnergyLane
-            key={c.lane.index}
-            check={c}
-            items={lanes[c.lane.index] ?? []}
-            quiet={quiet}
-            binding={bind({ phase: "during", index: c.lane.index })}
-          />
-        ))}
-      </div>
-      <EnergyBudget
-        kcalPerHour={kcalPerHour}
-        gutCap={check.gutCap}
-        advice={targeted ? advice : null}
-        planCarbs={check.totals.carbs / hours}
-        sweat={sweatPerHour(day.celsius)}
-        absorb={ABSORB_FLUID}
-        fluidGoal={fluid}
-        planFluid={check.totals.fluidL / hours}
-        allowedLossL={allowedLossL}
+      <EnergyGoal
+        label={t("goal")}
+        goals={[
+          { kind: "carbs", text: carbs },
+          {
+            kind: "fluid",
+            text: g("fluidHour", {
+              low: num(fluid.low, locale, 1),
+              high: num(fluid.high, locale, 1),
+            }),
+          },
+        ]}
       />
-      <details className="group border-border rounded-lg border">
-        <summary className="text-2sm flex cursor-pointer list-none items-center justify-between gap-2 px-3 py-2 font-medium">
-          {t("effort")}
-          <ChevronDown aria-hidden className="size-4 transition-transform group-open:rotate-180" />
-        </summary>
-        <div className="border-border border-t p-3">{effort}</div>
-      </details>
-    </EnergyPhase>
+      <p className="text-reading leading-relaxed">{t("how")}</p>
+      <div className="flex flex-col gap-2">
+        <h4 className="text-2sm font-semibold">{t("example")}</h4>
+        <ol className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
+          {check.lanes.map((c) => {
+            const lane = lanes[c.lane.index] ?? [];
+            const content = contentOf(lane, day.bottleMl);
+            return (
+              <li
+                key={c.lane.index}
+                className="border-border bg-card flex flex-col gap-1.5 rounded-lg border p-2"
+              >
+                <span className="text-2sm font-semibold">
+                  {t("hour", { hour: c.lane.index + 1 })}
+                </span>
+                <span aria-hidden className="flex flex-wrap gap-0.5">
+                  {lane.map((id, i) => (
+                    <ItemIcon key={`${id}-${i}`} id={id} className="size-7" />
+                  ))}
+                </span>
+                <span className="text-meta text-xs leading-snug">
+                  {lane.length === 0
+                    ? t("nothing")
+                    : lane.map((id) => items(`${id}.name` as "water.name")).join(", ")}
+                </span>
+                <span className="text-xs font-medium tabular-nums">
+                  {t("hourContent", { g: content.carbs, l: num(content.fluidL, locale, 2) })}
+                </span>
+              </li>
+            );
+          })}
+        </ol>
+        <p className="text-meta text-2sm leading-relaxed">{t("recipe", { ml: day.bottleMl })}</p>
+      </div>
+      {kcal && <EnergyBudget kcal={kcal} gutCap={check.gutCap} />}
+      <ul className="flex flex-col gap-2">
+        {[...notes.map((n) => warnings(n, { n: check.totals.bottles })), warnings("products")].map(
+          (text) => (
+            <li
+              key={text}
+              className="bg-secondary flex items-start gap-2 rounded-md px-3 py-2 text-2sm leading-relaxed"
+            >
+              <Info aria-hidden className="text-meta mt-0.5 size-4 shrink-0" />
+              {text}
+            </li>
+          ),
+        )}
+      </ul>
+    </EnergyStep>
   );
 }

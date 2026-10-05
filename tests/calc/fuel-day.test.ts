@@ -13,10 +13,12 @@ import {
 const DAY: Day = { ...DEFAULT_DAY, riderClass: "U17", sex: "male" }; // 61.8 kg behind the scenes
 
 describe("the goals of a day", () => {
-  it("before: about 1 g/kg for each hour from the main meal, ½ g either way, and 5–10 ml/kg", () => {
+  it("before: about 1 g/kg for each hour from a main meal 3 hours before, ½ g either way, and 5–10 ml/kg", () => {
     expect(beforeTargets(DAY).carbs).toEqual({ low: 155, high: 216 }); // 2.5–3.5 g/kg
-    expect(beforeTargets({ ...DAY, mealHours: 4 }).carbs).toEqual({ low: 216, high: 247 }); // 3.5–4
-    expect(beforeTargets({ ...DAY, mealHours: 2 }).carbs).toEqual({ low: 93, high: 155 });
+    expect(beforeTargets({ ...DAY, riderClass: "U15", sex: "female" }).carbs).toEqual({
+      low: 126,
+      high: 176,
+    });
     const fluid = beforeTargets(DAY).fluid;
     expect(fluid.low).toBeCloseTo(0.309, 3);
     expect(fluid.high).toBeCloseTo(0.618, 3);

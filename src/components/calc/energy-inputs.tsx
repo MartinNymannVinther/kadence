@@ -1,125 +1,181 @@
 "use client";
 
-import { Info } from "lucide-react";
+import { useId } from "react";
 import { useTranslations } from "next-intl";
-import { NumberField } from "@/components/workouts/number-field";
-import type { Position, RaceKind } from "@/modules/calc/energy";
-import type { Method, RaceInput, Warning } from "@/modules/calc/race-fuel";
-import { FieldSelect } from "./field-select";
+import { SegmentedChoice } from "@/components/ui/segmented";
+import type { Sex } from "@/modules/calc/energy";
+import { MAX_MINUTES, MIN_MINUTES } from "@/modules/calc/fuel-check";
+import type { Day, Intensity, Next, Session } from "@/modules/calc/fuel-day";
+import { CLASS_AGES, RIDER_CLASSES } from "@/modules/calc/reference-rider";
+import { cn } from "@/lib/utils";
+import { GearSlider } from "./gear-slider";
 
-type Set = <K extends keyof RaceInput>(key: K, value: RaceInput[K]) => void;
+const span = (from: number, to: number, step: number) =>
+  Array.from({ length: Math.floor((to - from) / step) + 1 }, (_, i) => from + i * step);
 
-const card = "grid gap-3 sm:grid-cols-2";
+/** Half an hour to six hours in quarters, and the temperatures a Danish season can bring. */
+const MINUTES = span(MIN_MINUTES, MAX_MINUTES, 15);
+const CELSIUS = span(-5, 40, 1);
+const NEXT: readonly Next[] = ["rest", "hard", "soon"];
+
+const choice =
+  "border-border bg-card flex cursor-pointer flex-col gap-0.5 rounded-xl border px-2 py-2 text-center shadow-[var(--surface-shadow)] transition-colors duration-[120ms] ease-out hover:bg-secondary has-[:checked]:border-primary has-[:checked]:bg-primary has-[:checked]:text-primary-foreground has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring";
+
+function Label({ children }: { children: React.ReactNode }) {
+  return <span className="text-label text-xs font-medium">{children}</span>;
+}
 
 /**
- * How hard the session is, by one of four ways, for the estimate of what
- * the body uses. Weight, age and sex come from the class and sex chosen
- * at the top, so none of them is asked for here.
+ * What the day is: a race or training (and how hard), the rider's class
+ * and sex — in place of a weight, which riders and parents should not
+ * have to think of as a number — how long and how warm, whether the
+ * stomach is used to much carbohydrate, and what comes next.
  */
 export function EnergyInputs({
-  input,
+  day,
   set,
-  warnings,
 }: {
-  input: RaceInput;
-  set: Set;
-  /** What makes the estimate less certain: a heart rate formula made on adults, speed in a bunch. */
-  warnings: readonly Warning[];
+  day: Day;
+  set: <K extends keyof Day>(key: K, value: Day[K]) => void;
 }) {
-  const t = useTranslations("calculators.energy.effort");
-  const w = useTranslations("calculators.energy.warnings");
+  const t = useTranslations("calculators.energy.setup");
+  const classGroup = useId();
+  const nextGroup = useId();
+  const duration = (m: number) => {
+    const h = Math.floor(m / 60);
+    const rest = m % 60;
+    if (h === 0) return t("durationMinutes", { m: rest });
+    return rest === 0 ? t("durationHours", { h }) : t("durationMixed", { h, m: rest });
+  };
 
   return (
-    <div className={card}>
-      <p className="text-meta text-2sm leading-relaxed sm:col-span-2">{t("intro")}</p>
-      <div className="sm:col-span-2">
-        <FieldSelect<Method>
-          label={t("method.label")}
-          value={input.method}
-          onChange={(m) => set("method", m)}
-          options={(["watts", "speed", "heartRate", "met"] as const).map((m) => ({
-            value: m,
-            label: t(`method.${m}`),
-          }))}
+    <section
+      aria-labelledby="energy-setup"
+      className="border-border bg-card flex flex-col gap-4 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5"
+    >
+      <h2 id="energy-setup" className="text-lg font-semibold">
+        {t("title")}
+      </h2>
+      <div className="flex flex-wrap items-end gap-3">
+        <SegmentedChoice<Session>
+          label={t("session")}
+          value={day.session}
+          onChange={(s) => set("session", s)}
+          options={[
+            { value: "race", label: t("race") },
+            { value: "training", label: t("training") },
+          ]}
         />
-      </div>
-      {input.method === "watts" && (
-        <div className="flex flex-col gap-1 sm:col-span-2">
-          <NumberField
-            label={t("watts")}
-            value={input.watts}
-            onChange={(w) => set("watts", w)}
-            max={600}
-            suffix="W"
-          />
-          <p className="text-meta text-xs">{t("wattsHint")}</p>
-        </div>
-      )}
-      {input.method === "speed" && (
-        <>
-          <NumberField
-            label={t("kmh")}
-            value={input.kmh}
-            onChange={(v) => set("kmh", v)}
-            max={60}
-            suffix={t("kmhUnit")}
-          />
-          <NumberField
-            label={t("climb")}
-            value={input.climbM}
-            onChange={(v) => set("climbM", v)}
-            max={5000}
-            suffix="m"
-          />
-          <FieldSelect<Position>
-            label={t("position.label")}
-            value={input.position}
-            onChange={(p) => set("position", p)}
-            options={(["hoods", "drops", "timeTrial"] as const).map((p) => ({
-              value: p,
-              label: t(`position.${p}`),
+        {day.session === "training" && (
+          <SegmentedChoice<Intensity>
+            label={t("intensity.label")}
+            value={day.intensity}
+            onChange={(i) => set("intensity", i)}
+            options={(["easy", "tempo", "intervals"] as const).map((i) => ({
+              value: i,
+              label: t(`intensity.${i}`),
             }))}
           />
-          <NumberField
-            label={t("bikeKg")}
-            value={input.bikeKg}
-            onChange={(v) => set("bikeKg", v)}
-            min={5}
-            max={15}
-            suffix={t("kg")}
-          />
-        </>
-      )}
-      {input.method === "heartRate" && (
-        <>
-          <NumberField
-            label={t("bpm")}
-            value={input.bpm}
-            onChange={(v) => set("bpm", v)}
-            max={220}
-          />
-        </>
-      )}
-      {input.method === "met" && (
-        <FieldSelect<RaceKind>
-          label={t("raceKind.label")}
-          value={input.raceKind}
-          onChange={(k) => set("raceKind", k)}
-          options={(["fast", "racing", "solo"] as const).map((k) => ({
-            value: k,
-            label: t(`raceKind.${k}`),
-          }))}
+        )}
+      </div>
+
+      <fieldset className="flex flex-col gap-1.5">
+        <legend className="mb-1.5">
+          <Label>{t("class")}</Label>
+        </legend>
+        <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
+          {RIDER_CLASSES.map((c) => {
+            const ages = CLASS_AGES[c];
+            return (
+              <label key={c} className={choice}>
+                <input
+                  type="radio"
+                  name={classGroup}
+                  value={c}
+                  checked={day.riderClass === c}
+                  onChange={() => set("riderClass", c)}
+                  className="sr-only"
+                />
+                <span className="text-lg leading-none font-semibold">{c}</span>
+                <span className="text-2xs opacity-85">
+                  {t("ages", { from: ages[0]!, to: ages.at(-1)! })}
+                </span>
+              </label>
+            );
+          })}
+        </div>
+        <p className="text-meta text-xs leading-relaxed">{t("classHint")}</p>
+      </fieldset>
+
+      <div className="flex flex-col gap-1.5">
+        <Label>{t("sex.label")}</Label>
+        <SegmentedChoice<Sex>
+          label={t("sex.label")}
+          value={day.sex}
+          onChange={(s) => set("sex", s)}
+          options={(["female", "male"] as const).map((s) => ({ value: s, label: t(`sex.${s}`) }))}
+          className="w-fit"
         />
-      )}
-      {warnings.map((warning) => (
-        <p
-          key={warning}
-          className="bg-sticky text-sticky-ink flex items-start gap-2 rounded-md px-3 py-2 text-2sm leading-relaxed sm:col-span-2"
-        >
-          <Info aria-hidden className="mt-0.5 size-4 shrink-0" />
-          {w(warning as "heartRateAge")}
-        </p>
-      ))}
-    </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <GearSlider
+          label={t("duration")}
+          values={MINUTES}
+          value={day.minutes}
+          onChange={(m) => set("minutes", m)}
+          shown={duration}
+          spoken={(m) => t("durationSpoken", { m })}
+          less={t("shorter")}
+          more={t("longer")}
+        />
+        <GearSlider
+          label={t("temperature")}
+          values={CELSIUS}
+          value={day.celsius}
+          onChange={(c) => set("celsius", c)}
+          shown={(c) => t("celsiusShown", { c })}
+          spoken={(c) => t("celsiusSpoken", { c })}
+          less={t("colder")}
+          more={t("warmer")}
+        />
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <Label>{t("gut.label")}</Label>
+        <SegmentedChoice<"no" | "yes">
+          label={t("gut.label")}
+          value={day.gutTrained ? "yes" : "no"}
+          onChange={(v) => set("gutTrained", v === "yes")}
+          options={[
+            { value: "no", label: t("gut.no") },
+            { value: "yes", label: t("gut.yes") },
+          ]}
+          className="w-fit"
+        />
+      </div>
+
+      <fieldset className="flex flex-col gap-1.5">
+        <legend className="mb-1.5">
+          <Label>{t("next.label")}</Label>
+        </legend>
+        <div className="grid gap-1.5 sm:grid-cols-3 sm:gap-2">
+          {NEXT.map((n) => (
+            <label key={n} className={cn(choice, "items-start text-left")}>
+              <input
+                type="radio"
+                name={nextGroup}
+                value={n}
+                checked={day.next === n}
+                onChange={() => set("next", n)}
+                className="sr-only"
+              />
+              <span className="text-2sm font-semibold">{t(`next.${n}.title`)}</span>
+              <span className="text-2xs leading-snug opacity-85">{t(`next.${n}.body`)}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+    </section>
   );
 }

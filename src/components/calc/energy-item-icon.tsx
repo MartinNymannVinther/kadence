@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { MealIcon } from "./energy-meal-icon";
 
 /**
- * The colours of the pantry, one for each thing, used for its icon and
+ * The colours of the food, one for each thing, used for its icon and
  * the tint behind it. They are the illustration's own and the same in
  * light and dark: a bottle of sports drink is orange on any screen.
  */
@@ -13,9 +13,7 @@ export const ITEM_COLOUR: Record<FuelItemId, string> = {
   drink: "#f08a24",
   fuel: "#d4407a",
   riceCake: "#c9b48a",
-  gel: "#f2c230",
   banana: "#e8c22a",
-  oatBar: "#b07a3f",
   oats: "#d9c8a8",
   milk: "#9fc6e0",
   whiteBread: "#e8bf72",
@@ -80,21 +78,6 @@ function RiceCake() {
   );
 }
 
-function Gel() {
-  return (
-    <>
-      <path
-        d="M9 4 H23 L23 8 L20 10 V27 Q20 29 18 29 H14 Q12 29 12 27 V10 L9 8 Z"
-        fill="#f2c230"
-        stroke="#00000033"
-        strokeWidth="0.8"
-      />
-      <path d="M12 15 H20 V20 H12 Z" fill="#e0533d" />
-      <path d="M9 6 H23" stroke="#00000044" strokeWidth="0.8" strokeDasharray="1.2 1" />
-    </>
-  );
-}
-
 function Banana() {
   return (
     <>
@@ -111,35 +94,7 @@ function Banana() {
   );
 }
 
-function OatBar() {
-  return (
-    <>
-      <rect
-        x="4"
-        y="11"
-        width="24"
-        height="11"
-        rx="2"
-        fill="#c08a4c"
-        stroke="#00000033"
-        strokeWidth="0.8"
-      />
-      <g fill="#8f5f2c">
-        <ellipse cx="9" cy="14.5" rx="1.6" ry="0.9" />
-        <ellipse cx="15" cy="18.5" rx="1.6" ry="0.9" />
-        <ellipse cx="21" cy="14" rx="1.6" ry="0.9" />
-        <ellipse cx="24" cy="19" rx="1.4" ry="0.8" />
-        <ellipse cx="11" cy="19.5" rx="1.3" ry="0.8" />
-      </g>
-      <g fill="#e6c48f">
-        <ellipse cx="12.5" cy="13.8" rx="1.2" ry="0.7" />
-        <ellipse cx="18.5" cy="16.5" rx="1.2" ry="0.7" />
-      </g>
-    </>
-  );
-}
-
-/** One thing from the pantry drawn small: a bottle in its drink's colour, a rice cake in foil, a gel, a banana, an oat bar, or a meal. */
+/** One food drawn small: a bottle in its drink's colour, a rice cake in foil, a banana, or a meal. */
 export function ItemIcon({ id, className }: { id: FuelItemId; className?: string }) {
   return (
     <svg viewBox="0 0 32 32" aria-hidden className={cn("size-8 shrink-0", className)}>
@@ -148,9 +103,7 @@ export function ItemIcon({ id, className }: { id: FuelItemId; className?: string
       {id === "drink" && <Bottle colour={ITEM_COLOUR.drink} />}
       {id === "fuel" && <Bottle colour={ITEM_COLOUR.fuel} />}
       {id === "riceCake" && <RiceCake />}
-      {id === "gel" && <Gel />}
       {id === "banana" && <Banana />}
-      {id === "oatBar" && <OatBar />}
       <MealIcon id={id} />
     </svg>
   );

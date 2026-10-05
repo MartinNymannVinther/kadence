@@ -13,16 +13,18 @@ import {
 import { contentOf, type FuelItemId } from "./fuel-items";
 
 /**
- * Kadence's own plan for a race, for the rider who wants to see one
- * after building their own. The bottles follow the middle of the fluid
- * range, as many as the calculator has always counted (⌈fluid ÷
- * bottle⌉), spread evenly over the hours, all of one kind: the 8 %
- * bottle above 60 g an hour, sports drink below it and whenever it is
- * hot, when Team Danmark has the fluid in a 6 % drink and the rest of
- * the carbohydrate as food (ernaering.md 2.3). Then, hour by hour, water
- * — with salt when the race is long or hot — in some of them and rice cakes or gels beside them are chosen to land
- * nearest the middle of the carbohydrate range without passing the
- * stomach's limit: rice cakes while they keep, gels after.
+ * Kadence's example of the hours on the bike, shown under the
+ * recommendation as one way to meet it. The bottles follow the middle of
+ * the fluid range, as many as the calculator has always counted
+ * (⌈fluid ÷ bottle⌉), spread evenly over the hours, all of one kind: the
+ * homemade 8 % bottle above 60 g an hour, sports drink below it and
+ * whenever it is hot, when Team Danmark has the fluid in a 6 % drink and
+ * the rest of the carbohydrate as food (ernaering.md 2.3). Then, hour by
+ * hour, water — with salt when the race is long or hot — in some of them
+ * and rice cakes or bananas beside them are chosen to land nearest the
+ * middle of the carbohydrate range without passing the stomach's limit:
+ * rice cakes while they keep, bananas after. No gels: Team Danmark's ATK
+ * does not recommend sports products for children and young people.
  * Kadence's own reading of the sources, which give no fixed rhythm
  * (Morton 2026; ernaering.md 4.6).
  *
@@ -43,14 +45,14 @@ function options(
   const out: Option[] = [];
   for (let plain = 0; plain <= bottles; plain++) {
     for (let cakes = 0; cakes <= (riceCakes ? MAX_PIECES : 0); cakes++) {
-      for (let gels = 0; cakes + gels <= MAX_PIECES; gels++) {
+      for (let bananas = 0; cakes + bananas <= MAX_PIECES; bananas++) {
         const items: FuelItemId[] = [
           ...Array<FuelItemId>(bottles - plain).fill(kind),
           ...Array<FuelItemId>(plain).fill(water),
           ...Array<FuelItemId>(cakes).fill("riceCake"),
-          ...Array<FuelItemId>(gels).fill("gel"),
+          ...Array<FuelItemId>(bananas).fill("banana"),
         ];
-        out.push({ items, carbs: 0, cost: 2 * plain + 6 * cakes + 8 * gels });
+        out.push({ items, carbs: 0, cost: 2 * plain + 6 * cakes + 8 * bananas });
       }
     }
   }

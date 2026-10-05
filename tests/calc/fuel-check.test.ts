@@ -26,13 +26,11 @@ describe("the pantry", () => {
       fluidL: 0,
       sodiumMg: 39,
     });
-    expect(itemContent("gel", 500).carbs).toBe(25);
     expect(itemContent("banana", 500).carbs).toBe(25);
-    expect(itemContent("oatBar", 500).carbs).toBe(33);
   });
 
-  it("has eight things for the bike, four of them bottles, and sixteen meals", () => {
-    expect(RIDE_ITEM_IDS).toHaveLength(8);
+  it("has six things for the bike, four of them bottles and no sports products, and sixteen meals", () => {
+    expect(RIDE_ITEM_IDS).toHaveLength(6);
     expect(RIDE_ITEM_IDS.filter((id) => itemContent(id, 750).fluidL > 0)).toHaveLength(4);
     expect(MEAL_ITEM_IDS).toHaveLength(16);
   });
@@ -82,13 +80,13 @@ describe("checking a plan hour by hour", () => {
     });
     expect(check.lanes[1]).toMatchObject({ carbState: "under", fluidState: "ok", mood: "empty" });
     expect(check.podium).toBe(false);
-    expect(checkPlan(RACE, [["gel"], ["water"]]).lanes[1]!.mood).toBe("hungry");
+    expect(checkPlan(RACE, [["banana"], ["water"]]).lanes[1]!.mood).toBe("hungry");
   });
 
   it("counts the recommendation from the start, so a short hour is caught up later", () => {
     const check = checkPlan(RACE, [
-      ["gel", "water"],
-      ["riceCake", "gel"],
+      ["banana", "water"],
+      ["riceCake", "banana"],
     ]);
     expect(check.lanes.map((c) => c.cumCarbs)).toEqual([25, 82]);
     expect(check.lanes.map((c) => c.carbState)).toEqual(["ok", "ok"]);
@@ -96,7 +94,7 @@ describe("checking a plan hour by hour", () => {
 
   it("gives the stomach 60 g an hour without practice and 90 g with, 10 g over either", () => {
     const hour = (items: Lanes[number]) => checkPlan(RACE, [items, ["drink"]]).lanes[0]!;
-    expect(hour(["drink", "gel"]).carbState).toBe("ok"); // 70 g
+    expect(hour(["drink", "banana"]).carbState).toBe("ok"); // 70 g
     expect(hour(["drink", "riceCake"])).toMatchObject({ carbState: "gut", mood: "stomach" }); // 77 g
     const trained = checkPlan({ ...RACE, gutTrained: true }, [["drink", "riceCake"], ["drink"]]);
     expect(trained.lanes[0]!.carbState).not.toBe("gut");
@@ -158,21 +156,21 @@ describe("the notes under a plan", () => {
   });
 
   it("keeps the oat bar out of the finale, the 8 % bottle out of the heat, and counts the cages", () => {
-    expect(checkPlan(RACE, [["oatBar"], []]).notes).not.toContain("fatFibre");
-    expect(checkPlan(RACE, [[], ["oatBar"]]).notes).toContain("fatFibre");
+    expect(checkPlan(RACE, [["oats"], []]).notes).not.toContain("fatFibre");
+    expect(checkPlan(RACE, [[], ["oats"]]).notes).toContain("fatFibre");
     expect(checkPlan({ ...RACE, celsius: 30 }, [["fuel"], []]).notes).toContain("fuelHeat");
     expect(checkPlan(RACE, [["drink", "drink"], ["drink"]]).notes).toContain("cages");
   });
 
   it("names the gut's 60 g and the practice it takes to go higher", () => {
     expect(checkPlan({ ...RACE, minutes: 180 }, [[], [], []]).notes).toContain("capped");
-    expect(checkPlan({ ...RACE, gutTrained: true }, [["fuel", "gel"], []]).notes).toEqual(
+    expect(checkPlan({ ...RACE, gutTrained: true }, [["fuel", "banana"], []]).notes).toEqual(
       expect.arrayContaining(["multiple", "practise"]),
     );
   });
 
   it("does not count what lies after a shortened finish, and says so", () => {
-    const plan: Lanes = [["drink"], ["drink"], ["gel", "gel"], [], [], []];
+    const plan: Lanes = [["drink"], ["drink"], ["banana", "banana"], [], [], []];
     const check = checkPlan(RACE, plan);
     expect(check.lanes).toHaveLength(2);
     expect(check.totals.pieces).toBe(0);

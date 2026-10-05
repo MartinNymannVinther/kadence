@@ -1,133 +1,78 @@
 "use client";
 
-import { Info, Minus, Plus } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { num } from "@/components/charts/format";
-import { Button } from "@/components/ui/button";
-import type { Day, MealHours } from "@/modules/calc/fuel-day";
-import type { FuelItemId } from "@/modules/calc/fuel-items";
-import type { Slot } from "@/modules/calc/fuel-plan";
-import type { MealCheck, MealNote } from "@/modules/calc/meal-check";
-import { EnergyMeter } from "./energy-meter";
-import { EnergyPhase } from "./energy-phase";
-import { EnergySlot, type SlotBinding } from "./energy-slot";
+import { beforeTargets, type Day } from "@/modules/calc/fuel-day";
+import { MAIN_MEAL, SNACK } from "@/modules/calc/fuel-examples";
+import { EnergyExamples } from "./energy-examples";
+import { EnergyGoal } from "./energy-goal";
+import { EnergyStep } from "./energy-phase";
+import { EnergyPlate } from "./energy-plate";
+
+function Points({ points }: { points: readonly string[] }) {
+  return (
+    <ul className="flex list-disc flex-col gap-1.5 pl-5 text-reading leading-relaxed marker:text-[var(--meta)]">
+      {points.map((point) => (
+        <li key={point}>{point}</li>
+      ))}
+    </ul>
+  );
+}
 
 /**
- * Before the start: the main meal, a few hours before, and a snack about
- * an hour before, counted together against one goal for the rider's class
- * — carbohydrate and something to drink.
+ * The day before: drink through the day and eat plenty of carbohydrate,
+ * so the stores are full (Team Danmark), the Elite plate for dinner, and
+ * before a race DCU's short ride to open the legs.
  */
-export function EnergyBefore({
-  day,
-  onMealHours,
-  items,
-  check,
-  notes,
-  rider,
-  quiet,
-  bind,
-}: {
-  day: Day;
-  onMealHours: (hours: MealHours) => void;
-  items: readonly (readonly FuelItemId[])[];
-  check: MealCheck;
-  notes: MealNote[];
-  /** "en typisk U17-dreng". */
-  rider: string;
-  quiet: boolean;
-  bind: (slot: Slot) => SlotBinding;
-}) {
+export function EnergyDayBefore({ day }: { day: Day }) {
+  const d = useTranslations("calculators.energy.dayBefore");
+  return (
+    <EnergyStep id="energy-day-before" when={d("when")} title={d("title")}>
+      <Points points={[d("drink"), d("eat"), ...(day.session === "race" ? [d("dcu")] : [])]} />
+      <div className="flex flex-col gap-1.5">
+        <span className="text-2sm font-semibold">{d("dinner")}</span>
+        <EnergyPlate plate="elite" />
+        <Points points={[d("dinners.pasta"), d("dinners.rice"), d("dinners.potatoes")]} />
+      </div>
+    </EnergyStep>
+  );
+}
+
+/**
+ * The hours before the start: a main meal 3–4 hours before and a snack
+ * 1–2 hours before (Team Danmark), together about the goal for the
+ * rider's class, with examples, and ½–1 l to drink.
+ */
+export function EnergyBefore({ day, rider }: { day: Day; rider: string }) {
   const t = useTranslations("calculators.energy.before");
-  const m = useTranslations("calculators.energy.meter");
+  const g = useTranslations("calculators.energy.goal");
   const locale = useLocale();
-  const l = (n: number) => num(n, locale, 2);
-  const h = day.mealHours;
+  const target = beforeTargets(day);
 
   return (
-    <EnergyPhase
-      step={1}
-      title={t("title")}
-      intro={t("intro", {
-        rider,
-        low: check.carbs.target.low,
-        high: check.carbs.target.high,
-        flLow: l(check.fluid.target.low),
-        flHigh: l(check.fluid.target.high),
-        hours: h,
-      })}
-    >
-      <div className="flex items-center gap-2">
-        <span className="text-label text-xs font-medium">{t("mealAt")}</span>
-        <Button
-          variant="outline"
-          size="icon-sm"
-          aria-label={t("earlier")}
-          disabled={h === 4}
-          onClick={() => onMealHours((h + 1) as MealHours)}
-        >
-          <Plus aria-hidden />
-        </Button>
-        <output className="min-w-28 text-center text-2sm font-semibold tabular-nums">
-          {t("hoursBefore", { hours: h })}
-        </output>
-        <Button
-          variant="outline"
-          size="icon-sm"
-          aria-label={t("later")}
-          disabled={h === 2}
-          onClick={() => onMealHours((h - 1) as MealHours)}
-        >
-          <Minus aria-hidden />
-        </Button>
+    <EnergyStep id="energy-before" when={t("when")} title={t("title")}>
+      <EnergyGoal
+        label={t("goal", { rider })}
+        goals={[
+          { kind: "carbs", text: g("carbs", { low: target.carbs.low, high: target.carbs.high }) },
+          {
+            kind: "fluid",
+            text: g("fluid", { low: num(0.5, locale, 1), high: num(1, locale, 1) }),
+          },
+        ]}
+      />
+      <div className="flex flex-col gap-2">
+        <h4 className="text-2sm font-semibold">{t("meal")}</h4>
+        <EnergyExamples examples={MAIN_MEAL} />
+        <p className="text-meta text-2sm leading-relaxed">{t("mealNote")}</p>
       </div>
-      <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
-        <EnergySlot
-          slot={{ phase: "before", index: 0 }}
-          title={t("meal")}
-          when={t("hoursBefore", { hours: h })}
-          items={items[0] ?? []}
-          {...bind({ phase: "before", index: 0 })}
-        />
-        <EnergySlot
-          slot={{ phase: "before", index: 1 }}
-          title={t("snack")}
-          when={t("snackWhen")}
-          items={items[1] ?? []}
-          {...bind({ phase: "before", index: 1 })}
-        />
-      </div>
-      <div className="grid gap-3 sm:grid-cols-2">
-        <EnergyMeter
-          label={m("carbs")}
-          value={check.content.carbs}
-          shown={m("grams", { g: check.content.carbs })}
-          target={check.carbs.target}
-          goal={m("goalGrams", { low: check.carbs.target.low, high: check.carbs.target.high })}
-          state={quiet ? null : check.carbs.state}
-          stateLabel={quiet ? null : m(`state.${check.carbs.state}`)}
-        />
-        <EnergyMeter
-          label={m("fluid")}
-          value={check.content.fluidL}
-          shown={m("litres", { l: l(check.content.fluidL) })}
-          target={check.fluid.target}
-          goal={m("goalLitres", {
-            low: l(check.fluid.target.low),
-            high: l(check.fluid.target.high),
-          })}
-          state={quiet ? null : check.fluid.state}
-          stateLabel={quiet ? null : m(`state.${check.fluid.state}`)}
-        />
-      </div>
-      {notes.map((n) => (
-        <p
-          key={n}
-          className="bg-secondary flex items-start gap-2 rounded-md px-3 py-2 text-2sm leading-relaxed"
-        >
-          <Info aria-hidden className="text-meta mt-0.5 size-4 shrink-0" />
-          {t(`notes.${n}`)}
+      <div className="flex flex-col gap-2">
+        <h4 className="text-2sm font-semibold">{t("snack")}</h4>
+        <EnergyExamples examples={SNACK} />
+        <p className="text-meta text-2sm leading-relaxed">
+          {t(day.session === "training" ? "snackNoteTraining" : "snackNote")}
         </p>
-      ))}
-    </EnergyPhase>
+      </div>
+    </EnergyStep>
   );
 }

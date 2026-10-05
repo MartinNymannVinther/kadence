@@ -1,9 +1,9 @@
 import { useTranslations } from "next-intl";
 import { SourceLinks } from "@/components/guides/source-links";
 
-const POINTS = ["1", "2", "3", "4", "5", "6", "7", "8"] as const;
+const POINTS = ["1", "2", "3", "4", "5", "6"] as const;
 
-/** How the energy calculator works and where its numbers come from (docs/research/ernaering.md, 4 and 4.13). */
+/** Where the advice and its numbers come from (docs/research/ernaering.md, 4 and 4.13). */
 export function EnergyAbout() {
   const t = useTranslations("calculators.energy.about");
   return (
@@ -23,9 +23,8 @@ export function EnergyAbout() {
           "tdFood2026",
           "tdFluid",
           "usdaDangerZone",
-          "hopker2009",
-          "martin1998",
-          "keytel2005",
+          "dcuU17Compendium",
+          "dcuU19Compendium",
           "compendium2024",
         ]}
       />
