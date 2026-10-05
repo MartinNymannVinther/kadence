@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { crownBadge } from "./jersey-crown";
 import type { Kit } from "./kits";
 
 /** The canvas, around the torso and up it. */
@@ -9,29 +10,19 @@ const BACK = 0;
 const CHEST = 0.5;
 /** Up the torso, from the hips: where its quarters meet, and where the crown sits. */
 const MIDDLE = 0.5;
-/**
- * The crown, as shares of the way round from its middle and up: its foot
- * and its three rounded points, the middle one tallest.
- */
-const CROWN: readonly [number, number][] = [
-  [-0.085, 0.4],
-  [-0.09, 0.6],
-  [-0.045, 0.52],
-  [0, 0.66],
-  [0.045, 0.52],
-  [0.09, 0.6],
-  [0.085, 0.4],
-];
-/** How round its corners are and how soft its edge, pixels. */
-const ROUND = 14;
-const SOFT = 2.5;
+/** The crown's width, as a share of the way round the torso. */
+const CROWN_WIDE = 0.25;
+/** The canvas is stretched more round the torso than up it: the crown is drawn flatter to stand true. */
+const FLAT = 0.87;
+/** How soft its edges are, pixels. */
+const SOFT = 0.7;
 
 /**
  * A patterned jersey drawn round the torso: quartered (`Kit.quarters`) —
  * split down the middle of the chest and the back and across halfway up,
  * the body's upper left and lower right in the other colour — and a
- * soft-edged crown (`Kit.crown`) in the middle of the chest and of the
- * back: the sprinter's (ADR 0050). The torso is a cylinder: round it is
+ * crown (`Kit.crown`, `jersey-crown.ts`) in the middle of the chest and
+ * of the back: the sprinter's (ADR 0050). The torso is a cylinder: round it is
  * across the canvas, from the middle of the back by its right side; up it
  * is up the canvas, from the hips.
  */
@@ -50,18 +41,14 @@ export function jerseyTexture(kit: Kit): THREE.CanvasTexture {
     context.fillRect(...at(CHEST, 1), (1 - CHEST) * WIDE, (1 - MIDDLE) * HIGH);
   }
   if (kit.crown) {
-    context.fillStyle = kit.crown;
-    context.strokeStyle = kit.crown;
-    context.lineWidth = ROUND;
-    context.lineJoin = "round";
+    const badge = crownBadge(kit.crown);
+    const wide = CROWN_WIDE * WIDE;
+    const high = wide * FLAT;
     context.filter = `blur(${SOFT}px)`;
     // The back's crown is drawn at both edges of the canvas, where the way round closes.
     for (const middle of [BACK, CHEST, BACK + 1]) {
-      context.beginPath();
-      for (const [round, up] of CROWN) context.lineTo(...at(middle + round, up));
-      context.closePath();
-      context.fill();
-      context.stroke();
+      const [x, y] = at(middle, MIDDLE);
+      context.drawImage(badge, x - wide / 2, y - high / 2, wide, high);
     }
     context.filter = "none";
   }

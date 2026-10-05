@@ -43,8 +43,10 @@ was left to be worked out.
   85 % of the rider's size, smaller still than his weight says, as
   asked. A jersey quartered in red and black — split down the middle of
   the chest and the back and across halfway up, the black quarters
-  diagonal — with a soft-edged white crown in the middle of the chest
-  and of the back (`jersey-pattern.ts`). Red sleeves, black shorts, a
+  diagonal — with a white royal crown in the middle of the chest and of
+  the back (`jersey-crown.ts`): a band set with lozenges and studs,
+  small crosses on its ring, beaded arches, and an orb with a cross,
+  its openings showing the jersey through. Red sleeves, black shorts, a
   white road helmet and gold glasses, bare hands, white socks and shoes,
   a black bike with deep rims and a number. No maker's names.
 - **His words**: his own call as he comes up — a small rider in red and
