@@ -969,7 +969,9 @@
     "repeatTooMany": "That is too many sessions at once. Choose fewer riders or a shorter period.",
     "copySameWeek": "A week cannot be copied into itself.",
     "uciBirthYear": "That UCI ID belongs to a rider born in another year. Check the number on the licence.",
-    "uciUnknown": "Cykling Danmark does not know that UCI ID. Check the number on the licence."
+    "uciUnknown": "Cykling Danmark does not know that UCI ID. Check the number on the licence.",
+    "exerciseUnknown": "One of the exercises no longer exists. Reload the page and choose again.",
+    "exerciseArchived": "One of the exercises is archived, so it cannot go into a programme. You can bring it back in the library or choose another."
   },
   "calendar": {
     "title": "Calendar",

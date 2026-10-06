@@ -225,6 +225,13 @@
       "when": 1791279169540,
       "tag": "0031_pilot_numbers",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1791317875004,
+      "tag": "0032_team_exercises",
+      "breakpoints": true
     }
   ]
 }
