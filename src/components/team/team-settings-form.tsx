@@ -13,18 +13,23 @@ import { SwitchRow } from "./switch-row";
 const KINDS = ["U17", "U19", "U23", "mixed"] as const;
 
 /**
- * The team's own settings, one save: what kind of team it is, whether the
- * team is guided by DCU's recommendations (on, ADR 0049) and measures its
- * sessions against "Lav intensitet først" (off, ADR 0053), whether weight
- * may be recorded for riders under 19 (off, ADR 0013), and whether the AI
- * may read the riders' data (off).
+ * The team's own settings, one save: what kind of team it is, its
+ * training basis — one choice, whether to follow DCU's recommendations
+ * (on, ADR 0049), with "Lav intensitet først" as a profile on top of
+ * either answer (off, ADR 0053) — whether weight may be recorded for
+ * riders under 19 (off, ADR 0013), and whether the AI may read the
+ * riders' data (off). The club championship's switch is there only where
+ * the installation has the championship on (ADR 0056).
  */
 export function TeamSettingsForm({
   settings,
   canManage,
+  clubChampionship,
 }: {
   settings: TeamSettings;
   canManage: boolean;
+  /** Whether the installation offers the club championship (`featureOn`, read by the page). */
+  clubChampionship: boolean;
 }) {
   const t = useTranslations("settings.team");
   const common = useTranslations("common");
@@ -77,7 +82,7 @@ export function TeamSettingsForm({
             <CardTitle>{t("guidanceTitle")}</CardTitle>
             <CardDescription>{t("guidanceBody")}</CardDescription>
           </CardHeader>
-          <CardContent className="divide-hairline flex flex-col divide-y">
+          <CardContent className="flex flex-col">
             <SwitchRow
               label={t("guidance")}
               hint={t("guidanceHint")}
@@ -85,29 +90,34 @@ export function TeamSettingsForm({
               stateText={draft.guidance === "dcu-2025" ? t("on") : t("off")}
               onChange={(on) => setDraft({ ...draft, guidance: on ? "dcu-2025" : "none" })}
             />
-            <SwitchRow
-              label={t("lowIntensity")}
-              hint={t("lowIntensityHint")}
-              checked={draft.lowIntensityFirst}
-              stateText={draft.lowIntensityFirst ? t("on") : t("off")}
-              onChange={(lowIntensityFirst) => setDraft({ ...draft, lowIntensityFirst })}
-            />
+            {/* A profile on top of the hours, DCU's or the team's own: secondary, so set in. */}
+            <div className="border-hairline ml-1 border-l-2 pl-4">
+              <SwitchRow
+                label={t("lowIntensity")}
+                hint={t("lowIntensityHint")}
+                checked={draft.lowIntensityFirst}
+                stateText={draft.lowIntensityFirst ? t("on") : t("off")}
+                onChange={(lowIntensityFirst) => setDraft({ ...draft, lowIntensityFirst })}
+              />
+            </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("clubTitle")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <SwitchRow
-              label={t("club")}
-              hint={t("clubHint")}
-              checked={draft.clubChampionship}
-              stateText={draft.clubChampionship ? t("on") : t("off")}
-              onChange={(clubChampionship) => setDraft({ ...draft, clubChampionship })}
-            />
-          </CardContent>
-        </Card>
+        {clubChampionship && (
+          <Card>
+            <CardHeader>
+              <CardTitle>{t("clubTitle")}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <SwitchRow
+                label={t("club")}
+                hint={t("clubHint")}
+                checked={draft.clubChampionship}
+                stateText={draft.clubChampionship ? t("on") : t("off")}
+                onChange={(clubChampionship) => setDraft({ ...draft, clubChampionship })}
+              />
+            </CardContent>
+          </Card>
+        )}
         <Card>
           <CardHeader>
             <CardTitle>{t("youthTitle")}</CardTitle>

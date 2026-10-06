@@ -6,7 +6,7 @@ import { ResolveInput, resolveFlag, unresolveFlag } from "./resolutions";
 
 /** The resolutions' server actions: afklaret, and fortryd. */
 
-const PATHS = ["/today", "/riders"];
+const PATHS = ["/today", "/calendar", "/riders"];
 
 export async function resolveFlagAction(raw: unknown) {
   return runAction(raw, ResolveInput, (ctx, input) => resolveFlag(ctx, input), PATHS);

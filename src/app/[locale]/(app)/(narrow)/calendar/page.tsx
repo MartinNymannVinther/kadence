@@ -12,8 +12,11 @@ import { toActivityCard, toCard, toEventCard, withResults } from "@/components/c
 import { WeekNav } from "@/components/calendar/week-nav";
 import { SessionSheet } from "@/components/session/session-sheet";
 import { SessionView } from "@/components/session/session-view";
+import { TeamAttention } from "@/components/insight/team-attention";
+import { teamAttentionData } from "@/components/insight/team-attention-data";
+import { ATTENTION_ID } from "@/components/insight/signals";
 import { getOrgContext } from "@/core/auth/session";
-import { todayInCopenhagen } from "@/core/dates";
+import { mondayOf, todayInCopenhagen } from "@/core/dates";
 import { basisText } from "@/components/season/basis-text";
 import { Link, redirect } from "@/i18n/navigation";
 import { refreshStaleRaces } from "@/modules/results/refresh";
@@ -40,7 +43,10 @@ type Search = Promise<Record<string, string | string[] | undefined>>;
  * week in Copenhagen by default), `?rider=` whose week, `?view=team` the
  * team grid, and `?session=` the session whose panel is open. Who may see
  * which rider is the database's decision (ADR 0011): the list of riders
- * here is whatever it lets the caller read.
+ * here is whatever it lets the caller read. The team's week in progress
+ * also carries the signals — each rider's flags as badges, and under the
+ * grid the attention list, the AI's summary and the coach's tips — so
+ * that is where a coach sees who needs a talk (ADR 0061).
  */
 export default async function CalendarPage({ searchParams }: { searchParams: Search }) {
   const ctx = await getOrgContext();
@@ -97,15 +103,21 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
     ? { week: monday, view: "team" }
     : { week: monday, rider: choose ? rider.id : null };
 
-  const [sessions, unplanned, eventRows, results, templates, volumes] = await Promise.all([
-    listSessions(ctx, { ...range, riderIds }),
-    listUnplanned(ctx, { ...range, riderIds }),
-    listEvents(ctx, { ...range, riderIds }),
-    // The places from Cykling Danmark are the coach's (ADR 0039).
-    me.isCoach ? listRaceResults(ctx, { ...range, riderIds }) : Promise.resolve([]),
-    canWrite ? listTemplates(ctx) : Promise.resolve([]),
-    volumesFor(ctx, riderIds, range, today),
-  ]);
+  // Flags belong to the week in progress (ADR 0026), so the signals come with that week only.
+  const thisMonday = mondayOf(today);
+  const [sessions, unplanned, eventRows, results, templates, volumes, attention] =
+    await Promise.all([
+      listSessions(ctx, { ...range, riderIds }),
+      listUnplanned(ctx, { ...range, riderIds }),
+      listEvents(ctx, { ...range, riderIds }),
+      // The places from Cykling Danmark are the coach's (ADR 0039).
+      me.isCoach ? listRaceResults(ctx, { ...range, riderIds }) : Promise.resolve([]),
+      canWrite ? listTemplates(ctx) : Promise.resolve([]),
+      volumesFor(ctx, riderIds, range, today),
+      teamView && monday === thisMonday
+        ? teamAttentionData(ctx, { today, locale, riders: riderRows })
+        : Promise.resolve(null),
+    ]);
   // A rider plans their own sessions into their own calendar too (ADR 0050).
   const ownTemplates =
     canWrite && !teamView && me.rider?.id === rider.id
@@ -153,6 +165,7 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
           templates={templateOptions}
           query={query}
           volumes={Object.fromEntries(volumes)}
+          signals={attention?.signals ?? {}}
         />
       ) : (
         <RiderWeek
@@ -169,6 +182,12 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
           query={query}
           volume={volume}
           basisLabel={volume?.basis ? basisText(volume.basis, (k, v) => seasonT(k, v)) : null}
+        />
+      )}
+      {teamView && (
+        <TeamAttention
+          data={attention}
+          thisWeekHref={`${calendarHref({ view: "team" })}#${ATTENTION_ID}`}
         />
       )}
       {openSession && (
