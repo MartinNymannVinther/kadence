@@ -244,8 +244,8 @@ make sure it says what you actually do.
 Kadence sends no mail. Admission links and workspace invitation links
 (Settings → Workspace, ADR 0008) are shown to the person who made them,
 who sends them the way they talk to their colleague anyway. There is no
-SMTP setting, no scheduled job and no reminder; an installation needs
-nothing beyond what section 2 lists.
+SMTP setting; reminders, when you turn them on, go by web push (6d), and
+an installation needs nothing beyond what section 2 lists.
 
 ## 6c. The map behind routes
 
@@ -269,6 +269,30 @@ without an argument puts the file in `./data/map` and names the
 
 The map shows © OpenStreetMap contributors, as the data's licence (ODbL)
 asks.
+
+## 6d. Reminders by web push
+
+Reminders (ADR 0059) are off until the installation has a key pair. Make
+one on your own machine, once, and keep it: a new pair means everyone has
+to turn reminders on again.
+
+```bash
+pnpm script scripts/push-keys.ts
+```
+
+Put the three lines it prints into Coolify: `PUSH_PUBLIC_KEY`,
+`PUSH_PRIVATE_KEY` (a secret) and `PUSH_CONTACT` (a `mailto:` the push
+services may write to). Redeploy, and Settings → Mig offers each person
+"Påmindelser" on their own browser. The app runs the reminders itself
+every ten minutes; there is nothing to schedule. If you would rather
+drive them from cron, `curl -X POST https://kadence.haij.dk/api/push/tick`
+does one run and is safe to call as often as you like.
+
+The push carries nothing: the browser's push service (Apple's, Google's,
+Mozilla's or Microsoft's) sees that a reminder went out and when, and the
+words are fetched from Kadence. `docs/subprocessors.md` says so for the
+people you host; on an iPhone, reminders work once Kadence is on the
+home screen.
 
 ## 7. Nightly encrypted backups (EU object storage)
 

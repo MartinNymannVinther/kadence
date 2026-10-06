@@ -75,3 +75,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0053](0053-low-intensity-first.md)                                        | "Lav intensitet først": sessions in three zones by their goal, and a profile a team may lay on its hours    | → 0026, 0049                   |
 | [0054](0054-every-feature-in-the-demo.md)                                  | Every part of the product in the demo, and the demo kept out of Trænerrummet                                | → 0005, 0052                   |
 | [0055](0055-gearing-you-can-play-with.md)                                  | Gearing you can play with: class buttons, sliders, one pedal turn drawn to scale, and a concrete build      | → 0047                         |
+| [0059](0059-reminders-without-content.md)                                  | Reminders without content: a push that only wakes the browser, which asks Kadence as the person             | → 0003, 0011, 0029             |
