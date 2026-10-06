@@ -4655,7 +4655,176 @@
         "name": "Hoftebøjerstræk",
         "how": "Sæt det ene knæ i gulvet og den anden fod foran. Spænd let i maven, stå ret og skub hoften fremad, til du mærker et stræk foran på låret.",
         "why": "Modvirker de stramme hoftebøjere, der trækker i lænden, når man sidder og cykler."
+      },
+      "catCow": {
+        "name": "Kat og ko",
+        "how": "Stå på alle fire med hænderne under skuldrene og knæene under hofterne. Skyd ryggen op som en kat og lad hovedet hænge. Lad så maven synke og løft blikket. Skift roligt mellem de to.",
+        "why": "Får ryggen i gang efter mange timer bøjet over styret."
+      },
+      "hamstringStretch": {
+        "name": "Baglårsstræk",
+        "how": "Lig på ryggen. Løft det ene ben så strakt, du kan, og hold om låret med begge hænder. Træk benet roligt mod dig, til du mærker et stræk bag på låret. Det andet ben ligger fladt i gulvet.",
+        "why": "På cyklen bliver baglårene aldrig helt strakt ud, så her får de lov."
+      },
+      "figureFour": {
+        "name": "Firetalsstræk",
+        "how": "Sid på en stol eller bænk og læg den ene ankel over det andet knæ. Hold ryggen rank og læn dig langsomt frem, til du mærker et stræk i ballen.",
+        "why": "Strækker ballen og hoften, som arbejder i hvert eneste pedaltråd."
+      },
+      "calfStretch": {
+        "name": "Lægstræk",
+        "how": "Stå med hænderne mod en væg og det ene ben langt bagude. Hold det bageste ben strakt og hælen i gulvet. Læn dig mod væggen, til du mærker et stræk i læggen.",
+        "why": "Læggene arbejder i hvert pedaltråd og har godt af et stræk bagefter."
+      },
+      "quadStretch": {
+        "name": "Forlårsstræk",
+        "how": "Stå på ét ben med den ene hånd mod en væg. Tag fat om den anden fod og træk hælen mod ballen. Hold knæene samlet og hoften let fremme.",
+        "why": "Forlåret er den store motor på cyklen, så det får et stræk efter turen."
+      },
+      "thoracicOpener": {
+        "name": "Brystrygstræk",
+        "how": "Knæl foran en bænk eller stol og læg hænderne på den med strakte arme. Skub hoften lidt tilbage og lad brystet synke mod gulvet. Træk vejret roligt.",
+        "why": "Giver den øvre ryg en modvægt til den krumme stilling over styret."
+      },
+      "chinTuck": {
+        "name": "Hagetræk",
+        "how": "Stå med ryggen mod en væg. Træk hagen lige bagud, så baghovedet rører væggen, uden at kigge op eller ned. Hold et øjeblik og slip igen.",
+        "why": "Giver nakken en modvægt til at holde hovedet oppe i mange timer på cyklen."
+      },
+      "plank": {
+        "name": "Planke",
+        "how": "Støt på underarmene med albuerne under skuldrene og stå på tæerne. Hold kroppen lige som en planke fra hoved til hæl. Spænd let i maven og træk vejret roligt.",
+        "why": "Træner musklerne, der holder kroppen stille, mens benene arbejder."
+      },
+      "sidePlank": {
+        "name": "Sideplanke",
+        "how": "Lig på siden og støt på underarmen med albuen under skulderen. Løft hoften, så kroppen er lige fra hoved til fødder. Den øverste arm kan pege op mod loftet.",
+        "why": "Træner siden af maven, som holder hoften rolig, når du træder."
+      },
+      "deadBug": {
+        "name": "Dead bug",
+        "how": "Lig på ryggen med armene lodret op og knæene bøjet over hoften. Pres lænden mod gulvet. Stræk den ene arm bagud og det modsatte ben frem, og kom tilbage. Skift side hver gang.",
+        "why": "Lærer maven at holde lænden i ro, mens arme og ben bevæger sig."
+      },
+      "birdDog": {
+        "name": "Fuglehund",
+        "how": "Stå på alle fire. Stræk den ene arm frem og det modsatte ben bagud, så de er i linje med ryggen. Hold et øjeblik, sænk og skift side. Hold ryggen stille hele vejen.",
+        "why": "Træner ryg og balder til at arbejde sammen uden at vride kroppen."
+      },
+      "superman": {
+        "name": "Faldskærm",
+        "how": "Lig på maven med armene strakt frem. Løft arme, bryst og ben lidt fra gulvet på samme tid, og sænk roligt igen. Kig ned i gulvet.",
+        "why": "Træner musklerne langs ryggen, som bærer dig i stillingen på cyklen."
+      },
+      "squat": {
+        "name": "Squat",
+        "how": "Stå med fødderne i skulderbredde. Sæt dig ned og bagud som mod en stol, med ret ryg og armene frem. Hold knæene på linje med fødderne, og rejs dig igen.",
+        "why": "Træner de samme muskler, som skubber pedalerne rundt."
+      },
+      "gobletSquat": {
+        "name": "Goblet squat",
+        "how": "Hold en kettlebell ind mod brystet med begge hænder. Sæt dig ned og bagud med ret ryg og knæene på linje med fødderne. Gå roligt ned og rejs dig med fuld kraft.",
+        "why": "Vægten foran hjælper dig med at holde ryggen rank, mens benene bliver stærkere."
+      },
+      "gluteBridge": {
+        "name": "Hoftehæv",
+        "how": "Lig på ryggen med bøjede knæ og fødderne i gulvet. Pres hælene ned og løft hoften, til kroppen er lige fra skuldre til knæ. Sænk roligt igen.",
+        "why": "Træner ballerne, som giver kraft, når du træder pedalen ned."
+      },
+      "lunge": {
+        "name": "Udfald",
+        "how": "Tag et langt skridt frem og sænk det bageste knæ mod gulvet. Hold overkroppen rank og det forreste knæ over foden. Skub dig tilbage med det forreste ben og skift ben.",
+        "why": "Træner ét ben ad gangen, ligesom når du træder."
+      },
+      "stepUp": {
+        "name": "Step-up",
+        "how": "Sæt den ene fod op på et trin eller en lav bænk. Træd op, til benet er strakt, uden at skubbe fra med det andet ben. Gå roligt ned igen, og skift ben efter sættet.",
+        "why": "Bygger styrke i ét ben ad gangen i en bevægelse, der ligner et pedaltråd."
+      },
+      "splitSquat": {
+        "name": "Bulgarsk split squat",
+        "how": "Stå med ryggen til en bænk og læg den bageste fod op på den. Sænk dig, til det forreste lår er næsten vandret. Hold overkroppen rank og knæet over foden, og skub dig op igen.",
+        "why": "Giver ét ben ad gangen et tungt arbejde, uden maskiner."
+      },
+      "romanianDeadlift": {
+        "name": "Rumænsk dødløft",
+        "how": "Stå med en kettlebell i hænderne og let bøjede knæ. Skub hoften bagud og før vægten ned langs benene med ret ryg. Rejs dig ved at skubbe hoften frem.",
+        "why": "Træner baglår og balder og lærer dig at bøje i hoften med ret ryg."
+      },
+      "calfRaise": {
+        "name": "Tåhævning",
+        "how": "Stå med forfoden på kanten af et trin og en hånd mod væggen. Hold benene strakte, gå op på tæerne og sænk hælene langsomt.",
+        "why": "Træner læggene, som er med i hvert eneste pedaltråd."
+      },
+      "pushUp": {
+        "name": "Armstrækninger",
+        "how": "Sæt hænderne i gulvet lidt bredere end skuldrene og hold kroppen lige. Sænk brystet mod gulvet med albuerne lidt ind mod kroppen, og pres dig op igen. Er det for hårdt, så støt på knæene.",
+        "why": "Styrker arme og skuldre, som bærer en del af din vægt på styret."
+      },
+      "bandRow": {
+        "name": "Roning med elastik",
+        "how": "Sæt en elastik fast i brysthøjde, fx i en dør. Stå med let bøjede knæ og træk albuerne bagud langs kroppen, til hænderne er ved brystet. Klem skulderbladene sammen og slip roligt.",
+        "why": "Træner den øvre ryg, som holder skuldrene tilbage over styret."
       }
+    },
+    "programs": {
+      "mobilityDay": {
+        "name": "Bevægelighed hele dagen",
+        "description": "Korte stræk morgen, middag og aften, cirka fem minutter ad gangen. Godt på dage, hvor du sidder meget."
+      },
+      "afterRide": {
+        "name": "Efter turen",
+        "description": "Seks stræk på cirka ti minutter, når du er hjemme fra turen og stadig varm. Hold hvert stræk roligt uden at fjedre."
+      },
+      "coreNoEquipment": {
+        "name": "Mave og ryg uden udstyr",
+        "description": "Mave, ryg og balder med kun et underlag. Cirka et kvarter, to til tre gange om ugen."
+      },
+      "strengthNoMachines": {
+        "name": "Styrke uden maskiner",
+        "description": "Ben, ryg og arme med kropsvægt, en kettlebell og en elastik. Varm op med 8 minutter på cyklen først. DCU anbefaler mindst 48 timer mellem to styrkepas og teknik før belastning."
+      }
+    },
+    "parts": {
+      "any": "Øvelser",
+      "morning": "Morgen",
+      "midday": "Middag",
+      "evening": "Aften",
+      "before": "Før",
+      "after": "Efter"
+    },
+    "groups": {
+      "legs": "Ben",
+      "core": "Mave og ryg",
+      "upper": "Overkrop",
+      "mobility": "Bevægelighed",
+      "other": "Andet"
+    },
+    "equipment": {
+      "none": "Intet udstyr",
+      "mat": "Underlag",
+      "wall": "Væg",
+      "bench": "Bænk eller stol",
+      "step": "Trin",
+      "band": "Elastik",
+      "kettlebell": "Kettlebell",
+      "ball": "Bold"
+    },
+    "dose": {
+      "seconds": "{seconds} sek",
+      "minutes": "{minutes} min",
+      "times": "{reps, plural, one {# gang} other {# gange}}",
+      "perSide": "{amount} pr. side",
+      "sets": "{sets} × {amount}"
+    },
+    "card": {
+      "done": "Færdig"
+    },
+    "figure": {
+      "label": "Tegning: {name}"
+    },
+    "viewer": {
+      "parts": "Dele af programmet"
     }
   }
 }

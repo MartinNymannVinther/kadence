@@ -4655,7 +4655,176 @@
         "name": "Hip flexor stretch",
         "how": "Put one knee on the floor and the other foot in front. Tighten your stomach a little, stand tall and push the hip forward until you feel a stretch at the front of the thigh.",
         "why": "Eases the tight hip flexors that pull on the lower back when you sit and ride."
+      },
+      "catCow": {
+        "name": "Cat-cow",
+        "how": "Kneel on all fours with your hands under your shoulders and your knees under your hips. Round your back up like a cat and let your head hang. Then let your stomach sink and lift your gaze. Move slowly between the two.",
+        "why": "Gets your back moving after hours bent over the bars."
+      },
+      "hamstringStretch": {
+        "name": "Hamstring stretch",
+        "how": "Lie on your back. Lift one leg as straight as you can and hold the thigh with both hands. Pull the leg gently towards you until you feel a stretch at the back of the thigh. The other leg stays flat on the floor.",
+        "why": "On the bike your hamstrings never stretch out fully, so here they get the chance."
+      },
+      "figureFour": {
+        "name": "Figure-four stretch",
+        "how": "Sit on a chair or bench and put one ankle over the other knee. Keep your back straight and lean slowly forward until you feel a stretch in your buttock.",
+        "why": "Stretches the buttock and hip, which work in every pedal stroke."
+      },
+      "calfStretch": {
+        "name": "Calf stretch",
+        "how": "Stand with your hands against a wall and one leg far behind you. Keep the back leg straight and the heel on the floor. Lean towards the wall until you feel a stretch in the calf.",
+        "why": "Your calves work in every pedal stroke and do well with a stretch afterwards."
+      },
+      "quadStretch": {
+        "name": "Quad stretch",
+        "how": "Stand on one leg with one hand against a wall. Hold the other foot and pull the heel towards your buttock. Keep your knees together and your hip slightly forward.",
+        "why": "The front of the thigh is the big engine on the bike, so it gets a stretch after the ride."
+      },
+      "thoracicOpener": {
+        "name": "Upper-back opener",
+        "how": "Kneel in front of a bench or chair and put your hands on it with straight arms. Push your hips back a little and let your chest sink towards the floor. Breathe calmly.",
+        "why": "Gives your upper back a counterweight to the rounded position over the bars."
+      },
+      "chinTuck": {
+        "name": "Chin tuck",
+        "how": "Stand with your back against a wall. Pull your chin straight back so the back of your head touches the wall, without looking up or down. Hold for a moment and let go.",
+        "why": "Gives your neck a counterweight to holding your head up for hours on the bike."
+      },
+      "plank": {
+        "name": "Plank",
+        "how": "Rest on your forearms with your elbows under your shoulders and stand on your toes. Keep your body straight as a plank from head to heel. Tighten your stomach a little and breathe calmly.",
+        "why": "Trains the muscles that keep your body still while your legs work."
+      },
+      "sidePlank": {
+        "name": "Side plank",
+        "how": "Lie on your side and rest on your forearm with the elbow under your shoulder. Lift your hip so your body is straight from head to feet. Your top arm can point at the ceiling.",
+        "why": "Trains the side of your trunk, which keeps your hips steady as you pedal."
+      },
+      "deadBug": {
+        "name": "Dead bug",
+        "how": "Lie on your back with your arms straight up and your knees bent above your hips. Press your lower back into the floor. Reach one arm back and the opposite leg out, then come back. Switch sides each time.",
+        "why": "Teaches your stomach to keep your lower back still while your arms and legs move."
+      },
+      "birdDog": {
+        "name": "Bird dog",
+        "how": "Kneel on all fours. Stretch one arm forward and the opposite leg back so they line up with your back. Hold for a moment, lower and switch sides. Keep your back still all the way.",
+        "why": "Trains your back and buttocks to work together without twisting your body."
+      },
+      "superman": {
+        "name": "Superman",
+        "how": "Lie on your stomach with your arms stretched forward. Lift your arms, chest and legs a little off the floor at the same time, and lower them slowly. Look down at the floor.",
+        "why": "Trains the muscles along your back that hold you in position on the bike."
+      },
+      "squat": {
+        "name": "Squat",
+        "how": "Stand with your feet shoulder-width apart. Sit down and back as if onto a chair, with a straight back and your arms forward. Keep your knees in line with your feet, and stand up again.",
+        "why": "Trains the same muscles that push the pedals round."
+      },
+      "gobletSquat": {
+        "name": "Goblet squat",
+        "how": "Hold a kettlebell against your chest with both hands. Sit down and back with a straight back and your knees in line with your feet. Go down slowly and stand up with full force.",
+        "why": "The weight in front helps you keep your back straight while your legs get stronger."
+      },
+      "gluteBridge": {
+        "name": "Glute bridge",
+        "how": "Lie on your back with your knees bent and your feet on the floor. Press your heels down and lift your hips until your body is straight from shoulders to knees. Lower slowly.",
+        "why": "Trains your buttocks, which give power as you push the pedal down."
+      },
+      "lunge": {
+        "name": "Lunge",
+        "how": "Take a long step forward and lower your back knee towards the floor. Keep your upper body upright and your front knee over your foot. Push back with the front leg and switch legs.",
+        "why": "Trains one leg at a time, just as you do when you pedal."
+      },
+      "stepUp": {
+        "name": "Step-up",
+        "how": "Put one foot on a step or a low bench. Step up until the leg is straight, without pushing off with the other leg. Step down slowly, and switch legs after the set.",
+        "why": "Builds strength in one leg at a time, in a movement much like a pedal stroke."
+      },
+      "splitSquat": {
+        "name": "Bulgarian split squat",
+        "how": "Stand with your back to a bench and put your back foot on it. Lower yourself until your front thigh is nearly level. Keep your upper body upright and your knee over your foot, and push back up.",
+        "why": "Gives one leg at a time hard work, without machines."
+      },
+      "romanianDeadlift": {
+        "name": "Romanian deadlift",
+        "how": "Stand with a kettlebell in your hands and your knees slightly bent. Push your hips back and lower the weight along your legs with a straight back. Stand up by pushing your hips forward.",
+        "why": "Trains the hamstrings and buttocks, and teaches you to bend at the hip with a straight back."
+      },
+      "calfRaise": {
+        "name": "Calf raise",
+        "how": "Stand with the balls of your feet on the edge of a step and one hand against the wall. Keep your legs straight, rise onto your toes and lower your heels slowly.",
+        "why": "Trains your calves, which take part in every pedal stroke."
+      },
+      "pushUp": {
+        "name": "Push-ups",
+        "how": "Put your hands on the floor a little wider than your shoulders and keep your body straight. Lower your chest towards the floor with your elbows slightly in, and press back up. If that is too hard, rest on your knees.",
+        "why": "Strengthens the arms and shoulders that carry some of your weight on the bars."
+      },
+      "bandRow": {
+        "name": "Band row",
+        "how": "Fix an elastic band at chest height, for example in a door. Stand with your knees slightly bent and pull your elbows back along your body until your hands reach your chest. Squeeze your shoulder blades together and let go slowly.",
+        "why": "Trains the upper back that holds your shoulders back over the bars."
       }
+    },
+    "programs": {
+      "mobilityDay": {
+        "name": "Mobility through the day",
+        "description": "Short stretches morning, midday and evening, about five minutes each. Good on days when you sit a lot."
+      },
+      "afterRide": {
+        "name": "After the ride",
+        "description": "Six stretches in about ten minutes, when you are home from the ride and still warm. Hold each stretch calmly without bouncing."
+      },
+      "coreNoEquipment": {
+        "name": "Core without equipment",
+        "description": "Stomach, back and buttocks with nothing but a mat. About a quarter of an hour, two or three times a week."
+      },
+      "strengthNoMachines": {
+        "name": "Strength without machines",
+        "description": "Legs, back and arms with body weight, a kettlebell and an elastic band. Warm up with 8 minutes on the bike first. DCU recommends at least 48 hours between two strength sessions, and technique before load."
+      }
+    },
+    "parts": {
+      "any": "Exercises",
+      "morning": "Morning",
+      "midday": "Midday",
+      "evening": "Evening",
+      "before": "Before",
+      "after": "After"
+    },
+    "groups": {
+      "legs": "Legs",
+      "core": "Core",
+      "upper": "Upper body",
+      "mobility": "Mobility",
+      "other": "Other"
+    },
+    "equipment": {
+      "none": "No equipment",
+      "mat": "Mat",
+      "wall": "Wall",
+      "bench": "Bench or chair",
+      "step": "Step",
+      "band": "Elastic band",
+      "kettlebell": "Kettlebell",
+      "ball": "Ball"
+    },
+    "dose": {
+      "seconds": "{seconds} sec",
+      "minutes": "{minutes} min",
+      "times": "{reps, plural, one {# time} other {# times}}",
+      "perSide": "{amount} per side",
+      "sets": "{sets} × {amount}"
+    },
+    "card": {
+      "done": "Done"
+    },
+    "figure": {
+      "label": "Drawing: {name}"
+    },
+    "viewer": {
+      "parts": "Parts of the programme"
     }
   }
 }
