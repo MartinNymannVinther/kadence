@@ -795,6 +795,10 @@
       "ai": {
         "title": "The AI",
         "body": "The AI proposes, and the coach decides. It can read a coach's shorthand like \"3x10 min Z4 / 5 min rest\" into steps (the rules manage most of it without any language model), build a session from your own words with \"Build with AI\" in the library, propose a week under \"Plan the week\" for one rider or several, and write a short summary of the week's points of attention in the team's week. Nothing goes in the calendar until a coach presses. It never writes to a rider and never deletes anything. Week proposals and the summary read the riders' data, so they only work if the team has turned on \"May the AI read the riders' data\" under Settings → Team. Without a language model everything else works as before."
+      },
+      "pilot": {
+        "title": "The first two weeks as a pilot team",
+        "body": "If your team has just started out, there is a guide to the first two weeks: how to invite the whole team, lay out season plans for everyone, plan the first week and turn reminders on. It lives as docs/pilot.md in Kadence's code, and is the guide to the pilot team that Martin sends you."
       }
     }
   },
