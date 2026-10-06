@@ -37,30 +37,43 @@ export async function createGroupSessions(
   input: Omit<SessionInputT, "riderId">,
   repeat?: Repeat,
 ): Promise<{ groupKey: string; ids: string[] }> {
-  return withOrgContext(ctx, async (tx) => {
-    // A plan for several riders is a coach's; a session for one rider is
-    // anyone's who may write for that rider — a rider planning their own
-    // (createSessionsIn checks).
-    const unique = [...new Set(riderIds)];
-    if (unique.length > 1) await requireCoach(tx, ctx);
-    const days = daysOf(input.onDate, repeat, unique.length);
-    const seriesKey = repeat ? randomUUID() : null;
-    let firstGroup: string | null = null;
-    const rows = days.flatMap((onDate) => {
-      const groupKey = unique.length > 1 ? randomUUID() : null;
-      firstGroup ??= groupKey;
-      return unique.map((riderId) => ({
-        ...input,
-        onDate,
-        riderId,
-        groupKey,
-        seriesKey,
-        origin: groupKey ? ("group" as const) : undefined,
-      }));
-    });
-    const ids = await createSessionsIn(tx, ctx, rows);
-    return { groupKey: firstGroup ?? "", ids };
+  return withOrgContext(ctx, (tx) => createGroupSessionsIn(tx, ctx, riderIds, input, repeat));
+}
+
+/**
+ * The same inside a transaction the caller holds — for a service that
+ * checks something of its own first, as laying a programme in does
+ * (src/modules/exercises/schedule.ts).
+ */
+export async function createGroupSessionsIn(
+  tx: AppTransaction,
+  ctx: OrgContext,
+  riderIds: string[],
+  input: Omit<SessionInputT, "riderId">,
+  repeat?: Repeat,
+): Promise<{ groupKey: string; ids: string[] }> {
+  // A plan for several riders is a coach's; a session for one rider is
+  // anyone's who may write for that rider — a rider planning their own
+  // (createSessionsIn checks).
+  const unique = [...new Set(riderIds)];
+  if (unique.length > 1) await requireCoach(tx, ctx);
+  const days = daysOf(input.onDate, repeat, unique.length);
+  const seriesKey = repeat ? randomUUID() : null;
+  let firstGroup: string | null = null;
+  const rows = days.flatMap((onDate) => {
+    const groupKey = unique.length > 1 ? randomUUID() : null;
+    firstGroup ??= groupKey;
+    return unique.map((riderId) => ({
+      ...input,
+      onDate,
+      riderId,
+      groupKey,
+      seriesKey,
+      origin: groupKey ? ("group" as const) : undefined,
+    }));
   });
+  const ids = await createSessionsIn(tx, ctx, rows);
+  return { groupKey: firstGroup ?? "", ids };
 }
 
 /** How many sessions of a programme a rider already has: the next one is that plus one. */
