@@ -1,14 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { CalendarPlus, CopyPlus, NotebookPen, Plus } from "lucide-react";
+import { CalendarPlus, CalendarRange, CopyPlus, NotebookPen, Plus, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { UploadDialog } from "@/components/activities/upload-dialog";
-import { WeekDraftDialog } from "@/components/assist/week-draft-dialog";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Link } from "@/i18n/navigation";
+import { cn } from "@/lib/utils";
 import { CalendarDialogs, type DialogState } from "./calendar-dialogs";
 import { DayColumn } from "./day-column";
-import { calendarHref, type CalendarQuery } from "./href";
+import { calendarHref, withQuery, type CalendarQuery } from "./href";
 import { SessionCard } from "./session-card";
 import type { TemplateOption } from "./template-picker";
 import type { CalendarActivityCard, CalendarCard, CalendarEventCard, RiderOption } from "./types";
@@ -21,7 +22,8 @@ import { WeekTotals } from "./week-totals";
  * One rider's week: seven columns on a desktop, a day-by-day list on a
  * phone. Sessions move by dragging on a desktop and by "Flyt" everywhere;
  * the week's hours sit on top, the bike's in the four numbers against
- * the season plan (ADR 0040). A coach can ask the AI to propose the week; the rider and the
+ * the season plan (ADR 0040). A coach plans the rider's week in the week
+ * planner, with the AI's proposal there too (ADR 0058); the rider and the
  * coach can upload a ride.
  */
 export function RiderWeek({
@@ -57,6 +59,8 @@ export function RiderWeek({
 }) {
   const t = useTranslations("calendar.actions");
   const copy = useTranslations("calendar.copyWeek");
+  const plan = useTranslations("weekPlan");
+  const suggest = useTranslations("assist.week");
   const { sessions, move, place, landed, announcement } = useWeekSessions(initial);
   const drag = useSessionDrag(move);
   const [dialog, setDialog] = useState<DialogState>(null);
@@ -114,7 +118,28 @@ export function RiderWeek({
               </Button>
             )}
             <UploadDialog riderId={riderId} />
-            {isCoach && <WeekDraftDialog riderId={riderId} monday={monday} />}
+            {isCoach && (
+              <>
+                <Link
+                  href={withQuery("/calendar/week-plan", { week: monday, rider: riderId })}
+                  className={cn(buttonVariants({ variant: "outline" }), "max-sm:h-11")}
+                >
+                  <CalendarRange data-icon="inline-start" />
+                  {plan("open")}
+                </Link>
+                <Link
+                  href={withQuery("/calendar/week-plan", {
+                    week: monday,
+                    rider: riderId,
+                    start: "ai",
+                  })}
+                  className={cn(buttonVariants({ variant: "outline" }), "max-sm:h-11")}
+                >
+                  <Sparkles data-icon="inline-start" />
+                  {suggest("open")}
+                </Link>
+              </>
+            )}
           </div>
         )}
       </div>

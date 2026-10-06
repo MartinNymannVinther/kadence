@@ -76,3 +76,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0054](0054-every-feature-in-the-demo.md)                                  | Every part of the product in the demo, and the demo kept out of Trænerrummet                                | → 0005, 0052                   |
 | [0055](0055-gearing-you-can-play-with.md)                                  | Gearing you can play with: class buttons, sliders, one pedal turn drawn to scale, and a concrete build      | → 0047                         |
 | [0057](0057-time-and-place-on-a-session.md)                                | Time and place on a session: two optional fields every form carries, shown wherever a session is            | → 0041, 0042, 0043             |
+| [0058](0058-one-place-to-plan-a-week.md)                                   | One place to plan a week: start from last week, a block or the AI, repeat it, keep it as a block            | → 0025, 0041, 0043, 0057       |

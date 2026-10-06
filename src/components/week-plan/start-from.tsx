@@ -1,100 +1,132 @@
 "use client";
 
-import { useId, useState } from "react";
-import { Download } from "lucide-react";
+import { useState } from "react";
+import { Download, Eraser } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { useRun } from "@/components/common/use-run";
 import type { TemplateOption } from "@/components/calendar/template-picker";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { NativeSelect } from "@/components/ui/native-select";
-import { addDaysIso, mondayOf } from "@/core/dates";
-import { loadRiderWeekAction } from "@/modules/training/week-actions";
-import { fromInput, newKey, type PlanItem, type PlanRider } from "./types";
+import { SegmentedChoice } from "@/components/ui/segmented";
+import type { ClassBasis } from "@/modules/dcu";
+import { loadPreviousWeekAction } from "@/modules/training/week-actions";
+import { GroupWeekAi } from "./group-week-ai";
+import { fromInput, type PlanBlock, type PlanItem } from "./types";
 
-export type PlanBlock = {
-  id: string;
-  name: string;
-  weeks: number;
-  items: Array<{ day: number; templateId: string }>;
-};
+export type StartMode = "empty" | "last" | "block" | "ai";
 
 /**
- * A week to start from instead of an empty one: a week of one of the
- * library's blocks (ADR 0025), or one rider's week — "a week like last
- * week's for Emma" for the whole group. What comes in replaces the plan,
- * and can then be changed before it is laid in.
+ * Where the week starts (ADR 0058): an empty week, last week's sessions,
+ * a week of one of the library's blocks, or the AI's proposal for the
+ * group (ADR 0043) — the one AI path, also where a rider's "Foreslå
+ * ugen" leads. What comes in replaces the plan, and can be changed before
+ * it is laid in.
  */
 export function StartFrom({
   monday,
+  riderIds,
+  bases,
   blocks,
-  riders,
   templates,
+  initial,
   onLoad,
 }: {
   monday: string;
+  /** The riders the week is for: last week is theirs. */
+  riderIds: string[];
+  /** Their class-years, for the AI. */
+  bases: ClassBasis[];
   blocks: PlanBlock[];
-  riders: PlanRider[];
   templates: TemplateOption[];
+  initial?: StartMode;
   onLoad: (items: PlanItem[]) => void;
 }) {
   const t = useTranslations("weekPlan.start");
-  const id = useId();
   const { run, pending } = useRun();
-  const [source, setSource] = useState<"block" | "rider">(blocks.length > 0 ? "block" : "rider");
+  const [mode, setMode] = useState<StartMode>(initial ?? "last");
   const [blockId, setBlockId] = useState(blocks[0]?.id ?? "");
   const [week, setWeek] = useState(1);
-  const [riderId, setRiderId] = useState(riders[0]?.id ?? "");
-  const [day, setDay] = useState(addDaysIso(monday, -7));
-  const block = blocks.find((b) => b.id === blockId);
+  // A block saved a moment ago arrives with the refresh; the first stands in until one is chosen.
+  const block = blocks.find((b) => b.id === blockId) ?? blocks[0];
+  const items = (list: Parameters<typeof fromInput>[0][]) =>
+    list.flatMap((i) => fromInput(i, templates) ?? []);
 
-  async function load() {
-    if (source === "block") {
-      if (!block) return;
-      const from = (week - 1) * 7;
-      onLoad(
+  function loadBlock() {
+    if (!block) return;
+    const from = (week - 1) * 7;
+    onLoad(
+      items(
         block.items
           .filter((i) => i.day >= from && i.day < from + 7)
-          .flatMap((i) => {
-            const item = fromInput(
-              { kind: "template", day: i.day - from, templateId: i.templateId },
-              templates,
-            );
-            return item ? [{ ...item, key: newKey() }] : [];
-          }),
-      );
-      return;
-    }
-    if (!riderId || !day) return;
-    const items = await run(() => loadRiderWeekAction({ riderId, monday: mondayOf(day) }), {
+          .map((i) => ({ ...i, day: i.day - from })),
+      ),
+    );
+  }
+
+  async function loadLast() {
+    if (riderIds.length === 0) return;
+    const loaded = await run(() => loadPreviousWeekAction({ riderIds, monday }), {
       refresh: false,
     });
-    if (items) onLoad(items.flatMap((i) => fromInput(i, templates) ?? []));
+    if (!loaded) return;
+    if (loaded.length === 0) toast.info(t("lastEmpty"));
+    else onLoad(items(loaded));
   }
 
   return (
     <div className="border-border flex min-w-0 flex-col gap-3 rounded-lg border p-3">
-      <div className="flex flex-wrap items-end gap-3">
-        <div className="flex flex-col gap-1">
-          <label htmlFor={`${id}-source`} className="text-label text-xs font-medium">
-            {t("source")}
-          </label>
-          <NativeSelect
-            id={`${id}-source`}
-            value={source}
-            variant="sm"
-            className="w-44 max-sm:h-11"
-            onChange={(e) => setSource(e.target.value as "block" | "rider")}
+      <SegmentedChoice<StartMode>
+        label={t("source")}
+        value={mode}
+        onChange={setMode}
+        className="flex-wrap self-start [&>button]:max-sm:min-h-11"
+        options={[
+          { value: "empty", label: t("empty") },
+          { value: "last", label: t("last") },
+          { value: "block", label: t("block") },
+          { value: "ai", label: t("ai") },
+        ]}
+      />
+      {mode === "empty" && (
+        <div className="flex flex-wrap items-center gap-3">
+          <p className="text-2sm">{t("emptyBody")}</p>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="max-sm:h-11"
+            onClick={() => onLoad([])}
           >
-            {blocks.length > 0 && <option value="block">{t("block")}</option>}
-            <option value="rider">{t("rider")}</option>
-          </NativeSelect>
+            <Eraser data-icon="inline-start" />
+            {t("clear")}
+          </Button>
         </div>
-        {source === "block" ? (
-          <>
+      )}
+      {mode === "last" && (
+        <div className="flex flex-wrap items-center gap-3">
+          <p className="text-2sm">{riderIds.length === 1 ? t("lastOne") : t("lastMany")}</p>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={pending || riderIds.length === 0}
+            className="max-sm:h-11"
+            onClick={() => void loadLast()}
+          >
+            <Download data-icon="inline-start" />
+            {t("loadLast")}
+          </Button>
+        </div>
+      )}
+      {mode === "block" &&
+        (blocks.length === 0 ? (
+          <p className="text-meta text-2sm">{t("noBlocks")}</p>
+        ) : (
+          <div className="flex flex-wrap items-end gap-3">
             <NativeSelect
               aria-label={t("block")}
-              value={blockId}
+              value={block?.id ?? ""}
               variant="sm"
               className="w-52 max-sm:h-11"
               onChange={(e) => {
@@ -108,56 +140,42 @@ export function StartFrom({
                 </option>
               ))}
             </NativeSelect>
-            <NativeSelect
-              aria-label={t("week")}
-              value={week}
-              variant="sm"
-              className="w-28 max-sm:h-11"
-              onChange={(e) => setWeek(Number(e.target.value))}
+            {(block?.weeks ?? 1) > 1 && (
+              <NativeSelect
+                aria-label={t("week")}
+                value={week}
+                variant="sm"
+                className="w-28 max-sm:h-11"
+                onChange={(e) => setWeek(Number(e.target.value))}
+              >
+                {Array.from({ length: block?.weeks ?? 1 }, (_, i) => (
+                  <option key={i} value={i + 1}>
+                    {t("weekN", { n: i + 1 })}
+                  </option>
+                ))}
+              </NativeSelect>
+            )}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="max-sm:h-11"
+              onClick={loadBlock}
             >
-              {Array.from({ length: block?.weeks ?? 1 }, (_, i) => (
-                <option key={i} value={i + 1}>
-                  {t("weekN", { n: i + 1 })}
-                </option>
-              ))}
-            </NativeSelect>
-          </>
-        ) : (
-          <>
-            <NativeSelect
-              aria-label={t("rider")}
-              value={riderId}
-              variant="sm"
-              className="w-44 max-sm:h-11"
-              onChange={(e) => setRiderId(e.target.value)}
-            >
-              {riders.map((r) => (
-                <option key={r.id} value={r.id}>
-                  {r.name}
-                </option>
-              ))}
-            </NativeSelect>
-            <Input
-              type="date"
-              aria-label={t("weekOf")}
-              value={day}
-              className="h-9 w-44 max-sm:h-11"
-              onChange={(e) => setDay(e.target.value)}
-            />
-          </>
-        )}
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          disabled={pending}
-          className="max-sm:h-11"
-          onClick={() => void load()}
-        >
-          <Download data-icon="inline-start" />
-          {t("load")}
-        </Button>
-      </div>
+              <Download data-icon="inline-start" />
+              {t("load")}
+            </Button>
+          </div>
+        ))}
+      {mode === "ai" && (
+        <GroupWeekAi
+          monday={monday}
+          bases={bases}
+          templates={templates}
+          onUse={onLoad}
+          defaultOpen
+        />
+      )}
       <p className="text-meta text-xs">{t("hint")}</p>
     </div>
   );

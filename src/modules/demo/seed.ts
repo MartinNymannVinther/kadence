@@ -130,6 +130,7 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
     ...week.map((slot, i) => ({
       day: w * 7 + slot.day,
       templateId: w % 2 === 1 && i === 0 ? byText(TEMPLATES[2]!.text) : slot.template,
+      ...slot.at,
     })),
     ...(strength
       ? [
