@@ -6,18 +6,21 @@ import type { BikeStructure } from "@/modules/workouts/structure";
 import { seedClubChampionship, type DemoRider } from "./club";
 import { demoCoverPng, demoLogoPng } from "./club-images";
 import { inDemoRoom, seedCoachesRoom } from "./coaches-room";
+import { seedTeamExercises } from "./exercises";
 import { pick, type L } from "./seed-data";
 import { seedUnratedRide } from "./unrated-ride";
 
 /**
  * The rest of the product in the demo (docs/adr/0054), so a visitor sees
  * every part of it at work: the club's logo and picture (ADR 0048), a
- * rider's own session beside the library (ADR 0050), the club
- * championship (ADR 0051) and Trænerrummet with example threads
- * (ADR 0052). "Lav intensitet først" (ADR 0053) is a setting, turned on
- * with the others in seed.ts. Written through the ordinary services, as
- * the demo's coach. The demo follows the installation's flags (ADR 0057):
- * the championship and the room are seeded only where they are on.
+ * rider's own session beside the library (ADR 0050), the team's own
+ * drawn exercise and a programme mixing it with Kadence's own, laid into
+ * the calendars (ADR 0067), the club championship (ADR 0051) and
+ * Trænerrummet with example threads (ADR 0052). "Lav intensitet først"
+ * (ADR 0053) is a setting, turned on with the others in seed.ts. Written
+ * through the ordinary services, as the demo's coach. The demo follows
+ * the installation's flags (ADR 0057): the championship and the room are
+ * seeded only where they are on.
  */
 
 /** The demo rider's own session: what Emma rides on the trainer when it rains. */
@@ -64,6 +67,7 @@ export async function seedShowcase(
     plannedMinutes: 0,
     riderId: ownRiderId,
   });
+  await seedTeamExercises(ctx, l, { today, riderIds: riders.map((r) => r.id) });
   if (featureOn("clubChampionship")) await seedClubChampionship(ctx, l, riders, today);
   if (featureOn("coachesRoom") && (await inDemoRoom(ctx))) await seedCoachesRoom(ctx, l);
 }
