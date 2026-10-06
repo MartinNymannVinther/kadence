@@ -71,6 +71,9 @@ Rammen er:
 | P2-09 | Parkerede sider svarer 404                        | P2   | S    |                   |
 | P2-10 | Enhedssiden nævner kun de udbydere, der er sat op | P2   | S    |                   |
 | P2-11 | En kortere check-in                               | P2   | M    | A-06 (faglig)     |
+| P2-12 | Planændringer kender deres afsender               | P2   | M    |                   |
+| P2-13 | Påmindelser fylder ikke revisionssporet           | P2   | S    | Martins valg      |
+| P2-14 | Demoen viser forløb med egne pas og påmindelser   | P2   | S    |                   |
 | P3-01 | Evaluér de parkerede dele ud fra pilotens tal     | P3   | S    | P1-04             |
 | P3-02 | Fremmøde på holdpas                               | P3   | M    | pilotens ønske    |
 | P3-03 | Saml de gamle indgange til planlægning            | P3   | S    | en måneds brug    |
@@ -585,6 +588,68 @@ tre og alle svar.
 
 ---
 
+### P2-12 Planændringer kender deres afsender
+
+**Som** rytter **vil jeg** få at vide, når træneren ændrer eller sletter et
+af mine kommende pas, **så** jeg ikke møder op til noget, der er aflyst.
+
+- Et pas husker, hvem der sidst ændrede det.
+- Påmindelsen "Planen er ændret" kommer kun for andres ændringer, også
+  når et pas er slettet.
+
+**Størrelse:** M
+
+```text
+Følg rammen i docs/backlog.md §0. Gren: feat/plan-afsender.
+Læs docs/adr/0059-reminders-without-content.md (afsnittet om "by someone
+else") og src/modules/push/facts.ts. I dag ved påmindelsen kun, hvem der
+lagde et pas, ikke hvem der sidst ændrede det, og et slettet pas giver
+ingen besked. Plan først: en kolonne updated_by på planned_sessions sat
+af services i src/modules/training (eller en trigger, der læser
+app.user_id), og en lille tabel eller tombstone for slettede pas i de
+næste 7 dage, så rytteren kan få besked (org_id, rider_id, tvungen RLS
+gennem app_can_read_rider, audit, isolationstest). Opdatér facts.ts og
+due.ts og testene i tests/push. Opdatér ADR 0059.
+```
+
+### P2-13 Påmindelser fylder ikke revisionssporet
+
+**Som** træner, der læser revisionssporet, **vil jeg** se ændringer i
+træningen og ikke en række for hver påmindelse, **så** sporet kan læses.
+
+**Størrelse:** S · **Afhænger af:** Martins valg af løsning
+
+```text
+Følg rammen i docs/backlog.md §0. Gren: fix/audit-paamindelser.
+Hver påmindelse opdaterer told_up_to, checkin_reminded_on eller
+week_told_on på push_subscriptions og skriver dermed en række i
+audit_log (drizzle/0028). Plan først og lad Martin vælge: (a) en
+audit-trigger på tabellen, der springer en UPDATE over, når kun de tre
+kolonner og updated_at ændres, eller (b) flyt de tre kolonner til en
+tabel uden audit, med begrundelse i ADR'en, da det er tekniske tidsstempler
+og ingen persondata. Tests i tests/push/isolation.test.ts: tilmelding og
+afmelding auditeres stadig, en påmindelse gør ikke.
+```
+
+### P2-14 Demoen viser forløb med egne pas og påmindelser
+
+**Som** Martin, der viser Kadence frem, **vil jeg** se et forløb med pas
+bygget i planlæggeren og et kort om påmindelser i demoen, **så** alle dele
+af produktet kan ses.
+
+**Størrelse:** S
+
+```text
+Følg rammen i docs/backlog.md §0. Gren: feat/demo-forloeb.
+src/modules/demo/seed.ts er tæt på 300 linjer. Del den (fx
+seed-weeks.ts til ugerne og forløbet), og lad demoens forløb "Vinterblok,
+4 uger" indeholde mindst ét pas bygget i forløbet selv med tid og sted
+(ADR 0058, drizzle/0027). Vis i demoen, at påmindelser findes: når
+installationen har PUSH-nøgler, står kortet under Indstillinger → Mig; når
+den ikke har, skriver demobanneret intet om det. Udvid
+tests/demo/demo.test.ts.
+```
+
 ## P3 — efter vinteren
 
 ### P3-01 Evaluér de parkerede dele ud fra pilotens tal
@@ -826,7 +891,11 @@ importeres nogen steder, og slet dem: src/components/ui/add-affordance,
 alert, avatar, chip-input (og --radius-xs, som kun den bruger),
 detail-surfaces, linked-row, property-row, select;
 src/components/today/attention-section.tsx; route-gruppen (wide) med sit
-layout, hvis den stadig er uden sider. Kør hele suiten og build.
+layout, hvis den stadig er uden sider; src/components/assist/week-draft-
+dialog.tsx med acceptDraftSessionsAction i src/modules/assist/actions.ts
+og ruten /api/ai/week-draft, som kun dialogen brugte (ADR 0058 lod
+planlæggeren overtage); loadRiderWeek i week-plan-load.ts, hvis kun
+testene bruger den. Kør hele suiten og build.
 ```
 
 ### R-02 Små rester fra fokus-bølgen
@@ -837,6 +906,8 @@ Følg rammen i docs/backlog.md §0. Gren: chore/rester.
 den. 2) Tilføj de rene tests i tests/insight, tests/calendar og
 tests/today til vitest.unit.config.mts. 3) Ret kommentaren i
 src/modules/assist/coach-brief.ts, der stadig siger
-"Mandagsoverblikket". 4) Gennemgå README.md og TECH-DEBT.md for tal, der
-ikke passer (ruter, AI-forslag).
+"Mandagsoverblikket". 4) Når en træner fjerner et medlem, bliver
+medlemmets rækker i push_subscriptions liggende uden at blive brugt;
+fjern dem i samme transaktion (en SECURITY DEFINER eller en trigger på
+memberships), med en test.
 ```
