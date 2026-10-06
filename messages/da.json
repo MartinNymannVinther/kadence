@@ -2039,6 +2039,27 @@
       "hide": "Skjul",
       "undo": "Fortryd",
       "weekNote": "En afklaring gælder ugen ud, medmindre tallene bliver tydeligt værre. Dukker det samme op i næste uge, er det et nyt punkt. Resuméet fra AI'en og rådene til træneren ser de punkter, der stadig er åbne. Forslaget til ugen ser alle punkter, fordi det planlægger belastning."
+    },
+    "pilot": {
+      "title": "Holdets tre tal",
+      "body": "Tre tal om ugen viser, hvordan Kadence bliver brugt på holdet: hvor mange ryttere der checker ind, hvor mange pas der får en kvittering, og et skøn over tiden til planlægning. Tallene skal hjælpe med at afgøre, hvad Kadence skal være efter vinteren.",
+      "week": "Uge",
+      "weekNumber": "Uge {week}",
+      "inProgress": "i gang",
+      "checkins": "Check-in",
+      "receipts": "Kvittering",
+      "minutes": "Planlægning",
+      "of": "{part} af {whole}",
+      "percent": "{share, number, percent}",
+      "minutesValue": "{minutes} min",
+      "none": "–",
+      "explainCheckins": "Check-in: ryttere med et check-in på mindst fire af ugens dage.",
+      "explainReceipts": "Kvittering: pas til og med i går, der er markeret udført, har fået en RPE eller har fået en tur.",
+      "explainRiders": "En rytter tæller med fra sin første hele uge på holdet. Arkiverede ryttere tæller ikke med.",
+      "explainMinutes": "Planlægning er et groft skøn i minutter ud fra, hvornår trænerne har gemt pas, blokke og sæsonplaner. Ændringer med under ti minutters mellemrum regnes som én omgang, og hver omgang tæller mindst to minutter. Tid til at tænke og læse planen er ikke med. Tallet skal hjælpe med at se, om Kadence sparer tid. Det er ikke en vurdering af nogen.",
+      "clubsTitle": "Tre tal pr. klub, uge {week}",
+      "clubsBody": "Sidste hele uge, mandag til søndag. Kun tal, aldrig en rytter, et navn eller et check-in.",
+      "club": "Klub"
     }
   },
   "wellbeing": {
