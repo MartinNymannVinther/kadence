@@ -8,6 +8,7 @@ import { checkPlan, type Note } from "@/modules/calc/fuel-check";
 import { carbAdvice, type Day } from "@/modules/calc/fuel-day";
 import { contentOf } from "@/modules/calc/fuel-items";
 import { suggestPlan } from "@/modules/calc/fuel-suggest";
+import type { DayTimes } from "@/modules/calc/fuel-times";
 import { referenceKg } from "@/modules/calc/reference-rider";
 import { EnergyBudget } from "./energy-budget";
 import { EnergyGoal } from "./energy-goal";
@@ -22,7 +23,15 @@ const SHOWN: readonly Note[] = ["capped", "multiple", "practise", "heat", "cages
  * homemade drinks and ordinary food, the recipe for the sports drink, and
  * — for a race — why the stomach cannot take back what the body uses.
  */
-export function EnergyDuring({ day }: { day: Day }) {
+export function EnergyDuring({
+  day,
+  times,
+  clock,
+}: {
+  day: Day;
+  times: DayTimes | null;
+  clock: (minutes: number) => string;
+}) {
   const t = useTranslations("calculators.energy.during");
   const g = useTranslations("calculators.energy.goal");
   const items = useTranslations("calculators.energy.items");
@@ -49,7 +58,9 @@ export function EnergyDuring({ day }: { day: Day }) {
   return (
     <EnergyStep
       id="energy-during"
-      when={t("when")}
+      when={
+        times ? t("whenAt", { from: clock(times.ride.from), to: clock(times.ride.to) }) : t("when")
+      }
       title={t(day.session === "race" ? "titleRace" : "titleTraining")}
     >
       <EnergyGoal
@@ -77,8 +88,18 @@ export function EnergyDuring({ day }: { day: Day }) {
                 key={c.lane.index}
                 className="border-border bg-card flex flex-col gap-1.5 rounded-lg border p-2"
               >
-                <span className="text-2sm font-semibold">
-                  {t("hour", { hour: c.lane.index + 1 })}
+                <span className="flex flex-col">
+                  <span className="text-2sm font-semibold">
+                    {t("hour", { hour: c.lane.index + 1 })}
+                  </span>
+                  {times?.lanes[c.lane.index] && (
+                    <span className="text-meta text-2xs tabular-nums">
+                      {t("hourAt", {
+                        from: clock(times.lanes[c.lane.index]!.from),
+                        to: clock(times.lanes[c.lane.index]!.to),
+                      })}
+                    </span>
+                  )}
                 </span>
                 <span aria-hidden className="flex flex-wrap gap-0.5">
                   {lane.map((id, i) => (

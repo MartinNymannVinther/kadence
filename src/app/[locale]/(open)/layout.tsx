@@ -17,11 +17,11 @@ export default async function OpenLayout({ children }: { children: React.ReactNo
 
   return (
     <div className="bg-background flex min-h-svh flex-col">
-      <header className="mx-auto flex w-full max-w-3xl items-center justify-between gap-4 px-6 py-5">
+      <header className="mx-auto flex w-full max-w-3xl items-center justify-between gap-4 px-6 py-5 print:px-0 print:pt-0 print:pb-3">
         <Link href="/" className="focus-ring rounded-md">
           <Wordmark className="text-xl" />
         </Link>
-        <nav className="flex items-center gap-1">
+        <nav className="flex items-center gap-1 print:hidden">
           <Link
             href="/guides"
             className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "max-sm:hidden")}
@@ -37,9 +37,11 @@ export default async function OpenLayout({ children }: { children: React.ReactNo
         </nav>
       </header>
 
-      <main className="mx-auto w-full max-w-3xl flex-1 px-6 pb-20">{children}</main>
+      <main className="mx-auto w-full max-w-3xl flex-1 px-6 pb-20 print:px-0 print:pb-0">
+        {children}
+      </main>
 
-      <footer className="border-border mx-auto w-full max-w-3xl border-t px-6 py-6">
+      <footer className="border-border mx-auto w-full max-w-3xl border-t px-6 py-6 print:hidden">
         <p className="text-meta text-2sm leading-relaxed">{t("footer")}</p>
         <Link
           href="/terms"

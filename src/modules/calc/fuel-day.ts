@@ -38,6 +38,8 @@ export type Day = {
   riderClass: RiderClass;
   sex: Sex;
   next: Next;
+  /** When the race or session starts, in minutes since midnight; null to leave the clock out. */
+  startMin: number | null;
 };
 
 export const DEFAULT_DAY: Day = {
@@ -50,6 +52,7 @@ export const DEFAULT_DAY: Day = {
   riderClass: "U17",
   sex: "male",
   next: "rest",
+  startMin: 10 * 60,
 };
 
 export const gutCapFor = (gutTrained: boolean) => (gutTrained ? MAX_CARBS_PER_HOUR : UNTRAINED_CAP);

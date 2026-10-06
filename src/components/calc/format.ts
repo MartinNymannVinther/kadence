@@ -8,3 +8,13 @@ export function formatPrice(price: Price, locale: string): string {
     maximumFractionDigits: Number.isInteger(price.amount) ? 0 : 2,
   }).format(price.amount);
 }
+
+/** Minutes since midnight as the reader's clock: "07.30" in Danish, "07:30" in English. */
+export function formatClock(minutes: number, locale: string): string {
+  return new Intl.DateTimeFormat(locale === "da" ? "da-DK" : "en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+    timeZone: "UTC",
+  }).format(new Date(Date.UTC(2026, 0, 1, 0, minutes)));
+}

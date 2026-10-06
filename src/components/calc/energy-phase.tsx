@@ -23,7 +23,7 @@ export function EnergyStep({
         {!last && <span className="bg-border mt-1 w-0.5 flex-1" />}
       </div>
       <div className="flex min-w-0 flex-col gap-3 pb-8">
-        <div className="flex flex-col items-start gap-1">
+        <div data-print-keep className="flex flex-col items-start gap-1">
           <span className="bg-secondary text-label rounded-full px-2.5 py-0.5 text-xs font-medium">
             {when}
           </span>

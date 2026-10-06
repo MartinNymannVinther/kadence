@@ -2,6 +2,7 @@
 
 import { useId } from "react";
 import { useTranslations } from "next-intl";
+import { Input } from "@/components/ui/input";
 import { SegmentedChoice } from "@/components/ui/segmented";
 import type { Sex } from "@/modules/calc/energy";
 import { MAX_MINUTES, MIN_MINUTES } from "@/modules/calc/fuel-check";
@@ -25,8 +26,18 @@ function Label({ children }: { children: React.ReactNode }) {
   return <span className="text-label text-xs font-medium">{children}</span>;
 }
 
+/** "10:00" for 600 minutes, the form a time field speaks whatever the locale. */
+const hhmm = (minutes: number) =>
+  `${String(Math.floor(minutes / 60)).padStart(2, "0")}:${String(minutes % 60).padStart(2, "0")}`;
+
+function parseTime(value: string): number | null {
+  const match = /^(\d{2}):(\d{2})$/.exec(value);
+  return match ? Number(match[1]) * 60 + Number(match[2]) : null;
+}
+
 /**
- * What the day is: a race or training (and how hard), the rider's class
+ * What the day is: a race or training (and how hard), when it starts,
+ * the rider's class
  * and sex — in place of a weight, which riders and parents should not
  * have to think of as a number — how long and how warm, whether the
  * stomach is used to much carbohydrate, and what comes next.
@@ -40,6 +51,7 @@ export function EnergyInputs({
 }) {
   const t = useTranslations("calculators.energy.setup");
   const classGroup = useId();
+  const startId = useId();
   const nextGroup = useId();
   const duration = (m: number) => {
     const h = Math.floor(m / 60);
@@ -51,7 +63,7 @@ export function EnergyInputs({
   return (
     <section
       aria-labelledby="energy-setup"
-      className="border-border bg-card flex flex-col gap-4 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5"
+      className="border-border bg-card flex flex-col gap-4 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5 print:hidden"
     >
       <h2 id="energy-setup" className="text-lg font-semibold">
         {t("title")}
@@ -77,6 +89,21 @@ export function EnergyInputs({
             }))}
           />
         )}
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor={startId}>
+          <Label>{t("start")}</Label>
+        </label>
+        <Input
+          id={startId}
+          type="time"
+          step={900}
+          value={day.startMin === null ? "" : hhmm(day.startMin)}
+          onChange={(e) => set("startMin", parseTime(e.target.value))}
+          className="w-[8.5rem]"
+        />
+        <p className="text-meta text-xs leading-relaxed">{t("startHint")}</p>
       </div>
 
       <fieldset className="flex flex-col gap-1.5">

@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { num } from "@/components/charts/format";
 import { beforeTargets, type Day } from "@/modules/calc/fuel-day";
 import { MAIN_MEAL, SNACK } from "@/modules/calc/fuel-examples";
+import type { DayTimes } from "@/modules/calc/fuel-times";
 import { EnergyExamples } from "./energy-examples";
 import { EnergyGoal } from "./energy-goal";
 import { EnergyStep } from "./energy-phase";
@@ -43,14 +44,28 @@ export function EnergyDayBefore({ day }: { day: Day }) {
  * 1–2 hours before (Team Danmark), together about the goal for the
  * rider's class, with examples, and ½–1 l to drink.
  */
-export function EnergyBefore({ day, rider }: { day: Day; rider: string }) {
+export function EnergyBefore({
+  day,
+  rider,
+  times,
+  clock,
+}: {
+  day: Day;
+  rider: string;
+  times: DayTimes | null;
+  clock: (minutes: number) => string;
+}) {
   const t = useTranslations("calculators.energy.before");
   const g = useTranslations("calculators.energy.goal");
   const locale = useLocale();
   const target = beforeTargets(day);
 
   return (
-    <EnergyStep id="energy-before" when={t("when")} title={t("title")}>
+    <EnergyStep
+      id="energy-before"
+      when={times ? t("whenAt", { from: clock(times.mainMeal.from) }) : t("when")}
+      title={t("title")}
+    >
       <EnergyGoal
         label={t("goal", { rider })}
         goals={[
@@ -62,12 +77,25 @@ export function EnergyBefore({ day, rider }: { day: Day; rider: string }) {
         ]}
       />
       <div className="flex flex-col gap-2">
-        <h4 className="text-2sm font-semibold">{t("meal")}</h4>
+        <h4 className="text-2sm font-semibold">
+          {times
+            ? t("mealAt", { from: clock(times.mainMeal.from), to: clock(times.mainMeal.to) })
+            : t("meal")}
+        </h4>
         <EnergyExamples examples={MAIN_MEAL} />
         <p className="text-meta text-2sm leading-relaxed">{t("mealNote")}</p>
+        {times?.early && (
+          <p className="bg-sticky text-sticky-ink rounded-md px-3 py-2 text-2sm leading-relaxed">
+            {t("early", { start: clock(times.ride.from) })}
+          </p>
+        )}
       </div>
       <div className="flex flex-col gap-2">
-        <h4 className="text-2sm font-semibold">{t("snack")}</h4>
+        <h4 className="text-2sm font-semibold">
+          {times
+            ? t("snackAt", { from: clock(times.snack.from), to: clock(times.snack.to) })
+            : t("snack")}
+        </h4>
         <EnergyExamples examples={SNACK} />
         <p className="text-meta text-2sm leading-relaxed">
           {t(day.session === "training" ? "snackNoteTraining" : "snackNote")}

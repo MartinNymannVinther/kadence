@@ -28,6 +28,13 @@ const keys = [
   ...["pasta", "rice", "potatoes"].flatMap((d) => [`dayBefore.dinners.${d}`, `after.dinners.${d}`]),
   ...["titleRace", "titleTraining"].map((k) => `during.${k}`),
   ...["1", "2", "3", "4", "5", "6"].map((p) => `about.points.${p}`),
+  ...["whenAt", "mealAt", "snackAt", "early"].map((k) => `before.${k}`),
+  ...["whenAt", "hourAt"].map((k) => `during.${k}`),
+  ...["whenAt", "soonAt", "dinnerAt"].map((k) => `after.${k}`),
+  ...["startAt", "next", "fileName", "printFooter"].map((k) => `results.${k}`),
+  "setup.start",
+  "setup.startHint",
+  "print.button",
 ].map((k) => `calculators.energy.${k}`);
 
 describe("the energy advice's words", () => {

@@ -66,6 +66,18 @@ Danish sources DCU leans on.
   `src/modules/calc/fuel-items.ts` — the Danish Food Composition Database
   6.1 (DTU, May 2026, CC BY 4.0) — so none is typed in by hand
   (`src/modules/calc/fuel-examples.ts`).
+- **The clock and paper** (Martin, 6 October 2026). A start time (a time
+  field, 10:00 to begin with, empty to leave it out) puts approximate
+  times on every step (`src/modules/calc/fuel-times.ts`): the main meal
+  3–4 hours before, the snack 1–2 hours before, each hour on the bike,
+  the first half hour after, the four hours after when another hard
+  session follows within 8 hours, and the main meal 1–2 hours after. A
+  main meal before 6 o'clock — Kadence's line — brings Team Danmark's
+  advice for a morning session: a smaller breakfast, a light snack and
+  sports drink on the way. "Udskriv eller gem som PDF" uses the browser's
+  own print: the printed page holds the advice with one line of the
+  choices, without the form, the menu or the sources, always in the light
+  theme, A4 with cards kept whole, and the file named after the rider.
 - **Removed**: dragging, the pantry, the plan's slots and checks of meals
   typed by the rider, the effort fields and the chart of a rider's own
   plan. The two earlier versions live in this pull request's history.
@@ -85,6 +97,12 @@ Danish sources DCU leans on.
 - **The energy picture is rough.** A race in a bunch is 12 MET for every
   rider; it is there to show the proportion, not to count a rider's
   calories, and is shown only for races.
+- **Times are approximate.** The windows are Team Danmark's hours counted
+  back from the start; a rider who wakes late or travels far will not
+  keep to them, and the page says "ca.".
+- **Printing is the browser's.** No PDF library: the result depends on
+  the browser's print dialog, and backgrounds print only because the page
+  asks for exact colours.
 - **DCU is thin on food.** Most of the advice is Team Danmark's; DCU's own
   part is the ride the day before and the recovery meal in its strength
   programmes.
