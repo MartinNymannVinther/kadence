@@ -1,5 +1,9 @@
 import type { BuiltinExercise, BuiltinProgram } from "../types";
-import { HIP_FLEXOR } from "./mobility";
+import { CORE } from "./core";
+import { LEGS } from "./legs";
+import { MOBILITY } from "./mobility";
+import { PROGRAMS } from "./programs";
+import { UPPER } from "./upper";
 
 /**
  * Kadence's own exercises and programmes (docs/plan-ovelser-og-programmer.md).
@@ -7,7 +11,27 @@ import { HIP_FLEXOR } from "./mobility";
  * or `exercises.programs.<id>`) and, for an exercise, a pose; the tests in
  * tests/exercises prove every entry is complete and every programme points
  * at exercises that exist.
+ *
+ * The ids match the strength builder's catalogue keys where both have the
+ * exercise (src/modules/workouts/exercise-catalogue.ts), so one can find
+ * the other's drawing.
  */
-export const BUILTIN_EXERCISES: readonly BuiltinExercise[] = [HIP_FLEXOR];
+export const BUILTIN_EXERCISES: readonly BuiltinExercise[] = [
+  ...MOBILITY,
+  ...CORE,
+  ...LEGS,
+  ...UPPER,
+];
 
-export const BUILTIN_PROGRAMS: readonly BuiltinProgram[] = [];
+export const BUILTIN_PROGRAMS: readonly BuiltinProgram[] = PROGRAMS;
+
+const exercisesById = new Map(BUILTIN_EXERCISES.map((e) => [e.id, e]));
+const programsById = new Map(BUILTIN_PROGRAMS.map((p) => [p.id, p]));
+
+export function builtinExercise(id: string): BuiltinExercise | null {
+  return exercisesById.get(id) ?? null;
+}
+
+export function builtinProgram(id: string): BuiltinProgram | null {
+  return programsById.get(id) ?? null;
+}
