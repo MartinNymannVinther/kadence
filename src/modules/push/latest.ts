@@ -5,6 +5,7 @@ import { whoAmIIn } from "@/modules/team/access";
 import { copenhagenClock, lastTold, mayBeWellbeing } from "./due";
 import { newestComment, newestPlanChange, visibleChildren } from "./facts";
 import { teamsOf } from "./subscriptions";
+import { testSentAt } from "./test-push";
 import { redCheckinFirstSavedAt } from "./wellbeing";
 
 /**
@@ -23,6 +24,8 @@ import { redCheckinFirstSavedAt } from "./wellbeing";
 
 /** Where a coach sees who: the team's points of attention (src/components/insight/signals.ts). */
 export const ATTENTION_PATH = "/calendar#opmaerksomhed";
+/** Where "Send en prøve" is, for a tap on the test. */
+export const REMINDERS_PATH = "/settings/me";
 
 export type Note =
   | {
@@ -35,7 +38,8 @@ export type Note =
   | { kind: "plan"; path: string }
   | { kind: "checkin"; path: string }
   | { kind: "week"; children: string[]; path: string }
-  | { kind: "wellbeing"; path: string };
+  | { kind: "wellbeing"; path: string }
+  | { kind: "test"; path: string };
 
 /** How far back news is looked for behind the moment it was told. */
 const NEWS_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
@@ -96,10 +100,11 @@ export async function noteFor(ctx: OrgContext, row: PushSubscriptionRow): Promis
 
 /**
  * The newest reminder for the person signed in: on whichever team and
- * browser one went out last. Null when there is nothing to say; the
- * route then gives the plain "there is something new".
+ * browser one went out last, or the person's own test when nothing has
+ * gone out since. Null when there is nothing to say; the route then gives
+ * the plain "there is something new".
  */
-export async function latestFor(userId: string): Promise<Note | null> {
+export async function latestFor(userId: string, now: Date = new Date()): Promise<Note | null> {
   let newest: { ctx: OrgContext; row: PushSubscriptionRow } | null = null;
   for (const orgId of await teamsOf(userId)) {
     const ctx = { orgId, userId };
@@ -107,5 +112,8 @@ export async function latestFor(userId: string): Promise<Note | null> {
     for (const row of rows)
       if (!newest || row.updatedAt > newest.row.updatedAt) newest = { ctx, row };
   }
+  const tested = testSentAt(userId, now);
+  if (tested && (!newest || tested >= newest.row.updatedAt))
+    return { kind: "test", path: REMINDERS_PATH };
   return newest ? noteFor(newest.ctx, newest.row) : null;
 }

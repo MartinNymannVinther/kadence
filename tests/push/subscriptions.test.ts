@@ -109,8 +109,9 @@ describe("turning reminders on", () => {
       subscribed: true,
       kinds: ["checkin"],
       offered: ["checkin", "comment", "plan"],
+      since: expect.stringMatching(/^\d{4}-\d\d-\d\dT/),
     });
-    expect((await reminderState(RIDER, LAPTOP)).subscribed).toBe(false);
+    expect(await reminderState(RIDER, LAPTOP)).toMatchObject({ subscribed: false, since: null });
   });
 
   it("takes only the reminders the roles offer", async () => {

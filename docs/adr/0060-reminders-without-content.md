@@ -1,7 +1,7 @@
 # ADR 0060: Reminders without content
 
 Status: accepted · Date: 2026-10-06 · Amended 2026-10-06: a coach's
-wellbeing reminder (P1-02)
+wellbeing reminder (P1-02) and a test push (P1-05)
 
 ## Context
 
@@ -186,3 +186,38 @@ normal`), not an alarm; the coach decides what to do. The job therefore
   both.
 - **A coach who saves a check-in for a rider** after a conversation is
   told of it too: a check-in does not record who saved it.
+
+## Amendment: a test push (P1-05)
+
+"Send en prøve" under Settings → Mig → Påmindelser lets a person see on
+the phone itself that reminders arrive, before the first real one is
+due.
+
+- **What it sends.** A server action, as the person (`runAction`, zod,
+  `src/modules/push/test-push.ts`), sends one empty push to each of the
+  person's own browsers on the team. It reads the rows inside the
+  person's own context, so the policy leaves nobody else's in reach. Three
+  an hour per person, counted in the in-process limiter like other
+  per-person limits. A browser the push service no longer knows is
+  forgotten, as the run does.
+- **What it says.** The push is as empty as any other, so the service
+  worker asks `latest`, which answers "Sådan ser en påmindelse fra Kadence
+  ud" until a real reminder goes out after the test. The server keeps the
+  moment of the test in memory, for the six hours a push can wait, and
+  writes nothing: a test is not a reminder, and a mark in
+  `push_subscriptions` would move the run's marks and add a row to the
+  audit trail for nothing.
+- **The status line** under the card is worked out in the browser: the
+  notification permission, whether `/sw.js` is registered, whether the
+  browser holds a subscription, and on an iPhone or iPad whether Kadence
+  was opened from the home screen. The one thing from the server is when
+  the person's own subscription on this team was made. Nothing about
+  anyone else, and nothing is sent anywhere.
+
+### Trade-offs accepted
+
+- **Memory, not a mark.** After a restart, or with several app processes,
+  a test still arrives but shows the plain "Der er nyt i Kadence".
+- **The test goes to every browser** the person has on the team, not only
+  the one they pressed it on, so a person with reminders on a phone and a
+  computer sees it on both.

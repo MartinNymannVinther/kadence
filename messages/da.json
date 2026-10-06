@@ -948,6 +948,7 @@
     "not_a_rider": "Kun en rytter kan forbinde sin egen enhed.",
     "too_many_keys": "Du har allerede så mange nøgler, som du kan have. Fjern en, før du opretter en ny.",
     "too_many_keys_made": "Du har oprettet mange nøgler lige nu. Prøv igen om en time.",
+    "too_many_test_reminders": "Du har sendt tre prøver inden for en time. Prøv igen lidt senere.",
     "flagGone": "Opmærksomhedspunktet er ikke aktivt længere. Genindlæs siden.",
     "uciId": "Et UCI ID er 11 cifre, som det står på licensen.",
     "uciTaken": "En anden rytter på holdet har allerede det UCI ID.",
@@ -3148,6 +3149,27 @@
     "ios": "På iPhone virker påmindelser, når Kadence ligger på hjemmeskærmen (iOS 16.4 eller nyere).",
     "denied": "Browseren har blokeret påmindelser fra Kadence. Du kan tillade dem i browserens indstillinger.",
     "failed": "Påmindelserne kunne ikke slås til i denne browser. Alt andet virker.",
+    "test": "Send en prøve",
+    "testHint": "Kadence sender en påmindelse til dine enheder på dette hold, så du kan se, at den kommer frem. Højst tre i timen.",
+    "testSent": "Prøven er sendt. Den kommer om et øjeblik.",
+    "testGone": "Push-tjenesten kender ikke enheden længere. Slå påmindelser til igen.",
+    "testFailed": "Prøven kom ikke af sted lige nu. Prøv igen om lidt.",
+    "diagnosis": {
+      "label": "Status på denne enhed:",
+      "permission": {
+        "granted": "tilladelse givet",
+        "denied": "tilladelse afvist",
+        "default": "ikke spurgt om tilladelse endnu",
+        "unsupported": "ingen påmindelser i denne browser"
+      },
+      "worker": "service worker registreret",
+      "noWorker": "ingen service worker",
+      "subscribedSince": "abonnement siden {when}",
+      "subscribedElsewhere": "abonnement i browseren, men ikke på dette hold",
+      "noSubscription": "intet abonnement",
+      "standalone": "åbnet fra hjemmeskærmen",
+      "notStandalone": "ikke åbnet fra hjemmeskærmen"
+    },
     "kind": {
       "checkin": "Check-in om aftenen",
       "checkinHint": "Klokken 19, hvis du ikke har checket ind i dag.",
@@ -3175,7 +3197,9 @@
       "fallbackTitle": "Der er nyt i Kadence",
       "fallbackBody": "Åbn Kadence for at se det.",
       "wellbeingTitle": "En rytter har brug for en snak",
-      "wellbeingBody": "Se, hvem det er, under opmærksomhedspunkterne."
+      "wellbeingBody": "Se, hvem det er, under opmærksomhedspunkterne.",
+      "testTitle": "Sådan ser en påmindelse fra Kadence ud",
+      "testBody": "Prøven kom frem. Påmindelserne virker på denne enhed."
     }
   },
   "records": {

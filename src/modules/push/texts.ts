@@ -58,5 +58,7 @@ export function renderNote(note: Note | null, t: Translate, locale: NoteLocale):
       };
     case "wellbeing":
       return { title: t("wellbeingTitle"), body: t("wellbeingBody"), url };
+    case "test":
+      return { title: t("testTitle"), body: t("testBody"), url };
   }
 }

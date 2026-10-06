@@ -38,6 +38,7 @@ const NOTES: Array<Note | null> = [
   { kind: "comment", title: null, author: null, path: "/calendar?week=2026-10-05&rider=r1" },
   { kind: "week", children: ["Emma Holm"], path: "/parents" },
   { kind: "wellbeing", path: "/calendar#opmaerksomhed" },
+  { kind: "test", path: "/settings/me" },
 ];
 
 describe("a reminder in words", () => {
@@ -79,6 +80,14 @@ describe("a reminder in words", () => {
       url: "/calendar#opmaerksomhed",
     });
     expect(renderNote(NOTES[6]!, translate("en"), "en").url).toBe("/en/calendar#opmaerksomhed");
+  });
+
+  it("shows a test as what a reminder looks like", () => {
+    expect(renderNote(NOTES[7]!, translate("da"), "da")).toEqual({
+      title: "Sådan ser en påmindelse fra Kadence ud",
+      body: "Prøven kom frem. Påmindelserne virker på denne enhed.",
+      url: "/settings/me",
+    });
   });
 
   it("puts English paths under /en", () => {

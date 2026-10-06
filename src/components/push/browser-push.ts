@@ -27,6 +27,33 @@ export function pushSupport(): Support {
   return isIos() && !installed() ? "ios" : "unsupported";
 }
 
+/** The browser's side of reminders, for the status line under the card (P1-05). */
+export type Diagnosis = {
+  permission: NotificationPermission | "unsupported";
+  /** Whether Kadence's worker, /sw.js, is registered. */
+  worker: boolean;
+  /** Whether this browser holds a push subscription for Kadence. */
+  subscription: boolean;
+  ios: boolean;
+  /** Opened from the home screen rather than in the browser. */
+  standalone: boolean;
+};
+
+/** What this browser says about itself; nothing here leaves it. */
+export async function diagnose(): Promise<Diagnosis> {
+  const permission = "Notification" in window ? Notification.permission : "unsupported";
+  let worker = false;
+  let subscription = false;
+  if ("serviceWorker" in navigator) {
+    const registration = await navigator.serviceWorker.getRegistration("/").catch(() => undefined);
+    const script = registration?.active ?? registration?.waiting ?? registration?.installing;
+    worker = Boolean(script && new URL(script.scriptURL).pathname === "/sw.js");
+    const held = await registration?.pushManager?.getSubscription().catch(() => null);
+    subscription = Boolean(held);
+  }
+  return { permission, worker, subscription, ios: isIos(), standalone: installed() };
+}
+
 export function permissionDenied(): boolean {
   return "Notification" in window && Notification.permission === "denied";
 }
