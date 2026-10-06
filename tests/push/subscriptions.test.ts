@@ -97,7 +97,7 @@ afterAll(async () => {
 describe("turning reminders on", () => {
   it("offers each person what their roles on the team mean", async () => {
     expect((await subscribe(RIDER, PHONE)).kinds).toEqual(["checkin", "comment", "plan"]);
-    expect((await subscribe(COACH, PHONE)).kinds).toEqual(["comment"]);
+    expect((await subscribe(COACH, PHONE)).kinds).toEqual(["comment", "wellbeing"]);
     expect((await subscribe(PARENT, PHONE)).kinds).toEqual(["comment", "week"]);
     expect(await refusal(subscribe(NOBODY, PHONE))).toBe("forbidden");
   });
@@ -116,6 +116,12 @@ describe("turning reminders on", () => {
   it("takes only the reminders the roles offer", async () => {
     expect((await setKinds(COACH, PHONE, ["checkin", "comment", "week"])).kinds).toEqual([
       "comment",
+    ]);
+    // Wellbeing is a coach's: a rider or a parent who asks for it does not get it.
+    expect((await setKinds(PARENT, PHONE, ["wellbeing", "week"])).kinds).toEqual(["week"]);
+    expect((await setKinds(COACH, PHONE, ["comment", "wellbeing"])).kinds).toEqual([
+      "comment",
+      "wellbeing",
     ]);
     expect(await refusal(setKinds(COACH, LAPTOP, ["comment"]))).toBe("notFound");
   });

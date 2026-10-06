@@ -5,7 +5,8 @@ import type { Note } from "./latest";
  * the person's language. The words are messages/*.json's, under
  * `reminders.notify`; this only picks which, and fills in names. Short,
  * plain, no exclamation marks, nothing on a lock screen a teammate
- * should not read: a session's title and who wrote, never the comment.
+ * should not read: a session's title and who wrote, never the comment,
+ * and for a rider in the red zone neither the rider nor the answers.
  */
 
 export type Notification = { title: string; body: string; url: string };
@@ -55,5 +56,7 @@ export function renderNote(note: Note | null, t: Translate, locale: NoteLocale):
         body: t("weekBody"),
         url,
       };
+    case "wellbeing":
+      return { title: t("wellbeingTitle"), body: t("wellbeingBody"), url };
   }
 }

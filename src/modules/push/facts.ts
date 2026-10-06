@@ -3,13 +3,15 @@ import { activities, checkins, comments, plannedSessions, users } from "@/core/d
 import type { AppTransaction, OrgContext } from "@/core/db/tenant";
 import type { Me } from "@/modules/team/access";
 import { planWindow, type Facts } from "./due";
+import { newestRedCheckin } from "./wellbeing";
 
 /**
  * What a reminder is about, read as the person it is for (docs/adr/0060).
  * Every query here runs inside the person's own `withOrgContext`, so the
  * policies decide what they can see: a rider their own sessions, a coach
  * the team's, a parent their child's while the child shares training. A
- * reminder can never be about something its reader could not open.
+ * reminder can never be about something its reader could not open. A
+ * rider in the red zone is read in wellbeing.ts, for coaches only.
  */
 
 export type Range = { after: Date; upTo: Date };
@@ -145,5 +147,7 @@ export async function gatherFacts(
     isParent: visibleChildren(me).length > 0,
     newestComment: comment?.at ?? null,
     newestPlanChange: me.rider ? await newestPlanChange(tx, ctx, me.rider.id, range, today) : null,
+    isCoach: me.isCoach,
+    newestRedCheckin: await newestRedCheckin(tx, ctx, me, today),
   };
 }

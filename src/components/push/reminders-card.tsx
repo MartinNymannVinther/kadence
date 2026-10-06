@@ -125,7 +125,9 @@ export function RemindersCard({
     <Card>
       <CardHeader>
         <CardTitle>{t("title")}</CardTitle>
-        <CardDescription>{t("body")}</CardDescription>
+        <CardDescription>
+          {offered.includes("wellbeing") ? t("bodyCoach") : t("body")}
+        </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
         {view === "unsupported" && <Note>{t("unsupported")}</Note>}

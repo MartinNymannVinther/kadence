@@ -2,9 +2,10 @@ import { pushSubscriptions, type PushSubscriptionRow } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
 import { mondayOf } from "@/core/dates";
 import { whoAmIIn } from "@/modules/team/access";
-import { copenhagenClock, lastTold } from "./due";
+import { copenhagenClock, lastTold, mayBeWellbeing } from "./due";
 import { newestComment, newestPlanChange, visibleChildren } from "./facts";
 import { teamsOf } from "./subscriptions";
+import { redCheckinFirstSavedAt } from "./wellbeing";
 
 /**
  * What the service worker shows when a push wakes it (docs/adr/0060).
@@ -15,8 +16,13 @@ import { teamsOf } from "./subscriptions";
  * browser gets their own answer, never the owner's.
  *
  * A note is words and a path, not text: the route renders it in the
- * person's language from messages/*.json (texts.ts).
+ * person's language from messages/*.json (texts.ts). A coach's note about
+ * a rider in the red zone has no words at all: not who, and not what they
+ * answered, because a lock screen is read by whoever holds the phone.
  */
+
+/** Where a coach sees who: the team's points of attention (src/components/insight/signals.ts). */
+export const ATTENTION_PATH = "/calendar#opmaerksomhed";
 
 export type Note =
   | {
@@ -28,7 +34,8 @@ export type Note =
     }
   | { kind: "plan"; path: string }
   | { kind: "checkin"; path: string }
-  | { kind: "week"; children: string[]; path: string };
+  | { kind: "week"; children: string[]; path: string }
+  | { kind: "wellbeing"; path: string };
 
 /** How far back news is looked for behind the moment it was told. */
 const NEWS_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
@@ -71,14 +78,19 @@ async function news(
 /** The note for one subscription, read as its owner. */
 export async function noteFor(ctx: OrgContext, row: PushSubscriptionRow): Promise<Note | null> {
   const told = lastTold(row);
-  if (!told) return null;
+  const wellbeing = mayBeWellbeing(row);
+  if (!told && !wellbeing) return null;
   return withOrgContext(ctx, async (tx) => {
     if (told === "news") return news(tx, ctx, row);
     const me = await whoAmIIn(tx, ctx);
     if (!me) return null;
+    if (wellbeing && (await redCheckinFirstSavedAt(tx, ctx, me, row.toldUpTo)))
+      return { kind: "wellbeing", path: ATTENTION_PATH };
     if (told === "checkin") return me.rider ? { kind: "checkin", path: "/today" } : null;
     const children = visibleChildren(me);
-    return children.length > 0 ? { kind: "week", children, path: "/parents" } : null;
+    return told === "week" && children.length > 0
+      ? { kind: "week", children, path: "/parents" }
+      : null;
   });
 }
 

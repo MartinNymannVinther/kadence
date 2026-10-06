@@ -3135,6 +3135,7 @@
   "reminders": {
     "title": "Påmindelser",
     "body": "Kadence kan minde dig om det vigtigste på denne enhed. Der kommer ingen påmindelser mellem 21.30 og 7.",
+    "bodyCoach": "Kadence kan minde dig om det vigtigste på denne enhed. Mellem 21.30 og 7 kommer kun påmindelser om trivsel.",
     "privacy": "Selve beskeden hentes fra Kadence, når den kommer. Din browsers push-tjeneste ser kun, at der er noget nyt.",
     "enable": "Slå påmindelser til på denne enhed",
     "disable": "Slå fra",
@@ -3156,7 +3157,9 @@
       "plan": "Ændret plan",
       "planHint": "Når en træner lægger eller ændrer et pas i de næste syv dage.",
       "week": "Ugens overblik",
-      "weekHint": "Søndag aften, når ugen er gået."
+      "weekHint": "Søndag aften, når ugen er gået.",
+      "wellbeing": "Trivsel",
+      "wellbeingHint": "Når en rytter checker ind i rød zone, højst én gang om dagen pr. rytter. Den kommer også mellem 21.30 og 7 og nævner ikke rytterens navn."
     },
     "notify": {
       "checkinTitle": "Husk dagens check-in",
@@ -3170,7 +3173,9 @@
       "weekTitle": "{owner} uge er klar",
       "weekBody": "Se, hvordan ugen er gået.",
       "fallbackTitle": "Der er nyt i Kadence",
-      "fallbackBody": "Åbn Kadence for at se det."
+      "fallbackBody": "Åbn Kadence for at se det.",
+      "wellbeingTitle": "En rytter har brug for en snak",
+      "wellbeingBody": "Se, hvem det er, under opmærksomhedspunkterne."
     }
   },
   "records": {

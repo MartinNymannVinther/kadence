@@ -148,6 +148,22 @@ describe("who changes a browser's reminders", () => {
       "23514",
     );
   });
+
+  it("takes the kinds Kadence knows, wellbeing among them, and nothing else", async () => {
+    const known = await asApp(app, COACH, (c) =>
+      c.query(
+        "update push_subscriptions set kinds = '{comment,wellbeing}' where id = 'pi_coach' returning id",
+      ),
+    );
+    expect(known.rowCount).toBe(1);
+    expect(
+      await expectSqlError(
+        asApp(app, COACH, (c) =>
+          c.query("update push_subscriptions set kinds = '{alarm}' where id = 'pi_coach'"),
+        ),
+      ),
+    ).toBe("23514");
+  });
 });
 
 describe("the reminder job's door", () => {

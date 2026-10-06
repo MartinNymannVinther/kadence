@@ -3135,6 +3135,7 @@
   "reminders": {
     "title": "Reminders",
     "body": "Kadence can remind you of what matters on this device. No reminders come between 21:30 and 7:00.",
+    "bodyCoach": "Kadence can remind you of what matters on this device. Between 21:30 and 7:00 only wellbeing reminders come.",
     "privacy": "The message itself is fetched from Kadence when it arrives. Your browser's push service only sees that there is something new.",
     "enable": "Turn on reminders on this device",
     "disable": "Turn off",
@@ -3156,7 +3157,9 @@
       "plan": "Changed plan",
       "planHint": "When a coach adds or changes a session in the next seven days.",
       "week": "The week in short",
-      "weekHint": "Sunday evening, when the week is over."
+      "weekHint": "Sunday evening, when the week is over.",
+      "wellbeing": "Wellbeing",
+      "wellbeingHint": "When a rider checks in in the red zone, at most once a day per rider. It also comes between 21:30 and 7:00 and does not name the rider."
     },
     "notify": {
       "checkinTitle": "Remember today's check-in",
@@ -3170,7 +3173,9 @@
       "weekTitle": "{owner} training week is ready",
       "weekBody": "See how the week went.",
       "fallbackTitle": "There is something new in Kadence",
-      "fallbackBody": "Open Kadence to see it."
+      "fallbackBody": "Open Kadence to see it.",
+      "wellbeingTitle": "A rider could use a talk",
+      "wellbeingBody": "See who it is under the points of attention."
     }
   },
   "records": {
