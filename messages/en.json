@@ -577,11 +577,11 @@
       "kindTitle": "What kind of team",
       "kindBody": "Used for the team's defaults. Each rider's class still comes from their birth year.",
       "guidanceTitle": "Training basis",
-      "guidanceBody": "Kadence can guide the team by DCU's recommendations for each class: the hours in the season plan, the week's range and the longest ride. You can turn it off and on whenever you like.",
-      "guidance": "Guided by DCU's recommendations",
-      "guidanceHint": "When on, the season plan starts from DCU's hours and the week is shown against DCU's range. When off, you set your own hours, and the points about DCU's range and the longest ride go away. Pain, wellbeing, sleep, the week-to-week rise and the classes' race rules stay, whichever you choose.",
-      "lowIntensity": "Measure sessions against \"Low intensity first\"",
-      "lowIntensityHint": "A profile from the research that sits on top of the hours, with or without DCU. From November to February at least 75–80 % of the bike sessions sit in the low zone, at most 10 % in the middle zone and the rest in the high zone. When the middle zone grows large over the last four weeks, it appears among the possible points of attention. The spread is always shown in the season plan.",
+      "guidanceBody": "Choose what the team's season plans start from and what the weeks are measured against.",
+      "guidance": "Follow DCU's recommendations (hours and phases)",
+      "guidanceHint": "The season plan starts from DCU's hours and phases for the rider's class, and the week is shown against DCU's range.",
+      "lowIntensity": "Low intensity first",
+      "lowIntensityHint": "From November to February, Kadence speaks up when the middle zone takes up much of the bike sessions.",
       "clubTitle": "Club championship",
       "club": "Club championship in Kadence",
       "clubHint": "Off by default. When on, the club gets a page with the season's rounds, the standings and the club champions over the years. It is the only place where riders and parents see placings.",
@@ -2432,7 +2432,7 @@
         "12": "about 10 %"
       },
       "profile": "Low intensity first: at least {lowMin}–{lowTarget} % low, at most {midMax} % middle and the rest high from November to February.",
-      "profileOff": "You can measure the sessions against the profile \"Low intensity first\" under Settings → Team."
+      "profileOff": "You can measure the sessions against \"Low intensity first\" under Settings → Team → Training basis."
     },
     "chart": {
       "title": "Hours per month",

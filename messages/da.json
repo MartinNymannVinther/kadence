@@ -577,11 +577,11 @@
       "kindTitle": "Hvad slags hold",
       "kindBody": "Bruges til holdets standarder. Hver rytters klasse kommer stadig fra fødselsåret.",
       "guidanceTitle": "Træningsgrundlag",
-      "guidanceBody": "Kadence kan guide holdet efter DCU's anbefalinger for hver klasse: timerne i sæsonplanen, ugens ramme og den længste tur. Du kan slå det fra og til, når du vil.",
-      "guidance": "Guidet af DCU's anbefalinger",
-      "guidanceHint": "Slået til starter sæsonplanen fra DCU's timer, og ugen vises mod DCU's ramme. Slået fra lægger du dine egne timer, og punkterne om DCU's ramme og den længste tur forsvinder. Smerter, trivsel, søvn, stigningen fra uge til uge og klassernes løbsregler bliver, uanset valget.",
-      "lowIntensity": "Mål pasene mod \"Lav intensitet først\"",
-      "lowIntensityHint": "En profil fra forskningen, som lægger sig oven på timerne, med eller uden DCU. Fra november til februar ligger mindst 75–80 % af cykelpasene i lav zone, højst 10 % i mellemzonen og resten i høj zone. Fylder mellemzonen meget de sidste fire uger, kommer det på listen over mulige opmærksomhedspunkter. Fordelingen står altid i sæsonplanen.",
+      "guidanceBody": "Vælg, hvad holdets sæsonplaner starter fra, og hvad ugerne måles mod.",
+      "guidance": "Følg DCU's anbefalinger (timer og faser)",
+      "guidanceHint": "Sæsonplanen starter fra DCU's timer og faser for rytterens årgang, og ugen vises mod DCU's ramme.",
+      "lowIntensity": "Lav intensitet først",
+      "lowIntensityHint": "Fra november til februar siger Kadence til, når mellemzonen fylder meget i cykelpasene.",
       "clubTitle": "Klubmesterskab",
       "club": "Klubmesterskab i Kadence",
       "clubHint": "Slået fra som standard. Slået til får klubben en side med sæsonens afdelinger, stillingen og klubmestre gennem tiden. Det er det eneste sted, hvor ryttere og forældre ser placeringer.",
@@ -2432,7 +2432,7 @@
         "12": "omkring 10 %"
       },
       "profile": "Lav intensitet først: mindst {lowMin}–{lowTarget} % lav, højst {midMax} % mellem og resten høj fra november til februar.",
-      "profileOff": "Du kan måle pasene mod profilen \"Lav intensitet først\" under Indstillinger → Holdet."
+      "profileOff": "Du kan måle pasene mod \"Lav intensitet først\" under Indstillinger → Holdet → Træningsgrundlag."
     },
     "chart": {
       "title": "Timer pr. måned",
