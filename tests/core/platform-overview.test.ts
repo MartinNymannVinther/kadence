@@ -1,13 +1,17 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { Client, Pool } from "pg";
 import { platformOverview } from "@/core/admin/overview";
+import { todayInCopenhagen } from "@/core/dates";
+import { lastFullWeek } from "@/modules/insight/pilot-numbers";
 import { adminPool, appClient, expectSqlError } from "../helpers/db";
 import { seedMember, seedWorkspace } from "../helpers/workspace";
 
 /**
  * The installation's overview (drizzle/0019, docs/adr/0048): the owner
  * gets one row per club with counts only; anyone else is refused, by the
- * service and by the database function itself.
+ * service and by the database function itself. The pilot's three numbers
+ * (drizzle/0031, docs/adr/0066) are counts for the last full week;
+ * tests/insight/pilot-overview proves them against the coaches' own.
  */
 
 let admin: Pool;
@@ -42,6 +46,18 @@ describe("the installation's overview", () => {
     expect(JSON.stringify(clubs)).not.toContain("Hemmelig Rytter");
   });
 
+  it("adds the pilot's numbers for the last full week, where a rider added today is not yet", async () => {
+    const club = (await platformOverview("user_ov_owner"))?.find((c) => c.orgId === "org_ov_club");
+    expect(club?.pilot).toEqual({
+      week: lastFullWeek(todayInCopenhagen()),
+      riders: 0,
+      checkedIn: 0,
+      sessions: 0,
+      receipts: 0,
+      minutes: 0,
+    });
+  });
+
   it("leaves demo workspaces out", async () => {
     const clubs = await platformOverview("user_ov_owner");
     expect(clubs?.some((c) => c.orgId === "org_ov_demo")).toBe(false);
@@ -65,5 +81,24 @@ describe("the installation's overview", () => {
     expect(await expectSqlError(call(null)())).toBe("42501");
     const owner = await call("user_ov_owner")();
     expect(owner.rows.length).toBeGreaterThan(0);
+    // Nothing but the club, its name and counts: a new column is a decision.
+    expect(owner.fields.map((f) => f.name)).toEqual([
+      "org_id",
+      "name",
+      "created_at",
+      "coaches",
+      "riders",
+      "parents",
+      "members",
+      "last_seen",
+      "file_bytes",
+      "ai_calls_day",
+      "pilot_week",
+      "pilot_riders",
+      "pilot_checked_in",
+      "pilot_sessions",
+      "pilot_receipts",
+      "pilot_minutes",
+    ]);
   });
 });

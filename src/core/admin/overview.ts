@@ -8,7 +8,19 @@ import { appDb } from "@/core/db/client";
  * (drizzle/0019) reads across every workspace and refuses anyone who is
  * not the owner; this asks it as the owner, with nothing set but who is
  * asking. There is no org context, so no domain table is readable here.
+ * The pilot's three numbers (drizzle/0031, docs/adr/0066) come as counts
+ * for the last full week, the same for every club.
  */
+export type PilotCounts = {
+  /** The Monday of the last full week, a Copenhagen day. */
+  week: string;
+  riders: number;
+  checkedIn: number;
+  sessions: number;
+  receipts: number;
+  minutes: number;
+};
+
 export type ClubOverview = {
   orgId: string;
   name: string;
@@ -20,19 +32,28 @@ export type ClubOverview = {
   lastSeen: Date | null;
   fileBytes: number;
   aiCallsDay: number;
+  pilot: PilotCounts;
 };
+
+type Count = string | number;
 
 type Row = {
   org_id: string;
   name: string;
   created_at: Date | string;
-  coaches: string | number;
-  riders: string | number;
-  parents: string | number;
-  members: string | number;
+  coaches: Count;
+  riders: Count;
+  parents: Count;
+  members: Count;
   last_seen: Date | string | null;
-  file_bytes: string | number;
-  ai_calls_day: string | number;
+  file_bytes: Count;
+  ai_calls_day: Count;
+  pilot_monday: string;
+  pilot_riders: Count;
+  pilot_checked_in: Count;
+  pilot_sessions: Count;
+  pilot_receipts: Count;
+  pilot_minutes: Count;
 };
 
 const date = (v: Date | string) => (v instanceof Date ? v : new Date(v));
@@ -42,7 +63,10 @@ export async function platformOverview(userId: string): Promise<ClubOverview[] |
   if (!(await isPlatformOwner(userId))) return null;
   const rows = await appDb.transaction(async (tx) => {
     await tx.execute(sql`select set_config('app.user_id', ${userId}, true)`);
-    const result = await tx.execute(sql`select * from platform_overview()`);
+    // The week as text, so no driver's idea of a date moves it.
+    const result = await tx.execute(
+      sql`select *, to_char(pilot_week, 'YYYY-MM-DD') as pilot_monday from platform_overview()`,
+    );
     return result.rows as Row[];
   });
   return rows.map((r) => ({
@@ -56,5 +80,13 @@ export async function platformOverview(userId: string): Promise<ClubOverview[] |
     lastSeen: r.last_seen ? date(r.last_seen) : null,
     fileBytes: Number(r.file_bytes),
     aiCallsDay: Number(r.ai_calls_day),
+    pilot: {
+      week: r.pilot_monday,
+      riders: Number(r.pilot_riders),
+      checkedIn: Number(r.pilot_checked_in),
+      sessions: Number(r.pilot_sessions),
+      receipts: Number(r.pilot_receipts),
+      minutes: Number(r.pilot_minutes),
+    },
   }));
 }
