@@ -4,14 +4,18 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { accountState } from "@/components/team/account-badge";
 import { AddRiderDialog } from "@/components/team/add-rider-dialog";
+import { BulkInviteDialog } from "@/components/team/bulk-invite-dialog";
 import { classText } from "@/components/team/class-text";
+import { waitingRecipients } from "@/components/team/invitation-recipients";
 import { RiderList } from "@/components/team/rider-list";
+import { WaitingInvitations } from "@/components/team/waiting-invitations";
 import { getOrgContext } from "@/core/auth/session";
 import { todayInCopenhagen } from "@/core/dates";
 import { listPendingInvitations } from "@/core/team/service";
 import { Link, redirect } from "@/i18n/navigation";
 import { whoAmI } from "@/modules/team/access";
 import { listTeamGuardians } from "@/modules/team/guardians";
+import { getTeamName } from "@/modules/team/name";
 import { getRiders } from "@/modules/team/riders";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -22,7 +26,9 @@ export async function generateMetadata(): Promise<Metadata> {
 /**
  * The team's riders, for the coaches: who is on it, their class, whether
  * they have an account, and how many parents are linked. `?archived=1`
- * shows the riders who have left as well.
+ * shows the riders who have left as well. A rider is added one at a time
+ * or the whole team at once (ADR 0064), and the links not used yet wait
+ * above the list.
  */
 export default async function RidersPage({
   searchParams,
@@ -48,17 +54,31 @@ export default async function RidersPage({
   }
 
   const showArchived = (await searchParams).archived === "1";
-  const [riders, guardians, invitations] = await Promise.all([
+  const [riders, guardians, invitations, team] = await Promise.all([
     getRiders(ctx, showArchived),
     listTeamGuardians(ctx),
     listPendingInvitations(ctx.orgId),
+    getTeamName(ctx),
   ]);
   const pending = new Set(invitations.map((i) => i.id));
   const today = todayInCopenhagen();
 
   return (
     <div className="flex min-w-0 flex-col gap-6">
-      <PageHeader title={t("title")} subtitle={t("subtitle")} actions={<AddRiderDialog />} />
+      <PageHeader
+        title={t("title")}
+        subtitle={t("subtitle")}
+        actions={
+          <>
+            <BulkInviteDialog team={team} today={today} />
+            <AddRiderDialog />
+          </>
+        }
+      />
+      <WaitingInvitations
+        team={team}
+        recipients={waitingRecipients({ riders, guardians, pending: invitations })}
+      />
       {riders.length === 0 ? (
         <EmptyState title={t("emptyTitle")} hint={t("emptyBody")} />
       ) : (

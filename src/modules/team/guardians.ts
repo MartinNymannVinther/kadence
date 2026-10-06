@@ -2,7 +2,7 @@ import { and, asc, eq, isNull } from "drizzle-orm";
 import { z } from "zod";
 import { Refused } from "@/core/action";
 import { guardians, riders, users, type GuardianRow } from "@/core/db/schema";
-import { withOrgContext, type OrgContext } from "@/core/db/tenant";
+import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
 import { requireCoach, whoAmIIn } from "./access";
 
 /**
@@ -59,19 +59,26 @@ export async function addGuardian(
   ctx: OrgContext,
   input: z.infer<typeof GuardianInput>,
 ): Promise<{ id: string }> {
-  return withOrgContext(ctx, async (tx) => {
-    await requireCoach(tx, ctx);
-    const [rider] = await tx
-      .select({ id: riders.id })
-      .from(riders)
-      .where(eq(riders.id, input.riderId));
-    if (!rider) throw new Refused("notFound");
-    const [row] = await tx
-      .insert(guardians)
-      .values({ orgId: ctx.orgId, ...input })
-      .returning({ id: guardians.id });
-    return row!;
-  });
+  return withOrgContext(ctx, (tx) => addGuardianIn(tx, ctx, input));
+}
+
+/** The same, inside a transaction a caller already holds — a whole team at once (bulk-invite.ts). */
+export async function addGuardianIn(
+  tx: AppTransaction,
+  ctx: OrgContext,
+  input: z.infer<typeof GuardianInput>,
+): Promise<{ id: string }> {
+  await requireCoach(tx, ctx);
+  const [rider] = await tx
+    .select({ id: riders.id })
+    .from(riders)
+    .where(eq(riders.id, input.riderId));
+  if (!rider) throw new Refused("notFound");
+  const [row] = await tx
+    .insert(guardians)
+    .values({ orgId: ctx.orgId, ...input })
+    .returning({ id: guardians.id });
+  return row!;
 }
 
 export async function attachGuardianInvitation(
@@ -79,13 +86,20 @@ export async function attachGuardianInvitation(
   guardianId: string,
   invitationId: string,
 ): Promise<void> {
-  await withOrgContext(ctx, async (tx) => {
-    await requireCoach(tx, ctx);
-    await tx
-      .update(guardians)
-      .set({ invitationId })
-      .where(and(eq(guardians.id, guardianId), isNull(guardians.userId)));
-  });
+  await withOrgContext(ctx, (tx) => attachGuardianInvitationIn(tx, ctx, guardianId, invitationId));
+}
+
+export async function attachGuardianInvitationIn(
+  tx: AppTransaction,
+  ctx: OrgContext,
+  guardianId: string,
+  invitationId: string,
+): Promise<void> {
+  await requireCoach(tx, ctx);
+  await tx
+    .update(guardians)
+    .set({ invitationId })
+    .where(and(eq(guardians.id, guardianId), isNull(guardians.userId)));
 }
 
 /** The rider says yes to a parent — or, as an adult, yes again. */
