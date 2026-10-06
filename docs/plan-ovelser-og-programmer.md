@@ -1,5 +1,8 @@
 # Øvelser og programmer
 
+Status: bygget, spor Ø-01 til Ø-05 flettet ind; se
+[ADR 0067](adr/0067-exercises-and-programmes.md).
+
 Planen bag grenen `feat/ovelser-og-programmer`, godkendt af Martin den 6.
 oktober 2026 ("Ja tak"). Hans valg: både en åben side og en indgang i appen,
 download som HTML-fil og PDF, holdets egne øvelser og programmer i
