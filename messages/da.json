@@ -2951,6 +2951,47 @@
     "weightOn": "Holdet registrerer vægt for ryttere under 19. Lad vægt og mad ligge i snakken med rytterne, og tal kun om en rytters vægt i enrum.",
     "heat": "Sommervarme: drik løbende, tænk salt med på lange ture, og flyt de hårde pas til morgen eller aften."
   },
+  "reminders": {
+    "title": "Påmindelser",
+    "body": "Kadence kan minde dig om det vigtigste på denne enhed. Der kommer ingen påmindelser mellem 21.30 og 7.",
+    "privacy": "Selve beskeden hentes fra Kadence, når den kommer. Din browsers push-tjeneste ser kun, at der er noget nyt.",
+    "enable": "Slå påmindelser til på denne enhed",
+    "disable": "Slå fra",
+    "on": "Påmindelser er slået til på denne enhed.",
+    "enabled": "Påmindelser er slået til.",
+    "disabled": "Påmindelser er slået fra.",
+    "switchOn": "Slået til",
+    "switchOff": "Slået fra",
+    "unsupported": "Denne browser kan ikke vise påmindelser fra Kadence. Alt andet virker.",
+    "ios": "På iPhone virker påmindelser, når Kadence ligger på hjemmeskærmen (iOS 16.4 eller nyere).",
+    "denied": "Browseren har blokeret påmindelser fra Kadence. Du kan tillade dem i browserens indstillinger.",
+    "failed": "Påmindelserne kunne ikke slås til i denne browser. Alt andet virker.",
+    "kind": {
+      "checkin": "Check-in om aftenen",
+      "checkinHint": "Klokken 19, hvis du ikke har checket ind i dag.",
+      "comment": "Nye kommentarer",
+      "commentHint": "Når en anden skriver på et pas eller en tur, du kan se.",
+      "commentHintCoach": "Når en rytter eller en forælder skriver på et pas eller en tur.",
+      "plan": "Ændret plan",
+      "planHint": "Når en træner lægger eller ændrer et pas i de næste syv dage.",
+      "week": "Ugens overblik",
+      "weekHint": "Søndag aften, når ugen er gået."
+    },
+    "notify": {
+      "checkinTitle": "Husk dagens check-in",
+      "checkinBody": "Det tager et halvt minut.",
+      "commentTitle": "Ny kommentar på {title}",
+      "commentTitlePlain": "Ny kommentar",
+      "commentBody": "Fra {name}.",
+      "commentBodyPlain": "Åbn Kadence for at læse den.",
+      "planTitle": "Planen er ændret",
+      "planBody": "Se de næste dage.",
+      "weekTitle": "{owner} uge er klar",
+      "weekBody": "Se, hvordan ugen er gået.",
+      "fallbackTitle": "Der er nyt i Kadence",
+      "fallbackBody": "Åbn Kadence for at se det."
+    }
+  },
   "records": {
     "period": {
       "month": "Seneste måned",

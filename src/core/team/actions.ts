@@ -1,10 +1,13 @@
 "use server";
 
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { z } from "zod";
 import { requireOrgContext } from "@/core/auth/guard";
 import { getSession } from "@/core/auth/session";
+import { pushSubscriptions } from "@/core/db/schema";
+import { withOrgContext } from "@/core/db/tenant";
 import { fail, ok, type Result } from "@/core/result";
 import { registerInvited, type JoinRegisterResult } from "./register";
 import { createResetLink } from "./reset-link";
@@ -90,7 +93,21 @@ export async function leaveWorkspaceAction(): Promise<Result<boolean>> {
   const ctx = await requireOrgContext();
   if (!ctx) return fail("unauthorized");
   const done = await leaveWorkspace(await headers(), ctx.orgId);
-  return done ? ok(true) : fail("generic");
+  if (!done) return fail("generic");
+  // The person's reminders on the team go with them (docs/adr/0059). The
+  // row is theirs alone, so it is deleted as them; the team keeps nothing.
+  try {
+    await withOrgContext(ctx, (tx) =>
+      tx
+        .delete(pushSubscriptions)
+        .where(
+          and(eq(pushSubscriptions.orgId, ctx.orgId), eq(pushSubscriptions.userId, ctx.userId)),
+        ),
+    );
+  } catch (error) {
+    console.error("team: forgetting reminders after leaving failed", error);
+  }
+  return ok(true);
 }
 
 /** A signed-in person accepting the invitation they were sent. */
