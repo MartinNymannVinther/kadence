@@ -1,14 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Archive, ArchiveRestore, CalendarPlus, Download } from "lucide-react";
+import { Archive, ArchiveRestore, CalendarPlus, Copy, Download, Pencil } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRun } from "@/components/common/use-run";
 import type { RiderOption } from "@/components/calendar/types";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { archiveTeamProgramAction } from "@/modules/exercises/actions";
-import { downloadHref, paramOf } from "@/modules/exercises/library-paths";
+import { downloadHref, paramOf, programHref } from "@/modules/exercises/library-paths";
 import type { ProgramRef } from "@/modules/exercises/ref";
 import { PrintButton } from "./print-button";
 import { ProgramScheduleDialog } from "./program-schedule-dialog";
@@ -16,7 +17,7 @@ import { ProgramScheduleDialog } from "./program-schedule-dialog";
 /**
  * What can be done with a programme: lay it into riders' calendars (a
  * coach), take it along as a file or on paper (everyone), and for a coach
- * put the team's own away.
+ * change the team's own, copy any to adapt, and put the team's away.
  */
 export function ProgramActions({
   program,
@@ -61,6 +62,24 @@ export function ProgramActions({
         {t("download")}
       </a>
       <PrintButton title={program.name} label={t("print")} />
+      {isCoach && program.team && (
+        <Link
+          href={`${programHref(program.ref)}/edit`}
+          className={cn(buttonVariants({ variant: "outline", size: "sm" }), small)}
+        >
+          <Pencil data-icon="inline-start" />
+          {t("edit")}
+        </Link>
+      )}
+      {isCoach && (
+        <Link
+          href={{ pathname: "/library/programs/new", query: { from: program.ref } }}
+          className={cn(buttonVariants({ variant: "outline", size: "sm" }), small)}
+        >
+          <Copy data-icon="inline-start" />
+          {t("copy")}
+        </Link>
+      )}
       {isCoach && program.team && (
         <Button
           size="sm"

@@ -51,6 +51,10 @@ export default async function ProgramsPage({
         actions={
           isCoach ? (
             <>
+              <Link href="/library/programs/new" className={cn(buttonVariants(), "max-sm:h-11")}>
+                <Plus data-icon="inline-start" />
+                {tl("newProgram")}
+              </Link>
               <Link
                 href="/library/exercises/new"
                 className={cn(buttonVariants({ variant: "outline" }), "max-sm:h-11")}
