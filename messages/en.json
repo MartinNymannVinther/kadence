@@ -678,8 +678,8 @@
   },
   "join": {
     "title": "You are invited",
-    "intro": "{inviter} has invited you to the team {team}{role, select, coach { as a coach} other {}}.",
-    "next": "{role, select, coach {Once you are in, you can plan the team's week and follow the riders.} other {Once you are in, you will find your training or your child's week here.}}",
+    "intro": "{inviter} has invited you to the team {team}{role, select, coach { as a coach} rider { as a rider} parentOf { as {child}'s parent} parent { as a parent} other {}}.",
+    "next": "{role, select, coach {Once you are in, you can plan the team's week and follow the riders.} rider {Once you are in, you will find your training here.} parentOf {Once you are in and {child} has confirmed you, you can follow the training here.} parent {Once you are in and your child has confirmed you, you can follow the training here.} other {Once you are in, you will find your training or your child's week here.}}",
     "someone": "A coach",
     "invalidTitle": "This link no longer works",
     "invalidBody": "The invitation has expired or been withdrawn. Ask the person who invited you for a new link.",

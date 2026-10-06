@@ -678,8 +678,8 @@
   },
   "join": {
     "title": "Du er inviteret",
-    "intro": "{inviter} har inviteret dig på holdet {team}{role, select, coach { som træner} other {}}.",
-    "next": "{role, select, coach {Når du er med, kan du planlægge holdets uge og følge rytterne.} other {Når du er med, finder du din træning eller dit barns uge her.}}",
+    "intro": "{inviter} har inviteret dig på holdet {team}{role, select, coach { som træner} rider { som rytter} parentOf { som forælder til {child}} parent { som forælder} other {}}.",
+    "next": "{role, select, coach {Når du er med, kan du planlægge holdets uge og følge rytterne.} rider {Når du er med, finder du din træning her.} parentOf {Når du er med, og {child} har bekræftet dig, kan du følge træningen her.} parent {Når du er med, og dit barn har bekræftet dig, kan du følge træningen her.} other {Når du er med, finder du din træning eller dit barns uge her.}}",
     "someone": "En træner",
     "invalidTitle": "Linket virker ikke længere",
     "invalidBody": "Invitationen er udløbet eller trukket tilbage. Bed den der inviterede dig om et nyt link.",

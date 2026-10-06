@@ -87,6 +87,7 @@ Martin asked for all of the plan's corrections on 6 October 2026.
 - **"rytter" or "forælder" is not on the join page** until the
   invitation can say which it is without the auth role reading
   product tables — a definer function in a migration, left for later.
+  ADR 0065 adds it.
 - **"Mere data" mounts its contents only when open**, so a chart or map
   never draws into a box of no size; opening it costs a render, not a
   request.
