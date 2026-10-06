@@ -28,7 +28,7 @@ was left to be worked out.
   — and a reserve of 18 kJ above it. Above 300 W he spends the reserve;
   below it he wins it back, the faster the emptier it is, as in the
   differential W′ balance model (Skiba et al., Eur J Appl Physiol 2015).
-  He never rides more than 1300 W.
+  He never rides more than 1150 W.
 - **What following costs him**: the physics turned round (`wattsFor`) —
   52 kg and an 8 kg bike, a wheel's length behind the rider in their
   slipstream, and about 18 % less air than the 70 kg rider the physics
@@ -37,7 +37,7 @@ was left to be worked out.
   gone, he rides 300 W and drops. On the flat in a wheel that is almost
   never; up a long climb at a hard pace it is within minutes.
 - **The sprint and the throw**: from 200 metres out, if he has anything
-  left, 1300 W out of the saddle with his hands in the drops; for the
+  left, 1150 W out of the saddle with his hands in the drops; for the
   last 15 metres he stops pedalling, his hips go far back and his arms
   straight, and he jumps 70 cm into the air in an arc that comes down on
   the line, his shadow left on the road. Dropped, he has no sprint.

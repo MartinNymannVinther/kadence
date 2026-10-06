@@ -3,7 +3,7 @@ import { PHYSICS, resistance } from "./physics";
 /**
  * The sprinter (ADR 0050), called by HYLDTOFT: a small rider, 52 kg, who
  * sits on the rider's wheel for as long as his legs let him, sprints at
- * 1300 W from 200 metres out if he has anything left, and throws his
+ * 1150 W from 200 metres out if he has anything left, and throws his
  * bike at the line with a jump. Here what he can ride and what following
  * costs him; the race itself is the challenger's (`ride/race.ts`). Pure:
  * nothing from the browser or the database.
@@ -47,7 +47,7 @@ export const SPRINTER = {
   wheel: 2,
   /** He sprints from this far out, metres, at these watts — the most he ever rides. */
   sprintFrom: 200,
-  sprintWatts: 1300,
+  sprintWatts: 1150,
   /** He throws his bike from this far out, metres, and jumps this high at the top of it. */
   throwFrom: 15,
   jump: 0.7,

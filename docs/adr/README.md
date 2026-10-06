@@ -68,4 +68,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0046](0046-rulle-the-queen-stage-in-odder.md)                             | Rulle's queen stage in Odder: all of its buildings, the roads round it, the hill sprint                  | → 0013, 0034, 0035, 0036, 0037 |
 | [0048](0048-rulle-a-watt-cheat-code.md)                                    | Rulle: a WATT cheat code — the watts or W/kg set by the keys, an avatar's weight kept nowhere            | → 0013, 0033, 0045             |
 | [0049](0049-rulle-the-challenger.md)                                       | Rulle: the challenger, a race for two kilometres now and then, a slipstream behind him                   | → 0034, 0045, 0048             |
-| [0050](0050-rulle-the-sprinter.md)                                         | Rulle: the sprinter HYLDTOFT calls, on your wheel until a 1300 W sprint and a jump over the line         | → 0013, 0045, 0049             |
+| [0050](0050-rulle-the-sprinter.md)                                         | Rulle: the sprinter HYLDTOFT calls, on your wheel until a 1150 W sprint and a jump over the line         | → 0013, 0045, 0049             |

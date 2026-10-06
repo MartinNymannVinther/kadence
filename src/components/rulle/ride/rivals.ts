@@ -83,7 +83,7 @@ export class Challenger implements Rival {
  * The sprinter: on the rider's wheel for as long as his reserve lets him —
  * what it costs worked out from the physics, his weight, his size and the
  * slipstream — and at his critical power once it is gone; from 200 metres
- * out 1300 W, if he has anything left, and the last 15 metres in the air.
+ * out 1150 W, if he has anything left, and the last 15 metres in the air.
  */
 export class Sprinter implements Rival {
   readonly who = "sprinter";
