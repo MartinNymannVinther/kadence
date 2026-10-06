@@ -14,7 +14,7 @@ export function ParentBasics() {
   const t = useTranslations("parents.basics");
   return (
     <div className="grid gap-4 @3xl:grid-cols-2">
-      <section className="border-border bg-card flex flex-col gap-2 rounded-xl border p-4 shadow-[var(--surface-shadow)]">
+      <section className="border-border bg-card flex flex-col gap-2 rounded-xl border p-4 shadow-surface">
         <h3 className="text-sm font-semibold">{t("sleepTitle")}</h3>
         <p className="text-2sm leading-relaxed">{t("sleepBody")}</p>
         <a
@@ -27,11 +27,11 @@ export function ParentBasics() {
           <ExternalLink aria-hidden className="size-3.5" />
         </a>
       </section>
-      <section className="border-border bg-card flex flex-col gap-2 rounded-xl border p-4 shadow-[var(--surface-shadow)]">
+      <section className="border-border bg-card flex flex-col gap-2 rounded-xl border p-4 shadow-surface">
         <h3 className="text-sm font-semibold">{t("schoolTitle")}</h3>
         <p className="text-2sm leading-relaxed">{t("schoolBody")}</p>
       </section>
-      <section className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-[var(--surface-shadow)] @3xl:col-span-2">
+      <section className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-surface @3xl:col-span-2">
         <h3 className="text-sm font-semibold">{t("seeTitle")}</h3>
         <div className="grid gap-4 @2xl:grid-cols-2">
           <div className="flex flex-col gap-2">

@@ -195,7 +195,7 @@ export default async function SeasonPage({ searchParams }: { searchParams: Searc
               </div>
               {canWrite && guided && <ResetPlan planId={plan.id} basis={plan.basis} />}
             </div>
-            <div className="border-border bg-card rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5">
+            <div className="border-border bg-card rounded-xl border p-4 shadow-surface sm:p-5">
               <SeasonChart
                 months={plan.months.map((m, i) => ({
                   month: m.month,

@@ -7,7 +7,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <main className="w-full max-w-[470px]">
         <p className="mb-7 text-center">
           <Link href="/" aria-label="Kadence">
-            <Wordmark className="text-[1.375rem]" />
+            <Wordmark className="text-brand" />
           </Link>
         </p>
         {children}

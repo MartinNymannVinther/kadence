@@ -35,7 +35,7 @@ export function BlockList({
   if (blocks.length === 0) return <p className="text-meta text-2sm">{t("empty")}</p>;
   return (
     <>
-      <ul className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-[var(--surface-shadow)]">
+      <ul className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-surface">
         {blocks.map((b) => (
           <li
             key={b.id}

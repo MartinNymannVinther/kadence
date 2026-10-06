@@ -10,7 +10,7 @@ import { FieldSelect } from "./field-select";
 type Set = <K extends keyof RaceInput>(key: K, value: RaceInput[K]) => void;
 
 const card =
-  "border-border bg-card grid gap-3 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:grid-cols-2 sm:p-5";
+  "border-border bg-card grid gap-3 rounded-xl border p-4 shadow-surface sm:grid-cols-2 sm:p-5";
 
 /** What the rider types: the race, the effort by one of four ways, and the bottles and food. */
 export function EnergyInputs({ input, set }: { input: RaceInput; set: Set }) {

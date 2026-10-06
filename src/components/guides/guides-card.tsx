@@ -8,7 +8,7 @@ export function GuidesCard({ body }: { body: "fromParents" | "fromHelp" }) {
   return (
     <Link
       href="/guides"
-      className="focus-ring border-border bg-card hover:border-primary flex items-start gap-3 rounded-xl border p-4 shadow-[var(--surface-shadow)]"
+      className="focus-ring border-border bg-card hover:border-primary flex items-start gap-3 rounded-xl border p-4 shadow-surface"
     >
       <Compass aria-hidden className="text-primary mt-0.5 size-5 shrink-0" />
       <span className="flex flex-col gap-1">

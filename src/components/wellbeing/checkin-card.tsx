@@ -100,7 +100,7 @@ export function CheckinCard({
   return (
     <form
       onSubmit={save}
-      className="border-border bg-card flex flex-col gap-5 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5"
+      className="border-border bg-card flex flex-col gap-5 rounded-xl border p-4 shadow-surface sm:p-5"
     >
       <div className="flex flex-col gap-1">
         <h3 className="text-base font-semibold">{t("title")}</h3>

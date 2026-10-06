@@ -29,7 +29,7 @@ export function NewThread({ templates }: { templates: Array<{ id: string; name: 
 
   return (
     <form
-      className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-[var(--surface-shadow)]"
+      className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-surface"
       onSubmit={async (e) => {
         e.preventDefault();
         const created = await run(

@@ -28,7 +28,7 @@ export function GettingStarted() {
         {STEPS.map((step, i) => (
           <li
             key={step.key}
-            className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:flex-row sm:items-center sm:justify-between"
+            className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-surface sm:flex-row sm:items-center sm:justify-between"
           >
             <div className="flex gap-3">
               <span className="bg-accent text-accent-foreground flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold">

@@ -41,7 +41,7 @@ export function PlanDays({
         return (
           <li
             key={day}
-            className="border-border bg-card flex min-w-0 flex-col gap-2 rounded-xl border p-2.5 shadow-[var(--surface-shadow)]"
+            className="border-border bg-card flex min-w-0 flex-col gap-2 rounded-xl border p-2.5 shadow-surface"
           >
             <div className="flex items-center justify-between gap-1">
               <h3 className="text-2sm font-semibold first-letter:uppercase">{label}</h3>

@@ -55,7 +55,7 @@ export function DeviceCard({ link }: { link: DeviceLink }) {
   );
 
   return (
-    <article className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5">
+    <article className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-surface sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h3 className="text-base font-semibold">{name}</h3>
         <span className="bg-muted text-meta rounded-full px-2.5 py-0.5 text-xs font-medium">

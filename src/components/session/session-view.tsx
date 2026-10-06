@@ -91,7 +91,7 @@ export async function SessionView({
           {rider ? ` · ${rider.name}` : ""}
         </p>
         <div className="flex items-start justify-between gap-3">
-          <Heading className="text-[1.625rem] leading-tight font-semibold tracking-[-0.02em]">
+          <Heading className="text-title-section leading-tight font-semibold tracking-[-0.02em]">
             {card.title}
           </Heading>
           {canWrite && (

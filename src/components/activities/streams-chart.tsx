@@ -198,7 +198,7 @@ export function StreamsChart({
             viewBox={`0 0 ${width} ${height}`}
             role="img"
             aria-label={shown ? t("labelZoomed", { channels, ...shown }) : t("label", { channels })}
-            className="focus-visible:outline-ring block cursor-crosshair touch-pan-y touch-pinch-zoom rounded-md outline-none select-none [-webkit-touch-callout:none] focus-visible:outline-2"
+            className="focus-visible:outline-ring block cursor-crosshair touch-pan-y touch-pinch-zoom rounded-md outline-none select-none [-webkit-touch-callout:none] focus-visible:outline-2 focus-visible:outline-solid"
             {...hover.handlers}
             {...select.handlers}
             onPointerDown={(e) => {

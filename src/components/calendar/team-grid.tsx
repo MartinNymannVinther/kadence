@@ -120,7 +120,7 @@ export function TeamGrid({
       </p>
       <div
         ref={scroller}
-        className="border-border bg-card overflow-x-auto overscroll-x-contain rounded-xl border shadow-[var(--surface-shadow)]"
+        className="border-border bg-card overflow-x-auto overscroll-x-contain rounded-xl border shadow-surface"
       >
         {/* Fixed layout: the columns come from <colgroup>, never from a chip's text.
             The floor is names (8rem) + 7 × 6.5rem + the week (9rem); below it the grid scrolls

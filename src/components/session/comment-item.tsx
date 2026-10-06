@@ -112,6 +112,7 @@ export function CommentItem({
             confirmLabel={common("delete")}
             variant="ghost"
             size="xs"
+            className="max-sm:h-11"
             onConfirm={() => run(() => deleteCommentAction({ commentId: comment.id }))}
           >
             {common("delete")}

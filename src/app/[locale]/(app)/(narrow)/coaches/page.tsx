@@ -110,7 +110,7 @@ export default async function CoachesRoomPage({
       {threads.length === 0 ? (
         <EmptyState title={t("empty.title")} hint={t("empty.body")} />
       ) : (
-        <ul className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-[var(--surface-shadow)]">
+        <ul className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-surface">
           {threads.map((th) => (
             <li
               key={th.id}
