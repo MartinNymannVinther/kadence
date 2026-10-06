@@ -4,9 +4,9 @@ import type { ZoneDay } from "@/components/wellbeing/zone-days";
 import { ZoneStrip } from "@/components/wellbeing/zone-strip";
 
 /**
- * The rider's check-in on today's page: the card, and the last two weeks
- * of zones under it, so a rider sees their own pattern before anyone else
- * does.
+ * The rider's check-in on today's page: the card, and — where it is asked
+ * for, on Mig — the last two weeks of zones under it, so a rider sees
+ * their own pattern before anyone else does.
  */
 export function CheckinSection({
   riderId,
@@ -17,7 +17,8 @@ export function CheckinSection({
   riderId: string;
   today: string;
   initial: CheckinValues | null;
-  days: ZoneDay[];
+  /** The last two weeks under the card; Today leaves them to Mig. */
+  days?: ZoneDay[];
 }) {
   const t = useTranslations("wellbeing");
   return (
@@ -26,10 +27,12 @@ export function CheckinSection({
         {t("title")}
       </h2>
       <CheckinCard riderId={riderId} today={today} initial={initial} />
-      <div className="flex flex-col gap-2">
-        <h3 className="text-sm font-semibold">{t("stripTitle")}</h3>
-        <ZoneStrip days={days} today={today} />
-      </div>
+      {days && (
+        <div className="flex flex-col gap-2">
+          <h3 className="text-sm font-semibold">{t("stripTitle")}</h3>
+          <ZoneStrip days={days} today={today} />
+        </div>
+      )}
     </section>
   );
 }

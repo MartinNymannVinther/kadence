@@ -153,6 +153,14 @@ const TABLES: Array<{ table: string; row: (s: string) => Record<string, unknown>
       expires_at: `${DAY}T09:00:00Z`,
     }),
   },
+  {
+    // A browser's reminders (ADR 0060); its owner's alone, tests/push/isolation.
+    table: "push_subscriptions",
+    row: (s) => ({
+      user_id: `user_prod_${s === "x" ? "a" : s}`,
+      endpoint: `https://fcm.googleapis.com/fcm/send/prod-${s}`,
+    }),
+  },
   { table: "ai_calls", row: () => ({ kind: "week_draft" }) },
   { table: "workspace_llm_settings", row: (s) => ({ provider: "ollama", model: `model-${s}` }) },
 ];

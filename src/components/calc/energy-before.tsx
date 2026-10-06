@@ -12,7 +12,7 @@ import { EnergyPlate } from "./energy-plate";
 
 function Points({ points }: { points: readonly string[] }) {
   return (
-    <ul className="flex list-disc flex-col gap-1.5 pl-5 text-reading leading-relaxed marker:text-[var(--meta)]">
+    <ul className="flex list-disc flex-col gap-1.5 pl-5 text-reading leading-relaxed marker:text-meta">
       {points.map((point) => (
         <li key={point}>{point}</li>
       ))}

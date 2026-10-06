@@ -5,14 +5,17 @@ import { buttonVariants } from "@/components/ui/button";
 import { guardianState } from "@/components/team/guardian-state";
 import { MyChildren } from "@/components/team/my-children";
 import { MyGuardians } from "@/components/team/my-guardians";
+import { RemindersCard } from "@/components/push/reminders-card";
 import { OwnRacesCard } from "@/components/team/own-races-card";
 import { SharingForm } from "@/components/team/sharing-form";
 import { ThresholdsForm } from "@/components/team/thresholds-form";
 import { getOrgContext } from "@/core/auth/session";
 import { todayInCopenhagen } from "@/core/dates";
 import { env } from "@/core/env";
+import { remindersOn } from "@/core/features";
 import { Link, redirect } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+import { kindsForMe } from "@/modules/push/subscriptions";
 import { readsRacesFor } from "@/modules/results/switch";
 import { dcuProfileUrl, formatUciId } from "@/modules/results/uci-id";
 import { whoAmI } from "@/modules/team/access";
@@ -85,6 +88,14 @@ export default async function MePage() {
       )}
 
       {me && me.children.length > 0 && <MyChildren links={me.children} />}
+
+      {me && remindersOn() && env.PUSH_PUBLIC_KEY && kindsForMe(me).length > 0 && (
+        <RemindersCard
+          publicKey={env.PUSH_PUBLIC_KEY}
+          offered={kindsForMe(me)}
+          coach={me.isCoach}
+        />
+      )}
 
       {nothing && (
         <p className="border-border bg-card text-meta rounded-xl border p-4 text-2sm leading-relaxed">

@@ -23,3 +23,24 @@ export async function validateEnvironmentOrExit(): Promise<boolean> {
     return false;
   }
 }
+
+/**
+ * Starts the reminder timer (docs/adr/0060) when the installation has a
+ * push key pair, and never in the test suite, which runs the job itself.
+ * Started once per process (the timer keeps a flag on globalThis), and
+ * nothing in here may stop the server: a key that does not parse is said
+ * once, here, and the rest of Kadence runs without reminders.
+ */
+export async function startReminders(): Promise<void> {
+  if (process.env.NODE_ENV === "test") return;
+  try {
+    const { remindersOn } = await import("@/core/features");
+    if (!remindersOn()) return;
+    const { pushConfig, startReminderTimer } = await import("@/modules/push/timer");
+    pushConfig();
+    startReminderTimer();
+  } catch (error) {
+    console.error("kadence: reminders are off, the push keys did not load.");
+    console.error(error instanceof Error ? error.message : String(error));
+  }
+}

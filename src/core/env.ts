@@ -122,6 +122,36 @@ export const EnvSchema = z
       .transform((v) => v.replace(/\s/g, ""))
       .pipe(z.union([z.enum(["off", "on"]), z.string().regex(/^[0-9]{11}(,[0-9]{11})*$/)]))
       .default("off"),
+    // Parts of Kadence that wait for a real winter with a real team before
+    // a club sees them (docs/adr/0057, src/core/features.ts). Each is "off"
+    // by default and "on" brings it back whole: the code, the pages and the
+    // demo. Nothing is removed by turning one off; the data stays.
+    // Rulle's land, towns, people and sound behind the session; without it
+    // Rulle is the session alone: the bar, the numbers and the trainer.
+    RULLE_WORLD: z.enum(["off", "on"]).default("off"),
+    // Trænerrummet, the coaches' room across the installation's teams (ADR 0052).
+    COACHES_ROOM: z.enum(["off", "on"]).default("off"),
+    // The club championship (ADR 0051); a team still turns it on for itself.
+    CLUB_CHAMPIONSHIP: z.enum(["off", "on"]).default("off"),
+    // The energy calculator among the open guides (ADR 0047).
+    CALC_ENERGY: z.enum(["off", "on"]).default("off"),
+    // The food guide, health advice about minors: off until a sports
+    // dietitian has read its section on low energy availability (ADR 0047).
+    GUIDE_FOOD: z.enum(["off", "on"]).default("off"),
+    // Reminders by web push (docs/adr/0060). The push carries no content;
+    // Apple's, Google's or Mozilla's push service, whichever the person's
+    // browser uses, sees that a reminder went out and when, never what it
+    // says (docs/subprocessors.md). Without the key pair nothing is sent
+    // and everything else works. `npx web-push generate-vapid-keys` is not
+    // needed: `pnpm script scripts/push-keys.ts` prints a pair.
+    // Secret: the private key lives only in .env locally and in Coolify.
+    PUSH_PUBLIC_KEY: z.string().min(80).optional(),
+    PUSH_PRIVATE_KEY: z.string().min(40).optional(),
+    // Who the push services may contact about this installation's pushes.
+    PUSH_CONTACT: z
+      .string()
+      .regex(/^(mailto:|https:\/\/)/)
+      .optional(),
   })
   .superRefine((value, ctx) => {
     // `next build` runs with NODE_ENV=production and placeholder values
@@ -196,6 +226,14 @@ export const EnvSchema = z
         code: "custom",
         message: "WAHOO_WEBHOOK_TOKEN does nothing without WAHOO_CLIENT_ID and WAHOO_CLIENT_SECRET",
         path: ["WAHOO_WEBHOOK_TOKEN"],
+      });
+    }
+    if (Boolean(value.PUSH_PUBLIC_KEY) !== Boolean(value.PUSH_PRIVATE_KEY)) {
+      ctx.addIssue({
+        code: "custom",
+        message:
+          "PUSH_PUBLIC_KEY and PUSH_PRIVATE_KEY go together: set both to send reminders, or neither",
+        path: [value.PUSH_PUBLIC_KEY ? "PUSH_PRIVATE_KEY" : "PUSH_PUBLIC_KEY"],
       });
     }
     if (value.POLAR_WEBHOOK_SECRET && !value.POLAR_CLIENT_ID) {

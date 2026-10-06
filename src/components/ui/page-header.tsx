@@ -1,8 +1,11 @@
 import { cn } from "@/lib/utils";
 
 /**
- * The 2a page opening: an optional kicker over a 33px title, a supporting
- * line, and the page's actions on the right.
+ * The 2a page opening: an optional kicker over the title, a supporting
+ * line, and the page's actions on the right. The title's size is a named
+ * step (globals.css, ADR 0061): 33px for a page, 29px for one thing's
+ * page, 26px for a section's — and 26px for all of them on a phone, where
+ * the larger steps break a Danish word in two.
  */
 function PageHeader({
   kicker,
@@ -22,13 +25,13 @@ function PageHeader({
   return (
     <div className={cn("flex flex-wrap items-start justify-between gap-x-6 gap-y-3", className)}>
       <div className="flex min-w-0 flex-col gap-1.5">
-        {kicker ? <p className="text-chart-2 text-2sm leading-none font-medium">{kicker}</p> : null}
+        {kicker ? <p className="text-primary text-2sm leading-none font-medium">{kicker}</p> : null}
         <h1
           className={cn(
             "leading-[1.1] font-semibold tracking-[-0.02em]",
-            size === "page" && "text-[2.0625rem]",
-            size === "detail" && "text-[1.8125rem]",
-            size === "section" && "text-[1.625rem]",
+            size === "page" && "text-title-section sm:text-title-page",
+            size === "detail" && "text-title-section sm:text-title-detail",
+            size === "section" && "text-title-section",
           )}
         >
           {title}

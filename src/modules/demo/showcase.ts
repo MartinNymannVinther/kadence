@@ -1,11 +1,13 @@
 import type { OrgContext } from "@/core/db/tenant";
+import { featureOn } from "@/core/features";
 import { saveOrgImage } from "@/modules/team/images";
 import { createTemplate } from "@/modules/training/templates";
 import type { BikeStructure } from "@/modules/workouts/structure";
 import { seedClubChampionship, type DemoRider } from "./club";
 import { demoCoverPng, demoLogoPng } from "./club-images";
-import { seedCoachesRoom } from "./coaches-room";
+import { inDemoRoom, seedCoachesRoom } from "./coaches-room";
 import { pick, type L } from "./seed-data";
+import { seedUnratedRide } from "./unrated-ride";
 
 /**
  * The rest of the product in the demo (docs/adr/0054), so a visitor sees
@@ -14,7 +16,8 @@ import { pick, type L } from "./seed-data";
  * championship (ADR 0051) and Trænerrummet with example threads
  * (ADR 0052). "Lav intensitet først" (ADR 0053) is a setting, turned on
  * with the others in seed.ts. Written through the ordinary services, as
- * the demo's coach.
+ * the demo's coach. The demo follows the installation's flags (ADR 0057):
+ * the championship and the room are seeded only where they are on.
  */
 
 /** The demo rider's own session: what Emma rides on the trainer when it rains. */
@@ -47,6 +50,7 @@ export async function seedShowcase(
   l: L,
   { today, riders, ownRiderId }: { today: string; riders: DemoRider[]; ownRiderId: string },
 ): Promise<void> {
+  await seedUnratedRide(ctx, l, { today, riderId: ownRiderId });
   await saveOrgImage(ctx, "logo", demoLogoPng());
   await saveOrgImage(ctx, "cover", demoCoverPng());
   await createTemplate(ctx, {
@@ -60,6 +64,6 @@ export async function seedShowcase(
     plannedMinutes: 0,
     riderId: ownRiderId,
   });
-  await seedClubChampionship(ctx, l, riders, today);
-  await seedCoachesRoom(ctx, l);
+  if (featureOn("clubChampionship")) await seedClubChampionship(ctx, l, riders, today);
+  if (featureOn("coachesRoom") && (await inDemoRoom(ctx))) await seedCoachesRoom(ctx, l);
 }

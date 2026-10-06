@@ -30,7 +30,7 @@
     },
     "hero": {
       "title": "Young riders at the right cadence.",
-      "subtitle": "Kadence is training planning for U17, U19 and U23 cyclists, their coaches and their parents: a calendar of sessions on the bike and in the gym, Cycling Denmark's recommendations as the default, load that works without a power meter, and a page for parents. Open source, Danish and in the EU.",
+      "subtitle": "Training planning for U17, U19 and U23 riders, their coaches and parents, with DCU's recommendations as the default. Open source, in the EU.",
       "ctaPrimary": "Create account",
       "ctaSecondary": "Log in",
       "trust": "AGPL-3.0 · Passkeys and two-factor sign-in · Your data out in one click",
@@ -38,8 +38,8 @@
       "ctaDemo": "Try the demo"
     },
     "values": {
-      "aiTitle": "DCU as the default",
-      "aiBody": "The season plan is filled from Cycling Denmark's recommendations for the rider's age class, and the strength programmes for U17, U19 and U23 are ready. The coach can deviate, and the deviation is always visible. The AI can propose next week; the coach decides.",
+      "dcuTitle": "DCU as the default",
+      "dcuBody": "The season plan is filled from Cycling Denmark's recommendations for the rider's age class, and the strength programmes for U17, U19 and U23 are ready. The coach can deviate, and the deviation is always visible. The AI can propose next week; the coach decides.",
       "dataTitle": "The rider's data, always",
       "dataBody": "The rider decides what parents see. Everything can be exported as a spreadsheet and JSON in one click and deleted completely.",
       "securityTitle": "Secure from day one",
@@ -183,12 +183,16 @@
       "calendar": "Calendar",
       "riders": "Riders",
       "coaches": "Coaches' room",
-      "library": "Workout library",
+      "library": "Library",
       "season": "Season",
       "club": "Club champion",
       "parents": "Parents",
       "rulle": "Rulle",
-      "guides": "Guides and calculators"
+      "me": "Me",
+      "child": "Your child",
+      "more": "More",
+      "moreNews": "More, something new",
+      "barLabel": "Main menu"
     },
     "orgSwitcher": {
       "label": "Workspace",
@@ -289,8 +293,11 @@
   },
   "settings": {
     "title": "Settings",
-    "subtitle": "You, the team and the installation.",
+    "subtitleCoach": "You, the team and the workspace.",
+    "subtitleRider": "You, your devices and your security.",
+    "subtitleOther": "You and your security.",
     "nav": {
+      "label": "Settings menu",
       "security": "Security",
       "about": "About",
       "access": "Access",
@@ -368,7 +375,7 @@
       },
       "images": {
         "title": "Logo and picture",
-        "body": "The club's logo sits by its name in the menu, and the picture sits at the top of the Today page for everyone in the club. The picture is made smaller in your browser before it is sent, and details such as a GPS position are removed.",
+        "body": "The club's logo sits by its name in the menu, and the picture sits at the top of the Today page for everyone in the club on a day without sessions. The picture is made smaller in your browser before it is sent, and details such as a GPS position are removed.",
         "logo": "Logo",
         "cover": "Club picture",
         "logoHint": "Square works best. PNG, JPEG or WebP.",
@@ -471,9 +478,9 @@
       "testFailed": "The model does not answer",
       "failAuth": "The key was rejected. Check the workspace's own key below, or the installation's MISTRAL_API_KEY.",
       "failUnreachable": "Nothing is listening at that address. Is Ollama running? Check OLLAMA_BASE_URL.",
-      "failConfig": "The model is set up wrong. Correct the model name below, or LLM_MODEL in .env.",
+      "failConfig": "The model is set up wrong. Correct the model name below, or ask the installation's owner to correct it.",
       "failGeneric": "The call failed. The details are below and in the server log.",
-      "failRateLimited": "Mistral refused the call as too many (429). The key works, but the account or plan sets the ceiling: on the free Experiment plan this happens often when the model is busy, and a key under a workspace with no active plan gets the same answer. Check Billing and Limits on console.mistral.ai for the organisation the key belongs to.",
+      "failRateLimited": "Mistral has said stop for now. The key works, but the account's ceiling is reached or the model is busy. Try again in a little while. If it happens often, a paid plan at Mistral can help.",
       "failWhereToLook": "The details are in the server log.",
       "testNotAllowed": "Only the owner or an administrator can test the connection.",
       "withoutTitle": "Without a model",
@@ -577,11 +584,11 @@
       "kindTitle": "What kind of team",
       "kindBody": "Used for the team's defaults. Each rider's class still comes from their birth year.",
       "guidanceTitle": "Training basis",
-      "guidanceBody": "Kadence can guide the team by DCU's recommendations for each class: the hours in the season plan, the week's range and the longest ride. You can turn it off and on whenever you like.",
-      "guidance": "Guided by DCU's recommendations",
-      "guidanceHint": "When on, the season plan starts from DCU's hours and the week is shown against DCU's range. When off, you set your own hours, and the points about DCU's range and the longest ride go away. Pain, wellbeing, sleep, the week-to-week rise and the classes' race rules stay, whichever you choose.",
-      "lowIntensity": "Measure sessions against \"Low intensity first\"",
-      "lowIntensityHint": "A profile from the research that sits on top of the hours, with or without DCU. From November to February at least 75–80 % of the bike sessions sit in the low zone, at most 10 % in the middle zone and the rest in the high zone. When the middle zone grows large over the last four weeks, it appears among the possible points of attention. The spread is always shown in the season plan.",
+      "guidanceBody": "Choose what the team's season plans start from and what the weeks are measured against.",
+      "guidance": "Follow DCU's recommendations (hours and phases)",
+      "guidanceHint": "The season plan starts from DCU's hours and phases for the rider's class, and the week is shown against DCU's range.",
+      "lowIntensity": "Low intensity first",
+      "lowIntensityHint": "From November to February, Kadence speaks up when the middle zone takes up much of the bike sessions.",
       "clubTitle": "Club championship",
       "club": "Club championship in Kadence",
       "clubHint": "Off by default. When on, the club gets a page with the season's rounds, the standings and the club champions over the years. It is the only place where riders and parents see placings.",
@@ -604,11 +611,21 @@
     "bannerTitle": "This is a demo.",
     "bannerBody": "The workspace and everything in it is deleted after {hours, plural, one {# hour} other {# hours}}. Feel free to write in it.",
     "bannerCta": "Apply for a real account",
+    "bannerShort": "Demo",
+    "bannerLeft": "deleted in {hours} h",
+    "bannerCtaShort": "Apply",
+    "about": "About the demo",
+    "rolesNote": "Switch between the coach, the rider Emma and her mother to see Kadence through their eyes.",
     "viewAs": "See as:",
     "roles": {
       "coach": "Coach",
       "rider": "Rider (Emma)",
       "parent": "Parent (Emma's mother)"
+    },
+    "rolesShort": {
+      "coach": "Coach",
+      "rider": "Rider",
+      "parent": "Parent"
     }
   },
   "terms": {
@@ -661,19 +678,20 @@
   },
   "join": {
     "title": "You are invited",
-    "intro": "{inviter} has invited you into the workspace {workspace}.",
-    "someone": "A colleague",
+    "intro": "{inviter} has invited you to the team {team}{role, select, coach { as a coach} other {}}.",
+    "next": "{role, select, coach {Once you are in, you can plan the team's week and follow the riders.} other {Once you are in, you will find your training or your child's week here.}}",
+    "someone": "A coach",
     "invalidTitle": "This link no longer works",
     "invalidBody": "The invitation has expired or been withdrawn. Ask the person who invited you for a new link.",
-    "acceptedBody": "The invitation has already been used. Sign in to enter the workspace.",
+    "acceptedBody": "The invitation has already been used. Sign in to join the team.",
     "toLogin": "Sign in",
     "wrongAccount": "The invitation is for {email}, but you are signed in as {current}. Sign out and open the link again.",
     "switchAccount": "Sign out",
-    "accept": "Enter the workspace",
+    "accept": "Join the team",
     "wrongPerson": "The invitation was sent to another address than the one you are signed in with.",
     "name": "Your name",
     "email": "E-mail",
-    "lockedHint": "The invitation is for this address. The account becomes a member of {workspace}.",
+    "lockedHint": "The invitation is for this address. The account joins the team {team}.",
     "password": "Password",
     "passwordHint": "At least 12 characters. A sentence is easier to remember than a word.",
     "submit": "Create account and enter",
@@ -686,6 +704,8 @@
   "help": {
     "title": "Help",
     "intro": "How Kadence works, in the rhythm a season lives in.",
+    "guidesLine": "Guides and calculators are open to everyone, no login needed:",
+    "guidesLink": "Guides and calculators",
     "howToTitle": "How to use the tool",
     "closing": "Something missing here? Write to us, or fix the page yourself: the code is open.",
     "howTo": {
@@ -703,11 +723,11 @@
       },
       "calendar": {
         "title": "The calendar",
-        "body": "The calendar shows one week at a time. On a computer the days stand side by side, on a phone one below the other. The coach can see the whole team at once and drag a session to another day. On a phone you use \"Move\" in the session's menu. Races, exams, school, camps, holidays and illness sit in the calendar as small labels. The colours on the sessions show how it went: green is as planned, yellow is a little off, red is not done or far from the plan, and grey is not ridden yet. There is always a word beside the colour. If the same session should come back, say strength every Tuesday and Thursday this winter, turn on \"Repeat on set weekdays\" when you add it: choose the weekdays and the last day. Each session can be changed on its own, and \"Edit\" and \"Delete\" can also take the rest of the series. \"Copy the week before\" lays each rider's own sessions from another week on the same weekdays of the week you are on. A coach can do it for the whole team at once, and first sees what it gives against the season plan. A coach can also plan a whole week for the team or chosen riders at once: \"Plan the week\" in the team's week. Choose riders, a whole class with one tap if you like, put sessions on the days or start from a block, a rider's week or a proposal from the AI, see what it gives against the season plan, and lay the week in."
+        "body": "The calendar shows one week at a time. On a computer the days stand side by side, on a phone one below the other, and the team's week is one card per rider. The coach can drag a session to another day; on a phone you use \"Move\" in the session's menu. Races, exams, school, camps, holidays and illness sit in the calendar as small labels. The colours show how it went: green is as planned, yellow is a little off, red is not done or far from the plan, and grey is not ridden yet. There is always a word beside the colour. A session can have a time and a meeting place, say \"17:30 from the clubhouse\". A whole week is laid in under \"Plan the week\": choose riders, a whole class with one tap if you like, and start from an empty week, last week, a block or a proposal from the AI. You see what the week gives against the season plan before you lay it in, and you can repeat it over several weeks or save it as a block. If one session should come back, say strength every Tuesday and Thursday, turn on \"Repeat on set weekdays\" when you add it; \"Edit\" and \"Delete\" can also take the rest of the series. \"Copy the week before\" lays each rider's own sessions from another week on the same weekdays. \"Share the week\" makes a text with the week's sessions, times and places for the team's chat, with nothing about the riders' wellbeing."
       },
       "sessions": {
         "title": "Sessions and templates",
-        "body": "A session is built in steps: warm-up, work, rest and cool-down, each with a length and a target in zones, percent of FTP or threshold heart rate, or by feel. Repeats gather steps that are ridden several times. Once the rider's thresholds are set, the targets read in watts and pulse. Strength sessions have exercises, and a programme has a progression, so sets and reps follow along from session to session. A coach can also press \"Build with AI\" and write the session in their own words, e.g. \"5x4 min VO2max\" or \"strength 45 min, legs and core\", or what to change in the session as it stands. The proposal is shown first, and nothing is saved until the coach saves the session. Bike sessions can be built from building blocks with one tap, say a warm-up, threshold intervals or sprints, and strength exercises are suggested as you type the name, DCU's exercises and ones without machines. Save a session as a template in the workout library and it can be given to one rider or the whole team at once."
+        "body": "A session is built in steps: warm-up, work, rest and cool-down, each with a length and a target in zones, percent of FTP or threshold heart rate, or by feel. Repeats gather steps that are ridden several times. Once the rider's thresholds are set, the targets read in watts and pulse. Strength sessions have exercises, and a programme has a progression, so sets and reps follow along from session to session. A coach can also press \"Build with AI\" and write the session in their own words, e.g. \"5x4 min VO2max\" or \"strength 45 min, legs and core\", or what to change in the session as it stands. The proposal is shown first, and nothing is saved until the coach saves the session. Bike sessions can be built from building blocks with one tap, say a warm-up, threshold intervals or sprints, and strength exercises are suggested as you type the name, DCU's exercises and ones without machines. Save a session as a template in the library and it can be given to one rider or the whole team at once. Several weeks of sessions can be gathered in a block and laid in from a Monday."
       },
       "done": {
         "title": "Done and RPE",
@@ -723,7 +743,7 @@
       },
       "season": {
         "title": "The season plan and DCU",
-        "body": "The season runs from October to September. The plan is filled with DCU's hours for the rider's class (U17, U19 or U23 and the year in it), month by month, with DCU's phases: break and free riding in October, distance in November and December, long base intervals in January and February, short hard intervals around March, and the racing season from April. The coach and the rider can change anything, but DCU's numbers and the deviation always stand beside it. Wherever training is planned, the same four numbers stand: DCU (DCU's hours and the corridor round them), Goal (the season plan the coach has set), Planned (the sessions in the calendar) and Done (what was actually ridden). You see them for the week in the calendar, for each rider in the team's week, and month by month on the season page, where \"The whole team\" shows every rider at once. Only hours on the bike count. Kadence's seven zones are Kadence's own; DCU's heart-rate bands are shown beside them for comparison."
+        "body": "The season runs from October to September. The plan can be filled with DCU's hours for the rider's class (U17, U19 or U23 and the year in it), month by month, with DCU's phases: break and free riding in October, distance in November and December, long base intervals in January and February, short hard intervals around March, and the racing season from April. Under \"The whole team\", \"Create season plans for everyone without one\" makes the plans for the whole team at once. The coach and the rider can change anything. When the team follows DCU's recommendations (Settings → Team), DCU's numbers and the deviation stand beside it. Wherever training is planned, the same four numbers stand: Season plan (the hours the coach has set), Scheduled (the sessions in the calendar), Ridden (what was actually ridden) and DCU (DCU's hours and the range round them). You see them for the week in the calendar, for each rider in the team's week, and month by month on the season page. Only hours on the bike count. Kadence's seven zones are Kadence's own; DCU's heart-rate bands are shown beside them for comparison."
       },
       "load": {
         "title": "Load: fitness, fatigue and freshness",
@@ -731,31 +751,36 @@
       },
       "warnings": {
         "title": "Points of attention",
-        "body": "Kadence shows the coach when a week goes past the limits, and the coach decides what happens. The points are: hours on the bike above or below DCU's range for the week, more than 15 % more hours than the last weeks, a ride longer than DCU's limit (U17 at most 4 hours or 120 km, U19 at most 5 hours or 150 km), strength sessions less than 48 hours apart, too little sleep, pain on ATK's pain ladder, and check-ins in the yellow or red zone. Each point has a word for how much it matters: \"Important now\", \"Worth a look\" or \"Good to know\"."
+        "body": "Kadence shows the coach when a week goes past the limits, and the coach decides what happens. The points of attention are under Calendar → The whole team: as badges beside each rider and as a list under the week, where \"See the week\" opens the rider's week. Today says how many riders have something worth a look. The points are: hours on the bike above or below DCU's range for the week (October is DCU's break and has no range), more than 15 % more hours than the last weeks, a ride longer than DCU's limit (U17 at most 4 hours or 120 km, U19 at most 5 hours or 150 km), strength sessions less than 48 hours apart, sessions far from the plan, much time in the middle zone when the team uses \"Low intensity first\", too little sleep, pain on ATK's pain ladder, and check-ins in the yellow or red zone. Each point has a word for how much it matters: \"Important now\", \"Worth a look\" or \"Good to know\". Once you have talked a point through, you can mark it resolved."
       },
       "checkin": {
         "title": "Check-in and wellbeing zones",
         "body": "Every morning the rider answers on sleep, energy, mood, fresh legs, calm and pain, and whether they are ill. The answers give a zone for the day: green, yellow or red. Kadence looks at the pattern over three weeks, not at one bad day. The zones build on Kolding Talent's wellbeing model from Team Danmark's guide for parents: when a rider is in the yellow zone for a while, rider, parent and coach have a talk within 14 days, and in the red zone professionals are involved. The coach sees check-ins; the parents only if the rider shares them. Kadence never diagnoses."
       },
+      "reminders": {
+        "title": "Reminders",
+        "body": "Kadence can remind you of the day's check-in in the evening, tell you when there is a new comment or the plan for the next days has changed, and give parents the week's overview on Sunday evening. Turn it on under Settings → Me on the phone or computer you want them on, and choose which. On an iPhone it works once Kadence is on the home screen. The message itself from Apple, Google or Mozilla is empty; the phone asks Kadence what is new when it arrives. Between 21:30 and 7:00 reminders wait until morning. They are there when the installation has set them up."
+      },
       "devices": {
         "title": "Uploads and devices",
-        "body": "Upload a FIT file from the bike computer, watch or trainer under Today, in the calendar or on the rider's page. Kadence reads the file itself, offline too, and puts the ride on the day's session when it fits. Every ride has its own page with curves, time in zones and best power. Wahoo, Garmin and Polar can be connected under Settings → Devices, so rides come in by themselves, and sessions can be sent to a Wahoo or Garmin. Wahoo and Garmin are US companies, Polar is Finnish, and it is the rider's own choice. A bike session can also be downloaded as .zwo, .erg, .mrc or .fit."
+        "body": "Upload a FIT file from the bike computer, watch or trainer under Me, in the calendar or on the rider's page. Kadence reads the file itself, offline too, and puts the ride on the day's session when it fits. Every ride has its own page with curves, time in zones and best power. If Wahoo, Garmin or Polar is set up here, you can connect them under Settings → Devices, so rides come in by themselves. Wahoo and Garmin are US companies, Polar is Finnish, and it is the rider's own choice. Otherwise your rides come in as files, and that works just as well. A bike session can also be downloaded as .zwo, .erg, .mrc or .fit."
       },
       "toDevice": {
         "title": "Sessions on the bike computer",
-        "body": "A bike session with steps can go onto a Garmin, so you ride it with targets and a countdown on the screen. Plug the bike computer into the computer with a cable, press Send to bike computer on the session or Send the week's sessions on Today, and pick the bike computer when the browser asks. Kadence puts the files in the folder Garmin/NewFiles; eject the bike computer, and you find the sessions under Training. It works in Chrome and Edge on a computer and in Chrome on Android. In Safari and Firefox you download the files and put them in Garmin/NewFiles yourself. An Edge 540, 840, 1040 or 1050 does not show up as a drive on a Mac; use File Explorer on a Windows PC. Each session is named by its day first, such as 29.09 Tempo, so a week's sessions do not overwrite each other on the bike computer. A step without watts or pulse shows its target in words, such as RPE 7. Kadence writes nothing else to the bike computer and deletes nothing."
+        "body": "A bike session with steps can go onto a Garmin, so you ride it with targets and a countdown on the screen. Plug the bike computer into the computer with a cable, press Send to bike computer on the session or Send the week's sessions on Me, and pick the bike computer when the browser asks. Kadence puts the files in the folder Garmin/NewFiles; eject the bike computer, and you find the sessions under Training. It works in Chrome and Edge on a computer and in Chrome on Android. In Safari and Firefox you download the files and put them in Garmin/NewFiles yourself. An Edge 540, 840, 1040 or 1050 does not show up as a drive on a Mac; use File Explorer on a Windows PC. Each session is named by its day first, such as 29.09 Tempo, so a week's sessions do not overwrite each other on the bike computer. A step without watts or pulse shows its target in words, such as RPE 7. Kadence writes nothing else to the bike computer and deletes nothing."
       },
       "rulle": {
         "title": "Rulle: the session on the trainer",
-        "body": "When you can't get outside, ride today's session indoors in Rulle: in the menu, or \"Ride indoors\" on the session. Connect the trainer with one press. A smart trainer sets the watts of each block itself (ERG), so all you do is pedal; a trainer that only measures leaves the numbers to you. A heart-rate strap can be connected beside it. The screen shows the watts against the target, the time left of the block and the whole session as a bar you ride across, large enough to read from the bike. Space pauses, the right arrow skips to the next block, up and down make the session easier or harder. Stop pedalling, and Rulle pauses with you. When the session is over, the ride is saved as an ordinary ride on the session, and you say how hard it was. Without a connection the ride waits in the browser. Rulle needs Chrome or Edge on a computer or Android; on an iPhone, the Bluefy app can. Now and then something small happens on the way – an electric cargo bike, a car with windscreen washer fluid, a dog – and pause long enough and you sit down at a café. They are counted in today's little things when you finish; the numbers and the bar are left in peace. Under the ride you hear the wind and the tyres with your speed, a bird in the country, a town's hum and the crowd on race day, so a hoot never comes out of silence. M turns all sound off and on. There is a cheat code hidden in Rulle. It cheats only the landscape, never the ride that is saved. With no session today, you can choose one of the team's own or DCU's standard sessions, and choose between the routes – among them the championship lap from B&U DM 2026 in Vejle, with its finish at the top, the Future Racing lap through Copenhagen and the Worlds circuit round Mont-Royal in Montréal. K shows and hides the little map of the route. I hides every number, so you see only the rider and the land; tap the screen or press I again to bring them back. H shows the speed – the route's speed for your watts and a standard rider, so a guide, not a measure – and on a climb or a descent its percent is down in the corner. The rider on the screen stands on the steep climbs and gets low on the fast descents. The routes that come with Kadence run through the real land from OpenStreetMap – the woods, the lakes, the fjord and the towns – and you meet other riders on the road, some with a hand raised. The road crosses its rivers on bridges, and where you ride under a railway or a motorway, a train comes over now and then and the cars run on the bridge. On the city routes it is race day: a crowd down the finish straight and up the climbs, marshals with yellow flags at the islands and the sharp bends, marshals on motorbikes who hoot and ride a while ahead of you, cobbles that shake, speed bumps, a feed zone and the team buses. Copenhagen is a June morning in a big city – blocks in ochre, yellow and red brick, shops at street level, lamps hung over the street and a hot-dog wagon, Montréal a September afternoon with red maples, stairs outside the houses and the cross on Mont-Royal. The towns in the country, like Vejle, are built lower, in yellow and red brick under red and black tiles."
+        "body": "When you can't get outside, ride today's session indoors in Rulle: in the menu, or \"Ride indoors\" on the session. Connect the trainer with one press. A smart trainer sets the watts of each block itself (ERG), so all you do is pedal; a trainer that only measures leaves the numbers to you. A heart-rate strap can be connected beside it. The screen shows the watts against the target, the time left of the block and the whole session as a bar you ride across, large enough to read from the bike. Space pauses, the right arrow skips to the next block, up and down make the session easier or harder. Stop pedalling, and Rulle pauses with you. When the session is over, the ride is saved as an ordinary ride on the session, and you say how hard it was. Without a connection the ride waits in the browser. Rulle needs Chrome or Edge on a computer or Android; on an iPhone, the Bluefy app can. With no session today, you can choose one of the team's own or DCU's standard sessions. M turns the sound off and on.",
+        "world": "Now and then something small happens on the way – an electric cargo bike, a car with windscreen washer fluid, a dog – and pause long enough and you sit down at a café. They are counted in today's little things when you finish; the numbers and the bar are left in peace. Under the ride you hear the wind and the tyres with your speed, a bird in the country, a town's hum and the crowd on race day, so a hoot never comes out of silence. There is a cheat code hidden in Rulle. It cheats only the landscape, never the ride that is saved. You can choose between the routes – among them the championship lap from B&U DM 2026 in Vejle, with its finish at the top, the Future Racing lap through Copenhagen and the Worlds circuit round Mont-Royal in Montréal. K shows and hides the little map of the route. I hides every number, so you see only the rider and the land; tap the screen or press I again to bring them back. H shows the speed – the route's speed for your watts and a standard rider, so a guide, not a measure – and on a climb or a descent its percent is down in the corner. The rider on the screen stands on the steep climbs and gets low on the fast descents. The routes that come with Kadence run through the real land from OpenStreetMap – the woods, the lakes, the fjord and the towns – and you meet other riders on the road, some with a hand raised. The road crosses its rivers on bridges, and where you ride under a railway or a motorway, a train comes over now and then and the cars run on the bridge. On the city routes it is race day: a crowd down the finish straight and up the climbs, marshals with yellow flags at the islands and the sharp bends, marshals on motorbikes who hoot and ride a while ahead of you, cobbles that shake, speed bumps, a feed zone and the team buses. Copenhagen is a June morning in a big city – blocks in ochre, yellow and red brick, shops at street level, lamps hung over the street and a hot-dog wagon, Montréal a September afternoon with red maples, stairs outside the houses and the cross on Mont-Royal. The towns in the country, like Vejle, are built lower, in yellow and red brick under red and black tiles."
       },
       "keys": {
         "title": "Upload keys",
-        "body": "An upload key lets a program hand rides to Kadence by itself, without you being signed in. Create one under Settings → Devices, give it a name, and copy it right away: it is shown that one time only. The program sends the ride's file to the address shown with the key, with the key in the Authorization field, written as Bearer and then the key. The ride lands on the day's session, exactly as when you upload it yourself. The key can only add rides for you. It cannot read anything, and you or your coach can remove it at any time. Give it only to the program that is to use it."
+        "body": "An upload key lets a program hand rides to Kadence by itself, without you being signed in. Create one under Settings → Devices → Advanced, give it a name, and copy it right away: it is shown that one time only. The program sends the ride's file to the address shown with the key, with the key in the Authorization field, written as Bearer and then the key. The ride lands on the day's session, exactly as when you upload it yourself. The key can only add rides for you. It cannot read anything, and you or your coach can remove it at any time. Give it only to the program that is to use it."
       },
       "strava": {
         "title": "From Strava to Kadence",
-        "body": "Kadence cannot be connected to Strava: Strava's rules for apps say an app may show your Strava rides to you alone, not to your coach. But you can bring your rides along. Your whole history: sign in on strava.com on a computer (the app cannot do it), choose Settings → My Account, press Get Started under Download your account and then Request download, and wait for Strava's e-mail; it can take a few hours. Put the zip file in the upload field under Today, as it is. Kadence shows what the archive holds, and then fetches the rides, or every activity if you choose so: with the names you gave them on Strava, newest first, and without the rides that are here already. Up to 500 rides a day; if there are more, it goes on where it stopped when you add the archive again the next day. If you have unpacked the archive, you can pick the folder with “Fetch from the device” instead. A coach can do the same on the rider's page. A single ride: open it on strava.com, choose ••• → Export Original, and upload the file. New rides come most easily straight from the bike computer; see Uploads and devices."
+        "body": "Kadence cannot be connected to Strava: Strava's rules for apps say an app may show your Strava rides to you alone, not to your coach. But you can bring your rides along. Your whole history: sign in on strava.com on a computer (the app cannot do it), choose Settings → My Account, press Get Started under Download your account and then Request download, and wait for Strava's e-mail; it can take a few hours. Put the zip file in the upload field under Me, as it is. Kadence shows what the archive holds, and then fetches the rides, or every activity if you choose so: with the names you gave them on Strava, newest first, and without the rides that are here already. Up to 500 rides a day; if there are more, it goes on where it stopped when you add the archive again the next day. If you have unpacked the archive, you can pick the folder with “Fetch from the device” instead. A coach can do the same on the rider's page. A single ride: open it on strava.com, choose ••• → Export Original, and upload the file. New rides come most easily straight from the bike computer; see Uploads and devices."
       },
       "parentsPage": {
         "title": "The parents' page",
@@ -763,7 +788,7 @@
       },
       "ai": {
         "title": "The AI",
-        "body": "The AI proposes, and the coach decides. It can read a coach's shorthand like \"3x10 min Z4 / 5 min rest\" into steps (the rules manage most of it without any language model), propose a week for a rider, and write a short summary of the week's points of attention. Nothing goes in the calendar until a coach presses. It never writes to a rider and never deletes anything. Week proposals and the summary read the riders' data, so they only work if the team has turned on \"May the AI read the riders' data\" under Settings → Team. Without a language model everything else works as before."
+        "body": "The AI proposes, and the coach decides. It can read a coach's shorthand like \"3x10 min Z4 / 5 min rest\" into steps (the rules manage most of it without any language model), build a session from your own words with \"Build with AI\" in the library, propose a week under \"Plan the week\" for one rider or several, and write a short summary of the week's points of attention in the team's week. Nothing goes in the calendar until a coach presses. It never writes to a rider and never deletes anything. Week proposals and the summary read the riders' data, so they only work if the team has turned on \"May the AI read the riders' data\" under Settings → Team. Without a language model everything else works as before."
       }
     }
   },
@@ -777,19 +802,13 @@
     "rider": {
       "today": "Your session today",
       "tomorrow": "Tomorrow",
-      "week": "Your week",
       "rest": "Nothing planned. Enjoy it, or log it if you train anyway.",
+      "restTomorrow": "Nothing planned tomorrow.",
       "done": "Done",
-      "doneTitle": "Well done! How did it go?",
+      "doneTitle": "Well done. How did it go?",
       "open": "See the whole session",
       "indoors": "Ride indoors",
-      "comments": "{count, plural, one {# comment} other {# comments}}",
-      "upload": "Upload a ride",
-      "uploadBody": "FIT files from your bike computer, watch or trainer. The ride lands on the day's session by itself.",
-      "form": "My form",
-      "formBody": "What your training looks like over the last 90 days.",
-      "records": "Your records",
-      "goals": "Your goals"
+      "comments": "{count, plural, one {# comment} other {# comments}}"
     },
     "week": {
       "nothing": "Nothing planned"
@@ -801,12 +820,12 @@
       "events": "The team's events this week",
       "noEvents": "No races or camps for the whole team this week."
     },
+    "attention": {
+      "count": "{count, plural, =0 {No riders have anything worth a look right now} one {# rider has something worth a look} other {# riders have something worth a look}}",
+      "where": "See the team's week in the calendar"
+    },
     "parent": {
-      "week": "{name}'s week",
-      "waitingTitle": "Waiting for your child's confirmation",
-      "waitingBody": "You can see your child's training here once your child has confirmed the link to you. The rider does that under Settings → Me.",
-      "hiddenTitle": "Your child is not sharing their training right now",
-      "hiddenBody": "The link is confirmed, but your child has chosen not to share their training. It is their choice; talk about it at home."
+      "link": "{count, plural, one {See your child's week under Parents} other {See your children's weeks under Parents}}"
     },
     "start": {
       "title": "Getting started",
@@ -833,7 +852,85 @@
       "not_a_rider": "Only a rider can share a ride to Kadence. A coach uploads the ride on the rider's page.",
       "rate_limited": "You have uploaded many files just now. Try again in a moment.",
       "no_file": "No file came along. Share a .fit, .tcx or .gpx file."
+    },
+    "checklist": {
+      "title": "Getting started",
+      "progress": "{done} of {total} ready",
+      "hide": "Hide",
+      "doneWord": "done",
+      "device": {
+        "title": "What do you ride with?",
+        "ask": "Then Kadence shows you how your rides get in.",
+        "choice": {
+          "garmin": "Garmin",
+          "wahoo": "Wahoo",
+          "polar": "Polar",
+          "strava": "Only Strava",
+          "none": "No bike computer"
+        },
+        "way": {
+          "connect": "Connect your {name}, and your rides come in by themselves.",
+          "folder": "Plug your Garmin into the computer or the phone with a cable. Kadence then fetches the new rides from it.",
+          "upload": "You can always add a file from the ride yourself.",
+          "stravaArchive": "Fetch your Strava archive once, and Kadence has your old rides. New rides you add as files.",
+          "byHand": "Press Done when you have trained, and say how hard it felt. That is all it takes."
+        },
+        "go": {
+          "connect": "Connect {name}",
+          "folder": "Fetch from the device",
+          "upload": "Add a ride",
+          "stravaArchive": "Fetch the Strava archive"
+        },
+        "settle": "Ready",
+        "change": "Choose something else"
+      },
+      "thresholds": {
+        "title": "Your thresholds",
+        "body": "With your FTP or your threshold heart rate, Kadence can show your zones. If you do not know them, skip this. Kadence then uses how hard it felt.",
+        "go": "Enter thresholds",
+        "skip": "Skip"
+      },
+      "guardian": {
+        "title": "Say yes to your parent",
+        "body": "Your parent sees your training only once you have said yes. You decide what they see.",
+        "confirm": "{adult, select, yes {Say yes again to {name}} other {Say yes to {name}}}",
+        "confirmed": "{name} can now see what you share.",
+        "where": "You can change it any time under Settings → Me."
+      },
+      "homeScreen": {
+        "title": "Put Kadence on your home screen",
+        "ios": "Tap the Share button in Safari and choose Add to Home Screen. Kadence then opens like an app.",
+        "android": "Open Chrome's menu and choose Install app or Add to Home screen. Kadence then opens like an app.",
+        "androidPrompt": "Kadence then opens like an app, straight from your home screen.",
+        "other": "Open Kadence on your phone and put it on the home screen from there.",
+        "install": "Add to home screen",
+        "done": "I have done that"
+      }
+    },
+    "rpe": {
+      "named": "How hard did {sport, select, bike {the ride} other {the session}} “{title}” feel?",
+      "unnamed": "How hard did {sport, select, bike {your ride} other {your session}} feel?",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "scale": "How hard, from 1 to 10",
+      "hint": "1 is very, very easy. 10 is the hardest you can do.",
+      "save": "Save",
+      "later": "Not now",
+      "saved": "Saved. Thank you."
     }
+  },
+  "me": {
+    "title": "Me",
+    "sessionPanel": "Session",
+    "week": "Your week",
+    "form": "Form",
+    "formBody": "What your training looks like over the last 90 days.",
+    "checkins": "Check-ins over the last 14 days",
+    "checkinsBody": "Your own colours, so you can see your pattern.",
+    "goals": "Your goals",
+    "records": "Your records",
+    "upload": "Upload a ride",
+    "uploadBody": "Files from your bike computer, watch or trainer. The ride lands on the day's session by itself. Below, you can also send the week's sessions to your Garmin."
   },
   "errors": {
     "too_many_reset_links": "You have made many links just now. Try again in an hour.",
@@ -851,7 +948,7 @@
     "not_a_rider": "Only a rider can connect their own device.",
     "too_many_keys": "You already have as many keys as you can have. Remove one before you create a new one.",
     "too_many_keys_made": "You have created many keys just now. Try again in an hour.",
-    "flagGone": "That warning is no longer active. Reload the page.",
+    "flagGone": "That point of attention is no longer active. Reload the page.",
     "uciId": "A UCI ID is 11 digits, as on the licence.",
     "uciTaken": "Another rider on the team already has that UCI ID.",
     "noUciId": "The rider has no UCI ID yet.",
@@ -922,7 +1019,9 @@
       "rider": "Rider",
       "week": "On the bike",
       "plan": "Plan the week",
-      "hours": "{done} of {planned} h"
+      "hours": "{done} of {planned} h",
+      "day": "{day}: {what}",
+      "dayEmpty": "nothing planned"
     },
     "menu": {
       "label": "Actions for {title}",
@@ -988,6 +1087,22 @@
       "submit": "Put in the calendar",
       "added": "{count, plural, one {The session is in the calendar.} other {The session is in # calendars.}}",
       "addedSeries": "{count, plural, one {The series is in: # session.} other {The series is in: # sessions.}}"
+    },
+    "timePlace": {
+      "legend": "Time and place",
+      "hint": "For a session you ride together. Both can stay empty.",
+      "time": "Start time",
+      "place": "Meeting place",
+      "placePlaceholder": "E.g. the clubhouse",
+      "clearTime": "Remove the start time"
+    },
+    "share": {
+      "open": "Share the week",
+      "week": "Week {n}",
+      "riders": "{count, plural, one {# rider} other {# riders}}",
+      "empty": "No sessions this week.",
+      "copied": "The week is copied as text. Paste it into the team's chat.",
+      "failed": "The week could not be shared or copied. Try again."
     },
     "repeat": {
       "toggle": "Repeat on set weekdays",
@@ -1061,8 +1176,8 @@
   },
   "weekPlan": {
     "title": "Plan the week",
-    "subtitle": "Week {n}, {from}–{to}",
     "back": "Back to the team's week",
+    "backRider": "Back to the rider's week",
     "coachOnly": "Only coaches plan the team's week.",
     "open": "Plan the week",
     "applied": "{count, plural, one {# session laid in} other {# sessions laid in}} for {riders, plural, one {# rider} other {# riders}}.",
@@ -1074,7 +1189,7 @@
     },
     "week": {
       "title": "The week",
-      "body": "Put sessions on the days from the library, build them here, or start from a block, a rider's week or a proposal from the AI. Nothing reaches the calendar until you lay the week in.",
+      "body": "Put sessions on the days from the library, or build them here. Nothing reaches the calendar until you lay the week in.",
       "replaced": "The week was replaced.",
       "undo": "Undo"
     },
@@ -1091,11 +1206,19 @@
     },
     "start": {
       "source": "Start from",
+      "empty": "Empty week",
+      "last": "Last week",
       "block": "A block",
-      "rider": "A rider's week",
+      "ai": "AI",
+      "emptyBody": "Begin with an empty week, and put sessions on the days.",
+      "clear": "Clear the week",
+      "lastOne": "Fetches the rider's sessions from the week before.",
+      "lastMany": "Fetches the group sessions from the week before, each session once. The riders' own sessions stay behind.",
+      "loadLast": "Fetch last week",
+      "lastEmpty": "There were no sessions to fetch in the week before.",
+      "noBlocks": "There are no blocks in the library yet. Save a week as a block below, and you can start from it another time.",
       "week": "The week in the block",
       "weekN": "Week {n}",
-      "weekOf": "The week of",
       "load": "Load",
       "hint": "What you load replaces the week here. You can change everything after."
     },
@@ -1118,11 +1241,24 @@
       "empty": "Choose riders, and put at least one session on the week.",
       "summary": "{sessions, plural, one {# session} other {# sessions}} for {riders, plural, one {# rider} other {# riders}}. Each session becomes a group session, so \"Edit all\" works afterwards.",
       "preview": "See what it gives against the season plan",
-      "confirm": "{riders, plural, one {Lay the week in for # rider} other {Lay the week in for # riders}}"
+      "confirm": "{riders, plural, one {Lay the week in for # rider} other {Lay the week in for # riders}}",
+      "repeat": "Lay the week into",
+      "weeksOption": "{weeks, plural, one {This week only} other {# weeks in a row}}",
+      "summaryWeeks": "{sessions, plural, one {# session} other {# sessions}} a week for {riders, plural, one {# rider} other {# riders}} over {weeks, plural, one {# week} other {# weeks in a row}}. Each session becomes a group session every week and a series over the weeks, so you can change them together afterwards.",
+      "confirmWeeks": "{riders, plural, one {Lay the weeks in for # rider} other {Lay the weeks in for # riders}}"
+    },
+    "save": {
+      "open": "Save as block",
+      "title": "Save the week as a block",
+      "body": "The week becomes a one-week block in the library. You can start from it again or lay it in from there. Sessions you built here stay in the block and are not added to the library on their own.",
+      "name": "Name",
+      "defaultName": "Week {n}",
+      "submit": "Save the block",
+      "saved": "The block is saved in the library."
     }
   },
   "library": {
-    "title": "Workout library",
+    "title": "Library",
     "own": {
       "titleRider": "My sessions",
       "subtitleRider": "Sessions you built yourself. Your coach can see them and take them into the team's library.",
@@ -1216,7 +1352,8 @@
       "applied": "{count, plural, one {The block is now with # rider} other {The block is now with # riders}}.",
       "weekLine": "Week {n} ({date}): {hours} h on the bike, {strength, plural, =0 {no strength sessions} one {# strength session} other {# strength sessions}}",
       "corridor": "DCU {low}–{high} h",
-      "previewNote": "The guardrails speak up; they forbid nothing. You can apply the block anyway and adjust in the calendar."
+      "previewNote": "The points of attention are there to help, and you decide. You can apply the block and adjust it in the calendar afterwards.",
+      "ownSession": "Built in the planner. The session exists only in the block."
     }
   },
   "riders": {
@@ -1437,7 +1574,7 @@
       "note": "Note",
       "notePlaceholder": "E.g. heavy legs, but a good day",
       "submit": "Done",
-      "saved": "Well done! The session is done."
+      "saved": "Well done. The session is done."
     },
     "doneTitle": "Done",
     "commentsTitle": "{count, plural, =0 {Comments} one {# comment} other {# comments}}",
@@ -1548,7 +1685,11 @@
       "4": "Good",
       "5": "Really good"
     },
-    "placed": "placed {place}"
+    "placed": "placed {place}",
+    "when": {
+      "time": "at {time}",
+      "place": "Meeting place"
+    }
   },
   "workouts": {
     "profile": {
@@ -1728,7 +1869,7 @@
       "title": "Building blocks",
       "warmup": "Warm-up 15 min",
       "endurance": "Endurance 1 h Z2",
-      "cadence": "Cadence 4×2 min",
+      "cadence": "High cadence 4×2 min",
       "tempo": "Tempo 3×10 min",
       "threshold": "Threshold 2×15 min",
       "vo2": "VO₂max 5×4 min",
@@ -1820,7 +1961,7 @@
   },
   "insight": {
     "title": "Possible points of attention",
-    "subtitle": "From the week's hours, the check-ins and DCU's ranges.",
+    "subtitle": "The week in progress, from the hours, the sessions and the check-ins.",
     "riderTitle": "Points of attention",
     "noFlags": "The week looks calm.",
     "allCalm": "The team looks to be in balance this week.",
@@ -1864,6 +2005,25 @@
       "short_sleep": "under 6 hours' sleep"
     },
     "guideLink": "Advice in the coach guide",
+    "weekLink": "See the week",
+    "otherWeek": "The points of attention follow the week in progress.",
+    "toThisWeek": "Go to this week",
+    "badge": {
+      "label": "Points of attention for {name}: {flags}. Go to the list.",
+      "more": "+{count}",
+      "hours_above_corridor": "Over DCU's range",
+      "hours_below_corridor": "Under DCU's range",
+      "ramp": "Steep rise",
+      "longest_ride": "Long ride",
+      "strength_spacing": "Strength close",
+      "compliance": "Sessions went differently",
+      "mid_zone": "Much middle zone",
+      "wellbeing_talk": "Time for a talk",
+      "wellbeing_help": "Professional help",
+      "pain": "Pain",
+      "sleep_short": "Short sleep",
+      "sleep_below_minimum": "Too little sleep"
+    },
     "resolve": {
       "button": "Resolved",
       "label": "Mark as resolved",
@@ -1872,7 +2032,7 @@
       "show": "Show",
       "hide": "Hide",
       "undo": "Undo",
-      "weekNote": "A resolution lasts the week unless the numbers get clearly worse. If the same thing comes up next week, it is a new point. The Monday brief and the tips see the points still open; the week draft sees every point, because it plans load."
+      "weekNote": "A resolution lasts the week unless the numbers get clearly worse. If the same thing comes up next week, it is a new point. The AI's summary and the advice for the coach see the points still open. The week draft sees every point, because it plans load."
     }
   },
   "wellbeing": {
@@ -1950,7 +2110,7 @@
     "noteHint": "Your coach can read it. Your parents only if you share how you are doing.",
     "save": "Save",
     "cancel": "Cancel",
-    "saved": "Thanks! Today's check-in is saved.",
+    "saved": "Thanks. Today's check-in is saved.",
     "edit": "Change today's check-in",
     "doneTitle": "Today's check-in",
     "result": {
@@ -2035,7 +2195,13 @@
       "drift": "Heart-rate drift",
       "driftHint": "How much more pulse each watt cost in the second half than in the first",
       "kmh": "{kmh} km/h",
-      "pct": "{pct} %"
+      "pct": "{pct} %",
+      "plan": "Against the plan",
+      "planSteps": "{hit} of {judged} steps hit the target"
+    },
+    "more": {
+      "title": "More data",
+      "body": "Watts, pulse, curves, laps, climbs, zones and the power curve"
     },
     "streams": {
       "show": "Show curves",
@@ -2216,7 +2382,7 @@
       "h": "{n} h",
       "compare": "Hold the ride against your bests",
       "readoutBest": "best {w} W",
-      "record": "Record!",
+      "record": "Record",
       "recordsSet": "{count, plural, one {This ride set a record on # duration} other {This ride set records on # durations}}: {durations}"
     },
     "sourceFormat": "From a {format} file",
@@ -2288,10 +2454,18 @@
       "team": "The whole team"
     },
     "team": {
-      "subtitle": "Each rider's hours on the bike this month and in the season so far, against the goal and DCU.",
+      "subtitle": "Each rider's hours on the bike this month and in the season so far, against the season plan and DCU.",
       "toDate": "The season so far",
-      "toDateValue": "Done {done} h · planned {planned} h · goal {goal} · DCU {dcu}",
+      "toDateValue": "Season plan {goal} · scheduled {planned} h · ridden {done} h · DCU {dcu}",
       "empty": "No riders to show."
+    },
+    "teamPlans": {
+      "missing": "{count, plural, one {# rider has no season plan for {season} yet.} other {# riders have no season plan for {season} yet.}}",
+      "body": "Each plan is filled with DCU's hours and phases for the rider's class. You can change it afterwards.",
+      "bodyOwn": "The team plans with its own hours, so the plans start empty and you type in the hours yourself.",
+      "noClass": "{count, plural, one {# rider is not in one of DCU's classes. You make that plan on the rider's own page, where you choose the class.} other {# riders are not in one of DCU's classes. You make those plans on the rider's own page, where you choose the class.}}",
+      "button": "Create season plans for everyone without one",
+      "created": "{count, plural, =0 {There were no plans to make.} one {# season plan is made.} other {# season plans are made.}}"
     },
     "noRiders": {
       "coachTitle": "No riders yet",
@@ -2324,10 +2498,10 @@
       "done": "The plan is filled again from DCU."
     },
     "monthsTitle": "Month by month",
-    "plan": "Goal",
+    "plan": "Season plan",
     "dcu": "DCU",
-    "scheduled": "Planned",
-    "ridden": "Done",
+    "scheduled": "Scheduled",
+    "ridden": "Ridden",
     "hours": "{hours} h",
     "dcuHours": "DCU: {hours} h",
     "deviationLabel": "Deviation from DCU",
@@ -2377,8 +2551,8 @@
     "notePlaceholder": "E.g. a camp or exams",
     "planNote": "Note for the season",
     "planNotePlaceholder": "E.g. the season's goals, or why the plan differs from DCU",
-    "totals": "The season in total: goal {plan} h · planned {scheduled} h · done {ridden} h · DCU {dcu} h",
-    "totalsOwn": "The season in total: goal {plan} h · planned {scheduled} h · done {ridden} h",
+    "totals": "The season in total: season plan {plan} h · scheduled {scheduled} h · ridden {ridden} h · DCU {dcu} h",
+    "totalsOwn": "The season in total: season plan {plan} h · scheduled {scheduled} h · ridden {ridden} h",
     "readOnlyNote": "You can see the plan. The coach and the rider can change it.",
     "intensity": {
       "title": "Intensity week by week",
@@ -2403,17 +2577,17 @@
         "12": "about 10 %"
       },
       "profile": "Low intensity first: at least {lowMin}–{lowTarget} % low, at most {midMax} % middle and the rest high from November to February.",
-      "profileOff": "You can measure the sessions against the profile \"Low intensity first\" under Settings → Team."
+      "profileOff": "You can measure the sessions against \"Low intensity first\" under Settings → Team → Training basis."
     },
     "chart": {
       "title": "Hours per month",
-      "planned": "Goal",
-      "scheduled": "Planned",
-      "ridden": "Done",
+      "planned": "Season plan",
+      "scheduled": "Scheduled",
+      "ridden": "Ridden",
       "dcu": "DCU",
-      "label": "Hours on the bike per month in the season: goal, planned, done and DCU's hours",
-      "readout": "{month}: goal {plan} h · planned {scheduled} h · done {ridden} h · DCU {dcu} h",
-      "readoutOwn": "{month}: goal {plan} h · planned {scheduled} h · done {ridden} h",
+      "label": "Hours on the bike per month in the season: season plan, scheduled, ridden and DCU's hours",
+      "readout": "{month}: season plan {plan} h · scheduled {scheduled} h · ridden {ridden} h · DCU {dcu} h",
+      "readoutOwn": "{month}: season plan {plan} h · scheduled {scheduled} h · ridden {ridden} h",
       "hint": "Point at a month, or use the arrow keys, to see the numbers."
     },
     "reference": {
@@ -2439,34 +2613,34 @@
     }
   },
   "volume": {
-    "done": "Done",
-    "planned": "Planned",
-    "goal": "Goal",
+    "done": "Ridden",
+    "planned": "Scheduled",
+    "goal": "Season plan",
     "dcu": "DCU",
     "hours": "{hours} h",
     "range": "{low}–{high} h",
-    "noGoal": "no goal of your own",
+    "noGoal": "none",
     "noDcu": "no DCU class",
-    "said": "Done {done} h, planned {planned} h, goal {goal}, DCU {dcu}.",
+    "said": "Season plan {goal}, scheduled {planned} h, ridden {done} h, DCU {dcu}.",
     "compact": "{done} of {planned} h",
-    "goalShort": "Goal {hours}",
+    "goalShort": "Season plan {hours}",
     "dcuShort": "DCU {low}–{high}",
     "dcuBreak": "DCU: break and free riding",
     "expected": "Expected {hours} h on the bike:",
     "state": {
-      "inside": "inside DCU's corridor",
-      "over": "above DCU's corridor",
-      "under": "below DCU's corridor"
+      "inside": "inside DCU's range",
+      "over": "above DCU's range",
+      "under": "below DCU's range"
     },
     "toGoal": {
-      "on": "on the goal",
-      "over": "{hours} h over the goal",
-      "under": "{hours} h under the goal"
+      "on": "in line with the season plan",
+      "over": "{hours} h over the season plan",
+      "under": "{hours} h under the season plan"
     },
     "preview": {
       "week": "Week {n}",
-      "planned": "Planned {before} → {after} h",
-      "note": "The bar shows how it looks once the sessions are in. The guardrails say, they forbid nothing."
+      "planned": "Scheduled {before} → {after} h",
+      "note": "The bar shows how it looks once the sessions are in. The points of attention are there to help, and you decide."
     }
   },
   "assist": {
@@ -2474,7 +2648,7 @@
     "dismiss": "Close the proposal",
     "byRules": "Read by the rules",
     "byModel": "Read by {engine}",
-    "byGuardrails": "From Kadence's warnings",
+    "byGuardrails": "From the points of attention",
     "errors": {
       "noModel": "No language model is set up, so the AI cannot answer. Everything else works.",
       "noModelLink": "Settings → AI",
@@ -2509,7 +2683,7 @@
       "category": "Class",
       "categoryNone": "None in particular",
       "refine": "Change the session as it stands",
-      "hint": "Choose a class and the proposal stays inside DCU's frame. No rider data is sent, and nothing is saved until you save the session.",
+      "hint": "Choose a class and the proposal keeps to DCU's recommendations for it. No rider data is sent, and nothing is saved until you save the session.",
       "ruleHint": "Shorthand like \"3x10 min Z4 / 5 min rest\" is read by the rules without a language model.",
       "build": "Build the proposal",
       "building": "Building … this can take a while.",
@@ -2524,7 +2698,7 @@
     "week": {
       "open": "Propose the week",
       "title": "A proposal for the week",
-      "body": "The AI reads DCU's hours and phase, the calendar, the last weeks and the warnings, and proposes sessions. You choose what goes in the calendar.",
+      "body": "The AI reads DCU's hours and phase, the calendar, the last weeks and the points of attention, and proposes sessions. You choose what goes in the calendar.",
       "thinking": "Thinking … it can take a little while.",
       "proposal": "Proposed by the AI",
       "empty": "The AI proposed no sessions for the week.",
@@ -2544,9 +2718,13 @@
   },
   "devices": {
     "title": "Devices",
-    "subtitle": "Connect Wahoo, Garmin or Polar, and your rides come in by themselves. With Wahoo and Garmin, sessions can also be sent to your bike computer. FIT upload always works, without them too.",
-    "coachNote": "Riders connect their own Wahoo, Garmin or Polar here under Settings → Devices. Once a rider has connected Wahoo or Garmin, you can send sessions to the rider's device from the session in the calendar.",
-    "otherNote": "Devices belong to the rider. Only the rider can connect their Wahoo, Garmin or Polar.",
+    "subtitle": "Connect {providers}, and your rides come in by themselves. FIT upload always works, without it too.",
+    "filesOnly": "Your rides come in as files, and that works just as well.",
+    "ridersFilesOnly": "The riders bring their rides in as files, and that works just as well.",
+    "coachNote": "Riders connect their own {providers} here under Settings → Devices.",
+    "coachPush": "Once a rider has connected {providers}, you can send sessions to the rider's device from the session in the calendar.",
+    "otherNote": "Devices belong to the rider. Only the rider can connect their {providers}.",
+    "advanced": "Advanced",
     "name": {
       "wahoo": "Wahoo",
       "garmin": "Garmin",
@@ -2554,7 +2732,7 @@
     },
     "about": {
       "wahoo": "ELEMNT bike computers and KICKR trainers. Rides come in automatically, and sessions can be sent to them.",
-      "garmin": "Edge bike computers and watches through Garmin Connect. Rides come in automatically, and sessions can be sent to the Garmin Connect calendar.",
+      "garmin": "Edge bike computers and watches through Garmin Connect. Rides come in automatically. A bike session goes onto an Edge by cable, from the session.",
       "polar": "Watches and bike computers through Polar Flow. Rides come in automatically. Sessions cannot be sent to Polar from Kadence."
     },
     "state": {
@@ -2632,7 +2810,7 @@
         "done": "Done"
       }
     },
-    "uploadInstead": "Without Wahoo, Garmin and Polar you can always upload your rides as FIT files.",
+    "uploadInstead": "Without a connection you can always upload your rides as FIT files.",
     "uploadLink": "Upload a ride",
     "usTitle": "Wahoo and Garmin are US companies, Polar is Finnish",
     "usBody": "Kadence itself is in the EU, and so is Polar. When you connect, Wahoo, Garmin or Polar send your rides to Kadence, and Kadence sends the sessions you choose to Wahoo or Garmin. It is your choice, and you can disconnect at any time.",
@@ -2651,8 +2829,11 @@
       "hours": "{sessions} of {total} sessions done · {done} of {planned} h",
       "form": "Form",
       "noForm": "Not enough training has been done to show the form yet.",
-      "upcoming": "Coming up",
+      "upcoming": "The next 30 days",
       "noUpcoming": "No races, exams or camps in the next month.",
+      "threads": "Conversations about the training",
+      "noThreads": "No comments in the last two weeks.",
+      "comments": "{count, plural, one {# comment} other {# comments}}",
       "trainingHidden": "{name} does not share their training with you right now. That is the rider's own choice.",
       "wellbeing": "How it is going",
       "wellbeingNote": "Green is balance. Yellow for a while is a signal to have a talk together with the coach. Red means help is needed. Ask openly, and listen.",
@@ -2782,7 +2963,7 @@
     "contents": "Contents",
     "sources": "Sources",
     "opensElsewhere": "(opens on another site)",
-    "research": "What each source says, how old it is, and where the sources disagree is in Kadence's research note (docs/research/traenermateriale.md).",
+    "research": "What each source says, how old it is, and where the sources disagree is in Kadence's research note, published openly with the code.",
     "fromHelp": "Advice for coaches of young riders: classes and rules, volume, strength, growth, injury, body and weight, wellbeing and more.",
     "open": "Open the coach guide",
     "sections": {
@@ -2850,7 +3031,7 @@
       },
       "injury": {
         "title": "Pain, illness and concussion",
-        "intro": "Kadence shows warnings, but the coach, the rider, the parents and in the end a doctor decide.",
+        "intro": "Kadence shows points of attention, and the coach, the rider, the parents and in the end a doctor decide.",
         "points": {
           "1": "ATK's pain ladder is in Kadence's check-in. When pain changes the movement or stops training, the load comes down and a professional should look at it.",
           "2": "A fever means no training.",
@@ -2950,6 +3131,47 @@
     "strengthWinter": "The strength season has started: 2–3 sessions a week with at least 48 hours between them, and at least 30 sessions over the winter for U17 and U19.",
     "weightOn": "The team records weight for riders under 19. Leave weight and food out of your talks with the riders, and talk about a rider's weight only in private.",
     "heat": "Summer heat: drink steadily, think of salt on long rides, and move the hard sessions to the morning or evening."
+  },
+  "reminders": {
+    "title": "Reminders",
+    "body": "Kadence can remind you of what matters on this device. No reminders come between 21:30 and 7:00.",
+    "privacy": "The message itself is fetched from Kadence when it arrives. Your browser's push service only sees that there is something new.",
+    "enable": "Turn on reminders on this device",
+    "disable": "Turn off",
+    "on": "Reminders are on for this device.",
+    "enabled": "Reminders are on.",
+    "disabled": "Reminders are off.",
+    "switchOn": "On",
+    "switchOff": "Off",
+    "unsupported": "This browser cannot show reminders from Kadence. Everything else works.",
+    "ios": "On an iPhone, reminders work when Kadence is on the home screen (iOS 16.4 or later).",
+    "denied": "The browser has blocked reminders from Kadence. You can allow them in the browser's settings.",
+    "failed": "Reminders could not be turned on in this browser. Everything else works.",
+    "kind": {
+      "checkin": "Check-in in the evening",
+      "checkinHint": "At 19:00, if you have not checked in today.",
+      "comment": "New comments",
+      "commentHint": "When someone else writes on a session or a ride you can see.",
+      "commentHintCoach": "When a rider or a parent writes on a session or a ride.",
+      "plan": "Changed plan",
+      "planHint": "When a coach adds or changes a session in the next seven days.",
+      "week": "The week in short",
+      "weekHint": "Sunday evening, when the week is over."
+    },
+    "notify": {
+      "checkinTitle": "Remember today's check-in",
+      "checkinBody": "It takes half a minute.",
+      "commentTitle": "New comment on {title}",
+      "commentTitlePlain": "New comment",
+      "commentBody": "From {name}.",
+      "commentBodyPlain": "Open Kadence to read it.",
+      "planTitle": "The plan has changed",
+      "planBody": "See the coming days.",
+      "weekTitle": "{owner} training week is ready",
+      "weekBody": "See how the week went.",
+      "fallbackTitle": "There is something new in Kadence",
+      "fallbackBody": "Open Kadence to see it."
+    }
   },
   "records": {
     "period": {
@@ -3211,8 +3433,8 @@
         "duplicate": "The ride is already saved.",
         "rateLimited": "You've saved many rides in the last hour. Try again in a little while.",
         "not_rider": "Only a rider can save a ride.",
-        "notFound": "The session no longer exists. Download the FIT file and upload it on “Today”.",
-        "too_large": "The ride is too large to save from here. Download the FIT file and upload it on “Today”."
+        "notFound": "The session no longer exists. Download the FIT file and upload it on “Me”.",
+        "too_large": "The ride is too large to save from here. Download the FIT file and upload it on “Me”."
       }
     },
     "little": {
@@ -3476,27 +3698,32 @@
       "items": {
         "energy": {
           "title": "Energy for racing and training",
-          "body": "Good advice on food and drink the day before, before the start, on the way and after, with examples for your class."
+          "body": "Good advice on food and drink the day before, before the start, on the way and after, with examples for your class.",
+          "topic": "energy for racing and training"
         },
         "gearing": {
           "title": "Gearing for the young classes",
-          "body": "Work out the bike's biggest gear and see whether it stays within the limit for U11 to U17."
+          "body": "Work out the bike's biggest gear and see whether it stays within the limit for U11 to U17.",
+          "topic": "gearing"
         },
         "classes": {
           "title": "The classes and the way on",
-          "body": "The difference between U15, U17, U19 and U23, and how riders move on to a junior team."
+          "body": "The difference between U15, U17, U19 and U23, and how riders move on to a junior team.",
+          "topic": "the classes and the way on"
         },
         "equipment": {
           "title": "Equipment: where the speed is",
-          "body": "What buys speed for the money, and what is mostly for show. With watts, prices and sources."
+          "body": "What buys speed for the money, and what is mostly for show. With watts, prices and sources.",
+          "topic": "equipment"
         },
         "food": {
           "title": "Food and drink",
-          "body": "Everyday food and race-day food, recipes for homemade energy, teeth and supplements."
+          "body": "Everyday food and race-day food, recipes for homemade energy, teeth and supplements.",
+          "topic": "food and drink"
         }
       },
-      "fromParents": "About the sport, for parents: the classes and the way on, equipment, food and drink, and calculators for energy and gearing.",
-      "fromHelp": "Guides and calculators for riders, parents and coaches: the classes, equipment, food and drink, energy for racing and training, and gearing."
+      "fromParents": "About the sport, for parents: {topics}.",
+      "fromHelp": "Guides and calculators for riders, parents and coaches: {topics}."
     },
     "classes": {
       "title": "The classes and the way on",

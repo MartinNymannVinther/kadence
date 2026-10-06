@@ -1,6 +1,7 @@
 import type { CalendarEventRow, RaceResultRow } from "@/core/db/schema";
 import type { CalendarActivity } from "@/modules/training/activities";
 import type { CalendarSession } from "@/modules/training/sessions";
+import { clockOf } from "@/modules/training/time-place";
 import type { CalendarActivityCard, CalendarCard, CalendarEventCard, EventResult } from "./types";
 
 /**
@@ -22,6 +23,8 @@ export function toCard(s: CalendarSession): CalendarCard {
     plannedLoad: s.plannedLoad,
     plannedKm: s.plannedKm,
     templateId: s.templateId,
+    startTime: clockOf(s.startTime),
+    meetingPlace: s.meetingPlace,
     groupKey: s.groupKey,
     seriesKey: s.seriesKey,
     programmeSession: s.programmeSession,

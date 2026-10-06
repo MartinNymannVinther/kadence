@@ -1,0 +1,121 @@
+# ADR 0057: Focus for the first winter — five parts behind installation flags
+
+Status: accepted · Date: 2026-10-06 · Amends ADR 0045, 0047, 0051, 0052 and 0054
+
+## Context
+
+The review of `main` on 5 October 2026 (docs/plan-fokus-vinter.md) found
+the core sound, and the product grown wider faster than deeper. Nothing
+in it has yet run a real winter with a real team, which is what dogma
+seven asks for before anything is shown:
+
+> Intet af det vi selv har bygget kommer i vinduet før det har kørt
+> rigtigt arbejde, hos os selv eller hos en kunde vi sidder tæt på.
+
+The aim for the first winter is narrow: a coach lays the team's week in
+five minutes on a phone, and a rider spends twenty seconds a day. Five
+parts sit outside that aim:
+
+- **Trænerrummet** (ADR 0052), a room for coaches across clubs, which
+  needs many clubs before it is worth opening;
+- **the club championship** (ADR 0051), which a club runs once a season;
+- **the energy calculator** (ADR 0047), among the open guides, in the
+  form ADR 0056 gave it: energy advice for the day, for a class;
+- **the food guide** (ADR 0047), which is health advice about minors and
+  waits for a sports dietitian to read its section on low energy
+  availability;
+- **Rulle's world** (ADR 0034–0037, 0045, 0046): the land, the towns, the
+  people, the sound under the ride, the cheat code and the developer's
+  warp, behind a session that works without any of it.
+
+Martin said on 6 October "lav alle rettelser i planen". The plan's
+recommended choices were built, and each can be turned at the review.
+
+Three ways were open: delete the five, leave them on, or park them.
+
+## Decision
+
+- **Park them behind installation flags, off by default.** Five
+  variables, each `off` or `on`, read on the server only
+  (`src/core/features.ts`); a client component gets the answer as a prop.
+
+  | Variable            | Feature            | While it is `off`                                         |
+  | ------------------- | ------------------ | --------------------------------------------------------- |
+  | `COACHES_ROOM`      | `coachesRoom`      | `/coaches` answers 404, its actions are refused, no count |
+  | `CLUB_CHAMPIONSHIP` | `clubChampionship` | `/club` answers 404 for every team, whatever it chose     |
+  | `CALC_ENERGY`       | `energyCalculator` | `/calculators/energy` answers 404, the hub leaves it out  |
+  | `GUIDE_FOOD`        | `foodGuide`        | `/guides/food` answers 404, the hub leaves it out         |
+  | `RULLE_WORLD`       | `rulleWorld`       | Rulle is the session alone                                |
+
+- **One switch hides it everywhere at once:** the menu, the page (404,
+  `notFoundWithout`), the server action behind it (refused as not found,
+  `runFeatureAction`, after the session and team are resolved as every
+  action's are), and the demo. Nothing is deleted. The code stays and
+  keeps compiling, the rows stay in the database, and the export carries
+  what it carried before (a club's championship included).
+- **Trænerrummet:** the unread count the menu shows is 0 while the room is
+  off, so a coach is never pointed at a page that is not there.
+- **The championship:** the installation's flag sits above the team's own
+  setting (`championshipOn` in `src/modules/club/switch.ts`). While it is
+  off, every read answers as if the team had it off and every write is
+  refused; the team's setting stays in the database untouched and counts
+  again the day the flag is on.
+- **The open guides:** the hub lists only what is on, and the card that
+  leads to it from help and the parents' page names only those topics.
+- **Rulle, the session alone.** Without its world Rulle keeps the strip of
+  controls, the three numbers, the session's bar large across the middle
+  of the screen, ERG on the trainer, the pulse strap, the recording, the
+  ride saved through the ordinary FIT import, the ride kept offline, and
+  the beeps that count down a block. It leaves out the three.js scene
+  (its chunk is never requested), the choice of route and land, the
+  sound under the ride, the cheat code, the developer's warp, the people,
+  and the little things the landscape showed; "every block on target"
+  stays, because it is about the session. The engine rides a flat 20 km
+  loop made in memory (`flatCourse`), so speed and distance in the file
+  come from the same physics as before, on a road with no hills.
+- **Devices** (Settings → Enheder): only the providers this installation
+  has keys for are listed; with none, one sentence says that rides come
+  in as files and that it works just as well. Upload keys sit under
+  "Avanceret". Garmin's text no longer promises sessions in Garmin
+  Connect's calendar: that path needs Garmin's partner keys, the
+  programme is closed to new partners (docs/research/garmin-without-partner-access.md),
+  and the push is unverified against Garmin's partner documentation. The
+  cable (ADR 0031) is named instead, because it works without keys.
+- **The demo follows the flags** (amends ADR 0054). The championship, and
+  the team setting that shows it, are seeded only when
+  `CLUB_CHAMPIONSHIP=on`; Trænerrummet's example threads only when
+  `COACHES_ROOM=on`.
+- **`DCU_RESULTS` stays as it was** (ADR 0039). It is not one of these:
+  it waits for an external service's yes rather than for a winter, and it
+  already has its own three values, including one rider at a time.
+- **The tests pin the five off** (`vitest.config.mts`), as a new
+  installation has them, and turn one on with `vi.mock("@/core/features")`
+  where a test exercises a parked part. Each gate is proven both ways in
+  `tests/core/feature-gates.test.ts` (the pages) and
+  `tests/core/feature-actions.test.ts` (the actions), and the demo is
+  built both ways.
+
+## Trade-offs accepted
+
+- **Code carried and kept compiling, unseen.** Lint, typecheck and the
+  tests keep running over five parts nobody sees, and a change to a
+  shared service must keep them working. That is the price of bringing
+  one back with one variable instead of a revert, for work that was asked
+  for and may well return after the winter.
+- **The demo shows less.** ADR 0054's "every part of the product" no
+  longer holds by default. A demo installation can turn the flags on, and
+  the demo follows.
+- **One switch per installation, not per team.** A club on a shared
+  installation cannot have Trænerrummet while another does not. The
+  championship keeps its own team setting under the flag; the others did
+  not need one.
+- **A product switch, not a security boundary.** The flags are held in the
+  application — pages, actions, the championship's services and the
+  unread count — and not in the database. RLS decides who may read and
+  write the rows exactly as before, flag or no flag.
+- **A flat road under the session alone.** Without the land, the speed and
+  distance written into the file are a flat road's. They were virtual
+  before too; now there is no hill to make them vary.
+- **What brings them back is decided after the winter**, by the three
+  numbers in the plan: riders who check in at least four days a week,
+  sessions with a receipt, and a coach's minutes a week spent planning.

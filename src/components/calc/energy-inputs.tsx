@@ -20,7 +20,7 @@ const CELSIUS = span(-5, 40, 1);
 const NEXT: readonly Next[] = ["rest", "hard", "soon"];
 
 const choice =
-  "border-border bg-card flex cursor-pointer flex-col gap-0.5 rounded-xl border px-2 py-2 text-center shadow-[var(--surface-shadow)] transition-colors duration-[120ms] ease-out hover:bg-secondary has-[:checked]:border-primary has-[:checked]:bg-primary has-[:checked]:text-primary-foreground has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring";
+  "border-border bg-card flex cursor-pointer flex-col gap-0.5 rounded-xl border px-2 py-2 text-center shadow-surface transition-colors duration-[120ms] ease-out hover:bg-secondary has-[:checked]:border-primary has-[:checked]:bg-primary has-[:checked]:text-primary-foreground has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring";
 
 function Label({ children }: { children: React.ReactNode }) {
   return <span className="text-label text-xs font-medium">{children}</span>;
@@ -63,7 +63,7 @@ export function EnergyInputs({
   return (
     <section
       aria-labelledby="energy-setup"
-      className="border-border bg-card flex flex-col gap-4 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5 print:hidden"
+      className="border-border bg-card flex flex-col gap-4 rounded-xl border p-4 shadow-surface sm:p-5 print:hidden"
     >
       <h2 id="energy-setup" className="text-lg font-semibold">
         {t("title")}

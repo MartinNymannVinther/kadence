@@ -12,6 +12,7 @@ import {
   SeasonMonthsInput,
 } from "./plans";
 import { previewPlan } from "./preview";
+import { createTeamSeasonPlans } from "./team-plans";
 import { monthsBetween } from "./volume";
 
 /** The season plan's server actions; the season page and the calendar are refreshed after. */
@@ -28,6 +29,16 @@ export async function createSeasonPlanAction(raw: unknown) {
       basis: z.enum(CLASS_BASES).optional(),
     }),
     (ctx, input) => createSeasonPlan(ctx, input.riderId, input.seasonStartYear, input.basis),
+    PATHS,
+  );
+}
+
+/** A plan for every rider on the team who has none for the season; a coach's. */
+export async function createTeamSeasonPlansAction(raw: unknown) {
+  return runAction(
+    raw,
+    z.object({ seasonStartYear: z.number().int().min(2020).max(2100) }),
+    (ctx, input) => createTeamSeasonPlans(ctx, input.seasonStartYear),
     PATHS,
   );
 }

@@ -17,3 +17,4 @@ export * from "./demo";
 export * from "./club";
 export * from "./championship";
 export * from "./community";
+export * from "./push";

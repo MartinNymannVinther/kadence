@@ -18,6 +18,9 @@ export type CalendarCard = {
   plannedLoad: number | null;
   plannedKm: number | null;
   templateId: string | null;
+  /** "17:30", when it starts; and where (ADR 0058). */
+  startTime: string | null;
+  meetingPlace: string;
   groupKey: string | null;
   /** The series a "Gentag" made it part of (ADR 0041). */
   seriesKey: string | null;

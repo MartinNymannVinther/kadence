@@ -1,6 +1,6 @@
 # ADR 0045: Rulle — the land alone, a sound under the ride, a cheat code, and people and towns of their own
 
-Status: accepted · Date: 2026-10-02 · Builds on 0013, 0033, 0034, 0035, 0036, 0037 · Amends 0033, 0034, 0036
+Status: accepted · Date: 2026-10-02 · Builds on 0013, 0033, 0034, 0035, 0036, 0037 · Amends 0033, 0034, 0036 · Amended by ADR 0057 (the world behind RULLE_WORLD, off by default)
 
 ## Context
 

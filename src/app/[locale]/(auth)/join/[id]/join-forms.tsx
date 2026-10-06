@@ -94,7 +94,7 @@ export function JoinRegisterForm({
                 aria-describedby="join-locked"
               />
               <FieldDescription id="join-locked">
-                {t("lockedHint", { workspace: workspaceName })}
+                {t("lockedHint", { team: workspaceName })}
               </FieldDescription>
             </Field>
             <Field>

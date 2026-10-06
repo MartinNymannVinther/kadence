@@ -77,7 +77,7 @@ export function WeeklyHoursChart({ weeks }: { weeks: WeekBar[] }) {
           viewBox={`0 0 ${width} ${height}`}
           role="img"
           aria-label={t("label", { count: n })}
-          className="focus-visible:outline-ring block touch-pan-y rounded-md outline-none focus-visible:outline-2"
+          className="focus-visible:outline-ring block touch-pan-y rounded-md outline-none focus-visible:outline-2 focus-visible:outline-solid"
           {...hover.handlers}
         >
           {ticks.map((tick) => (

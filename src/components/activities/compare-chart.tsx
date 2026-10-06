@@ -85,7 +85,7 @@ export function CompareChart({ rides }: { rides: CompareRide[] }) {
           viewBox={`0 0 ${width} ${height}`}
           role="img"
           aria-label={t("chartLabel", { count: rides.length })}
-          className="focus-visible:outline-ring block touch-pan-y rounded-md outline-none focus-visible:outline-2"
+          className="focus-visible:outline-ring block touch-pan-y rounded-md outline-none focus-visible:outline-2 focus-visible:outline-solid"
           {...hover.handlers}
         >
           {shown.map((c, row) => {

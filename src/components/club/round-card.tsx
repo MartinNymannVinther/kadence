@@ -38,7 +38,7 @@ export function RoundCard({
           : "";
 
   return (
-    <article className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-[var(--surface-shadow)]">
+    <article className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-surface">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h3 className="text-base font-semibold">{round.title}</h3>
         <span className="text-meta text-xs">

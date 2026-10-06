@@ -68,6 +68,18 @@ Deletes demo workspaces that have expired. The application runs the same
 cleanup on every visit to `/demo`; the script is for a quiet installation
 or a scheduler that would rather not rely on visitors. Safe to run twice.
 
+## push-keys.ts
+
+Prints a fresh key pair for reminders by web push (docs/adr/0060) as
+`PUSH_PUBLIC_KEY`, `PUSH_PRIVATE_KEY` and a `PUSH_CONTACT` to fill in,
+ready for `.env` or Coolify. node:crypto makes the pair, so no web-push
+package is needed. Make one per installation and keep it; a new pair
+means every browser turns reminders on again.
+
+```
+pnpm script scripts/push-keys.ts
+```
+
 ## reread-activities.ts
 
 Reads every team's stored FIT files again, so rides imported before

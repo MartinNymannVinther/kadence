@@ -44,7 +44,7 @@ export function ParentGuide() {
           {THEMES.map((theme) => (
             <li
               key={theme.n}
-              className="border-border bg-card flex flex-col gap-1.5 rounded-xl border p-4 shadow-[var(--surface-shadow)]"
+              className="border-border bg-card flex flex-col gap-1.5 rounded-xl border p-4 shadow-surface"
             >
               <p className="text-meta text-xs font-medium">{t("themeNumber", { n: theme.n })}</p>
               <h4 className="text-sm font-semibold">
@@ -66,7 +66,7 @@ export function ParentGuide() {
           </h3>
           <External href={ADVICE_URL}>{t("adviceLink")}</External>
         </div>
-        <ol className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-[var(--surface-shadow)]">
+        <ol className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-surface">
           {ADVICE.map((n) => (
             <li key={n} className="flex gap-3 px-4 py-3">
               <span className="bg-accent text-accent-foreground flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold">

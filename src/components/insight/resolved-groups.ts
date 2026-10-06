@@ -1,5 +1,6 @@
 import type { RiderInsight } from "@/modules/insight/rider";
 import type { Flag, WellbeingStatus } from "@/modules/load";
+import { flagWeekHref } from "./signals";
 
 /**
  * The trace under the attention list, grouped the way the list is: one
@@ -14,6 +15,8 @@ export type ResolvedGroup = {
   /** The chip beside the name on the team list; null on the rider's own page, which shows it on top. */
   wellbeing: WellbeingStatus | null;
   klass: string;
+  /** The rider's calendar for the week the flags are about (ADR 0062). */
+  weekHref: string;
   items: { resolutionId: string; flag: Flag }[];
 };
 
@@ -29,6 +32,7 @@ export function resolvedGroups(
       riderName: options.named ? i.name : null,
       wellbeing: options.named ? i.wellbeing : null,
       klass: klassOf(i),
+      weekHref: flagWeekHref(i),
       items: i.resolved.map((r) => ({ resolutionId: r.resolution.id, flag: r.flag })),
     }));
 }

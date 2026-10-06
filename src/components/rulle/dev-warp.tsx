@@ -57,7 +57,7 @@ export function DevWarp({
   if (hidden) return null;
   return (
     <div
-      className="bg-card/85 border-border absolute top-3 right-3 flex items-center gap-1 rounded-xl border p-1 shadow-[var(--surface-shadow)] sm:right-4 lg:right-6"
+      className="bg-card/85 border-border absolute top-3 right-3 flex items-center gap-1 rounded-xl border p-1 shadow-surface sm:right-4 lg:right-6"
       role="group"
       aria-label={t("title")}
       title={t("hint")}

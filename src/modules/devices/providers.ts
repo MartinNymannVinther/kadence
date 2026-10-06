@@ -104,3 +104,12 @@ export function isProviderId(value: unknown): value is ProviderId {
 export function providerById(id: ProviderId): DeviceProvider {
   return PROVIDERS[id];
 }
+
+/**
+ * The providers this installation has keys for, in their order: the only
+ * ones the devices page offers (docs/adr/0057). Without any, rides come in
+ * as files, and nothing else changes.
+ */
+export function configuredProviders(): ProviderId[] {
+  return PROVIDER_IDS.filter((id) => PROVIDERS[id].configured());
+}

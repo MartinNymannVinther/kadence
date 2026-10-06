@@ -1,6 +1,7 @@
 import { addDaysIso, diffDays, mondayOf, todayInCopenhagen } from "@/core/dates";
 import type { OrgContext } from "@/core/db/tenant";
-import { raceYearOf, seasonStartYear, strengthFrequency } from "@/modules/dcu";
+import { featureOn } from "@/core/features";
+import { phaseOf, raceYearOf, seasonStartYear, strengthFrequency } from "@/modules/dcu";
 import { createSeasonPlan } from "@/modules/season/plans";
 import { createRider, setThresholds } from "@/modules/team/riders";
 import { saveTeamSettings } from "@/modules/team/settings";
@@ -13,6 +14,7 @@ import { addDcuWinterGoal } from "@/modules/training/goals";
 import { createEvent } from "@/modules/training/events";
 import { scheduleTemplate } from "@/modules/training/group";
 import { listSessions } from "@/modules/training/sessions";
+import type { TimePlace } from "@/modules/training/time-place";
 import { createTemplate, listTemplates } from "@/modules/training/templates";
 import { saveCheckin } from "@/modules/wellbeing/checkins";
 import { parseWorkoutText } from "@/modules/workouts/parse-text";
@@ -35,10 +37,11 @@ export type { L };
  * each rider's own threshold (`rides.ts`) — so the calendar, the records
  * and every activity page show what an upload gives; one long ride with a
  * coffee stop is the showcase. The rest of the product comes after
- * (showcase.ts): the club's logo and picture, a rider's own session, the
- * club championship and Trænerrummet's example threads. Written through
- * the ordinary services, as the demo's coach, so what the visitor sees is
- * what the product does with real rows.
+ * (showcase.ts): the club's logo and picture, a rider's own session, and
+ * the club championship and Trænerrummet's example threads where the
+ * installation has them on (ADR 0057). Written through the ordinary
+ * services, as the demo's coach, so what the visitor sees is what the
+ * product does with real rows.
  */
 
 const WEEKS_BACK = 6;
@@ -66,7 +69,8 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
     allowYouthWeight: false,
     guidance: "dcu-2025",
     // On in the demo so a visitor sees them; off for a new team (ADR 0051, 0053).
-    clubChampionship: true,
+    // The championship only where the installation has it on (ADR 0057).
+    clubChampionship: featureOn("clubChampionship"),
     lowIntensityFirst: true,
   });
   await installDcuProgrammes(ctx, l);
@@ -113,11 +117,15 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
   }
 
   const byText = (text: string) => templates[text]!;
-  const week = [
-    { day: 1, template: byText(TEMPLATES[1]!.text) },
+  // The team rides Tuesday's intervals and Saturday's long ride together (ADR 0058).
+  const clubhouse = pick({ da: "Klubhuset", en: "The clubhouse" }, l);
+  const at = (startTime: string): TimePlace => ({ startTime, meetingPlace: clubhouse });
+  type Slot = { day: number; template: string; at?: TimePlace };
+  const week: Slot[] = [
+    { day: 1, template: byText(TEMPLATES[1]!.text), at: at("17:30") },
     { day: 2, template: byText(TEMPLATES[0]!.text) },
     { day: 3, template: byText(TEMPLATES[5]!.text) },
-    { day: 5, template: byText(TEMPLATES[0]!.text) },
+    { day: 5, template: byText(TEMPLATES[0]!.text), at: at("09:00") },
     { day: 6, template: byText(TEMPLATES[3]!.text) },
   ];
   // The same week as a block in the library: four weeks, ready to lay in.
@@ -125,6 +133,7 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
     ...week.map((slot, i) => ({
       day: w * 7 + slot.day,
       templateId: w % 2 === 1 && i === 0 ? byText(TEMPLATES[2]!.text) : slot.template,
+      ...slot.at,
     })),
     ...(strength
       ? [
@@ -145,12 +154,22 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
     weeks: 4,
     items: blockItems,
   });
+  // DCU's October is "pause + frit": short, easy rides every other day and
+  // nothing hard, so a demo opened in October plans that, not a full week.
+  const breakWeek: Slot[] = [
+    { day: 1, template: byText(TEMPLATES[3]!.text) },
+    { day: 3, template: byText(TEMPLATES[6]!.text) },
+    { day: 5, template: byText(TEMPLATES[6]!.text), at: at("10:00") },
+  ];
   const firstMonday = addDaysIso(mondayOf(today), -7 * WEEKS_BACK);
   for (let w = 0; w <= WEEKS_BACK + 1; w++) {
     const monday = addDaysIso(firstMonday, 7 * w);
-    for (const [i, slot] of week.entries()) {
-      const template = w % 2 === 1 && i === 0 ? byText(TEMPLATES[2]!.text) : slot.template;
-      await scheduleTemplate(ctx, template, riderIds, addDaysIso(monday, slot.day));
+    const inBreak = phaseOf(Number(addDaysIso(monday, 3).slice(5, 7))) === "break";
+    for (const [i, slot] of (inBreak ? breakWeek : week).entries()) {
+      const template =
+        !inBreak && w % 2 === 1 && i === 0 ? byText(TEMPLATES[2]!.text) : slot.template;
+      const day = addDaysIso(monday, slot.day);
+      await scheduleTemplate(ctx, template, riderIds, day, undefined, slot.at);
     }
     if (strength) {
       const perWeek = strengthFrequency(monday).perWeekMin;
@@ -238,16 +257,23 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
     }
   }
 
-  for (const e of EVENTS)
+  const month = Number(today.slice(5, 7));
+  const racing = month >= 4 && month <= 9;
+  for (const e of EVENTS) {
+    const startsOn =
+      racing || e.seasonDay === null
+        ? addDaysIso(today, e.inDays)
+        : addDaysIso(`${raceYear}-04-01`, e.seasonDay);
     await createEvent(ctx, {
       riderId: null,
       kind: e.kind,
       title: pick(e.title, l),
-      startsOn: addDaysIso(today, e.inDays),
-      endsOn: addDaysIso(today, e.inDays + e.days - 1),
+      startsOn,
+      endsOn: addDaysIso(startsOn, e.days - 1),
       priority: e.priority,
       note: "",
     });
+  }
   await createEvent(ctx, {
     riderId: riderIds[2]!,
     kind: "exam",

@@ -1,37 +1,32 @@
 import type { Metadata } from "next";
 import { BookOpen, Calculator, ChevronRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import { features } from "@/core/features";
 import { Link } from "@/i18n/navigation";
+import { HUB_CALCULATORS, HUB_GUIDES, shownItems } from "@/modules/guides/hub";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("guides.hub");
   return { title: t("title"), description: t("intro") };
 }
 
-const CALCULATORS = [
-  { key: "energy", href: "/calculators/energy" },
-  { key: "gearing", href: "/calculators/gearing" },
-] as const;
-
-const GUIDES = [
-  { key: "classes", href: "/guides/classes" },
-  { key: "equipment", href: "/guides/equipment" },
-  { key: "food", href: "/guides/food" },
-] as const;
-
 /**
  * The open hub (ADR 0047): the calculators and the guides, for anyone,
  * signed in or not. Linked from the parents' page, from help and from
- * the app's navigation.
+ * the app's navigation. A calculator or guide the installation has
+ * parked is left out (ADR 0057).
  */
 export default async function GuidesHubPage() {
   const t = await getTranslations("guides.hub");
+  const on = features();
+  const calculators = shownItems(HUB_CALCULATORS, on);
+  const guides = shownItems(HUB_GUIDES, on);
 
   const card = (item: { key: string; href: string }, Icon: typeof BookOpen) => (
     <li key={item.key}>
       <Link
         href={item.href}
-        className="focus-ring border-border bg-card hover:border-primary flex items-start gap-3 rounded-xl border p-4 shadow-[var(--surface-shadow)]"
+        className="focus-ring border-border bg-card hover:border-primary flex items-start gap-3 rounded-xl border p-4 shadow-surface"
       >
         <Icon aria-hidden className="text-primary mt-0.5 size-5 shrink-0" />
         <span className="flex flex-1 flex-col gap-1">
@@ -57,13 +52,13 @@ export default async function GuidesHubPage() {
         <h2 id="hub-calculators" className="text-lg font-semibold">
           {t("calculators")}
         </h2>
-        <ul className="grid gap-3 sm:grid-cols-2">{CALCULATORS.map((c) => card(c, Calculator))}</ul>
+        <ul className="grid gap-3 sm:grid-cols-2">{calculators.map((c) => card(c, Calculator))}</ul>
       </section>
       <section aria-labelledby="hub-guides" className="flex flex-col gap-3">
         <h2 id="hub-guides" className="text-lg font-semibold">
           {t("guides")}
         </h2>
-        <ul className="grid gap-3 sm:grid-cols-2">{GUIDES.map((g) => card(g, BookOpen))}</ul>
+        <ul className="grid gap-3 sm:grid-cols-2">{guides.map((g) => card(g, BookOpen))}</ul>
       </section>
     </div>
   );

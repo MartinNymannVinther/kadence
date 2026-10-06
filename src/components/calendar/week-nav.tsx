@@ -11,22 +11,27 @@ import { MonthJump } from "./month-jump";
 /**
  * Which week, and the way to the one before, the one after, this one,
  * and any month of any year ("Gå til"). Links, not buttons: a week is a
- * place, and the back button knows it.
+ * place, and the back button knows it. The calendar's by default; the
+ * week planner gives its own addresses (ADR 0059).
  */
 export async function WeekNav({
   monday,
   today,
-  query,
+  query = {},
+  hrefFor,
 }: {
   monday: string;
   today: string;
-  query: CalendarQuery;
+  query?: CalendarQuery;
+  /** Where a week is, when it is not the calendar. */
+  hrefFor?: (week: string) => string;
 }) {
   const t = await getTranslations("calendar.nav");
   const locale = await getLocale();
   const sunday = addDaysIso(monday, 6);
   const thisWeek = mondayOf(today);
-  const href = (week: string) => calendarHref({ ...query, week, session: null });
+  const href = (week: string) =>
+    hrefFor ? hrefFor(week) : calendarHref({ ...query, week, session: null });
   const icon = cn(buttonVariants({ variant: "outline", size: "icon" }), "max-sm:size-11");
 
   return (

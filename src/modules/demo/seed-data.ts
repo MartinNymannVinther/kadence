@@ -46,12 +46,20 @@ export const TEMPLATES: Array<{ name: Text; text: string }> = [
     name: { da: "Tempo", en: "Tempo" },
     text: "15 min opvarmning, 2x20 min Z3 / 5 min pause, 10 min nedkørsel",
   },
+  { name: { da: "Kort tur", en: "Short ride" }, text: "1 t Z2" },
 ];
 
+/**
+ * The team's events. `inDays` counts from today while the racing season
+ * runs (April to September); from October to March races wait for the
+ * season, so `seasonDay` places them from 1 April of the racing year
+ * instead, and the camp stays a few weeks ahead (seed.ts).
+ */
 export const EVENTS: Array<{
   kind: "race" | "camp";
   title: Text;
   inDays: number;
+  seasonDay: number | null;
   days: number;
   priority: "A" | "B" | null;
 }> = [
@@ -59,6 +67,7 @@ export const EVENTS: Array<{
     kind: "race",
     title: { da: "Sæsonstart, landevej", en: "Season opener, road" },
     inDays: 19,
+    seasonDay: 11,
     days: 1,
     priority: "B",
   },
@@ -66,6 +75,7 @@ export const EVENTS: Array<{
     kind: "camp",
     title: { da: "Holdsamling", en: "Team camp" },
     inDays: 33,
+    seasonDay: null,
     days: 3,
     priority: null,
   },
@@ -73,6 +83,7 @@ export const EVENTS: Array<{
     kind: "race",
     title: { da: "DM enkeltstart", en: "National time trial" },
     inDays: 47,
+    seasonDay: 70,
     days: 1,
     priority: "A",
   },
@@ -83,7 +94,7 @@ export const EXAM: Text = { da: "Terminsprøve i matematik", en: "Maths mock exa
 export const COMMENTS: Array<{ coach: Text }> = [
   {
     coach: {
-      da: "Flot kørt! Hold pulsen lidt lavere i sidste interval næste gang.",
+      da: "Flot kørt. Hold pulsen lidt lavere i sidste interval næste gang.",
       en: "Well ridden! Keep the pulse a little lower in the last interval next time.",
     },
   },

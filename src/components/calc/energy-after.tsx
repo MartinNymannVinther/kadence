@@ -95,7 +95,7 @@ export function EnergyAfter({
         last
       >
         <EnergyPlate plate={plate} />
-        <ul className="flex list-disc flex-col gap-1.5 pl-5 text-reading leading-relaxed marker:text-[var(--meta)]">
+        <ul className="flex list-disc flex-col gap-1.5 pl-5 text-reading leading-relaxed marker:text-meta">
           {(["pasta", "rice", "potatoes"] as const).map((d) => (
             <li key={d}>{t(`dinners.${d}`)}</li>
           ))}

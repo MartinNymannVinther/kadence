@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { WordmarkLockup } from "@/components/wordmark";
 import { Link } from "@/i18n/navigation";
+import type { NavItem } from "./nav-items";
 import { OrgSwitcher } from "./org-switcher";
 import { SidebarNav, SidebarSettingsLink } from "./sidebar-nav";
 import { SIDEBAR_ID } from "./sidebar-shell";
@@ -19,9 +20,8 @@ export async function AppSidebar({
   logo = null,
   canCreate = false,
   attention = 0,
-  isCoach = false,
-  rides = false,
-  club = false,
+  items,
+  home,
   counts = {},
   toggle,
 }: {
@@ -34,13 +34,12 @@ export async function AppSidebar({
   canCreate?: boolean;
   /** Items waiting for the installation's owner; zero for everyone else. */
   attention?: number;
-  isCoach?: boolean;
-  /** The club keeps a club championship (ADR 0051). */
-  club?: boolean;
+  /** The role's list (menuItems in ./nav-items.ts, ADR 0061). */
+  items: NavItem[];
+  /** Where the wordmark leads: the first place in the role's day. */
+  home: string;
   /** Counts beside menu items (ADR 0052). */
   counts?: Partial<Record<string, number>>;
-  /** A rider or a coach: Rulle is in the navigation. */
-  rides?: boolean;
   /** The control that folds the rail away; rendered next to the lockup. */
   toggle?: React.ReactNode;
 }) {
@@ -53,15 +52,15 @@ export async function AppSidebar({
     >
       <div className="flex items-start justify-between gap-2 px-4 pt-5 pb-3">
         <Link
-          href="/today"
+          href={home}
           aria-label="Kadence"
-          className="block w-fit transition-opacity hover:opacity-80"
+          className="focus-ring block w-fit transition-opacity hover:opacity-80"
         >
           <WordmarkLockup organization={organization} logo={logo} />
         </Link>
         {toggle}
       </div>
-      <SidebarNav isCoach={isCoach} rides={rides} club={club} counts={counts} />
+      <SidebarNav items={items} counts={counts} />
       <div className="flex flex-col gap-1.5 px-3 pt-1 pb-3">
         <OrgSwitcher
           canCreate={canCreate}

@@ -41,6 +41,19 @@ export default defineConfig({
       // default is "off" is proven in tests/core/env.
       DEMO: "on",
       LLM_PROVIDER: "none",
+      // The parts that wait for a real winter are off, as on a new
+      // installation (docs/adr/0057); a test that needs one on mocks
+      // "@/core/features" (tests/helpers/features.ts).
+      RULLE_WORLD: "off",
+      COACHES_ROOM: "off",
+      CLUB_CHAMPIONSHIP: "off",
+      CALC_ENERGY: "off",
+      GUIDE_FOOD: "off",
+      // Reminders are off: with a developer's push keys the app's own run
+      // would post to the push services. The tests hand the job its keys
+      // and a stand-in fetch (tests/push); an empty value is "not set".
+      PUSH_PUBLIC_KEY: "",
+      PUSH_PRIVATE_KEY: "",
     },
     environment: "node",
     include: ["tests/**/*.test.ts"],

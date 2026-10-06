@@ -42,7 +42,7 @@ export function StandingsBoard({
             <section
               key={cls}
               aria-labelledby={`standings-${cls}`}
-              className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-[var(--surface-shadow)]"
+              className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-surface"
             >
               <h3 id={`standings-${cls}`} className="text-base font-semibold">
                 {t(`class.${cls}` as "empty")}

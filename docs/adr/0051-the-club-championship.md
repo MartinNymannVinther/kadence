@@ -1,6 +1,6 @@
 # ADR 0051: The club championship, the one place riders see placings
 
-Status: accepted · Date: 2026-10-03 · Amends ADR 0013 and ADR 0039
+Status: accepted · Date: 2026-10-03 · Amends ADR 0013 and ADR 0039 · Amended by ADR 0057 (behind CLUB_CHAMPIONSHIP above the team's own setting, off by default)
 
 ## Context
 

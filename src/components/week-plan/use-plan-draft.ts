@@ -10,7 +10,9 @@ export type PlanDraft = { riderIds: string[]; items: PlanItem[] };
  * in, so closing the page or losing the signal does not lose a coach's
  * half-built week. One draft per week; it holds sessions and rider ids,
  * nothing a rider wrote. Where the browser keeps nothing (storage turned
- * off), the plan lives in memory for as long as the page does.
+ * off), the plan lives in memory for as long as the page does. A plan
+ * begun from one rider's calendar is kept apart from the team's for the
+ * same week (ADR 0059).
  */
 
 const CHANGED = "kadence:week-plan";
@@ -55,8 +57,8 @@ function parse(raw: string | null): PlanDraft | null {
   }
 }
 
-export function usePlanDraft(monday: string, initial: PlanDraft) {
-  const key = `kadence:week-plan:${monday}`;
+export function usePlanDraft(monday: string, initial: PlanDraft, scope?: string) {
+  const key = `kadence:week-plan:${monday}${scope ? `:${scope}` : ""}`;
   const raw = useSyncExternalStore(
     subscribe,
     () => read(key),

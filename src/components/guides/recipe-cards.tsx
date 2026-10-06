@@ -20,7 +20,7 @@ export function RecipeCards() {
             <h3 className="text-reading font-semibold">{key("title")}</h3>
             <div>
               <p className="text-label text-xs font-medium">{t("ingredients")}</p>
-              <ul className="mt-1 flex list-disc flex-col gap-0.5 pl-5 text-2sm marker:text-[var(--meta)]">
+              <ul className="mt-1 flex list-disc flex-col gap-0.5 pl-5 text-2sm marker:text-meta">
                 {Array.from({ length: recipe.ingredients }, (_, i) => (
                   <li key={i}>{key(`ingredients.${i + 1}`)}</li>
                 ))}

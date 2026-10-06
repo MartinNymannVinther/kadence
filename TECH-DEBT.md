@@ -221,16 +221,16 @@ they cheer or wear, and whether anyone wants a switch.
 
 ### A team's own routes
 
-Every rider rides one of the five routes that come with Kadence or a
+Every rider rides one of the six routes that come with Kadence or a
 GPX of their own on the device. A coach who wants the team on the same
 local loop hands out a file, and that loop runs through land made up
-from it, not the real land the five have (ADR 0035, 0036). A route shared
+from it, not the real land the six have (ADR 0035, 0036, 0046). A route shared
 through Kadence is a table with RLS, audit and isolation tests (ADR
 0033), and waits until a coach asks for it.
 
 ### The real land is a map's
 
-The land round the five routes (ADR 0035, 0036) is OpenStreetMap's and
+The land round the six routes (ADR 0035, 0036, 0046) is OpenStreetMap's and
 a height model's, drawn by rule: a building is the rectangle round its
 footprint with windows spaced evenly, a lake's shore follows a 25 m grid
 softened by the land, a wood the map does not call conifer is one or the

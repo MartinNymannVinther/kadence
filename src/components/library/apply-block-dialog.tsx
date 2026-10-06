@@ -21,7 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { mondayOf } from "@/core/dates";
 import { applyBlockAction, previewBlockAction } from "@/modules/training/block-actions";
-import type { RiderPreview } from "@/modules/training/blocks";
+import type { RiderPreview } from "@/modules/training/block-apply";
 
 /**
  * "Læg ind": a block into the riders' calendars from a Monday — but first
@@ -151,7 +151,7 @@ export function ApplyBlockDialog({
                           )}
                         </span>
                         {w.flags.map((f, i) => (
-                          <span key={i} className="text-chart-4 text-xs">
+                          <span key={i} className="text-warning text-xs">
                             {flagSentence(f, (key, values) => flags(key as "ramp", values), {
                               locale,
                               klass: basisText(r.basis, (k, v) => insight(k, v)),

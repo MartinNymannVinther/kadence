@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CircleCheck, CircleX, ExternalLink } from "lucide-react";
+import { ChevronRight, CircleCheck, CircleX, ExternalLink } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { DeviceCard } from "@/components/devices/device-card";
 import { connectErrorKey } from "@/components/devices/device-words";
@@ -8,7 +8,12 @@ import { getOrgContext } from "@/core/auth/session";
 import { env } from "@/core/env";
 import { Link, redirect } from "@/i18n/navigation";
 import { listDeviceLinks } from "@/modules/devices/links";
-import { isProviderId } from "@/modules/devices/providers";
+import {
+  configuredProviders,
+  isProviderId,
+  providerById,
+  type ProviderId,
+} from "@/modules/devices/providers";
 import { listUploadKeys, MAX_KEYS_PER_RIDER } from "@/modules/devices/upload-keys";
 import { whoAmI } from "@/modules/team/access";
 
@@ -28,7 +33,9 @@ const SUBPROCESSORS =
  * connect, and the page says what flows.
  * Coaches and parents do not connect anyone's device; they are told so.
  * The OAuth round trip lands back here with `?connected=` or `?error=`.
- * Below the providers, the rider's upload keys (ADR 0029): what a helper
+ * Only the providers this installation has keys for are offered; with
+ * none, the page says plainly that files work just as well (ADR 0057).
+ * Under "Avanceret", the rider's upload keys (ADR 0029): what a helper
  * hands rides over with, whatever the installation has keys for.
  */
 export default async function DevicesPage({
@@ -44,6 +51,12 @@ export default async function DevicesPage({
   }
   const t = await getTranslations("devices");
   const me = await whoAmI(ctx.orgId, ctx.userId);
+  const offered = configuredProviders();
+  const names = (ids: ProviderId[]) =>
+    new Intl.ListFormat(locale === "en" ? "en-GB" : "da-DK", { type: "disjunction" }).format(
+      ids.map((id) => t(`name.${id}`)),
+    );
+  const pushers = offered.filter((id) => Boolean(providerById(id).pushWorkout));
   const search = await searchParams;
   const connected = typeof search.connected === "string" ? search.connected : undefined;
   const error = connectErrorKey(typeof search.error === "string" ? search.error : undefined);
@@ -51,24 +64,36 @@ export default async function DevicesPage({
   if (!me?.rider) {
     return (
       <div className="flex max-w-2xl flex-col gap-5">
-        <div className="flex flex-col gap-1.5">
-          <h2 className="text-base font-semibold">{t("title")}</h2>
-          <p className="text-meta text-2sm leading-relaxed">{t("subtitle")}</p>
+        <h2 className="text-base font-semibold">{t("title")}</h2>
+        <div className="border-border bg-card flex flex-col gap-2 rounded-xl border p-4 text-2sm leading-relaxed">
+          {offered.length === 0 ? (
+            <p>{t("ridersFilesOnly")}</p>
+          ) : me?.isCoach ? (
+            <>
+              <p>{t("coachNote", { providers: names(offered) })}</p>
+              {pushers.length > 0 && <p>{t("coachPush", { providers: names(pushers) })}</p>}
+            </>
+          ) : (
+            <p>{t("otherNote", { providers: names(offered) })}</p>
+          )}
         </div>
-        <p className="border-border bg-card rounded-xl border p-4 text-2sm leading-relaxed">
-          {me?.isCoach ? t("coachNote") : t("otherNote")}
-        </p>
       </div>
     );
   }
 
   const [links, keys] = await Promise.all([listDeviceLinks(ctx), listUploadKeys(ctx)]);
+  // A link made before the installation lost its keys still shows, so the rider knows it is there.
+  const shown = links.filter((link) => link.configured || link.status !== null);
 
   return (
     <div className="flex max-w-2xl flex-col gap-5">
       <div className="flex flex-col gap-1.5">
         <h2 className="text-base font-semibold">{t("title")}</h2>
-        <p className="text-meta text-2sm leading-relaxed">{t("subtitle")}</p>
+        {shown.length > 0 && offered.length > 0 && (
+          <p className="text-meta text-2sm leading-relaxed">
+            {t("subtitle", { providers: names(offered) })}
+          </p>
+        )}
       </div>
 
       {connected && isProviderId(connected) && (
@@ -90,46 +115,64 @@ export default async function DevicesPage({
         </p>
       )}
 
-      <div className="grid gap-3">
-        {links.map((link) => (
-          <DeviceCard
-            key={link.provider}
-            link={{ ...link, lastSyncAt: link.lastSyncAt?.toISOString() ?? null }}
-          />
-        ))}
-      </div>
+      {shown.length > 0 ? (
+        <div className="grid gap-3">
+          {shown.map((link) => (
+            <DeviceCard
+              key={link.provider}
+              link={{ ...link, lastSyncAt: link.lastSyncAt?.toISOString() ?? null }}
+            />
+          ))}
+        </div>
+      ) : null}
 
-      <UploadKeysCard
-        own
-        max={MAX_KEYS_PER_RIDER}
-        endpoint={new URL("/api/ingest", env.BETTER_AUTH_URL).toString()}
-        keys={keys.map((key) => ({
-          ...key,
-          createdAt: key.createdAt.toISOString(),
-          lastUsedAt: key.lastUsedAt?.toISOString() ?? null,
-        }))}
-      />
-
-      <p className="text-meta text-2sm leading-relaxed">
-        {t("uploadInstead")}{" "}
-        <Link href="/today" className="focus-ring text-primary font-medium hover:underline">
+      <p
+        className={
+          shown.length > 0
+            ? "text-meta text-2sm leading-relaxed"
+            : "border-border bg-card rounded-xl border p-4 text-2sm leading-relaxed"
+        }
+      >
+        {shown.length > 0 ? t("uploadInstead") : t("filesOnly")}{" "}
+        <Link href="/me#upload" className="focus-ring text-primary font-medium hover:underline">
           {t("uploadLink")}
         </Link>
       </p>
 
-      <div className="border-border bg-secondary/40 flex flex-col gap-1.5 rounded-xl border p-4">
-        <h3 className="text-sm font-semibold">{t("usTitle")}</h3>
-        <p className="text-2sm leading-relaxed">{t("usBody")}</p>
-        <a
-          href={SUBPROCESSORS}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="focus-ring text-primary inline-flex min-h-9 w-fit items-center gap-1.5 text-2sm font-medium hover:underline"
-        >
-          {t("usLink")}
-          <ExternalLink aria-hidden className="size-3.5" />
-        </a>
-      </div>
+      <details className="group text-2sm">
+        <summary className="focus-ring text-primary flex min-h-11 w-fit cursor-pointer items-center gap-1 font-medium">
+          <ChevronRight aria-hidden className="size-4 transition-transform group-open:rotate-90" />
+          {t("advanced")}
+        </summary>
+        <div className="mt-2">
+          <UploadKeysCard
+            own
+            max={MAX_KEYS_PER_RIDER}
+            endpoint={new URL("/api/ingest", env.BETTER_AUTH_URL).toString()}
+            keys={keys.map((key) => ({
+              ...key,
+              createdAt: key.createdAt.toISOString(),
+              lastUsedAt: key.lastUsedAt?.toISOString() ?? null,
+            }))}
+          />
+        </div>
+      </details>
+
+      {shown.length > 0 && (
+        <div className="border-border bg-secondary/40 flex flex-col gap-1.5 rounded-xl border p-4">
+          <h3 className="text-sm font-semibold">{t("usTitle")}</h3>
+          <p className="text-2sm leading-relaxed">{t("usBody")}</p>
+          <a
+            href={SUBPROCESSORS}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="focus-ring text-primary inline-flex min-h-9 w-fit items-center gap-1.5 text-2sm font-medium hover:underline"
+          >
+            {t("usLink")}
+            <ExternalLink aria-hidden className="size-3.5" />
+          </a>
+        </div>
+      )}
     </div>
   );
 }

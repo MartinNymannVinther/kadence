@@ -39,7 +39,7 @@ export function EnergyResults({ day, rider }: { day: Day; rider: string }) {
   return (
     <section
       aria-labelledby="energy-results"
-      className="border-border bg-card flex flex-col gap-5 rounded-xl border p-4 shadow-[var(--surface-shadow)] [print-color-adjust:exact] sm:p-5 print:border-0 print:p-0 print:shadow-none"
+      className="border-border bg-card flex flex-col gap-5 rounded-xl border p-4 shadow-surface [print-color-adjust:exact] sm:p-5 print:border-0 print:p-0 print:shadow-none"
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex flex-col gap-1">
