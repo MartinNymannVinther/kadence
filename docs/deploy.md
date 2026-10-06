@@ -69,6 +69,17 @@ runtime but the machine.
    `SIGNUP` is deliberately absent: it defaults to `closed`, which is what
    an installation on the open internet should be. See section 5.
 
+   Five parts of Kadence wait for a real winter with a real team and are
+   `off` unless you set them to `on` (ADR 0056): `COACHES_ROOM`
+   (Trænerrummet), `CLUB_CHAMPIONSHIP` (the club championship; a team
+   still turns it on for itself), `CALC_ENERGY` (the energy calculator),
+   `GUIDE_FOOD` (the food guide, until a sports dietitian has read it) and
+   `RULLE_WORLD` (Rulle's land, routes, people and sound; without it Rulle
+   is the session alone). Off hides the menu item, the page, the actions
+   and the demo's part at once; nothing is deleted, and turning one on
+   takes a restart. `DCU_RESULTS` is not one of these and works as
+   before (ADR 0039).
+
    Every one of these is named in the `app` service's `environment:` block
    in `docker-compose.yml`, and that is not decoration. A variable set in
    Coolify reaches the compose file for `${...}` substitution; it does not
