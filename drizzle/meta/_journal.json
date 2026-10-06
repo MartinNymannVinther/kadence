@@ -204,6 +204,27 @@
       "when": 1791262206206,
       "tag": "0028_push_subscriptions",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1791279167119,
+      "tag": "0029_push_wellbeing",
+      "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1791279168334,
+      "tag": "0030_invitation_kind",
+      "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1791279169540,
+      "tag": "0031_pilot_numbers",
+      "breakpoints": true
     }
   ]
 }

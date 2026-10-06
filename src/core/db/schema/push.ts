@@ -47,7 +47,7 @@ export const pushSubscriptions = pgTable(
     ),
     check(
       "push_subscriptions_kinds",
-      sql`${t.kinds} <@ array['checkin','comment','plan','week']::text[]`,
+      sql`${t.kinds} <@ array['checkin','comment','plan','week','wellbeing']::text[]`,
     ),
   ],
 );
