@@ -4,8 +4,8 @@ import { EnvSchema } from "@/core/env";
 import { FEATURES, featuresFrom } from "@/core/features";
 
 /**
- * The parts that wait for a real winter (docs/adr/0057) are off unless an
- * installation says "on", and a setting the app reads in production is
+ * The parts an installation may park (docs/adr/0057) are on unless it
+ * says "off", and a setting the app reads in production is
  * worth nothing unless docker-compose.yml forwards it to the container.
  */
 
@@ -16,19 +16,19 @@ const REQUIRED = {
 };
 
 describe("the installation's features", () => {
-  it("are all off by default", () => {
+  it("are all on by default", () => {
     const parsed = EnvSchema.parse(REQUIRED);
-    expect(Object.values(featuresFrom(parsed)).every((on) => !on)).toBe(true);
+    expect(Object.values(featuresFrom(parsed)).every((on) => on)).toBe(true);
   });
 
-  it("come on one at a time", () => {
-    const parsed = EnvSchema.parse({ ...REQUIRED, COACHES_ROOM: "on", GUIDE_FOOD: "on" });
+  it("go off one at a time", () => {
+    const parsed = EnvSchema.parse({ ...REQUIRED, COACHES_ROOM: "off", GUIDE_FOOD: "off" });
     expect(featuresFrom(parsed)).toEqual({
-      rulleWorld: false,
-      coachesRoom: true,
-      clubChampionship: false,
-      energyCalculator: false,
-      foodGuide: true,
+      rulleWorld: true,
+      coachesRoom: false,
+      clubChampionship: true,
+      energyCalculator: true,
+      foodGuide: false,
     });
   });
 

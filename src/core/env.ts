@@ -122,22 +122,24 @@ export const EnvSchema = z
       .transform((v) => v.replace(/\s/g, ""))
       .pipe(z.union([z.enum(["off", "on"]), z.string().regex(/^[0-9]{11}(,[0-9]{11})*$/)]))
       .default("off"),
-    // Parts of Kadence that wait for a real winter with a real team before
-    // a club sees them (docs/adr/0057, src/core/features.ts). Each is "off"
-    // by default and "on" brings it back whole: the code, the pages and the
-    // demo. Nothing is removed by turning one off; the data stays.
+    // Parts of Kadence an installation may park until a real winter with a
+    // real team has used the rest (docs/adr/0057, src/core/features.ts).
+    // Each is "on" by default (Martin's choice, 6 October 2026) and "off"
+    // parks it whole: the menu, the pages, the actions and the demo.
+    // Nothing is removed by turning one off; the data stays.
     // Rulle's land, towns, people and sound behind the session; without it
     // Rulle is the session alone: the bar, the numbers and the trainer.
-    RULLE_WORLD: z.enum(["off", "on"]).default("off"),
+    RULLE_WORLD: z.enum(["off", "on"]).default("on"),
     // Trænerrummet, the coaches' room across the installation's teams (ADR 0052).
-    COACHES_ROOM: z.enum(["off", "on"]).default("off"),
+    COACHES_ROOM: z.enum(["off", "on"]).default("on"),
     // The club championship (ADR 0051); a team still turns it on for itself.
-    CLUB_CHAMPIONSHIP: z.enum(["off", "on"]).default("off"),
+    CLUB_CHAMPIONSHIP: z.enum(["off", "on"]).default("on"),
     // The energy calculator among the open guides (ADR 0047).
-    CALC_ENERGY: z.enum(["off", "on"]).default("off"),
-    // The food guide, health advice about minors: off until a sports
-    // dietitian has read its section on low energy availability (ADR 0047).
-    GUIDE_FOOD: z.enum(["off", "on"]).default("off"),
+    CALC_ENERGY: z.enum(["off", "on"]).default("on"),
+    // The food guide, health advice about minors. Its section on low energy
+    // availability has not yet been read by a sports dietitian (ADR 0047);
+    // "off" holds it back until one has.
+    GUIDE_FOOD: z.enum(["off", "on"]).default("on"),
     // Reminders by web push (docs/adr/0060). The push carries no content;
     // Apple's, Google's or Mozilla's push service, whichever the person's
     // browser uses, sees that a reminder went out and when, never what it
