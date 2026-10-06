@@ -21,7 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { mondayOf } from "@/core/dates";
 import { applyBlockAction, previewBlockAction } from "@/modules/training/block-actions";
-import type { RiderPreview } from "@/modules/training/blocks";
+import type { RiderPreview } from "@/modules/training/block-apply";
 
 /**
  * "Læg ind": a block into the riders' calendars from a Monday — but first

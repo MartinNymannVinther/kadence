@@ -113,6 +113,15 @@ describe("a demo workspace", () => {
     expect(asked).toMatchObject({ onDate: addDaysIso(today, -1), rpe: null, sport: "bike" });
   });
 
+  it("meets at the clubhouse for the rides the team does together (ADR 0057)", async () => {
+    const placed = await admin.query(
+      `select count(*)::int as n from planned_sessions
+        where org_id = $1 and start_time is not null and meeting_place = 'Klubhuset'`,
+      [orgId],
+    );
+    expect(placed.rows[0].n).toBeGreaterThan(0);
+  });
+
   it("has a rider and her parent the visitor can switch to, and nobody else can", async () => {
     const row = await admin.query(
       `select accounts from demo_workspaces where organization_id = $1`,

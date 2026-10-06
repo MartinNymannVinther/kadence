@@ -33,6 +33,8 @@ function session(over: Partial<CalendarCard>): CalendarCard {
     plannedMinutes: 60,
     plannedLoad: null,
     plannedKm: null,
+    startTime: null,
+    meetingPlace: "",
     templateId: null,
     groupKey: null,
     seriesKey: null,

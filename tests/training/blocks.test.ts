@@ -1,6 +1,8 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { Pool } from "pg";
-import { applyBlock, createBlock, listBlocks, previewBlock } from "@/modules/training/blocks";
+import { applyBlock, previewBlock } from "@/modules/training/block-apply";
+import { blockItemInput } from "@/modules/training/block-items";
+import { createBlock, listBlocks, updateBlock } from "@/modules/training/blocks";
 import { listSessions } from "@/modules/training/sessions";
 import { createTemplate } from "@/modules/training/templates";
 import { adminPool } from "../helpers/db";
@@ -9,7 +11,8 @@ import { insertSql, seedPerson } from "../helpers/rows";
 /**
  * A block: kept by a coach, read by a rider, previewed against the
  * corridor and applied into calendars as ordinary sessions — never by a
- * rider.
+ * rider. Saved from the week planner, it may hold sessions of its own
+ * beside the library's (ADR 0058).
  */
 
 const ORG = "org_blocks";
@@ -105,5 +108,101 @@ describe("a training block", () => {
       "2026-11-11",
     ]);
     expect(planned.every((s) => s.groupKey)).toBe(true);
+  });
+});
+
+describe("a block with sessions of its own (ADR 0058)", () => {
+  const ride = {
+    sport: "bike" as const,
+    title: "Holdtur",
+    description: "Rolig, samlet",
+    structure: {
+      kind: "bike" as const,
+      steps: [
+        {
+          kind: "step" as const,
+          intent: "steady" as const,
+          seconds: 5400,
+          target: { kind: "zone" as const, zone: 2 },
+        },
+      ],
+    },
+    plannedMinutes: 0,
+  };
+  let ownId = "";
+
+  it("keeps a session built in the planner beside the library's, with time and place", async () => {
+    const [library] = await listBlocks(COACH);
+    const templateId = library!.items[0]!.templateId!;
+    ownId = (
+      await createBlock(COACH, {
+        name: "Uge 46",
+        description: "",
+        weeks: 1,
+        items: [
+          { day: 1, session: ride, startTime: "17:30", meetingPlace: "Klubhuset" },
+          { day: 3, templateId, startTime: "06:45", meetingPlace: "" },
+        ],
+      })
+    ).id;
+    const block = (await listBlocks(RIDER)).find((b) => b.id === ownId)!;
+    expect(block.items).toEqual([
+      {
+        day: 1,
+        templateId: null,
+        title: "Holdtur",
+        sport: "bike",
+        plannedMinutes: 90,
+        startTime: "17:30",
+        meetingPlace: "Klubhuset",
+        session: { description: "Rolig, samlet", structure: ride.structure },
+      },
+      expect.objectContaining({ day: 3, templateId, startTime: "06:45", session: null }),
+    ]);
+  });
+
+  it("previews the session of its own with the rest", async () => {
+    const [ida] = await previewBlock(COACH, {
+      blockId: ownId,
+      riderIds: ["b_ida"],
+      startMonday: "2026-11-16",
+    });
+    expect(ida!.weeks[0]).toMatchObject({ sessions: 2 });
+    expect(ida!.weeks[0]!.bikeHours).toBeGreaterThanOrEqual(1.5);
+  });
+
+  it("lays both into the calendars, each with its time and place", async () => {
+    const { sessions } = await applyBlock(COACH, {
+      blockId: ownId,
+      riderIds: ["b_ida", "b_noah"],
+      startMonday: "2026-11-16",
+    });
+    expect(sessions).toBe(4);
+    const week = await listSessions(COACH, { from: "2026-11-16", to: "2026-11-22" });
+    const own = week.filter((s) => s.title === "Holdtur");
+    expect(own).toHaveLength(2);
+    expect(own[0]).toMatchObject({
+      onDate: "2026-11-17",
+      templateId: null,
+      description: "Rolig, samlet",
+      plannedMinutes: 90,
+      meetingPlace: "Klubhuset",
+    });
+    expect(own[0]!.startTime).toBe("17:30:00");
+    expect(new Set(own.map((s) => s.groupKey)).size).toBe(1);
+    const fromLibrary = week.filter((s) => s.onDate === "2026-11-19");
+    expect(fromLibrary.map((s) => s.startTime)).toEqual(["06:45:00", "06:45:00"]);
+  });
+
+  it("keeps the session of its own when the block is saved again", async () => {
+    const block = (await listBlocks(COACH)).find((b) => b.id === ownId)!;
+    await updateBlock(COACH, ownId, {
+      name: "Uge 46, rettet",
+      description: "",
+      weeks: 1,
+      items: block.items.map(blockItemInput),
+    });
+    const again = (await listBlocks(COACH)).find((b) => b.id === ownId)!;
+    expect(again.items).toEqual(block.items);
   });
 });

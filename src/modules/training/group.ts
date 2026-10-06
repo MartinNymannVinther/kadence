@@ -7,6 +7,7 @@ import { requireCoach } from "@/modules/team/access";
 import { readStructure, structureMinutes } from "@/modules/workouts/structure";
 import { MAX_SERIES_ROWS, repeatDates, repeatProblem, type Repeat } from "./recurrence";
 import { createSessionsIn } from "./sessions";
+import type { TimePlace } from "./time-place";
 import type { SessionInputT, Sport } from "./vocabulary";
 
 /**
@@ -76,6 +77,7 @@ async function nextProgrammeSession(tx: AppTransaction, riderId: string, templat
  * a repeat, on every day of it. A strength programme's session is
  * numbered per rider and counts on through the series, so each copy
  * carries the sets and reps of where that rider is in the programme.
+ * Every copy gets the same time and place, when there are any (ADR 0057).
  */
 export async function scheduleTemplate(
   ctx: OrgContext,
@@ -83,6 +85,7 @@ export async function scheduleTemplate(
   riderIds: string[],
   onDate: string,
   repeat?: Repeat,
+  at: Partial<TimePlace> = {},
 ): Promise<{ ids: string[] }> {
   return withOrgContext(ctx, async (tx) => {
     const [template] = await tx
@@ -116,6 +119,8 @@ export async function scheduleTemplate(
         plannedMinutes: template.plannedMinutes || structureMinutes(structure),
         plannedKm: null,
         templateId,
+        startTime: at.startTime ?? null,
+        meetingPlace: at.meetingPlace ?? "",
         groupKey,
         seriesKey,
         origin: groupKey ? ("group" as const) : ("template" as const),

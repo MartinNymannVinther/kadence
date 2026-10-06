@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { structureSchema } from "@/modules/workouts/structure";
+import { TimePlaceFields } from "./time-place";
 
 /** The words and limits the training services share. */
 
@@ -21,6 +22,8 @@ export const SessionInput = z.object({
   plannedMinutes: z.coerce.number().int().min(0).max(1440).default(0),
   plannedKm: z.coerce.number().int().min(0).max(400).nullable().default(null),
   templateId: id.nullable().default(null),
+  /** When and where it starts (docs/adr/0057); left out, a change keeps what was there. */
+  ...TimePlaceFields,
 });
 export type SessionInputT = z.infer<typeof SessionInput>;
 

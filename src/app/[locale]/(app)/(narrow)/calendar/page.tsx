@@ -23,6 +23,7 @@ import { refreshStaleRaces } from "@/modules/results/refresh";
 import { listRaceResults } from "@/modules/results/service";
 import { volumesFor } from "@/modules/season/volumes";
 import { whoAmI } from "@/modules/team/access";
+import { getTeamName } from "@/modules/team/name";
 import { getRiders } from "@/modules/team/riders";
 import { listUnplanned } from "@/modules/training/activities";
 import { listEvents } from "@/modules/training/events";
@@ -105,7 +106,7 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
 
   // Flags belong to the week in progress (ADR 0026), so the signals come with that week only.
   const thisMonday = mondayOf(today);
-  const [sessions, unplanned, eventRows, results, templates, volumes, attention] =
+  const [sessions, unplanned, eventRows, results, templates, volumes, attention, teamName] =
     await Promise.all([
       listSessions(ctx, { ...range, riderIds }),
       listUnplanned(ctx, { ...range, riderIds }),
@@ -117,6 +118,7 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
       teamView && monday === thisMonday
         ? teamAttentionData(ctx, { today, locale, riders: riderRows })
         : Promise.resolve(null),
+      getTeamName(ctx),
     ]);
   // A rider plans their own sessions into their own calendar too (ADR 0050).
   const ownTemplates =
@@ -166,6 +168,7 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
           query={query}
           volumes={Object.fromEntries(volumes)}
           signals={attention?.signals ?? {}}
+          teamName={teamName}
         />
       ) : (
         <RiderWeek
@@ -182,6 +185,7 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
           query={query}
           volume={volume}
           basisLabel={volume?.basis ? basisText(volume.basis, (k, v) => seasonT(k, v)) : null}
+          teamName={teamName}
         />
       )}
       {teamView && (

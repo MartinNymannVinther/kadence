@@ -1084,6 +1084,22 @@
       "added": "{count, plural, one {The session is in the calendar.} other {The session is in # calendars.}}",
       "addedSeries": "{count, plural, one {The series is in: # session.} other {The series is in: # sessions.}}"
     },
+    "timePlace": {
+      "legend": "Time and place",
+      "hint": "For a session you ride together. Both can stay empty.",
+      "time": "Start time",
+      "place": "Meeting place",
+      "placePlaceholder": "E.g. the clubhouse",
+      "clearTime": "Remove the start time"
+    },
+    "share": {
+      "open": "Share the week",
+      "week": "Week {n}",
+      "riders": "{count, plural, one {# rider} other {# riders}}",
+      "empty": "No sessions this week.",
+      "copied": "The week is copied as text. Paste it into the team's chat.",
+      "failed": "The week could not be shared or copied. Try again."
+    },
     "repeat": {
       "toggle": "Repeat on set weekdays",
       "weekdays": "Weekdays",
@@ -1156,8 +1172,8 @@
   },
   "weekPlan": {
     "title": "Plan the week",
-    "subtitle": "Week {n}, {from}–{to}",
     "back": "Back to the team's week",
+    "backRider": "Back to the rider's week",
     "coachOnly": "Only coaches plan the team's week.",
     "open": "Plan the week",
     "applied": "{count, plural, one {# session laid in} other {# sessions laid in}} for {riders, plural, one {# rider} other {# riders}}.",
@@ -1169,7 +1185,7 @@
     },
     "week": {
       "title": "The week",
-      "body": "Put sessions on the days from the library, build them here, or start from a block, a rider's week or a proposal from the AI. Nothing reaches the calendar until you lay the week in.",
+      "body": "Put sessions on the days from the library, or build them here. Nothing reaches the calendar until you lay the week in.",
       "replaced": "The week was replaced.",
       "undo": "Undo"
     },
@@ -1186,11 +1202,19 @@
     },
     "start": {
       "source": "Start from",
+      "empty": "Empty week",
+      "last": "Last week",
       "block": "A block",
-      "rider": "A rider's week",
+      "ai": "AI",
+      "emptyBody": "Begin with an empty week, and put sessions on the days.",
+      "clear": "Clear the week",
+      "lastOne": "Fetches the rider's sessions from the week before.",
+      "lastMany": "Fetches the group sessions from the week before, each session once. The riders' own sessions stay behind.",
+      "loadLast": "Fetch last week",
+      "lastEmpty": "There were no sessions to fetch in the week before.",
+      "noBlocks": "There are no blocks in the library yet. Save a week as a block below, and you can start from it another time.",
       "week": "The week in the block",
       "weekN": "Week {n}",
-      "weekOf": "The week of",
       "load": "Load",
       "hint": "What you load replaces the week here. You can change everything after."
     },
@@ -1213,7 +1237,20 @@
       "empty": "Choose riders, and put at least one session on the week.",
       "summary": "{sessions, plural, one {# session} other {# sessions}} for {riders, plural, one {# rider} other {# riders}}. Each session becomes a group session, so \"Edit all\" works afterwards.",
       "preview": "See what it gives against the season plan",
-      "confirm": "{riders, plural, one {Lay the week in for # rider} other {Lay the week in for # riders}}"
+      "confirm": "{riders, plural, one {Lay the week in for # rider} other {Lay the week in for # riders}}",
+      "repeat": "Lay the week into",
+      "weeksOption": "{weeks, plural, one {This week only} other {# weeks in a row}}",
+      "summaryWeeks": "{sessions, plural, one {# session} other {# sessions}} a week for {riders, plural, one {# rider} other {# riders}} over {weeks, plural, one {# week} other {# weeks in a row}}. Each session becomes a group session every week and a series over the weeks, so you can change them together afterwards.",
+      "confirmWeeks": "{riders, plural, one {Lay the weeks in for # rider} other {Lay the weeks in for # riders}}"
+    },
+    "save": {
+      "open": "Save as block",
+      "title": "Save the week as a block",
+      "body": "The week becomes a one-week block in the library. You can start from it again or lay it in from there. Sessions you built here stay in the block and are not added to the library on their own.",
+      "name": "Name",
+      "defaultName": "Week {n}",
+      "submit": "Save the block",
+      "saved": "The block is saved in the library."
     }
   },
   "library": {
@@ -1311,7 +1348,8 @@
       "applied": "{count, plural, one {The block is now with # rider} other {The block is now with # riders}}.",
       "weekLine": "Week {n} ({date}): {hours} h on the bike, {strength, plural, =0 {no strength sessions} one {# strength session} other {# strength sessions}}",
       "corridor": "DCU {low}–{high} h",
-      "previewNote": "The points of attention are there to help, and you decide. You can apply the block and adjust it in the calendar afterwards."
+      "previewNote": "The points of attention are there to help, and you decide. You can apply the block and adjust it in the calendar afterwards.",
+      "ownSession": "Built in the planner. The session exists only in the block."
     }
   },
   "riders": {
@@ -1643,7 +1681,11 @@
       "4": "Good",
       "5": "Really good"
     },
-    "placed": "placed {place}"
+    "placed": "placed {place}",
+    "when": {
+      "time": "at {time}",
+      "place": "Meeting place"
+    }
   },
   "workouts": {
     "profile": {

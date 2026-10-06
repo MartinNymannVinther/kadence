@@ -1084,6 +1084,22 @@
       "added": "{count, plural, one {Passet er lagt i kalenderen.} other {Passet er lagt i # kalendere.}}",
       "addedSeries": "{count, plural, one {Serien er lagt ind: # pas.} other {Serien er lagt ind: # pas.}}"
     },
+    "timePlace": {
+      "legend": "Tid og sted",
+      "hint": "Til et pas, I kører sammen. Begge kan stå tomme.",
+      "time": "Starttid",
+      "place": "Mødested",
+      "placePlaceholder": "Fx klubhuset",
+      "clearTime": "Fjern starttiden"
+    },
+    "share": {
+      "open": "Del ugen",
+      "week": "Uge {n}",
+      "riders": "{count, plural, one {# rytter} other {# ryttere}}",
+      "empty": "Ingen pas i ugen.",
+      "copied": "Ugen er kopieret som tekst. Sæt den ind i holdets chat.",
+      "failed": "Ugen kunne ikke deles eller kopieres. Prøv igen."
+    },
     "repeat": {
       "toggle": "Gentag på faste ugedage",
       "weekdays": "Ugedage",
@@ -1156,8 +1172,8 @@
   },
   "weekPlan": {
     "title": "Planlæg ugen",
-    "subtitle": "Uge {n}, {from}–{to}",
     "back": "Tilbage til holdets uge",
+    "backRider": "Tilbage til rytterens uge",
     "coachOnly": "Kun trænere planlægger holdets uge.",
     "open": "Planlæg ugen",
     "applied": "{count, plural, one {# pas er lagt ind} other {# pas er lagt ind}} hos {riders, plural, one {# rytter} other {# ryttere}}.",
@@ -1169,7 +1185,7 @@
     },
     "week": {
       "title": "Ugen",
-      "body": "Læg pas på dagene fra biblioteket, byg dem her, eller start fra en blok, en rytters uge eller et forslag fra AI'en. Intet kommer i kalenderen, før du lægger ugen ind.",
+      "body": "Læg pas på dagene fra biblioteket, eller byg dem her. Intet kommer i kalenderen, før du lægger ugen ind.",
       "replaced": "Ugen er skiftet ud.",
       "undo": "Fortryd"
     },
@@ -1186,11 +1202,19 @@
     },
     "start": {
       "source": "Start fra",
-      "block": "En blok",
-      "rider": "En rytters uge",
-      "week": "Ugen i blokken",
+      "empty": "Tom uge",
+      "last": "Sidste uge",
+      "block": "Et forløb",
+      "ai": "AI",
+      "emptyBody": "Begynd med en tom uge, og læg passene på dagene.",
+      "clear": "Tøm ugen",
+      "lastOne": "Henter rytterens pas fra ugen før.",
+      "lastMany": "Henter holdpassene fra ugen før, hvert pas én gang. Rytternes egne pas kommer ikke med.",
+      "loadLast": "Hent sidste uge",
+      "lastEmpty": "Der var ingen pas at hente i ugen før.",
+      "noBlocks": "Der er ingen forløb i biblioteket endnu. Gem en uge som forløb nedenfor, så kan du starte fra den en anden gang.",
+      "week": "Ugen i forløbet",
       "weekN": "Uge {n}",
-      "weekOf": "Ugen med",
       "load": "Hent",
       "hint": "Det, du henter, erstatter ugen her. Du kan rette alt bagefter."
     },
@@ -1213,7 +1237,20 @@
       "empty": "Vælg ryttere, og læg mindst ét pas på ugen.",
       "summary": "{sessions, plural, one {# pas} other {# pas}} til {riders, plural, one {# rytter} other {# ryttere}}. Hvert pas bliver et holdpas, så \"Ret alle\" virker bagefter.",
       "preview": "Se, hvad det giver mod sæsonplanen",
-      "confirm": "{riders, plural, one {Læg ugen ind hos # rytter} other {Læg ugen ind hos # ryttere}}"
+      "confirm": "{riders, plural, one {Læg ugen ind hos # rytter} other {Læg ugen ind hos # ryttere}}",
+      "repeat": "Læg ugen ind i",
+      "weeksOption": "{weeks, plural, one {Kun denne uge} other {# uger i træk}}",
+      "summaryWeeks": "{sessions, plural, one {# pas} other {# pas}} om ugen til {riders, plural, one {# rytter} other {# ryttere}} i {weeks, plural, one {# uge} other {# uger i træk}}. Hvert pas bliver et holdpas hver uge og en serie over ugerne, så du kan rette dem samlet bagefter.",
+      "confirmWeeks": "{riders, plural, one {Læg ugerne ind hos # rytter} other {Læg ugerne ind hos # ryttere}}"
+    },
+    "save": {
+      "open": "Gem som forløb",
+      "title": "Gem ugen som forløb",
+      "body": "Ugen bliver et forløb på én uge i biblioteket. Du kan starte fra det igen eller lægge det ind derfra. Pas, du har bygget her, bliver i forløbet og kommer ikke i biblioteket for sig.",
+      "name": "Navn",
+      "defaultName": "Uge {n}",
+      "submit": "Gem forløbet",
+      "saved": "Forløbet er gemt i biblioteket."
     }
   },
   "library": {
@@ -1311,7 +1348,8 @@
       "applied": "{count, plural, one {Blokken ligger nu hos # rytter} other {Blokken ligger nu hos # ryttere}}.",
       "weekLine": "Uge {n} ({date}): {hours} t på cyklen, {strength, plural, =0 {ingen styrkepas} one {# styrkepas} other {# styrkepas}}",
       "corridor": "DCU {low}–{high} t",
-      "previewNote": "Opmærksomhedspunkterne er en hjælp, og du bestemmer. Du kan lægge blokken ind og rette bagefter i kalenderen."
+      "previewNote": "Opmærksomhedspunkterne er en hjælp, og du bestemmer. Du kan lægge blokken ind og rette bagefter i kalenderen.",
+      "ownSession": "Bygget i planlæggeren. Passet findes kun i forløbet."
     }
   },
   "riders": {
@@ -1643,7 +1681,11 @@
       "4": "Godt",
       "5": "Rigtig godt"
     },
-    "placed": "placering {place}"
+    "placed": "placering {place}",
+    "when": {
+      "time": "kl. {time}",
+      "place": "Mødested"
+    }
   },
   "workouts": {
     "profile": {

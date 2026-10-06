@@ -14,13 +14,16 @@ import { SportIcon } from "@/components/training/sport-icon";
 import { addDaysIso } from "@/core/dates";
 import { useRouter } from "@/i18n/navigation";
 import { createBlockAction, updateBlockAction } from "@/modules/training/block-actions";
+import type { BlockItemInputT } from "@/modules/training/blocks";
+import { clockText } from "@/modules/training/time-place";
 
 export type BlockDraft = {
   id: string | null;
   name: string;
   description: string;
   weeks: number;
-  items: Array<{ day: number; templateId: string }>;
+  /** From the library, or a session kept in the block itself (ADR 0058). */
+  items: BlockItemInputT[];
 };
 export type BlockTemplateOption = {
   id: string;
@@ -33,9 +36,11 @@ const DAYS = [0, 1, 2, 3, 4, 5, 6] as const;
 
 /**
  * A block laid out week by week: each day a list of sessions from the
- * library, added from a select and taken away with a press. Works on a
- * phone, one week at a time in view. Saved as a whole; nothing reaches a
- * calendar until the block is applied.
+ * library, added from a select and taken away with a press. A session
+ * saved from the week planner without being in the library (ADR 0058) is
+ * shown, kept and removed the same way. Works on a phone, one week at a
+ * time in view. Saved as a whole; nothing reaches a calendar until the
+ * block is applied.
  */
 export function BlockEditor({
   initial,
@@ -55,17 +60,23 @@ export function BlockEditor({
   const ids = { name: useId(), description: useId(), weeks: useId() };
   const [draft, setDraft] = useState(initial);
   const byId = new Map(templates.map((tpl) => [tpl.id, tpl]));
+  const shown = (item: BlockItemInputT) =>
+    "templateId" in item
+      ? {
+          name: byId.get(item.templateId)?.name ?? "?",
+          sport: byId.get(item.templateId)?.sport ?? "bike",
+          minutes: byId.get(item.templateId)?.plannedMinutes ?? 0,
+        }
+      : {
+          name: item.session.title,
+          sport: item.session.sport,
+          minutes: item.session.plannedMinutes,
+        };
   const weeksHours = (week: number) =>
     draft.items
       .filter((i) => Math.floor(i.day / 7) === week)
-      .reduce(
-        (s, i) =>
-          s +
-          (byId.get(i.templateId)?.sport === "bike"
-            ? (byId.get(i.templateId)?.plannedMinutes ?? 0) / 60
-            : 0),
-        0,
-      );
+      .map(shown)
+      .reduce((s, i) => s + (i.sport === "bike" ? i.minutes / 60 : 0), 0);
 
   async function save(event: React.FormEvent) {
     event.preventDefault();
@@ -152,14 +163,24 @@ export function BlockEditor({
                   <p className="text-label text-xs">{days(d)}</p>
                   <ul className="flex flex-col gap-1">
                     {mine.map((item) => {
-                      const tpl = byId.get(item.templateId);
+                      const tpl = shown(item);
+                      const own = !("templateId" in item);
                       return (
                         <li
                           key={item.index}
+                          title={own ? t("ownSession") : undefined}
                           className="bg-secondary flex min-w-0 items-center gap-1 rounded-md px-2 py-1 text-xs"
                         >
-                          <SportIcon sport={tpl?.sport ?? "bike"} className="size-3 shrink-0" />
-                          <span className="min-w-0 flex-1 truncate">{tpl?.name ?? "?"}</span>
+                          <SportIcon sport={tpl.sport} className="size-3 shrink-0" />
+                          {item.startTime && (
+                            <span className="shrink-0 tabular-nums">
+                              {clockText(item.startTime, locale)}
+                            </span>
+                          )}
+                          <span className="min-w-0 flex-1 truncate">
+                            {tpl.name}
+                            {own && <span className="sr-only"> ({t("ownSession")})</span>}
+                          </span>
                           <button
                             type="button"
                             className="focus-ring text-meta hover:text-foreground -m-1 flex size-7 shrink-0 items-center justify-center rounded"
@@ -169,7 +190,7 @@ export function BlockEditor({
                                 items: draft.items.filter((_, i) => i !== item.index),
                               })
                             }
-                            aria-label={t("remove", { name: tpl?.name ?? "" })}
+                            aria-label={t("remove", { name: tpl.name })}
                           >
                             <X aria-hidden className="size-3" />
                           </button>
