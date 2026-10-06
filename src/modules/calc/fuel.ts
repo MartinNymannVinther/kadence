@@ -21,6 +21,9 @@ export type CarbAdvice = Range & { target: number; kind: CarbKind; capped: boole
  */
 export const UNTRAINED_CAP = 60;
 
+/** More than 90 g an hour is never suggested to young riders (docs/research/ernaering.md, 4.4). */
+export const MAX_CARBS_PER_HOUR = 90;
+
 /**
  * Carbohydrate per hour by the race's length (Thomas et al. 2016;
  * Jeukendrup 2014; Team Danmark): under 45 min water; up to 75 min small
@@ -31,7 +34,7 @@ export const UNTRAINED_CAP = 60;
 export function carbsPerHour(hours: number, gutTrained: boolean): CarbAdvice {
   if (hours < 0.75) return { low: 0, high: 0, target: 0, kind: "water", capped: false };
   if (hours < 1.25) return { low: 0, high: 0, target: 0, kind: "small", capped: false };
-  const base: Range = hours <= 2.5 ? { low: 30, high: 60 } : { low: 60, high: 90 };
+  const base: Range = hours <= 2.5 ? { low: 30, high: 60 } : { low: 60, high: MAX_CARBS_PER_HOUR };
   const capped = !gutTrained && base.high > UNTRAINED_CAP;
   const high = capped ? UNTRAINED_CAP : base.high;
   const low = Math.min(base.low, high);

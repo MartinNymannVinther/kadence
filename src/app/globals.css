@@ -349,3 +349,26 @@
     padding-inline-end: calc(var(--spacing) * 5);
   }
 }
+
+/* Printed pages (the energy advice, saved as a PDF from the browser): an A4
+   margin, and cards and examples kept whole across page breaks. */
+@media print {
+  @page {
+    margin: 14mm;
+  }
+  /* Everything is in rem, so a smaller root makes the whole page a size
+     that fits on fewer sheets and is still easy to read. */
+  html {
+    font-size: 13.5px;
+  }
+  li,
+  figure,
+  [data-print-keep] {
+    break-inside: avoid;
+  }
+  h2,
+  h3,
+  h4 {
+    break-after: avoid;
+  }
+}
