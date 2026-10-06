@@ -23,6 +23,7 @@ eller mere. Rækkefølgen inden for en prioritet er den anbefalede.
 
 P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter #21 og #22). Hvert spor bygges i sit eget worktree med egen database og flettes ind på P1-grenen, når det er grønt. Statusloggen nyeste først:
 
+- **6. okt., aften.** Ø-01 er færdig og flettet ind (23 øvelser, 4 programmer, tegnefunktionen og de fælles komponenter); hele suiten er grøn (2.340 tests). Ø-02 og Ø-04 er sat i gang parallelt.
 - **6. okt., aften.** Ø-03 (holdets egne øvelser og programmer i databasen) er færdig og flettet ind; hele suiten er grøn (2.297 tests). Ø-01 arbejder stadig.
 - **6. okt., aften.** Øvelser og programmer (Ø-01 til Ø-05) er godkendt og sat i gang på `feat/ovelser-og-programmer`: kontrakten i `src/modules/exercises/types.ts` er lagt, Ø-01 og Ø-03 kører parallelt.
 - **6. okt., aften.** P1 er færdig: alle otte stories er flettet ind på `feat/p1-foer-piloten`, hele suiten er grøn (2.243 tests), build kompilerer, og PR #23 er klar til Martin. Samlet forbrug for P1: ca. 1,7M tokens mod et skøn på 1,4–2,2M. Næste skridt er Martins: læse PR'en, prøve påmindelser på en telefon (P1-05) og Rulle på en hometrainer (P1-06), og udfylde kontaktoplysningerne i pilotguiden.
@@ -134,10 +135,10 @@ Rammen er:
 | A-07  | Ja eller nej til Tredict og Connect IQ                     | A    | S    | 60–120k      | Opus 5.5  |                   | Ikke startet |
 | R-01  | Slet de ubrugte filer                                      | R    | S    | 40–80k       | Haiku 4.5 | Martins ja        | Ikke startet |
 | R-02  | Små rester fra fokus-bølgen                                | R    | S    | 100–180k     | Sonnet 5  |                   | Ikke startet |
-| Ø-01  | Tegnefunktion og indbyggede øvelser og programmer          | Ø    | M    | 400–700k     | Opus 5.5  |                   | I gang       |
-| Ø-02  | Åben side, sammensæt og download                           | Ø    | M    | 300–500k     | Sonnet 5  | Ø-01              | Venter       |
+| Ø-01  | Tegnefunktion og indbyggede øvelser og programmer          | Ø    | M    | 400–700k     | Opus 5.5  |                   | Færdig       |
+| Ø-02  | Åben side, sammensæt og download                           | Ø    | M    | 300–500k     | Sonnet 5  | Ø-01              | I gang       |
 | Ø-03  | Holdets egne øvelser og programmer i databasen             | Ø    | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
-| Ø-04  | Appen: bibliotek, tegneværktøj, programbygger, kalender    | Ø    | L    | 600k–1M      | Opus 5.5  | Ø-01, Ø-03        | Venter       |
+| Ø-04  | Appen: bibliotek, tegneværktøj, programbygger, kalender    | Ø    | L    | 600k–1M      | Opus 5.5  | Ø-01, Ø-03        | I gang       |
 | Ø-05  | Demo, hjælp og ADR                                         | Ø    | S    | 100–200k     | Sonnet 5  | Ø-02, Ø-04        | Venter       |
 
 ---
@@ -1009,7 +1010,7 @@ af.
 
 **Tokens:** ca. 400–700k · **Model:** Opus 5.5 (`claude-opus-5-5`), tegninger, der skal være rigtige, og råd til unge med kilder.
 
-**Status:** I gang siden 6. oktober.
+**Status:** Færdig 6. oktober, flettet ind. Én tegnefunktion med to tynde lag (SVG-tekst til download og en React-komponent) i Kadences farver: figuren i forgrundsfarven, pil og dosis i `--warning` (6,0:1 lys, 7,9:1 mørk), gulvet bevidst stille. 23 indbyggede øvelser (mobilitet, core, ben, overkrop) og 4 programmer: mobilitetsdag (morgen/middag/aften), efter turen, core uden udstyr og styrke uden maskiner, med kilder fra DCU og Team Danmark først, derefter ACSM, NSCA, Lloyd og McGill. Hver tegning er tjekket visuelt i lys og mørk tilstand. Øvelseskortet med Færdig-knap og programvisningen med faner er fælles for den åbne side og appen. Faktisk forbrug: 404k tokens på 38 min (skøn 400–700k).
 
 ### Ø-02 Åben side, sammensæt og download
 
@@ -1019,7 +1020,7 @@ net.
 
 **Tokens:** ca. 300–500k · **Model:** Sonnet 5 (`claude-sonnet-5`), en side og en filbygger på det, Ø-01 har lagt.
 
-**Status:** Venter på Ø-01.
+**Status:** I gang siden 6. oktober aften (Sonnet 5).
 
 ### Ø-03 Holdets egne øvelser og programmer i databasen
 
@@ -1038,7 +1039,7 @@ planen.
 
 **Tokens:** ca. 600k–1M · **Model:** Opus 5.5 (`claude-opus-5-5`), tegneværktøj, kalenderen og rettigheder.
 
-**Status:** Venter på Ø-01 og Ø-03.
+**Status:** I gang siden 6. oktober aften (Opus 5.5).
 
 ### Ø-05 Demo, hjælp og ADR
 
