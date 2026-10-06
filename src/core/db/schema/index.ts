@@ -18,3 +18,4 @@ export * from "./club";
 export * from "./championship";
 export * from "./community";
 export * from "./push";
+export * from "./exercises";

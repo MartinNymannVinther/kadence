@@ -63,6 +63,12 @@ const TABLES: Array<{ table: string; row: (s: string) => Record<string, unknown>
     table: "training_block_items",
     row: (s) => ({ block_id: `blk_${s}`, template_id: `tpl_${s}`, day: 0 }),
   },
+  // The team's own exercises and programmes (drizzle/0032); tests/rls/team-exercises.
+  {
+    table: "team_exercises",
+    row: (s) => ({ name: `Øvelse ${s}`, group: "core", dose: {}, how: "x", pose: {} }),
+  },
+  { table: "team_programs", row: (s) => ({ name: `Program ${s}`, parts: [] }) },
   {
     table: "activities",
     row: (s) => ({
