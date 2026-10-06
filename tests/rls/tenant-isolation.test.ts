@@ -382,6 +382,16 @@ describe("rls coverage (guards future tables)", () => {
     // append-only guard would otherwise keep forever. Checks itself that
     // the caller coaches the team, like delete_workspace.
     "erase_rider",
+    // Whom an invitation is for, for the join page before anybody is
+    // signed in (drizzle/0030, docs/adr/0065), and the only definer the
+    // auth role may call. For an invitation that is still pending and in
+    // date it answers 'rider', or 'guardian' with the rider's first name,
+    // from a row joining would link — no id, no team, no surname, nothing
+    // for a used, withdrawn or expired invitation — and it cannot
+    // enumerate without the invitation's id, which is the key in the link.
+    // tests/team/invitation-kind.test.ts proves it, and that the
+    // application role cannot call it.
+    "invitation_kind",
     // The installation's overview for its owner (drizzle/0019, docs/adr/0048):
     // one row per workspace with counts only — no name of a person, no
     // training, no check-in. It takes no arguments and refuses everyone
