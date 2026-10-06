@@ -75,7 +75,7 @@ export function TeamCards({
           return (
             <li
               key={rider.id}
-              className="border-border bg-card flex flex-col gap-2.5 rounded-xl border p-3.5 shadow-[var(--surface-shadow)]"
+              className="border-border bg-card flex flex-col gap-2.5 rounded-xl border p-3.5 shadow-surface"
             >
               <div className="-my-1 flex flex-wrap items-center gap-x-3">
                 <Link

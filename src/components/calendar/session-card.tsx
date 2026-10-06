@@ -48,7 +48,7 @@ export function SessionCard({
     <div
       {...dragProps}
       className={cn(
-        "bg-card border-border flex min-w-0 flex-col rounded-lg border border-l-4 shadow-[var(--surface-shadow)]",
+        "bg-card border-border flex min-w-0 flex-col rounded-lg border border-l-4 shadow-surface",
         COLOUR_STYLE[colour].edge,
         dragProps.draggable && "cursor-grab active:cursor-grabbing",
         dragging && "opacity-45",

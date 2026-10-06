@@ -48,7 +48,7 @@ export function GearingCalculator() {
     <div className="flex flex-col gap-6">
       <ClassPicker value={gearClass} onChange={setGearClass} />
 
-      <section className="border-border bg-card flex flex-col gap-5 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5">
+      <section className="border-border bg-card flex flex-col gap-5 rounded-xl border p-4 shadow-surface sm:p-5">
         <h2 className="text-lg font-semibold">{t("scene.title")}</h2>
         {valid ? (
           <RolloutScene

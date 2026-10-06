@@ -46,7 +46,7 @@ export default async function InstallationPage() {
       {clubs.length === 0 ? (
         <p className="border-border bg-card rounded-xl border p-4 text-2sm">{t("none")}</p>
       ) : (
-        <div className="border-border bg-card overflow-x-auto rounded-xl border shadow-[var(--surface-shadow)]">
+        <div className="border-border bg-card overflow-x-auto rounded-xl border shadow-surface">
           <table className="w-full min-w-[40rem] border-collapse text-2sm">
             <thead>
               <tr className="text-label text-left text-xs">

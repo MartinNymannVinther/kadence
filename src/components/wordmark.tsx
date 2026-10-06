@@ -64,7 +64,7 @@ export function WordmarkLockup({
     <span className="flex items-center gap-2.5">
       <HaijMark className="h-5" />
       <span className="flex min-w-0 flex-col">
-        <span className="text-[1.0625rem] leading-none font-semibold tracking-[-0.045em]">
+        <span className="text-heading leading-none font-semibold tracking-[-0.045em]">
           {PRODUCT_NAME}
         </span>
         {organization ? (

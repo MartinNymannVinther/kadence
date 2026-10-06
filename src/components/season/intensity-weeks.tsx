@@ -43,7 +43,7 @@ export function IntensityWeeks({
         </h2>
         <p className="text-meta text-2sm leading-relaxed">{t("body")}</p>
       </div>
-      <div className="border-border bg-card flex flex-col gap-4 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5">
+      <div className="border-border bg-card flex flex-col gap-4 rounded-xl border p-4 shadow-surface sm:p-5">
         <ul className="text-2sm flex flex-wrap gap-x-4 gap-y-1">
           {THREE_ZONES.map((zone) => (
             <li key={zone} className="flex items-center gap-1.5">

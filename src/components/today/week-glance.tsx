@@ -34,7 +34,7 @@ export function WeekGlance({
   const locale = useLocale();
 
   return (
-    <ol className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-[var(--surface-shadow)]">
+    <ol className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-surface">
       {days.map((date) => {
         const day = sessions.filter((s) => s.onDate === date);
         const dayEvents = events.filter((e) => e.startsOn <= date && e.endsOn >= date);

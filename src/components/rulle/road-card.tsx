@@ -30,7 +30,7 @@ export function RoadCard({
   if (!hill && !speedShown) return null;
   const Icon = pct > 0 ? TrendingUp : TrendingDown;
   return (
-    <div className="bg-card/85 border-border pointer-events-none absolute bottom-3 left-3 flex gap-6 rounded-xl border px-4 py-2.5 shadow-[var(--surface-shadow)] sm:left-4 lg:left-6 lg:px-5">
+    <div className="bg-card/85 border-border pointer-events-none absolute bottom-3 left-3 flex gap-6 rounded-xl border px-4 py-2.5 shadow-surface sm:left-4 lg:left-6 lg:px-5">
       {hill && (
         <div className="flex flex-col gap-1">
           <span className="text-ride-label leading-tight font-medium tracking-wide uppercase opacity-80">

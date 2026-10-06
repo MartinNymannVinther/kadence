@@ -1,8 +1,11 @@
 import { cn } from "@/lib/utils";
 
 /**
- * The 2a page opening: an optional kicker over a 33px title, a supporting
- * line, and the page's actions on the right.
+ * The 2a page opening: an optional kicker over the title, a supporting
+ * line, and the page's actions on the right. The title's size is a named
+ * step (globals.css, ADR 0060): 33px for a page, 29px for one thing's
+ * page, 26px for a section's — and 26px for all of them on a phone, where
+ * the larger steps break a Danish word in two.
  */
 function PageHeader({
   kicker,
@@ -26,9 +29,9 @@ function PageHeader({
         <h1
           className={cn(
             "leading-[1.1] font-semibold tracking-[-0.02em]",
-            size === "page" && "text-[2.0625rem]",
-            size === "detail" && "text-[1.8125rem]",
-            size === "section" && "text-[1.625rem]",
+            size === "page" && "text-title-section sm:text-title-page",
+            size === "detail" && "text-title-section sm:text-title-detail",
+            size === "section" && "text-title-section",
           )}
         >
           {title}

@@ -31,7 +31,7 @@ export function CreatePlan({
   const id = useId();
   const [basis, setBasis] = useState(riderBasis ?? "");
   return (
-    <div className="border-border bg-card flex flex-col gap-4 rounded-xl border p-5 shadow-[var(--surface-shadow)]">
+    <div className="border-border bg-card flex flex-col gap-4 rounded-xl border p-5 shadow-surface">
       <div className="flex flex-col gap-1">
         <h2 className="text-base font-semibold">{t("none.title")}</h2>
         <p className="text-meta text-2sm leading-relaxed">

@@ -33,7 +33,7 @@ export function AttentionList({ insights }: { insights: RiderInsight[] }) {
           {resolved.length > 0 ? t("allResolved") : t("allCalm")}
         </p>
       ) : (
-        <ul className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-[var(--surface-shadow)]">
+        <ul className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-surface">
           {flagged.map((insight) => (
             <li
               key={insight.riderId}

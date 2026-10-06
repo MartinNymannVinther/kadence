@@ -5,7 +5,6 @@
  * stay the same page in two sizes.
  */
 export const surface =
-  "border-border bg-card divide-hairline flex min-w-0 flex-col divide-y rounded-xl border shadow-[var(--surface-shadow)] [&>*]:px-5 [&>*]:py-4";
+  "border-border bg-card divide-hairline flex min-w-0 flex-col divide-y rounded-xl border shadow-surface [&>*]:px-5 [&>*]:py-4";
 
-export const panel =
-  "border-border bg-card flex min-w-0 flex-col rounded-xl border shadow-[var(--surface-shadow)]";
+export const panel = "border-border bg-card flex min-w-0 flex-col rounded-xl border shadow-surface";

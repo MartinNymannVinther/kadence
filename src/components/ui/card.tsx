@@ -3,9 +3,10 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * Card spacing is deliberately plain: p-5 / gap-5 (p-4 for size="sm")
- * written as literal utilities on every part, so the padding never depends
- * on custom-property indirection that a stale dev-server CSS cache can drop.
+ * Card spacing is deliberately plain: 22px above, below and between the
+ * parts, 24px at the sides (16px all round for size="sm"), written as
+ * literal utilities on every part, so the padding never depends on
+ * custom-property indirection that a stale dev-server CSS cache can drop.
  */
 function Card({
   className,
@@ -17,7 +18,7 @@ function Card({
       data-slot="card"
       data-size={size}
       className={cn(
-        "group/card bg-card text-card-foreground border-border flex flex-col gap-[22px] overflow-hidden rounded-xl border py-[22px] text-sm shadow-[var(--surface-shadow)] data-[size=sm]:gap-4 data-[size=sm]:py-4 has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
+        "group/card bg-card text-card-foreground border-border flex flex-col gap-[22px] overflow-hidden rounded-xl border py-[22px] text-sm shadow-surface data-[size=sm]:gap-4 data-[size=sm]:py-4 has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
         className,
       )}
       {...props}
@@ -43,7 +44,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card-title"
       className={cn(
-        "font-heading text-[1.0625rem] leading-none font-semibold tracking-[-0.01em] group-data-[size=sm]/card:text-base",
+        "font-heading text-heading leading-none font-semibold tracking-[-0.01em] group-data-[size=sm]/card:text-base",
         className,
       )}
       {...props}

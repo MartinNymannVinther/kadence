@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import type { RaceAnswer, RaceInput } from "@/modules/calc/race-fuel";
 
 const card =
-  "border-border bg-card flex flex-col gap-2 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5";
+  "border-border bg-card flex flex-col gap-2 rounded-xl border p-4 shadow-surface sm:p-5";
 
 /** The calculator's answer: energy, carbohydrate, fluid and salt, the plan, and before and after. */
 export function EnergyResults({ input, answer }: { input: RaceInput; answer: RaceAnswer }) {
@@ -94,7 +94,7 @@ export function EnergyResults({ input, answer }: { input: RaceInput; answer: Rac
 
       <section className={card}>
         <h2 className="text-lg font-semibold">{r("plan")}</h2>
-        <ul className="flex list-disc flex-col gap-1 pl-5 text-reading leading-relaxed marker:text-[var(--meta)]">
+        <ul className="flex list-disc flex-col gap-1 pl-5 text-reading leading-relaxed marker:text-meta">
           <li>{r("bottles", { bottles: plan.bottles, ml: input.bottleMl })}</li>
           {plan.carbsFromBottles > 0 && (
             <li>{r("fromBottles", { grams: plan.carbsFromBottles })}</li>

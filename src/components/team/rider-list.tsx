@@ -22,7 +22,7 @@ export type RiderRowView = {
 export function RiderList({ riders }: { riders: RiderRowView[] }) {
   const t = useTranslations("riders.list");
   return (
-    <ul className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-[var(--surface-shadow)]">
+    <ul className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-surface">
       {riders.map((rider) => (
         <li key={rider.id}>
           <Link

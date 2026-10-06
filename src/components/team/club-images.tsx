@@ -75,7 +75,7 @@ export function ClubImages({
   }
 
   return (
-    <section className="border-border bg-card flex flex-col gap-4 rounded-xl border p-4 shadow-[var(--surface-shadow)]">
+    <section className="border-border bg-card flex flex-col gap-4 rounded-xl border p-4 shadow-surface">
       <div className="flex flex-col gap-1">
         <h3 className="text-base font-semibold">{t("title")}</h3>
         <p className="text-meta text-2sm leading-relaxed">{t("body")}</p>

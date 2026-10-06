@@ -134,7 +134,7 @@ export function TeamGrid({
       />
       <div
         ref={scroller}
-        className="border-border bg-card overflow-x-auto overscroll-x-contain rounded-xl border shadow-[var(--surface-shadow)] max-md:hidden"
+        className="border-border bg-card overflow-x-auto overscroll-x-contain rounded-xl border shadow-surface max-md:hidden"
       >
         {/* Fixed layout: the columns come from <colgroup>, never from a chip's text.
             The floor is names with their badges (10rem) + 7 × 6.5rem + the week (9rem);

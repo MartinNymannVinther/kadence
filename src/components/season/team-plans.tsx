@@ -35,7 +35,7 @@ export function TeamPlans({
   }
 
   return (
-    <div className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5">
+    <div className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-surface sm:p-5">
       {gaps.missing > 0 && (
         <>
           <div className="flex flex-col gap-1">

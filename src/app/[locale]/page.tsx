@@ -1,4 +1,4 @@
-import { Database, ShieldCheck, Sparkles } from "lucide-react";
+import { CalendarRange, Database, ShieldCheck } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { buttonVariants } from "@/components/ui/button";
 import { Wordmark } from "@/components/wordmark";
@@ -10,7 +10,7 @@ import { demoEnabled, DEMO_TTL_HOURS } from "@/modules/demo/service";
 import { cn } from "@/lib/utils";
 
 const VALUES = [
-  { icon: Sparkles, titleKey: "aiTitle", bodyKey: "aiBody" },
+  { icon: CalendarRange, titleKey: "dcuTitle", bodyKey: "dcuBody" },
   { icon: Database, titleKey: "dataTitle", bodyKey: "dataBody" },
   { icon: ShieldCheck, titleKey: "securityTitle", bodyKey: "securityBody" },
 ] as const;
@@ -39,6 +39,8 @@ export default async function HomePage() {
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-5">
         <Wordmark className="text-xl" />
         <nav className="flex items-center gap-2">
+          {/* On a phone the header has room for two buttons; the guides
+              stand under the hero's buttons there instead. */}
           <Link
             href="/guides"
             className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "max-sm:hidden")}
@@ -99,6 +101,12 @@ export default async function HomePage() {
                 {t("hero.ctaSecondary")}
               </Link>
             </div>
+            <Link
+              href="/guides"
+              className={cn(buttonVariants({ variant: "link", size: "sm" }), "mt-3 sm:hidden")}
+            >
+              {openPages("nav.hub")}
+            </Link>
             <p className="text-muted-foreground mt-6 text-xs">{t("hero.trust")}</p>
           </div>
 
@@ -139,7 +147,7 @@ export default async function HomePage() {
           {VALUES.map((value) => (
             <div
               key={value.titleKey}
-              className="bg-card ring-foreground/10 shadow-[var(--surface-shadow)] rounded-xl p-6 ring-1 transition-shadow hover:shadow-md"
+              className="bg-card ring-foreground/10 shadow-surface rounded-xl p-6 ring-1"
             >
               <div className="bg-accent text-accent-foreground mb-4 flex size-9 items-center justify-center rounded-lg">
                 <value.icon className="size-4.5" />

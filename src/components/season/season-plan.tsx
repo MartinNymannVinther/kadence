@@ -91,7 +91,7 @@ export function SeasonPlan({
           </Button>
         )}
       </div>
-      <ol className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-[var(--surface-shadow)]">
+      <ol className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-surface">
         {shown.map((month, i) =>
           editing ? (
             <MonthEditor
@@ -126,7 +126,7 @@ export function SeasonPlan({
               onChange={(e) => setNote(e.target.value)}
             />
           </div>
-          <div className="bg-background/95 sticky bottom-0 flex flex-wrap gap-2 py-2 backdrop-blur">
+          <div className="bg-background/95 sticky bottom-[var(--bottom-bar,0px)] flex flex-wrap gap-2 py-2 backdrop-blur">
             <Button type="submit" disabled={pending} className="max-sm:h-11 max-sm:flex-1">
               {t("save")}
             </Button>

@@ -124,7 +124,7 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
           {fromFile ? ` · ${t("startedAt", { time: started })}` : ""}
           {rider ? ` · ${rider.name}` : ""}
         </p>
-        <h1 className="flex items-center gap-2 text-[1.625rem] leading-tight font-semibold tracking-[-0.02em]">
+        <h1 className="flex items-center gap-2 text-title-section leading-tight font-semibold tracking-[-0.02em]">
           <SportIcon sport={activity.sport} className="size-5" />
           {activity.title || sports(activity.sport as "bike")}
         </h1>

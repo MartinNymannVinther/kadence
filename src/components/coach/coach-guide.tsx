@@ -38,14 +38,14 @@ export function CoachGuide() {
           key={section.id}
           id={section.id}
           aria-labelledby={`${section.id}-title`}
-          className="border-border bg-card flex scroll-mt-20 flex-col gap-3 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5"
+          className="border-border bg-card flex scroll-mt-20 flex-col gap-3 rounded-xl border p-4 shadow-surface sm:p-5"
         >
           <h2 id={`${section.id}-title`} className="text-lg font-semibold">
             <span className="text-meta mr-2 tabular-nums">{i + 1}.</span>
             {text(`sections.${section.id}.title`)}
           </h2>
           <p className="text-reading leading-relaxed">{text(`sections.${section.id}.intro`)}</p>
-          <ul className="flex list-disc flex-col gap-2 pl-5 text-reading leading-relaxed marker:text-[var(--meta)]">
+          <ul className="flex list-disc flex-col gap-2 pl-5 text-reading leading-relaxed marker:text-meta">
             {Array.from({ length: section.points }, (_, p) => (
               <li key={p}>{text(`sections.${section.id}.points.${p + 1}`)}</li>
             ))}

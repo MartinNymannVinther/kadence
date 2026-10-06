@@ -36,7 +36,7 @@ export function CheatOverlay({
     <button
       type="button"
       aria-label={label}
-      className="bg-foreground/80 text-sticky grid size-16 touch-none place-items-center rounded-2xl shadow-[var(--surface-shadow)] select-none active:scale-95 [&_svg]:size-9"
+      className="bg-foreground/80 text-sticky grid size-16 touch-none place-items-center rounded-2xl shadow-surface select-none active:scale-95 [&_svg]:size-9"
       onPointerDown={(event) => {
         event.currentTarget.setPointerCapture(event.pointerId);
         hold(axis, value);
@@ -65,7 +65,7 @@ export function CheatOverlay({
           </div>
         </div>
       )}
-      <div className="bg-foreground/85 absolute top-3 left-1/2 flex -translate-x-1/2 items-center gap-3 rounded-xl py-1.5 pr-1.5 pl-4 shadow-[var(--surface-shadow)]">
+      <div className="bg-foreground/85 absolute top-3 left-1/2 flex -translate-x-1/2 items-center gap-3 rounded-xl py-1.5 pr-1.5 pl-4 shadow-surface">
         <span className="text-sticky text-xs font-black tracking-[0.25em] uppercase">
           {t("badge")}
         </span>

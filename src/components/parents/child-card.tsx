@@ -76,7 +76,7 @@ export function ChildCard({
               hrefFor={hrefFor}
             />
           </section>
-          <section className="border-border bg-card flex flex-col gap-2 rounded-xl border p-4 shadow-[var(--surface-shadow)]">
+          <section className="border-border bg-card flex flex-col gap-2 rounded-xl border p-4 shadow-surface">
             <h3 className="text-sm font-semibold">{t("form")}</h3>
             {child.load.some((d) => d.fitness > 0) ? (
               <FormTrend days={child.load} name={child.name.split(" ")[0] ?? child.name} />

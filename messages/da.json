@@ -30,7 +30,7 @@
     },
     "hero": {
       "title": "Unge ryttere i den rigtige kadence.",
-      "subtitle": "Kadence er træningsplanlægning for U17-, U19- og U23-ryttere, deres trænere og deres forældre: en kalender med pas på cykel og i styrkerummet, Cykling Danmarks anbefalinger som standard, belastning der også virker uden wattmåler, og en side til forældrene. Open source, dansk og i EU.",
+      "subtitle": "Træningsplanlægning for U17-, U19- og U23-ryttere, deres trænere og forældre, med DCU's anbefalinger som standard. Open source og i EU.",
       "ctaPrimary": "Opret konto",
       "ctaSecondary": "Log ind",
       "trust": "AGPL-3.0 · Passkeys og totrinslogin · Jeres data kan hentes ud med ét klik",
@@ -38,8 +38,8 @@
       "ctaDemo": "Prøv demoen"
     },
     "values": {
-      "aiTitle": "DCU som standard",
-      "aiBody": "Sæsonplanen udfyldes fra Cykling Danmarks anbefalinger for rytterens årgang, og styrkeprogrammerne for U17, U19 og U23 ligger klar. Træneren kan afvige, men afvigelsen er altid synlig. AI'en kan foreslå næste uge; træneren bestemmer.",
+      "dcuTitle": "DCU som standard",
+      "dcuBody": "Sæsonplanen udfyldes fra Cykling Danmarks anbefalinger for rytterens årgang, og styrkeprogrammerne for U17, U19 og U23 ligger klar. Træneren kan afvige, men afvigelsen er altid synlig. AI'en kan foreslå næste uge; træneren bestemmer.",
       "dataTitle": "Rytterens data, altid",
       "dataBody": "Rytteren bestemmer, hvad forældrene ser. Alt kan hentes ud som regneark og JSON med ét klik og slettes helt igen.",
       "securityTitle": "Sikkerhed fra første dag",
@@ -183,12 +183,16 @@
       "calendar": "Kalender",
       "riders": "Ryttere",
       "coaches": "Trænerrummet",
-      "library": "Træningsbibliotek",
+      "library": "Bibliotek",
       "season": "Sæson",
       "club": "Klubmester",
       "parents": "Forældre",
       "rulle": "Rulle",
-      "guides": "Viden og beregnere"
+      "me": "Mig",
+      "child": "Barnet",
+      "more": "Mere",
+      "moreNews": "Mere, der er noget nyt",
+      "barLabel": "Hovedmenu"
     },
     "orgSwitcher": {
       "label": "Arbejdsrum",
@@ -289,8 +293,11 @@
   },
   "settings": {
     "title": "Indstillinger",
-    "subtitle": "Dig selv, holdet og installationen.",
+    "subtitleCoach": "Dig selv, holdet og arbejdsrummet.",
+    "subtitleRider": "Dig selv, dine enheder og din sikkerhed.",
+    "subtitleOther": "Dig selv og din sikkerhed.",
     "nav": {
+      "label": "Indstillingsmenu",
       "security": "Sikkerhed",
       "about": "Om",
       "access": "Adgang",
@@ -604,11 +611,21 @@
     "bannerTitle": "Det her er en demo.",
     "bannerBody": "Arbejdsrummet og alt i det slettes efter {hours, plural, one {# time} other {# timer}}. Skriv gerne i det.",
     "bannerCta": "Ansøg om en rigtig konto",
+    "bannerShort": "Demo",
+    "bannerLeft": "slettes om {hours} t",
+    "bannerCtaShort": "Ansøg",
+    "about": "Om demoen",
+    "rolesNote": "Skift mellem træneren, rytteren Emma og hendes mor for at se Kadence med deres øjne.",
     "viewAs": "Se som:",
     "roles": {
       "coach": "Træner",
       "rider": "Rytter (Emma)",
       "parent": "Forælder (Emmas mor)"
+    },
+    "rolesShort": {
+      "coach": "Træner",
+      "rider": "Rytter",
+      "parent": "Forælder"
     }
   },
   "terms": {
@@ -686,6 +703,8 @@
   "help": {
     "title": "Hjælp",
     "intro": "Sådan virker Kadence, i den rytme en sæson lever i.",
+    "guidesLine": "Guides og beregnere ligger åbent for alle, også uden login:",
+    "guidesLink": "Viden og beregnere",
     "howToTitle": "Sådan bruger du værktøjet",
     "closing": "Mangler der noget her? Skriv til os, eller ret siden selv: koden er åben.",
     "howTo": {
@@ -1124,7 +1143,7 @@
     }
   },
   "library": {
-    "title": "Træningsbibliotek",
+    "title": "Bibliotek",
     "own": {
       "titleRider": "Mine pas",
       "subtitleRider": "Pas, du selv har bygget. Din træner kan se dem og tage dem med i holdets bibliotek.",

@@ -60,7 +60,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
         <ChevronLeft aria-hidden className="size-4" />
         {t("title")}
       </Link>
-      <article className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-[var(--surface-shadow)]">
+      <article className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-surface">
         <p className="text-meta text-xs">{t(`category.${thread.category}`)}</p>
         <h1 className="flex items-center gap-2 text-xl font-semibold">
           {thread.title}

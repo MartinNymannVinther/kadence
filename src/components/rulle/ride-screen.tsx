@@ -225,7 +225,7 @@ export function RideScreen({
             />
           )}
           {live && mapShown && (
-            <div className="bg-card/85 border-border pointer-events-none absolute right-3 bottom-3 w-[min(30vmin,15rem)] rounded-xl border p-1.5 shadow-[var(--surface-shadow)] sm:right-4 lg:right-6">
+            <div className="bg-card/85 border-border pointer-events-none absolute right-3 bottom-3 w-[min(30vmin,15rem)] rounded-xl border p-1.5 shadow-surface sm:right-4 lg:right-6">
               <RouteMap course={course} distance={live.distance} finish={finish} />
             </div>
           )}

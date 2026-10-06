@@ -30,7 +30,7 @@
     },
     "hero": {
       "title": "Young riders at the right cadence.",
-      "subtitle": "Kadence is training planning for U17, U19 and U23 cyclists, their coaches and their parents: a calendar of sessions on the bike and in the gym, Cycling Denmark's recommendations as the default, load that works without a power meter, and a page for parents. Open source, Danish and in the EU.",
+      "subtitle": "Training planning for U17, U19 and U23 riders, their coaches and parents, with DCU's recommendations as the default. Open source, in the EU.",
       "ctaPrimary": "Create account",
       "ctaSecondary": "Log in",
       "trust": "AGPL-3.0 · Passkeys and two-factor sign-in · Your data out in one click",
@@ -38,8 +38,8 @@
       "ctaDemo": "Try the demo"
     },
     "values": {
-      "aiTitle": "DCU as the default",
-      "aiBody": "The season plan is filled from Cycling Denmark's recommendations for the rider's age class, and the strength programmes for U17, U19 and U23 are ready. The coach can deviate, and the deviation is always visible. The AI can propose next week; the coach decides.",
+      "dcuTitle": "DCU as the default",
+      "dcuBody": "The season plan is filled from Cycling Denmark's recommendations for the rider's age class, and the strength programmes for U17, U19 and U23 are ready. The coach can deviate, and the deviation is always visible. The AI can propose next week; the coach decides.",
       "dataTitle": "The rider's data, always",
       "dataBody": "The rider decides what parents see. Everything can be exported as a spreadsheet and JSON in one click and deleted completely.",
       "securityTitle": "Secure from day one",
@@ -183,12 +183,16 @@
       "calendar": "Calendar",
       "riders": "Riders",
       "coaches": "Coaches' room",
-      "library": "Workout library",
+      "library": "Library",
       "season": "Season",
       "club": "Club champion",
       "parents": "Parents",
       "rulle": "Rulle",
-      "guides": "Guides and calculators"
+      "me": "Me",
+      "child": "Your child",
+      "more": "More",
+      "moreNews": "More, something new",
+      "barLabel": "Main menu"
     },
     "orgSwitcher": {
       "label": "Workspace",
@@ -289,8 +293,11 @@
   },
   "settings": {
     "title": "Settings",
-    "subtitle": "You, the team and the installation.",
+    "subtitleCoach": "You, the team and the workspace.",
+    "subtitleRider": "You, your devices and your security.",
+    "subtitleOther": "You and your security.",
     "nav": {
+      "label": "Settings menu",
       "security": "Security",
       "about": "About",
       "access": "Access",
@@ -604,11 +611,21 @@
     "bannerTitle": "This is a demo.",
     "bannerBody": "The workspace and everything in it is deleted after {hours, plural, one {# hour} other {# hours}}. Feel free to write in it.",
     "bannerCta": "Apply for a real account",
+    "bannerShort": "Demo",
+    "bannerLeft": "deleted in {hours} h",
+    "bannerCtaShort": "Apply",
+    "about": "About the demo",
+    "rolesNote": "Switch between the coach, the rider Emma and her mother to see Kadence through their eyes.",
     "viewAs": "See as:",
     "roles": {
       "coach": "Coach",
       "rider": "Rider (Emma)",
       "parent": "Parent (Emma's mother)"
+    },
+    "rolesShort": {
+      "coach": "Coach",
+      "rider": "Rider",
+      "parent": "Parent"
     }
   },
   "terms": {
@@ -686,6 +703,8 @@
   "help": {
     "title": "Help",
     "intro": "How Kadence works, in the rhythm a season lives in.",
+    "guidesLine": "Guides and calculators are open to everyone, no login needed:",
+    "guidesLink": "Guides and calculators",
     "howToTitle": "How to use the tool",
     "closing": "Something missing here? Write to us, or fix the page yourself: the code is open.",
     "howTo": {
@@ -1124,7 +1143,7 @@
     }
   },
   "library": {
-    "title": "Workout library",
+    "title": "Library",
     "own": {
       "titleRider": "My sessions",
       "subtitleRider": "Sessions you built yourself. Your coach can see them and take them into the team's library.",

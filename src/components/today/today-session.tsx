@@ -37,7 +37,7 @@ export function TodaySession({
   return (
     <article
       className={cn(
-        "bg-card border-border flex flex-col gap-3 rounded-xl border border-l-4 p-4 shadow-[var(--surface-shadow)]",
+        "bg-card border-border flex flex-col gap-3 rounded-xl border border-l-4 p-4 shadow-surface",
         COLOUR_STYLE[colour].edge,
       )}
     >
