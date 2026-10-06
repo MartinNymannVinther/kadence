@@ -23,6 +23,7 @@ eller mere. Rækkefølgen inden for en prioritet er den anbefalede.
 
 P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter #21 og #22). Hvert spor bygges i sit eget worktree med egen database og flettes ind på P1-grenen, når det er grønt. Statusloggen nyeste først:
 
+- **6. okt., middag.** De fem parkerede dele er slået til som standard (PR #24, ADR 0057 tillæg), og den ændring er flettet ind i P1-grenen, så P1 bygger oven på den. P1-sporene blev stoppet ved en fejl, før de nåede at skrive noget, og er sat i gang igen fra den opdaterede gren.
 - **6. okt.** P1 sat i gang. Migreringerne 0029 (påmindelser om trivsel), 0030 (invitationens rolle) og 0031 (pilotens tal) er lagt på P1-grenen først, så sporene ikke tager samme nummer. P1-01, P1-02+05, P1-03+07, P1-04 og P1-06 kører parallelt; P1-08 skrives til sidst.
 
 ## Tokens og model
