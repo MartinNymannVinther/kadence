@@ -27,7 +27,7 @@ slipstream that makes it easier behind him.
   their very speed while ten seconds are counted down; then two
   kilometres on his own watts, whatever the rider does: 800 W for the
   first 7 seconds and 460 W to the end of the first minute — about
-  7 W/kg at 66 kg and a bike — 360 W from there, and 800 W for the last
+  7 W/kg at 66 kg and a bike — 380 W from there, and 800 W for the last
   200 metres. He does not answer an attack; in the rider's wheel he goes
   faster on the same watts, as the rider does in his.
 - **The slipstream**: behind another rider, either of them pushes about

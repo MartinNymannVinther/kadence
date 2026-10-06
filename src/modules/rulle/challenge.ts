@@ -12,7 +12,7 @@ import { courseAt, type Course } from "./route/course";
  * He comes up alongside and rides at the rider's speed while ten seconds
  * are counted down; then he rides his own watts whatever the rider does:
  * 800 W for the first 7 seconds and 460 W for the rest of the first
- * minute — about 7 W/kg at 66 kg — 360 W from there, and 800 W for the
+ * minute — about 7 W/kg at 66 kg — 380 W from there, and 800 W for the
  * last 200 metres. Behind another rider either of them pushes less air
  * (`draft`), so the one in the other's wheel goes faster on the same
  * watts. Pure.
@@ -99,14 +99,14 @@ export function challengeIn(course: Course, k: number): ChallengeStart | null {
 
 /**
  * His watts, `seconds` after the start with `left` metres to go: 800 W for
- * 7 seconds, 460 W to the end of the first minute, 360 W, and 800 W for
+ * 7 seconds, 460 W to the end of the first minute, 380 W, and 800 W for
  * the last 200 metres. The same whatever the rider does.
  */
 export function challengerWatts(seconds: number, left: number): number {
   if (left <= 200) return 800;
   if (seconds < 7) return 800;
   if (seconds < 60) return 460;
-  return 360;
+  return 380;
 }
 
 /**
