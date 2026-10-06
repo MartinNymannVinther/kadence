@@ -23,6 +23,7 @@ eller mere. Rækkefølgen inden for en prioritet er den anbefalede.
 
 P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter #21 og #22). Hvert spor bygges i sit eget worktree med egen database og flettes ind på P1-grenen, når det er grønt. Statusloggen nyeste først:
 
+- **6. okt., eftermiddag.** P1-01, P1-02+05, P1-04 og P1-06 er færdige og flettet ind; hele suiten er grøn (2.243 tests) og build kompilerer. Samlet forbrug for P1-01 til P1-07: ca. 1,4M tokens mod et skøn på 1,2–2,0M. P1-08 (pilotguiden) er sat i gang.
 - **6. okt., eftermiddag.** P1-03 og P1-07 er færdige og flettet ind; hele suiten er grøn (2.143 tests).
 - **6. okt., middag.** De fem parkerede dele er slået til som standard (PR #24, ADR 0057 tillæg), og den ændring er flettet ind i P1-grenen, så P1 bygger oven på den. P1-sporene blev stoppet ved en fejl, før de nåede at skrive noget, og er sat i gang igen fra den opdaterede gren.
 - **6. okt.** P1 sat i gang. Migreringerne 0029 (påmindelser om trivsel), 0030 (invitationens rolle) og 0031 (pilotens tal) er lagt på P1-grenen først, så sporene ikke tager samme nummer. P1-01, P1-02+05, P1-03+07, P1-04 og P1-06 kører parallelt; P1-08 skrives til sidst.
@@ -88,14 +89,14 @@ Rammen er:
 
 | ID    | Story                                             | Prio | Str. | Tokens (ca.) | Model     | Afhænger af       | Status       |
 | ----- | ------------------------------------------------- | ---- | ---- | ------------ | --------- | ----------------- | ------------ |
-| P1-01 | Inviter hele holdet på én gang                    | P1   | M    | 300–450k     | Opus 5.5  |                   | I gang       |
-| P1-02 | Træneren får besked, når en rytter er i rød zone  | P1   | M    | 250–400k     | Opus 5.5  | ADR 0060 (push)   | I gang       |
+| P1-01 | Inviter hele holdet på én gang                    | P1   | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
+| P1-02 | Træneren får besked, når en rytter er i rød zone  | P1   | M    | 250–400k     | Opus 5.5  | ADR 0060 (push)   | Færdig       |
 | P1-03 | Invitationen siger rytter eller forælder          | P1   | S    | 120–200k     | Opus 5.5  |                   | Færdig       |
-| P1-04 | Pilotens tre tal                                  | P1   | M    | 300–450k     | Opus 5.5  |                   | I gang       |
-| P1-05 | Prøv påmindelser på en rigtig telefon             | P1   | S    | 100–180k     | Sonnet 5  | ADR 0060 (push)   | I gang       |
-| P1-06 | Rulle møder en rigtig hometrainer                 | P1   | S    | 120–200k     | Sonnet 5  |                   | I gang       |
+| P1-04 | Pilotens tre tal                                  | P1   | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
+| P1-05 | Prøv påmindelser på en rigtig telefon             | P1   | S    | 100–180k     | Sonnet 5  | ADR 0060 (push)   | Færdig       |
+| P1-06 | Rulle møder en rigtig hometrainer                 | P1   | S    | 120–200k     | Sonnet 5  |                   | Færdig       |
 | P1-07 | Ryttere og forældre kan forlade holdet igen       | P1   | S    | 50–100k      | Sonnet 5  |                   | Færdig       |
-| P1-08 | En pilotguide til træneren                        | P1   | S    | 120–200k     | Sonnet 5  | A-05              | Venter       |
+| P1-08 | En pilotguide til træneren                        | P1   | S    | 120–200k     | Sonnet 5  | A-05              | I gang       |
 | P2-01 | Garmin-ture ind af sig selv gennem Tredict        | P2   | L    | 600k–1M      | Opus 5.5  | A-07 (Martins ja) | Ikke startet |
 | P2-02 | Mine ture: en liste over rytterens ture           | P2   | S    | 80–150k      | Sonnet 5  |                   | Ikke startet |
 | P2-03 | Tid, sted og kørsel på løb og begivenheder        | P2   | M    | 200–300k     | Sonnet 5  |                   | Ikke startet |
@@ -150,7 +151,7 @@ kan få tolv ryttere i gang på ti minutter i stedet for en time.
 
 **Tokens:** ca. 300–450k · **Model:** Opus 5.5 (`claude-opus-5-5`), flere services i én transaktion, invitationer og roller; fejl her rammer adgangen til holdet.
 
-**Status:** I gang siden 6. oktober på `feat/p1-01-inviter-holdet` (Opus 5.5).
+**Status:** Færdig 6. oktober, flettet ind på `feat/p1-foer-piloten`. "Inviter hele holdet" på Ryttere: én rytter pr. linje med år, op til to forældre efter semikolon, forhåndsvisning og en forklaring pr. linje, der ikke kan læses; bagefter "Del" pr. person og et kort med de links, der venter. Alt eller intet: links laves først og trækkes tilbage, hvis rækkerne fejler (ADR 0064). Bemærk: et link kræver en e-mailadresse og gælder 48 timer (Better Auths standard); uden adresse oprettes personen uden link. Søskende kan dele en forælder. Faktisk forbrug: 310k tokens på 30 min (skøn 300–450k).
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/inviter-holdet.
@@ -188,7 +189,7 @@ ske, mens det betyder noget.
 
 **Tokens:** ca. 250–400k · **Model:** Opus 5.5 (`claude-opus-5-5`), migrering, trivselsdata om mindreårige og påmindelsernes logik.
 
-**Status:** I gang siden 6. oktober på `feat/p1-02-05-paamindelser` sammen med P1-05 (Opus 5.5). Migrering 0029 er lagt på P1-grenen.
+**Status:** Færdig 6. oktober, flettet ind. Ny påmindelse "Trivsel" kun for trænere: en check-in i rød zone i dag (smerte 3, syg eller humør 1) giver én tom push, også om natten; teksten nævner hverken navn eller svar og fører til opmærksomhedspunkterne. Højst én pr. rytter pr. dag uden ny kolonne. Accepteret hul (i ADR 0060): en check-in, der først gemmes grøn og senere rettes til rød, kan blive overset, hvis træneren fik en anden påmindelse imellem; listen viser den stadig. Trænere, der allerede har påmindelser slået til, skal selv slå "Trivsel" til. Faktisk forbrug for P1-02 og P1-05 samlet: 307k tokens på 31 min (skøn 350–580k).
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/trivsel-paamindelse.
@@ -258,7 +259,7 @@ uge, **så** vinteren kan afgøre, hvad Kadence skal være (dogme syv).
 
 **Tokens:** ca. 300–450k · **Model:** Opus 5.5 (`claude-opus-5-5`), audit-loggen, udvidelse af platform_overview og privatlivsgrænsen for ejeren.
 
-**Status:** I gang siden 6. oktober på `feat/p1-04-pilotens-tal` (Opus 5.5). Migrering 0031 er reserveret.
+**Status:** Færdig 6. oktober, flettet ind. Træneren ser de seneste 8 uger under Indstillinger → Holdet: andel ryttere med check-in mindst 4 dage, andel pas med kvittering, og anslåede minutter på planlægning ud fra revisionssporet (strækninger med under 10 minutters pause, mindst 2 minutter hver). Ejeren ser tallene for sidste hele uge pr. klub på installationssiden, kun tal (migrering 0031, ADR 0066). Demoen har fået historik, så kortet ikke er tomt. Til Martin: læs de danske tekster, og vurder tærsklerne på 10 og 2 minutter. Faktisk forbrug: 283k tokens på 28 min (skøn 300–450k).
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/pilotens-tal.
@@ -294,7 +295,7 @@ kommer.
 
 **Tokens:** ca. 100–180k · **Model:** Sonnet 5 (`claude-sonnet-5`), afgrænset brugerflade og en action med rate-limit.
 
-**Status:** I gang siden 6. oktober sammen med P1-02 (samme modul).
+**Status:** Færdig 6. oktober sammen med P1-02. "Send en prøve" under Indstillinger → Mig → Påmindelser (højst 3 i timen) og en statuslinje: tilladelse, service worker, abonnement siden hvornår, og på iPhone om Kadence er åbnet fra hjemmeskærmen. `docs/deploy.md` §6d forklarer prøven på iPhone og Android. Kan kun bekræftes på en rigtig telefon; det er næste skridt for Martin.
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/proevepaamindelse.
@@ -325,7 +326,7 @@ Rulle uden fejl, **så** indendørsdagene tæller med.
 
 **Tokens:** ca. 120–200k · **Model:** Sonnet 5 (`claude-sonnet-5`), logning omkring de eksisterende parsere, ingen ændring i deres logik.
 
-**Status:** I gang siden 6. oktober på `feat/p1-06-rulle-ble-log` (Sonnet 5).
+**Status:** Færdig 6. oktober, flettet ind. `/rulle?ble=log` viser en log over de seneste 500 Bluetooth-hændelser med rå bytes, de tal parserne læser og trainerens svar med FTMS-navne, og "Kopiér log". Intet gemmes eller sendes. `docs/rulle-proevetur.md` er tjeklisten til den første tur på en rigtig hometrainer. Faktisk forbrug: 288k tokens på 31 min (skøn 120–200k; mere end ventet, fordi kontrolpunktets kø blev trukket ud af trainer-link.ts for at holde 300-linjersgrænsen).
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/rulle-ble-log.
@@ -382,7 +383,7 @@ sidde ved siden af.
 
 **Tokens:** ca. 120–200k · **Model:** Sonnet 5 (`claude-sonnet-5`), dansk tekst og skærmbilleder mod demoen.
 
-**Status:** Venter på P1-01 til P1-07, så guiden beskriver det, der faktisk er bygget.
+**Status:** I gang siden 6. oktober eftermiddag (Sonnet 5), nu hvor P1-01 til P1-07 er flettet ind. A-05 (aftalen med pilotholdet) er ikke nødvendig for guiden.
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: docs/pilotguide.
