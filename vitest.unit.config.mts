@@ -29,9 +29,9 @@ export default defineConfig({
       // The list "Inviter hele holdet" reads and who its links go to; the service needs the database.
       "tests/team/{bulk-parse,invitation-recipients}.test.ts",
       // Exercises and programmes: the contract, the figures, Kadence's own and their words,
-      // and a programme as a session. The team's own and laying a programme in need the
-      // database.
-      "tests/exercises/{builtin,contract,figure,view,program-session}.test.ts",
+      // the library's paths and search, and a programme as a session. The team's own and
+      // laying a programme in need the database.
+      "tests/exercises/{builtin,contract,figure,view,library-paths,program-session}.test.ts",
     ],
   },
 });
