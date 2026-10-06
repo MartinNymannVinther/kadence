@@ -851,7 +851,7 @@
     "not_a_rider": "Kun en rytter kan forbinde sin egen enhed.",
     "too_many_keys": "Du har allerede så mange nøgler, som du kan have. Fjern en, før du opretter en ny.",
     "too_many_keys_made": "Du har oprettet mange nøgler lige nu. Prøv igen om en time.",
-    "flagGone": "Advarslen er ikke aktiv længere. Genindlæs siden.",
+    "flagGone": "Opmærksomhedspunktet er ikke aktivt længere. Genindlæs siden.",
     "uciId": "Et UCI ID er 11 cifre, som det står på licensen.",
     "uciTaken": "En anden rytter på holdet har allerede det UCI ID.",
     "noUciId": "Rytteren har ikke noget UCI ID endnu.",
@@ -1218,7 +1218,7 @@
       "applied": "{count, plural, one {Blokken ligger nu hos # rytter} other {Blokken ligger nu hos # ryttere}}.",
       "weekLine": "Uge {n} ({date}): {hours} t på cyklen, {strength, plural, =0 {ingen styrkepas} one {# styrkepas} other {# styrkepas}}",
       "corridor": "DCU {low}–{high} t",
-      "previewNote": "Værnene siger til, de forbyder intet. Du kan lægge blokken ind alligevel og rette bagefter i kalenderen."
+      "previewNote": "Opmærksomhedspunkterne er en hjælp, og du bestemmer. Du kan lægge blokken ind og rette bagefter i kalenderen."
     }
   },
   "riders": {
@@ -1893,7 +1893,7 @@
       "show": "Vis",
       "hide": "Skjul",
       "undo": "Fortryd",
-      "weekNote": "En afklaring gælder ugen ud, medmindre tallene bliver tydeligt værre. Dukker det samme op i næste uge, er det et nyt punkt. Mandagsoverblikket og tipsene ser de punkter, der stadig er åbne; forslaget til ugen ser alle punkter, fordi det planlægger belastning."
+      "weekNote": "En afklaring gælder ugen ud, medmindre tallene bliver tydeligt værre. Dukker det samme op i næste uge, er det et nyt punkt. Resuméet fra AI'en og rådene til træneren ser de punkter, der stadig er åbne. Forslaget til ugen ser alle punkter, fordi det planlægger belastning."
     }
   },
   "wellbeing": {
@@ -2309,9 +2309,9 @@
       "team": "Hele holdet"
     },
     "team": {
-      "subtitle": "Hver rytters timer på cyklen i denne måned og i sæsonen indtil nu, mod målet og DCU.",
+      "subtitle": "Hver rytters timer på cyklen i denne måned og i sæsonen indtil nu, mod sæsonplanen og DCU.",
       "toDate": "Sæsonen indtil nu",
-      "toDateValue": "Udført {done} t · planlagt {planned} t · mål {goal} · DCU {dcu}",
+      "toDateValue": "Sæsonplan {goal} · lagt ind {planned} t · kørt {done} t · DCU {dcu}",
       "empty": "Ingen ryttere at vise."
     },
     "teamPlans": {
@@ -2353,10 +2353,10 @@
       "done": "Planen er fyldt ud igen fra DCU."
     },
     "monthsTitle": "Måned for måned",
-    "plan": "Mål",
+    "plan": "Sæsonplan",
     "dcu": "DCU",
-    "scheduled": "Planlagt",
-    "ridden": "Udført",
+    "scheduled": "Lagt ind",
+    "ridden": "Kørt",
     "hours": "{hours} t",
     "dcuHours": "DCU: {hours} t",
     "deviationLabel": "Afvigelse fra DCU",
@@ -2406,8 +2406,8 @@
     "notePlaceholder": "Fx lejr eller eksamen",
     "planNote": "Note til sæsonen",
     "planNotePlaceholder": "Fx sæsonens mål, eller hvorfor planen afviger fra DCU",
-    "totals": "Sæsonen i alt: mål {plan} t · planlagt {scheduled} t · udført {ridden} t · DCU {dcu} t",
-    "totalsOwn": "Sæsonen i alt: mål {plan} t · planlagt {scheduled} t · udført {ridden} t",
+    "totals": "Sæsonen i alt: sæsonplan {plan} t · lagt ind {scheduled} t · kørt {ridden} t · DCU {dcu} t",
+    "totalsOwn": "Sæsonen i alt: sæsonplan {plan} t · lagt ind {scheduled} t · kørt {ridden} t",
     "readOnlyNote": "Du kan se planen. Træneren og rytteren kan rette den.",
     "intensity": {
       "title": "Intensitet uge for uge",
@@ -2436,13 +2436,13 @@
     },
     "chart": {
       "title": "Timer pr. måned",
-      "planned": "Mål",
-      "scheduled": "Planlagt",
-      "ridden": "Udført",
+      "planned": "Sæsonplan",
+      "scheduled": "Lagt ind",
+      "ridden": "Kørt",
       "dcu": "DCU",
-      "label": "Timer på cyklen pr. måned i sæsonen: mål, planlagt, udført og DCU's timer",
-      "readout": "{month}: mål {plan} t · planlagt {scheduled} t · udført {ridden} t · DCU {dcu} t",
-      "readoutOwn": "{month}: mål {plan} t · planlagt {scheduled} t · udført {ridden} t",
+      "label": "Timer på cyklen pr. måned i sæsonen: sæsonplan, lagt ind, kørt og DCU's timer",
+      "readout": "{month}: sæsonplan {plan} t · lagt ind {scheduled} t · kørt {ridden} t · DCU {dcu} t",
+      "readoutOwn": "{month}: sæsonplan {plan} t · lagt ind {scheduled} t · kørt {ridden} t",
       "hint": "Peg på en måned, eller brug piletasterne, for at se tallene."
     },
     "reference": {
@@ -2468,17 +2468,17 @@
     }
   },
   "volume": {
-    "done": "Udført",
-    "planned": "Planlagt",
-    "goal": "Mål",
+    "done": "Kørt",
+    "planned": "Lagt ind",
+    "goal": "Sæsonplan",
     "dcu": "DCU",
     "hours": "{hours} t",
     "range": "{low}–{high} t",
-    "noGoal": "intet eget mål",
+    "noGoal": "ingen",
     "noDcu": "ingen DCU-årgang",
-    "said": "Udført {done} t, planlagt {planned} t, mål {goal}, DCU {dcu}.",
+    "said": "Sæsonplan {goal}, lagt ind {planned} t, kørt {done} t, DCU {dcu}.",
     "compact": "{done} af {planned} t",
-    "goalShort": "Mål {hours}",
+    "goalShort": "Sæsonplan {hours}",
     "dcuShort": "DCU {low}–{high}",
     "dcuBreak": "DCU: pause og frit",
     "expected": "Forventet {hours} t på cyklen:",
@@ -2488,14 +2488,14 @@
       "under": "under DCU's ramme"
     },
     "toGoal": {
-      "on": "på målet",
-      "over": "{hours} t over målet",
-      "under": "{hours} t under målet"
+      "on": "som sæsonplanen",
+      "over": "{hours} t over sæsonplanen",
+      "under": "{hours} t under sæsonplanen"
     },
     "preview": {
       "week": "Uge {n}",
-      "planned": "Planlagt {before} → {after} t",
-      "note": "Bjælken viser, hvordan det ser ud, når passene er lagt ind. Værnene siger til, de forbyder intet."
+      "planned": "Lagt ind {before} → {after} t",
+      "note": "Bjælken viser, hvordan det ser ud, når passene er lagt ind. Opmærksomhedspunkterne er en hjælp, og du bestemmer."
     }
   },
   "assist": {
@@ -2503,7 +2503,7 @@
     "dismiss": "Luk forslaget",
     "byRules": "Læst af reglerne",
     "byModel": "Læst af {engine}",
-    "byGuardrails": "Ud fra Kadences advarsler",
+    "byGuardrails": "Ud fra opmærksomhedspunkterne",
     "errors": {
       "noModel": "Der er ingen sprogmodel sat op, så AI'en kan ikke svare. Alt andet virker.",
       "noModelLink": "Indstillinger → AI",
@@ -2538,7 +2538,7 @@
       "category": "Årgang",
       "categoryNone": "Ingen bestemt",
       "refine": "Ret i det pas, der står nu",
-      "hint": "Vælger du årgang, holder forslaget sig inden for DCU's rammer. Der går ingen rytterdata med, og intet gemmes, før du gemmer passet.",
+      "hint": "Vælger du årgang, holder forslaget sig til DCU's anbefalinger for den. Der går ingen rytterdata med, og intet gemmes, før du gemmer passet.",
       "ruleHint": "Kortform som \"3x10 min Z4 / 5 min pause\" læses af reglerne uden sprogmodel.",
       "build": "Byg forslaget",
       "building": "Bygger … det kan tage lidt tid.",
@@ -2553,7 +2553,7 @@
     "week": {
       "open": "Foreslå ugen",
       "title": "Forslag til ugen",
-      "body": "AI'en læser DCU's timer og fase, kalenderen, de seneste uger og advarslerne og foreslår pas. Du vælger, hvad der kommer i kalenderen.",
+      "body": "AI'en læser DCU's timer og fase, kalenderen, de seneste uger og opmærksomhedspunkterne og foreslår pas. Du vælger, hvad der kommer i kalenderen.",
       "thinking": "Tænker … det kan tage lidt tid.",
       "proposal": "Forslag fra AI'en",
       "empty": "AI'en foreslog ingen pas til ugen.",

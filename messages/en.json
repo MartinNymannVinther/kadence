@@ -851,7 +851,7 @@
     "not_a_rider": "Only a rider can connect their own device.",
     "too_many_keys": "You already have as many keys as you can have. Remove one before you create a new one.",
     "too_many_keys_made": "You have created many keys just now. Try again in an hour.",
-    "flagGone": "That warning is no longer active. Reload the page.",
+    "flagGone": "That point of attention is no longer active. Reload the page.",
     "uciId": "A UCI ID is 11 digits, as on the licence.",
     "uciTaken": "Another rider on the team already has that UCI ID.",
     "noUciId": "The rider has no UCI ID yet.",
@@ -1218,7 +1218,7 @@
       "applied": "{count, plural, one {The block is now with # rider} other {The block is now with # riders}}.",
       "weekLine": "Week {n} ({date}): {hours} h on the bike, {strength, plural, =0 {no strength sessions} one {# strength session} other {# strength sessions}}",
       "corridor": "DCU {low}–{high} h",
-      "previewNote": "The guardrails speak up; they forbid nothing. You can apply the block anyway and adjust in the calendar."
+      "previewNote": "The points of attention are there to help, and you decide. You can apply the block and adjust it in the calendar afterwards."
     }
   },
   "riders": {
@@ -1893,7 +1893,7 @@
       "show": "Show",
       "hide": "Hide",
       "undo": "Undo",
-      "weekNote": "A resolution lasts the week unless the numbers get clearly worse. If the same thing comes up next week, it is a new point. The Monday brief and the tips see the points still open; the week draft sees every point, because it plans load."
+      "weekNote": "A resolution lasts the week unless the numbers get clearly worse. If the same thing comes up next week, it is a new point. The AI's summary and the advice for the coach see the points still open. The week draft sees every point, because it plans load."
     }
   },
   "wellbeing": {
@@ -2309,9 +2309,9 @@
       "team": "The whole team"
     },
     "team": {
-      "subtitle": "Each rider's hours on the bike this month and in the season so far, against the goal and DCU.",
+      "subtitle": "Each rider's hours on the bike this month and in the season so far, against the season plan and DCU.",
       "toDate": "The season so far",
-      "toDateValue": "Done {done} h · planned {planned} h · goal {goal} · DCU {dcu}",
+      "toDateValue": "Season plan {goal} · scheduled {planned} h · ridden {done} h · DCU {dcu}",
       "empty": "No riders to show."
     },
     "teamPlans": {
@@ -2353,10 +2353,10 @@
       "done": "The plan is filled again from DCU."
     },
     "monthsTitle": "Month by month",
-    "plan": "Goal",
+    "plan": "Season plan",
     "dcu": "DCU",
-    "scheduled": "Planned",
-    "ridden": "Done",
+    "scheduled": "Scheduled",
+    "ridden": "Ridden",
     "hours": "{hours} h",
     "dcuHours": "DCU: {hours} h",
     "deviationLabel": "Deviation from DCU",
@@ -2406,8 +2406,8 @@
     "notePlaceholder": "E.g. a camp or exams",
     "planNote": "Note for the season",
     "planNotePlaceholder": "E.g. the season's goals, or why the plan differs from DCU",
-    "totals": "The season in total: goal {plan} h · planned {scheduled} h · done {ridden} h · DCU {dcu} h",
-    "totalsOwn": "The season in total: goal {plan} h · planned {scheduled} h · done {ridden} h",
+    "totals": "The season in total: season plan {plan} h · scheduled {scheduled} h · ridden {ridden} h · DCU {dcu} h",
+    "totalsOwn": "The season in total: season plan {plan} h · scheduled {scheduled} h · ridden {ridden} h",
     "readOnlyNote": "You can see the plan. The coach and the rider can change it.",
     "intensity": {
       "title": "Intensity week by week",
@@ -2436,13 +2436,13 @@
     },
     "chart": {
       "title": "Hours per month",
-      "planned": "Goal",
-      "scheduled": "Planned",
-      "ridden": "Done",
+      "planned": "Season plan",
+      "scheduled": "Scheduled",
+      "ridden": "Ridden",
       "dcu": "DCU",
-      "label": "Hours on the bike per month in the season: goal, planned, done and DCU's hours",
-      "readout": "{month}: goal {plan} h · planned {scheduled} h · done {ridden} h · DCU {dcu} h",
-      "readoutOwn": "{month}: goal {plan} h · planned {scheduled} h · done {ridden} h",
+      "label": "Hours on the bike per month in the season: season plan, scheduled, ridden and DCU's hours",
+      "readout": "{month}: season plan {plan} h · scheduled {scheduled} h · ridden {ridden} h · DCU {dcu} h",
+      "readoutOwn": "{month}: season plan {plan} h · scheduled {scheduled} h · ridden {ridden} h",
       "hint": "Point at a month, or use the arrow keys, to see the numbers."
     },
     "reference": {
@@ -2468,34 +2468,34 @@
     }
   },
   "volume": {
-    "done": "Done",
-    "planned": "Planned",
-    "goal": "Goal",
+    "done": "Ridden",
+    "planned": "Scheduled",
+    "goal": "Season plan",
     "dcu": "DCU",
     "hours": "{hours} h",
     "range": "{low}–{high} h",
-    "noGoal": "no goal of your own",
+    "noGoal": "none",
     "noDcu": "no DCU class",
-    "said": "Done {done} h, planned {planned} h, goal {goal}, DCU {dcu}.",
+    "said": "Season plan {goal}, scheduled {planned} h, ridden {done} h, DCU {dcu}.",
     "compact": "{done} of {planned} h",
-    "goalShort": "Goal {hours}",
+    "goalShort": "Season plan {hours}",
     "dcuShort": "DCU {low}–{high}",
     "dcuBreak": "DCU: break and free riding",
     "expected": "Expected {hours} h on the bike:",
     "state": {
-      "inside": "inside DCU's corridor",
-      "over": "above DCU's corridor",
-      "under": "below DCU's corridor"
+      "inside": "inside DCU's range",
+      "over": "above DCU's range",
+      "under": "below DCU's range"
     },
     "toGoal": {
-      "on": "on the goal",
-      "over": "{hours} h over the goal",
-      "under": "{hours} h under the goal"
+      "on": "in line with the season plan",
+      "over": "{hours} h over the season plan",
+      "under": "{hours} h under the season plan"
     },
     "preview": {
       "week": "Week {n}",
-      "planned": "Planned {before} → {after} h",
-      "note": "The bar shows how it looks once the sessions are in. The guardrails say, they forbid nothing."
+      "planned": "Scheduled {before} → {after} h",
+      "note": "The bar shows how it looks once the sessions are in. The points of attention are there to help, and you decide."
     }
   },
   "assist": {
@@ -2503,7 +2503,7 @@
     "dismiss": "Close the proposal",
     "byRules": "Read by the rules",
     "byModel": "Read by {engine}",
-    "byGuardrails": "From Kadence's warnings",
+    "byGuardrails": "From the points of attention",
     "errors": {
       "noModel": "No language model is set up, so the AI cannot answer. Everything else works.",
       "noModelLink": "Settings → AI",
@@ -2538,7 +2538,7 @@
       "category": "Class",
       "categoryNone": "None in particular",
       "refine": "Change the session as it stands",
-      "hint": "Choose a class and the proposal stays inside DCU's frame. No rider data is sent, and nothing is saved until you save the session.",
+      "hint": "Choose a class and the proposal keeps to DCU's recommendations for it. No rider data is sent, and nothing is saved until you save the session.",
       "ruleHint": "Shorthand like \"3x10 min Z4 / 5 min rest\" is read by the rules without a language model.",
       "build": "Build the proposal",
       "building": "Building … this can take a while.",
@@ -2553,7 +2553,7 @@
     "week": {
       "open": "Propose the week",
       "title": "A proposal for the week",
-      "body": "The AI reads DCU's hours and phase, the calendar, the last weeks and the warnings, and proposes sessions. You choose what goes in the calendar.",
+      "body": "The AI reads DCU's hours and phase, the calendar, the last weeks and the points of attention, and proposes sessions. You choose what goes in the calendar.",
       "thinking": "Thinking … it can take a little while.",
       "proposal": "Proposed by the AI",
       "empty": "The AI proposed no sessions for the week.",
