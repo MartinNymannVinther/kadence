@@ -3,6 +3,7 @@ import { Bike, Dumbbell, Plus, Sparkles } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { buttonVariants } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
+import { LibraryTabs } from "@/components/exercises/library/library-tabs";
 import { InstallDcuButton } from "@/components/library/install-dcu-button";
 import { BlockList } from "@/components/library/block-list";
 import { LibraryList } from "@/components/library/library-list";
@@ -24,7 +25,8 @@ export async function generateMetadata(): Promise<Metadata> {
 /**
  * The team's workout library: sessions and programmes. Everyone reads it;
  * coaches keep it, and start a new bike or strength session from the top
- * of it. `?archived=1` shows what was put away as well.
+ * of it. `?archived=1` shows what was put away as well. Its other half,
+ * the exercises and programmes with drawings, is a tab away (./programs).
  */
 export default async function LibraryPage({
   searchParams,
@@ -87,6 +89,7 @@ export default async function LibraryPage({
           ) : undefined
         }
       />
+      <LibraryTabs />
       <LibraryList
         templates={templates.map((tpl) => ({
           id: tpl.id,

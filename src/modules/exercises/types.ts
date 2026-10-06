@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { EXERCISE_GROUPS } from "@/modules/workouts/structure";
+import { exerciseRefSchema, type ExerciseRef } from "./ref";
 
 /**
  * Exercises and programmes (docs/plan-ovelser-og-programmer.md): the shapes
@@ -102,11 +103,8 @@ export const doseSchema = z.discriminatedUnion("kind", [
 ]);
 export type Dose = z.infer<typeof doseSchema>;
 
-/** Kadence's own exercise by its id, or a team's own by its row id. */
-export const exerciseRefSchema = z
-  .string()
-  .regex(/^(builtin:[a-z][a-zA-Z0-9]{1,40}|team:[0-9a-f-]{36})$/);
-export type ExerciseRef = z.infer<typeof exerciseRefSchema>;
+/** Kadence's own exercise by its id, or a team's own by its row id (./ref.ts). */
+export { exerciseRefSchema, type ExerciseRef };
 
 /** The parts of a programme; a part's title comes from messages (`exercises.parts`). */
 export const PART_KEYS = ["any", "morning", "midday", "evening", "before", "after"] as const;

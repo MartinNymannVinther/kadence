@@ -16,6 +16,8 @@ import { StructureView } from "@/components/workouts/structure-view";
 import { todayInCopenhagen } from "@/core/dates";
 import type { OrgContext } from "@/core/db/tenant";
 import { listDeviceLinks } from "@/modules/devices/links";
+import { refsInStructure } from "@/modules/exercises/program-session";
+import { resolveExercises } from "@/modules/exercises/resolve";
 import type { Me } from "@/modules/team/access";
 import { getRider, getRiders } from "@/modules/team/riders";
 import { getActivity } from "@/modules/training/activities";
@@ -76,6 +78,12 @@ export async function SessionView({
   const sport = card.sport as "bike" | "strength" | "other";
   const structure = readStructure(session.structure, sport);
   const exportable = structure.kind === "bike" && structure.steps.length > 0;
+  // A programme's exercises carry their place in the library: the figure
+  // and how-to of those this reader may see (src/modules/exercises/resolve.ts).
+  const exercises =
+    structure.kind === "strength"
+      ? await resolveExercises(ctx, refsInStructure(structure), await getTranslations("exercises"))
+      : {};
   const pushTo =
     exportable && canWrite && !card.activity
       ? (await listDeviceLinks(ctx, session.riderId))
@@ -146,6 +154,7 @@ export async function SessionView({
           structure={structure}
           rider={rider ? { ftp: rider.ftpWatts, thresholdHr: rider.thresholdHr } : null}
           programmeSession={card.programmeSession}
+          exercises={exercises}
         />
         {exportable && (
           <div className="flex flex-col items-start gap-2">

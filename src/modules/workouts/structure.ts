@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { exerciseRefSchema } from "@/modules/exercises/ref";
 
 /**
  * What a session is made of, the one shape every part of Kadence shares:
@@ -12,6 +13,10 @@ import { z } from "zod";
  *   sets and reps of a group by the session's number in the programme
  *   (DCU's programmes go 3×16, then 3×12, then 4×6–8 RM for the legs);
  * - **other**: words, for running, cross-country skiing, a swim.
+ *
+ * A strength exercise may name the exercise in the library it is
+ * (`ref`, src/modules/exercises/ref.ts), so the session can show its
+ * figure and how-to.
  *
  * Pure: imports nothing from the database.
  */
@@ -130,6 +135,14 @@ export const exerciseSchema = z.object({
   load: z.string().max(40).default(""),
   restSeconds: z.number().int().min(0).max(900).optional(),
   note: z.string().max(300).default(""),
+  /**
+   * The exercise in the library this one is, when it came from a
+   * programme ("Læg i kalenderen"): its figure and how-to are shown
+   * beside it to whoever may read that exercise. Optional, so every
+   * session written before it still reads as it was; one that does not
+   * read as a reference is dropped rather than failing the whole session.
+   */
+  ref: exerciseRefSchema.optional().catch(undefined),
 });
 export type Exercise = z.infer<typeof exerciseSchema>;
 

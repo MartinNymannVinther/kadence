@@ -36,7 +36,8 @@ export function ExerciseFigure({
   );
 }
 
-function Primitive({ p }: { p: FigurePrimitive }) {
+/** One primitive painted with the tokens; the pose editor draws with it too. */
+export function Primitive({ p }: { p: FigurePrimitive }) {
   const colour = FIGURE_CSS_VARS[p.tone];
   const opacity = p.opacity < 1 ? p.opacity : undefined;
   const stroke = { stroke: colour, strokeWidth: p.width, opacity };

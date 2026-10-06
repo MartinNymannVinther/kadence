@@ -6,7 +6,13 @@ import { builtinExerciseView } from "./view";
 import { parseRef, teamIdsOf } from "./refs";
 import { getTeamProgram } from "./team-programs";
 import { teamExerciseView } from "./team-exercises";
-import type { ExerciseRef, ExerciseView, ProgramPart, ProgramView } from "./types";
+import {
+  exerciseRefSchema,
+  type ExerciseRef,
+  type ExerciseView,
+  type ProgramPart,
+  type ProgramView,
+} from "./types";
 
 /**
  * A programme ready to show or download, whichever kind its exercises
@@ -75,6 +81,31 @@ export async function resolveProgram(
     .filter((part) => part.items.length > 0);
 
   return { title: heading.title, description: heading.description, parts: resolved };
+}
+
+/**
+ * The exercises a list of references names, by reference: Kadence's own
+ * in the reader's language, the team's own as the coach wrote them,
+ * archived ones included. A reference this reader cannot see — another
+ * team's, one that was never there — is simply missing from the answer,
+ * so a session that carries it shows the exercise's name as before.
+ */
+export async function resolveExercises(
+  ctx: OrgContext,
+  refs: readonly string[],
+  t: Translate,
+): Promise<Record<ExerciseRef, ExerciseView>> {
+  const parsed = refs.flatMap((ref) =>
+    exerciseRefSchema.safeParse(ref).success ? [parseRef(ref as ExerciseRef)] : [],
+  );
+  const teamIds = [...new Set(parsed.filter((r) => r.kind === "team").map((r) => r.id))];
+  const out: Record<ExerciseRef, ExerciseView> = Object.fromEntries(await teamViews(ctx, teamIds));
+  for (const ref of parsed) {
+    if (ref.kind !== "builtin") continue;
+    const view = builtinExerciseView(ref.id, t);
+    if (view) out[view.ref] = view;
+  }
+  return out;
 }
 
 /** One of the team's programmes, archived or not, resolved; null when the team has none by that id. */
