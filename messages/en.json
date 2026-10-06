@@ -2033,6 +2033,27 @@
       "hide": "Hide",
       "undo": "Undo",
       "weekNote": "A resolution lasts the week unless the numbers get clearly worse. If the same thing comes up next week, it is a new point. The AI's summary and the advice for the coach see the points still open. The week draft sees every point, because it plans load."
+    },
+    "pilot": {
+      "title": "The team's three numbers",
+      "body": "Three numbers a week show how the team uses Kadence: how many riders check in, how many sessions get a receipt, and an estimate of the time spent planning. They are there to help decide what Kadence should be after the winter.",
+      "week": "Week",
+      "weekNumber": "Week {week}",
+      "inProgress": "in progress",
+      "checkins": "Check-in",
+      "receipts": "Receipt",
+      "minutes": "Planning",
+      "of": "{part} of {whole}",
+      "percent": "{share, number, percent}",
+      "minutesValue": "{minutes} min",
+      "none": "–",
+      "explainCheckins": "Check-in: riders with a check-in on at least four days of the week.",
+      "explainReceipts": "Receipt: sessions up to and including yesterday that are marked done, have an RPE or have a ride.",
+      "explainRiders": "A rider counts from their first full week on the team. Archived riders do not count.",
+      "explainMinutes": "Planning is a rough estimate in minutes, from when the coaches saved sessions, blocks and season plans. Changes less than ten minutes apart count as one sitting, and each sitting counts at least two minutes. Time spent thinking and reading the plan is not included. The number is there to help see whether Kadence saves time. It is not a judgement of anyone.",
+      "clubsTitle": "Three numbers per club, week {week}",
+      "clubsBody": "The last full week, Monday to Sunday. Numbers only, never a rider, a name or a check-in.",
+      "club": "Club"
     }
   },
   "wellbeing": {
