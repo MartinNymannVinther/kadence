@@ -16,6 +16,7 @@ const HOW_TO = [
   "password",
   "calendar",
   "sessions",
+  "exercises",
   "done",
   "comments",
   "season",

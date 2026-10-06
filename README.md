@@ -79,6 +79,14 @@ U19 and U23 sit in the library with their progression, so session seven
 of the programme says 3 × 12. The coach can change anything; DCU's number
 is always beside it.
 
+**Exercises and programmes, drawn.** A stretch or a strength exercise
+comes with its own stick-figure drawing, a dose and a short "how" and
+"why", in a library of Kadence's own beside what a coach draws for the
+team. Anyone composes a programme on the open guide and downloads it as
+one file that works on a phone offline, or prints it; inside the app a
+coach lays a finished one straight into the calendar, with the drawings
+on the session.
+
 **Load without a power meter.** Power when there is power, pulse when
 there is pulse, how hard it felt when there is neither — on one scale,
 so fitness, fatigue and form mean something for every rider.

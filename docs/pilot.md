@@ -79,6 +79,10 @@ har det eller har kørt. Skal en uge gentages, vælger du under "Læg ugen
 ind i", hvor mange uger i træk den samme uge skal ligge; en god uge kan
 også gemmes som forløb til senere med "Gem som forløb".
 
+Har holdet trænet hårdt sammen, kan du give ryttere et mobilitetsprogram
+med tegninger fra **Bibliotek → Øvelser og programmer** og lægge det i
+kalenderen som et pas.
+
 Brug også dagen til at slå dine egne påmindelser til. Under
 **Indstillinger → Mig → Påmindelser** trykker du "Slå påmindelser til på
 denne enhed". Som træner kan du vælge **"Trivsel"**: én push samme dag
