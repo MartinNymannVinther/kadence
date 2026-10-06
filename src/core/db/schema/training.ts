@@ -11,6 +11,7 @@ import {
   real,
   smallint,
   text,
+  time,
   timestamp,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
@@ -55,6 +56,12 @@ export const plannedSessions = pgTable(
     plannedMinutes: smallint("planned_minutes").notNull().default(0),
     plannedLoad: smallint("planned_load"),
     plannedKm: smallint("planned_km"),
+    /**
+     * When and where it starts, for a session ridden together: "17.30 fra
+     * klubhuset" (docs/adr/0057). Both optional; a session alone has neither.
+     */
+    startTime: time("start_time"),
+    meetingPlace: text("meeting_place").notNull().default(""),
     templateId: text("template_id").references(() => workoutTemplates.id, {
       onDelete: "set null",
     }),
@@ -77,6 +84,7 @@ export const plannedSessions = pgTable(
     index("planned_sessions_rider_date_idx").on(t.orgId, t.riderId, t.onDate),
     index("planned_sessions_group_idx").on(t.orgId, t.groupKey),
     index("planned_sessions_series_idx").on(t.orgId, t.seriesKey),
+    check("planned_sessions_meeting_place", sql`char_length(${t.meetingPlace}) <= 120`),
     uniqueIndex("planned_sessions_activity_uq")
       .on(t.activityId)
       .where(sql`${t.activityId} is not null`),

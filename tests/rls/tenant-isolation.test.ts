@@ -388,6 +388,13 @@ describe("rls coverage (guards future tables)", () => {
     // whose app.user_id is not the installation's owner; tests/core/
     // platform-overview.test.ts proves both.
     "platform_overview",
+    // Which reminders exist, for the reminder job that runs with nobody
+    // signed in (drizzle/0028, docs/adr/0059): the subscription's id, team
+    // and owner, for owners still on the team, and nothing else — no push
+    // address, no kinds, nothing about what a reminder would say. The job
+    // reads all of that as the owner, under the ordinary policies, so what
+    // crosses the boundary is that a person has said yes to reminders.
+    "push_subscriptions_due",
     // Whose upload key a hash is, for a ride file that arrives with a key
     // and nobody signed in (drizzle/0014, docs/adr/0029). It is
     // device_link_owner's question asked of a key: the key's id, the team,

@@ -10,6 +10,7 @@ import {
   pgTable,
   smallint,
   text,
+  time,
   timestamp,
   uniqueIndex,
   type AnyPgColumn,
@@ -368,7 +369,11 @@ export const trainingBlocks = pgTable(
   ],
 );
 
-/** One session of a block: a template on a day (0 is the first Monday). */
+/**
+ * One session of a block on a day (0 is the first Monday): a template from
+ * the library, or a session built in the week planner and kept in the block
+ * itself (docs/adr/0058), which carries its own sport, title and steps.
+ */
 export const trainingBlockItems = pgTable(
   "training_block_items",
   {
@@ -377,15 +382,28 @@ export const trainingBlockItems = pgTable(
     blockId: text("block_id")
       .notNull()
       .references(() => trainingBlocks.id, { onDelete: "cascade" }),
-    templateId: text("template_id")
-      .notNull()
-      .references(() => workoutTemplates.id, { onDelete: "cascade" }),
+    templateId: text("template_id").references(() => workoutTemplates.id, {
+      onDelete: "cascade",
+    }),
+    /** bike | strength | other, for a session kept in the block. */
+    sport: text("sport"),
+    title: text("title"),
+    description: text("description").notNull().default(""),
+    structure: jsonb("structure"),
+    plannedMinutes: smallint("planned_minutes"),
+    startTime: time("start_time"),
+    meetingPlace: text("meeting_place").notNull().default(""),
     day: smallint("day").notNull(),
     sort: smallint("sort").notNull().default(0),
   },
   (t) => [
     index("training_block_items_block_idx").on(t.orgId, t.blockId, t.day),
     check("training_block_items_day", sql`${t.day} between 0 and 83`),
+    check(
+      "training_block_items_session",
+      sql`${t.templateId} is not null or (${t.sport} is not null and ${t.title} is not null and ${t.structure} is not null)`,
+    ),
+    check("training_block_items_meeting_place", sql`char_length(${t.meetingPlace}) <= 120`),
   ],
 );
 

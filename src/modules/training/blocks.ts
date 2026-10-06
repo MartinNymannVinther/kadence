@@ -68,7 +68,7 @@ export type BlockWithItems = TrainingBlockRow & {
 
 async function itemsOf(tx: AppTransaction, blockIds: string[]) {
   if (blockIds.length === 0) return [];
-  return tx
+  const rows = await tx
     .select({
       blockId: trainingBlockItems.blockId,
       day: trainingBlockItems.day,
@@ -82,6 +82,9 @@ async function itemsOf(tx: AppTransaction, blockIds: string[]) {
     .innerJoin(workoutTemplates, eq(workoutTemplates.id, trainingBlockItems.templateId))
     .where(inArray(trainingBlockItems.blockId, blockIds))
     .orderBy(asc(trainingBlockItems.day), asc(trainingBlockItems.sort));
+  // The join keeps the items from the library; a session kept in the block
+  // itself (drizzle/0027) has no template and is read elsewhere.
+  return rows.flatMap((r) => (r.templateId ? [{ ...r, templateId: r.templateId }] : []));
 }
 
 export async function listBlocks(
