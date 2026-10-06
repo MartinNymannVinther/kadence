@@ -112,7 +112,7 @@ export default async function DevicesPage({
 
       <p className="text-meta text-2sm leading-relaxed">
         {t("uploadInstead")}{" "}
-        <Link href="/today" className="focus-ring text-primary font-medium hover:underline">
+        <Link href="/me#upload" className="focus-ring text-primary font-medium hover:underline">
           {t("uploadLink")}
         </Link>
       </p>

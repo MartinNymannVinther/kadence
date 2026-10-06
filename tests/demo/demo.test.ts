@@ -10,6 +10,10 @@ import { readAccounts, switchDemoRole } from "@/modules/demo/roles";
 import { getChampionship, listChampions, listChampionships } from "@/modules/club/service";
 import { listThreads, unreadThreadCount } from "@/modules/community/service";
 import { getTeamSettings } from "@/modules/team/settings";
+import { getRiders } from "@/modules/team/riders";
+import { recentRides } from "@/modules/today/recent-rides";
+import { rideToRate } from "@/components/today/rpe-pick";
+import { addDaysIso, todayInCopenhagen } from "@/core/dates";
 import { listOwnTemplates } from "@/modules/training/templates";
 import { whoAmI } from "@/modules/team/access";
 import { adminPool } from "../helpers/db";
@@ -94,6 +98,16 @@ describe("a demo workspace", () => {
       [orgId],
     );
     expect(inRoom.rows[0]).toEqual({ n: 7, w: 1 });
+  });
+
+  it("has a ride from yesterday that Today asks the rider how hard it felt (ADR 0062)", async () => {
+    const coach = { orgId, userId };
+    const today = todayInCopenhagen();
+    const emma = (await getRiders(coach)).find((r) => r.name === "Emma Holm")!;
+    const rides = await recentRides(coach, emma.id, { from: addDaysIso(today, -2), to: today });
+    const asked = rideToRate(rides, today);
+    expect(asked).not.toBeNull();
+    expect(asked).toMatchObject({ onDate: addDaysIso(today, -1), rpe: null, sport: "bike" });
   });
 
   it("has a rider and her parent the visitor can switch to, and nobody else can", async () => {

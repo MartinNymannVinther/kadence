@@ -368,7 +368,7 @@
       },
       "images": {
         "title": "Logo and picture",
-        "body": "The club's logo sits by its name in the menu, and the picture sits at the top of the Today page for everyone in the club. The picture is made smaller in your browser before it is sent, and details such as a GPS position are removed.",
+        "body": "The club's logo sits by its name in the menu, and the picture sits at the top of the Today page for everyone in the club on a day without sessions. The picture is made smaller in your browser before it is sent, and details such as a GPS position are removed.",
         "logo": "Logo",
         "cover": "Club picture",
         "logoHint": "Square works best. PNG, JPEG or WebP.",
@@ -740,11 +740,11 @@
       },
       "devices": {
         "title": "Uploads and devices",
-        "body": "Upload a FIT file from the bike computer, watch or trainer under Today, in the calendar or on the rider's page. Kadence reads the file itself, offline too, and puts the ride on the day's session when it fits. Every ride has its own page with curves, time in zones and best power. Wahoo, Garmin and Polar can be connected under Settings → Devices, so rides come in by themselves, and sessions can be sent to a Wahoo or Garmin. Wahoo and Garmin are US companies, Polar is Finnish, and it is the rider's own choice. A bike session can also be downloaded as .zwo, .erg, .mrc or .fit."
+        "body": "Upload a FIT file from the bike computer, watch or trainer under Me, in the calendar or on the rider's page. Kadence reads the file itself, offline too, and puts the ride on the day's session when it fits. Every ride has its own page with curves, time in zones and best power. Wahoo, Garmin and Polar can be connected under Settings → Devices, so rides come in by themselves, and sessions can be sent to a Wahoo or Garmin. Wahoo and Garmin are US companies, Polar is Finnish, and it is the rider's own choice. A bike session can also be downloaded as .zwo, .erg, .mrc or .fit."
       },
       "toDevice": {
         "title": "Sessions on the bike computer",
-        "body": "A bike session with steps can go onto a Garmin, so you ride it with targets and a countdown on the screen. Plug the bike computer into the computer with a cable, press Send to bike computer on the session or Send the week's sessions on Today, and pick the bike computer when the browser asks. Kadence puts the files in the folder Garmin/NewFiles; eject the bike computer, and you find the sessions under Training. It works in Chrome and Edge on a computer and in Chrome on Android. In Safari and Firefox you download the files and put them in Garmin/NewFiles yourself. An Edge 540, 840, 1040 or 1050 does not show up as a drive on a Mac; use File Explorer on a Windows PC. Each session is named by its day first, such as 29.09 Tempo, so a week's sessions do not overwrite each other on the bike computer. A step without watts or pulse shows its target in words, such as RPE 7. Kadence writes nothing else to the bike computer and deletes nothing."
+        "body": "A bike session with steps can go onto a Garmin, so you ride it with targets and a countdown on the screen. Plug the bike computer into the computer with a cable, press Send to bike computer on the session or Send the week's sessions on Me, and pick the bike computer when the browser asks. Kadence puts the files in the folder Garmin/NewFiles; eject the bike computer, and you find the sessions under Training. It works in Chrome and Edge on a computer and in Chrome on Android. In Safari and Firefox you download the files and put them in Garmin/NewFiles yourself. An Edge 540, 840, 1040 or 1050 does not show up as a drive on a Mac; use File Explorer on a Windows PC. Each session is named by its day first, such as 29.09 Tempo, so a week's sessions do not overwrite each other on the bike computer. A step without watts or pulse shows its target in words, such as RPE 7. Kadence writes nothing else to the bike computer and deletes nothing."
       },
       "rulle": {
         "title": "Rulle: the session on the trainer",
@@ -756,7 +756,7 @@
       },
       "strava": {
         "title": "From Strava to Kadence",
-        "body": "Kadence cannot be connected to Strava: Strava's rules for apps say an app may show your Strava rides to you alone, not to your coach. But you can bring your rides along. Your whole history: sign in on strava.com on a computer (the app cannot do it), choose Settings → My Account, press Get Started under Download your account and then Request download, and wait for Strava's e-mail; it can take a few hours. Put the zip file in the upload field under Today, as it is. Kadence shows what the archive holds, and then fetches the rides, or every activity if you choose so: with the names you gave them on Strava, newest first, and without the rides that are here already. Up to 500 rides a day; if there are more, it goes on where it stopped when you add the archive again the next day. If you have unpacked the archive, you can pick the folder with “Fetch from the device” instead. A coach can do the same on the rider's page. A single ride: open it on strava.com, choose ••• → Export Original, and upload the file. New rides come most easily straight from the bike computer; see Uploads and devices."
+        "body": "Kadence cannot be connected to Strava: Strava's rules for apps say an app may show your Strava rides to you alone, not to your coach. But you can bring your rides along. Your whole history: sign in on strava.com on a computer (the app cannot do it), choose Settings → My Account, press Get Started under Download your account and then Request download, and wait for Strava's e-mail; it can take a few hours. Put the zip file in the upload field under Me, as it is. Kadence shows what the archive holds, and then fetches the rides, or every activity if you choose so: with the names you gave them on Strava, newest first, and without the rides that are here already. Up to 500 rides a day; if there are more, it goes on where it stopped when you add the archive again the next day. If you have unpacked the archive, you can pick the folder with “Fetch from the device” instead. A coach can do the same on the rider's page. A single ride: open it on strava.com, choose ••• → Export Original, and upload the file. New rides come most easily straight from the bike computer; see Uploads and devices."
       },
       "parentsPage": {
         "title": "The parents' page",
@@ -778,19 +778,13 @@
     "rider": {
       "today": "Your session today",
       "tomorrow": "Tomorrow",
-      "week": "Your week",
       "rest": "Nothing planned. Enjoy it, or log it if you train anyway.",
+      "restTomorrow": "Nothing planned tomorrow.",
       "done": "Done",
       "doneTitle": "Well done. How did it go?",
       "open": "See the whole session",
       "indoors": "Ride indoors",
-      "comments": "{count, plural, one {# comment} other {# comments}}",
-      "upload": "Upload a ride",
-      "uploadBody": "FIT files from your bike computer, watch or trainer. The ride lands on the day's session by itself.",
-      "form": "My form",
-      "formBody": "What your training looks like over the last 90 days.",
-      "records": "Your records",
-      "goals": "Your goals"
+      "comments": "{count, plural, one {# comment} other {# comments}}"
     },
     "week": {
       "nothing": "Nothing planned"
@@ -802,12 +796,12 @@
       "events": "The team's events this week",
       "noEvents": "No races or camps for the whole team this week."
     },
+    "attention": {
+      "count": "{count, plural, =0 {No riders have anything worth a look right now} one {# rider has something worth a look} other {# riders have something worth a look}}",
+      "where": "See the team's week in the calendar"
+    },
     "parent": {
-      "week": "{name}'s week",
-      "waitingTitle": "Waiting for your child's confirmation",
-      "waitingBody": "You can see your child's training here once your child has confirmed the link to you. The rider does that under Settings → Me.",
-      "hiddenTitle": "Your child is not sharing their training right now",
-      "hiddenBody": "The link is confirmed, but your child has chosen not to share their training. It is their choice; talk about it at home."
+      "link": "{count, plural, one {See your child's week under Parents} other {See your children's weeks under Parents}}"
     },
     "start": {
       "title": "Getting started",
@@ -834,7 +828,85 @@
       "not_a_rider": "Only a rider can share a ride to Kadence. A coach uploads the ride on the rider's page.",
       "rate_limited": "You have uploaded many files just now. Try again in a moment.",
       "no_file": "No file came along. Share a .fit, .tcx or .gpx file."
+    },
+    "checklist": {
+      "title": "Getting started",
+      "progress": "{done} of {total} ready",
+      "hide": "Hide",
+      "doneWord": "done",
+      "device": {
+        "title": "What do you ride with?",
+        "ask": "Then Kadence shows you how your rides get in.",
+        "choice": {
+          "garmin": "Garmin",
+          "wahoo": "Wahoo",
+          "polar": "Polar",
+          "strava": "Only Strava",
+          "none": "No bike computer"
+        },
+        "way": {
+          "connect": "Connect your {name}, and your rides come in by themselves.",
+          "folder": "Plug your Garmin into the computer or the phone with a cable. Kadence then fetches the new rides from it.",
+          "upload": "You can always add a file from the ride yourself.",
+          "stravaArchive": "Fetch your Strava archive once, and Kadence has your old rides. New rides you add as files.",
+          "byHand": "Press Done when you have trained, and say how hard it felt. That is all it takes."
+        },
+        "go": {
+          "connect": "Connect {name}",
+          "folder": "Fetch from the device",
+          "upload": "Add a ride",
+          "stravaArchive": "Fetch the Strava archive"
+        },
+        "settle": "Ready",
+        "change": "Choose something else"
+      },
+      "thresholds": {
+        "title": "Your thresholds",
+        "body": "With your FTP or your threshold heart rate, Kadence can show your zones. If you do not know them, skip this. Kadence then uses how hard it felt.",
+        "go": "Enter thresholds",
+        "skip": "Skip"
+      },
+      "guardian": {
+        "title": "Say yes to your parent",
+        "body": "Your parent sees your training only once you have said yes. You decide what they see.",
+        "confirm": "{adult, select, yes {Say yes again to {name}} other {Say yes to {name}}}",
+        "confirmed": "{name} can now see what you share.",
+        "where": "You can change it any time under Settings → Me."
+      },
+      "homeScreen": {
+        "title": "Put Kadence on your home screen",
+        "ios": "Tap the Share button in Safari and choose Add to Home Screen. Kadence then opens like an app.",
+        "android": "Open Chrome's menu and choose Install app or Add to Home screen. Kadence then opens like an app.",
+        "androidPrompt": "Kadence then opens like an app, straight from your home screen.",
+        "other": "Open Kadence on your phone and put it on the home screen from there.",
+        "install": "Add to home screen",
+        "done": "I have done that"
+      }
+    },
+    "rpe": {
+      "named": "How hard did {sport, select, bike {the ride} other {the session}} “{title}” feel?",
+      "unnamed": "How hard did {sport, select, bike {your ride} other {your session}} feel?",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "scale": "How hard, from 1 to 10",
+      "hint": "1 is very, very easy. 10 is the hardest you can do.",
+      "save": "Save",
+      "later": "Not now",
+      "saved": "Saved. Thank you."
     }
+  },
+  "me": {
+    "title": "Me",
+    "sessionPanel": "Session",
+    "week": "Your week",
+    "form": "Form",
+    "formBody": "What your training looks like over the last 90 days.",
+    "checkins": "Check-ins over the last 14 days",
+    "checkinsBody": "Your own colours, so you can see your pattern.",
+    "goals": "Your goals",
+    "records": "Your records",
+    "upload": "Upload a ride",
+    "uploadBody": "Files from your bike computer, watch or trainer. The ride lands on the day's session by itself. Below, you can also send the week's sessions to your Garmin."
   },
   "errors": {
     "too_many_reset_links": "You have made many links just now. Try again in an hour.",
@@ -3218,8 +3290,8 @@
         "duplicate": "The ride is already saved.",
         "rateLimited": "You've saved many rides in the last hour. Try again in a little while.",
         "not_rider": "Only a rider can save a ride.",
-        "notFound": "The session no longer exists. Download the FIT file and upload it on “Today”.",
-        "too_large": "The ride is too large to save from here. Download the FIT file and upload it on “Today”."
+        "notFound": "The session no longer exists. Download the FIT file and upload it on “Me”.",
+        "too_large": "The ride is too large to save from here. Download the FIT file and upload it on “Me”."
       }
     },
     "little": {
