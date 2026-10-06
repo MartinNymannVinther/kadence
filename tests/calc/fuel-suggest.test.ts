@@ -4,7 +4,7 @@ import { carbAdvice, DEFAULT_DAY } from "@/modules/calc/fuel-day";
 import { suggestPlan } from "@/modules/calc/fuel-suggest";
 
 /** Notes that would point out a flaw in the plan itself, as opposed to advice about the race. */
-const FLAWS = ["sodium", "fuelHeat", "riceCakeLate", "fatFibre", "pastFinish"];
+const FLAWS = ["sodium", "fuelHeat", "riceCakeLate", "fatFibre"];
 
 describe("Kadence's own plan", () => {
   it("is on target every hour, without a flaw, for every race the calculator takes", () => {

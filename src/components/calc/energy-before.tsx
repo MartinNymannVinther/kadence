@@ -72,7 +72,10 @@ export function EnergyBefore({
           { kind: "carbs", text: g("carbs", { low: target.carbs.low, high: target.carbs.high }) },
           {
             kind: "fluid",
-            text: g("fluid", { low: num(0.5, locale, 1), high: num(1, locale, 1) }),
+            text: g("fluid", {
+              low: num(target.fluid.low, locale, 1),
+              high: num(target.fluid.high, locale, 1),
+            }),
           },
         ]}
       />

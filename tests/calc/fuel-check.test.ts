@@ -168,13 +168,4 @@ describe("the notes under a plan", () => {
       expect.arrayContaining(["multiple", "practise"]),
     );
   });
-
-  it("does not count what lies after a shortened finish, and says so", () => {
-    const plan: Lanes = [["drink"], ["drink"], ["banana", "banana"], [], [], []];
-    const check = checkPlan(RACE, plan);
-    expect(check.lanes).toHaveLength(2);
-    expect(check.totals.pieces).toBe(0);
-    expect(check.pastFinish).toBe(2);
-    expect(check.notes).toContain("pastFinish");
-  });
 });

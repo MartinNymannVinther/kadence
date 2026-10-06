@@ -3,7 +3,7 @@
 import { Info } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { num } from "@/components/charts/format";
-import { kcalFromMet, spread } from "@/modules/calc/energy";
+import { kcalRacing, spread } from "@/modules/calc/energy";
 import { checkPlan, type Note } from "@/modules/calc/fuel-check";
 import { carbAdvice, type Day } from "@/modules/calc/fuel-day";
 import { contentOf } from "@/modules/calc/fuel-items";
@@ -51,9 +51,7 @@ export function EnergyDuring({
           : g("carbsHour", { low: advice.low, high: advice.high });
   const notes = check.notes.filter((n) => SHOWN.includes(n));
   const kcal =
-    day.session === "race"
-      ? spread(kcalFromMet("racing", referenceKg(day.riderClass, day.sex), 1))
-      : null;
+    day.session === "race" ? spread(kcalRacing(referenceKg(day.riderClass, day.sex), 1)) : null;
 
   return (
     <EnergyStep

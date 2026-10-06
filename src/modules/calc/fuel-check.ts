@@ -14,9 +14,6 @@ import { contentOf, FUEL_ITEMS, type BottleMl, type FuelItemId } from "./fuel-it
 
 export const MIN_MINUTES = 30;
 export const MAX_MINUTES = 360;
-export const MAX_LANES = MAX_MINUTES / 60;
-/** No more than this in one hour: a jersey has three pockets. */
-export const MAX_PER_LANE = 8;
 
 /**
  * Food comes in whole pieces and bottles are seldom drunk to the last
@@ -54,7 +51,7 @@ export type FuelRace = {
   bottleMl: BottleMl;
 };
 
-/** One list of items for each hour on the bike; lists past the finish are kept but not counted. */
+/** One list of items for each hour on the bike. */
 export type Lanes = FuelItemId[][];
 
 export type Lane = { index: number; fromMin: number; toMin: number };
@@ -86,8 +83,7 @@ export type Note =
   | "fuelHeat"
   | "riceCakeLate"
   | "fatFibre"
-  | "cages"
-  | "pastFinish";
+  | "cages";
 
 export type PlanCheck = {
   advice: CarbAdvice;
@@ -98,8 +94,6 @@ export type PlanCheck = {
   onTarget: number;
   podium: boolean;
   notes: Note[];
-  /** Items left in hours after the finish when the race was made shorter. */
-  pastFinish: number;
 };
 
 export function clampMinutes(minutes: number): number {
@@ -203,8 +197,6 @@ export function checkPlan(
     notes.push("riceCakeLate");
   if (last.some((id) => FUEL_ITEMS[id].fatFibre)) notes.push("fatFibre");
   if (bottles > 2) notes.push("cages");
-  const pastFinish = plan.slice(lanes.length).flat().length;
-  if (pastFinish > 0) notes.push("pastFinish");
 
   const onTarget = checks.filter(
     (c) => (c.carbState === "ok" || c.carbState === "free") && c.fluidState === "ok",
@@ -218,6 +210,5 @@ export function checkPlan(
     onTarget,
     podium: onTarget === checks.length,
     notes,
-    pastFinish,
   };
 }

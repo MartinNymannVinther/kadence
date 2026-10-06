@@ -60,7 +60,10 @@ export function EnergyAfter({
                 : []),
               {
                 kind: "fluid",
-                text: g("fluid", { low: num(0.5, locale, 1), high: num(1, locale, 1) }),
+                text: g("fluid", {
+                  low: num(first.fluid.low, locale, 1),
+                  high: num(first.fluid.high, locale, 1),
+                }),
               },
             ]}
           />
