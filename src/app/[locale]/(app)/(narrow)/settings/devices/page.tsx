@@ -134,7 +134,7 @@ export default async function DevicesPage({
         }
       >
         {shown.length > 0 ? t("uploadInstead") : t("filesOnly")}{" "}
-        <Link href="/today" className="focus-ring text-primary font-medium hover:underline">
+        <Link href="/me#upload" className="focus-ring text-primary font-medium hover:underline">
           {t("uploadLink")}
         </Link>
       </p>

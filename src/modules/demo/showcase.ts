@@ -7,6 +7,7 @@ import { seedClubChampionship, type DemoRider } from "./club";
 import { demoCoverPng, demoLogoPng } from "./club-images";
 import { seedCoachesRoom } from "./coaches-room";
 import { pick, type L } from "./seed-data";
+import { seedUnratedRide } from "./unrated-ride";
 
 /**
  * The rest of the product in the demo (docs/adr/0054), so a visitor sees
@@ -49,6 +50,7 @@ export async function seedShowcase(
   l: L,
   { today, riders, ownRiderId }: { today: string; riders: DemoRider[]; ownRiderId: string },
 ): Promise<void> {
+  await seedUnratedRide(ctx, l, { today, riderId: ownRiderId });
   await saveOrgImage(ctx, "logo", demoLogoPng());
   await saveOrgImage(ctx, "cover", demoCoverPng());
   await createTemplate(ctx, {

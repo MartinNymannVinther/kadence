@@ -5,6 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { getSession } from "@/core/auth/session";
 import { findTeamInvitation } from "@/core/team/service";
 import { Link } from "@/i18n/navigation";
+import { isCoachRole } from "@/modules/team/access";
 import { AcceptForm, JoinRegisterForm } from "./join-forms";
 
 type Params = { params: Promise<{ id: string }> };
@@ -15,11 +16,15 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /**
- * The page behind an invitation link. It says who invited whom into
- * what, and then does the one right thing for whoever opened it: a
- * stranger registers for the address the invitation names, the person
- * it was sent to accepts with one click, and somebody signed in as
- * anyone else is told so rather than let through.
+ * The page behind an invitation link. It says who invited whom onto
+ * which team, and as what — a coach's invitation says "som træner"; a
+ * rider's and a parent's are the same kind to the auth role, which cannot
+ * see the rider or parent row waiting for it, so they name the team alone
+ * — and in one line what comes after (docs/adr/0062). Then it does the
+ * one right thing for whoever opened it: a stranger registers for the
+ * address the invitation names, the person it was sent to accepts with
+ * one click, and somebody signed in as anyone else is told so rather
+ * than let through.
  */
 export default async function JoinPage({ params }: Params) {
   const { id } = await params;
@@ -45,10 +50,12 @@ export default async function JoinPage({ params }: Params) {
     );
   }
 
-  const intro = t("intro", {
+  const role = isCoachRole(invitation.role) ? "coach" : "member";
+  const intro = `${t("intro", {
     inviter: invitation.inviterName || t("someone"),
-    workspace: invitation.workspaceName,
-  });
+    team: invitation.workspaceName,
+    role,
+  })} ${t("next", { role })}`;
 
   if (session && session.user.email.toLowerCase() !== invitation.email.toLowerCase()) {
     return (

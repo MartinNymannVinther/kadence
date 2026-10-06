@@ -13,6 +13,7 @@ const PROTECTED_PREFIXES = [
   "/season",
   "/activities",
   "/parents",
+  "/me",
   "/settings",
   "/help",
   "/onboarding",

@@ -78,3 +78,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0056](0056-focus-for-the-first-winter.md)                                 | Focus for the first winter: five parts parked behind installation flags, nothing deleted                    | → 0045, 0047, 0051, 0052, 0054 |
 | [0060](0060-navigation-by-role.md)                                         | One menu per role, a bottom bar on the phone, and the guides out of the signed-in menu                      | → 0007, 0047                   |
 | [0061](0061-the-teams-week.md)                                             | The team's week: who needs a talk, beside each rider; one card per rider on a phone                         | → 0017, 0026, 0040, 0049, 0053 |
+| [0062](0062-the-riders-day-and-their-own-page.md)                          | The rider's day: Today shows today, the rest lives on Mig; a first-run checklist; RPE when the ride lands   | → 0021, 0032, 0060             |
