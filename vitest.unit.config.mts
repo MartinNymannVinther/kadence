@@ -28,6 +28,8 @@ export default defineConfig({
       "tests/insight/pilot-numbers.test.ts",
       // The list "Inviter hele holdet" reads and who its links go to; the service needs the database.
       "tests/team/{bulk-parse,invitation-recipients}.test.ts",
+      // Exercises and programmes: the contract, the figures, Kadence's own and their words.
+      "tests/exercises/**/*.test.ts",
     ],
   },
 });
