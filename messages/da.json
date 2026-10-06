@@ -4648,5 +4648,14 @@
         }
       }
     }
+  },
+  "exercises": {
+    "items": {
+      "hipFlexor": {
+        "name": "Hoftebøjerstræk",
+        "how": "Sæt det ene knæ i gulvet og den anden fod foran. Spænd let i maven, stå ret og skub hoften fremad, til du mærker et stræk foran på låret.",
+        "why": "Modvirker de stramme hoftebøjere, der trækker i lænden, når man sidder og cykler."
+      }
+    }
   }
 }

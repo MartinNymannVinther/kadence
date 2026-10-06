@@ -4648,5 +4648,14 @@
         }
       }
     }
+  },
+  "exercises": {
+    "items": {
+      "hipFlexor": {
+        "name": "Hip flexor stretch",
+        "how": "Put one knee on the floor and the other foot in front. Tighten your stomach a little, stand tall and push the hip forward until you feel a stretch at the front of the thigh.",
+        "why": "Eases the tight hip flexors that pull on the lower back when you sit and ride."
+      }
+    }
   }
 }
