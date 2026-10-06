@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
+import { Plus } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
+import { buttonVariants } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
 import { ExerciseBrowser } from "@/components/exercises/library/exercise-browser";
 import { LibraryTabs } from "@/components/exercises/library/library-tabs";
 import { ProgramList } from "@/components/exercises/library/program-list";
 import { getOrgContext } from "@/core/auth/session";
 import { Link, redirect } from "@/i18n/navigation";
+import { cn } from "@/lib/utils";
 import { libraryCatalogue } from "@/modules/exercises/library";
 import { whoAmI } from "@/modules/team/access";
 
@@ -42,7 +45,23 @@ export default async function ProgramsPage({
 
   return (
     <div className="flex min-w-0 flex-col gap-6">
-      <PageHeader title={t("title")} subtitle={tl("subtitle")} />
+      <PageHeader
+        title={t("title")}
+        subtitle={tl("subtitle")}
+        actions={
+          isCoach ? (
+            <>
+              <Link
+                href="/library/exercises/new"
+                className={cn(buttonVariants({ variant: "outline" }), "max-sm:h-11")}
+              >
+                <Plus data-icon="inline-start" />
+                {tl("newExercise")}
+              </Link>
+            </>
+          ) : undefined
+        }
+      />
       <LibraryTabs />
       <section aria-labelledby="library-programs" className="flex flex-col gap-3">
         <div className="flex flex-col gap-0.5">
