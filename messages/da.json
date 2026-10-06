@@ -922,7 +922,9 @@
       "rider": "Rytter",
       "week": "På cyklen",
       "plan": "Planlæg ugen",
-      "hours": "{done} af {planned} t"
+      "hours": "{done} af {planned} t",
+      "day": "{day}: {what}",
+      "dayEmpty": "intet planlagt"
     },
     "menu": {
       "label": "Handlinger for {title}",
@@ -1820,7 +1822,7 @@
   },
   "insight": {
     "title": "Mulige opmærksomhedspunkter",
-    "subtitle": "Ud fra ugens timer, check-ins og DCU's rammer.",
+    "subtitle": "Ugen, der er i gang, ud fra timerne, passene og check-ins.",
     "riderTitle": "Opmærksomhedspunkter",
     "noFlags": "Ugen ser rolig ud.",
     "allCalm": "Holdet ser ud til at være i balance i denne uge.",
@@ -1864,6 +1866,25 @@
       "short_sleep": "under 6 timers søvn"
     },
     "guideLink": "Råd i trænerguiden",
+    "weekLink": "Se ugen",
+    "otherWeek": "Opmærksomhedspunkterne følger ugen, der er i gang.",
+    "toThisWeek": "Gå til denne uge",
+    "badge": {
+      "label": "Opmærksomhedspunkter for {name}: {flags}. Gå til listen.",
+      "more": "+{count}",
+      "hours_above_corridor": "Over DCU's ramme",
+      "hours_below_corridor": "Under DCU's ramme",
+      "ramp": "Hurtig stigning",
+      "longest_ride": "Lang tur",
+      "strength_spacing": "Styrkepas tæt",
+      "compliance": "Pas gik anderledes",
+      "mid_zone": "Meget mellemzone",
+      "wellbeing_talk": "Tid til en snak",
+      "wellbeing_help": "Hjælp fra fagfolk",
+      "pain": "Smerte",
+      "sleep_short": "Kort søvn",
+      "sleep_below_minimum": "For lidt søvn"
+    },
     "resolve": {
       "button": "Afklaret",
       "label": "Markér som afklaret",

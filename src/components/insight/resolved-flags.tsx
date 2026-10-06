@@ -60,6 +60,7 @@ export function ResolvedFlags({ groups }: { groups: ResolvedGroup[] }) {
                     key={`${item.resolutionId}-${index}`}
                     flag={item.flag}
                     klass={g.klass}
+                    weekHref={g.weekHref}
                     action={
                       <Button
                         type="button"

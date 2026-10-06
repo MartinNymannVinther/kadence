@@ -922,7 +922,9 @@
       "rider": "Rider",
       "week": "On the bike",
       "plan": "Plan the week",
-      "hours": "{done} of {planned} h"
+      "hours": "{done} of {planned} h",
+      "day": "{day}: {what}",
+      "dayEmpty": "nothing planned"
     },
     "menu": {
       "label": "Actions for {title}",
@@ -1820,7 +1822,7 @@
   },
   "insight": {
     "title": "Possible points of attention",
-    "subtitle": "From the week's hours, the check-ins and DCU's ranges.",
+    "subtitle": "The week in progress, from the hours, the sessions and the check-ins.",
     "riderTitle": "Points of attention",
     "noFlags": "The week looks calm.",
     "allCalm": "The team looks to be in balance this week.",
@@ -1864,6 +1866,25 @@
       "short_sleep": "under 6 hours' sleep"
     },
     "guideLink": "Advice in the coach guide",
+    "weekLink": "See the week",
+    "otherWeek": "The points of attention follow the week in progress.",
+    "toThisWeek": "Go to this week",
+    "badge": {
+      "label": "Points of attention for {name}: {flags}. Go to the list.",
+      "more": "+{count}",
+      "hours_above_corridor": "Over DCU's range",
+      "hours_below_corridor": "Under DCU's range",
+      "ramp": "Steep rise",
+      "longest_ride": "Long ride",
+      "strength_spacing": "Strength close",
+      "compliance": "Sessions went differently",
+      "mid_zone": "Much middle zone",
+      "wellbeing_talk": "Time for a talk",
+      "wellbeing_help": "Professional help",
+      "pain": "Pain",
+      "sleep_short": "Short sleep",
+      "sleep_below_minimum": "Too little sleep"
+    },
     "resolve": {
       "button": "Resolved",
       "label": "Mark as resolved",
