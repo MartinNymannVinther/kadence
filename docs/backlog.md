@@ -23,6 +23,7 @@ eller mere. Rækkefølgen inden for en prioritet er den anbefalede.
 
 P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter #21 og #22). Hvert spor bygges i sit eget worktree med egen database og flettes ind på P1-grenen, når det er grønt. Statusloggen nyeste først:
 
+- **6. okt., aften.** P1 er færdig: alle otte stories er flettet ind på `feat/p1-foer-piloten`, hele suiten er grøn (2.243 tests), build kompilerer, og PR #23 er klar til Martin. Samlet forbrug for P1: ca. 1,7M tokens mod et skøn på 1,4–2,2M. Næste skridt er Martins: læse PR'en, prøve påmindelser på en telefon (P1-05) og Rulle på en hometrainer (P1-06), og udfylde kontaktoplysningerne i pilotguiden.
 - **6. okt., eftermiddag.** P1-01, P1-02+05, P1-04 og P1-06 er færdige og flettet ind; hele suiten er grøn (2.243 tests) og build kompilerer. Samlet forbrug for P1-01 til P1-07: ca. 1,4M tokens mod et skøn på 1,2–2,0M. P1-08 (pilotguiden) er sat i gang.
 - **6. okt., eftermiddag.** P1-03 og P1-07 er færdige og flettet ind; hele suiten er grøn (2.143 tests).
 - **6. okt., middag.** De fem parkerede dele er slået til som standard (PR #24, ADR 0057 tillæg), og den ændring er flettet ind i P1-grenen, så P1 bygger oven på den. P1-sporene blev stoppet ved en fejl, før de nåede at skrive noget, og er sat i gang igen fra den opdaterede gren.
@@ -96,7 +97,7 @@ Rammen er:
 | P1-05 | Prøv påmindelser på en rigtig telefon                      | P1   | S    | 100–180k     | Sonnet 5  | ADR 0060 (push)   | Færdig       |
 | P1-06 | Rulle møder en rigtig hometrainer                          | P1   | S    | 120–200k     | Sonnet 5  |                   | Færdig       |
 | P1-07 | Ryttere og forældre kan forlade holdet igen                | P1   | S    | 50–100k      | Sonnet 5  |                   | Færdig       |
-| P1-08 | En pilotguide til træneren                                 | P1   | S    | 120–200k     | Sonnet 5  | A-05              | I gang       |
+| P1-08 | En pilotguide til træneren                                 | P1   | S    | 120–200k     | Sonnet 5  | A-05              | Færdig       |
 | P2-01 | Garmin-ture ind af sig selv gennem Tredict                 | P2   | L    | 600k–1M      | Opus 5.5  | A-07 (Martins ja) | Ikke startet |
 | P2-02 | Mine ture: en liste over rytterens ture                    | P2   | S    | 80–150k      | Sonnet 5  |                   | Ikke startet |
 | P2-03 | Tid, sted og kørsel på løb og begivenheder                 | P2   | M    | 200–300k     | Sonnet 5  |                   | Ikke startet |
@@ -386,7 +387,7 @@ sidde ved siden af.
 
 **Tokens:** ca. 120–200k · **Model:** Sonnet 5 (`claude-sonnet-5`), dansk tekst og skærmbilleder mod demoen.
 
-**Status:** I gang siden 6. oktober eftermiddag (Sonnet 5), nu hvor P1-01 til P1-07 er flettet ind. A-05 (aftalen med pilotholdet) er ikke nødvendig for guiden.
+**Status:** Færdig 6. oktober, flettet ind. `docs/pilot.md` fører træneren gennem de første to uger med otte skærmbilleder fra demoen i `docs/pilot/`, og Hjælp har fået et afsnit om guiden. Martins kontaktoplysninger står som en pladsholder, der skal udfyldes. Undervejs fandt guiden, at tabellen med holdets tre tal blev skåret af på en telefon; det er rettet. Faktisk forbrug: 285k tokens på 31 min (skøn 120–200k; mere end ventet, fordi hvert trin blev klikket igennem på en rigtig demo).
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: docs/pilotguide.
