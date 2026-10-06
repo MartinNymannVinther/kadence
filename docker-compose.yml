@@ -81,8 +81,8 @@ services:
       DEMO: ${DEMO:-}
       # Races from Cykling Danmark (ADR 0039), off unless set.
       DCU_RESULTS: ${DCU_RESULTS:-}
-      # The parts that wait for a real winter (docs/adr/0057), each off
-      # unless set to "on".
+      # The parts an installation may park (docs/adr/0057), each on
+      # unless set to "off".
       RULLE_WORLD: ${RULLE_WORLD:-}
       COACHES_ROOM: ${COACHES_ROOM:-}
       CLUB_CHAMPIONSHIP: ${CLUB_CHAMPIONSHIP:-}

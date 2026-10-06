@@ -1,9 +1,8 @@
 import { env } from "@/core/env";
 
 /**
- * The parts of Kadence an installation turns on by itself (docs/adr/0057).
- * Each waits for a real winter with a real team before a club sees it, so
- * each is off unless the installation says "on". Turning one off hides it
+ * The parts of Kadence an installation may park (docs/adr/0057). Each is
+ * on unless the installation says "off". Turning one off hides it
  * everywhere at once — the menu, the page, the action behind it and the
  * demo — and removes nothing: the code stays, and so do the rows.
  *

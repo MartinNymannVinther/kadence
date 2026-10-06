@@ -20,6 +20,10 @@ og kan vendes ved gennemgangen af PR'en:
 Intet er slettet. Det, der er parkeret, ligger bag et flag, og data bliver
 liggende.
 
+**Ændret samme dag:** Martin valgte at have alle fem dele slået til som
+standard (ADR 0057, tillægget). Flagene er der stadig, så en installation
+kan parkere en del med `=off`.
+
 ## Bølge 1 — rettelser
 
 - Oktober har ingen DCU-ramme: en uge mest i "pause + frit" giver hverken

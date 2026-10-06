@@ -41,9 +41,10 @@ export default defineConfig({
       // default is "off" is proven in tests/core/env.
       DEMO: "on",
       LLM_PROVIDER: "none",
-      // The parts that wait for a real winter are off, as on a new
-      // installation (docs/adr/0057); a test that needs one on mocks
-      // "@/core/features" (tests/helpers/features.ts).
+      // The parts an installation may park are pinned off here, so every
+      // gate is exercised; they are on by default (tests/core/features), and
+      // a test that needs one on mocks "@/core/features"
+      // (tests/helpers/features.ts).
       RULLE_WORLD: "off",
       COACHES_ROOM: "off",
       CLUB_CHAMPIONSHIP: "off",

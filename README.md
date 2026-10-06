@@ -52,10 +52,11 @@ smaller and sharper: a menu per role with a bottom bar on the phone, a
 Today that shows today, the team's week as the place to see who needs a
 talk, one place to plan a week, time and place on a session, reminders
 by web push without content, and a rider's first-run checklist. Five
-parts wait behind installation flags, off by default, until a real team
-has used the rest (ADR 0057): Rulle's land and towns, Trænerrummet, the
-club championship, the energy calculator and the food guide. What is
-left is in [docs/backlog.md](docs/backlog.md).
+parts sit behind installation flags, on by default, so an installation
+can park them until a real team has used the rest (ADR 0057): Rulle's
+land and towns, Trænerrummet, the club championship, the energy
+calculator and the food guide. What is left is in
+[docs/backlog.md](docs/backlog.md).
 
 Much of the code is written together with Claude Code, under the rules
 in [CLAUDE.md](CLAUDE.md). Every change is reviewed, tested and deployed
