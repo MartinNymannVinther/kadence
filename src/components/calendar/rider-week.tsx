@@ -11,6 +11,7 @@ import { CalendarDialogs, type DialogState } from "./calendar-dialogs";
 import { DayColumn } from "./day-column";
 import { calendarHref, withQuery, type CalendarQuery } from "./href";
 import { SessionCard } from "./session-card";
+import { ShareWeekButton } from "./share-week-button";
 import type { TemplateOption } from "./template-picker";
 import type { CalendarActivityCard, CalendarCard, CalendarEventCard, RiderOption } from "./types";
 import { useSessionDrag } from "./use-session-drag";
@@ -40,6 +41,7 @@ export function RiderWeek({
   query,
   volume,
   basisLabel,
+  teamName,
 }: {
   riderId: string;
   days: string[];
@@ -56,6 +58,8 @@ export function RiderWeek({
   volume: Volume | null;
   /** The DCU class-year they are read for, as words. */
   basisLabel: string | null;
+  /** For "Del ugen". */
+  teamName: string;
 }) {
   const t = useTranslations("calendar.actions");
   const copy = useTranslations("calendar.copyWeek");
@@ -118,6 +122,12 @@ export function RiderWeek({
               </Button>
             )}
             <UploadDialog riderId={riderId} />
+            <ShareWeekButton
+              team={teamName}
+              monday={monday}
+              sessions={sessions}
+              rider={riders.find((r) => r.id === riderId)?.name ?? ""}
+            />
             {isCoach && (
               <>
                 <Link

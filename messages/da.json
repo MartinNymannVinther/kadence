@@ -997,6 +997,14 @@
       "placePlaceholder": "Fx klubhuset",
       "clearTime": "Fjern starttiden"
     },
+    "share": {
+      "open": "Del ugen",
+      "week": "Uge {n}",
+      "riders": "{count, plural, one {# rytter} other {# ryttere}}",
+      "empty": "Ingen pas i ugen.",
+      "copied": "Ugen er kopieret som tekst. Sæt den ind i holdets chat.",
+      "failed": "Ugen kunne ikke deles eller kopieres. Prøv igen."
+    },
     "repeat": {
       "toggle": "Gentag på faste ugedage",
       "weekdays": "Ugedage",

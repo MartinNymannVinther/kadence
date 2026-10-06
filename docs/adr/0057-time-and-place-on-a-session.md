@@ -34,6 +34,14 @@ page, to parents and in "Del ugen".
   (`src/modules/training/time-place.ts`, pure).
 - **A day's sessions come in the order they start**; those without a time
   after them, in the order they had.
+- **"Del ugen"**, in the team's week and a rider's week, gives the week as
+  plain text for the club's SMS or chat group — through the phone's share
+  sheet, or copied where there is none: the team, "Uge 41", and per day
+  each session with its time, place, title and length. A session ridden
+  together is one line with how many riders have it, and no rider is
+  named in the team's week; a rider's own week names the rider once, at
+  the top. Nothing about how anyone is or did — no check-ins, no rides,
+  no flags (`src/modules/training/share-week.ts`, pure).
 - **The export carries them**: it reads every column of the tables it
   lists, and a test proves these two are there.
 - The demo's Tuesday intervals and Saturday ride meet at the clubhouse.
@@ -52,3 +60,9 @@ page, to parents and in "Del ugen".
   length says how long it is; an end time would be a second truth.
 - **No zone on the time.** A session is in Copenhagen as its day is; a
   camp abroad says its local time in the place or the description.
+- **"Del ugen" is text, not a link.** It leaves Kadence the moment it is
+  shared, does not follow later changes, and anyone in the chat can read
+  it; that is why it carries the plan and nothing about a rider. A
+  shared, always-current page for a club's chat would be a public link
+  into the team's data, past the database's separation of teams and
+  riders.

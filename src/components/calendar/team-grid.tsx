@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { CalendarDialogs, type DialogState } from "./calendar-dialogs";
 import { EventChip } from "./event-chip";
 import { calendarHref, type CalendarQuery } from "./href";
+import { ShareWeekButton } from "./share-week-button";
 import { TeamChip } from "./team-chip";
 import type { Volume } from "@/modules/season/volume";
 import type { TemplateOption } from "./template-picker";
@@ -38,6 +39,7 @@ export function TeamGrid({
   templates,
   query,
   volumes,
+  teamName,
 }: {
   riders: RiderOption[];
   days: string[];
@@ -49,6 +51,8 @@ export function TeamGrid({
   query: CalendarQuery;
   /** Each rider's four numbers for the week (ADR 0040), by rider id. */
   volumes: Record<string, Volume>;
+  /** For "Del ugen". */
+  teamName: string;
 }) {
   const t = useTranslations("calendar.team");
   const actions = useTranslations("calendar.actions");
@@ -114,6 +118,7 @@ export function TeamGrid({
           <CopyPlus data-icon="inline-start" />
           {copy("open")}
         </Button>
+        <ShareWeekButton team={teamName} monday={days[0] ?? today} sessions={sessions} />
       </div>
       <p aria-live="polite" className="sr-only">
         {announcement}

@@ -997,6 +997,14 @@
       "placePlaceholder": "E.g. the clubhouse",
       "clearTime": "Remove the start time"
     },
+    "share": {
+      "open": "Share the week",
+      "week": "Week {n}",
+      "riders": "{count, plural, one {# rider} other {# riders}}",
+      "empty": "No sessions this week.",
+      "copied": "The week is copied as text. Paste it into the team's chat.",
+      "failed": "The week could not be shared or copied. Try again."
+    },
     "repeat": {
       "toggle": "Repeat on set weekdays",
       "weekdays": "Weekdays",

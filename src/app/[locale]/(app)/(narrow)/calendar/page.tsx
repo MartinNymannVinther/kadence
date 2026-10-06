@@ -20,6 +20,7 @@ import { refreshStaleRaces } from "@/modules/results/refresh";
 import { listRaceResults } from "@/modules/results/service";
 import { volumesFor } from "@/modules/season/volumes";
 import { whoAmI } from "@/modules/team/access";
+import { getTeamName } from "@/modules/team/name";
 import { getRiders } from "@/modules/team/riders";
 import { listUnplanned } from "@/modules/training/activities";
 import { listEvents } from "@/modules/training/events";
@@ -97,15 +98,18 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
     ? { week: monday, view: "team" }
     : { week: monday, rider: choose ? rider.id : null };
 
-  const [sessions, unplanned, eventRows, results, templates, volumes] = await Promise.all([
-    listSessions(ctx, { ...range, riderIds }),
-    listUnplanned(ctx, { ...range, riderIds }),
-    listEvents(ctx, { ...range, riderIds }),
-    // The places from Cykling Danmark are the coach's (ADR 0039).
-    me.isCoach ? listRaceResults(ctx, { ...range, riderIds }) : Promise.resolve([]),
-    canWrite ? listTemplates(ctx) : Promise.resolve([]),
-    volumesFor(ctx, riderIds, range, today),
-  ]);
+  const [sessions, unplanned, eventRows, results, templates, volumes, teamName] = await Promise.all(
+    [
+      listSessions(ctx, { ...range, riderIds }),
+      listUnplanned(ctx, { ...range, riderIds }),
+      listEvents(ctx, { ...range, riderIds }),
+      // The places from Cykling Danmark are the coach's (ADR 0039).
+      me.isCoach ? listRaceResults(ctx, { ...range, riderIds }) : Promise.resolve([]),
+      canWrite ? listTemplates(ctx) : Promise.resolve([]),
+      volumesFor(ctx, riderIds, range, today),
+      getTeamName(ctx),
+    ],
+  );
   // A rider plans their own sessions into their own calendar too (ADR 0050).
   const ownTemplates =
     canWrite && !teamView && me.rider?.id === rider.id
@@ -153,6 +157,7 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
           templates={templateOptions}
           query={query}
           volumes={Object.fromEntries(volumes)}
+          teamName={teamName}
         />
       ) : (
         <RiderWeek
@@ -169,6 +174,7 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
           query={query}
           volume={volume}
           basisLabel={volume?.basis ? basisText(volume.basis, (k, v) => seasonT(k, v)) : null}
+          teamName={teamName}
         />
       )}
       {openSession && (
