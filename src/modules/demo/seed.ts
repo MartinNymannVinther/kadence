@@ -1,6 +1,6 @@
 import { addDaysIso, diffDays, mondayOf, todayInCopenhagen } from "@/core/dates";
 import type { OrgContext } from "@/core/db/tenant";
-import { raceYearOf, seasonStartYear, strengthFrequency } from "@/modules/dcu";
+import { phaseOf, raceYearOf, seasonStartYear, strengthFrequency } from "@/modules/dcu";
 import { createSeasonPlan } from "@/modules/season/plans";
 import { createRider, setThresholds } from "@/modules/team/riders";
 import { saveTeamSettings } from "@/modules/team/settings";
@@ -145,11 +145,20 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
     weeks: 4,
     items: blockItems,
   });
+  // DCU's October is "pause + frit": short, easy rides every other day and
+  // nothing hard, so a demo opened in October plans that, not a full week.
+  const breakWeek = [
+    { day: 1, template: byText(TEMPLATES[3]!.text) },
+    { day: 3, template: byText(TEMPLATES[6]!.text) },
+    { day: 5, template: byText(TEMPLATES[6]!.text) },
+  ];
   const firstMonday = addDaysIso(mondayOf(today), -7 * WEEKS_BACK);
   for (let w = 0; w <= WEEKS_BACK + 1; w++) {
     const monday = addDaysIso(firstMonday, 7 * w);
-    for (const [i, slot] of week.entries()) {
-      const template = w % 2 === 1 && i === 0 ? byText(TEMPLATES[2]!.text) : slot.template;
+    const inBreak = phaseOf(Number(addDaysIso(monday, 3).slice(5, 7))) === "break";
+    for (const [i, slot] of (inBreak ? breakWeek : week).entries()) {
+      const template =
+        !inBreak && w % 2 === 1 && i === 0 ? byText(TEMPLATES[2]!.text) : slot.template;
       await scheduleTemplate(ctx, template, riderIds, addDaysIso(monday, slot.day));
     }
     if (strength) {
@@ -238,16 +247,23 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
     }
   }
 
-  for (const e of EVENTS)
+  const month = Number(today.slice(5, 7));
+  const racing = month >= 4 && month <= 9;
+  for (const e of EVENTS) {
+    const startsOn =
+      racing || e.seasonDay === null
+        ? addDaysIso(today, e.inDays)
+        : addDaysIso(`${raceYear}-04-01`, e.seasonDay);
     await createEvent(ctx, {
       riderId: null,
       kind: e.kind,
       title: pick(e.title, l),
-      startsOn: addDaysIso(today, e.inDays),
-      endsOn: addDaysIso(today, e.inDays + e.days - 1),
+      startsOn,
+      endsOn: addDaysIso(startsOn, e.days - 1),
       priority: e.priority,
       note: "",
     });
+  }
   await createEvent(ctx, {
     riderId: riderIds[2]!,
     kind: "exam",

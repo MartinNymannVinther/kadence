@@ -86,7 +86,7 @@ export async function SessionView({
   return (
     <article className="flex min-w-0 flex-col gap-6">
       <header className="flex flex-col gap-2">
-        <p className="text-chart-2 text-2sm font-medium first-letter:uppercase">
+        <p className="text-primary text-2sm font-medium first-letter:uppercase">
           {dayLong(card.onDate, locale)}
           {rider ? ` · ${rider.name}` : ""}
         </p>

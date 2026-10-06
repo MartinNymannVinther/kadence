@@ -151,7 +151,7 @@ export function ApplyBlockDialog({
                           )}
                         </span>
                         {w.flags.map((f, i) => (
-                          <span key={i} className="text-chart-4 text-xs">
+                          <span key={i} className="text-warning text-xs">
                             {flagSentence(f, (key, values) => flags(key as "ramp", values), {
                               locale,
                               klass: basisText(r.basis, (k, v) => insight(k, v)),

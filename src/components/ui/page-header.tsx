@@ -22,7 +22,7 @@ function PageHeader({
   return (
     <div className={cn("flex flex-wrap items-start justify-between gap-x-6 gap-y-3", className)}>
       <div className="flex min-w-0 flex-col gap-1.5">
-        {kicker ? <p className="text-chart-2 text-2sm leading-none font-medium">{kicker}</p> : null}
+        {kicker ? <p className="text-primary text-2sm leading-none font-medium">{kicker}</p> : null}
         <h1
           className={cn(
             "leading-[1.1] font-semibold tracking-[-0.02em]",

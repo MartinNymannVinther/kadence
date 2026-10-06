@@ -119,7 +119,7 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
       </Link>
 
       <header className="flex flex-col gap-2">
-        <p className="text-chart-2 text-2sm font-medium first-letter:uppercase">
+        <p className="text-primary text-2sm font-medium first-letter:uppercase">
           {dayLong(activity.onDate, locale)}
           {fromFile ? ` · ${t("startedAt", { time: started })}` : ""}
           {rider ? ` · ${rider.name}` : ""}

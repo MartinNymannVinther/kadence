@@ -780,7 +780,7 @@
       "week": "Din uge",
       "rest": "Intet planlagt. Nyd det, eller log det, hvis du alligevel træner.",
       "done": "Udført",
-      "doneTitle": "Godt gået! Hvordan gik det?",
+      "doneTitle": "Godt gået. Hvordan gik det?",
       "open": "Se hele passet",
       "indoors": "Kør indendørs",
       "comments": "{count, plural, one {# kommentar} other {# kommentarer}}",
@@ -1437,7 +1437,7 @@
       "note": "Note",
       "notePlaceholder": "Fx tunge ben, men god dag",
       "submit": "Udført",
-      "saved": "Godt gået! Passet er udført."
+      "saved": "Godt gået. Passet er udført."
     },
     "doneTitle": "Udført",
     "commentsTitle": "{count, plural, =0 {Kommentarer} one {# kommentar} other {# kommentarer}}",
@@ -1950,7 +1950,7 @@
     "noteHint": "Din træner kan læse det. Dine forældre kun, hvis du deler, hvordan du har det.",
     "save": "Gem",
     "cancel": "Fortryd",
-    "saved": "Tak! Dagens check-in er gemt.",
+    "saved": "Tak. Dagens check-in er gemt.",
     "edit": "Ret dagens check-in",
     "doneTitle": "Dagens check-in",
     "result": {
@@ -2216,7 +2216,7 @@
       "h": "{n} t",
       "compare": "Hold turen op mod dine bedste",
       "readoutBest": "bedste {w} W",
-      "record": "Rekord!",
+      "record": "Rekord",
       "recordsSet": "{count, plural, one {Turen satte rekord på # varighed} other {Turen satte rekord på # varigheder}}: {durations}"
     },
     "sourceFormat": "Fra en {format}-fil",

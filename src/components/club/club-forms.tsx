@@ -46,7 +46,7 @@ export function NewChampionship({ year }: { year: number }) {
           onChange={(e) => setSeason(e.target.value)}
         />
       </label>
-      <label className={`${field} flex-1`}>
+      <label className={`${field} min-w-48 flex-1`}>
         <span className={label}>{t("title")}</span>
         <Input value={title} onChange={(e) => setTitle(e.target.value)} />
       </label>
@@ -101,7 +101,7 @@ export function NewRound({ championshipId, today }: { championshipId: string; to
           ))}
         </NativeSelect>
       </label>
-      <label className={`${field} flex-1`}>
+      <label className={`${field} min-w-48 flex-1`}>
         <span className={label}>{t("roundTitle")}</span>
         <Input
           value={title}

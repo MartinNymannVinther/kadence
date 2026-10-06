@@ -95,7 +95,12 @@ export interface GuardrailInput {
 
 const round1 = (value: number) => Math.round(value * 10) / 10;
 
-/** A week with this many October-break days has no floor to fall below. */
+/**
+ * A week with this many October-break days has no corridor: DCU's October
+ * is "pause + frit", rest and then free riding with no hours, so there is
+ * neither a floor to fall below nor a ceiling of 0 hours to ride over. The
+ * ramp still notices a sudden jump.
+ */
 const BREAK_WEEK_DAYS = 4;
 
 /**
@@ -110,10 +115,10 @@ export function corridorFlag(
   corridor: Corridor | null | undefined,
 ): Flag | null {
   if (!corridor) return null;
+  if ((corridor.breakDays ?? 0) >= BREAK_WEEK_DAYS) return null;
   const values = { hours: round1(bikeHours), ...corridor };
   if (bikeHours > corridor.high) return { kind: "hours_above_corridor", severity: "warn", values };
-  if (bikeHours < corridor.low && (corridor.breakDays ?? 0) < BREAK_WEEK_DAYS)
-    return { kind: "hours_below_corridor", severity: "info", values };
+  if (bikeHours < corridor.low) return { kind: "hours_below_corridor", severity: "info", values };
   return null;
 }
 

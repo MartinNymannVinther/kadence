@@ -780,7 +780,7 @@
       "week": "Your week",
       "rest": "Nothing planned. Enjoy it, or log it if you train anyway.",
       "done": "Done",
-      "doneTitle": "Well done! How did it go?",
+      "doneTitle": "Well done. How did it go?",
       "open": "See the whole session",
       "indoors": "Ride indoors",
       "comments": "{count, plural, one {# comment} other {# comments}}",
@@ -1437,7 +1437,7 @@
       "note": "Note",
       "notePlaceholder": "E.g. heavy legs, but a good day",
       "submit": "Done",
-      "saved": "Well done! The session is done."
+      "saved": "Well done. The session is done."
     },
     "doneTitle": "Done",
     "commentsTitle": "{count, plural, =0 {Comments} one {# comment} other {# comments}}",
@@ -1950,7 +1950,7 @@
     "noteHint": "Your coach can read it. Your parents only if you share how you are doing.",
     "save": "Save",
     "cancel": "Cancel",
-    "saved": "Thanks! Today's check-in is saved.",
+    "saved": "Thanks. Today's check-in is saved.",
     "edit": "Change today's check-in",
     "doneTitle": "Today's check-in",
     "result": {
@@ -2216,7 +2216,7 @@
       "h": "{n} h",
       "compare": "Hold the ride against your bests",
       "readoutBest": "best {w} W",
-      "record": "Record!",
+      "record": "Record",
       "recordsSet": "{count, plural, one {This ride set a record on # duration} other {This ride set records on # durations}}: {durations}"
     },
     "sourceFormat": "From a {format} file",
