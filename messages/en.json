@@ -989,6 +989,14 @@
       "added": "{count, plural, one {The session is in the calendar.} other {The session is in # calendars.}}",
       "addedSeries": "{count, plural, one {The series is in: # session.} other {The series is in: # sessions.}}"
     },
+    "timePlace": {
+      "legend": "Time and place",
+      "hint": "For a session you ride together. Both can stay empty.",
+      "time": "Start time",
+      "place": "Meeting place",
+      "placePlaceholder": "E.g. the clubhouse",
+      "clearTime": "Remove the start time"
+    },
     "repeat": {
       "toggle": "Repeat on set weekdays",
       "weekdays": "Weekdays",
@@ -1548,7 +1556,11 @@
       "4": "Good",
       "5": "Really good"
     },
-    "placed": "placed {place}"
+    "placed": "placed {place}",
+    "when": {
+      "time": "at {time}",
+      "place": "Meeting place"
+    }
   },
   "workouts": {
     "profile": {

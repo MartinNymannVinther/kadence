@@ -10,6 +10,7 @@ import { requireCoach } from "@/modules/team/access";
 import { readStructure } from "@/modules/workouts/structure";
 import { planCopy } from "./copy-week";
 import { createSessionsIn } from "./sessions";
+import { clockOf } from "./time-place";
 import type { Sport } from "./vocabulary";
 
 /**
@@ -109,6 +110,8 @@ function copyOf(
     plannedMinutes: source.plannedMinutes,
     plannedKm: source.plannedKm,
     templateId: source.templateId,
+    startTime: clockOf(source.startTime),
+    meetingPlace: source.meetingPlace,
     groupKey,
     origin: groupKey
       ? ("group" as const)

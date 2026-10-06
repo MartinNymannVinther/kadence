@@ -6,10 +6,17 @@ import type { PlanItemInputT } from "@/modules/training/week-plan";
 /**
  * The week planner's own words (ADR 0043): a session of the plan on a
  * day of the week (0 is Monday) — one of the library's, or one built in
- * the planner — and a rider as the planner chooses them, by class.
+ * the planner — with when and where it starts (ADR 0057), and a rider as
+ * the planner chooses them, by class.
  */
 
-export type PlanItem = { key: string; day: number } & (
+export type PlanItem = {
+  key: string;
+  day: number;
+  /** "17:30"; missing in a plan kept on the device before time and place were. */
+  startTime?: string | null;
+  meetingPlace?: string;
+} & (
   | { kind: "template"; templateId: string; name: string; sport: string; minutes: number }
   | { kind: "built"; session: DraftValue }
 );
@@ -18,16 +25,25 @@ export type PlanRider = { id: string; name: string; basis: ClassBasis | null };
 
 export const newKey = () => Math.random().toString(36).slice(2, 10);
 
-/** What the server is sent for an item: its day and either the template or the session. */
+/** What the server is sent for an item: its day, when and where, and the template or the session. */
 export function toInput(item: PlanItem): PlanItemInputT {
+  const at = { startTime: item.startTime ?? null, meetingPlace: item.meetingPlace ?? "" };
   return item.kind === "template"
-    ? { kind: "template", day: item.day, templateId: item.templateId }
-    : { kind: "built", day: item.day, session: item.session };
+    ? { kind: "template", day: item.day, templateId: item.templateId, ...at }
+    : { kind: "built", day: item.day, session: item.session, ...at };
 }
 
 /** What the server sent back, as the planner holds it; a template no longer there drops out. */
 export function fromInput(input: PlanItemInputT, templates: TemplateOption[]): PlanItem | null {
-  if (input.kind === "built") return { key: newKey(), ...input };
+  const at = { startTime: input.startTime ?? null, meetingPlace: input.meetingPlace ?? "" };
+  if (input.kind === "built")
+    return {
+      key: newKey(),
+      day: input.day,
+      kind: "built",
+      session: { ...input.session, plannedKm: input.session.plannedKm ?? null },
+      ...at,
+    };
   const template = templates.find((t) => t.id === input.templateId);
   return template
     ? {
@@ -38,6 +54,7 @@ export function fromInput(input: PlanItemInputT, templates: TemplateOption[]): P
         name: template.name,
         sport: template.sport,
         minutes: template.plannedMinutes,
+        ...at,
       }
     : null;
 }

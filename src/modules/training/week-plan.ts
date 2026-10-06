@@ -9,6 +9,7 @@ import { previewPlan, type RiderPlanPreview } from "@/modules/season/preview";
 import { requireCoach } from "@/modules/team/access";
 import { readStructure, structureMinutes } from "@/modules/workouts/structure";
 import { createSessionsIn } from "./sessions";
+import { clockOf, TimePlaceFields } from "./time-place";
 import { SessionInput, type Sport } from "./vocabulary";
 
 /**
@@ -22,13 +23,19 @@ import { SessionInput, type Sport } from "./vocabulary";
 const id = z.string().min(1).max(100);
 const day = z.number().int().min(0).max(6);
 
+/** A session of the plan as it is built: what the session is, without whose, which day or when. */
+export const BuiltSession = SessionInput.omit({
+  riderId: true,
+  onDate: true,
+  templateId: true,
+  startTime: true,
+  meetingPlace: true,
+});
+
+/** Each item of the plan may carry when and where it starts (ADR 0057). */
 export const PlanItemInput = z.discriminatedUnion("kind", [
-  z.object({ kind: z.literal("template"), day, templateId: id }),
-  z.object({
-    kind: z.literal("built"),
-    day,
-    session: SessionInput.omit({ riderId: true, onDate: true, templateId: true }),
-  }),
+  z.object({ kind: z.literal("template"), day, templateId: id, ...TimePlaceFields }),
+  z.object({ kind: z.literal("built"), day, session: BuiltSession, ...TimePlaceFields }),
 ]);
 export type PlanItemInputT = z.infer<typeof PlanItemInput>;
 
@@ -52,7 +59,8 @@ function sessionOf(
   item: PlanItemInputT,
   templates: Map<string, typeof workoutTemplates.$inferSelect>,
 ) {
-  if (item.kind === "built") return { ...item.session, templateId: null, programme: false };
+  const at = { startTime: clockOf(item.startTime), meetingPlace: item.meetingPlace ?? "" };
+  if (item.kind === "built") return { ...item.session, ...at, templateId: null, programme: false };
   const template = templates.get(item.templateId)!;
   const sport = template.sport as Sport;
   const structure = readStructure(template.structure, sport);
@@ -64,6 +72,7 @@ function sessionOf(
     plannedMinutes: template.plannedMinutes || structureMinutes(structure),
     plannedKm: null,
     templateId: template.id,
+    ...at,
     programme: structure.kind === "strength" && structure.progression.length > 0,
   };
 }
@@ -186,12 +195,14 @@ export async function loadRiderWeek(
       .slice(0, 21)
       .map((row): PlanItemInputT => {
         const dayOf = diffDays(monday, row.onDate);
+        const at = { startTime: clockOf(row.startTime), meetingPlace: row.meetingPlace };
         if (row.templateId && library.has(row.templateId))
-          return { kind: "template", day: dayOf, templateId: row.templateId };
+          return { kind: "template", day: dayOf, templateId: row.templateId, ...at };
         const sport = row.sport as Sport;
         return {
           kind: "built",
           day: dayOf,
+          ...at,
           session: {
             sport,
             title: row.title,

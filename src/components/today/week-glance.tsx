@@ -7,6 +7,7 @@ import { EventIcon } from "@/components/training/event-icon";
 import type { CalendarCard, CalendarEventCard } from "@/components/calendar/types";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+import { clockText } from "@/modules/training/time-place";
 
 /**
  * A week at a glance, read-only: each day with its sessions (title,
@@ -73,7 +74,15 @@ export function WeekGlance({
                 const body = (
                   <>
                     <SportIcon sport={s.sport} className="size-3.5" />
-                    <span className="min-w-0 flex-1 truncate">{s.title}</span>
+                    {s.startTime && (
+                      <span className="shrink-0 tabular-nums">
+                        {clockText(s.startTime, locale)}
+                      </span>
+                    )}
+                    <span className="min-w-0 flex-1 truncate">
+                      {s.title}
+                      {s.meetingPlace && <span className="text-meta"> · {s.meetingPlace}</span>}
+                    </span>
                     {s.plannedMinutes > 0 && (
                       <span className="text-meta shrink-0 text-xs tabular-nums">
                         {durationText(s.plannedMinutes, duration)}

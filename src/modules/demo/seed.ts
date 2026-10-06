@@ -13,6 +13,7 @@ import { addDcuWinterGoal } from "@/modules/training/goals";
 import { createEvent } from "@/modules/training/events";
 import { scheduleTemplate } from "@/modules/training/group";
 import { listSessions } from "@/modules/training/sessions";
+import type { TimePlace } from "@/modules/training/time-place";
 import { createTemplate, listTemplates } from "@/modules/training/templates";
 import { saveCheckin } from "@/modules/wellbeing/checkins";
 import { parseWorkoutText } from "@/modules/workouts/parse-text";
@@ -113,11 +114,15 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
   }
 
   const byText = (text: string) => templates[text]!;
-  const week = [
-    { day: 1, template: byText(TEMPLATES[1]!.text) },
+  // The team rides Tuesday's intervals and Saturday's long ride together (ADR 0057).
+  const clubhouse = pick({ da: "Klubhuset", en: "The clubhouse" }, l);
+  const at = (startTime: string): TimePlace => ({ startTime, meetingPlace: clubhouse });
+  type Slot = { day: number; template: string; at?: TimePlace };
+  const week: Slot[] = [
+    { day: 1, template: byText(TEMPLATES[1]!.text), at: at("17:30") },
     { day: 2, template: byText(TEMPLATES[0]!.text) },
     { day: 3, template: byText(TEMPLATES[5]!.text) },
-    { day: 5, template: byText(TEMPLATES[0]!.text) },
+    { day: 5, template: byText(TEMPLATES[0]!.text), at: at("09:00") },
     { day: 6, template: byText(TEMPLATES[3]!.text) },
   ];
   // The same week as a block in the library: four weeks, ready to lay in.
@@ -147,10 +152,10 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
   });
   // DCU's October is "pause + frit": short, easy rides every other day and
   // nothing hard, so a demo opened in October plans that, not a full week.
-  const breakWeek = [
+  const breakWeek: Slot[] = [
     { day: 1, template: byText(TEMPLATES[3]!.text) },
     { day: 3, template: byText(TEMPLATES[6]!.text) },
-    { day: 5, template: byText(TEMPLATES[6]!.text) },
+    { day: 5, template: byText(TEMPLATES[6]!.text), at: at("10:00") },
   ];
   const firstMonday = addDaysIso(mondayOf(today), -7 * WEEKS_BACK);
   for (let w = 0; w <= WEEKS_BACK + 1; w++) {
@@ -159,7 +164,8 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
     for (const [i, slot] of (inBreak ? breakWeek : week).entries()) {
       const template =
         !inBreak && w % 2 === 1 && i === 0 ? byText(TEMPLATES[2]!.text) : slot.template;
-      await scheduleTemplate(ctx, template, riderIds, addDaysIso(monday, slot.day));
+      const day = addDaysIso(monday, slot.day);
+      await scheduleTemplate(ctx, template, riderIds, day, undefined, slot.at);
     }
     if (strength) {
       const perWeek = strengthFrequency(monday).perWeekMin;

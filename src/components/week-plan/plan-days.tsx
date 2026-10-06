@@ -7,6 +7,7 @@ import { durationText } from "@/components/training/duration";
 import { SportIcon } from "@/components/training/sport-icon";
 import { Button } from "@/components/ui/button";
 import { addDaysIso } from "@/core/dates";
+import { byStartTime, timePlaceText } from "@/modules/training/time-place";
 import { itemMinutes, itemSport, itemTitle, type PlanItem } from "./types";
 
 /**
@@ -32,12 +33,19 @@ export function PlanDays({
   const t = useTranslations("weekPlan.days");
   const duration = useTranslations("training.duration");
   const locale = useLocale();
+  const timePlace = (item: PlanItem) =>
+    timePlaceText(
+      { startTime: item.startTime ?? null, meetingPlace: item.meetingPlace ?? "" },
+      locale,
+    );
   return (
     <ol className="grid gap-2 @4xl:grid-cols-7">
       {Array.from({ length: 7 }, (_, day) => {
         const date = addDaysIso(monday, day);
         const label = `${weekdayShort(date, locale)} ${dayMonth(date, locale)}`;
-        const mine = items.filter((i) => i.day === day);
+        const mine = byStartTime(
+          items.filter((i) => i.day === day).map((i) => ({ ...i, startTime: i.startTime ?? null })),
+        );
         return (
           <li
             key={day}
@@ -71,6 +79,9 @@ export function PlanDays({
                       {itemTitle(item)}
                     </span>
                   </span>
+                  {timePlace(item) && (
+                    <span className="text-meta text-xs break-words">{timePlace(item)}</span>
+                  )}
                   <span className="flex items-center justify-between gap-1">
                     <span className="text-meta text-xs tabular-nums">
                       {itemMinutes(item) > 0 ? durationText(itemMinutes(item), duration) : null}

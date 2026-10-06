@@ -1,5 +1,5 @@
-import { Bike, MessageSquare } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { Bike, Clock, MapPin, MessageSquare } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import { ComplianceMark, colourOf, COLOUR_STYLE } from "@/components/training/compliance-mark";
 import { durationText } from "@/components/training/duration";
 import { SportIcon } from "@/components/training/sport-icon";
@@ -9,6 +9,7 @@ import { withQuery } from "@/components/calendar/href";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { rideableStructure } from "@/modules/rulle/rideable";
+import { clockText } from "@/modules/training/time-place";
 import { CompleteDialog } from "./complete-dialog";
 
 /**
@@ -31,6 +32,8 @@ export function TodaySession({
   const sports = useTranslations("training.sport");
   const duration = useTranslations("training.duration");
   const t = useTranslations("today.rider");
+  const when = useTranslations("training.when");
+  const locale = useLocale();
   const colour = colourOf(session, today);
   const done = session.activity !== null;
 
@@ -56,6 +59,19 @@ export function TodaySession({
           </span>
           {session.plannedMinutes > 0 && (
             <span>{durationText(session.plannedMinutes, duration)}</span>
+          )}
+          {session.startTime && (
+            <span className="flex items-center gap-1">
+              <Clock aria-hidden className="size-3.5" />
+              {when("time", { time: clockText(session.startTime, locale) })}
+            </span>
+          )}
+          {session.meetingPlace && (
+            <span className="flex min-w-0 items-center gap-1">
+              <MapPin aria-hidden className="size-3.5 shrink-0" />
+              <span className="sr-only">{when("place")}: </span>
+              <span className="min-w-0 break-words">{session.meetingPlace}</span>
+            </span>
           )}
           {session.commentCount > 0 && (
             <span className="flex items-center gap-1">

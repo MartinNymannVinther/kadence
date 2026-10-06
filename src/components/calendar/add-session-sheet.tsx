@@ -17,6 +17,7 @@ import { structureMinutes } from "@/modules/workouts/structure";
 import { RepeatFields } from "./repeat-fields";
 import { RiderPicker } from "./rider-picker";
 import { TemplatePicker, type TemplateOption } from "./template-picker";
+import { TimePlaceFields, timePlaceDraft, timePlaceValue } from "./time-place-fields";
 import type { RiderOption } from "./types";
 
 /**
@@ -24,7 +25,8 @@ import type { RiderOption } from "./types";
  * library, or a session built here with the same builder the library
  * uses. Several riders make a group plan. A rider (not a coach) plans
  * from the library for themselves; building is the coach's. "Gentag" puts
- * it on chosen weekdays until a last day (ADR 0041).
+ * it on chosen weekdays until a last day (ADR 0041). A time and a place
+ * are there for a session ridden together (ADR 0057).
  */
 export function AddSessionSheet({
   open,
@@ -57,6 +59,7 @@ export function AddSessionSheet({
   const [draft, setDraft] = useState(() => newDraft());
   const [problem, setProblem] = useState<string | null>(null);
   const [repeat, setRepeat] = useState<Repeat | null>(null);
+  const [at, setAt] = useState(() => timePlaceDraft());
   const chosen = templates.find((tpl) => tpl.id === templateId) ?? null;
   const sport = mode === "template" ? (chosen?.sport ?? null) : draft.sport;
   const minutes =
@@ -73,7 +76,13 @@ export function AddSessionSheet({
       if (!templateId) return setProblem(t("pickTemplate"));
       setProblem(null);
       const done = await run(() =>
-        scheduleTemplateAction({ templateId, riderIds, onDate, repeat: repeat ?? undefined }),
+        scheduleTemplateAction({
+          templateId,
+          riderIds,
+          onDate,
+          repeat: repeat ?? undefined,
+          ...timePlaceValue(at),
+        }),
       );
       if (done) {
         toast.success(added(done.ids));
@@ -92,6 +101,7 @@ export function AddSessionSheet({
         onDate,
         templateId: null,
         ...checked.value,
+        ...timePlaceValue(at),
         repeat: repeat ?? undefined,
       }),
     );
@@ -129,6 +139,8 @@ export function AddSessionSheet({
               onChange={(e) => setOnDate(e.target.value)}
             />
           </div>
+
+          <TimePlaceFields value={at} onChange={setAt} />
 
           {canBuild && (
             <SegmentedChoice

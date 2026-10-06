@@ -989,6 +989,14 @@
       "added": "{count, plural, one {Passet er lagt i kalenderen.} other {Passet er lagt i # kalendere.}}",
       "addedSeries": "{count, plural, one {Serien er lagt ind: # pas.} other {Serien er lagt ind: # pas.}}"
     },
+    "timePlace": {
+      "legend": "Tid og sted",
+      "hint": "Til et pas, I kører sammen. Begge kan stå tomme.",
+      "time": "Starttid",
+      "place": "Mødested",
+      "placePlaceholder": "Fx klubhuset",
+      "clearTime": "Fjern starttiden"
+    },
     "repeat": {
       "toggle": "Gentag på faste ugedage",
       "weekdays": "Ugedage",
@@ -1548,7 +1556,11 @@
       "4": "Godt",
       "5": "Rigtig godt"
     },
-    "placed": "placering {place}"
+    "placed": "placering {place}",
+    "when": {
+      "time": "kl. {time}",
+      "place": "Mødested"
+    }
   },
   "workouts": {
     "profile": {

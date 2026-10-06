@@ -1,4 +1,4 @@
-import { Bike } from "lucide-react";
+import { Bike, Clock, MapPin } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
@@ -21,6 +21,7 @@ import { getRider, getRiders } from "@/modules/team/riders";
 import { getActivity } from "@/modules/training/activities";
 import { listComments } from "@/modules/training/comments";
 import { getSession as getPlannedSession } from "@/modules/training/sessions";
+import { clockText } from "@/modules/training/time-place";
 import { readStructure } from "@/modules/workouts/structure";
 import { CommentThread } from "./comment-thread";
 import { CompleteForm } from "./complete-form";
@@ -56,6 +57,7 @@ export async function SessionView({
   const t = await getTranslations("session");
   const sports = await getTranslations("training.sport");
   const duration = await getTranslations("training.duration");
+  const when = await getTranslations("training.when");
   const locale = await getLocale();
   const session = await getPlannedSession(ctx, sessionId);
   if (!session) {
@@ -110,6 +112,19 @@ export async function SessionView({
           </span>
           {card.plannedMinutes > 0 && <span>{durationText(card.plannedMinutes, duration)}</span>}
           {card.plannedKm ? <span>{t("km", { km: card.plannedKm })}</span> : null}
+          {card.startTime && (
+            <span className="flex items-center gap-1.5">
+              <Clock aria-hidden className="size-4" />
+              {when("time", { time: clockText(card.startTime, locale) })}
+            </span>
+          )}
+          {card.meetingPlace && (
+            <span className="flex min-w-0 items-center gap-1.5">
+              <MapPin aria-hidden className="size-4 shrink-0" />
+              <span className="sr-only">{when("place")}: </span>
+              <span className="min-w-0 break-words">{card.meetingPlace}</span>
+            </span>
+          )}
           <ComplianceMark
             colour={colourOf(card, today)}
             done={card.activity !== null}
