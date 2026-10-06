@@ -1,7 +1,8 @@
 import { and, eq, inArray } from "drizzle-orm";
 import { teamExercises } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
-import { builtinExerciseView, findBuiltinExercise, type Translate } from "./builtin-adapter";
+import type { Translate } from "./dose";
+import { builtinExerciseView } from "./view";
 import { parseRef, teamIdsOf } from "./refs";
 import { getTeamProgram } from "./team-programs";
 import { teamExerciseView } from "./team-exercises";
@@ -57,8 +58,8 @@ export async function resolveProgram(
     const parsed = parseRef(ref);
     if (parsed.kind === "team") return team.get(ref);
     if (!builtin.has(ref)) {
-      const exercise = findBuiltinExercise(parsed.id);
-      if (exercise) builtin.set(ref, builtinExerciseView(exercise, t));
+      const view = builtinExerciseView(parsed.id, t);
+      if (view) builtin.set(ref, view);
     }
     return builtin.get(ref);
   }

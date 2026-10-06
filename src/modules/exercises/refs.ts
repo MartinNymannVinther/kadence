@@ -3,7 +3,7 @@ import type { z } from "zod";
 import { Refused } from "@/core/action";
 import { teamExercises } from "@/core/db/schema";
 import type { AppTransaction, OrgContext } from "@/core/db/tenant";
-import { findBuiltinExercise } from "./builtin-adapter";
+import { builtinExercise } from "./builtin";
 import type { ExerciseRef, ProgramPart } from "./types";
 
 /**
@@ -52,7 +52,7 @@ export async function checkProgramRefs(
 ): Promise<void> {
   const refs = refsOf(parts).map((ref) => ({ ref, parsed: parseRef(ref) }));
   for (const { parsed } of refs) {
-    if (parsed.kind === "builtin" && !findBuiltinExercise(parsed.id)) {
+    if (parsed.kind === "builtin" && !builtinExercise(parsed.id)) {
       throw new Refused("invalid", "exerciseUnknown");
     }
   }
