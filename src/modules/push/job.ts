@@ -26,10 +26,12 @@ import { sendPush, type PushConfig } from "./send";
  * at once — the timer and a tick, or two servers — send it once. A push
  * service that says the browser has gone (404, 410) has its address
  * deleted; one that fails for a moment has the mark taken back, so the
- * next run tries again. Nothing is sent in the quiet hours.
+ * next run tries again. In the quiet hours only a coach's wellbeing
+ * reminder goes out; the rest waits (due.ts).
  */
 
 export type RunReport = {
+  /** The run fell in the quiet hours: only wellbeing reminders could go out. */
   quiet: boolean;
   people: number;
   sent: number;
@@ -61,7 +63,7 @@ function byPerson(due: Due[]): Map<string, Map<string, string[]>> {
 }
 
 const markValues = (mark: Mark) =>
-  mark.slot === "news"
+  mark.slot === "news" || mark.slot === "wellbeing"
     ? { toldUpTo: mark.toldUpTo }
     : mark.slot === "checkin"
       ? { checkinRemindedOn: mark.checkinRemindedOn }
@@ -69,7 +71,7 @@ const markValues = (mark: Mark) =>
 
 /** Written only if nobody has written it since the row was read. */
 function unchanged(row: PushSubscriptionRow, mark: Mark) {
-  if (mark.slot === "news")
+  if (mark.slot === "news" || mark.slot === "wellbeing")
     return sql`date_trunc('milliseconds', ${pushSubscriptions.toldUpTo}) = ${row.toldUpTo}`;
   if (mark.slot === "checkin")
     return sql`${pushSubscriptions.checkinRemindedOn} is distinct from ${mark.checkinRemindedOn}`;
@@ -101,7 +103,8 @@ async function decideAndMark(ctx: OrgContext, ids: string[], now: Date): Promise
       const decision = decide(row, facts, now);
       return decision ? [{ row, decision }] : [];
     });
-    const first = decisions[0];
+    // A rider in the red zone goes before whatever another browser is due.
+    const first = decisions.find((d) => d.decision.kind === "wellbeing") ?? decisions[0];
     if (!first) return [];
 
     const marked: Marked[] = [];
@@ -122,7 +125,7 @@ async function decideAndMark(ctx: OrgContext, ids: string[], now: Date): Promise
 /** The reminder could not go out this time: take the mark back for the next run. */
 async function unmark(ctx: OrgContext, { row, mark }: Marked): Promise<void> {
   const previous =
-    mark.slot === "news"
+    mark.slot === "news" || mark.slot === "wellbeing"
       ? { toldUpTo: row.toldUpTo }
       : mark.slot === "checkin"
         ? { checkinRemindedOn: row.checkinRemindedOn }
@@ -139,8 +142,8 @@ async function forget(ctx: OrgContext, id: string): Promise<void> {
 }
 
 export async function runReminders(config: PushConfig, now: Date = new Date()): Promise<RunReport> {
-  const report: RunReport = { quiet: false, people: 0, sent: 0, gone: 0, failed: 0 };
-  if (isQuiet(copenhagenClock(now))) return { ...report, quiet: true };
+  const quiet = isQuiet(copenhagenClock(now));
+  const report: RunReport = { quiet, people: 0, sent: 0, gone: 0, failed: 0 };
 
   for (const [userId, teams] of byPerson(await dueSubscriptions())) {
     report.people += 1;

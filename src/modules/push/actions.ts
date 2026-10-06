@@ -3,6 +3,8 @@
 import { z } from "zod";
 import { runAction } from "@/core/action";
 import { Endpoint, Kinds, reminderState, setKinds, subscribe, unsubscribe } from "./subscriptions";
+import { sendTestReminder } from "./test-push";
+import { pushConfig } from "./timer";
 
 /**
  * Reminders on this browser (docs/adr/0060). Each action resolves the
@@ -13,6 +15,8 @@ import { Endpoint, Kinds, reminderState, setKinds, subscribe, unsubscribe } from
 
 const ThisBrowser = z.object({ endpoint: Endpoint });
 const Choice = z.object({ endpoint: Endpoint, kinds: Kinds });
+/** A test takes nothing from the browser: it goes to the person's own browsers on this team. */
+const Nothing = z.object({}).strict();
 
 export async function reminderStateAction(raw: unknown) {
   return runAction(raw, ThisBrowser, (ctx, input) => reminderState(ctx, input.endpoint));
@@ -28,4 +32,9 @@ export async function setReminderKindsAction(raw: unknown) {
 
 export async function unsubscribeRemindersAction(raw: unknown) {
   return runAction(raw, ThisBrowser, (ctx, input) => unsubscribe(ctx, input.endpoint));
+}
+
+/** "Send en prøve": one empty push to each of the person's own browsers here, three an hour. */
+export async function sendTestReminderAction(raw: unknown) {
+  return runAction(raw, Nothing, (ctx) => sendTestReminder(ctx, pushConfig()));
 }

@@ -37,6 +37,8 @@ const NOTES: Array<Note | null> = [
   },
   { kind: "comment", title: null, author: null, path: "/calendar?week=2026-10-05&rider=r1" },
   { kind: "week", children: ["Emma Holm"], path: "/parents" },
+  { kind: "wellbeing", path: "/calendar#opmaerksomhed" },
+  { kind: "test", path: "/settings/me" },
 ];
 
 describe("a reminder in words", () => {
@@ -69,6 +71,23 @@ describe("a reminder in words", () => {
     });
     expect(renderNote(NOTES[5]!, t, "da").title).toBe("Emmas uge er klar");
     expect(renderNote(null, t, "da").title).toBe("Der er nyt i Kadence");
+  });
+
+  it("tells a coach that a rider needs a talk, without a name or an answer", () => {
+    expect(renderNote(NOTES[6]!, translate("da"), "da")).toEqual({
+      title: "En rytter har brug for en snak",
+      body: "Se, hvem det er, under opmærksomhedspunkterne.",
+      url: "/calendar#opmaerksomhed",
+    });
+    expect(renderNote(NOTES[6]!, translate("en"), "en").url).toBe("/en/calendar#opmaerksomhed");
+  });
+
+  it("shows a test as what a reminder looks like", () => {
+    expect(renderNote(NOTES[7]!, translate("da"), "da")).toEqual({
+      title: "Sådan ser en påmindelse fra Kadence ud",
+      body: "Prøven kom frem. Påmindelserne virker på denne enhed.",
+      url: "/settings/me",
+    });
   });
 
   it("puts English paths under /en", () => {
@@ -106,5 +125,10 @@ describe("the service worker's fallback", () => {
     expect(worker).not.toContain('addEventListener("fetch"');
     expect(worker).not.toMatch(/caches\.|indexedDB/);
     expect(worker).toContain('credentials: "include"');
+  });
+
+  it("opens a path in Kadence with its anchor, and nothing outside", () => {
+    expect(worker).toContain("target.pathname + target.search + target.hash");
+    expect(worker).toContain("target.origin === self.location.origin");
   });
 });

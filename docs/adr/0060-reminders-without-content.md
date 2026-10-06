@@ -1,6 +1,7 @@
 # ADR 0060: Reminders without content
 
-Status: accepted · Date: 2026-10-06
+Status: accepted · Date: 2026-10-06 · Amended 2026-10-06: a coach's
+wellbeing reminder (P1-02) and a test push (P1-05)
 
 ## Context
 
@@ -50,7 +51,9 @@ the browser, not Kadence, decides which one is used.
     a coach hears from riders and parents, not from the other coaches;
   - plan: a session in the rider's next seven days laid or changed by
     someone else;
-  - week: a parent, on Sunday from 18.00, "Emmas uge er klar".
+  - week: a parent, on Sunday from 18.00, "Emmas uge er klar";
+  - wellbeing: a coach, when a rider checks in in the red zone (see the
+    amendment below).
 
   **Quiet hours** from 21.30 to 7.00: nothing is sent, and what is due
   waits for the morning (the check-in and the week do not; their evening
@@ -125,3 +128,96 @@ the browser, not Kadence, decides which one is used.
   or the team is deleted: only the owner may delete it, and they are no
   longer on the team. The job never reads it, because
   `push_subscriptions_due()` returns only members.
+
+## Amendment: a rider in the red zone (P1-02)
+
+A coach who has chosen **Trivsel** gets one push the same day a rider on
+the team saves a check-in in the red zone, so a conversation can happen
+while it matters.
+
+- **Which check-ins.** The check-in's own zone
+  (`src/modules/load/wellbeing.ts`): pain 3, ill, or mood at the bottom
+  of the scale. The status's escalation after three yellow weeks is not a
+  trigger: it is a pattern, not something that happened today, and it
+  stays on the attention list.
+- **As the coach.** The job reads today's check-ins inside the coach's own
+  `withOrgContext` (`src/modules/push/wellbeing.ts`), so the policies
+  decide: the team's riders, still on the team, never the coach's own,
+  and nothing from another team. Only a coach is offered the kind, and
+  the job decides it only for a coach, whatever a row says; a rider or a
+  parent never gets it.
+- **Once per rider per day, with no new column.** A check-in is one row
+  per rider per day, changed in place when the rider saves again. The
+  reminder counts from its first save (`created_at`), and its mark moves
+  `told_up_to` to the newest told check-in's first save, not to now. So
+  saving the same check-in again is not news, and a comment written after
+  the check-in is still told on the next run.
+- **Quiet hours do not apply.** They keep evenings and nights free of what
+  can wait. A rider who is ill, in pain during and after training, or at
+  the bottom of the mood scale has said something that should not wait
+  for the morning, and the coach chose to hear it. It goes before news,
+  the check-in and the week, and it is still a reminder (`Urgency:
+normal`), not an alarm; the coach decides what to do. The job therefore
+  runs through the night too, sending nothing else.
+- **No name in the text.** "En rytter har brug for en snak", with a link
+  to `/calendar#opmaerksomhed`. A lock screen is read by whoever holds the
+  phone, and a rider's check-in is health data about a young person (ADR
+  0011). Who it is, and what they answered, stays behind the coach's
+  login, on the attention list, under the same policies. The service
+  worker keeps the anchor when it opens the page.
+- **What the text says** is read back from the mark: `told_up_to` equal,
+  to the millisecond, to the first save of a red check-in the coach can
+  see.
+
+### Trade-offs accepted
+
+- **A check-in that turns red later in the day** is told only if no other
+  reminder went to that coach since it was first saved. Kadence keeps no
+  history of a check-in's zone outside the audit trail, so a change from
+  green to red cannot be told from a red check-in saved twice without a
+  column. The attention list shows it either way; if the pilot shows it
+  matters, a column on `checkins` saying when it last turned red closes
+  it.
+- **News waiting in the quiet hours** from before the red check-in is
+  folded into its reminder, as news always is.
+- **A coach who also rides or is a parent on the team** and gets a
+  wellbeing reminder and then a check-in or week reminder within a
+  quarter of an hour of the red check-in may see the wellbeing words on
+  both.
+- **A coach who saves a check-in for a rider** after a conversation is
+  told of it too: a check-in does not record who saved it.
+
+## Amendment: a test push (P1-05)
+
+"Send en prøve" under Settings → Mig → Påmindelser lets a person see on
+the phone itself that reminders arrive, before the first real one is
+due.
+
+- **What it sends.** A server action, as the person (`runAction`, zod,
+  `src/modules/push/test-push.ts`), sends one empty push to each of the
+  person's own browsers on the team. It reads the rows inside the
+  person's own context, so the policy leaves nobody else's in reach. Three
+  an hour per person, counted in the in-process limiter like other
+  per-person limits. A browser the push service no longer knows is
+  forgotten, as the run does.
+- **What it says.** The push is as empty as any other, so the service
+  worker asks `latest`, which answers "Sådan ser en påmindelse fra Kadence
+  ud" until a real reminder goes out after the test. The server keeps the
+  moment of the test in memory, for the six hours a push can wait, and
+  writes nothing: a test is not a reminder, and a mark in
+  `push_subscriptions` would move the run's marks and add a row to the
+  audit trail for nothing.
+- **The status line** under the card is worked out in the browser: the
+  notification permission, whether `/sw.js` is registered, whether the
+  browser holds a subscription, and on an iPhone or iPad whether Kadence
+  was opened from the home screen. The one thing from the server is when
+  the person's own subscription on this team was made. Nothing about
+  anyone else, and nothing is sent anywhere.
+
+### Trade-offs accepted
+
+- **Memory, not a mark.** After a restart, or with several app processes,
+  a test still arrives but shows the plain "Der er nyt i Kadence".
+- **The test goes to every browser** the person has on the team, not only
+  the one they pressed it on, so a person with reminders on a phone and a
+  computer sees it on both.

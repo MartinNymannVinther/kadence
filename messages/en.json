@@ -954,6 +954,7 @@
     "not_a_rider": "Only a rider can connect their own device.",
     "too_many_keys": "You already have as many keys as you can have. Remove one before you create a new one.",
     "too_many_keys_made": "You have created many keys just now. Try again in an hour.",
+    "too_many_test_reminders": "You have sent three tests within an hour. Try again a little later.",
     "flagGone": "That point of attention is no longer active. Reload the page.",
     "uciId": "A UCI ID is 11 digits, as on the licence.",
     "uciTaken": "Another rider on the team already has that UCI ID.",
@@ -3230,6 +3231,7 @@
   "reminders": {
     "title": "Reminders",
     "body": "Kadence can remind you of what matters on this device. No reminders come between 21:30 and 7:00.",
+    "bodyCoach": "Kadence can remind you of what matters on this device. Between 21:30 and 7:00 only wellbeing reminders come.",
     "privacy": "The message itself is fetched from Kadence when it arrives. Your browser's push service only sees that there is something new.",
     "enable": "Turn on reminders on this device",
     "disable": "Turn off",
@@ -3242,6 +3244,27 @@
     "ios": "On an iPhone, reminders work when Kadence is on the home screen (iOS 16.4 or later).",
     "denied": "The browser has blocked reminders from Kadence. You can allow them in the browser's settings.",
     "failed": "Reminders could not be turned on in this browser. Everything else works.",
+    "test": "Send a test",
+    "testHint": "Kadence sends a reminder to your devices on this team, so you can see that it arrives. At most three an hour.",
+    "testSent": "The test is on its way. It arrives in a moment.",
+    "testGone": "The push service no longer knows this device. Turn reminders on again.",
+    "testFailed": "The test could not be sent just now. Try again in a little while.",
+    "diagnosis": {
+      "label": "Status on this device:",
+      "permission": {
+        "granted": "permission given",
+        "denied": "permission refused",
+        "default": "not asked for permission yet",
+        "unsupported": "no reminders in this browser"
+      },
+      "worker": "service worker registered",
+      "noWorker": "no service worker",
+      "subscribedSince": "subscribed since {when}",
+      "subscribedElsewhere": "subscribed in the browser, but not on this team",
+      "noSubscription": "no subscription",
+      "standalone": "opened from the home screen",
+      "notStandalone": "not opened from the home screen"
+    },
     "kind": {
       "checkin": "Check-in in the evening",
       "checkinHint": "At 19:00, if you have not checked in today.",
@@ -3251,7 +3274,9 @@
       "plan": "Changed plan",
       "planHint": "When a coach adds or changes a session in the next seven days.",
       "week": "The week in short",
-      "weekHint": "Sunday evening, when the week is over."
+      "weekHint": "Sunday evening, when the week is over.",
+      "wellbeing": "Wellbeing",
+      "wellbeingHint": "When a rider checks in in the red zone, at most once a day per rider. It also comes between 21:30 and 7:00 and does not name the rider."
     },
     "notify": {
       "checkinTitle": "Remember today's check-in",
@@ -3265,7 +3290,11 @@
       "weekTitle": "{owner} training week is ready",
       "weekBody": "See how the week went.",
       "fallbackTitle": "There is something new in Kadence",
-      "fallbackBody": "Open Kadence to see it."
+      "fallbackBody": "Open Kadence to see it.",
+      "wellbeingTitle": "A rider could use a talk",
+      "wellbeingBody": "See who it is under the points of attention.",
+      "testTitle": "This is what a reminder from Kadence looks like",
+      "testBody": "The test arrived. Reminders work on this device."
     }
   },
   "records": {
