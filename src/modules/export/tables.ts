@@ -45,6 +45,11 @@ export const EXPORT_TABLES: ExportTable[] = [
   { table: "workout_templates", sheet: "Skabeloner", orderBy: "sport, name" },
   { table: "training_blocks", sheet: "Blokke", orderBy: "name" },
   { table: "training_block_items", sheet: "Blokkens pas", orderBy: "block_id, day, sort" },
+  // The team's own exercises and programmes (drizzle/0032), archived ones
+  // included. A pose, a dose and a programme's parts are JSON in a cell;
+  // the JSON export keeps them as they are, references and all.
+  { table: "team_exercises", sheet: "Øvelser", orderBy: "name, created_at" },
+  { table: "team_programs", sheet: "Øvelsesprogrammer", orderBy: "name, created_at" },
   { table: "team_settings", sheet: "Indstillinger" },
   // The club championship (ADR 0051): the club's own seasons, rounds,
   // results and roll of honour.
