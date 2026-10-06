@@ -1,7 +1,7 @@
 import { createTranslator } from "next-intl";
 import { describe, expect, it } from "vitest";
 import { BUILTIN_PROGRAMS } from "@/modules/exercises/builtin";
-import { formatDose, type Translate } from "@/modules/exercises/dose";
+import { formatDose, programMinutes, type Translate } from "@/modules/exercises/dose";
 import type { Dose } from "@/modules/exercises/types";
 import {
   builtinExerciseView,
@@ -121,4 +121,29 @@ describe("a dose in words", () => {
       expect(formatDose(dose, tEn)).toBe(inEnglish);
     });
   }
+});
+
+describe("a programme's whole time", () => {
+  it("adds up every item, sets and sides together, to the nearest minute", () => {
+    const view = builtinProgramView("mobilityDay", tDa)!;
+    expect(programMinutes(view)).toBeGreaterThan(0);
+  });
+
+  it("is never zero, even for one short hold", () => {
+    expect(
+      programMinutes({
+        parts: [
+          {
+            key: "any",
+            items: [
+              {
+                exercise: builtinExerciseView("chinTuck", tDa)!,
+                dose: { kind: "time", seconds: 5, perSide: false, sets: 1 },
+              },
+            ],
+          },
+        ],
+      }),
+    ).toBe(1);
+  });
 });

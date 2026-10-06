@@ -3858,6 +3858,11 @@
           "title": "Mad og drikke",
           "body": "Mad i hverdagen og på løbsdagen, opskrifter på hjemmelavet energi, tænder og kosttilskud.",
           "topic": "mad og drikke"
+        },
+        "programs": {
+          "title": "Øvelser og programmer",
+          "body": "Kadences egne programmer med tegninger, eller sammensæt dit eget. Hent som én fil, eller udskriv.",
+          "topic": "øvelser og programmer"
         }
       },
       "fromParents": "Viden om sporten til forældre: {topics}.",
@@ -5011,6 +5016,46 @@
     },
     "viewer": {
       "parts": "Dele af programmet"
+    },
+    "open": {
+      "title": "Øvelser og programmer",
+      "intro": "Kadences egne programmer med tegninger og en \"Færdig\"-knap, eller sammensæt dit eget ud fra biblioteket. Hent som én fil, eller udskriv.",
+      "builtinHeading": "Kadences egne programmer",
+      "composeTitle": "Sammensæt dit eget",
+      "composeBody": "Vælg øvelser fra biblioteket, sæt dem i de dele af dagen, du vil, og se det med det samme.",
+      "parts": "{count, plural, one {1 del} other {# dele}}",
+      "backToGallery": "Alle programmer",
+      "notFound": "Vi kender ikke det program eller den sammensætning. Her er dem, vi har."
+    },
+    "compose": {
+      "title": "Sammensæt dit eget",
+      "intro": "Vælg øvelser fra biblioteket, og sæt dem i de dele af dagen, du vil. Det hele ligger i linket — intet gemmes om dig.",
+      "previewTitle": "Dit program",
+      "addTo": "Tilføj til",
+      "group": "Gruppe",
+      "allGroups": "Alle grupper",
+      "noEquipment": "Uden udstyr",
+      "search": "Søg",
+      "searchPlaceholder": "Søg efter en øvelse",
+      "libraryEmpty": "Ingen øvelser matcher. Prøv et andet filter.",
+      "add": "Tilføj {name} til programmet",
+      "builderHeading": "Dit program",
+      "builderEmpty": "Vælg øvelser fra biblioteket for at komme i gang.",
+      "remove": "Fjern {name}",
+      "moveUp": "Flyt {name} op",
+      "moveDown": "Flyt {name} ned",
+      "doseTime": "Tid",
+      "doseReps": "Antal",
+      "seconds": "Sekunder",
+      "reps": "Gentagelser",
+      "perSide": "Pr. side",
+      "sets": "Sæt",
+      "preview": "Sådan ser det ud",
+      "limitReached": "Der er plads til højst {max} øvelser i alt."
+    },
+    "download": {
+      "button": "Hent som fil",
+      "print": "Udskriv eller gem som PDF"
     }
   }
 }

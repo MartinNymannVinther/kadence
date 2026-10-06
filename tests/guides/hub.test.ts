@@ -21,8 +21,9 @@ describe("the open hub", () => {
     expect(shownItems(HUB_GUIDES, off).map((i) => i.href)).toEqual([
       "/guides/classes",
       "/guides/equipment",
+      "/guides/programs",
     ]);
-    expect(shownTopics(off)).toEqual(["classes", "equipment", "gearing"]);
+    expect(shownTopics(off)).toEqual(["classes", "equipment", "programs", "gearing"]);
   });
 
   it("brings each back on its own flag", () => {
@@ -30,13 +31,19 @@ describe("the open hub", () => {
       "classes",
       "equipment",
       "food",
+      "programs",
       "gearing",
     ]);
     expect(shownTopics({ ...off, energyCalculator: true })).toEqual([
       "classes",
       "equipment",
+      "programs",
       "energy",
       "gearing",
     ]);
+  });
+
+  it("shows the programmes guide without waiting for any flag", () => {
+    expect(shownItems(HUB_GUIDES, off).map((i) => i.key)).toContain("programs");
   });
 });

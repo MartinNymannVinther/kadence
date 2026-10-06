@@ -1,4 +1,4 @@
-import type { Dose } from "./types";
+import type { Dose, ProgramView } from "./types";
 
 /**
  * A translator for the `exercises` namespace: next-intl's `useTranslations`
@@ -26,4 +26,18 @@ export function formatDose(dose: Dose, t: Translate): string {
   }
   if (perSide) amount = t("dose.perSide", { amount });
   return sets > 1 ? t("dose.sets", { sets, amount }) : amount;
+}
+
+/** A rough seconds for one set of a dose: a hold as given, a rep about three seconds, doubled per side. */
+function doseSeconds(dose: Dose): number {
+  const perSet = dose.kind === "time" ? dose.seconds : dose.reps * 3;
+  return perSet * (dose.sets ?? 1) * (dose.perSide ? 2 : 1);
+}
+
+/** A programme's whole time on the gallery's card, rounded to the nearest minute, at least one. */
+export function programMinutes(program: Pick<ProgramView, "parts">): number {
+  const seconds = program.parts
+    .flatMap((part) => part.items)
+    .reduce((sum, item) => sum + doseSeconds(item.dose), 0);
+  return Math.max(1, Math.round(seconds / 60));
 }

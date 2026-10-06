@@ -3858,6 +3858,11 @@
           "title": "Food and drink",
           "body": "Everyday food and race-day food, recipes for homemade energy, teeth and supplements.",
           "topic": "food and drink"
+        },
+        "programs": {
+          "title": "Exercises and programmes",
+          "body": "Kadence's own programmes with drawings, or put together your own. Download as one file, or print it.",
+          "topic": "exercises and programmes"
         }
       },
       "fromParents": "About the sport, for parents: {topics}.",
@@ -5011,6 +5016,46 @@
     },
     "viewer": {
       "parts": "Parts of the programme"
+    },
+    "open": {
+      "title": "Exercises and programmes",
+      "intro": "Kadence's own programmes with drawings and a \"Done\" button, or put together your own from the library. Download as one file, or print it.",
+      "builtinHeading": "Kadence's own programmes",
+      "composeTitle": "Put together your own",
+      "composeBody": "Choose exercises from the library, put them into the parts of the day you want, and see it right away.",
+      "parts": "{count, plural, one {1 part} other {# parts}}",
+      "backToGallery": "All programmes",
+      "notFound": "We don't know that programme or that composition. Here are the ones we have."
+    },
+    "compose": {
+      "title": "Put together your own",
+      "intro": "Choose exercises from the library, and put them into the parts of the day you want. It all lives in the link — nothing is stored about you.",
+      "previewTitle": "Your programme",
+      "addTo": "Add to",
+      "group": "Group",
+      "allGroups": "All groups",
+      "noEquipment": "No equipment",
+      "search": "Search",
+      "searchPlaceholder": "Search for an exercise",
+      "libraryEmpty": "No exercises match. Try another filter.",
+      "add": "Add {name} to the programme",
+      "builderHeading": "Your programme",
+      "builderEmpty": "Choose exercises from the library to get started.",
+      "remove": "Remove {name}",
+      "moveUp": "Move {name} up",
+      "moveDown": "Move {name} down",
+      "doseTime": "Time",
+      "doseReps": "Number",
+      "seconds": "Seconds",
+      "reps": "Repetitions",
+      "perSide": "Per side",
+      "sets": "Sets",
+      "preview": "What it looks like",
+      "limitReached": "There is room for at most {max} exercises in total."
+    },
+    "download": {
+      "button": "Download as a file",
+      "print": "Print or save as PDF"
     }
   }
 }
