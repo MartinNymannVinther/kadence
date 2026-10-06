@@ -23,6 +23,7 @@ eller mere. Rækkefølgen inden for en prioritet er den anbefalede.
 
 P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter #21 og #22). Hvert spor bygges i sit eget worktree med egen database og flettes ind på P1-grenen, når det er grønt. Statusloggen nyeste først:
 
+- **6. okt., aften.** Ø-03 (holdets egne øvelser og programmer i databasen) er færdig og flettet ind; hele suiten er grøn (2.297 tests). Ø-01 arbejder stadig.
 - **6. okt., aften.** Øvelser og programmer (Ø-01 til Ø-05) er godkendt og sat i gang på `feat/ovelser-og-programmer`: kontrakten i `src/modules/exercises/types.ts` er lagt, Ø-01 og Ø-03 kører parallelt.
 - **6. okt., aften.** P1 er færdig: alle otte stories er flettet ind på `feat/p1-foer-piloten`, hele suiten er grøn (2.243 tests), build kompilerer, og PR #23 er klar til Martin. Samlet forbrug for P1: ca. 1,7M tokens mod et skøn på 1,4–2,2M. Næste skridt er Martins: læse PR'en, prøve påmindelser på en telefon (P1-05) og Rulle på en hometrainer (P1-06), og udfylde kontaktoplysningerne i pilotguiden.
 - **6. okt., eftermiddag.** P1-01, P1-02+05, P1-04 og P1-06 er færdige og flettet ind; hele suiten er grøn (2.243 tests) og build kompilerer. Samlet forbrug for P1-01 til P1-07: ca. 1,4M tokens mod et skøn på 1,2–2,0M. P1-08 (pilotguiden) er sat i gang.
@@ -135,7 +136,7 @@ Rammen er:
 | R-02  | Små rester fra fokus-bølgen                                | R    | S    | 100–180k     | Sonnet 5  |                   | Ikke startet |
 | Ø-01  | Tegnefunktion og indbyggede øvelser og programmer          | Ø    | M    | 400–700k     | Opus 5.5  |                   | I gang       |
 | Ø-02  | Åben side, sammensæt og download                           | Ø    | M    | 300–500k     | Sonnet 5  | Ø-01              | Venter       |
-| Ø-03  | Holdets egne øvelser og programmer i databasen             | Ø    | M    | 300–450k     | Opus 5.5  |                   | I gang       |
+| Ø-03  | Holdets egne øvelser og programmer i databasen             | Ø    | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
 | Ø-04  | Appen: bibliotek, tegneværktøj, programbygger, kalender    | Ø    | L    | 600k–1M      | Opus 5.5  | Ø-01, Ø-03        | Venter       |
 | Ø-05  | Demo, hjælp og ADR                                         | Ø    | S    | 100–200k     | Sonnet 5  | Ø-02, Ø-04        | Venter       |
 
@@ -1027,7 +1028,7 @@ net.
 
 **Tokens:** ca. 300–450k · **Model:** Opus 5.5 (`claude-opus-5-5`), nye tabeller med RLS, audit og eksport.
 
-**Status:** I gang siden 6. oktober.
+**Status:** Færdig 6. oktober, flettet ind på `feat/ovelser-og-programmer` (PR #25). Migrering 0032 med `team_exercises` og `team_programs`: tvungen RLS, hvor kun holdets medlemmer læser og kun trænere skriver, audit, isolationstest og eksport ("Øvelser" og "Øvelsesprogrammer"). Der slettes ikke; en øvelse arkiveres, fordi programmer peger på den i JSON uden fremmednøgle, og arkiverede øvelser virker stadig i de programmer, der har dem. Faktisk forbrug: 234k tokens på 18 min (skøn 300–450k).
 
 ### Ø-04 Appen: bibliotek, tegneværktøj, programbygger, kalender
 
