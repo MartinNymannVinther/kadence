@@ -183,12 +183,16 @@
       "calendar": "Kalender",
       "riders": "Ryttere",
       "coaches": "Trænerrummet",
-      "library": "Træningsbibliotek",
+      "library": "Bibliotek",
       "season": "Sæson",
       "club": "Klubmester",
       "parents": "Forældre",
       "rulle": "Rulle",
-      "guides": "Viden og beregnere"
+      "me": "Mig",
+      "child": "Barnet",
+      "more": "Mere",
+      "moreNews": "Mere, der er noget nyt",
+      "barLabel": "Hovedmenu"
     },
     "orgSwitcher": {
       "label": "Arbejdsrum",
@@ -289,8 +293,11 @@
   },
   "settings": {
     "title": "Indstillinger",
-    "subtitle": "Dig selv, holdet og installationen.",
+    "subtitleCoach": "Dig selv, holdet og arbejdsrummet.",
+    "subtitleRider": "Dig selv, dine enheder og din sikkerhed.",
+    "subtitleOther": "Dig selv og din sikkerhed.",
     "nav": {
+      "label": "Indstillingsmenu",
       "security": "Sikkerhed",
       "about": "Om",
       "access": "Adgang",
@@ -686,6 +693,8 @@
   "help": {
     "title": "Hjælp",
     "intro": "Sådan virker Kadence, i den rytme en sæson lever i.",
+    "guidesLine": "Guides og beregnere ligger åbent for alle, også uden login:",
+    "guidesLink": "Viden og beregnere",
     "howToTitle": "Sådan bruger du værktøjet",
     "closing": "Mangler der noget her? Skriv til os, eller ret siden selv: koden er åben.",
     "howTo": {
@@ -1122,7 +1131,7 @@
     }
   },
   "library": {
-    "title": "Træningsbibliotek",
+    "title": "Bibliotek",
     "own": {
       "titleRider": "Mine pas",
       "subtitleRider": "Pas, du selv har bygget. Din træner kan se dem og tage dem med i holdets bibliotek.",

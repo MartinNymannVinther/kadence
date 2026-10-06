@@ -98,7 +98,7 @@ export function TemplateEditor({
           {problem}
         </p>
       )}
-      <div className="bg-background/95 sticky bottom-0 -mx-5 flex gap-2 border-t px-5 py-3 backdrop-blur-sm sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 sm:backdrop-blur-none">
+      <div className="bg-background/95 sticky bottom-[var(--bottom-bar,0px)] -mx-5 flex gap-2 border-t px-5 py-3 backdrop-blur-sm sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 sm:backdrop-blur-none">
         <Button type="submit" disabled={pending} className="max-sm:h-11 max-sm:flex-1">
           {template ? common("save") : t("create")}
         </Button>

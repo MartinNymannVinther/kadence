@@ -6,9 +6,9 @@ import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
 /**
- * Showing and hiding the navigation rail. Desktop only: on a phone the
- * menu already lives behind the burger, and hiding what is not there
- * would be a setting for nothing.
+ * Showing and hiding the navigation rail. Desktop only: on a phone and an
+ * upright iPad the menu lives in the bottom bar (ADR 0060), and hiding
+ * what is not there would be a setting for nothing.
  *
  * The choice is kept in a cookie rather than in local storage, so the
  * server renders the right layout on the first pass. A person who hid the
@@ -50,6 +50,10 @@ export function SidebarShell({
       <div
         className={cn(
           "flex min-w-0 flex-1 flex-col",
+          // Below lg the bottom bar covers the foot of the screen; the
+          // column keeps its height free, and names it so a sticky footer
+          // inside a page can stand on top of the bar (./bottom-bar.tsx).
+          "pb-(--bottom-bar) [--bottom-bar:calc(4rem+env(safe-area-inset-bottom))] lg:[--bottom-bar:0px] print:pb-0",
           // The dividing line belongs to the content area, so it goes
           // when there is nothing on the other side of it.
           hidden ? "lg:pl-12" : "border-border lg:border-l",

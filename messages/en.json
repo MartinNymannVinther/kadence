@@ -183,12 +183,16 @@
       "calendar": "Calendar",
       "riders": "Riders",
       "coaches": "Coaches' room",
-      "library": "Workout library",
+      "library": "Library",
       "season": "Season",
       "club": "Club champion",
       "parents": "Parents",
       "rulle": "Rulle",
-      "guides": "Guides and calculators"
+      "me": "Me",
+      "child": "Your child",
+      "more": "More",
+      "moreNews": "More, something new",
+      "barLabel": "Main menu"
     },
     "orgSwitcher": {
       "label": "Workspace",
@@ -289,8 +293,11 @@
   },
   "settings": {
     "title": "Settings",
-    "subtitle": "You, the team and the installation.",
+    "subtitleCoach": "You, the team and the workspace.",
+    "subtitleRider": "You, your devices and your security.",
+    "subtitleOther": "You and your security.",
     "nav": {
+      "label": "Settings menu",
       "security": "Security",
       "about": "About",
       "access": "Access",
@@ -686,6 +693,8 @@
   "help": {
     "title": "Help",
     "intro": "How Kadence works, in the rhythm a season lives in.",
+    "guidesLine": "Guides and calculators are open to everyone, no login needed:",
+    "guidesLink": "Guides and calculators",
     "howToTitle": "How to use the tool",
     "closing": "Something missing here? Write to us, or fix the page yourself: the code is open.",
     "howTo": {
@@ -1122,7 +1131,7 @@
     }
   },
   "library": {
-    "title": "Workout library",
+    "title": "Library",
     "own": {
       "titleRider": "My sessions",
       "subtitleRider": "Sessions you built yourself. Your coach can see them and take them into the team's library.",

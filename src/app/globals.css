@@ -284,6 +284,11 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
+    /* The viewport covers the whole screen (viewport-fit=cover in
+       src/app/[locale]/layout.tsx), so a phone on its side keeps the page
+       clear of the notch; fixed bars keep their own safe area. */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
   html {
     @apply font-sans;
