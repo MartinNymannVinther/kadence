@@ -22,6 +22,7 @@ const HOW_TO = [
   "load",
   "warnings",
   "checkin",
+  "reminders",
   "devices",
   "toDevice",
   "rulle",
