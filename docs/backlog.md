@@ -23,6 +23,7 @@ eller mere. Rækkefølgen inden for en prioritet er den anbefalede.
 
 P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter #21 og #22). Hvert spor bygges i sit eget worktree med egen database og flettes ind på P1-grenen, når det er grønt. Statusloggen nyeste først:
 
+- **6. okt., eftermiddag.** P1-03 og P1-07 er færdige og flettet ind; hele suiten er grøn (2.143 tests).
 - **6. okt., middag.** De fem parkerede dele er slået til som standard (PR #24, ADR 0057 tillæg), og den ændring er flettet ind i P1-grenen, så P1 bygger oven på den. P1-sporene blev stoppet ved en fejl, før de nåede at skrive noget, og er sat i gang igen fra den opdaterede gren.
 - **6. okt.** P1 sat i gang. Migreringerne 0029 (påmindelser om trivsel), 0030 (invitationens rolle) og 0031 (pilotens tal) er lagt på P1-grenen først, så sporene ikke tager samme nummer. P1-01, P1-02+05, P1-03+07, P1-04 og P1-06 kører parallelt; P1-08 skrives til sidst.
 
@@ -89,11 +90,11 @@ Rammen er:
 | ----- | ------------------------------------------------- | ---- | ---- | ------------ | --------- | ----------------- | ------------ |
 | P1-01 | Inviter hele holdet på én gang                    | P1   | M    | 300–450k     | Opus 5.5  |                   | I gang       |
 | P1-02 | Træneren får besked, når en rytter er i rød zone  | P1   | M    | 250–400k     | Opus 5.5  | ADR 0060 (push)   | I gang       |
-| P1-03 | Invitationen siger rytter eller forælder          | P1   | S    | 120–200k     | Opus 5.5  |                   | I gang       |
+| P1-03 | Invitationen siger rytter eller forælder          | P1   | S    | 120–200k     | Opus 5.5  |                   | Færdig       |
 | P1-04 | Pilotens tre tal                                  | P1   | M    | 300–450k     | Opus 5.5  |                   | I gang       |
 | P1-05 | Prøv påmindelser på en rigtig telefon             | P1   | S    | 100–180k     | Sonnet 5  | ADR 0060 (push)   | I gang       |
 | P1-06 | Rulle møder en rigtig hometrainer                 | P1   | S    | 120–200k     | Sonnet 5  |                   | I gang       |
-| P1-07 | Ryttere og forældre kan forlade holdet igen       | P1   | S    | 50–100k      | Sonnet 5  |                   | I gang       |
+| P1-07 | Ryttere og forældre kan forlade holdet igen       | P1   | S    | 50–100k      | Sonnet 5  |                   | Færdig       |
 | P1-08 | En pilotguide til træneren                        | P1   | S    | 120–200k     | Sonnet 5  | A-05              | Venter       |
 | P2-01 | Garmin-ture ind af sig selv gennem Tredict        | P2   | L    | 600k–1M      | Opus 5.5  | A-07 (Martins ja) | Ikke startet |
 | P2-02 | Mine ture: en liste over rytterens ture           | P2   | S    | 80–150k      | Sonnet 5  |                   | Ikke startet |
@@ -222,7 +223,7 @@ jeg** kunne se, at jeg inviteres som rytter (eller forælder) på holdet X,
 
 **Tokens:** ca. 120–200k · **Model:** Opus 5.5 (`claude-opus-5-5`), en SECURITY DEFINER-funktion, som auth-rollen kalder før login.
 
-**Status:** I gang siden 6. oktober på `feat/p1-03-07-invitation-og-forlad` sammen med P1-07 (Opus 5.5). Migrering 0030 er reserveret.
+**Status:** Færdig 6. oktober, flettet ind på `feat/p1-foer-piloten` (PR #23). Join-siden siger "som rytter", "som forælder til Emma" eller "som træner" gennem `invitation_kind()` (migrering 0030), som kun auth-rollen må kalde, og som kun svarer for en gyldig invitation. ADR 0065. Valgt undervejs: rækker for arkiverede ryttere og allerede brugte rækker tæller ikke, så siden siger mindre frem for for meget. Faktisk forbrug for P1-03 og P1-07 samlet: 215k tokens på 18 min (skøn 170–300k).
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: fix/invitation-rolle.
@@ -355,7 +356,7 @@ egne indstillinger, **så** jeg ikke skal kende en adresse for at gøre det.
 
 **Tokens:** ca. 50–100k · **Model:** Sonnet 5 (`claude-sonnet-5`), en komponent flyttes, guards er uændrede.
 
-**Status:** I gang siden 6. oktober sammen med P1-03 (begge rører indstillinger og invitationer).
+**Status:** Færdig 6. oktober, flettet ind på `feat/p1-foer-piloten`. "Forlad holdet" står nederst på Mig for alle, der ikke er trænere, med samme action og bekræftelse som før; trænere har den stadig under Arbejdsrum. Bemærkning: trænerens tekst siger stadig "Forlad arbejdsrummet … dine samtaler" (arvet fra Haij) og kan rettes i en senere oprydning.
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: fix/forlad-holdet.

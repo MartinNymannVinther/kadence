@@ -83,3 +83,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0061](0061-navigation-by-role.md)                                         | One menu per role, a bottom bar on the phone, and the guides out of the signed-in menu                      | → 0007, 0047                   |
 | [0062](0062-the-teams-week.md)                                             | The team's week: who needs a talk, beside each rider; one card per rider on a phone                         | → 0017, 0026, 0040, 0049, 0053 |
 | [0063](0063-the-riders-day-and-their-own-page.md)                          | The rider's day: Today shows today, the rest lives on Mig; a first-run checklist; RPE when the ride lands   | → 0021, 0032, 0061             |
+| [0065](0065-the-invitation-says-who.md)                                    | The invitation says who: rider, parent of a named child, or coach, from one definer function before sign-in | → 0004, 0010, 0063             |
