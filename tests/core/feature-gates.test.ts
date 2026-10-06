@@ -1,4 +1,4 @@
-import { isValidElement, type ReactNode } from "react";
+import { isValidElement, type ReactElement, type ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 /**
@@ -58,6 +58,7 @@ const clubPage = await import("@/app/[locale]/(app)/(narrow)/club/page");
 const energyPage = await import("@/app/[locale]/(open)/calculators/energy/page");
 const foodPage = await import("@/app/[locale]/(open)/guides/food/page");
 const hubPage = await import("@/app/[locale]/(open)/guides/page");
+const rullePage = await import("@/app/[locale]/(ride)/rulle/page");
 
 /** Every link in a page as the server returned it, without rendering it. */
 function hrefsIn(node: ReactNode): string[] {
@@ -127,5 +128,26 @@ describe("the open hub", () => {
     expect(hrefsIn(await hubPage.default())).toEqual(
       expect.arrayContaining(["/calculators/energy", "/guides/food"]),
     );
+  });
+});
+
+describe("Rulle", () => {
+  const ride = async () =>
+    (await rullePage.default(search)) as ReactElement<{
+      world: boolean;
+      name: string | null;
+    }>;
+
+  it("is the session alone while its world is off: no world, no name on a climb", async () => {
+    stand.ctx = { orgId: "org_gate", userId: "user_gate" };
+    const app = await ride();
+    expect(app.props).toMatchObject({ world: false, name: null });
+  });
+
+  it("rides through its world when it is on", async () => {
+    stand.ctx = { orgId: "org_gate", userId: "user_gate" };
+    on.add("rulleWorld");
+    const app = await ride();
+    expect(app.props).toMatchObject({ world: true, name: "Emma" });
   });
 });

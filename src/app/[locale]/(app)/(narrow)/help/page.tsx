@@ -3,6 +3,7 @@ import { GuidesCard } from "@/components/guides/guides-card";
 import { BookOpen } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { getOrgContext } from "@/core/auth/session";
+import { featureOn } from "@/core/features";
 import { Link } from "@/i18n/navigation";
 import { whoAmI } from "@/modules/team/access";
 
@@ -41,6 +42,7 @@ const HOW_TO = [
  * adds the part it built. Every section can be linked to: `/help#help-keys`.
  * The coach guide is offered to coaches and riders; a parent who is
  * neither has the parents' page instead, so the card is left out for them.
+ * Rulle's world is described only where the installation has it on (ADR 0056).
  */
 export default async function HelpPage() {
   const t = await getTranslations("help");
@@ -48,6 +50,7 @@ export default async function HelpPage() {
   const ctx = await getOrgContext();
   const me = ctx ? await whoAmI(ctx.orgId, ctx.userId) : null;
   const parentOnly = !!me && !me.isCoach && !me.rider && me.children.length > 0;
+  const rulleWorld = featureOn("rulleWorld");
 
   return (
     <div className="mx-auto max-w-2xl pb-16">
@@ -75,6 +78,9 @@ export default async function HelpPage() {
             {t(`howTo.${key}.title`)}
           </h3>
           <p className="mt-1.5 text-reading leading-relaxed">{t(`howTo.${key}.body`)}</p>
+          {key === "rulle" && rulleWorld && (
+            <p className="mt-1.5 text-reading leading-relaxed">{t("howTo.rulle.world")}</p>
+          )}
         </section>
       ))}
 
