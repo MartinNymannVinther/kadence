@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { buildTimeline, type Recording, type Seen } from "@/modules/rulle";
 import type { RulleSession, RulleStart } from "@/modules/rulle/service";
+import { BleLogPanel } from "./ble-log-panel";
+import { BleLog } from "./bluetooth/ble-log";
 import { DoneScreen } from "./done-screen";
 import { dcuPicks, pickOf, plannedPick, teamPicks } from "./ready/choices";
 import { ReadyScreen } from "./ready/ready-screen";
@@ -28,12 +30,16 @@ type Phase = "ready" | "counting" | "riding" | "done";
  * browser, and reaches Kadence only as the finished ride's FIT file.
  * Without the world (ADR 0057) the same ride is the session alone: no
  * route to choose, no landscape, the bar and the numbers on their own.
+ * With `?ble=log` a diagnostics panel (`BleLogPanel`) sits over every
+ * screen below, for Martin's first ride on a real trainer
+ * (TECH-DEBT.md, docs/rulle-proevetur.md); without it, nothing is kept.
  */
 export function RulleApp({
   start,
   today,
   name,
   world,
+  bleLog,
 }: {
   start: RulleStart;
   today: string;
@@ -41,6 +47,8 @@ export function RulleApp({
   name: string | null;
   /** The installation has Rulle's world on: the land, the routes, the people and the sound. */
   world: boolean;
+  /** `?ble=log` was on the URL: keep a Bluetooth diagnostics log and show it. */
+  bleLog: boolean;
 }) {
   const t = useTranslations("rulle");
   const locale = useLocale();
@@ -65,7 +73,8 @@ export function RulleApp({
 
   const [sensors] = useState(() => new Sensors());
   const [beeps] = useState(() => new Beeps());
-  const devices = useDevices(sensors);
+  const [log] = useState(() => (bleLog ? new BleLog() : null));
+  const devices = useDevices(sensors, log);
   const course = useCourse(world);
   const courseReady = course.state.status === "ready" ? course.state.course : null;
   const land = course.state.status === "ready" ? course.state.land : null;
@@ -117,8 +126,8 @@ export function RulleApp({
     },
   });
 
-  if (phase === "done" && finished)
-    return (
+  const screen =
+    phase === "done" && finished ? (
       <DoneScreen
         recording={finished.recording}
         meta={finished.meta}
@@ -128,10 +137,7 @@ export function RulleApp({
         onTarget={finished.onTarget}
         world={world}
       />
-    );
-
-  if ((phase === "counting" || phase === "riding") && courseReady && !world)
-    return (
+    ) : (phase === "counting" || phase === "riding") && courseReady && !world ? (
       <SessionScreen
         title={meta.title}
         trial={trial}
@@ -146,10 +152,7 @@ export function RulleApp({
           setPhase("riding");
         }}
       />
-    );
-
-  if ((phase === "counting" || phase === "riding") && courseReady)
-    return (
+    ) : (phase === "counting" || phase === "riding") && courseReady ? (
       <RideScreen
         title={meta.title}
         trial={trial}
@@ -170,41 +173,46 @@ export function RulleApp({
         land={land}
         city={city}
       />
+    ) : (
+      <ReadyScreen
+        picked={picked}
+        choices={choices}
+        timeline={timeline}
+        today={today}
+        trial={trial}
+        noFtp={Boolean(picked) && !thresholds?.ftp}
+        missing={start.missing}
+        devices={devices}
+        course={course}
+        world={world}
+        kept={kept}
+        onChoose={setChosenId}
+        onStart={() => {
+          beeps.unlock();
+          setPhase("counting");
+        }}
+        onSaveKept={() => {
+          if (!kept) return;
+          // Kept until Kadence has it: the done screen forgets it once it is saved.
+          setFinished({
+            recording: kept.recording,
+            meta: kept.meta,
+            trial: false,
+            seen: kept.seen ?? null,
+            onTarget: kept.onTarget ?? null,
+          });
+          setPhase("done");
+        }}
+        onDiscardKept={() => {
+          if (start.riderId) forgetRide(start.riderId);
+        }}
+      />
     );
 
   return (
-    <ReadyScreen
-      picked={picked}
-      choices={choices}
-      timeline={timeline}
-      today={today}
-      trial={trial}
-      noFtp={Boolean(picked) && !thresholds?.ftp}
-      missing={start.missing}
-      devices={devices}
-      course={course}
-      world={world}
-      kept={kept}
-      onChoose={setChosenId}
-      onStart={() => {
-        beeps.unlock();
-        setPhase("counting");
-      }}
-      onSaveKept={() => {
-        if (!kept) return;
-        // Kept until Kadence has it: the done screen forgets it once it is saved.
-        setFinished({
-          recording: kept.recording,
-          meta: kept.meta,
-          trial: false,
-          seen: kept.seen ?? null,
-          onTarget: kept.onTarget ?? null,
-        });
-        setPhase("done");
-      }}
-      onDiscardKept={() => {
-        if (start.riderId) forgetRide(start.riderId);
-      }}
-    />
+    <>
+      {screen}
+      {log && <BleLogPanel log={log} />}
+    </>
   );
 }

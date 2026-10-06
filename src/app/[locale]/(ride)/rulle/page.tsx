@@ -20,6 +20,8 @@ export async function generateMetadata(): Promise<Metadata> {
  * thresholds its watts come from; the ride itself happens in the browser.
  * Whether the ride goes through Rulle's world or is the session alone is
  * the installation's choice (ADR 0057), handed to the browser here.
+ * `?ble=log` turns on Rulle's Bluetooth diagnostics panel (TECH-DEBT.md,
+ * docs/rulle-proevetur.md); it keeps nothing when it is absent.
  */
 export default async function RullePage({
   searchParams,
@@ -35,10 +37,11 @@ export default async function RullePage({
   const me = await whoAmI(ctx.orgId, ctx.userId);
   const search = await searchParams;
   const asked = typeof search.session === "string" ? search.session : null;
+  const bleLog = search.ble === "log";
   const today = todayInCopenhagen();
   const start = await rulleStart(ctx, me, asked, today);
   const world = featureOn("rulleWorld");
   // The first name, chalked on the steepest climb (ADR 0034): the rider's own screen only.
   const name = (world && me?.rider?.name.trim().split(/\s+/)[0]) || null;
-  return <RulleApp start={start} today={today} name={name} world={world} />;
+  return <RulleApp start={start} today={today} name={name} world={world} bleLog={bleLog} />;
 }
