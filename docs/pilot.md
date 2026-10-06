@@ -75,8 +75,9 @@ klubhuset. Det står på kortene i kalenderen, på rytterens og forældrenes
 "I dag", og det tager du med, når du trykker **"Del ugen"** på holdets
 uge: en tekst med ugens pas, tider og steder, klar til at sætte ind i
 klubbens sms- eller chatgruppe. Teksten siger intet om, hvordan nogen
-har det eller har kørt. Skal en uge gentages, bruger du "Gentag i N
-uger"; en god uge kan gemmes som forløb til senere.
+har det eller har kørt. Skal en uge gentages, vælger du under "Læg ugen
+ind i", hvor mange uger i træk den samme uge skal ligge; en god uge kan
+også gemmes som forløb til senere med "Gem som forløb".
 
 Brug også dagen til at slå dine egne påmindelser til. Under
 **Indstillinger → Mig → Påmindelser** trykker du "Slå påmindelser til på
@@ -128,8 +129,9 @@ til at afgøre.
 Første gang en rytter åbner Kadence, møder de **"Kom i gang"** øverst på
 I dag: hvad de kører med (Garmin, Wahoo, Polar, kun Strava eller ingen
 cykelcomputer), deres tærskler (eller "spring over", så bruger Kadence i
-stedet, hvor hårdt det føltes), et ja til en ventende forælder, og at
-lægge Kadence på hjemmeskærmen. Resten af I dag er kort: dagens pas med
+stedet, hvor hårdt det føltes), og at lægge Kadence på hjemmeskærmen;
+venter der en forælder på at blive bekræftet, står det trin også med.
+Resten af I dag er kort: dagens pas med
 "Udført" og "Kør indendørs", dagens check-in, og i morgen. Har den
 seneste tur ingen vurdering endnu, spørger siden "Hvor hårdt føltes
 turen …?" med en skala fra 1 til 10.
