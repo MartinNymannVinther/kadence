@@ -9,7 +9,7 @@ import { CLUB_CLASSES, ROUND_KINDS, type ClubClass } from "./standings";
 /**
  * The club championship's actions (docs/adr/0051): each resolves the team
  * and the role first, and each is refused while the installation has the
- * championship off (docs/adr/0056).
+ * championship off (docs/adr/0057).
  */
 
 const CLUB = ["/club"];

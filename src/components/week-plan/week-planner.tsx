@@ -23,7 +23,7 @@ import { usePlanDraft } from "./use-plan-draft";
 const MAX_ITEMS = 21;
 
 /**
- * The one place to plan a week (ADR 0043, 0058): who the week is for —
+ * The one place to plan a week (ADR 0043, 0059): who the week is for —
  * the team, a class, or the one rider it was opened for — the week itself,
  * started empty, from last week, from a block or from the AI, what it does
  * to each rider's four numbers (ADR 0040), and one press that lays it into

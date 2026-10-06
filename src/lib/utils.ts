@@ -3,7 +3,7 @@ import { extendTailwindMerge } from "tailwind-merge";
 
 /**
  * tailwind-merge knows Tailwind's own scales; the steps globals.css names
- * (ADR 0007, 0060) are taught here, or `text-heading` beside a
+ * (ADR 0007, 0061) are taught here, or `text-heading` beside a
  * `text-primary` reads as two colours and the size is dropped.
  * `2xs` and `2sm` already pass for T-shirt sizes.
  */

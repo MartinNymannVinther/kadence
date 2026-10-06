@@ -24,7 +24,7 @@ import {
 type View = "loading" | "unsupported" | "ios" | "denied" | "off" | "on";
 
 /**
- * "Påmindelser" under Settings → Mig (docs/adr/0059): reminders on this
+ * "Påmindelser" under Settings → Mig (docs/adr/0060): reminders on this
  * browser, for this team. The page shows the card only when the
  * installation has the keys, and hands it the reminders the person's
  * roles offer; the choices are kept per browser, and turning off lets go

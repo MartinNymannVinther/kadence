@@ -70,7 +70,7 @@ or a scheduler that would rather not rely on visitors. Safe to run twice.
 
 ## push-keys.ts
 
-Prints a fresh key pair for reminders by web push (docs/adr/0059) as
+Prints a fresh key pair for reminders by web push (docs/adr/0060) as
 `PUSH_PUBLIC_KEY`, `PUSH_PRIVATE_KEY` and a `PUSH_CONTACT` to fill in,
 ready for `.env` or Coolify. node:crypto makes the pair, so no web-push
 package is needed. Make one per installation and keep it; a new pair

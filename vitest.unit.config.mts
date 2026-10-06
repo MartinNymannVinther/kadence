@@ -6,7 +6,7 @@ import { defineConfig } from "vitest/config";
  * guardrails, the FIT decoder, the workout files, the coach guide, a
  * rider's page at Cykling Danmark, Rulle's routes, physics, timeline and
  * Bluetooth, the open calculators and guides, and what Today and a
- * ride's page decide (docs/adr/0062). No database, no global
+ * ride's page decide (docs/adr/0063). No database, no global
  * setup, no network — `pnpm test:unit` runs anywhere, in a second.
  * `pnpm test` runs these too, with everything else.
  */

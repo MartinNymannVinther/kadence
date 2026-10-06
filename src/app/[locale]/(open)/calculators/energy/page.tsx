@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * The energy calculator for a race, open to anyone (ADR 0047). It plans
  * fuel for a race and never what a young rider should weigh or eat in a
  * day: that line is ADR 0021's, and it holds here too. Not there while the
- * installation has it parked (ADR 0056).
+ * installation has it parked (ADR 0057).
  */
 export default async function EnergyPage() {
   notFoundWithout("energyCalculator");

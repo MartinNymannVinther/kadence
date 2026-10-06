@@ -1,7 +1,7 @@
 import { COURSE, type Course } from "./course";
 
 /**
- * The road under a session ridden alone (docs/adr/0056): when the
+ * The road under a session ridden alone (docs/adr/0057): when the
  * installation has Rulle's world off, there is no route to choose and no
  * land to fetch, and the engine still needs somewhere to turn watts into
  * a speed. A flat loop, made here in memory: every slope nought, every

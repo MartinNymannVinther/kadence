@@ -1,7 +1,7 @@
 import type * as Real from "@/core/features";
 
 /**
- * The installation's features as a test sets them (docs/adr/0056). The
+ * The installation's features as a test sets them (docs/adr/0057). The
  * suite runs with all of them off, as a new installation has them; a test
  * file that exercises a parked part turns it on with this, hoisted so the
  * mock sees it:

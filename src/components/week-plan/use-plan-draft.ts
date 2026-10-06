@@ -12,7 +12,7 @@ export type PlanDraft = { riderIds: string[]; items: PlanItem[] };
  * nothing a rider wrote. Where the browser keeps nothing (storage turned
  * off), the plan lives in memory for as long as the page does. A plan
  * begun from one rider's calendar is kept apart from the team's for the
- * same week (ADR 0058).
+ * same week (ADR 0059).
  */
 
 const CHANGED = "kadence:week-plan";

@@ -1,4 +1,4 @@
-# ADR 0061: The team's week is where a coach sees who needs a talk
+# ADR 0062: The team's week is where a coach sees who needs a talk
 
 Status: accepted · Date: 2026-10-06 · Builds on 0017, 0026, 0040, 0049, 0053 · Amends 0040's names
 
@@ -61,7 +61,7 @@ process goals.
   profile that lies on top of either answer, each with one sentence. The
   columns and the services are unchanged (ADR 0049, 0053). The club
   championship's switch shows only where the installation has it on
-  (ADR 0056).
+  (ADR 0057).
 - **One name, and four numbers renamed.** The guardrails' output is
   "opmærksomhedspunkter" everywhere in the interface; "DCU's ramme"
   stays where it means DCU's hours range. ADR 0040's numbers are now

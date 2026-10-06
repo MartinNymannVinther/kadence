@@ -5,7 +5,7 @@ import { runAction } from "@/core/action";
 import { Endpoint, Kinds, reminderState, setKinds, subscribe, unsubscribe } from "./subscriptions";
 
 /**
- * Reminders on this browser (docs/adr/0059). Each action resolves the
+ * Reminders on this browser (docs/adr/0060). Each action resolves the
  * person and the team first and takes nothing else on trust: the push
  * address must be a known push service's, and the reminders offered are
  * the person's roles', worked out on the server.

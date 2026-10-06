@@ -5,7 +5,7 @@ import { adminPool } from "../helpers/db";
 import { insertSql, seedPerson } from "../helpers/rows";
 
 /**
- * Today's question about the last ride (docs/adr/0062) reads rides under
+ * Today's question about the last ride (docs/adr/0063) reads rides under
  * the caller's RLS: a rider reads their own, newest first with the
  * session's title when the ride has none, and a teammate who asks for
  * someone else's gets nothing — whatever id the page hands over.

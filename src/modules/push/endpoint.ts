@@ -1,5 +1,5 @@
 /**
- * Where a push may go (docs/adr/0059). A browser hands Kadence its push
+ * Where a push may go (docs/adr/0060). A browser hands Kadence its push
  * address when a person turns reminders on, and Kadence later posts to
  * it with nobody watching. Taking any https address on trust would let
  * a signed-in person aim the server at a host of their choosing, so the

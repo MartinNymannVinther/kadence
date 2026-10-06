@@ -7,7 +7,7 @@ import { newestComment, newestPlanChange, visibleChildren } from "./facts";
 import { teamsOf } from "./subscriptions";
 
 /**
- * What the service worker shows when a push wakes it (docs/adr/0059).
+ * What the service worker shows when a push wakes it (docs/adr/0060).
  * The push carried nothing, so the browser asks `GET /api/push/latest`
  * with the person's own cookies, and this answers as that person: the
  * reminder last written down on their newest-told subscription, read

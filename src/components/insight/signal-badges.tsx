@@ -5,7 +5,7 @@ import type { RiderSignals } from "./signals";
 
 /**
  * A rider's open flags as small badges beside their name in the team's
- * week (ADR 0061): the severity as a tint and an icon of its own shape,
+ * week (ADR 0062): the severity as a tint and an icon of its own shape,
  * a short word for the kind, and the whole group one link down to the
  * rider's entry in the attention list, where the sentence and the
  * numbers are. `row` lays them side by side, for the phone's card.

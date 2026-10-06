@@ -17,7 +17,7 @@ import { fromInput, type PlanBlock, type PlanItem } from "./types";
 export type StartMode = "empty" | "last" | "block" | "ai";
 
 /**
- * Where the week starts (ADR 0058): an empty week, last week's sessions,
+ * Where the week starts (ADR 0059): an empty week, last week's sessions,
  * a week of one of the library's blocks, or the AI's proposal for the
  * group (ADR 0043) — the one AI path, also where a rider's "Foreslå
  * ugen" leads. What comes in replaces the plan, and can be changed before

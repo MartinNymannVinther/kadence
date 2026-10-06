@@ -11,7 +11,7 @@ import {
 } from "@/modules/push/due";
 
 /**
- * When a reminder is due (docs/adr/0059), in Copenhagen time: the
+ * When a reminder is due (docs/adr/0060), in Copenhagen time: the
  * check-in from 19.00, news since the last reminder, the parents' week on
  * Sunday from 18.00, nothing in the quiet hours from 21.30 to 7.00, one
  * reminder at a time, and only what the person chose.

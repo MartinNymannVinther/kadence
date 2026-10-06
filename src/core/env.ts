@@ -123,7 +123,7 @@ export const EnvSchema = z
       .pipe(z.union([z.enum(["off", "on"]), z.string().regex(/^[0-9]{11}(,[0-9]{11})*$/)]))
       .default("off"),
     // Parts of Kadence that wait for a real winter with a real team before
-    // a club sees them (docs/adr/0056, src/core/features.ts). Each is "off"
+    // a club sees them (docs/adr/0057, src/core/features.ts). Each is "off"
     // by default and "on" brings it back whole: the code, the pages and the
     // demo. Nothing is removed by turning one off; the data stays.
     // Rulle's land, towns, people and sound behind the session; without it
@@ -138,7 +138,7 @@ export const EnvSchema = z
     // The food guide, health advice about minors: off until a sports
     // dietitian has read its section on low energy availability (ADR 0047).
     GUIDE_FOOD: z.enum(["off", "on"]).default("off"),
-    // Reminders by web push (docs/adr/0059). The push carries no content;
+    // Reminders by web push (docs/adr/0060). The push carries no content;
     // Apple's, Google's or Mozilla's push service, whichever the person's
     // browser uses, sees that a reminder went out and when, never what it
     // says (docs/subprocessors.md). Without the key pair nothing is sent

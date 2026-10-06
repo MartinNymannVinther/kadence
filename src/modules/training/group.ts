@@ -77,7 +77,7 @@ async function nextProgrammeSession(tx: AppTransaction, riderId: string, templat
  * a repeat, on every day of it. A strength programme's session is
  * numbered per rider and counts on through the series, so each copy
  * carries the sets and reps of where that rider is in the programme.
- * Every copy gets the same time and place, when there are any (ADR 0057).
+ * Every copy gets the same time and place, when there are any (ADR 0058).
  */
 export async function scheduleTemplate(
   ctx: OrgContext,

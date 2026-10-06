@@ -1,4 +1,4 @@
-# ADR 0059: Reminders without content
+# ADR 0060: Reminders without content
 
 Status: accepted · Date: 2026-10-06
 

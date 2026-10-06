@@ -18,7 +18,7 @@ import { WellbeingAction } from "./wellbeing-action";
  * a way back (ADR 0026); a rider whose flags are all afklaret leaves the
  * list, and the line under it is their trace, with their wellbeing chip.
  * Each rider's entry is an anchor the team's week links its badges to,
- * and each flag leads to the rider's calendar for its week (ADR 0061).
+ * and each flag leads to the rider's calendar for its week (ADR 0062).
  */
 export function AttentionList({ insights }: { insights: RiderInsight[] }) {
   const t = useTranslations("insight");

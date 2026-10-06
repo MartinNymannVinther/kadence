@@ -50,7 +50,7 @@ function Section({
 }
 
 /**
- * Mig: the rider's own page (docs/adr/0062). Everything about the rider
+ * Mig: the rider's own page (docs/adr/0063). Everything about the rider
  * that is not today — the week, the form with the words that explain it,
  * the last two weeks of check-ins, goals, records, and the upload and the
  * way to a bike computer. Today keeps today. A coach or a parent who opens

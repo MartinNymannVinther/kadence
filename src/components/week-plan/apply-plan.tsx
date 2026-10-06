@@ -15,7 +15,7 @@ import { toInput, type PlanItem } from "./types";
 const MAX_PLAN_WEEKS = 12;
 
 /**
- * "Læg ugen ind" (ADR 0043, 0058): how many weeks in a row the week goes
+ * "Læg ugen ind" (ADR 0043, 0059): how many weeks in a row the week goes
  * into — "Gentag i N uger" — what it does to each rider's weeks in the
  * four numbers (ADR 0040), and one press. The preview belongs to the plan
  * it was made for; change the plan and it is asked for again.

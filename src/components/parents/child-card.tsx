@@ -24,7 +24,7 @@ export type ChildView = {
 };
 
 /**
- * One child, for a parent (ADR 0011, docs/adr/0062): the week with when
+ * One child, for a parent (ADR 0011, docs/adr/0063): the week with when
  * and where each session starts, what is coming the next 30 days, how the
  * child is doing if the child shares it, the conversations about the
  * training, and a simple picture of the form. Read-only: a parent never

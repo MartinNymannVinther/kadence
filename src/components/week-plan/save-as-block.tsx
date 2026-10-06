@@ -19,7 +19,7 @@ import { createBlockAction } from "@/modules/training/block-actions";
 import { toBlockItem, type PlanItem } from "./types";
 
 /**
- * "Gem som forløb" (ADR 0058): the planner's week kept in the library as
+ * "Gem som forløb" (ADR 0059): the planner's week kept in the library as
  * a block of one week, to start from again — "Start fra: Et forløb" — or
  * lay in from the library. The library's sessions are kept as the
  * library's; a session built here is kept in the block, not added to the

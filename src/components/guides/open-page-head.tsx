@@ -9,7 +9,7 @@ export function OpenPageHead({ title, intro }: { title: string; intro: string })
     <div className="flex flex-col gap-2 pb-6">
       <Link
         href="/guides"
-        className="focus-ring text-meta hover:text-foreground flex min-h-11 w-fit items-center gap-1 text-2sm"
+        className="focus-ring text-meta hover:text-foreground flex min-h-11 w-fit items-center gap-1 text-2sm print:hidden"
       >
         <ChevronLeft aria-hidden className="size-4" />
         {t("back")}

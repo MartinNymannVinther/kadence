@@ -29,7 +29,7 @@ const ICONS: Partial<Record<NavKey, LucideIcon>> = {
 };
 
 /**
- * The phone's navigation (ADR 0060): a bar at the foot of the screen with
+ * The phone's navigation (ADR 0061): a bar at the foot of the screen with
  * the few places a role goes every day and "Mere" for the rest, within
  * reach of a thumb. Below lg, so an iPad held upright gets it too; the
  * sidebar takes over from lg. Fixed over the home indicator with the safe

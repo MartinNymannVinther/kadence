@@ -34,7 +34,7 @@ export async function AppSidebar({
   canCreate?: boolean;
   /** Items waiting for the installation's owner; zero for everyone else. */
   attention?: number;
-  /** The role's list (menuItems in ./nav-items.ts, ADR 0060). */
+  /** The role's list (menuItems in ./nav-items.ts, ADR 0061). */
   items: NavItem[];
   /** Where the wordmark leads: the first place in the role's day. */
   home: string;

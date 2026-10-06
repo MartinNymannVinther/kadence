@@ -53,7 +53,7 @@ Today that shows today, the team's week as the place to see who needs a
 talk, one place to plan a week, time and place on a session, reminders
 by web push without content, and a rider's first-run checklist. Five
 parts wait behind installation flags, off by default, until a real team
-has used the rest (ADR 0056): Rulle's land and towns, Trænerrummet, the
+has used the rest (ADR 0057): Rulle's land and towns, Trænerrummet, the
 club championship, the energy calculator and the food guide. What is
 left is in [docs/backlog.md](docs/backlog.md).
 
@@ -87,7 +87,7 @@ the rider opens today's session in Rulle, connects the trainer over
 Bluetooth, and pedals: a smart trainer holds each block's watts. The
 session is a bar the rider rides across, the numbers are sized to be
 read from the saddle, and where the installation has turned Rulle's
-world on (ADR 0056), a quiet low-poly landscape rolls past behind them: six real roads through their real land — Vejle's hills and the
+world on (ADR 0057), a quiet low-poly landscape rolls past behind them: six real roads through their real land — Vejle's hills and the
 fjord to Munkebjerg, Himmelbjerget, the B&U DM lap, and Copenhagen and
 Montréal on race day — or a GPX of the rider's own. The ride lands on
 the session as an ordinary FIT file. Company on the road and a crowd on

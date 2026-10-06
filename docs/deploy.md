@@ -70,7 +70,7 @@ runtime but the machine.
    an installation on the open internet should be. See section 5.
 
    Five parts of Kadence wait for a real winter with a real team and are
-   `off` unless you set them to `on` (ADR 0056): `COACHES_ROOM`
+   `off` unless you set them to `on` (ADR 0057): `COACHES_ROOM`
    (Trænerrummet), `CLUB_CHAMPIONSHIP` (the club championship; a team
    still turns it on for itself), `CALC_ENERGY` (the energy calculator),
    `GUIDE_FOOD` (the food guide, until a sports dietitian has read it) and
@@ -283,7 +283,7 @@ asks.
 
 ## 6d. Reminders by web push
 
-Reminders (ADR 0059) are off until the installation has a key pair. Make
+Reminders (ADR 0060) are off until the installation has a key pair. Make
 one on your own machine, once, and keep it: a new pair means everyone has
 to turn reminders on again.
 

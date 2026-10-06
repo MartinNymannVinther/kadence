@@ -17,7 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * availability, for parents and riders (ADR 0047). The research is
  * docs/research/ernaering.md. Parked until a sports dietitian has read its
  * section on low energy availability: not there while the installation
- * has it off (ADR 0056).
+ * has it off (ADR 0057).
  */
 export default async function FoodGuidePage() {
   notFoundWithout("foodGuide");

@@ -47,7 +47,7 @@ type Search = Promise<Record<string, string | string[] | undefined>>;
  * here is whatever it lets the caller read. The team's week in progress
  * also carries the signals — each rider's flags as badges, and under the
  * grid the attention list, the AI's summary and the coach's tips — so
- * that is where a coach sees who needs a talk (ADR 0061).
+ * that is where a coach sees who needs a talk (ADR 0062).
  */
 export default async function CalendarPage({ searchParams }: { searchParams: Search }) {
   const ctx = await getOrgContext();

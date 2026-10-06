@@ -11,7 +11,7 @@ import type { CalendarCard } from "./types";
 
 /**
  * A session in the team grid, as small as it can be and still say what
- * it is: the sport, the length, when and where (ADR 0057) and how it
+ * it is: the sport, the length, when and where (ADR 0058) and how it
  * went — as a tint and an icon, with the title, the length and the state
  * in words for a pointer and a screen reader.
  */

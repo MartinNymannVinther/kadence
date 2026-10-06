@@ -6,7 +6,7 @@ import { adminPool } from "../helpers/db";
 import { at, EVENING, MORNING, pushTeam } from "./push-team";
 
 /**
- * The reminder run (docs/adr/0059) against the database, with the push
+ * The reminder run (docs/adr/0060) against the database, with the push
  * services replaced by a stand-in: the suite never reaches the network.
  * The check-in once a day, nothing in the quiet hours, one push per person
  * per run, the mark written so a second run — or one at the same time —

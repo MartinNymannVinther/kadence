@@ -25,7 +25,7 @@ import {
  * browser and sent nowhere, and ridden through land made up from it. The
  * route chosen last is remembered on this device.
  *
- * Without Rulle's world (docs/adr/0056) there is nothing to choose and
+ * Without Rulle's world (docs/adr/0057) there is nothing to choose and
  * nothing to fetch: the session is ridden on a flat road made in memory.
  */
 

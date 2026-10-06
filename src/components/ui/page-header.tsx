@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 /**
  * The 2a page opening: an optional kicker over the title, a supporting
  * line, and the page's actions on the right. The title's size is a named
- * step (globals.css, ADR 0060): 33px for a page, 29px for one thing's
+ * step (globals.css, ADR 0061): 33px for a page, 29px for one thing's
  * page, 26px for a section's — and 26px for all of them on a phone, where
  * the larger steps break a Danish word in two.
  */

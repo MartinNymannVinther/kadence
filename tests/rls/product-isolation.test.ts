@@ -154,7 +154,7 @@ const TABLES: Array<{ table: string; row: (s: string) => Record<string, unknown>
     }),
   },
   {
-    // A browser's reminders (ADR 0059); its owner's alone, tests/push/isolation.
+    // A browser's reminders (ADR 0060); its owner's alone, tests/push/isolation.
     table: "push_subscriptions",
     row: (s) => ({
       user_id: `user_prod_${s === "x" ? "a" : s}`,

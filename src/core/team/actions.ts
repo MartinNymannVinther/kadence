@@ -94,7 +94,7 @@ export async function leaveWorkspaceAction(): Promise<Result<boolean>> {
   if (!ctx) return fail("unauthorized");
   const done = await leaveWorkspace(await headers(), ctx.orgId);
   if (!done) return fail("generic");
-  // The person's reminders on the team go with them (docs/adr/0059). The
+  // The person's reminders on the team go with them (docs/adr/0060). The
   // row is theirs alone, so it is deleted as them; the team keeps nothing.
   try {
     await withOrgContext(ctx, (tx) =>

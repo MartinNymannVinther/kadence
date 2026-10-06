@@ -5,7 +5,7 @@ import type { Me } from "@/modules/team/access";
 import { planWindow, type Facts } from "./due";
 
 /**
- * What a reminder is about, read as the person it is for (docs/adr/0059).
+ * What a reminder is about, read as the person it is for (docs/adr/0060).
  * Every query here runs inside the person's own `withOrgContext`, so the
  * policies decide what they can see: a rider their own sessions, a coach
  * the team's, a parent their child's while the child shares training. A

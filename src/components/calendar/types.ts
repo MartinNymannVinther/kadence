@@ -18,7 +18,7 @@ export type CalendarCard = {
   plannedLoad: number | null;
   plannedKm: number | null;
   templateId: string | null;
-  /** "17:30", when it starts; and where (ADR 0057). */
+  /** "17:30", when it starts; and where (ADR 0058). */
   startTime: string | null;
   meetingPlace: string;
   groupKey: string | null;

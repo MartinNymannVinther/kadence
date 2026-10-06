@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 /**
  * The small sizes keep desktop's density from sm up and grow on a phone,
- * where a finger is wider than a pointer (ADR 0060): sm and icon-sm reach
+ * where a finger is wider than a pointer (ADR 0061): sm and icon-sm reach
  * 40px, xs and icon-xs 36px.
  */
 const buttonVariants = cva(

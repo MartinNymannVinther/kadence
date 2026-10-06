@@ -1,7 +1,7 @@
 import type { Note } from "./latest";
 
 /**
- * A note in words (docs/adr/0059): title, body and where a tap goes, in
+ * A note in words (docs/adr/0060): title, body and where a tap goes, in
  * the person's language. The words are messages/*.json's, under
  * `reminders.notify`; this only picks which, and fills in names. Short,
  * plain, no exclamation marks, nothing on a lock screen a teammate

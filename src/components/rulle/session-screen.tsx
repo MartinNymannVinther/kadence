@@ -18,7 +18,7 @@ import { useFullscreen, useWakeLock } from "./ride/use-screen";
 import type { Devices } from "./use-devices";
 
 /**
- * The session alone (docs/adr/0056): Rulle while the installation has its
+ * The session alone (docs/adr/0057): Rulle while the installation has its
  * world off. The strip of controls on top; under it the three numbers,
  * read from the saddle; and the session's bar across the middle of the
  * screen, as large as the screen allows, with the time ridden and the

@@ -1,4 +1,4 @@
-# ADR 0062: The rider's day, and a page of their own
+# ADR 0063: The rider's day, and a page of their own
 
 Status: accepted · Date: 2026-10-06 · Part of docs/plan-fokus-vinter.md, wave 3
 
@@ -22,7 +22,7 @@ Martin asked for all of the plan's corrections on 6 October 2026.
 
 - **Today shows today.** A rider's Today is the first steps while they
   are not done, today's session with "Udført" and "Kør indendørs" (and
-  when and where it starts, ADR 0057), the question about the last ride,
+  when and where it starts, ADR 0058), the question about the last ride,
   today's check-in and tomorrow. The club's picture (ADR 0048) shows
   only on an empty day.
 - **Mig (`/me`) holds the rest**, in this order: the week, the form with
@@ -52,7 +52,7 @@ Martin asked for all of the plan's corrections on 6 October 2026.
 - **The coach's Today** is one number — "N ryttere har noget, der er
   værd at se på", counted as the attention list counts — linking to the
   team's week on the calendar, where the list, the coach's tips and the
-  AI brief now live (ADR 0061), and "Holdet i dag" below it. An empty
+  AI brief now live (ADR 0062), and "Holdet i dag" below it. An empty
   team still gets the three steps to start.
 - **A parent's Today is /parents.** One page, child first: with one child
   the page is titled with the child's name; the week with time and
@@ -75,7 +75,7 @@ Martin asked for all of the plan's corrections on 6 October 2026.
 
 - **One more page.** The form chart, goals and records are a tap away
   instead of a scroll away, and a rider has to learn that Mig exists. The
-  menu names it (ADR 0060); the first steps link to its upload.
+  menu names it (ADR 0061); the first steps link to its upload.
 - **What the rider said lives in one browser.** The device choice, the
   skips and "Ikke nu" are not stored on the server, so a rider on a new
   phone sees the steps again, minus those Kadence can tell from real

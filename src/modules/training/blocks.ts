@@ -18,8 +18,8 @@ import { id, SessionInput, type Sport } from "./vocabulary";
  * day, kept by the coach and put into calendars from a Monday
  * (block-apply.ts). An item is one of the library's sessions, or — saved
  * from the week planner — a session kept in the block itself, with its
- * own sport, title and steps (ADR 0058, drizzle/0027). Either may say when
- * and where it starts (ADR 0057).
+ * own sport, title and steps (ADR 0059, drizzle/0027). Either may say when
+ * and where it starts (ADR 0058).
  */
 
 export const MAX_WEEKS = 12;

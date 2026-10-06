@@ -226,7 +226,7 @@
   --text-xs: 0.72rem;
   --text-2sm: 0.8125rem;
   --text-reading: 0.9375rem;
-  /* The heading scale above it (docs/adr/0060), sizes only — each heading
+  /* The heading scale above it (docs/adr/0061), sizes only — each heading
      keeps its own leading and tracking.
      title-page: a page's title, 33px · title-detail: one thing's page, 29px
      title-section: a section's page, 26px, and every page title on a phone,
@@ -369,5 +369,28 @@
     [data-slot="table"]:not([data-slot="card-content"] *)
     :where(th, td):last-child {
     padding-inline-end: calc(var(--spacing) * 5);
+  }
+}
+
+/* Printed pages (the energy advice, saved as a PDF from the browser): an A4
+   margin, and cards and examples kept whole across page breaks. */
+@media print {
+  @page {
+    margin: 14mm;
+  }
+  /* Everything is in rem, so a smaller root makes the whole page a size
+     that fits on fewer sheets and is still easy to read. */
+  html {
+    font-size: 13.5px;
+  }
+  li,
+  figure,
+  [data-print-keep] {
+    break-inside: avoid;
+  }
+  h2,
+  h3,
+  h4 {
+    break-after: avoid;
   }
 }

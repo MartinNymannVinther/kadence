@@ -8,7 +8,7 @@ ALTER TABLE "training_block_items" ADD COLUMN "start_time" time;--> statement-br
 ALTER TABLE "training_block_items" ADD COLUMN "meeting_place" text DEFAULT '' NOT NULL;--> statement-breakpoint
 ALTER TABLE "training_block_items" ADD CONSTRAINT "training_block_items_session" CHECK ("training_block_items"."template_id" is not null or ("training_block_items"."sport" is not null and "training_block_items"."title" is not null and "training_block_items"."structure" is not null));--> statement-breakpoint
 ALTER TABLE "training_block_items" ADD CONSTRAINT "training_block_items_meeting_place" CHECK (char_length("training_block_items"."meeting_place") <= 120);--> statement-breakpoint
--- A session kept in the block itself (docs/adr/0058) has no template, so
+-- A session kept in the block itself (docs/adr/0059) has no template, so
 -- the write policy asks for a template of the same team only when the item
 -- names one. Everything else about the policy is as drizzle/0012 wrote it.
 DROP POLICY app_write_training_block_items ON "training_block_items";

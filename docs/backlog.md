@@ -81,10 +81,10 @@ Rammen er:
 | ID    | Story                                             | Prio | Str. | Tokens (ca.) | Model     | Afhænger af       |
 | ----- | ------------------------------------------------- | ---- | ---- | ------------ | --------- | ----------------- |
 | P1-01 | Inviter hele holdet på én gang                    | P1   | M    | 300–450k     | Opus 5.5  |                   |
-| P1-02 | Træneren får besked, når en rytter er i rød zone  | P1   | M    | 250–400k     | Opus 5.5  | ADR 0059 (push)   |
+| P1-02 | Træneren får besked, når en rytter er i rød zone  | P1   | M    | 250–400k     | Opus 5.5  | ADR 0060 (push)   |
 | P1-03 | Invitationen siger rytter eller forælder          | P1   | S    | 120–200k     | Opus 5.5  |                   |
 | P1-04 | Pilotens tre tal                                  | P1   | M    | 300–450k     | Opus 5.5  |                   |
-| P1-05 | Prøv påmindelser på en rigtig telefon             | P1   | S    | 100–180k     | Sonnet 5  | ADR 0059 (push)   |
+| P1-05 | Prøv påmindelser på en rigtig telefon             | P1   | S    | 100–180k     | Sonnet 5  | ADR 0060 (push)   |
 | P1-06 | Rulle møder en rigtig hometrainer                 | P1   | S    | 120–200k     | Sonnet 5  |                   |
 | P1-07 | Ryttere og forældre kan forlade holdet igen       | P1   | S    | 50–100k      | Sonnet 5  |                   |
 | P1-08 | En pilotguide til træneren                        | P1   | S    | 120–200k     | Sonnet 5  | A-05              |
@@ -167,7 +167,7 @@ vise det. Skriv en kort ADR.
 checker ind i rød zone eller med smerte på trin 3, **så** en samtale kan
 ske, mens det betyder noget.
 
-- Kun når træneren har slået påmindelser til (ADR 0059) og valgt den nye
+- Kun når træneren har slået påmindelser til (ADR 0060) og valgt den nye
   slags "Trivsel".
 - Pushen bærer intet indhold; teksten hentes som træneren og siger "En
   rytter har brug for en snak" med link til holdets uge.
@@ -180,7 +180,7 @@ ske, mens det betyder noget.
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/trivsel-paamindelse.
-Læs docs/adr/0059-reminders-without-content.md og src/modules/push
+Læs docs/adr/0060-reminders-without-content.md og src/modules/push
 (due.ts, job.ts, latest.ts). Tilføj en slags "wellbeing" til
 påmindelserne: en træner får én push, når en rytter på holdet har en
 check-in i dag med zonen "help" (rød) eller smerte 3 (se
@@ -193,7 +193,7 @@ ikke for denne slags; højst én pr. rytter pr. dag (husk det på
 abonnementet eller udled det af told_up_to). Teksten nævner ikke
 rytterens navn eller svar: "En rytter har brug for en snak" og link til
 /calendar#opmaerksomhed. Tests: due-logikken, job-testen med mocket
-fetch, RLS (en træner på et andet hold får intet). Opdatér ADR 0059
+fetch, RLS (en træner på et andet hold får intet). Opdatér ADR 0060
 eller skriv en kort ny.
 ```
 
@@ -280,7 +280,7 @@ kommer.
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/proevepaamindelse.
-Læs ADR 0059 og src/modules/push. Tilføj under Indstillinger → Mig →
+Læs ADR 0060 og src/modules/push. Tilføj under Indstillinger → Mig →
 Påmindelser en knap "Send en prøve", der gennem en server action (som
 personen selv, runAction, zod, rate-limit 3 i timen) sender én push uden
 indhold til personens egne abonnementer i dette hold; latest.ts svarer
@@ -338,7 +338,7 @@ egne indstillinger, **så** jeg ikke skal kende en adresse for at gøre det.
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: fix/forlad-holdet.
-Efter ADR 0060 ser ryttere og forældre ikke fanen Arbejdsrum, hvor
+Efter ADR 0061 ser ryttere og forældre ikke fanen Arbejdsrum, hvor
 "Forlad holdet" står, så de kan kun nå den med adressen. Flyt eller
 genbrug komponenten, så den står nederst på /settings/me for medlemmer,
 der ikke er trænere, med den eksisterende action og bekræftelse.
@@ -366,9 +366,9 @@ Skriv docs/pilot.md på dansk til pilotholdets træner, og tilføj et
 afsnit i hjælpen (help.howTo.pilot i messages) med et link til den. Brug
 det, der faktisk findes på main: inviter rytterne (eller P1-01, hvis den
 er landet), "Opret sæsonplaner for alle uden en plan" på /season,
-Planlæg ugen med "Start fra", Del ugen, påmindelser (ADR 0059), Holdets
-uge med opmærksomhedspunkterne (ADR 0061), rytterens kom-i-gang (ADR
-0062). Kort, i du-form, med skærmbilleder taget med Playwright mod demoen
+Planlæg ugen med "Start fra", Del ugen, påmindelser (ADR 0060), Holdets
+uge med opmærksomhedspunkterne (ADR 0062), rytterens kom-i-gang (ADR
+0063). Kort, i du-form, med skærmbilleder taget med Playwright mod demoen
 (DEMO=on) gemt i docs/pilot/. Ingen nye funktioner.
 ```
 
@@ -425,7 +425,7 @@ jeg kan finde en tur uden at bladre i kalenderen.
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/mine-ture.
 Tilføj sektionen "Dine ture" på /me (src/app/[locale]/(app)/(narrow)/me,
-ADR 0062): de seneste 20 aktiviteter for rytteren selv, læst under RLS
+ADR 0063): de seneste 20 aktiviteter for rytteren selv, læst under RLS
 gennem en service i src/modules/training eller today (genbrug
 recent-rides.ts, hvis den passer), med dato, titel, varighed, distance,
 compliance-farve og link til /activities/[id]. "Vis flere" henter de
@@ -439,7 +439,7 @@ holdkammerat ser intet), cursoren og i18n.
 der kører, **så** weekenden kan planlægges.
 
 - Begivenheder får starttid, sted og en kort note om kørsel, ligesom pas
-  har fået (ADR 0057).
+  har fået (ADR 0058).
 - Vises i kalenderen, på forældresiden og i Del ugen.
 
 **Størrelse:** M
@@ -448,7 +448,7 @@ der kører, **så** weekenden kan planlægges.
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/begivenhed-tid-sted.
-Læs ADR 0057 og drizzle/0026. Giv calendar_events start_time (time) og
+Læs ADR 0058 og drizzle/0026. Giv calendar_events start_time (time) og
 meeting_place (text, højst 120) samt transport_note (text, højst 200) i
 en migrering med check-constraints, og før dem gennem
 src/modules/training/events.ts (zod), dialogen til begivenheder,
@@ -499,7 +499,7 @@ ved at planlægge, **så** vi ikke laver den samme uge to gange.
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/faelles-kladde.
-Læs ADR 0043 og 0058 og src/components/week-plan/use-plan-draft.ts. Plan
+Læs ADR 0043 og 0059 og src/components/week-plan/use-plan-draft.ts. Plan
 først: en tabel week_plan_drafts (org_id, week_monday, payload jsonb,
 updated_by, timestamps; unik pr. hold og uge) med tvungen RLS (kun
 trænere læser og skriver), audit og isolationstest. Planlæggeren gemmer
@@ -598,7 +598,7 @@ overvågning ser det rigtige.
 Følg rammen i docs/backlog.md §0. Gren: fix/parkerede-404.
 Under src/app/[locale]/(app)/(narrow) starter loading.tsx streamen, før
 notFound() i en side bliver kaldt, så /coaches og /club svarer 200 med en
-not-found-side, når flaget er slået fra (ADR 0056). Læs Nexts
+not-found-side, når flaget er slået fra (ADR 0057). Læs Nexts
 dokumentation i node_modules/next/dist/docs om notFound og streaming.
 Løs det i src/proxy.ts (svar 404 for de parkerede stier ud fra
 src/core/features.ts) eller med et layout-segment pr. parkeret rute, der
@@ -669,7 +669,7 @@ af mine kommende pas, **så** jeg ikke møder op til noget, der er aflyst.
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/plan-afsender.
-Læs docs/adr/0059-reminders-without-content.md (afsnittet om "by someone
+Læs docs/adr/0060-reminders-without-content.md (afsnittet om "by someone
 else") og src/modules/push/facts.ts. I dag ved påmindelsen kun, hvem der
 lagde et pas, ikke hvem der sidst ændrede det, og et slettet pas giver
 ingen besked. Plan først: en kolonne updated_by på planned_sessions sat
@@ -677,7 +677,7 @@ af services i src/modules/training (eller en trigger, der læser
 app.user_id), og en lille tabel eller tombstone for slettede pas i de
 næste 7 dage, så rytteren kan få besked (org_id, rider_id, tvungen RLS
 gennem app_can_read_rider, audit, isolationstest). Opdatér facts.ts og
-due.ts og testene i tests/push. Opdatér ADR 0059.
+due.ts og testene i tests/push. Opdatér ADR 0060.
 ```
 
 ### P2-13 Påmindelser fylder ikke revisionssporet
@@ -716,7 +716,7 @@ Følg rammen i docs/backlog.md §0. Gren: feat/demo-forloeb.
 src/modules/demo/seed.ts er tæt på 300 linjer. Del den (fx
 seed-weeks.ts til ugerne og forløbet), og lad demoens forløb "Vinterblok,
 4 uger" indeholde mindst ét pas bygget i forløbet selv med tid og sted
-(ADR 0058, drizzle/0027). Vis i demoen, at påmindelser findes: når
+(ADR 0059, drizzle/0027). Vis i demoen, at påmindelser findes: når
 installationen har PUSH-nøgler, står kortet under Indstillinger → Mig; når
 den ikke har, skriver demobanneret intet om det. Udvid
 tests/demo/demo.test.ts.
@@ -738,7 +738,7 @@ tilbage, bygger på vinteren.
 Følg rammen i docs/backlog.md §0. Gren: docs/evaluering-vinter.
 Skriv docs/research/vinter-2026-27.md: pilotens tre tal uge for uge
 (fra P1-04), hvad trænere og ryttere har sagt (Martin giver noterne),
-og for hver parkeret del i ADR 0056 (Rulles verden, Trænerrummet,
+og for hver parkeret del i ADR 0057 (Rulles verden, Trænerrummet,
 klubmester, energiberegneren, madguiden) en anbefaling: slå til, vent
 eller fjern, med begrundelse. Ingen kodeændringer; foreslå de
 backlog-punkter, der følger.
@@ -768,13 +768,13 @@ rytteren kan rette. UI på holdpasset i kalenderen. Tests, RLS og ADR.
 **Som** træner **vil jeg** have én vej til at lægge en uge ind, **så**
 der er færre ord og knapper at lære.
 
-**Størrelse:** S · **Afhænger af:** en måneds brug af Planlæg (ADR 0058)
+**Størrelse:** S · **Afhænger af:** en måneds brug af Planlæg (ADR 0059)
 
 **Tokens:** ca. 120–200k · **Model:** Sonnet 5 (`claude-sonnet-5`), omdirigering af knapper til planlæggeren.
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/en-vej-at-planlaegge.
-Læs ADR 0058. Når Planlæg ugen har kørt en måned: lad "Kopiér ugen før"
+Læs ADR 0059. Når Planlæg ugen har kørt en måned: lad "Kopiér ugen før"
 i kalenderen og "Læg ind" på et forløb i biblioteket åbne planlæggeren
 med det rigtige "Start fra" valgt i stedet for deres egne dialoger.
 Behold "Tilføj pas" til enkeltpas og "Planlæg" på en skabelon. Slet
@@ -794,7 +794,7 @@ overblik.
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/holdets-uge-alle-uger.
-I dag gælder punkterne kun den igangværende uge (ADR 0026, 0061).
+I dag gælder punkterne kun den igangværende uge (ADR 0026, 0062).
 Plan først: hvilke slags giver mening for en kommende uge (timer mod
 rammen, rampen, styrke for tæt, mellemzonen ud fra planen) og for en
 tidligere uge (alt undtagen afklaret). Udvid getInsights med en uge-
@@ -818,7 +818,7 @@ Kun efter Martins ja til en SMTP-afhængighed (fx nodemailer) og en
 EU-udbyder. Plan først: SMTP_* i env.ts og docker-compose.yml, en
 mailer i src/core (uden indhold om rytterens helbred), selvbetjent
 nulstilling af adgangskode, der supplerer trænerens link (ADR 0032), og
-forældrenes ugeoverblik som valg ved siden af push (ADR 0059). Række i
+forældrenes ugeoverblik som valg ved siden af push (ADR 0060). Række i
 docs/subprocessors.md, ADR, tests med en fake transport.
 ```
 
@@ -834,7 +834,7 @@ kun hviler på installationens ejer.
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/traenerrummet-moderation.
-Kun hvis P3-01 anbefaler det. Læs ADR 0052, 0054 og 0056. Plan først:
+Kun hvis P3-01 anbefaler det. Læs ADR 0052, 0054 og 0057. Plan først:
 lad hver klubs admins moderere deres egne trænere, en rapport-kø med
 tidsfrist, og en tydelig regel om ingen rytternavne (en kontrol, der
 advarer ved navne fra holdets rytterliste, før indlægget sendes). Slå
@@ -853,7 +853,7 @@ yngste.
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/klubmester-unge.
-Kun hvis P3-01 anbefaler det. Læs ADR 0013, 0051 og 0056. Plan først: vis
+Kun hvis P3-01 anbefaler det. Læs ADR 0013, 0051 og 0057. Plan først: vis
 placeringer kun for U19 og op, og for U17 kun "kørt" og egen fremgang;
 læsning af entries for holdkammerater og forældre kun når rytteren har
 delt det. Opdatér RLS i en migrering og tests i tests/club og
@@ -913,7 +913,7 @@ Find i messages/da.json under rulle.credits og i public/rulle, hvilke
 ruter der kommer fra hvem (Vejle CK, Odder CK, DCU Distrikt Sjælland og
 VM-ruten i Montréal). Skriv et kort udkast pr. klub i Martins Gmail, der
 beskriver brugen og beder om skriftligt ja (aldrig send; htmlBody,
-adresser delt i spans). Foreslå i docs/adr/0056 et neutralt navn til
+adresser delt i spans). Foreslå i docs/adr/0057 et neutralt navn til
 VM-ruten, hvis UCI's navn bør undgås, og skriv OpenStreetMaps
 ODbL-kreditering ind, hvor landet vises.
 ```
@@ -997,7 +997,7 @@ detail-surfaces, linked-row, property-row, select;
 src/components/today/attention-section.tsx; route-gruppen (wide) med sit
 layout, hvis den stadig er uden sider; src/components/assist/week-draft-
 dialog.tsx med acceptDraftSessionsAction i src/modules/assist/actions.ts
-og ruten /api/ai/week-draft, som kun dialogen brugte (ADR 0058 lod
+og ruten /api/ai/week-draft, som kun dialogen brugte (ADR 0059 lod
 planlæggeren overtage); loadRiderWeek i week-plan-load.ts, hvis kun
 testene bruger den. Kør hele suiten og build.
 ```

@@ -8,7 +8,7 @@ import { CATEGORIES, createThread, reply, takeWorkout } from "./service";
 /**
  * Trænerrummet's actions (docs/adr/0052): each resolves the session and
  * team first, and each is refused while the installation has the room off
- * (docs/adr/0056).
+ * (docs/adr/0057).
  */
 
 const ROOM = ["/coaches"];

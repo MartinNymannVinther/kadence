@@ -14,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * The open hub (ADR 0047): the calculators and the guides, for anyone,
  * signed in or not. Linked from the parents' page, from help and from
  * the app's navigation. A calculator or guide the installation has
- * parked is left out (ADR 0056).
+ * parked is left out (ADR 0057).
  */
 export default async function GuidesHubPage() {
   const t = await getTranslations("guides.hub");

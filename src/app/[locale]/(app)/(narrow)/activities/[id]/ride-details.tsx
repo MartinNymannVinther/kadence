@@ -21,7 +21,7 @@ const isStreams = (value: unknown): value is Streams =>
   typeof value === "object" && value !== null && Array.isArray((value as Streams).t);
 
 /**
- * Everything under "Mere data" on a ride's page (docs/adr/0062): the
+ * Everything under "Mere data" on a ride's page (docs/adr/0063): the
  * numbers after the first four, the route and the ride over time, the
  * plan step by step, laps, climbs, time in zones and the power curve.
  */

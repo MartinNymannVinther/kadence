@@ -107,7 +107,7 @@ export function providerById(id: ProviderId): DeviceProvider {
 
 /**
  * The providers this installation has keys for, in their order: the only
- * ones the devices page offers (docs/adr/0056). Without any, rides come in
+ * ones the devices page offers (docs/adr/0057). Without any, rides come in
  * as files, and nothing else changes.
  */
 export function configuredProviders(): ProviderId[] {

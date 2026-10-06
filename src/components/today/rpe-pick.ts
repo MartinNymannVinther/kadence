@@ -1,7 +1,7 @@
 import { addDaysIso } from "@/core/dates";
 
 /**
- * Which ride Today asks "Hvor hårdt føltes turen?" about (docs/adr/0062):
+ * Which ride Today asks "Hvor hårdt føltes turen?" about (docs/adr/0063):
  * the rider's most recent ride of the last three days, and only while it
  * has no RPE — the question is asked while the ride is still in the legs,
  * and once. A ride the rider put off ("Ikke nu") on this device is not

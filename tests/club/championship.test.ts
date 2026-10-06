@@ -16,7 +16,7 @@ import { insertSql, seedPerson } from "../helpers/rows";
  * The club championship (drizzle/0022, docs/adr/0051): off until the club
  * turns it on; then everyone in the club reads it and only a coach writes
  * it; another club sees nothing; and the season's winners go on the roll
- * of honour. Above the club's choice sits the installation's (docs/adr/0056):
+ * of honour. Above the club's choice sits the installation's (docs/adr/0057):
  * on for this file, and off for one test to prove it is off for every club.
  */
 

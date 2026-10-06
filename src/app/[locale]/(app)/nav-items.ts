@@ -1,5 +1,5 @@
 /**
- * What the menu holds, for whom (docs/adr/0060). Pure: the layout asks the
+ * What the menu holds, for whom (docs/adr/0061). Pure: the layout asks the
  * database who the person is and which parts the installation and the
  * team have on, and these functions turn that into the list the sidebar,
  * the phone's bottom bar and its "Mere" sheet draw. No database, no
@@ -43,9 +43,9 @@ export type NavPerson = {
 };
 
 export type NavFlags = {
-  /** The installation has the club championship on and this club keeps one (ADR 0051, 0056). */
+  /** The installation has the club championship on and this club keeps one (ADR 0051, 0057). */
   club: boolean;
-  /** The installation has Trænerrummet on (ADR 0052, 0056). */
+  /** The installation has Trænerrummet on (ADR 0052, 0057). */
   coachesRoom: boolean;
   /** The person has a rider row of their own: a rider, or a coach who also rides. */
   rides: boolean;

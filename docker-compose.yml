@@ -81,14 +81,14 @@ services:
       DEMO: ${DEMO:-}
       # Races from Cykling Danmark (ADR 0039), off unless set.
       DCU_RESULTS: ${DCU_RESULTS:-}
-      # The parts that wait for a real winter (docs/adr/0056), each off
+      # The parts that wait for a real winter (docs/adr/0057), each off
       # unless set to "on".
       RULLE_WORLD: ${RULLE_WORLD:-}
       COACHES_ROOM: ${COACHES_ROOM:-}
       CLUB_CHAMPIONSHIP: ${CLUB_CHAMPIONSHIP:-}
       CALC_ENERGY: ${CALC_ENERGY:-}
       GUIDE_FOOD: ${GUIDE_FOOD:-}
-      # Reminders by web push (docs/adr/0059); nothing is sent without the
+      # Reminders by web push (docs/adr/0060); nothing is sent without the
       # key pair. The private key is a secret: Coolify only.
       PUSH_PUBLIC_KEY: ${PUSH_PUBLIC_KEY:-}
       PUSH_PRIVATE_KEY: ${PUSH_PRIVATE_KEY:-}

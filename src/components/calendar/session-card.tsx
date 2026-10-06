@@ -13,7 +13,7 @@ import type { CalendarCard, RiderOption } from "./types";
 
 /**
  * A planned session in a day: its sport, title and length, when and where
- * it starts (ADR 0057), how it went against the plan (colour, icon and
+ * it starts (ADR 0058), how it went against the plan (colour, icon and
  * word), and how many comments it has.
  * The card opens the session's panel; its menu moves, copies and deletes;
  * on a desktop it can be dragged to another day.

@@ -6,7 +6,7 @@ import { insertSql, seedPerson } from "../helpers/rows";
 /**
  * The actions behind a parked part are refused as not found while the
  * installation has it off, and do their work the moment it is on
- * (docs/adr/0056). The session and team are resolved first, as for every
+ * (docs/adr/0057). The session and team are resolved first, as for every
  * action: nobody signed in is told so, flag or no flag.
  */
 

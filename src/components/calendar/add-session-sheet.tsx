@@ -26,7 +26,7 @@ import type { RiderOption } from "./types";
  * uses. Several riders make a group plan. A rider (not a coach) plans
  * from the library for themselves; building is the coach's. "Gentag" puts
  * it on chosen weekdays until a last day (ADR 0041). A time and a place
- * are there for a session ridden together (ADR 0057).
+ * are there for a session ridden together (ADR 0058).
  */
 export function AddSessionSheet({
   open,

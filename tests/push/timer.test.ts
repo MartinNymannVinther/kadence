@@ -4,7 +4,7 @@ import { pushConfig, runRemindersOnce, startReminderTimer } from "@/modules/push
 import { newVapidKeyPair } from "@/modules/push/vapid";
 
 /**
- * When the reminder run happens (docs/adr/0059): a timer started once per
+ * When the reminder run happens (docs/adr/0060): a timer started once per
  * process however often it is asked, never holding the process open, a
  * run that does nothing without the key pair, and two calls at once that
  * share one run. The job itself is tests/push/job.test.ts.

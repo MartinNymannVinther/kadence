@@ -33,7 +33,7 @@ export type ChecklistFacts = {
 };
 
 /**
- * "Kom i gang" on a rider's Today (docs/adr/0062): what they ride with,
+ * "Kom i gang" on a rider's Today (docs/adr/0063): what they ride with,
  * their thresholds or "spring over", a yes to a parent who is waiting,
  * and Kadence on the home screen. Each step is done from what Kadence
  * knows where it can, and from what the rider said on this device where

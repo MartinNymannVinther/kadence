@@ -4,7 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
 /**
- * The coach's Today has one number from the guardrails (docs/adr/0062):
+ * The coach's Today has one number from the guardrails (docs/adr/0063):
  * how many riders have something worth a look this week, counted as the
  * list of opmærksomhedspunkter counts them, and the way to that list in
  * the team's week on the calendar.

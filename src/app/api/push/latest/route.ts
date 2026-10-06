@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 const NO_STORE = { "Cache-Control": "no-store" };
 
 /**
- * What a reminder says (docs/adr/0059). The push that woke the service
+ * What a reminder says (docs/adr/0060). The push that woke the service
  * worker carried nothing; the worker asks here with the person's own
  * cookies, and the answer is computed as that person, in their language.
  * Signed out, the answer is 401 and the worker shows a plain "there is

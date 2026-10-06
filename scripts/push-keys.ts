@@ -1,5 +1,5 @@
 /**
- * Prints a fresh key pair for reminders (docs/adr/0059), in the format
+ * Prints a fresh key pair for reminders (docs/adr/0060), in the format
  * .env and Coolify take:
  *
  *   pnpm script scripts/push-keys.ts

@@ -8,7 +8,7 @@ import { isActive, type NavItem } from "./nav-items";
 
 /**
  * The app navigation. Text only, per the 2a handoff, one list per role
- * (ADR 0060, the lists in ./nav-items.ts). Rendered in the desktop sidebar
+ * (ADR 0061, the lists in ./nav-items.ts). Rendered in the desktop sidebar
  * and inside the phone's "Mere" sheet, where `onNavigate` lets the sheet
  * close itself.
  */

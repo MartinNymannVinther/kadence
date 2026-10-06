@@ -1,7 +1,7 @@
 import type { ProviderId } from "@/modules/devices/providers";
 
 /**
- * The rider's first steps on Today (docs/adr/0062), as plain data: which
+ * The rider's first steps on Today (docs/adr/0063), as plain data: which
  * steps there are, which are done, and — for "Hvad kører du med?" — the
  * ways a ride reaches Kadence on this installation and in this browser.
  * A step is done from real state where Kadence has it (a connected

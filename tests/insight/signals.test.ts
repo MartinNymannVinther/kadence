@@ -12,7 +12,7 @@ import {
 import { FLAG_KINDS, type Flag } from "@/modules/load";
 
 /**
- * The team's week as the place for signals (ADR 0061), without React: a
+ * The team's week as the place for signals (ADR 0062), without React: a
  * rider's open flags become badges — one per kind, the most serious
  * first, three at most and the rest counted — that lead to the rider's
  * entry in the attention list, and every flag leads to the rider's

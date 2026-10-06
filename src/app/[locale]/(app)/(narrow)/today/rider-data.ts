@@ -15,7 +15,7 @@ import { listSessions } from "@/modules/training/sessions";
 import { getCheckin } from "@/modules/wellbeing/checkins";
 
 /**
- * What a rider's Today shows (docs/adr/0062): today's and tomorrow's
+ * What a rider's Today shows (docs/adr/0063): today's and tomorrow's
  * sessions, today's check-in, the ride to say "how hard" about, and what
  * the first steps need to know. The rest of the rider's picture is on Mig.
  */

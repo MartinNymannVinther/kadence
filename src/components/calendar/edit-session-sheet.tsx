@@ -21,7 +21,7 @@ const ORDER: Record<Scope, number> = { group: 0, series: 1, one: 2 };
  * A coach changing a group's session chooses this rider's copy or every
  * copy nobody has done yet — write once, and it applies to them all; a
  * session in a series can take the coming copies with it (ADR 0041). The
- * time and the place go as far as the rest of the change (ADR 0057).
+ * time and the place go as far as the rest of the change (ADR 0058).
  */
 export function EditSessionSheet({
   open,

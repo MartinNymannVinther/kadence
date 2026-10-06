@@ -33,7 +33,7 @@ export async function generateMetadata({
 
 /**
  * One thread in Trænerrummet: the first post, a session if one came along,
- * the replies, and a reply. Not there while the room is off (ADR 0056).
+ * the replies, and a reply. Not there while the room is off (ADR 0057).
  */
 export default async function ThreadPage({ params }: { params: Promise<{ id: string }> }) {
   notFoundWithout("coachesRoom");

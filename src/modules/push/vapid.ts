@@ -8,7 +8,7 @@ import {
 
 /**
  * VAPID (RFC 8292): how Kadence tells a push service that a push comes
- * from this installation (docs/adr/0059). A short ES256 token, signed with
+ * from this installation (docs/adr/0060). A short ES256 token, signed with
  * the installation's P-256 key, names the push service it is for (`aud`),
  * when it stops being good (`exp`) and whom to contact (`sub`); the public
  * key goes beside it. No payload rides on the push, so nothing here

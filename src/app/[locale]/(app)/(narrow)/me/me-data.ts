@@ -14,7 +14,7 @@ import { listCheckins } from "@/modules/wellbeing/checkins";
 import { readStructure } from "@/modules/workouts/structure";
 
 /**
- * What a rider's own page holds (docs/adr/0062): this week, the next
+ * What a rider's own page holds (docs/adr/0063): this week, the next
  * week's bike sessions a bike computer can ride (ADR 0031), the form,
  * two weeks of check-ins, goals and records. Read under the rider's own
  * RLS, as Today read them before.

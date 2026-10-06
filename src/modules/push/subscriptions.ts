@@ -11,7 +11,7 @@ import { isPushEndpoint, MAX_ENDPOINT_LENGTH, pushService } from "./endpoint";
 import { visibleChildren } from "./facts";
 
 /**
- * A person's reminders, one browser at a time (docs/adr/0059). Every
+ * A person's reminders, one browser at a time (docs/adr/0060). Every
  * function runs as the person in the active team, and the table's policy
  * lets a person see and change their own rows and nobody else's — a coach
  * included. The push address comes from the person's own browser and is

@@ -34,7 +34,7 @@ export const metadata: Metadata = {
 /**
  * The browser's own chrome in 2a's paper, light and dark (src/app/theme.css).
  * `cover` lets the page reach under a phone's home indicator, so the bottom
- * bar can stand on the safe area rather than beside it (ADR 0060).
+ * bar can stand on the safe area rather than beside it (ADR 0061).
  */
 export const viewport: Viewport = {
   viewportFit: "cover",

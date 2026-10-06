@@ -18,8 +18,8 @@ import { createGroupSessions, scheduleTemplate } from "./group";
  * from a Monday against DCU's corridor and the guardrails, then every
  * item on its day. A library session goes in through `scheduleTemplate`,
  * so a strength programme keeps its numbering per rider; a session kept in
- * the block (ADR 0058) as a group plan of its own. Each carries its time
- * and place (ADR 0057). A coach's.
+ * the block (ADR 0059) as a group plan of its own. Each carries its time
+ * and place (ADR 0058). A coach's.
  */
 
 export const ApplyInput = z.object({

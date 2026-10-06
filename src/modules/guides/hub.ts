@@ -3,7 +3,7 @@ import type { Feature, Features } from "@/core/features";
 /**
  * What the open hub offers (ADR 0047): the calculators and the guides,
  * each with its page, and for the parked ones the installation flag it
- * waits for (ADR 0056). The words are in messages, `guides.hub.items`.
+ * waits for (ADR 0057). The words are in messages, `guides.hub.items`.
  *
  * Pure: the caller reads the installation's features and hands them in.
  */

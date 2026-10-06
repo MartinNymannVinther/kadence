@@ -31,7 +31,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * improvement and the roll of honour. The one page in Kadence where
  * riders and parents see placings. A coach keeps it on the same page.
  * While the installation has the championship off, the page is not there
- * for anyone, whatever the team chose (ADR 0056).
+ * for anyone, whatever the team chose (ADR 0057).
  */
 export default async function ClubPage({
   searchParams,

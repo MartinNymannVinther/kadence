@@ -62,8 +62,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   // background after the page, and only what is more than three hours old.
   if (context && me?.isCoach) after(() => refreshStaleRaces(context));
   else if (context && me?.rider) after(() => refreshOwnRacesLater(context));
-  // One menu per role (ADR 0060). The club championship is in it once the
-  // installation has it (ADR 0056) and the club has turned it on (ADR 0051);
+  // One menu per role (ADR 0061). The club championship is in it once the
+  // installation has it (ADR 0057) and the club has turned it on (ADR 0051);
   // Trænerrummet once the installation has it (ADR 0052).
   const clubOn = featureOn("clubChampionship");
   const club = context && clubOn ? (await getTeamSettings(context)).clubChampionship : false;

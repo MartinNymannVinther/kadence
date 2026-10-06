@@ -19,7 +19,7 @@ const KINDS = ["U17", "U19", "U23", "mixed"] as const;
  * either answer (off, ADR 0053) — whether weight may be recorded for
  * riders under 19 (off, ADR 0013), and whether the AI may read the
  * riders' data (off). The club championship's switch is there only where
- * the installation has the championship on (ADR 0056).
+ * the installation has the championship on (ADR 0057).
  */
 export function TeamSettingsForm({
   settings,

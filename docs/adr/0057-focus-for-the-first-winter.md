@@ -1,4 +1,4 @@
-# ADR 0056: Focus for the first winter — five parts behind installation flags
+# ADR 0057: Focus for the first winter — five parts behind installation flags
 
 Status: accepted · Date: 2026-10-06 · Amends ADR 0045, 0047, 0051, 0052 and 0054
 
@@ -19,7 +19,8 @@ parts sit outside that aim:
 - **Trænerrummet** (ADR 0052), a room for coaches across clubs, which
   needs many clubs before it is worth opening;
 - **the club championship** (ADR 0051), which a club runs once a season;
-- **the energy calculator** (ADR 0047), among the open guides;
+- **the energy calculator** (ADR 0047), among the open guides, in the
+  form ADR 0056 gave it: energy advice for the day, for a class;
 - **the food guide** (ADR 0047), which is health advice about minors and
   waits for a sports dietitian to read its section on low energy
   availability;

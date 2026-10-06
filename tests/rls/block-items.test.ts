@@ -4,7 +4,7 @@ import { adminPool, appClient, asApp, expectSqlError } from "../helpers/db";
 import { insertSql, seedPerson } from "../helpers/rows";
 
 /**
- * A block's sessions of its own (drizzle/0027, ADR 0058), proven as the
+ * A block's sessions of its own (drizzle/0027, ADR 0059), proven as the
  * application role with raw SQL: a coach writes an item without a
  * template, the database still asks for a whole session when there is
  * none, a rider of the same team writes no item of either kind, and a

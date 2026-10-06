@@ -2,7 +2,7 @@ import { addDaysIso, mondayOf } from "@/core/dates";
 import type { PushKind } from "@/core/db/schema/push";
 
 /**
- * When a reminder is due, and which (docs/adr/0059). Pure: the job reads
+ * When a reminder is due, and which (docs/adr/0060). Pure: the job reads
  * the facts as the person, and these decide. All times are Copenhagen
  * time, the day the person lives in.
  *

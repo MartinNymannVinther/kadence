@@ -3,7 +3,7 @@ import { activities, plannedSessions } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 
 /**
- * What a rider's Today asks about their own rides (docs/adr/0062): the
+ * What a rider's Today asks about their own rides (docs/adr/0063): the
  * last few days' rides, for "Hvor hårdt føltes turen?", and whether any
  * ride is in at all, for the first steps. Read under the caller's RLS, so
  * a rider reads their own and nobody else's; the page asks only for the

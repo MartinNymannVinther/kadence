@@ -1,5 +1,5 @@
 /**
- * When and where a session starts (docs/adr/0057), as one short line:
+ * When and where a session starts (docs/adr/0058), as one short line:
  * "17.30 · Klubhuset". The time comes from Postgres as "17:30:00"; Danish
  * writes it with a dot, English with a colon. Pure.
  */

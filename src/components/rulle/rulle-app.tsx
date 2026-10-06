@@ -26,7 +26,7 @@ type Phase = "ready" | "counting" | "riding" | "done";
  * team's library; everything else — the choice of session and route
  * (ADR 0035), Bluetooth, the clock, the recording — lives here, in the
  * browser, and reaches Kadence only as the finished ride's FIT file.
- * Without the world (ADR 0056) the same ride is the session alone: no
+ * Without the world (ADR 0057) the same ride is the session alone: no
  * route to choose, no landscape, the bar and the numbers on their own.
  */
 export function RulleApp({

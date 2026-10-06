@@ -11,7 +11,7 @@ import { adminPool } from "../helpers/db";
 import { insertSql, seedPerson } from "../helpers/rows";
 
 /**
- * Time and place on a session (ADR 0057): "17.30 fra klubhuset", carried
+ * Time and place on a session (ADR 0058): "17.30 fra klubhuset", carried
  * by every way a session is made — by hand, for a group, as a series,
  * from the library, copied — changed as far as the rest of a change goes,
  * and kept when a change does not mention them. A day's sessions come in

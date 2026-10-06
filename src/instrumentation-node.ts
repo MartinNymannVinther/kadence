@@ -25,7 +25,7 @@ export async function validateEnvironmentOrExit(): Promise<boolean> {
 }
 
 /**
- * Starts the reminder timer (docs/adr/0059) when the installation has a
+ * Starts the reminder timer (docs/adr/0060) when the installation has a
  * push key pair, and never in the test suite, which runs the job itself.
  * Started once per process (the timer keeps a flag on globalThis), and
  * nothing in here may stop the server: a key that does not parse is said

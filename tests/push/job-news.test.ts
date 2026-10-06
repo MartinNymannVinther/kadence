@@ -6,7 +6,7 @@ import { adminPool } from "../helpers/db";
 import { at, MORNING, NOON, pushTeam } from "./push-team";
 
 /**
- * What the reminder run tells besides the check-in (docs/adr/0059): a new
+ * What the reminder run tells besides the check-in (docs/adr/0060): a new
  * comment to everyone who can read the thread but its writer — a coach
  * hears riders and parents, not the other coaches — a session the coach
  * laid in the rider's next seven days, and the parents' week on Sunday

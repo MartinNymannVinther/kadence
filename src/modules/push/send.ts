@@ -2,7 +2,7 @@ import { isPushEndpoint, pushService } from "./endpoint";
 import { vapidAuthorization, type VapidKeys } from "./vapid";
 
 /**
- * One push to one browser (RFC 8030), with nothing in it (docs/adr/0059).
+ * One push to one browser (RFC 8030), with nothing in it (docs/adr/0060).
  * The body is empty: the push only wakes the service worker, which asks
  * Kadence what is new as the person who is signed in. So the push service
  * — Apple's, Google's, Mozilla's or Microsoft's, whichever the browser

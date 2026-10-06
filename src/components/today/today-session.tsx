@@ -17,7 +17,7 @@ import { timePlaceText, type TimePlace } from "./time-place";
  * and for the rider, until it is done, the big "Udført". A bike session
  * with steps can be ridden indoors in Rulle on the day (ADR 0033). The
  * title opens the whole session with its steps and comments; when and
- * where it starts stands under it, when the coach gave it (ADR 0057).
+ * where it starts stands under it, when the coach gave it (ADR 0058).
  */
 export function TodaySession({
   session,

@@ -24,7 +24,7 @@ import { WeekTotals } from "./week-totals";
  * phone. Sessions move by dragging on a desktop and by "Flyt" everywhere;
  * the week's hours sit on top, the bike's in the four numbers against
  * the season plan (ADR 0040). A coach plans the rider's week in the week
- * planner, with the AI's proposal there too (ADR 0058); the rider and the
+ * planner, with the AI's proposal there too (ADR 0059); the rider and the
  * coach can upload a ride.
  */
 export function RiderWeek({

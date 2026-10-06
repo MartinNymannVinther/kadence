@@ -142,7 +142,7 @@ describe("the team's week plan", () => {
   });
 });
 
-describe("one place to plan a week (ADR 0058)", () => {
+describe("one place to plan a week (ADR 0059)", () => {
   const LATER = "2026-12-07";
 
   it("lays the same week into weeks in a row: a group a week, a series over the weeks", async () => {

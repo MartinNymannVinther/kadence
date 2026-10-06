@@ -58,7 +58,7 @@ export const plannedSessions = pgTable(
     plannedKm: smallint("planned_km"),
     /**
      * When and where it starts, for a session ridden together: "17.30 fra
-     * klubhuset" (docs/adr/0057). Both optional; a session alone has neither.
+     * klubhuset" (docs/adr/0058). Both optional; a session alone has neither.
      */
     startTime: time("start_time"),
     meetingPlace: text("meeting_place").notNull().default(""),

@@ -7,7 +7,7 @@ import { ATTENTION_ID } from "./signals";
 import type { TeamAttentionData } from "./team-attention-data";
 
 /**
- * Under the team's week (ADR 0061): who has something worth a look, from
+ * Under the team's week (ADR 0062): who has something worth a look, from
  * the guardrails alone, then the AI's few sentences on top where the team
  * allows it (ADR 0017), then the coach's tips. The section carries the
  * anchor Today links to, and each rider's entry the anchor their badges

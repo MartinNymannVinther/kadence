@@ -6,11 +6,11 @@ import type { MetadataRoute } from "next";
  * moss. The PNG icons are drawn from src/app/icon.svg by
  * scripts/icons.ts; the SVG itself stays the favicon. Installing is about
  * the home screen, not offline pages: the one service worker, public/sw.js,
- * shows reminders and nothing else, with no cache (docs/adr/0059).
+ * shows reminders and nothing else, with no cache (docs/adr/0060).
  *
  * No orientation: the phone in a hand is upright, but a tablet or a phone
  * on the handlebars in front of a trainer lies on its side, and Rulle
- * must be free to turn with it (ADR 0060).
+ * must be free to turn with it (ADR 0061).
  *
  * Installed, Kadence is a place to share a ride file to (ADR 0029): the
  * phone's share sheet posts it to /api/share, which imports it for the

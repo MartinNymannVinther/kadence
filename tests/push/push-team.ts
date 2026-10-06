@@ -4,7 +4,7 @@ import { newVapidKeyPair, parseVapidKeys } from "@/modules/push/vapid";
 import { insertSql, seedPerson } from "../helpers/rows";
 
 /**
- * A team for the reminder job's tests (docs/adr/0059), and a stand-in for
+ * A team for the reminder job's tests (docs/adr/0060), and a stand-in for
  * the push services: the job is handed a `fetch` that records each push
  * and answers with whatever the test says, so the suite never reaches the
  * network. Two coaches, two riders, a parent of the first rider, and the

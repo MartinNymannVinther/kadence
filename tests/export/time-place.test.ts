@@ -6,7 +6,7 @@ import { insertSql, seedPerson } from "../helpers/rows";
 
 /**
  * Dogma three for the newest columns: a session's time and place
- * (ADR 0057) and a block's own sessions (ADR 0058) leave with the rest of
+ * (ADR 0058) and a block's own sessions (ADR 0059) leave with the rest of
  * the team's data. The export reads every column of the tables it lists,
  * so this proves the columns are there and carry what was written.
  */

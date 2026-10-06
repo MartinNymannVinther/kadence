@@ -11,7 +11,7 @@ import {
 } from "@/components/today/checklist-steps";
 
 /**
- * The rider's first steps on Today (docs/adr/0062), without React or a
+ * The rider's first steps on Today (docs/adr/0063), without React or a
  * browser: which steps there are, which are done from what Kadence knows
  * and what the rider said, which ways a ride gets in for each answer, and
  * what the browser keeps.

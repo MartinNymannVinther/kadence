@@ -33,7 +33,7 @@ export async function generateMetadata(): Promise<Metadata> {
 const hrefFor = (sessionId: string) => withQuery("/today", { session: sessionId });
 
 /**
- * The front page, by who is looking, and about today (docs/adr/0062). A
+ * The front page, by who is looking, and about today (docs/adr/0063). A
  * rider sees the first steps while they are not done, today's session
  * with a big "Udført", "how hard" about the last ride, the check-in and
  * tomorrow; the rest of their picture is on Mig. A coach sees how many

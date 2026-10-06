@@ -28,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * category, with a new thread at the top; the owner's open reports above
  * all. Riders and parents never get here. A demo has a room of its own,
  * with example threads, and says so (ADR 0054). While the installation
- * has the room off, the page is not there (ADR 0056).
+ * has the room off, the page is not there (ADR 0057).
  */
 export default async function CoachesRoomPage({
   searchParams,

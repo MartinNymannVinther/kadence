@@ -16,7 +16,7 @@ import { seedUnratedRide } from "./unrated-ride";
  * championship (ADR 0051) and Trænerrummet with example threads
  * (ADR 0052). "Lav intensitet først" (ADR 0053) is a setting, turned on
  * with the others in seed.ts. Written through the ordinary services, as
- * the demo's coach. The demo follows the installation's flags (ADR 0056):
+ * the demo's coach. The demo follows the installation's flags (ADR 0057):
  * the championship and the room are seeded only where they are on.
  */
 

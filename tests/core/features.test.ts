@@ -4,7 +4,7 @@ import { EnvSchema } from "@/core/env";
 import { FEATURES, featuresFrom } from "@/core/features";
 
 /**
- * The parts that wait for a real winter (docs/adr/0056) are off unless an
+ * The parts that wait for a real winter (docs/adr/0057) are off unless an
  * installation says "on", and a setting the app reads in production is
  * worth nothing unless docker-compose.yml forwards it to the container.
  */

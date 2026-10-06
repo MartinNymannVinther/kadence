@@ -34,7 +34,7 @@ const SUBPROCESSORS =
  * Coaches and parents do not connect anyone's device; they are told so.
  * The OAuth round trip lands back here with `?connected=` or `?error=`.
  * Only the providers this installation has keys for are offered; with
- * none, the page says plainly that files work just as well (ADR 0056).
+ * none, the page says plainly that files work just as well (ADR 0057).
  * Under "Avanceret", the rider's upload keys (ADR 0029): what a helper
  * hands rides over with, whatever the installation has keys for.
  */

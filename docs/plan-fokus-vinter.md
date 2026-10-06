@@ -12,7 +12,7 @@ og kan vendes ved gennemgangen af PR'en:
 
 | Valg        | Bygget sådan                                                  | Kan vendes ved                       |
 | ----------- | ------------------------------------------------------------- | ------------------------------------ |
-| Påmindelser | Web push uden indhold og uden ny afhængighed (ADR 0059)       | at lade `PUSH_*` stå tomme           |
+| Påmindelser | Web push uden indhold og uden ny afhængighed (ADR 0060)       | at lade `PUSH_*` stå tomme           |
 | Rulle       | Kernen bliver; land, byer, folk og lyd bag `RULLE_WORLD`      | `RULLE_WORLD=on`                     |
 | Demoen      | Følger installationens flag                                   | at slå flagene til på installationen |
 | Madguiden   | Bag `GUIDE_FOOD`, slået fra til en sportsdiætist har læst den | `GUIDE_FOOD=on`                      |
@@ -35,11 +35,11 @@ liggende.
 
 ## Bølge 2 — fokus
 
-- **Installationens flag** (ADR 0056): `RULLE_WORLD`, `COACHES_ROOM`,
+- **Installationens flag** (ADR 0057): `RULLE_WORLD`, `COACHES_ROOM`,
   `CLUB_CHAMPIONSHIP`, `CALC_ENERGY`, `GUIDE_FOOD`, alle "off" som
   standard. Et flag skjuler menupunktet, siden, handlingen bag og demoens
   del på én gang.
-- **Menuen efter rolle** og en bundbjælke på telefonen (ADR 0060).
+- **Menuen efter rolle** og en bundbjælke på telefonen (ADR 0061).
   Træner: I dag · Kalender · Ryttere · Bibliotek · Mere. Rytter: I dag ·
   Kalender · Mig · Mere. Forælder: en side om barnet. Viden og beregnere
   flyttes ud af den indloggede menu til de åbne sider og Hjælp.
@@ -62,7 +62,7 @@ liggende.
   spring over, bekræft din forælder, læg appen på hjemmeskærmen.
 - **RPE lige efter turen**: når en tur er lagt ind uden en vurdering,
   spørger I dag "Hvor hårdt føltes den?".
-- **Tid og sted på et pas** (ADR 0057): `planned_sessions.start_time` og
+- **Tid og sted på et pas** (ADR 0058): `planned_sessions.start_time` og
   `meeting_place`, vist på kort, i dag, hos forældre og i "Del ugen".
 - **Join-siden** siger "holdet X" og rollen, ikke "arbejdsrummet".
 - **Rytterens I dag** viser i dag: dagens pas, Udført og check-in. Form,
@@ -73,16 +73,16 @@ liggende.
 
 ## Bølge 4 — vinteren
 
-- **Ét sted at planlægge ugen** (ADR 0058): planlæggeren får "Start fra"
+- **Ét sted at planlægge ugen** (ADR 0059): planlæggeren får "Start fra"
   (tom, sidste uge, et forløb, AI), uge-navigation, "Gentag i N uger" og
   "Gem som forløb". Et forløb kan nu rumme pas bygget direkte i
   planlæggeren (`training_block_items` uden skabelon). AI for én rytter og
   for gruppen er én knap.
-- **Holdets uge** (ADR 0061): holdkalenderen viser punkterne ved hver
+- **Holdets uge** (ADR 0062): holdkalenderen viser punkterne ved hver
   rytter og linker fra punkt til uge. I dag for træneren er dagens pas og
   et tal: "3 ryttere har noget, der er værd at se på".
 - **Sæsonplan for hele holdet** på én gang, efter hver rytters årgang.
-- **Påmindelser** (ADR 0059): check-in om aftenen, ny kommentar, ændret
+- **Påmindelser** (ADR 0060): check-in om aftenen, ny kommentar, ændret
   plan, forældrenes ugeoverblik søndag. Pushen bærer intet indhold; den
   vækker browseren, som spørger Kadence som den indloggede person.
 - **Del ugen** som tekst til holdets SMS- eller chatgruppe: pas, tid og

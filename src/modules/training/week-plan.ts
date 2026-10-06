@@ -14,7 +14,7 @@ import { clockOf, TimePlaceFields } from "./time-place";
 import { SessionInput, type Sport } from "./vocabulary";
 
 /**
- * The team's week plan (ADR 0043, 0058): a week of sessions — from the
+ * The team's week plan (ADR 0043, 0059): a week of sessions — from the
  * library or built there — laid into the calendars of every chosen rider
  * in one press, after a preview in the four numbers (ADR 0040), and with
  * "Gentag i N uger" into that many weeks in a row. Each session of the
@@ -41,7 +41,7 @@ export const BuiltSession = SessionInput.omit({
   meetingPlace: true,
 });
 
-/** Each item of the plan may carry when and where it starts (ADR 0057). */
+/** Each item of the plan may carry when and where it starts (ADR 0058). */
 export const PlanItemInput = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("template"), day, templateId: id, ...TimePlaceFields }),
   z.object({ kind: z.literal("built"), day, session: BuiltSession, ...TimePlaceFields }),

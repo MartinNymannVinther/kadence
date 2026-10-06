@@ -6,7 +6,7 @@ import { TodaySession } from "@/components/today/today-session";
 import type { RiderDay } from "./rider-data";
 
 /**
- * A rider's Today, and nothing else (docs/adr/0062): the first steps while
+ * A rider's Today, and nothing else (docs/adr/0063): the first steps while
  * they are not done, today's session with the big "Udført" and "Kør
  * indendørs", "how hard" about the last ride, today's check-in, and
  * tomorrow. The week, the form, goals, records and the upload are on Mig.

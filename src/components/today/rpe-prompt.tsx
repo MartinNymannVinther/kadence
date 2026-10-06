@@ -36,7 +36,7 @@ function putOff(raw: string | null | undefined): string[] {
 
 /**
  * "Hvor hårdt føltes turen?" on Today, right after a ride came in without
- * an answer (docs/adr/0062): the 1–10 scale in one row and a save. It is
+ * an answer (docs/adr/0063): the 1–10 scale in one row and a save. It is
  * the same save as the ride's own page (`setFeedbackAction`), and keeps
  * what the rider already said about how it felt and the note. "Ikke nu"
  * puts this ride away on this device; the ride's page still asks.

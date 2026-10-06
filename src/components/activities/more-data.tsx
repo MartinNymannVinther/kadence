@@ -7,7 +7,7 @@ import { useStored } from "@/components/common/use-stored";
 import { cn } from "@/lib/utils";
 
 /**
- * "Mere data" on a ride's page (docs/adr/0062): the numbers, curves,
+ * "Mere data" on a ride's page (docs/adr/0063): the numbers, curves,
  * laps, climbs, zones and power curve behind the four that come first.
  * Opened or closed, it stays that way for this person on this device; a
  * coach starts with it open, a rider with it closed. What is inside is

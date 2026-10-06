@@ -57,7 +57,7 @@ export async function listSessionsIn(
     .where(and(...where))
     .orderBy(
       asc(plannedSessions.onDate),
-      // A day's sessions in the order they start; those without a time after (docs/adr/0057).
+      // A day's sessions in the order they start; those without a time after (docs/adr/0058).
       asc(plannedSessions.startTime),
       asc(plannedSessions.sort),
       asc(plannedSessions.createdAt),
@@ -103,7 +103,7 @@ function derived(input: Pick<SessionInputT, "structure" | "sport" | "plannedMinu
   };
 }
 
-/** A new session's time and place: none unless the input brings them (docs/adr/0057). */
+/** A new session's time and place: none unless the input brings them (docs/adr/0058). */
 function timePlace(input: Pick<SessionInputT, "startTime" | "meetingPlace">) {
   return { startTime: clockOf(input.startTime), meetingPlace: input.meetingPlace ?? "" };
 }

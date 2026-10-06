@@ -25,7 +25,7 @@ import { insertSql, seedPerson } from "../helpers/rows";
  * signs every post with its author and club; only the installation's
  * owner moderates; and a deleted account leaves its posts nameless.
  * The room is on for this file, as an installation that has it on
- * (docs/adr/0056); that it is gone while off is in tests/core/feature-gates.
+ * (docs/adr/0057); that it is gone while off is in tests/core/feature-gates.
  */
 
 const on = vi.hoisted(() => new Set<string>(["coachesRoom"]));

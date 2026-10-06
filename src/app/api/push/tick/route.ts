@@ -7,7 +7,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**
- * One reminder run now (docs/adr/0059), for an installation that would
+ * One reminder run now (docs/adr/0060), for an installation that would
  * rather drive reminders from its own scheduler than from the app's
  * timer. Safe to call from anywhere: a run sends only what is due and
  * marks it, so calling it again sends nothing twice, and it says nothing

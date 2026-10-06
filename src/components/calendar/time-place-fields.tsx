@@ -20,7 +20,7 @@ export function timePlaceValue(draft: TimePlaceDraft): TimePlace {
 }
 
 /**
- * When and where a session starts (ADR 0057): a clock time in Copenhagen
+ * When and where a session starts (ADR 0058): a clock time in Copenhagen
  * and a meeting place, both optional — for the session a group rides
  * together. Every form that writes a session carries these two.
  */

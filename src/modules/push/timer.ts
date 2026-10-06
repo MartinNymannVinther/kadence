@@ -5,7 +5,7 @@ import type { PushConfig } from "./send";
 import { parseVapidKeys, vapidSubject } from "./vapid";
 
 /**
- * When the reminder run happens (docs/adr/0059): inside the app's own
+ * When the reminder run happens (docs/adr/0060): inside the app's own
  * process, every ten minutes, started once from the instrumentation hook
  * — no scheduler, no second container, no cloud. `POST /api/push/tick`
  * runs the same thing for an installation that would rather drive it

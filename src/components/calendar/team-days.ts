@@ -3,7 +3,7 @@ import { calendarHref, type CalendarQuery } from "./href";
 import type { CalendarActivityCard, CalendarCard } from "./types";
 
 /**
- * A rider's week as the phone's card shows it (ADR 0061): seven compact
+ * A rider's week as the phone's card shows it (ADR 0062): seven compact
  * days, each with its sessions' sports and how they went, and one tint
  * for the day — the session that most wants a look. Pure, so the shaping
  * is tested without React; the card only draws what this returns.

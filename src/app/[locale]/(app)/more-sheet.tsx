@@ -25,7 +25,7 @@ export type MoreSheetProps = {
 };
 
 /**
- * "Mere" on a phone (ADR 0060): the sidebar's whole content in a sheet —
+ * "Mere" on a phone (ADR 0061): the sidebar's whole content in a sheet —
  * the role's full list, the team switcher, settings and the person — so
  * the bottom bar can stay at four or five places and nothing is lost.
  * The content only: the bar holds the sheet's root and its trigger, so

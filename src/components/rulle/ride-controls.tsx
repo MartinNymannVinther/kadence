@@ -28,7 +28,7 @@ import type { LinkState } from "./bluetooth/reconnect";
  * but the rider and the land, full screen, and the end. Every control has
  * a key as well (`useRideKeys`), so a rider can reach a keyboard on the
  * handlebars rather than the screen. The map, the speed and the land
- * alone belong to Rulle's world, and are left out when it is (ADR 0056).
+ * alone belong to Rulle's world, and are left out when it is (ADR 0057).
  */
 export function RideControls({
   title,

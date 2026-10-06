@@ -1,5 +1,5 @@
 /**
- * The settings tabs, by role (ADR 0060). Pure, for the tests.
+ * The settings tabs, by role (ADR 0061). Pure, for the tests.
  *
  * "Holdet" is the coaches' and comes first for them, then everything a
  * team is run with: the workspace, its AI. A rider's settings are about

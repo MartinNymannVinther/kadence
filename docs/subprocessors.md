@@ -129,7 +129,7 @@ What this means in practice:
 
 ## The browser's push service, for reminders
 
-Reminders (ADR 0059) reach a phone or a computer through the push service
+Reminders (ADR 0060) reach a phone or a computer through the push service
 that the person's browser uses. Kadence does not choose it: Safari uses
 Apple's, Chrome and most Android browsers Google's, Firefox Mozilla's, and
 Edge on Windows Microsoft's. None of them is in the EU, so the push carries
@@ -149,7 +149,7 @@ more, and forgets the address when the browser lets go of it.
 | The browser's push service: Apple (`web.push.apple.com`), Google's Firebase Cloud Messaging (`fcm.googleapis.com`), Mozilla (`push.services.mozilla.com`) or Microsoft (`notify.windows.com`) | The person, by turning reminders on in their own browser; the browser picks the service | An empty push to the browser's opaque address, at the time a reminder is due; how long to keep it (six hours); the installation's public key and a signed token naming the service and the installation's contact (`PUSH_CONTACT`, or its address). No title, no text, no name, no team, no rider | Whether the push was taken, or that the browser has gone (Kadence then deletes the address) | US (Apple, Google, Mozilla, Microsoft); where each runs its service is not stated | 2026-10-06 |
 
 What the push service can still learn is the metadata: that this browser
-got a push from this installation, and when. ADR 0059 names that as the
+got a push from this installation, and when. ADR 0060 names that as the
 price of reaching a phone without a native app.
 
 ## Sources Kadence reads from

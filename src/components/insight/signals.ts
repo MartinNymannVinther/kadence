@@ -3,7 +3,7 @@ import type { FlagKind, Severity } from "@/modules/load";
 import type { RiderInsight } from "@/modules/insight/rider";
 
 /**
- * The team's week as the place for signals (ADR 0061): each rider's open
+ * The team's week as the place for signals (ADR 0062): each rider's open
  * flags as small badges beside their name, each badge a way down to the
  * rider's entry in the attention list under the grid, and every flag a
  * way to the rider's calendar for the week it is about. Pure, so the

@@ -43,8 +43,8 @@ const HOW_TO = [
  * The coach guide is offered to coaches and riders; a parent who is
  * neither has the parents' page instead, so the card is left out for them.
  * The open guides and calculators are not in the signed-in menu (ADR
- * 0060); the line under the introduction is the way to them from here.
- * Rulle's world is described only where the installation has it on (ADR 0056).
+ * 0061); the line under the introduction is the way to them from here.
+ * Rulle's world is described only where the installation has it on (ADR 0057).
  */
 export default async function HelpPage() {
   const t = await getTranslations("help");

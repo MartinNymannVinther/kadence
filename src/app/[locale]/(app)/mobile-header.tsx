@@ -6,7 +6,7 @@ import { UserMenu } from "./user-menu";
 
 /**
  * Slim top bar for small screens: the brand and the person. The places
- * themselves are in the bottom bar and its "Mere" sheet (ADR 0060), where
+ * themselves are in the bottom bar and its "Mere" sheet (ADR 0061), where
  * a thumb reaches them.
  */
 export function MobileHeader({

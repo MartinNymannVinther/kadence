@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { dcuState, type Volume } from "@/modules/season/volume";
 
 /**
- * The four numbers on one bar (ADR 0040, named as in ADR 0061), drawn the
+ * The four numbers on one bar (ADR 0040, named as in ADR 0062), drawn the
  * same wherever they stand — the calendar's week, the team's rows, the
  * season's months. A bullet bar: DCU's corridor as the band behind, the
  * season plan as an upright marker, the hours put in the calendar as an

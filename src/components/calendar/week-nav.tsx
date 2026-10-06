@@ -12,7 +12,7 @@ import { MonthJump } from "./month-jump";
  * Which week, and the way to the one before, the one after, this one,
  * and any month of any year ("Gå til"). Links, not buttons: a week is a
  * place, and the back button knows it. The calendar's by default; the
- * week planner gives its own addresses (ADR 0058).
+ * week planner gives its own addresses (ADR 0059).
  */
 export async function WeekNav({
   monday,

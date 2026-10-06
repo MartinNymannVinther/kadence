@@ -1,5 +1,5 @@
 /**
- * Which of a ride's numbers come first (docs/adr/0062): time in motion,
+ * Which of a ride's numbers come first (docs/adr/0063): time in motion,
  * distance and climbing, and how close it came to the plan — or the
  * average pulse when nothing was planned. A ride without one of those
  * fills the four from the next that it has. Everything else waits under

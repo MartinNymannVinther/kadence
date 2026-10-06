@@ -19,7 +19,7 @@ import { newKey, type PlanItem } from "./types";
 /**
  * A session for one day of the week plan: from the library, or built here
  * with the same builder — "Byg med AI" included — as anywhere a session is
- * written, with a time and a place when it is ridden together (ADR 0057).
+ * written, with a time and a place when it is ridden together (ADR 0058).
  * Nothing reaches a calendar from here; the plan is laid in as a whole.
  */
 export function ItemSheet({

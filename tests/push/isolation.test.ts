@@ -4,7 +4,7 @@ import { adminPool, appClient, asApp, expectSqlError } from "../helpers/db";
 import { insertSql, seedPerson } from "../helpers/rows";
 
 /**
- * A browser's reminders are its owner's alone (drizzle/0028, docs/adr/0059),
+ * A browser's reminders are its owner's alone (drizzle/0028, docs/adr/0060),
  * proven as the application role with raw SQL — what any bug in a service
  * could do, and no more. Not a teammate, not a parent, not the coach, and
  * not another team reads or changes them; the job's one door across

@@ -3,7 +3,7 @@ import { configuredProviders, PROVIDER_IDS, providerById } from "@/modules/devic
 
 /**
  * The devices page offers only the providers this installation has keys
- * for (docs/adr/0056); with none, rides come in as files. Each provider's
+ * for (docs/adr/0057); with none, rides come in as files. Each provider's
  * own answer is stood in for, so the developer's .env does not decide.
  */
 

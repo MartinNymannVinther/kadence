@@ -18,7 +18,7 @@ import { cardDays, weekMinutes, type CardDay } from "./team-days";
 import type { CalendarActivityCard, CalendarCard, CalendarEventCard, RiderOption } from "./types";
 
 /**
- * The team's week on a phone (ADR 0061): one card per rider instead of a
+ * The team's week on a phone (ADR 0062): one card per rider instead of a
  * grid two and a half screens wide. The name opens the rider's week, the
  * flags sit beside it, the seven days are compact chips — the day's
  * letter, the sport and how it went — and the season's bar closes the

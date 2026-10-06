@@ -26,7 +26,7 @@ const hrefFor = (sessionId: string) => withQuery("/parents", { session: sessionI
 
 /**
  * The parents' page, and a parent's whole Kadence: their Today lands here
- * (docs/adr/0062). Child first — with one child the page is titled with
+ * (docs/adr/0063). Child first — with one child the page is titled with
  * the child's name — each confirmed child's week with when and where each
  * session starts, what is coming the next 30 days, how the child is doing
  * if the child shares it, the conversations about the training and the

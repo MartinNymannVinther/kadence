@@ -9,10 +9,10 @@ import type { Sport } from "./vocabulary";
 import { MAX_PLAN_ITEMS, type PlanItemInputT } from "./week-plan";
 
 /**
- * Where a week plan can start from (ADR 0043, 0058): a week already in
+ * Where a week plan can start from (ADR 0043, 0059): a week already in
  * the calendars, as a draft the coach changes before anything is laid in.
  * Sessions from the library come back as the library's; the rest as they
- * were built, with their time and place (ADR 0057). A coach's.
+ * were built, with their time and place (ADR 0058). A coach's.
  */
 
 function weekOf(tx: AppTransaction, riderIds: string[], monday: string) {

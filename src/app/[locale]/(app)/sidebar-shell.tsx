@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 /**
  * Showing and hiding the navigation rail. Desktop only: on a phone and an
- * upright iPad the menu lives in the bottom bar (ADR 0060), and hiding
+ * upright iPad the menu lives in the bottom bar (ADR 0061), and hiding
  * what is not there would be a setting for nothing.
  *
  * The choice is kept in a cookie rather than in local storage, so the

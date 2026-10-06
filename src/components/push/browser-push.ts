@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * The browser's half of reminders (docs/adr/0059): the service worker at
+ * The browser's half of reminders (docs/adr/0060): the service worker at
  * /sw.js, the permission, and the push subscription made with the
  * installation's public key. Nothing here talks to Kadence; the card
  * saves the address through a server action.

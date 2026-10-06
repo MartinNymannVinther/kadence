@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { splitTiles } from "@/components/activities/summary-split";
 
 /**
- * A ride's four first numbers (docs/adr/0062): time, distance, climbing
+ * A ride's four first numbers (docs/adr/0063): time, distance, climbing
  * and the plan — or the average pulse without one — filled from the next
  * the ride has when one is missing; the rest go under "Mere data".
  */

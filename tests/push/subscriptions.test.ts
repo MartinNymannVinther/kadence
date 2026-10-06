@@ -15,7 +15,7 @@ import { adminPool } from "../helpers/db";
 import { insertSql, seedPerson } from "../helpers/rows";
 
 /**
- * Turning reminders on and off for a browser (docs/adr/0059), through the
+ * Turning reminders on and off for a browser (docs/adr/0060), through the
  * service the actions call, as the person. The reminders offered are the
  * person's roles' on the team, worked out on the server; a browser's
  * address is taken only from a known push service; turning off lets go of

@@ -39,7 +39,7 @@ export type { L };
  * coffee stop is the showcase. The rest of the product comes after
  * (showcase.ts): the club's logo and picture, a rider's own session, and
  * the club championship and Trænerrummet's example threads where the
- * installation has them on (ADR 0056). Written through the ordinary
+ * installation has them on (ADR 0057). Written through the ordinary
  * services, as the demo's coach, so what the visitor sees is what the
  * product does with real rows.
  */
@@ -69,7 +69,7 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
     allowYouthWeight: false,
     guidance: "dcu-2025",
     // On in the demo so a visitor sees them; off for a new team (ADR 0051, 0053).
-    // The championship only where the installation has it on (ADR 0056).
+    // The championship only where the installation has it on (ADR 0057).
     clubChampionship: featureOn("clubChampionship"),
     lowIntensityFirst: true,
   });
@@ -117,7 +117,7 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
   }
 
   const byText = (text: string) => templates[text]!;
-  // The team rides Tuesday's intervals and Saturday's long ride together (ADR 0057).
+  // The team rides Tuesday's intervals and Saturday's long ride together (ADR 0058).
   const clubhouse = pick({ da: "Klubhuset", en: "The clubhouse" }, l);
   const at = (startTime: string): TimePlace => ({ startTime, meetingPlace: clubhouse });
   type Slot = { day: number; template: string; at?: TimePlace };

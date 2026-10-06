@@ -12,7 +12,7 @@ import { insertSql, seedPerson } from "../helpers/rows";
  * A block: kept by a coach, read by a rider, previewed against the
  * corridor and applied into calendars as ordinary sessions — never by a
  * rider. Saved from the week planner, it may hold sessions of its own
- * beside the library's (ADR 0058).
+ * beside the library's (ADR 0059).
  */
 
 const ORG = "org_blocks";
@@ -111,7 +111,7 @@ describe("a training block", () => {
   });
 });
 
-describe("a block with sessions of its own (ADR 0058)", () => {
+describe("a block with sessions of its own (ADR 0059)", () => {
   const ride = {
     sport: "bike" as const,
     title: "Holdtur",

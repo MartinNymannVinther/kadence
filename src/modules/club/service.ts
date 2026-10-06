@@ -27,7 +27,7 @@ import { championshipOn } from "./switch";
  * The club championship (docs/adr/0051): everyone in the club reads it,
  * the coaches keep it. The club turns it on under Settings → Team; until
  * then nobody sees it. The database holds the same line (drizzle/0022).
- * Above the club's choice sits the installation's (docs/adr/0056): while
+ * Above the club's choice sits the installation's (docs/adr/0057): while
  * it has the championship off, every read here answers as if the club had
  * it off, and every write is refused.
  */

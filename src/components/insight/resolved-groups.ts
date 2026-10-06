@@ -15,7 +15,7 @@ export type ResolvedGroup = {
   /** The chip beside the name on the team list; null on the rider's own page, which shows it on top. */
   wellbeing: WellbeingStatus | null;
   klass: string;
-  /** The rider's calendar for the week the flags are about (ADR 0061). */
+  /** The rider's calendar for the week the flags are about (ADR 0062). */
   weekHref: string;
   items: { resolutionId: string; flag: Flag }[];
 };

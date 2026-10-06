@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
 /**
  * The team's settings: its kind, its training basis as one choice
  * (ADR 0049, 0053), the club championship where the installation has it
- * (ADR 0056), and the two youth defaults, both off (ADR 0013).
+ * (ADR 0057), and the two youth defaults, both off (ADR 0013).
  */
 export default async function TeamSettingsPage() {
   const ctx = await getOrgContext();

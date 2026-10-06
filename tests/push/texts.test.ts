@@ -7,7 +7,7 @@ import da from "../../messages/da.json";
 import en from "../../messages/en.json";
 
 /**
- * What a reminder says (docs/adr/0059): every note in both languages from
+ * What a reminder says (docs/adr/0060): every note in both languages from
  * messages/*.json, never a key left showing, never an exclamation mark,
  * and a path in the reader's language. The service worker's own fallback
  * — the one text it cannot fetch — is held to the catalogue here.

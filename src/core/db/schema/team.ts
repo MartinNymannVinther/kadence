@@ -372,7 +372,7 @@ export const trainingBlocks = pgTable(
 /**
  * One session of a block on a day (0 is the first Monday): a template from
  * the library, or a session built in the week planner and kept in the block
- * itself (docs/adr/0058), which carries its own sport, title and steps.
+ * itself (docs/adr/0059), which carries its own sport, title and steps.
  */
 export const trainingBlockItems = pgTable(
   "training_block_items",

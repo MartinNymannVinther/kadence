@@ -6,7 +6,7 @@ import { featureOn, type Feature } from "@/core/features";
 import type { Result } from "@/core/result";
 
 /**
- * Where a parked part of Kadence meets a request (docs/adr/0056). A page
+ * Where a parked part of Kadence meets a request (docs/adr/0057). A page
  * behind a feature the installation has off answers 404, as if it had
  * never been built; an action behind one is refused as not found. Both
  * read the installation's flag on every request, so turning one on needs

@@ -4,7 +4,7 @@ import { clockOf, timePlaceText } from "@/components/today/time-place";
 
 /**
  * Where a person lands, and two small things Today and the parents' page
- * show (docs/adr/0062): a parent who is nothing else has their Today on
+ * show (docs/adr/0063): a parent who is nothing else has their Today on
  * /parents; Mig is a rider's; the club's picture is for an empty day; and
  * a session's time and place read as one short line.
  */

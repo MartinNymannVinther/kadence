@@ -22,7 +22,7 @@ export type BlockDraft = {
   name: string;
   description: string;
   weeks: number;
-  /** From the library, or a session kept in the block itself (ADR 0058). */
+  /** From the library, or a session kept in the block itself (ADR 0059). */
   items: BlockItemInputT[];
 };
 export type BlockTemplateOption = {
@@ -37,7 +37,7 @@ const DAYS = [0, 1, 2, 3, 4, 5, 6] as const;
 /**
  * A block laid out week by week: each day a list of sessions from the
  * library, added from a select and taken away with a press. A session
- * saved from the week planner without being in the library (ADR 0058) is
+ * saved from the week planner without being in the library (ADR 0059) is
  * shown, kept and removed the same way. Works on a phone, one week at a
  * time in view. Saved as a whole; nothing reaches a calendar until the
  * block is applied.

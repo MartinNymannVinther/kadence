@@ -4,7 +4,7 @@ import { HUB_CALCULATORS, HUB_GUIDES, shownItems, shownTopics } from "@/modules/
 
 /**
  * The open hub offers what waits for nothing, and a parked calculator or
- * guide only where the installation has turned it on (docs/adr/0056).
+ * guide only where the installation has turned it on (docs/adr/0057).
  */
 
 const off: Features = {

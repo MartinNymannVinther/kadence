@@ -1,4 +1,4 @@
-# ADR 0060: One menu per role, a bottom bar on the phone, and the guides out of the signed-in menu
+# ADR 0061: One menu per role, a bottom bar on the phone, and the guides out of the signed-in menu
 
 Status: accepted · Date: 2026-10-06 · Amends ADR 0007 (named heading steps) and ADR 0047 (the hub's entry points)
 
@@ -19,7 +19,7 @@ minutes on a phone, and a rider who spends twenty seconds a day.
 
 - **One list per role**, decided by a pure function
   (`src/app/[locale]/(app)/nav-items.ts`) from who the person is on the
-  team and what the installation (ADR 0056) and the club have turned on:
+  team and what the installation (ADR 0057) and the club have turned on:
   - **coach:** I dag, Kalender, Ryttere, Bibliotek, Sæson, Forældre,
     Rulle, then Klubmester when the installation has it and the club
     keeps one, Trænerrummet when the installation has it, and Hjælp. A

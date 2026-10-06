@@ -26,7 +26,7 @@ export async function applyWeekPlanAction(raw: unknown) {
   return runAction(raw, WeekPlanInput, applyWeekPlan, PATHS);
 }
 
-/** "Start fra: Sidste uge" in the planner (ADR 0058): nothing is written. */
+/** "Start fra: Sidste uge" in the planner (ADR 0059): nothing is written. */
 export async function loadPreviousWeekAction(raw: unknown) {
   return runAction(
     raw,

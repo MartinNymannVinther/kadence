@@ -20,7 +20,7 @@ import { SessionCard } from "./session-card";
  * ready by itself and the session was chosen by the coach, so for most
  * rides the only thing to do here is to connect the trainer; a rider with
  * nothing planned chooses a session and a route (ADR 0035). Without
- * Rulle's world there is no route to choose, and no card for it (ADR 0056).
+ * Rulle's world there is no route to choose, and no card for it (ADR 0057).
  */
 export function ReadyScreen({
   picked,

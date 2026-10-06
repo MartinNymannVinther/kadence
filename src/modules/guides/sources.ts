@@ -42,6 +42,8 @@ export type OwnSourceId =
   | "dtuCaffeine"
   | "fvstCooling"
   | "usdaDangerZone"
+  | "nnr2023Energy"
+  | "fcdb61"
   | "dentistsSport"
   | "dentistsErosion"
   | "kkTeeth"
@@ -237,6 +239,19 @@ const OWN: Record<OwnSourceId, CoachSource> = {
     publisher: "Fødevarestyrelsen",
     year: null,
     url: "https://foedevarestyrelsen.dk/kost-og-foedevarer/start-og-drift-af-foedevarevirksomhed/hygiejne-og-indretning/haandtering-af-foedevarer-hygiejne-og-nedkoeling/nedkoeling-af-foedevarer",
+  },
+  nnr2023Energy: {
+    title:
+      "Energy – a scoping review for the Nordic Nutrition Recommendations 2023 project (tabel 7 og 10: referencevægte)",
+    publisher: "Food & Nutrition Research",
+    year: 2023,
+    url: "https://doi.org/10.29219/fnr.v67.10233",
+  },
+  fcdb61: {
+    title: "Den Danske Fødevaredatabase, version 6.1",
+    publisher: "DTU Fødevareinstituttet",
+    year: 2026,
+    url: "https://doi.org/10.11583/DTU.32312844",
   },
   usdaDangerZone: {
     title: '"Danger Zone" (40 °F–140 °F)',

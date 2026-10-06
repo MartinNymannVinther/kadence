@@ -7,7 +7,7 @@ import type { PlanItemInputT } from "@/modules/training/week-plan";
 /**
  * The week planner's own words (ADR 0043): a session of the plan on a
  * day of the week (0 is Monday) — one of the library's, or one built in
- * the planner — with when and where it starts (ADR 0057), and a rider as
+ * the planner — with when and where it starts (ADR 0058), and a rider as
  * the planner chooses them, by class.
  */
 
@@ -76,7 +76,7 @@ export function itemMinutes(item: PlanItem): number {
 }
 
 /**
- * An item as a block keeps it ("Gem som forløb", ADR 0058): the library's
+ * An item as a block keeps it ("Gem som forløb", ADR 0059): the library's
  * session by its id, a session built here as the block's own.
  */
 export function toBlockItem(item: PlanItem): BlockItemInputT {

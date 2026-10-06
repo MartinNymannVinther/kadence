@@ -107,7 +107,7 @@ export async function listThreads(
 
 /**
  * Threads with something new for this coach, for the count in the menu;
- * none while the installation has the room off (docs/adr/0056), so the
+ * none while the installation has the room off (docs/adr/0057), so the
  * menu never points at a page that is not there.
  */
 export async function unreadThreadCount(ctx: OrgContext): Promise<number> {

@@ -8,7 +8,7 @@ import { getTeamSettings } from "@/modules/team/settings";
 import { teamSignals, type RiderSignals } from "./signals";
 
 /**
- * What the team's week shows of the signals (ADR 0061), read for a coach
+ * What the team's week shows of the signals (ADR 0062), read for a coach
  * in the week that is in progress: the attention list's insights — open
  * and afklaret flags as the insight service returns them under RLS —
  * each rider's badges for the grid, whether the AI may write a summary,

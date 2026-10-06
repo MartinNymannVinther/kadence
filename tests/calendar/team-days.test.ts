@@ -3,7 +3,7 @@ import { cardDays, dayColour, weekMinutes } from "@/components/calendar/team-day
 import type { CalendarActivityCard, CalendarCard } from "@/components/calendar/types";
 
 /**
- * The team's week on a phone (ADR 0061), without React: each rider's
+ * The team's week on a phone (ADR 0062), without React: each rider's
  * seven days as compact chips — the sessions, how each went, one tint
  * for the day, and where a press leads — and the week's minutes for a
  * rider without a season bar.

@@ -26,7 +26,7 @@ import { adminPool } from "../helpers/db";
  * through the ordinary services (src/modules/demo/seed.ts), with a rider
  * and a parent beside the coach so the visitor can see all three roles
  * (src/modules/demo/roles.ts). The demo follows the installation's flags
- * (docs/adr/0056): built here once with them off, as a new installation
+ * (docs/adr/0057): built here once with them off, as a new installation
  * has them, and once with the championship and the room on.
  */
 
@@ -103,7 +103,7 @@ describe("a demo workspace", () => {
     expect(await unreadThreadCount(coach)).toBe(0);
   });
 
-  it("has a ride from yesterday that Today asks the rider how hard it felt (ADR 0062)", async () => {
+  it("has a ride from yesterday that Today asks the rider how hard it felt (ADR 0063)", async () => {
     const coach = { orgId, userId };
     const today = todayInCopenhagen();
     const emma = (await getRiders(coach)).find((r) => r.name === "Emma Holm")!;
@@ -113,7 +113,7 @@ describe("a demo workspace", () => {
     expect(asked).toMatchObject({ onDate: addDaysIso(today, -1), rpe: null, sport: "bike" });
   });
 
-  it("meets at the clubhouse for the rides the team does together (ADR 0057)", async () => {
+  it("meets at the clubhouse for the rides the team does together (ADR 0058)", async () => {
     const placed = await admin.query(
       `select count(*)::int as n from planned_sessions
         where org_id = $1 and start_time is not null and meeting_place = 'Klubhuset'`,

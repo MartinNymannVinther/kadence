@@ -24,7 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /**
- * "Planlæg ugen" (ADR 0043, 0058): the one place a coach plans a week —
+ * "Planlæg ugen" (ADR 0043, 0059): the one place a coach plans a week —
  * for the whole team, chosen riders, or the one rider whose calendar it
  * was opened from — with its own way between weeks. `?week=` is the
  * week's Monday, this week's by default; `?rider=` the rider it was

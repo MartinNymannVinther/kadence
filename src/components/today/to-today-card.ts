@@ -5,7 +5,7 @@ import type { TimePlace } from "./time-place";
 
 /**
  * A session for Today, Mig and the parents' page: the calendar's card,
- * with when and where it starts (ADR 0057) carried along, for the rows
+ * with when and where it starts (ADR 0058) carried along, for the rows
  * that show it.
  */
 export function toTodayCard(s: CalendarSession): CalendarCard & TimePlace {

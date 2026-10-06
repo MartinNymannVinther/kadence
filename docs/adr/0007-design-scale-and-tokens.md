@@ -1,6 +1,6 @@
 # ADR 0007: A named small-text scale, and the last hard-coded values become tokens
 
-Status: accepted · Date: 2026-09-18 (inherited from Tavle, ADR 0024 there; the review it records was of Tavle) · Amended by ADR 0060 (named heading steps, `shadow-surface`; the sticky notes' shadows are gone)
+Status: accepted · Date: 2026-09-18 (inherited from Tavle, ADR 0024 there; the review it records was of Tavle) · Amended by ADR 0061 (named heading steps, `shadow-surface`; the sticky notes' shadows are gone)
 
 > Inherited with the foundation from Plot, which took it from Makker and Domino (ADR 0001). The reasoning is the family's and holds here; where an example names a flow, a brick, a run, a conversation or an initiative, that is a sibling's example, not a feature of Kadence.
 

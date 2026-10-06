@@ -1,4 +1,4 @@
-# ADR 0057: Time and place on a session
+# ADR 0058: Time and place on a session
 
 Status: accepted · Date: 2026-10-06 · Builds on 0041, 0042, 0043 · docs/plan-fokus-vinter.md
 
@@ -22,7 +22,7 @@ page, to parents and in "Del ugen".
   library or built), the library's "Planlæg", a group plan, a series
   (ADR 0041), a session copied to another day or rider, "Kopiér ugen"
   (ADR 0042), the week planner's items (ADR 0043), and a block's items
-  (ADR 0058). One small fieldset, "Tid og sted", sits in every form.
+  (ADR 0059). One small fieldset, "Tid og sted", sits in every form.
 - **A change reaches as far as the rest of it**: "Kun dette pas", "Hele
   gruppen" or the series from this day on. A change that does not
   mention them — any caller that predates them — leaves them as they

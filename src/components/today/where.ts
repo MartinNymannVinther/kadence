@@ -1,5 +1,5 @@
 /**
- * Which page a person lands on (docs/adr/0062). A parent who is nothing
+ * Which page a person lands on (docs/adr/0063). A parent who is nothing
  * else has one page, about the child: their Today is /parents. Mig (/me)
  * is a rider's own page; a coach or a parent who opens it goes back to
  * their own front page. Pure, from the answer of `whoAmI`.

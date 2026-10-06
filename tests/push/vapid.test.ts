@@ -12,7 +12,7 @@ import {
 } from "@/modules/push/vapid";
 
 /**
- * VAPID by hand (RFC 8292, docs/adr/0059): the installation signs a short
+ * VAPID by hand (RFC 8292, docs/adr/0060): the installation signs a short
  * ES256 token for each push service with node:crypto, and these prove the
  * token is one a push service accepts — the signature verifies against the
  * public key the browsers subscribed with, the audience is the push

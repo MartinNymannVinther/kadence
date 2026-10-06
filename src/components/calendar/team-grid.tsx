@@ -30,7 +30,7 @@ import { useWeekSessions } from "./use-week-sessions";
  * show on one screen. The names are held in place when it scrolls
  * sideways, and a chip can be dragged to another day in its own row. Each
  * rider's open flags sit under the name as badges that lead to the
- * attention list below (ADR 0061), and each rider's week on the bike
+ * attention list below (ADR 0062), and each rider's week on the bike
  * against the season plan, in the four numbers every planning view
  * shares (ADR 0040), is the last column. Below md the grid gives way to
  * one card per rider (team-cards.tsx).
@@ -58,7 +58,7 @@ export function TeamGrid({
   query: CalendarQuery;
   /** Each rider's four numbers for the week (ADR 0040), by rider id. */
   volumes: Record<string, Volume>;
-  /** Each rider's open flags this week, by rider id (ADR 0061); empty in another week. */
+  /** Each rider's open flags this week, by rider id (ADR 0062); empty in another week. */
   signals: Record<string, RiderSignals>;
   /** For "Del ugen". */
   teamName: string;

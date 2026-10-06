@@ -389,7 +389,7 @@ describe("rls coverage (guards future tables)", () => {
     // platform-overview.test.ts proves both.
     "platform_overview",
     // Which reminders exist, for the reminder job that runs with nobody
-    // signed in (drizzle/0028, docs/adr/0059): the subscription's id, team
+    // signed in (drizzle/0028, docs/adr/0060): the subscription's id, team
     // and owner, for owners still on the team, and nothing else — no push
     // address, no kinds, nothing about what a reminder would say. The job
     // reads all of that as the owner, under the ordinary policies, so what

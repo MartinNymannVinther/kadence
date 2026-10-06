@@ -6,7 +6,7 @@ import { pick, RIDERS, type L } from "./seed-data";
 
 /**
  * Yesterday evening's ride for the demo's rider, come in as a file with
- * no answer yet to "how hard", so Today asks it (docs/adr/0062). Later in
+ * no answer yet to "how hard", so Today asks it (docs/adr/0063). Later in
  * the day than anything else the demo writes, so it is her latest ride.
  */
 export async function seedUnratedRide(

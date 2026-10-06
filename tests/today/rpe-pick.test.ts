@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { rideToRate } from "@/components/today/rpe-pick";
 
 /**
- * Which ride Today asks "Hvor hårdt føltes turen?" about (docs/adr/0062):
+ * Which ride Today asks "Hvor hårdt føltes turen?" about (docs/adr/0063):
  * the latest of the last three days, only while it has no answer, and
  * not again once the rider put it off.
  */

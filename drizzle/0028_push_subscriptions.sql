@@ -17,7 +17,7 @@ ALTER TABLE "push_subscriptions" ADD CONSTRAINT "push_subscriptions_org_id_organ
 ALTER TABLE "push_subscriptions" ADD CONSTRAINT "push_subscriptions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE UNIQUE INDEX "push_subscriptions_endpoint_uq" ON "push_subscriptions" USING btree ("org_id","user_id","endpoint");--> statement-breakpoint
 CREATE INDEX "push_subscriptions_user_idx" ON "push_subscriptions" USING btree ("user_id");--> statement-breakpoint
--- Reminders (docs/adr/0059). A subscription is its owner's alone: read,
+-- Reminders (docs/adr/0060). A subscription is its owner's alone: read,
 -- written and removed by that person in that team, by nobody else, coaches
 -- included. The push carries no content, so what a reminder says is read
 -- later as the person it is for, under the ordinary policies.

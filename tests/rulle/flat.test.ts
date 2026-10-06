@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { courseAt, FLAT_LAP_M, flatCourse, steadySpeed } from "@/modules/rulle";
 
 /**
- * The road under a session ridden alone (docs/adr/0056): a flat loop made
+ * The road under a session ridden alone (docs/adr/0057): a flat loop made
  * in memory, so the engine turns watts into speed exactly as on a route,
  * with no hill to change it and nothing fetched.
  */

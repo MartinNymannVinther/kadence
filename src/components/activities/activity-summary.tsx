@@ -39,7 +39,7 @@ type Tile = { key: string; label: string; value: React.ReactNode; hint?: string 
  * from how hard it felt (ADR 0016). A tile appears only when the file had
  * the number. Four come `first` — time, distance, climbing, and how close
  * it came to the plan or the average pulse (`splitTiles`) — and the
- * `rest` waits under "Mere data" (docs/adr/0062).
+ * `rest` waits under "Mere data" (docs/adr/0063).
  */
 export function ActivitySummary({
   facts,

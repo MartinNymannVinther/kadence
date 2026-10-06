@@ -20,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * which team, and as what — a coach's invitation says "som træner"; a
  * rider's and a parent's are the same kind to the auth role, which cannot
  * see the rider or parent row waiting for it, so they name the team alone
- * — and in one line what comes after (docs/adr/0062). Then it does the
+ * — and in one line what comes after (docs/adr/0063). Then it does the
  * one right thing for whoever opened it: a stranger registers for the
  * address the invitation names, the person it was sent to accepts with
  * one click, and somebody signed in as anyone else is told so rather

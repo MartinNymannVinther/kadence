@@ -3,13 +3,13 @@ import { check, date, index, pgTable, text, timestamp, uniqueIndex } from "drizz
 import { domainId, users } from "./foundation";
 import { tenant, timestamps } from "./shared";
 
-/** What a person can be reminded of (docs/adr/0059). */
+/** What a person can be reminded of (docs/adr/0060). */
 export const PUSH_KINDS = ["checkin", "comment", "plan", "week"] as const;
 export type PushKind = (typeof PUSH_KINDS)[number];
 
 /**
  * A browser that has said yes to Kadence's reminders, for one person on
- * one team (docs/adr/0059). The push itself carries nothing: it wakes the
+ * one team (docs/adr/0060). The push itself carries nothing: it wakes the
  * service worker, which asks Kadence what is new as the signed-in person,
  * so the push services see an address and a time and never a word of
  * what it is about. Each row is its owner's alone; the reminder job finds

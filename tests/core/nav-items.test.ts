@@ -15,7 +15,7 @@ import {
 } from "@/app/[locale]/(app)/(narrow)/settings/settings-items";
 
 /**
- * One menu per role (docs/adr/0060): the lists are the decision, so the
+ * One menu per role (docs/adr/0061): the lists are the decision, so the
  * tests hold each role to its own, in order, with the installation's and
  * the club's switches on and off.
  */

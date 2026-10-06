@@ -43,7 +43,7 @@ const isStreams = (value: unknown): value is Streams =>
  * climbing, and how close it came to the plan or the average pulse — and
  * how it felt; under "Mere data" the rest of the numbers, the route and
  * the ride over time, the plan step by step, laps and climbs, time in
- * zones and the power curve (docs/adr/0062). Then who rode along and the
+ * zones and the power curve (docs/adr/0063). Then who rode along and the
  * conversation about it, with the original file to take out again and
  * the way to delete it. Whoever may read the rider's training may read
  * this; the coach and the rider may change it (ADR 0011).

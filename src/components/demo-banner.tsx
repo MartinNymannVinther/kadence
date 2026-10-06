@@ -12,7 +12,7 @@ import { DemoStripe } from "./demo-stripe";
  * has three people in it, so the visitor can see Kadence as the coach, as
  * the rider and as the rider's parent (src/modules/demo/roles.ts).
  *
- * One line, so a phone keeps its first screen for the product (ADR 0060):
+ * One line, so a phone keeps its first screen for the product (ADR 0061):
  * the countdown, the switch between the three people, and the way to an
  * account. The longer explanation waits behind a small info button.
  */

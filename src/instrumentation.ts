@@ -8,7 +8,7 @@
  * `@/core/env`, and every request after it. The container reports "Up",
  * the health check reports 500, and the cause is nowhere near either of
  * those words. That is exactly how the family's first deployment went.
- * The second is to start the reminder timer (docs/adr/0059), when the
+ * The second is to start the reminder timer (docs/adr/0060), when the
  * installation has the keys for it.
  *
  * Node runtime only: the edge runtime cannot import pg, and there is no

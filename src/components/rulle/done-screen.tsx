@@ -30,7 +30,7 @@ const RETRY_MS = 30_000;
  * off by hand instead, with the minutes already filled in. A coach's
  * trial is saved nowhere; the file can always be taken along. Below the
  * numbers, the ride's little things (ADR 0034); without Rulle's world
- * only the one that is about the session, every block on target (ADR 0056).
+ * only the one that is about the session, every block on target (ADR 0057).
  */
 export function DoneScreen({
   recording,

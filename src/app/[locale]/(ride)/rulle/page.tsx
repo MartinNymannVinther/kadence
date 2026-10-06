@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * `?session=`, or the rider's first open bike session today — and the
  * thresholds its watts come from; the ride itself happens in the browser.
  * Whether the ride goes through Rulle's world or is the session alone is
- * the installation's choice (ADR 0056), handed to the browser here.
+ * the installation's choice (ADR 0057), handed to the browser here.
  */
 export default async function RullePage({
   searchParams,

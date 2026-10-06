@@ -9,7 +9,7 @@ import { gatherFacts } from "./facts";
 import { sendPush, type PushConfig } from "./send";
 
 /**
- * The reminder run (docs/adr/0059), every ten minutes and on
+ * The reminder run (docs/adr/0060), every ten minutes and on
  * `POST /api/push/tick`.
  *
  * It starts with nobody signed in, so the one thing it may read across

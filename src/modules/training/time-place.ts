@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /**
- * When and where a session starts (docs/adr/0057-time-and-place-on-a-session.md):
+ * When and where a session starts (docs/adr/0058-time-and-place-on-a-session.md):
  * "17.30 fra klubhuset". Both optional, on every form that writes a
  * session. The time is a wall-clock time in Copenhagen with no date and no
  * zone — the session's day already says which day — kept as Postgres
