@@ -7,6 +7,10 @@ import type { MetadataRoute } from "next";
  * scripts/icons.ts; the SVG itself stays the favicon. No service worker:
  * installing is about the home screen, not offline pages.
  *
+ * No orientation: the phone in a hand is upright, but a tablet or a phone
+ * on the handlebars in front of a trainer lies on its side, and Rulle
+ * must be free to turn with it (ADR 0060).
+ *
  * Installed, Kadence is a place to share a ride file to (ADR 0029): the
  * phone's share sheet posts it to /api/share, which imports it for the
  * rider who is signed in. Browsers that know share targets are Chrome's
@@ -24,7 +28,6 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: "/today",
     scope: "/",
     display: "standalone",
-    orientation: "portrait",
     background_color: "#f7f5f1",
     theme_color: "#f7f5f1",
     categories: ["sports", "health", "education"],
