@@ -7,6 +7,7 @@ import {
   workoutTemplates,
 } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
+import { featureOn } from "@/core/features";
 import { requireCoach } from "@/modules/team/access";
 
 /**
@@ -104,8 +105,13 @@ export async function listThreads(
   });
 }
 
-/** Threads with something new for this coach, for the count in the menu. */
+/**
+ * Threads with something new for this coach, for the count in the menu;
+ * none while the installation has the room off (docs/adr/0056), so the
+ * menu never points at a page that is not there.
+ */
 export async function unreadThreadCount(ctx: OrgContext): Promise<number> {
+  if (!featureOn("coachesRoom")) return 0;
   return withOrgContext(ctx, async (tx) => {
     if (!(await canUseRoom(tx))) return 0;
     const result = await tx.execute(sql`

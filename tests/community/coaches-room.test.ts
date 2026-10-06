@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { Client, Pool } from "pg";
 import {
   handleReport,
@@ -24,7 +24,14 @@ import { insertSql, seedPerson } from "../helpers/rows";
  * read and write one room; riders and parents never do; the database
  * signs every post with its author and club; only the installation's
  * owner moderates; and a deleted account leaves its posts nameless.
+ * The room is on for this file, as an installation that has it on
+ * (docs/adr/0056); that it is gone while off is in tests/core/feature-gates.
  */
+
+const on = vi.hoisted(() => new Set<string>(["coachesRoom"]));
+vi.mock("@/core/features", async (importOriginal) =>
+  (await import("../helpers/features")).featuresWith(await importOriginal(), on),
+);
 
 const A = { orgId: "org_room_a", userId: "user_room_coach_a" };
 const B = { orgId: "org_room_b", userId: "user_room_coach_b" };
@@ -169,6 +176,17 @@ describe("Trænerrummet", () => {
     const before = await unreadThreadCount(B);
     await getThread(B, threadId);
     expect(await unreadThreadCount(B)).toBeLessThanOrEqual(before);
+  });
+
+  it("counts nothing while the installation has the room off", async () => {
+    await createThread(B, { category: "strength", title: "Nyt", body: "Noget nyt til A." });
+    expect(await unreadThreadCount(A)).toBeGreaterThan(0);
+    on.delete("coachesRoom");
+    try {
+      expect(await unreadThreadCount(A)).toBe(0);
+    } finally {
+      on.add("coachesRoom");
+    }
   });
 
   it("a deleted account leaves its posts without a name", async () => {

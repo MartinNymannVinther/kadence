@@ -3476,27 +3476,32 @@
       "items": {
         "energy": {
           "title": "Energy for the race",
-          "body": "How much energy a race takes, and what to eat and drink before, during and after."
+          "body": "How much energy a race takes, and what to eat and drink before, during and after.",
+          "topic": "energy for the race"
         },
         "gearing": {
           "title": "Gearing for the young classes",
-          "body": "Work out the bike's biggest gear and see whether it stays within the limit for U11 to U17."
+          "body": "Work out the bike's biggest gear and see whether it stays within the limit for U11 to U17.",
+          "topic": "gearing"
         },
         "classes": {
           "title": "The classes and the way on",
-          "body": "The difference between U15, U17, U19 and U23, and how riders move on to a junior team."
+          "body": "The difference between U15, U17, U19 and U23, and how riders move on to a junior team.",
+          "topic": "the classes and the way on"
         },
         "equipment": {
           "title": "Equipment: where the speed is",
-          "body": "What buys speed for the money, and what is mostly for show. With watts, prices and sources."
+          "body": "What buys speed for the money, and what is mostly for show. With watts, prices and sources.",
+          "topic": "equipment"
         },
         "food": {
           "title": "Food and drink",
-          "body": "Everyday food and race-day food, recipes for homemade energy, teeth and supplements."
+          "body": "Everyday food and race-day food, recipes for homemade energy, teeth and supplements.",
+          "topic": "food and drink"
         }
       },
-      "fromParents": "About the sport, for parents: the classes and the way on, equipment, food and drink, and calculators for energy and gearing.",
-      "fromHelp": "Guides and calculators for riders, parents and coaches: the classes, equipment, food and drink, energy for the race and gearing."
+      "fromParents": "About the sport, for parents: {topics}.",
+      "fromHelp": "Guides and calculators for riders, parents and coaches: {topics}."
     },
     "classes": {
       "title": "The classes and the way on",

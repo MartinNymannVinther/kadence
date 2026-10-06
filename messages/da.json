@@ -3476,27 +3476,32 @@
       "items": {
         "energy": {
           "title": "Energi til løbet",
-          "body": "Hvor meget energi et løb koster, og hvad du kan spise og drikke før, under og efter."
+          "body": "Hvor meget energi et løb koster, og hvad du kan spise og drikke før, under og efter.",
+          "topic": "energi til løbet"
         },
         "gearing": {
           "title": "Gearing for de unge klasser",
-          "body": "Regn cyklens største gear ud, og se om det holder sig inden for grænsen i U11 til U17."
+          "body": "Regn cyklens største gear ud, og se om det holder sig inden for grænsen i U11 til U17.",
+          "topic": "gearing"
         },
         "classes": {
           "title": "Klasserne og vejen videre",
-          "body": "Forskellen på U15, U17, U19 og U23, og hvordan ryttere kommer videre til et juniorhold."
+          "body": "Forskellen på U15, U17, U19 og U23, og hvordan ryttere kommer videre til et juniorhold.",
+          "topic": "klasserne og vejen videre"
         },
         "equipment": {
           "title": "Udstyr: hvor er der mest at hente",
-          "body": "Hvad der giver fart for pengene, og hvad der mest er pynt. Med watt, priser og kilder."
+          "body": "Hvad der giver fart for pengene, og hvad der mest er pynt. Med watt, priser og kilder.",
+          "topic": "udstyr"
         },
         "food": {
           "title": "Mad og drikke",
-          "body": "Mad i hverdagen og på løbsdagen, opskrifter på hjemmelavet energi, tænder og kosttilskud."
+          "body": "Mad i hverdagen og på løbsdagen, opskrifter på hjemmelavet energi, tænder og kosttilskud.",
+          "topic": "mad og drikke"
         }
       },
-      "fromParents": "Viden om sporten til forældre: klasserne og vejen videre, udstyr, mad og drikke, og beregnere til energi og gearing.",
-      "fromHelp": "Guides og beregnere til ryttere, forældre og trænere: klasserne, udstyr, mad og drikke, energi til løbet og gearing."
+      "fromParents": "Viden om sporten til forældre: {topics}.",
+      "fromHelp": "Guides og beregnere til ryttere, forældre og trænere: {topics}."
     },
     "classes": {
       "title": "Klasserne og vejen videre",
