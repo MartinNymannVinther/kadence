@@ -5,7 +5,7 @@ import { createTemplate } from "@/modules/training/templates";
 import type { BikeStructure } from "@/modules/workouts/structure";
 import { seedClubChampionship, type DemoRider } from "./club";
 import { demoCoverPng, demoLogoPng } from "./club-images";
-import { seedCoachesRoom } from "./coaches-room";
+import { inDemoRoom, seedCoachesRoom } from "./coaches-room";
 import { pick, type L } from "./seed-data";
 import { seedUnratedRide } from "./unrated-ride";
 
@@ -65,5 +65,5 @@ export async function seedShowcase(
     riderId: ownRiderId,
   });
   if (featureOn("clubChampionship")) await seedClubChampionship(ctx, l, riders, today);
-  if (featureOn("coachesRoom")) await seedCoachesRoom(ctx, l);
+  if (featureOn("coachesRoom") && (await inDemoRoom(ctx))) await seedCoachesRoom(ctx, l);
 }
