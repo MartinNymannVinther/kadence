@@ -50,9 +50,3 @@ export function referenceKg(riderClass: RiderClass, sex: Sex): number {
   const mean = ages.reduce((sum, age) => sum + kgAt(age, sex), 0) / ages.length;
   return Math.round(mean * 10) / 10;
 }
-
-/** The age in the middle of a class, for the heart rate formula. */
-export function referenceAge(riderClass: RiderClass): number {
-  const ages = CLASS_AGES[riderClass];
-  return Math.round((ages[0]! + ages.at(-1)!) / 2);
-}

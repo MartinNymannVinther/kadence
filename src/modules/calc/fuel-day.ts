@@ -1,11 +1,5 @@
 import type { Range } from "./energy";
-import {
-  allowedLossKg,
-  carbsPerHour,
-  MAX_CARBS_PER_HOUR,
-  UNTRAINED_CAP,
-  type CarbAdvice,
-} from "./fuel";
+import { carbsPerHour, MAX_CARBS_PER_HOUR, UNTRAINED_CAP, type CarbAdvice } from "./fuel";
 import type { BottleMl } from "./fuel-items";
 import { referenceKg, type RiderClass } from "./reference-rider";
 import type { Sex } from "./energy";
@@ -79,35 +73,24 @@ export function carbAdvice(day: Day): CarbAdvice {
 /** A race, or training that is not easy. */
 export const hardToday = (day: Day) => day.session === "race" || day.intensity !== "easy";
 
-/**
- * Sweat an hour: 0.7–1.2 l in Danish weather, up to 2 l in heat at high
- * intensity (Team Danmark). From 25 °C Kadence reads it as 1.2–2 l.
- */
-export function sweatPerHour(celsius: number): Range {
-  return celsius < 25 ? { low: 0.7, high: 1.2 } : { low: 1.2, high: 2 };
-}
-
-/** The gut takes up about 1–1.5 l an hour (Team Danmark). */
-export const ABSORB_FLUID: Range = { low: 1, high: 1.5 };
-
-const times = (range: Range, by: number): Range => ({ low: range.low * by, high: range.high * by });
-
 /** The main meal comes 3–4 hours before the start (Team Danmark); the goal is read from 3. */
 export const MEAL_HOURS = 3;
+
+/** ½–1 l to drink in the hours before the start (Team Danmark). */
+export const BEFORE_FLUID_L: Range = { low: 0.5, high: 1 };
 
 /**
  * Before the start: 1–4 g/kg of carbohydrate 1–4 hours before (Thomas
  * 2016), read as about 1 g/kg for each hour from the main meal to the
  * start, give or take half a gram — the main meal 3–4 hours before and a
- * snack 1–2 hours before together (Team Danmark). And 5–10 ml/kg to drink
- * in the last hours (Thomas 2016).
+ * snack 1–2 hours before together (Team Danmark) — and ½–1 l to drink.
  */
 export function beforeTargets(day: Day): { carbs: Range; fluid: Range } {
   const kg = referenceKg(day.riderClass, day.sex);
   const perKg = { low: MEAL_HOURS - 0.5, high: MEAL_HOURS + 0.5 };
   return {
     carbs: { low: Math.round(perKg.low * kg), high: Math.round(perKg.high * kg) },
-    fluid: times({ low: 0.005, high: 0.01 }, kg),
+    fluid: BEFORE_FLUID_L,
   };
 }
 
@@ -140,19 +123,4 @@ export function afterSlots(day: Day): AfterSlot[] {
 export function plateFor(day: Day): "elite" | "everyday" {
   if (day.next !== "rest") return "elite";
   return hardToday(day) && day.minutes >= 90 ? "elite" : "everyday";
-}
-
-/**
- * Sweat the rider may lose before it costs performance, in litres: 2 % of
- * the reference weight below 25 °C, 1 % above 30 °C (Team Danmark).
- */
-export function allowedLossL(day: Day): number {
-  return allowedLossKg(referenceKg(day.riderClass, day.sex), day.celsius);
-}
-
-/** The sweat not drunk back during the session, and the 125–150 % of it to drink after (Thomas 2016). */
-export function fluidAfter(day: Day, drunkL: number): { lossL: Range; replaceL: Range } {
-  const sweat = times(sweatPerHour(day.celsius), day.minutes / 60);
-  const lossL = { low: Math.max(0, sweat.low - drunkL), high: Math.max(0, sweat.high - drunkL) };
-  return { lossL, replaceL: { low: lossL.low * 1.25, high: lossL.high * 1.5 } };
 }

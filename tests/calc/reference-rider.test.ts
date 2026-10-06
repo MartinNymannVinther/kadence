@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { referenceAge, referenceKg, RIDER_CLASSES } from "@/modules/calc/reference-rider";
+import { referenceKg, RIDER_CLASSES } from "@/modules/calc/reference-rider";
 
 describe("the reference rider for a class", () => {
   it("is the mean of NNR 2023's weights for the class's years", () => {
@@ -20,9 +20,5 @@ describe("the reference rider for a class", () => {
         expect(referenceKg(RIDER_CLASSES[i]!, sex)).toBeGreaterThan(
           referenceKg(RIDER_CLASSES[i - 1]!, sex),
         );
-  });
-
-  it("has the age in the middle of the class for the heart rate formula", () => {
-    expect(RIDER_CLASSES.map(referenceAge)).toEqual([14, 16, 18, 21]);
   });
 });

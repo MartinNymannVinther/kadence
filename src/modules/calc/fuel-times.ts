@@ -29,7 +29,6 @@ export type DayTimes = {
   early: boolean;
 };
 
-export const DEFAULT_START = 10 * 60;
 const DAY = 24 * 60;
 const EARLY = 6 * 60;
 

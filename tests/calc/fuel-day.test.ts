@@ -4,24 +4,20 @@ import {
   beforeTargets,
   carbAdvice,
   DEFAULT_DAY,
-  fluidAfter,
   plateFor,
-  sweatPerHour,
   type Day,
 } from "@/modules/calc/fuel-day";
 
 const DAY: Day = { ...DEFAULT_DAY, riderClass: "U17", sex: "male" }; // 61.8 kg behind the scenes
 
 describe("the goals of a day", () => {
-  it("before: about 1 g/kg for each hour from a main meal 3 hours before, ½ g either way, and 5–10 ml/kg", () => {
+  it("before: about 1 g/kg for each hour from a main meal 3 hours before, ½ g either way, and ½–1 l", () => {
     expect(beforeTargets(DAY).carbs).toEqual({ low: 155, high: 216 }); // 2.5–3.5 g/kg
     expect(beforeTargets({ ...DAY, riderClass: "U15", sex: "female" }).carbs).toEqual({
       low: 126,
       high: 176,
     });
-    const fluid = beforeTargets(DAY).fluid;
-    expect(fluid.low).toBeCloseTo(0.309, 3);
-    expect(fluid.high).toBeCloseTo(0.618, 3);
+    expect(beforeTargets(DAY).fluid).toEqual({ low: 0.5, high: 1 });
   });
 
   it("after: 1–1.2 g/kg of carbohydrate and 0.25–0.3 g/kg of protein, four hours of it within 8 hours", () => {
@@ -58,16 +54,5 @@ describe("the goals of a day", () => {
     expect(plateFor({ ...DAY, session: "training", intensity: "easy", minutes: 180 })).toBe(
       "everyday",
     );
-  });
-
-  it("counts the sweat not drunk back, and 125–150 % of it to drink after", () => {
-    expect(sweatPerHour(18)).toEqual({ low: 0.7, high: 1.2 });
-    expect(sweatPerHour(28)).toEqual({ low: 1.2, high: 2 });
-    const { lossL, replaceL } = fluidAfter(DAY, 1);
-    expect(lossL.low).toBeCloseTo(0.4, 5);
-    expect(lossL.high).toBeCloseTo(1.4, 5);
-    expect(replaceL.low).toBeCloseTo(0.5, 5);
-    expect(replaceL.high).toBeCloseTo(2.1, 5);
-    expect(fluidAfter(DAY, 5).lossL).toEqual({ low: 0, high: 0 });
   });
 });
