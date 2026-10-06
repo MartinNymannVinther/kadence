@@ -108,7 +108,7 @@ export function SessionScreen({
           </div>
         )}
         {(timeline || live) && (
-          <section className="border-border bg-card flex flex-col gap-3 rounded-2xl border px-4 pt-4 pb-3 shadow-[var(--surface-shadow)] sm:px-6 lg:px-8 lg:pt-6">
+          <section className="border-border bg-card flex flex-col gap-3 rounded-2xl border px-4 pt-4 pb-3 shadow-surface sm:px-6 lg:px-8 lg:pt-6">
             {timeline && (
               <IntervalBar
                 timeline={timeline}
