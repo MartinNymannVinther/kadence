@@ -123,6 +123,40 @@ describe("a demo workspace", () => {
     expect(placed.rows[0].n).toBeGreaterThan(0);
   });
 
+  it("has the team's own drawn exercise, mixed into a programme laid into today's calendar (ADR 0067)", async () => {
+    const exercises = await admin.query(`select name, pose from team_exercises where org_id = $1`, [
+      orgId,
+    ]);
+    expect(exercises.rows).toHaveLength(1);
+    expect(exercises.rows[0].name).toBe("Rygstræk på bænk");
+    expect(exercises.rows[0].pose.joints.head).toBeDefined();
+
+    const programs = await admin.query(
+      `select id, name, parts from team_programs where org_id = $1`,
+      [orgId],
+    );
+    expect(programs.rows).toHaveLength(1);
+    expect(programs.rows[0].name).toBe("Holdets mobilitet efter fællestræning");
+    const refs: string[] = programs.rows[0].parts.flatMap((p: { items: { exercise: string }[] }) =>
+      p.items.map((i) => i.exercise),
+    );
+    expect(refs.some((r) => r.startsWith("builtin:"))).toBe(true);
+    expect(refs.some((r) => r.startsWith("team:"))).toBe(true);
+
+    const emma = (await getRiders({ orgId, userId })).find((r) => r.name === "Emma Holm")!;
+    const session = await admin.query(
+      `select structure from planned_sessions
+        where org_id = $1 and rider_id = $2 and title = $3`,
+      [orgId, emma.id, programs.rows[0].name],
+    );
+    expect(session.rows).toHaveLength(1);
+    const refsInSession: Array<string | undefined> = session.rows[0].structure.exercises.map(
+      (e: { ref?: string }) => e.ref,
+    );
+    expect(refsInSession.some((r) => r?.startsWith("builtin:"))).toBe(true);
+    expect(refsInSession.some((r) => r?.startsWith("team:"))).toBe(true);
+  });
+
   it("shows the coach the team's three numbers over the weeks it has planned (ADR 0066)", async () => {
     const weeks = (await getPilotWeeks({ orgId, userId }))!;
     expect(weeks).toHaveLength(8);
