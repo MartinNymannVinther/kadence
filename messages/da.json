@@ -969,7 +969,9 @@
     "repeatTooMany": "Det bliver for mange pas på én gang. Vælg færre ryttere eller en kortere periode.",
     "copySameWeek": "En uge kan ikke kopieres ind i sig selv.",
     "uciBirthYear": "Det UCI ID tilhører en rytter med et andet fødselsår. Tjek tallet på licensen.",
-    "uciUnknown": "Cykling Danmark kender ikke det UCI ID. Tjek tallet på licensen."
+    "uciUnknown": "Cykling Danmark kender ikke det UCI ID. Tjek tallet på licensen.",
+    "exerciseUnknown": "En af øvelserne findes ikke længere. Genindlæs siden og vælg igen.",
+    "exerciseArchived": "En af øvelserne er arkiveret, så den kan ikke komme med i et program. Du kan tage den frem igen i biblioteket eller vælge en anden."
   },
   "calendar": {
     "title": "Kalender",
