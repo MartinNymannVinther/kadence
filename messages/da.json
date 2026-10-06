@@ -3607,6 +3607,14 @@
       "slower": "Langsommere",
       "left": "Til venstre",
       "right": "Til højre"
+    },
+    "log": {
+      "title": "Bluetooth-log",
+      "hint": "Kun med ?ble=log i adressen. Vises for dig, ikke for andre; intet sendes, og intet gemmes.",
+      "empty": "Venter på den første hændelse.",
+      "count": "{count, plural, one {# hændelse} other {# hændelser}}",
+      "copy": "Kopiér log",
+      "copied": "Kopieret"
     }
   },
   "club": {

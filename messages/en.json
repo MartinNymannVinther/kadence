@@ -3607,6 +3607,14 @@
       "slower": "Slower",
       "left": "Left",
       "right": "Right"
+    },
+    "log": {
+      "title": "Bluetooth log",
+      "hint": "Only with ?ble=log in the address. Shown to you, not to others; nothing is sent, and nothing is stored.",
+      "empty": "Waiting for the first event.",
+      "count": "{count, plural, one {# event} other {# events}}",
+      "copy": "Copy log",
+      "copied": "Copied"
     }
   },
   "club": {

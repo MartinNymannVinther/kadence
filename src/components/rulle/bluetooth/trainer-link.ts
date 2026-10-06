@@ -1,16 +1,16 @@
 import { CrankCadence, parsePowerMeasurement } from "@/modules/rulle/ble/cycling-power";
 import {
   control,
-  parseControlResponse,
   parseFeatures,
   parseIndoorBikeData,
   parsePowerRange,
   parseStatus,
-  type ControlResult,
   type MachineFeatures,
   type PowerRange,
 } from "@/modules/rulle/ble/ftms";
 import { CHARACTERISTIC, SERVICE } from "@/modules/rulle/ble/uuids";
+import { logLine, type BleLogSink } from "./ble-log";
+import { ControlPointQueue } from "./control-point";
 import {
   LinkError,
   linkErrorOf,
@@ -18,10 +18,8 @@ import {
   optionalService,
   readOptional,
   subscribe,
-  write,
   type BluetoothDeviceLike,
   type BluetoothLike,
-  type GattCharacteristic,
   type GattService,
 } from "./gatt";
 import { keepConnected, type LinkState } from "./reconnect";
@@ -36,11 +34,11 @@ import { keepConnected, type LinkState } from "./reconnect";
  * read through whichever reports the watts.
  *
  * Every Control Point command waits for the trainer's answer before the
- * next is written (one GATT operation at a time, and FTMS answers each
- * command in turn), and a command the trainer already holds is not sent
- * again. When the trainer says another app took control, or the
- * connection drops and comes back, control is taken again and the last
- * target set again.
+ * next is written (`ControlPointQueue`: one GATT operation at a time, and
+ * FTMS answers each command in turn), and a command the trainer already
+ * holds is not sent again. When the trainer says another app took
+ * control, or the connection drops and comes back, control is taken
+ * again and the last target set again.
  */
 
 export type SensorReading = {
@@ -53,6 +51,8 @@ export type SensorReading = {
 export type TrainerEvents = {
   onReading: (reading: SensorReading, atMs: number) => void;
   onState: (state: LinkState) => void;
+  /** Every connect, service, characteristic, notification and control write, with `?ble=log` only. */
+  onLog?: BleLogSink;
 };
 
 export type TrainerInfo = {
@@ -63,7 +63,6 @@ export type TrainerInfo = {
   simulation: boolean;
 };
 
-const RESPONSE_TIMEOUT_MS = 2500;
 /** A Fitness Machine reading this recent wins over the Cycling Power one. */
 const FTMS_FRESH_MS = 3000;
 
@@ -72,10 +71,7 @@ export class TrainerLink {
   private closed = false;
   private features: MachineFeatures | null = null;
   private range: PowerRange | null = null;
-  private controlPoint: GattCharacteristic | null = null;
-  private pending: { opCode: number; answer: (result: ControlResult | "timeout") => void } | null =
-    null;
-  private queue: Promise<unknown> = Promise.resolve();
+  private readonly controlQueue: ControlPointQueue;
   private hasControl = false;
   /** Watts to hold, null for free, undefined before anything was asked. */
   private wanted: number | null | undefined = undefined;
@@ -90,12 +86,16 @@ export class TrainerLink {
     private readonly events: TrainerEvents,
   ) {
     this.info = { name: device.name?.trim() ?? "", erg: false, simulation: false };
+    this.controlQueue = new ControlPointQueue(events.onLog);
     keepConnected(device, {
       setup: async () => {
         await this.setup();
         await this.apply();
       },
-      onState: events.onState,
+      onState: (state) => {
+        events.onLog?.(logLine.state("trainer", state));
+        events.onState(state);
+      },
       isClosed: () => this.closed,
     });
   }
@@ -139,13 +139,14 @@ export class TrainerLink {
   /** The ride is over: the trainer is let go, back to its own resistance. */
   async release(): Promise<void> {
     this.wanted = undefined;
-    if (this.hasControl) await this.command(control.reset());
+    if (this.hasControl) await this.controlQueue.send(control.reset());
     this.hasControl = false;
     this.sent = null;
   }
 
   close(): void {
     this.closed = true;
+    this.events.onLog?.(logLine.closed("trainer"));
     for (const off of this.unsubscribe.splice(0)) off();
     if (this.device.gatt?.connected) this.device.gatt.disconnect();
   }
@@ -154,20 +155,26 @@ export class TrainerLink {
     const gatt = this.device.gatt;
     if (!gatt) throw new LinkError("unsupported");
     const server = await gatt.connect();
+    this.events.onLog?.(logLine.connect("trainer", this.device.name ?? ""));
     for (const off of this.unsubscribe.splice(0)) off();
     this.hasControl = false;
     this.sent = null;
-    this.controlPoint = null;
+    this.controlQueue.attach(null);
     const ftms = await optionalService(server, SERVICE.fitnessMachine);
     const power = await optionalService(server, SERVICE.cyclingPower);
     if (!ftms && !power) throw new LinkError("no_service");
+    if (ftms) this.events.onLog?.(logLine.service("trainer", "fitness_machine"));
+    if (power) this.events.onLog?.(logLine.service("trainer", "cycling_power"));
     if (ftms) await this.setupFitnessMachine(ftms);
     if (power) {
       const measurement = await optionalCharacteristic(
         power,
         CHARACTERISTIC.cyclingPowerMeasurement,
       );
-      if (measurement) this.unsubscribe.push(await subscribe(measurement, (v) => this.onPower(v)));
+      if (measurement) {
+        this.events.onLog?.(logLine.characteristic("trainer", "cycling_power_measurement"));
+        this.unsubscribe.push(await subscribe(measurement, (v) => this.onPower(v)));
+      }
     }
   }
 
@@ -178,14 +185,19 @@ export class TrainerLink {
     const range = await readOptional(service, CHARACTERISTIC.supportedPowerRange);
     this.range = range ? parsePowerRange(range) : null;
     const data = await optionalCharacteristic(service, CHARACTERISTIC.indoorBikeData);
-    if (data) this.unsubscribe.push(await subscribe(data, (v) => this.onBikeData(v)));
+    if (data) {
+      this.events.onLog?.(logLine.characteristic("trainer", "indoor_bike_data"));
+      this.unsubscribe.push(await subscribe(data, (v) => this.onBikeData(v)));
+    }
     const status = await optionalCharacteristic(service, CHARACTERISTIC.fitnessMachineStatus);
+    if (status) this.events.onLog?.(logLine.characteristic("trainer", "fitness_machine_status"));
     const off = status && (await subscribe(status, (v) => this.onStatus(v)).catch(() => null));
     if (off) this.unsubscribe.push(off);
     const point = await optionalCharacteristic(service, CHARACTERISTIC.fitnessMachineControlPoint);
     if (!point) return;
-    this.unsubscribe.push(await subscribe(point, (v) => this.onResponse(v)));
-    this.controlPoint = point;
+    this.events.onLog?.(logLine.characteristic("trainer", "fitness_machine_control_point"));
+    this.unsubscribe.push(await subscribe(point, (v) => this.controlQueue.onIndication(v)));
+    this.controlQueue.attach(point);
     // A trainer that does not say what it supports is asked anyway: it answers "not supported".
     const erg = this.features?.targetPower ?? true;
     const simulation = this.features?.simulation ?? false;
@@ -199,9 +211,9 @@ export class TrainerLink {
   }
 
   private async takeControl(): Promise<boolean> {
-    if ((await this.command(control.requestControl())) !== "success") return false;
+    if ((await this.controlQueue.send(control.requestControl())) !== "success") return false;
     // Some trainers want to be started before they take a target; any answer will do.
-    await this.command(control.startOrResume());
+    await this.controlQueue.send(control.startOrResume());
     return true;
   }
 
@@ -223,41 +235,9 @@ export class TrainerLink {
     }
     const key = bytes.join(",");
     if (key === this.sent) return;
-    const result = await this.command(bytes);
+    const result = await this.controlQueue.send(bytes);
     this.sent = result === "success" ? key : null;
     if (result === "not_permitted") this.hasControl = false;
-  }
-
-  /** One command, answered (or timed out) before the next is written. */
-  private command(bytes: Uint8Array): Promise<ControlResult | "timeout"> {
-    const run = async (): Promise<ControlResult | "timeout"> => {
-      const point = this.controlPoint;
-      if (!point) return "failed";
-      const answer = new Promise<ControlResult | "timeout">((resolve) => {
-        const timer = setTimeout(() => settle("timeout"), RESPONSE_TIMEOUT_MS);
-        const settle = (result: ControlResult | "timeout") => {
-          clearTimeout(timer);
-          if (this.pending?.answer === settle) this.pending = null;
-          resolve(result);
-        };
-        this.pending = { opCode: bytes[0]!, answer: settle };
-      });
-      try {
-        await write(point, bytes);
-      } catch {
-        this.pending?.answer("failed");
-      }
-      return answer;
-    };
-    const next = this.queue.then(run, run);
-    this.queue = next;
-    return next;
-  }
-
-  private onResponse(value: DataView): void {
-    const response = parseControlResponse(value);
-    if (response && this.pending && response.opCode === this.pending.opCode)
-      this.pending.answer(response.result);
   }
 
   private onStatus(value: DataView): void {
@@ -269,6 +249,7 @@ export class TrainerLink {
 
   private onBikeData(value: DataView): void {
     const data = parseIndoorBikeData(value);
+    this.events.onLog?.(logLine.notify("trainer", "indoor_bike_data", value, data));
     const now = Date.now();
     if (data.power !== undefined) this.ftmsPowerAt = now;
     if (data.cadence !== undefined) this.ftmsCadenceAt = now;
@@ -286,6 +267,7 @@ export class TrainerLink {
   /** Cycling Power fills in what the Fitness Machine data leaves out, and is all a plain trainer has. */
   private onPower(value: DataView): void {
     const measurement = parsePowerMeasurement(value);
+    this.events.onLog?.(logLine.notify("trainer", "cycling_power_measurement", value, measurement));
     if (!measurement) return;
     const now = Date.now();
     const cadence = measurement.crank ? this.crank.update(measurement.crank, now) : null;
