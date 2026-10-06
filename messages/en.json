@@ -532,6 +532,12 @@
       "security": "Security: passkeys and two-step verification",
       "coachNote": "You are a coach on the team. The team's own choices are under Team.",
       "memberNote": "You are on the team, but neither a rider nor a parent here. Ask a coach for an invitation if you should be.",
+      "leave": {
+        "action": "Leave the team",
+        "title": "Leave the team?",
+        "body": "You lose access to the team straight away. What you have entered stays with the team. If you want a copy, download it under Data first. A coach can invite you again.",
+        "confirm": "Leave the team"
+      },
       "sharing": {
         "title": "What your parents can see",
         "body": "It is your choice, not the coach's or your parents'. You can change it at any time.",
