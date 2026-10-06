@@ -11,6 +11,7 @@ import {
 import { StructureView } from "@/components/workouts/structure-view";
 import { getOrgContext } from "@/core/auth/session";
 import { formatDay } from "@/core/dates";
+import { notFoundWithout } from "@/core/feature-gate";
 import { Link, redirect } from "@/i18n/navigation";
 import { canModerate } from "@/modules/community/moderation";
 import { getThread, roomKind } from "@/modules/community/service";
@@ -22,14 +23,20 @@ export async function generateMetadata({
 }: {
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
+  // Opening a thread marks it read: not even the title is asked for while the room is off.
+  notFoundWithout("coachesRoom");
   const ctx = await getOrgContext();
   const t = await getTranslations("community");
   const thread = ctx ? await getThread(ctx, (await params).id) : null;
   return { title: thread?.title ?? t("title") };
 }
 
-/** One thread in Trænerrummet: the first post, a session if one came along, the replies, and a reply. */
+/**
+ * One thread in Trænerrummet: the first post, a session if one came along,
+ * the replies, and a reply. Not there while the room is off (ADR 0056).
+ */
 export default async function ThreadPage({ params }: { params: Promise<{ id: string }> }) {
+  notFoundWithout("coachesRoom");
   const ctx = await getOrgContext();
   const locale = await getLocale();
   if (!ctx) {

@@ -1,5 +1,6 @@
 import { addDaysIso, diffDays, mondayOf, todayInCopenhagen } from "@/core/dates";
 import type { OrgContext } from "@/core/db/tenant";
+import { featureOn } from "@/core/features";
 import { phaseOf, raceYearOf, seasonStartYear, strengthFrequency } from "@/modules/dcu";
 import { createSeasonPlan } from "@/modules/season/plans";
 import { createRider, setThresholds } from "@/modules/team/riders";
@@ -35,10 +36,11 @@ export type { L };
  * each rider's own threshold (`rides.ts`) — so the calendar, the records
  * and every activity page show what an upload gives; one long ride with a
  * coffee stop is the showcase. The rest of the product comes after
- * (showcase.ts): the club's logo and picture, a rider's own session, the
- * club championship and Trænerrummet's example threads. Written through
- * the ordinary services, as the demo's coach, so what the visitor sees is
- * what the product does with real rows.
+ * (showcase.ts): the club's logo and picture, a rider's own session, and
+ * the club championship and Trænerrummet's example threads where the
+ * installation has them on (ADR 0056). Written through the ordinary
+ * services, as the demo's coach, so what the visitor sees is what the
+ * product does with real rows.
  */
 
 const WEEKS_BACK = 6;
@@ -66,7 +68,8 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
     allowYouthWeight: false,
     guidance: "dcu-2025",
     // On in the demo so a visitor sees them; off for a new team (ADR 0051, 0053).
-    clubChampionship: true,
+    // The championship only where the installation has it on (ADR 0056).
+    clubChampionship: featureOn("clubChampionship"),
     lowIntensityFirst: true,
   });
   await installDcuProgrammes(ctx, l);

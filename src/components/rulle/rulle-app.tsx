@@ -13,6 +13,7 @@ import { Sensors } from "./ride/sensors";
 import { useKeptRide } from "./ride/use-kept-ride";
 import { useRide } from "./ride/use-ride";
 import { RideScreen } from "./ride-screen";
+import { SessionScreen } from "./session-screen";
 import { useCourse } from "./use-course";
 import { useDevices } from "./use-devices";
 
@@ -25,16 +26,21 @@ type Phase = "ready" | "counting" | "riding" | "done";
  * team's library; everything else — the choice of session and route
  * (ADR 0035), Bluetooth, the clock, the recording — lives here, in the
  * browser, and reaches Kadence only as the finished ride's FIT file.
+ * Without the world (ADR 0056) the same ride is the session alone: no
+ * route to choose, no landscape, the bar and the numbers on their own.
  */
 export function RulleApp({
   start,
   today,
   name,
+  world,
 }: {
   start: RulleStart;
   today: string;
   /** The rider's first name, for the chalk on the climb. */
   name: string | null;
+  /** The installation has Rulle's world on: the land, the routes, the people and the sound. */
+  world: boolean;
 }) {
   const t = useTranslations("rulle");
   const locale = useLocale();
@@ -60,17 +66,17 @@ export function RulleApp({
   const [sensors] = useState(() => new Sensors());
   const [beeps] = useState(() => new Beeps());
   const devices = useDevices(sensors);
-  const course = useCourse();
+  const course = useCourse(world);
   const courseReady = course.state.status === "ready" ? course.state.course : null;
   const land = course.state.status === "ready" ? course.state.land : null;
   // A city's streets and its race day for a city's route: not for a rider's own file.
   const city =
-    course.route.city && course.state.status === "ready" && !course.state.own
+    world && course.route.city && course.state.status === "ready" && !course.state.own
       ? course.route.city
       : null;
   // A race's course has its finish, where the lap ends: not a route of the rider's own.
   const finish =
-    Boolean(course.route.finish) && course.state.status === "ready" && !course.state.own;
+    world && Boolean(course.route.finish) && course.state.status === "ready" && !course.state.own;
   const [phase, setPhase] = useState<Phase>("ready");
   const [finished, setFinished] = useState<{
     recording: Recording;
@@ -120,6 +126,25 @@ export function RulleApp({
         keepFor={finished.trial ? null : start.riderId}
         seen={finished.seen}
         onTarget={finished.onTarget}
+        world={world}
+      />
+    );
+
+  if ((phase === "counting" || phase === "riding") && courseReady && !world)
+    return (
+      <SessionScreen
+        title={meta.title}
+        trial={trial}
+        timeline={timeline}
+        rider={thresholds}
+        ride={ride}
+        devices={devices}
+        beeps={beeps}
+        counting={phase === "counting"}
+        onGo={() => {
+          ride.start();
+          setPhase("riding");
+        }}
       />
     );
 
@@ -158,6 +183,7 @@ export function RulleApp({
       missing={start.missing}
       devices={devices}
       course={course}
+      world={world}
       kept={kept}
       onChoose={setChosenId}
       onStart={() => {

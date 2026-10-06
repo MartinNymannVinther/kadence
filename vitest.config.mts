@@ -41,6 +41,14 @@ export default defineConfig({
       // default is "off" is proven in tests/core/env.
       DEMO: "on",
       LLM_PROVIDER: "none",
+      // The parts that wait for a real winter are off, as on a new
+      // installation (docs/adr/0056); a test that needs one on mocks
+      // "@/core/features" (tests/helpers/features.ts).
+      RULLE_WORLD: "off",
+      COACHES_ROOM: "off",
+      CLUB_CHAMPIONSHIP: "off",
+      CALC_ENERGY: "off",
+      GUIDE_FOOD: "off",
     },
     environment: "node",
     include: ["tests/**/*.test.ts"],

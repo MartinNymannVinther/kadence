@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { Pool } from "pg";
 import {
   cleanupExpiredDemos,
@@ -21,8 +21,23 @@ import { adminPool } from "../helpers/db";
  * proven in tests/core/env. A demo opens on a seeded portfolio, written
  * through the ordinary services (src/modules/demo/seed.ts), with a rider
  * and a parent beside the coach so the visitor can see all three roles
- * (src/modules/demo/roles.ts).
+ * (src/modules/demo/roles.ts). The demo follows the installation's flags
+ * (docs/adr/0056): built here once with them off, as a new installation
+ * has them, and once with the championship and the room on.
  */
+
+const on = vi.hoisted(() => new Set<string>());
+vi.mock("@/core/features", async (importOriginal) =>
+  (await import("../helpers/features")).featuresWith(await importOriginal(), on),
+);
+
+/** The newest demo's workspace and account. */
+async function newestDemo(admin: Pool): Promise<{ orgId: string; userId: string }> {
+  const row = await admin.query(
+    `select organization_id, user_id from demo_workspaces order by created_at desc limit 1`,
+  );
+  return { orgId: row.rows[0].organization_id, userId: row.rows[0].user_id };
+}
 
 let admin: Pool;
 let orgId: string;
@@ -42,11 +57,7 @@ describe("a demo workspace", () => {
     const demo = await createDemoWorkspace("da");
     expect(demo).not.toBeNull();
     expect(demo!.headers.get("cookie")).toMatch(/better-auth/);
-    const row = await admin.query(
-      `select organization_id, user_id from demo_workspaces order by created_at desc limit 1`,
-    );
-    orgId = row.rows[0].organization_id;
-    userId = row.rows[0].user_id;
+    ({ orgId, userId } = await newestDemo(admin));
     expect(await isDemoWorkspace(orgId)).toBe(true);
     expect(demoLandingUrl("da").pathname).toBe("/today");
     expect(demoLandingUrl("en").pathname).toBe("/en/today");
@@ -65,10 +76,10 @@ describe("a demo workspace", () => {
     expect(seeded.rows[0].dcu).toBe(3);
   });
 
-  it("shows every part of the product: logo, own sessions, the championship, the room", async () => {
+  it("shows the product and leaves out what the installation has parked", async () => {
     const coach = { orgId, userId };
     const settings = await getTeamSettings(coach);
-    expect(settings).toMatchObject({ clubChampionship: true, lowIntensityFirst: true });
+    expect(settings).toMatchObject({ clubChampionship: false, lowIntensityFirst: true });
     const images = await admin.query(
       `select kind from org_images where org_id = $1 order by kind`,
       [orgId],
@@ -76,24 +87,16 @@ describe("a demo workspace", () => {
     expect(images.rows.map((r) => r.kind)).toEqual(["cover", "logo"]);
     expect((await listOwnTemplates(coach)).map((t) => t.riderName)).toEqual(["Emma Holm"]);
 
-    const championships = (await listChampionships(coach))!;
-    expect(championships).toHaveLength(2);
-    const latest = (await getChampionship(coach, championships[0]!.id))!;
-    expect(latest.rounds).toHaveLength(3);
-    expect(latest.improvement?.name).toBe("Freja Dahl");
-    expect(latest.rounds.some((r) => r.entries.some((e) => e.record))).toBe(true);
-    expect((await listChampions(coach)).length).toBeGreaterThanOrEqual(8);
-
-    const threads = (await listThreads(coach))!;
-    expect(threads).toHaveLength(7);
-    expect(new Set(threads.map((t) => t.category)).size).toBe(6);
-    expect(threads.every((t) => t.authorName && t.clubName && t.unread)).toBe(true);
-    expect(await unreadThreadCount(coach)).toBe(7);
-    const inRoom = await admin.query(
-      `select count(*)::int as n, count(workout)::int as w from community_threads where demo_org_id = $1`,
+    const parked = await admin.query(
+      `select (select count(*)::int from club_championships where org_id = $1) as championships,
+              (select count(*)::int from club_champions where org_id = $1) as champions,
+              (select count(*)::int from community_threads where demo_org_id = $1) as threads`,
       [orgId],
     );
-    expect(inRoom.rows[0]).toEqual({ n: 7, w: 1 });
+    expect(parked.rows[0]).toEqual({ championships: 0, champions: 0, threads: 0 });
+    expect(await listChampionships(coach)).toBeNull();
+    expect(await listThreads(coach)).toEqual([]);
+    expect(await unreadThreadCount(coach)).toBe(0);
   });
 
   it("has a rider and her parent the visitor can switch to, and nobody else can", async () => {
@@ -132,5 +135,56 @@ describe("a demo workspace", () => {
       people,
     ]);
     expect(left.rows[0].n).toBe(0);
+  });
+});
+
+describe("a demo where the installation has the championship and the room on", () => {
+  let coach: { orgId: string; userId: string };
+
+  beforeAll(async () => {
+    on.add("clubChampionship");
+    on.add("coachesRoom");
+    expect(await createDemoWorkspace("da")).not.toBeNull();
+    coach = await newestDemo(admin);
+  });
+
+  afterAll(() => {
+    on.clear();
+  });
+
+  it("turns the championship on and seeds its seasons and champions", async () => {
+    expect(await getTeamSettings(coach)).toMatchObject({ clubChampionship: true });
+    const championships = (await listChampionships(coach))!;
+    expect(championships).toHaveLength(2);
+    const latest = (await getChampionship(coach, championships[0]!.id))!;
+    expect(latest.rounds).toHaveLength(3);
+    expect(latest.improvement?.name).toBe("Freja Dahl");
+    expect(latest.rounds.some((r) => r.entries.some((e) => e.record))).toBe(true);
+    expect((await listChampions(coach)).length).toBeGreaterThanOrEqual(8);
+  });
+
+  it("fills its own Trænerrum with the example threads", async () => {
+    const threads = (await listThreads(coach))!;
+    expect(threads).toHaveLength(7);
+    expect(new Set(threads.map((t) => t.category)).size).toBe(6);
+    expect(threads.every((t) => t.authorName && t.clubName && t.unread)).toBe(true);
+    expect(await unreadThreadCount(coach)).toBe(7);
+    const inRoom = await admin.query(
+      `select count(*)::int as n, count(workout)::int as w from community_threads where demo_org_id = $1`,
+      [coach.orgId],
+    );
+    expect(inRoom.rows[0]).toEqual({ n: 7, w: 1 });
+  });
+
+  it("goes whole when its time is up", async () => {
+    await admin.query(
+      `update demo_workspaces set expires_at = now() - interval '1 minute' where organization_id = $1`,
+      [coach.orgId],
+    );
+    expect(await cleanupExpiredDemos()).toBe(1);
+    const room = await admin.query(`select 1 from community_threads where demo_org_id = $1`, [
+      coach.orgId,
+    ]);
+    expect(room.rowCount).toBe(0);
   });
 });

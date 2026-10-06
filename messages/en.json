@@ -758,7 +758,7 @@
       },
       "devices": {
         "title": "Uploads and devices",
-        "body": "Upload a FIT file from the bike computer, watch or trainer under Today, in the calendar or on the rider's page. Kadence reads the file itself, offline too, and puts the ride on the day's session when it fits. Every ride has its own page with curves, time in zones and best power. Wahoo, Garmin and Polar can be connected under Settings → Devices, so rides come in by themselves, and sessions can be sent to a Wahoo or Garmin. Wahoo and Garmin are US companies, Polar is Finnish, and it is the rider's own choice. A bike session can also be downloaded as .zwo, .erg, .mrc or .fit."
+        "body": "Upload a FIT file from the bike computer, watch or trainer under Today, in the calendar or on the rider's page. Kadence reads the file itself, offline too, and puts the ride on the day's session when it fits. Every ride has its own page with curves, time in zones and best power. If Wahoo, Garmin or Polar is set up here, you can connect them under Settings → Devices, so rides come in by themselves. Wahoo and Garmin are US companies, Polar is Finnish, and it is the rider's own choice. Otherwise your rides come in as files, and that works just as well. A bike session can also be downloaded as .zwo, .erg, .mrc or .fit."
       },
       "toDevice": {
         "title": "Sessions on the bike computer",
@@ -766,11 +766,12 @@
       },
       "rulle": {
         "title": "Rulle: the session on the trainer",
-        "body": "When you can't get outside, ride today's session indoors in Rulle: in the menu, or \"Ride indoors\" on the session. Connect the trainer with one press. A smart trainer sets the watts of each block itself (ERG), so all you do is pedal; a trainer that only measures leaves the numbers to you. A heart-rate strap can be connected beside it. The screen shows the watts against the target, the time left of the block and the whole session as a bar you ride across, large enough to read from the bike. Space pauses, the right arrow skips to the next block, up and down make the session easier or harder. Stop pedalling, and Rulle pauses with you. When the session is over, the ride is saved as an ordinary ride on the session, and you say how hard it was. Without a connection the ride waits in the browser. Rulle needs Chrome or Edge on a computer or Android; on an iPhone, the Bluefy app can. Now and then something small happens on the way – an electric cargo bike, a car with windscreen washer fluid, a dog – and pause long enough and you sit down at a café. They are counted in today's little things when you finish; the numbers and the bar are left in peace. Under the ride you hear the wind and the tyres with your speed, a bird in the country, a town's hum and the crowd on race day, so a hoot never comes out of silence. M turns all sound off and on. There is a cheat code hidden in Rulle. It cheats only the landscape, never the ride that is saved. With no session today, you can choose one of the team's own or DCU's standard sessions, and choose between the routes – among them the championship lap from B&U DM 2026 in Vejle, with its finish at the top, the Future Racing lap through Copenhagen and the Worlds circuit round Mont-Royal in Montréal. K shows and hides the little map of the route. I hides every number, so you see only the rider and the land; tap the screen or press I again to bring them back. H shows the speed – the route's speed for your watts and a standard rider, so a guide, not a measure – and on a climb or a descent its percent is down in the corner. The rider on the screen stands on the steep climbs and gets low on the fast descents. The routes that come with Kadence run through the real land from OpenStreetMap – the woods, the lakes, the fjord and the towns – and you meet other riders on the road, some with a hand raised. The road crosses its rivers on bridges, and where you ride under a railway or a motorway, a train comes over now and then and the cars run on the bridge. On the city routes it is race day: a crowd down the finish straight and up the climbs, marshals with yellow flags at the islands and the sharp bends, marshals on motorbikes who hoot and ride a while ahead of you, cobbles that shake, speed bumps, a feed zone and the team buses. Copenhagen is a June morning in a big city – blocks in ochre, yellow and red brick, shops at street level, lamps hung over the street and a hot-dog wagon, Montréal a September afternoon with red maples, stairs outside the houses and the cross on Mont-Royal. The towns in the country, like Vejle, are built lower, in yellow and red brick under red and black tiles."
+        "body": "When you can't get outside, ride today's session indoors in Rulle: in the menu, or \"Ride indoors\" on the session. Connect the trainer with one press. A smart trainer sets the watts of each block itself (ERG), so all you do is pedal; a trainer that only measures leaves the numbers to you. A heart-rate strap can be connected beside it. The screen shows the watts against the target, the time left of the block and the whole session as a bar you ride across, large enough to read from the bike. Space pauses, the right arrow skips to the next block, up and down make the session easier or harder. Stop pedalling, and Rulle pauses with you. When the session is over, the ride is saved as an ordinary ride on the session, and you say how hard it was. Without a connection the ride waits in the browser. Rulle needs Chrome or Edge on a computer or Android; on an iPhone, the Bluefy app can. With no session today, you can choose one of the team's own or DCU's standard sessions. M turns the sound off and on.",
+        "world": "Now and then something small happens on the way – an electric cargo bike, a car with windscreen washer fluid, a dog – and pause long enough and you sit down at a café. They are counted in today's little things when you finish; the numbers and the bar are left in peace. Under the ride you hear the wind and the tyres with your speed, a bird in the country, a town's hum and the crowd on race day, so a hoot never comes out of silence. There is a cheat code hidden in Rulle. It cheats only the landscape, never the ride that is saved. You can choose between the routes – among them the championship lap from B&U DM 2026 in Vejle, with its finish at the top, the Future Racing lap through Copenhagen and the Worlds circuit round Mont-Royal in Montréal. K shows and hides the little map of the route. I hides every number, so you see only the rider and the land; tap the screen or press I again to bring them back. H shows the speed – the route's speed for your watts and a standard rider, so a guide, not a measure – and on a climb or a descent its percent is down in the corner. The rider on the screen stands on the steep climbs and gets low on the fast descents. The routes that come with Kadence run through the real land from OpenStreetMap – the woods, the lakes, the fjord and the towns – and you meet other riders on the road, some with a hand raised. The road crosses its rivers on bridges, and where you ride under a railway or a motorway, a train comes over now and then and the cars run on the bridge. On the city routes it is race day: a crowd down the finish straight and up the climbs, marshals with yellow flags at the islands and the sharp bends, marshals on motorbikes who hoot and ride a while ahead of you, cobbles that shake, speed bumps, a feed zone and the team buses. Copenhagen is a June morning in a big city – blocks in ochre, yellow and red brick, shops at street level, lamps hung over the street and a hot-dog wagon, Montréal a September afternoon with red maples, stairs outside the houses and the cross on Mont-Royal. The towns in the country, like Vejle, are built lower, in yellow and red brick under red and black tiles."
       },
       "keys": {
         "title": "Upload keys",
-        "body": "An upload key lets a program hand rides to Kadence by itself, without you being signed in. Create one under Settings → Devices, give it a name, and copy it right away: it is shown that one time only. The program sends the ride's file to the address shown with the key, with the key in the Authorization field, written as Bearer and then the key. The ride lands on the day's session, exactly as when you upload it yourself. The key can only add rides for you. It cannot read anything, and you or your coach can remove it at any time. Give it only to the program that is to use it."
+        "body": "An upload key lets a program hand rides to Kadence by itself, without you being signed in. Create one under Settings → Devices → Advanced, give it a name, and copy it right away: it is shown that one time only. The program sends the ride's file to the address shown with the key, with the key in the Authorization field, written as Bearer and then the key. The ride lands on the day's session, exactly as when you upload it yourself. The key can only add rides for you. It cannot read anything, and you or your coach can remove it at any time. Give it only to the program that is to use it."
       },
       "strava": {
         "title": "From Strava to Kadence",
@@ -2592,9 +2593,13 @@
   },
   "devices": {
     "title": "Devices",
-    "subtitle": "Connect Wahoo, Garmin or Polar, and your rides come in by themselves. With Wahoo and Garmin, sessions can also be sent to your bike computer. FIT upload always works, without them too.",
-    "coachNote": "Riders connect their own Wahoo, Garmin or Polar here under Settings → Devices. Once a rider has connected Wahoo or Garmin, you can send sessions to the rider's device from the session in the calendar.",
-    "otherNote": "Devices belong to the rider. Only the rider can connect their Wahoo, Garmin or Polar.",
+    "subtitle": "Connect {providers}, and your rides come in by themselves. FIT upload always works, without it too.",
+    "filesOnly": "Your rides come in as files, and that works just as well.",
+    "ridersFilesOnly": "The riders bring their rides in as files, and that works just as well.",
+    "coachNote": "Riders connect their own {providers} here under Settings → Devices.",
+    "coachPush": "Once a rider has connected {providers}, you can send sessions to the rider's device from the session in the calendar.",
+    "otherNote": "Devices belong to the rider. Only the rider can connect their {providers}.",
+    "advanced": "Advanced",
     "name": {
       "wahoo": "Wahoo",
       "garmin": "Garmin",
@@ -2602,7 +2607,7 @@
     },
     "about": {
       "wahoo": "ELEMNT bike computers and KICKR trainers. Rides come in automatically, and sessions can be sent to them.",
-      "garmin": "Edge bike computers and watches through Garmin Connect. Rides come in automatically, and sessions can be sent to the Garmin Connect calendar.",
+      "garmin": "Edge bike computers and watches through Garmin Connect. Rides come in automatically. A bike session goes onto an Edge by cable, from the session.",
       "polar": "Watches and bike computers through Polar Flow. Rides come in automatically. Sessions cannot be sent to Polar from Kadence."
     },
     "state": {
@@ -2680,7 +2685,7 @@
         "done": "Done"
       }
     },
-    "uploadInstead": "Without Wahoo, Garmin and Polar you can always upload your rides as FIT files.",
+    "uploadInstead": "Without a connection you can always upload your rides as FIT files.",
     "uploadLink": "Upload a ride",
     "usTitle": "Wahoo and Garmin are US companies, Polar is Finnish",
     "usBody": "Kadence itself is in the EU, and so is Polar. When you connect, Wahoo, Garmin or Polar send your rides to Kadence, and Kadence sends the sessions you choose to Wahoo or Garmin. It is your choice, and you can disconnect at any time.",
@@ -3524,27 +3529,32 @@
       "items": {
         "energy": {
           "title": "Energy for the race",
-          "body": "How much energy a race takes, and what to eat and drink before, during and after."
+          "body": "How much energy a race takes, and what to eat and drink before, during and after.",
+          "topic": "energy for the race"
         },
         "gearing": {
           "title": "Gearing for the young classes",
-          "body": "Work out the bike's biggest gear and see whether it stays within the limit for U11 to U17."
+          "body": "Work out the bike's biggest gear and see whether it stays within the limit for U11 to U17.",
+          "topic": "gearing"
         },
         "classes": {
           "title": "The classes and the way on",
-          "body": "The difference between U15, U17, U19 and U23, and how riders move on to a junior team."
+          "body": "The difference between U15, U17, U19 and U23, and how riders move on to a junior team.",
+          "topic": "the classes and the way on"
         },
         "equipment": {
           "title": "Equipment: where the speed is",
-          "body": "What buys speed for the money, and what is mostly for show. With watts, prices and sources."
+          "body": "What buys speed for the money, and what is mostly for show. With watts, prices and sources.",
+          "topic": "equipment"
         },
         "food": {
           "title": "Food and drink",
-          "body": "Everyday food and race-day food, recipes for homemade energy, teeth and supplements."
+          "body": "Everyday food and race-day food, recipes for homemade energy, teeth and supplements.",
+          "topic": "food and drink"
         }
       },
-      "fromParents": "About the sport, for parents: the classes and the way on, equipment, food and drink, and calculators for energy and gearing.",
-      "fromHelp": "Guides and calculators for riders, parents and coaches: the classes, equipment, food and drink, energy for the race and gearing."
+      "fromParents": "About the sport, for parents: {topics}.",
+      "fromHelp": "Guides and calculators for riders, parents and coaches: {topics}."
     },
     "classes": {
       "title": "The classes and the way on",

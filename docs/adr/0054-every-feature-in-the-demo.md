@@ -1,6 +1,6 @@
 # ADR 0054: Every part of the product in the demo, and the demo kept out of Trænerrummet
 
-Status: accepted · Date: 2026-10-04 · Amends ADR 0005 and ADR 0052
+Status: accepted · Date: 2026-10-04 · Amends ADR 0005 and ADR 0052 · Amended by ADR 0056 (the demo follows the installation's flags)
 
 ## Context
 

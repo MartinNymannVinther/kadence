@@ -1,4 +1,5 @@
 import type { OrgContext } from "@/core/db/tenant";
+import { featureOn } from "@/core/features";
 import { saveOrgImage } from "@/modules/team/images";
 import { createTemplate } from "@/modules/training/templates";
 import type { BikeStructure } from "@/modules/workouts/structure";
@@ -14,7 +15,8 @@ import { pick, type L } from "./seed-data";
  * championship (ADR 0051) and Trænerrummet with example threads
  * (ADR 0052). "Lav intensitet først" (ADR 0053) is a setting, turned on
  * with the others in seed.ts. Written through the ordinary services, as
- * the demo's coach.
+ * the demo's coach. The demo follows the installation's flags (ADR 0056):
+ * the championship and the room are seeded only where they are on.
  */
 
 /** The demo rider's own session: what Emma rides on the trainer when it rains. */
@@ -60,6 +62,6 @@ export async function seedShowcase(
     plannedMinutes: 0,
     riderId: ownRiderId,
   });
-  await seedClubChampionship(ctx, l, riders, today);
-  await seedCoachesRoom(ctx, l);
+  if (featureOn("clubChampionship")) await seedClubChampionship(ctx, l, riders, today);
+  if (featureOn("coachesRoom")) await seedCoachesRoom(ctx, l);
 }
