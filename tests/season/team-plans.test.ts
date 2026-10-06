@@ -50,11 +50,11 @@ beforeAll(async () => {
   await seedPerson(admin, ORG, COACH.userId, "owner");
   await seedPerson(admin, ORG, RIDER.userId, "member");
   await seedPerson(admin, OTHER, OTHER_COACH.userId, "owner");
-  await rider(ORG, "tp_ida", 2010, RIDER.userId); // U19, first year
-  await rider(ORG, "tp_bo", 2011); // U17, second year
-  await rider(ORG, "tp_has", 2009); // U19, second year, with a plan of its own
-  await rider(ORG, "tp_senior", 1990); // in none of DCU's classes
-  await rider(OTHER, "tp_other", 2010);
+  await rider(ORG, "tsp_ida", 2010, RIDER.userId); // U19, first year
+  await rider(ORG, "tsp_bo", 2011); // U17, second year
+  await rider(ORG, "tsp_has", 2009); // U19, second year, with a plan of its own
+  await rider(ORG, "tsp_senior", 1990); // in none of DCU's classes
+  await rider(OTHER, "tsp_other", 2010);
 });
 
 afterAll(async () => {
@@ -72,16 +72,16 @@ describe("season plans for the whole team", () => {
 
   it("makes a plan for each rider without one, from DCU for their own class", async () => {
     // tp_has gets a plan from another class-year first; it must stay as it is.
-    await createSeasonPlan(COACH, "tp_has", SEASON, "U17-2");
+    await createSeasonPlan(COACH, "tsp_has", SEASON, "U17-2");
     expect(await teamPlanGaps(COACH, SEASON)).toEqual({ missing: 2, noClass: 1 });
 
     expect(await createTeamSeasonPlans(COACH, SEASON)).toEqual({ created: 2, noClass: 1 });
     expect(await plansOf(ORG)).toEqual([
-      { rider_id: "tp_bo", basis: "U17-2" },
-      { rider_id: "tp_has", basis: "U17-2" },
-      { rider_id: "tp_ida", basis: "U19-1" },
+      { rider_id: "tsp_bo", basis: "U17-2" },
+      { rider_id: "tsp_has", basis: "U17-2" },
+      { rider_id: "tsp_ida", basis: "U19-1" },
     ]);
-    const ida = await getSeasonPlan(COACH, "tp_ida", SEASON);
+    const ida = await getSeasonPlan(COACH, "tsp_ida", SEASON);
     expect(ida?.guided).toBe(true);
     expect(ida?.months.find((m) => m.month === 11)?.hours).toBe(monthHours("U19-1", 11));
   });
@@ -103,7 +103,7 @@ describe("season plans for the whole team", () => {
       guidance: "none",
     });
     expect(await createTeamSeasonPlans(COACH, SEASON + 1)).toEqual({ created: 3, noClass: 1 });
-    const bo = await getSeasonPlan(COACH, "tp_bo", SEASON + 1);
+    const bo = await getSeasonPlan(COACH, "tsp_bo", SEASON + 1);
     expect(bo?.guided).toBe(false);
     expect(bo?.months.every((m) => m.hours === 0)).toBe(true);
   });
