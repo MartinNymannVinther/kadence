@@ -23,6 +23,7 @@ eller mere. Rækkefølgen inden for en prioritet er den anbefalede.
 
 P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter #21 og #22). Hvert spor bygges i sit eget worktree med egen database og flettes ind på P1-grenen, når det er grønt. Statusloggen nyeste først:
 
+- **7. okt.** Øvelser og programmer er færdig: Ø-01 til Ø-05 er flettet ind på `feat/ovelser-og-programmer`, hele suiten er grøn (2.431 tests, 1.329 enhedstests), build kompilerer, og PR #25 er klar til Martin. Samlet forbrug: ca. 1,9M tokens mod et skøn på 1,7–2,85M.
 - **6. okt., nat.** Ø-02 og Ø-04 er færdige og flettet ind; hele suiten er grøn (2.430 tests, 1.329 enhedstests) og build kompilerer. Ø-05 (demo, hjælp og ADR) er sat i gang. Forbrug for Ø-01 til Ø-04: ca. 1,6M tokens mod et skøn på 1,6–2,7M.
 - **6. okt., aften.** Ø-01 er færdig og flettet ind (23 øvelser, 4 programmer, tegnefunktionen og de fælles komponenter); hele suiten er grøn (2.340 tests). Ø-02 og Ø-04 er sat i gang parallelt.
 - **6. okt., aften.** Ø-03 (holdets egne øvelser og programmer i databasen) er færdig og flettet ind; hele suiten er grøn (2.297 tests). Ø-01 arbejder stadig.
@@ -140,7 +141,7 @@ Rammen er:
 | Ø-02  | Åben side, sammensæt og download                           | Ø    | M    | 300–500k     | Sonnet 5  | Ø-01              | Færdig       |
 | Ø-03  | Holdets egne øvelser og programmer i databasen             | Ø    | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
 | Ø-04  | Appen: bibliotek, tegneværktøj, programbygger, kalender    | Ø    | L    | 600k–1M      | Opus 5.5  | Ø-01, Ø-03        | Færdig       |
-| Ø-05  | Demo, hjælp og ADR                                         | Ø    | S    | 100–200k     | Sonnet 5  | Ø-02, Ø-04        | I gang       |
+| Ø-05  | Demo, hjælp og ADR                                         | Ø    | S    | 100–200k     | Sonnet 5  | Ø-02, Ø-04        | Færdig       |
 
 ---
 
@@ -1046,7 +1047,7 @@ planen.
 
 **Tokens:** ca. 100–200k · **Model:** Sonnet 5 (`claude-sonnet-5`).
 
-**Status:** I gang siden 6. oktober nat (Sonnet 5).
+**Status:** Færdig 7. oktober, flettet ind. Demoen har holdets egen øvelse "Rygstræk på bænk" med egen tegning, programmet "Holdets mobilitet efter fællestræning", der blander Kadences og holdets øvelser, og det program lagt i alle demorytteres kalender i dag, så Emma ser passet med tegninger. Hjælp har et afsnit om øvelser og programmer, pilotguiden og README nævner dem, og ADR 0067 samler beslutningerne. Undervejs rettet: en test fra P1-04, der af og til fejlede efter rækkefølgen af testfilerne. Faktisk forbrug: 311k tokens på 32 min (skøn 100–200k; mere end ventet, fordi demoen blev klikket igennem som træner og rytter).
 
 ## A — afklaringer uden kode
 
