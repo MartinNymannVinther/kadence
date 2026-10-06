@@ -2314,6 +2314,14 @@
       "toDateValue": "Udført {done} t · planlagt {planned} t · mål {goal} · DCU {dcu}",
       "empty": "Ingen ryttere at vise."
     },
+    "teamPlans": {
+      "missing": "{count, plural, one {# rytter har ingen sæsonplan for {season} endnu.} other {# ryttere har ingen sæsonplan for {season} endnu.}}",
+      "body": "Hver plan fyldes ud med DCU's timer og faser for rytterens årgang. Du kan rette den bagefter.",
+      "bodyOwn": "Holdet planlægger med egne timer, så planerne starter tomme, og du skriver selv timerne ind.",
+      "noClass": "{count, plural, one {# rytter er ikke i en af DCU's årgange. Den plan laver du på rytterens egen side, hvor du vælger årgangen.} other {# ryttere er ikke i en af DCU's årgange. De planer laver du på rytterens egen side, hvor du vælger årgangen.}}",
+      "button": "Opret sæsonplaner for alle uden en plan",
+      "created": "{count, plural, =0 {Der var ingen planer at lave.} one {# sæsonplan er lavet.} other {# sæsonplaner er lavet.}}"
+    },
     "noRiders": {
       "coachTitle": "Ingen ryttere endnu",
       "coachBody": "En sæsonplan hører til en rytter. Tilføj holdets ryttere, så kan du lægge en plan for hver af dem ud fra DCU.",

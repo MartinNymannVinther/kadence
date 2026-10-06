@@ -2314,6 +2314,14 @@
       "toDateValue": "Done {done} h · planned {planned} h · goal {goal} · DCU {dcu}",
       "empty": "No riders to show."
     },
+    "teamPlans": {
+      "missing": "{count, plural, one {# rider has no season plan for {season} yet.} other {# riders have no season plan for {season} yet.}}",
+      "body": "Each plan is filled with DCU's hours and phases for the rider's class. You can change it afterwards.",
+      "bodyOwn": "The team plans with its own hours, so the plans start empty and you type in the hours yourself.",
+      "noClass": "{count, plural, one {# rider is not in one of DCU's classes. You make that plan on the rider's own page, where you choose the class.} other {# riders are not in one of DCU's classes. You make those plans on the rider's own page, where you choose the class.}}",
+      "button": "Create season plans for everyone without one",
+      "created": "{count, plural, =0 {There were no plans to make.} one {# season plan is made.} other {# season plans are made.}}"
+    },
     "noRiders": {
       "coachTitle": "No riders yet",
       "coachBody": "A season plan belongs to a rider. Add the team's riders, and you can lay a plan for each of them from DCU.",
