@@ -12,8 +12,8 @@ import { PilotShare } from "./pilot-share";
  */
 export function PilotCard({ weeks }: { weeks: PilotWeek[] }) {
   const t = useTranslations("insight.pilot");
-  const cell = "px-3 py-2 text-right align-top";
-  const head = "px-3 py-1.5 text-right font-medium";
+  const cell = "px-2 py-2 text-right align-top sm:px-3";
+  const head = "px-2 py-1.5 text-right font-medium sm:px-3";
 
   return (
     <Card className="max-w-2xl">
@@ -22,12 +22,14 @@ export function PilotCard({ weeks }: { weeks: PilotWeek[] }) {
         <CardDescription>{t("body")}</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        <div className="-mx-3 overflow-x-auto">
+        {/* On a phone the counts behind each share are left to screen readers, so
+            all three numbers fit beside the week without scrolling. */}
+        <div className="-mx-2 overflow-x-auto sm:-mx-3">
           <table className="w-full border-collapse text-2sm tabular-nums">
             <caption className="sr-only">{t("title")}</caption>
             <thead>
               <tr className="text-label text-xs">
-                <th scope="col" className="px-3 py-1.5 text-left font-medium">
+                <th scope="col" className="px-2 py-1.5 text-left font-medium sm:px-3">
                   {t("week")}
                 </th>
                 <th scope="col" className={head}>
@@ -44,7 +46,7 @@ export function PilotCard({ weeks }: { weeks: PilotWeek[] }) {
             <tbody>
               {weeks.map((w) => (
                 <tr key={w.monday} className="border-border border-t">
-                  <th scope="row" className="px-3 py-2 text-left align-top font-normal">
+                  <th scope="row" className="px-2 py-2 text-left align-top font-normal sm:px-3">
                     <span className="whitespace-nowrap">
                       {t("weekNumber", { week: weekNumber(w.monday) })}
                     </span>
