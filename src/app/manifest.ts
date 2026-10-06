@@ -4,8 +4,9 @@ import type { MetadataRoute } from "next";
  * Kadence installs as a web app (CLAUDE.md: mobile first, a PWA, no
  * native app): standalone, opening on today's page, in 2a's paper and
  * moss. The PNG icons are drawn from src/app/icon.svg by
- * scripts/icons.ts; the SVG itself stays the favicon. No service worker:
- * installing is about the home screen, not offline pages.
+ * scripts/icons.ts; the SVG itself stays the favicon. Installing is about
+ * the home screen, not offline pages: the one service worker, public/sw.js,
+ * shows reminders and nothing else, with no cache (docs/adr/0059).
  *
  * No orientation: the phone in a hand is upright, but a tablet or a phone
  * on the handlebars in front of a trainer lies on its side, and Rulle

@@ -49,6 +49,11 @@ export default defineConfig({
       CLUB_CHAMPIONSHIP: "off",
       CALC_ENERGY: "off",
       GUIDE_FOOD: "off",
+      // Reminders are off: with a developer's push keys the app's own run
+      // would post to the push services. The tests hand the job its keys
+      // and a stand-in fetch (tests/push); an empty value is "not set".
+      PUSH_PUBLIC_KEY: "",
+      PUSH_PRIVATE_KEY: "",
     },
     environment: "node",
     include: ["tests/**/*.test.ts"],

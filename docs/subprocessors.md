@@ -3,9 +3,9 @@
 Per the Haij dogmas, every subprocessor must be EU-owned and EU-hosted,
 and must be listed here **before** it is taken into use. This is the
 public list of who can see what for the installation at kadence.haij.dk. A
-self-hosted Kadence with `LLM_PROVIDER=ollama` or `none` and without Wahoo,
-Garmin or Polar keys has no subprocessor at all beyond the machine it runs on,
-and talks to nobody else.
+self-hosted Kadence with `LLM_PROVIDER=ollama` or `none`, without Wahoo,
+Garmin or Polar keys and without the push keys for reminders has no
+subprocessor at all beyond the machine it runs on, and talks to nobody else.
 
 Wahoo, Garmin and Polar are not on the table below, because they are not
 Kadence's to choose: they are services a rider may choose to connect
@@ -19,7 +19,9 @@ which says what goes where and when.
 | Mistral AI          | LLM adapter: the proposals a person asks for — a sharper description of an initiative, and deliverables for an initiative in a quarter | What a prompt contains: the initiative's text, the quarter's objective for it, the names of its existing deliverables, and the workspace's team names. Written out below. | EU/EFTA data centres, via `api.eu.mistral.ai` | 2026-09-24 |
 
 Kadence sends no mail, so there is no mail provider on this list and there
-will not be one without a row here first.
+will not be one without a row here first. Reminders go by web push, through
+the push service of the person's own browser, and carry no content; they
+have [a section of their own](#the-browsers-push-service-for-reminders).
 
 ## What each one does and does not see
 
@@ -124,6 +126,31 @@ What this means in practice:
 - **Leaving is complete.** Disconnecting stops everything; what the
   provider already holds about the rider's own rides is between the rider
   and the provider, and Kadence neither sees nor controls it.
+
+## The browser's push service, for reminders
+
+Reminders (ADR 0059) reach a phone or a computer through the push service
+that the person's browser uses. Kadence does not choose it: Safari uses
+Apple's, Chrome and most Android browsers Google's, Firefox Mozilla's, and
+Edge on Windows Microsoft's. None of them is in the EU, so the push carries
+nothing: it only wakes Kadence's service worker in the browser, which then
+asks Kadence itself, with the person's own cookies, what the reminder
+says. The words never pass through the push service.
+
+Nothing goes to a push service for anyone who has not turned reminders
+on, per browser, in Settings → Mig, and an installation without
+`PUSH_PUBLIC_KEY` and `PUSH_PRIVATE_KEY` offers no reminders at all.
+Turning them off, leaving the team or deleting the account removes the
+browser's address from Kadence; the push service is then told nothing
+more, and forgets the address when the browser lets go of it.
+
+| Service                                                                                                                                                                                       | Chosen by                                                                               | From Kadence to the service                                                                                                                                                                                                                                                                       | From the service to Kadence                                                                 | Location                                                                          | Added      |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ---------- |
+| The browser's push service: Apple (`web.push.apple.com`), Google's Firebase Cloud Messaging (`fcm.googleapis.com`), Mozilla (`push.services.mozilla.com`) or Microsoft (`notify.windows.com`) | The person, by turning reminders on in their own browser; the browser picks the service | An empty push to the browser's opaque address, at the time a reminder is due; how long to keep it (six hours); the installation's public key and a signed token naming the service and the installation's contact (`PUSH_CONTACT`, or its address). No title, no text, no name, no team, no rider | Whether the push was taken, or that the browser has gone (Kadence then deletes the address) | US (Apple, Google, Mozilla, Microsoft); where each runs its service is not stated | 2026-10-06 |
+
+What the push service can still learn is the metadata: that this browser
+got a push from this installation, and when. ADR 0059 names that as the
+price of reaching a phone without a native app.
 
 ## Sources Kadence reads from
 

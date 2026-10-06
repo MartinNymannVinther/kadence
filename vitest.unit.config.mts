@@ -22,6 +22,8 @@ export default defineConfig({
       "tests/{dcu,load,fit,workouts,charts,coach,files,rulle,results,paradigms,calc,guides,today,activities}/**/*.test.ts",
       // The championship's arithmetic only; tests/club/championship.test.ts needs the database.
       "tests/club/standings.test.ts",
+      // Reminders' keys, timing and words; the job and the policies need the database.
+      "tests/push/{vapid,due,texts}.test.ts",
     ],
   },
 });

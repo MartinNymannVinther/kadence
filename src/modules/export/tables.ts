@@ -73,6 +73,10 @@ export const EXPORT_TABLES: ExportTable[] = [
  * - `password_resets`: the record that a coach made a link for a new
  *   password (ADR 0032). It is about accounts, not training, and the audit
  *   trail, which is exported, holds every one of them.
+ * - `push_subscriptions`: a browser's push address for reminders (ADR
+ *   0059) — a capability that could wake that browser, owned by the person
+ *   rather than the team, and nothing about training. That reminders were
+ *   turned on and off is in the audit trail, without the address.
  * - `ai_calls`: a counter for rate limiting, not something a workspace owns.
  * - `workspace_llm_settings`: the model choice, which holds an encrypted
  *   key; a workspace that leaves gets its data, not its secrets.

@@ -3086,6 +3086,47 @@
     "weightOn": "The team records weight for riders under 19. Leave weight and food out of your talks with the riders, and talk about a rider's weight only in private.",
     "heat": "Summer heat: drink steadily, think of salt on long rides, and move the hard sessions to the morning or evening."
   },
+  "reminders": {
+    "title": "Reminders",
+    "body": "Kadence can remind you of what matters on this device. No reminders come between 21:30 and 7:00.",
+    "privacy": "The message itself is fetched from Kadence when it arrives. Your browser's push service only sees that there is something new.",
+    "enable": "Turn on reminders on this device",
+    "disable": "Turn off",
+    "on": "Reminders are on for this device.",
+    "enabled": "Reminders are on.",
+    "disabled": "Reminders are off.",
+    "switchOn": "On",
+    "switchOff": "Off",
+    "unsupported": "This browser cannot show reminders from Kadence. Everything else works.",
+    "ios": "On an iPhone, reminders work when Kadence is on the home screen (iOS 16.4 or later).",
+    "denied": "The browser has blocked reminders from Kadence. You can allow them in the browser's settings.",
+    "failed": "Reminders could not be turned on in this browser. Everything else works.",
+    "kind": {
+      "checkin": "Check-in in the evening",
+      "checkinHint": "At 19:00, if you have not checked in today.",
+      "comment": "New comments",
+      "commentHint": "When someone else writes on a session or a ride you can see.",
+      "commentHintCoach": "When a rider or a parent writes on a session or a ride.",
+      "plan": "Changed plan",
+      "planHint": "When a coach adds or changes a session in the next seven days.",
+      "week": "The week in short",
+      "weekHint": "Sunday evening, when the week is over."
+    },
+    "notify": {
+      "checkinTitle": "Remember today's check-in",
+      "checkinBody": "It takes half a minute.",
+      "commentTitle": "New comment on {title}",
+      "commentTitlePlain": "New comment",
+      "commentBody": "From {name}.",
+      "commentBodyPlain": "Open Kadence to read it.",
+      "planTitle": "The plan has changed",
+      "planBody": "See the coming days.",
+      "weekTitle": "{owner} training week is ready",
+      "weekBody": "See how the week went.",
+      "fallbackTitle": "There is something new in Kadence",
+      "fallbackBody": "Open Kadence to see it."
+    }
+  },
   "records": {
     "period": {
       "month": "Last month",
