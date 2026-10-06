@@ -739,7 +739,7 @@
       },
       "devices": {
         "title": "Uploads and devices",
-        "body": "Upload a FIT file from the bike computer, watch or trainer under Today, in the calendar or on the rider's page. Kadence reads the file itself, offline too, and puts the ride on the day's session when it fits. Every ride has its own page with curves, time in zones and best power. Wahoo, Garmin and Polar can be connected under Settings → Devices, so rides come in by themselves, and sessions can be sent to a Wahoo or Garmin. Wahoo and Garmin are US companies, Polar is Finnish, and it is the rider's own choice. A bike session can also be downloaded as .zwo, .erg, .mrc or .fit."
+        "body": "Upload a FIT file from the bike computer, watch or trainer under Today, in the calendar or on the rider's page. Kadence reads the file itself, offline too, and puts the ride on the day's session when it fits. Every ride has its own page with curves, time in zones and best power. If Wahoo, Garmin or Polar is set up here, you can connect them under Settings → Devices, so rides come in by themselves. Wahoo and Garmin are US companies, Polar is Finnish, and it is the rider's own choice. Otherwise your rides come in as files, and that works just as well. A bike session can also be downloaded as .zwo, .erg, .mrc or .fit."
       },
       "toDevice": {
         "title": "Sessions on the bike computer",
@@ -752,7 +752,7 @@
       },
       "keys": {
         "title": "Upload keys",
-        "body": "An upload key lets a program hand rides to Kadence by itself, without you being signed in. Create one under Settings → Devices, give it a name, and copy it right away: it is shown that one time only. The program sends the ride's file to the address shown with the key, with the key in the Authorization field, written as Bearer and then the key. The ride lands on the day's session, exactly as when you upload it yourself. The key can only add rides for you. It cannot read anything, and you or your coach can remove it at any time. Give it only to the program that is to use it."
+        "body": "An upload key lets a program hand rides to Kadence by itself, without you being signed in. Create one under Settings → Devices → Advanced, give it a name, and copy it right away: it is shown that one time only. The program sends the ride's file to the address shown with the key, with the key in the Authorization field, written as Bearer and then the key. The ride lands on the day's session, exactly as when you upload it yourself. The key can only add rides for you. It cannot read anything, and you or your coach can remove it at any time. Give it only to the program that is to use it."
       },
       "strava": {
         "title": "From Strava to Kadence",
@@ -2545,9 +2545,13 @@
   },
   "devices": {
     "title": "Devices",
-    "subtitle": "Connect Wahoo, Garmin or Polar, and your rides come in by themselves. With Wahoo and Garmin, sessions can also be sent to your bike computer. FIT upload always works, without them too.",
-    "coachNote": "Riders connect their own Wahoo, Garmin or Polar here under Settings → Devices. Once a rider has connected Wahoo or Garmin, you can send sessions to the rider's device from the session in the calendar.",
-    "otherNote": "Devices belong to the rider. Only the rider can connect their Wahoo, Garmin or Polar.",
+    "subtitle": "Connect {providers}, and your rides come in by themselves. FIT upload always works, without it too.",
+    "filesOnly": "Your rides come in as files, and that works just as well.",
+    "ridersFilesOnly": "The riders bring their rides in as files, and that works just as well.",
+    "coachNote": "Riders connect their own {providers} here under Settings → Devices.",
+    "coachPush": "Once a rider has connected {providers}, you can send sessions to the rider's device from the session in the calendar.",
+    "otherNote": "Devices belong to the rider. Only the rider can connect their {providers}.",
+    "advanced": "Advanced",
     "name": {
       "wahoo": "Wahoo",
       "garmin": "Garmin",
@@ -2555,7 +2559,7 @@
     },
     "about": {
       "wahoo": "ELEMNT bike computers and KICKR trainers. Rides come in automatically, and sessions can be sent to them.",
-      "garmin": "Edge bike computers and watches through Garmin Connect. Rides come in automatically, and sessions can be sent to the Garmin Connect calendar.",
+      "garmin": "Edge bike computers and watches through Garmin Connect. Rides come in automatically. A bike session goes onto an Edge by cable, from the session.",
       "polar": "Watches and bike computers through Polar Flow. Rides come in automatically. Sessions cannot be sent to Polar from Kadence."
     },
     "state": {
@@ -2633,7 +2637,7 @@
         "done": "Done"
       }
     },
-    "uploadInstead": "Without Wahoo, Garmin and Polar you can always upload your rides as FIT files.",
+    "uploadInstead": "Without a connection you can always upload your rides as FIT files.",
     "uploadLink": "Upload a ride",
     "usTitle": "Wahoo and Garmin are US companies, Polar is Finnish",
     "usBody": "Kadence itself is in the EU, and so is Polar. When you connect, Wahoo, Garmin or Polar send your rides to Kadence, and Kadence sends the sessions you choose to Wahoo or Garmin. It is your choice, and you can disconnect at any time.",
