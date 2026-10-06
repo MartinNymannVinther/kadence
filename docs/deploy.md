@@ -69,15 +69,16 @@ runtime but the machine.
    `SIGNUP` is deliberately absent: it defaults to `closed`, which is what
    an installation on the open internet should be. See section 5.
 
-   Five parts of Kadence wait for a real winter with a real team and are
-   `off` unless you set them to `on` (ADR 0057): `COACHES_ROOM`
+   Five parts of Kadence can be parked until a real winter with a real
+   team has used the rest. Each is `on` unless you set it to `off`
+   (ADR 0057): `COACHES_ROOM`
    (Trænerrummet), `CLUB_CHAMPIONSHIP` (the club championship; a team
    still turns it on for itself), `CALC_ENERGY` (the energy calculator),
    `GUIDE_FOOD` (the food guide, until a sports dietitian has read it) and
    `RULLE_WORLD` (Rulle's land, routes, people and sound; without it Rulle
    is the session alone). Off hides the menu item, the page, the actions
-   and the demo's part at once; nothing is deleted, and turning one on
-   takes a restart. `DCU_RESULTS` is not one of these and works as
+   and the demo's part at once; nothing is deleted, and turning one back
+   on takes a restart. `DCU_RESULTS` is not one of these and works as
    before (ADR 0039).
 
    Every one of these is named in the `app` service's `environment:` block
@@ -304,6 +305,62 @@ Mozilla's or Microsoft's) sees that a reminder went out and when, and the
 words are fetched from Kadence. `docs/subprocessors.md` says so for the
 people you host; on an iPhone, reminders work once Kadence is on the
 home screen.
+
+### Trying reminders on a real phone
+
+A phone gets reminders only over https, so try them on an installation
+with the key pair (kadence.haij.dk), not on a dev server reached by a
+plain-http network name. Use a test team and test accounts
+(`scripts/seed-test-teams.ts`), not the pilot team. Settings → Mig →
+Påmindelser has "Send en prøve" (three an hour per person) and a status
+line under the card that says how the device stands.
+
+**iPhone or iPad (iOS 16.4 or later):**
+
+1. Open the site in Safari and sign in.
+2. Share → "Føj til hjemmeskærm". Open Kadence from the new icon and sign
+   in again if asked: the home-screen app keeps its own cookies apart
+   from Safari's.
+3. Settings → Mig → Påmindelser → "Slå påmindelser til på denne enhed",
+   and allow notifications when iOS asks.
+4. The status line should read "tilladelse givet · service worker
+   registreret · abonnement siden … · åbnet fra hjemmeskærmen". "Ikke
+   åbnet fra hjemmeskærmen" means you are in Safari, not in the app; the
+   card then says reminders need the home screen.
+5. Tap "Send en prøve" and lock the phone. Within seconds a notification
+   says "Sådan ser en påmindelse fra Kadence ud"; tapping it opens
+   Påmindelser.
+6. Nothing came: iOS Settings → Notifications → Kadence must allow
+   notifications, and a Focus mode holds them back. "Tilladelse afvist"
+   can only be undone in iOS Settings, or by removing the icon, adding it
+   again and allowing.
+
+**Android (Chrome):**
+
+1. Open the site in Chrome and sign in. Installing it is optional; it
+   works in a tab.
+2. Settings → Mig → Påmindelser → turn on, and allow notifications.
+3. The status line should read "tilladelse givet · service worker
+   registreret · abonnement siden …".
+4. Tap "Send en prøve", leave Chrome or lock the phone, and the
+   notification arrives.
+5. Nothing came: Android Settings → Apps → Chrome → Notifications, and
+   Chrome's site settings for kadence.haij.dk, must allow them; battery
+   saving can delay a push by minutes.
+
+When the toast says "Prøven kom ikke af sted", the app's log has a line
+`reminders: push refused <push service> <status>` or `push failed`; the
+address itself is never logged. The test says "Prøven er sendt" as soon
+as the push service has taken the push; what happens after that is
+between the push service and the phone.
+
+**The coach's wellbeing reminder.** Sign in on the phone as a coach on
+the test team, turn reminders on and keep "Trivsel" chosen. As a rider on
+the same team, save today's check-in with pain at the top step ("Smerte
+under træning"), or as ill. Within ten minutes, at any hour, the coach's
+phone says "En rytter har brug for en snak", and tapping it opens the
+points of attention under Kalender. Saving the same check-in again sends
+nothing more that day.
 
 ## 7. Nightly encrypted backups (EU object storage)
 

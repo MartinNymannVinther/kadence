@@ -9,12 +9,15 @@ import { FakeBluetooth, fakeStrap, fakeTrainer } from "./fake-bluetooth";
 function listen() {
   const readings: SensorReading[] = [];
   const states: LinkState[] = [];
+  const logs: string[] = [];
   return {
     readings,
     states,
+    logs,
     events: {
       onReading: (reading: SensorReading) => readings.push(reading),
       onState: (state: LinkState) => states.push(state),
+      onLog: (line: string) => logs.push(line),
     },
   };
 }
@@ -183,5 +186,85 @@ describe("a heart-rate strap", () => {
     strap.measurement.notify([0x04, 0x48]);
     expect(beats).toEqual([72]);
     expect(link.name).toBe("TICKR");
+  });
+
+  it("logs its connect, its characteristic and every notification, with ?ble=log only", async () => {
+    const strap = fakeStrap();
+    const { logs } = listen();
+    const link = await HeartRateLink.connect(strap.bluetooth, {
+      onHeartRate: () => {},
+      onState: () => {},
+      onLog: (line) => logs.push(line),
+    });
+    strap.measurement.notify([0x00, 0x48]);
+    strap.measurement.notify([0x04, 0x48]);
+    expect(logs).toEqual([
+      "strap: connected (TICKR)",
+      "strap: service found (heart_rate)",
+      "strap: characteristic found (heart_rate_measurement)",
+      'strap: notify heart_rate_measurement  bytes=00 48  {"bpm":72}',
+      'strap: notify heart_rate_measurement  bytes=04 48  {"bpm":null}',
+    ]);
+    link.close();
+    expect(logs.at(-1)).toBe("strap: closed");
+  });
+});
+
+describe("the ?ble=log diagnostics", () => {
+  it("logs the connect, the services and the characteristics found, on a trainer with both", async () => {
+    const trainer = fakeTrainer({ cyclingPower: true });
+    const { logs, events } = listen();
+    await TrainerLink.connect(trainer.bluetooth, events);
+    expect(logs.slice(0, 8)).toEqual([
+      "trainer: connected (KICKR CORE)",
+      "trainer: service found (fitness_machine)",
+      "trainer: service found (cycling_power)",
+      "trainer: characteristic found (indoor_bike_data)",
+      "trainer: characteristic found (fitness_machine_status)",
+      "trainer: characteristic found (fitness_machine_control_point)",
+      "trainer: write control_point  op=requestControl  bytes=00",
+      "trainer: control_point response  op=requestControl  result=success  bytes=80 00 01",
+    ]);
+    expect(logs).toContain("trainer: characteristic found (cycling_power_measurement)");
+  });
+
+  it("logs each notification with its raw bytes and what the parser read, for both services", async () => {
+    const trainer = fakeTrainer({ cyclingPower: true });
+    const { logs, events } = listen();
+    await TrainerLink.connect(trainer.bluetooth, events);
+    logs.length = 0;
+    trainer.bikeData.notify([0x44, 0x00, 0xea, 0x0b, 0xb4, 0x00, 0xfa, 0x00]);
+    trainer.power.notify([0x20, 0x00, 0xc8, 0x00, 0x64, 0x00, 0x00, 0x00]);
+    expect(logs).toEqual([
+      'trainer: notify indoor_bike_data  bytes=44 00 ea 0b b4 00 fa 00  {"speedKmh":30.5,"cadence":90,"power":250}',
+      'trainer: notify cycling_power_measurement  bytes=20 00 c8 00 64 00 00 00  {"power":200,"crank":{"revolutions":100,"eventTime":0}}',
+    ]);
+  });
+
+  it("logs every write to the control point and the trainer's answer, named as the FTMS spec names it", async () => {
+    const trainer = fakeTrainer({ controlAnswer: 0x03 });
+    const { logs, events } = listen();
+    await TrainerLink.connect(trainer.bluetooth, events);
+    expect(logs).toEqual([
+      "trainer: connected (KICKR CORE)",
+      "trainer: service found (fitness_machine)",
+      "trainer: characteristic found (indoor_bike_data)",
+      "trainer: characteristic found (fitness_machine_status)",
+      "trainer: characteristic found (fitness_machine_control_point)",
+      "trainer: write control_point  op=requestControl  bytes=00",
+      "trainer: control_point response  op=requestControl  result=invalid parameter  bytes=80 00 03",
+    ]);
+  });
+
+  it("logs a drop and a close, per device", async () => {
+    vi.useFakeTimers();
+    const trainer = fakeTrainer();
+    const { logs, events } = listen();
+    const link = await TrainerLink.connect(trainer.bluetooth, events);
+    trainer.device.drop();
+    await vi.advanceTimersByTimeAsync(600);
+    link.close();
+    expect(logs).toContain("trainer: reconnecting");
+    expect(logs.at(-1)).toBe("trainer: closed");
   });
 });

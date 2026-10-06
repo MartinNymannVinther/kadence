@@ -54,6 +54,16 @@ export function settingsItems({
     .map((key) => ({ key, href: `/settings/${key}` }));
 }
 
+/**
+ * Whether "Forlad holdet" stands at the bottom of Mig (P1-07): for
+ * everybody on the team who is not a coach — a rider, a parent, or a
+ * member who is neither — because the workspace tab, where a coach finds
+ * it, is not among theirs. A coach keeps it on the workspace page.
+ */
+export function leavesFromMe(me: { isCoach: boolean } | null): boolean {
+  return me !== null && !me.isCoach;
+}
+
 /** The line under "Indstillinger", in the reader's own terms. */
 export function settingsSubtitle({
   isCoach,

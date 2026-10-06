@@ -20,6 +20,7 @@ import { saveCheckin } from "@/modules/wellbeing/checkins";
 import { parseWorkoutText } from "@/modules/workouts/parse-text";
 import { kindOf, rideFit, routeFor } from "./rides";
 import type { DemoRider } from "./club";
+import { ridersSince } from "./history";
 import { seedShowcase } from "./showcase";
 import { sampleRideFit } from "./sample-ride";
 import { COMMENTS, EVENTS, EXAM, NOTES, pick, RIDERS, TEMPLATES, type L } from "./seed-data";
@@ -162,6 +163,7 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
     { day: 5, template: byText(TEMPLATES[6]!.text), at: at("10:00") },
   ];
   const firstMonday = addDaysIso(mondayOf(today), -7 * WEEKS_BACK);
+  await ridersSince(ctx, riderIds, firstMonday);
   for (let w = 0; w <= WEEKS_BACK + 1; w++) {
     const monday = addDaysIso(firstMonday, 7 * w);
     const inBreak = phaseOf(Number(addDaysIso(monday, 3).slice(5, 7))) === "break";

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
+import { PilotClubs } from "@/components/insight/pilot-clubs";
 import { platformOverview } from "@/core/admin/overview";
 import { getSession } from "@/core/auth/session";
 import { formatDay } from "@/core/dates";
@@ -14,7 +15,8 @@ export async function generateMetadata(): Promise<Metadata> {
 /**
  * The installation's owner sees the clubs on it (ADR 0048): how many
  * coaches, riders and parents, when someone was last in, how much space
- * their files take and the AI calls of the last day. Counts only; the
+ * their files take and the AI calls of the last day, and the pilot's
+ * three numbers for the last full week (ADR 0066). Counts only; the
  * database hands nothing else over. Anyone else gets a 404, as for
  * admission.
  */
@@ -84,6 +86,8 @@ export default async function InstallationPage() {
           </table>
         </div>
       )}
+
+      {clubs.length > 0 && <PilotClubs clubs={clubs} />}
 
       <div className="border-border bg-card flex flex-col gap-1.5 rounded-xl border p-4 text-2sm leading-relaxed">
         <p>{t("privacy")}</p>

@@ -20,6 +20,8 @@ import {
   pushSupport,
   subscribeBrowser,
 } from "./browser-push";
+import { RemindersDiagnosis } from "./reminders-diagnosis";
+import { TestReminder } from "./test-reminder";
 
 type View = "loading" | "unsupported" | "ios" | "denied" | "off" | "on";
 
@@ -28,7 +30,8 @@ type View = "loading" | "unsupported" | "ios" | "denied" | "off" | "on";
  * browser, for this team. The page shows the card only when the
  * installation has the keys, and hands it the reminders the person's
  * roles offer; the choices are kept per browser, and turning off lets go
- * of the browser's address everywhere.
+ * of the browser's address everywhere. "Send en prøve" and the status
+ * line underneath are for finding out whether a real phone is set up.
  */
 export function RemindersCard({
   publicKey,
@@ -45,6 +48,9 @@ export function RemindersCard({
   const [view, setView] = useState<View>("loading");
   const [endpoint, setEndpoint] = useState<string | null>(null);
   const [kinds, setKinds] = useState<PushKind[]>([]);
+  const [since, setSince] = useState<string | null>(null);
+  /** Bumped when the status line should look at the browser again. */
+  const [checked, setChecked] = useState(0);
   const [failed, setFailed] = useState(false);
   /** While the browser asks for permission and subscribes, before the action runs. */
   const [asking, setAsking] = useState(false);
@@ -62,6 +68,7 @@ export function RemindersCard({
       if (state.ok && state.data.subscribed) {
         setEndpoint(subscription.endpoint);
         setKinds(state.data.kinds);
+        setSince(state.data.since);
         setView("on");
       } else setView("off");
     })();
@@ -69,6 +76,18 @@ export function RemindersCard({
       live = false;
     };
   }, []);
+
+  /** After a test: a browser the push service no longer knew has been let go of. */
+  async function lookAgain() {
+    setChecked((n) => n + 1);
+    if (!endpoint) return;
+    const state = await reminderStateAction({ endpoint });
+    if (state.ok && !state.data.subscribed) {
+      setEndpoint(null);
+      setSince(null);
+      setView("off");
+    }
+  }
 
   async function turnOn() {
     setFailed(false);
@@ -81,6 +100,7 @@ export function RemindersCard({
       return;
     } finally {
       setAsking(false);
+      setChecked((n) => n + 1);
     }
     if (subscription === "denied") return setView(permissionDenied() ? "denied" : "off");
     const address = subscription.endpoint;
@@ -91,6 +111,7 @@ export function RemindersCard({
     if (!saved) return;
     setEndpoint(address);
     setKinds(saved.kinds);
+    setSince(saved.since);
     setView("on");
   }
 
@@ -104,6 +125,8 @@ export function RemindersCard({
         refresh: false,
       });
     setEndpoint(null);
+    setSince(null);
+    setChecked((n) => n + 1);
     setView("off");
   }
 
@@ -125,7 +148,9 @@ export function RemindersCard({
     <Card>
       <CardHeader>
         <CardTitle>{t("title")}</CardTitle>
-        <CardDescription>{t("body")}</CardDescription>
+        <CardDescription>
+          {offered.includes("wellbeing") ? t("bodyCoach") : t("body")}
+        </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
         {view === "unsupported" && <Note>{t("unsupported")}</Note>}
@@ -154,6 +179,7 @@ export function RemindersCard({
                 />
               ))}
             </div>
+            <TestReminder disabled={pending} onSent={lookAgain} />
             <Button
               variant="outline"
               onClick={turnOff}
@@ -165,6 +191,7 @@ export function RemindersCard({
             </Button>
           </>
         )}
+        {view !== "loading" && <RemindersDiagnosis since={since} checked={checked} />}
         <p className="text-meta text-xs leading-relaxed">{t("privacy")}</p>
       </CardContent>
     </Card>

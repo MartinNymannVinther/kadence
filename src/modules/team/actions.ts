@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { z } from "zod";
 import { Refused, runAction } from "@/core/action";
 import { inviteMember, type IssuedTeamInvitation } from "@/core/team/service";
+import { bulkInvite, BulkInviteInput } from "./bulk-invite";
 import {
   addGuardian,
   attachGuardianInvitation,
@@ -74,6 +75,16 @@ export async function inviteRiderAction(raw: unknown) {
       await attachRiderInvitation(ctx, input.riderId, invitation.id);
       return invitation;
     },
+    PATHS,
+  );
+}
+
+/** "Inviter hele holdet": a pasted list, all or nothing (bulk-invite.ts, ADR 0064). */
+export async function bulkInviteAction(raw: unknown) {
+  return runAction(
+    raw,
+    BulkInviteInput,
+    async (ctx, input) => bulkInvite(ctx, await headers(), input),
     PATHS,
   );
 }

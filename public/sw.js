@@ -26,11 +26,13 @@ function fallback() {
   return { title: words.title, body: words.body, url: english ? "/en/today" : "/today" };
 }
 
-/** Only a path in Kadence itself may be opened from a notification. */
+/** Only a path in Kadence itself may be opened from a notification, with its #anchor. */
 function samePath(url) {
   try {
     const target = new URL(url, self.location.origin);
-    return target.origin === self.location.origin ? target.pathname + target.search : "/today";
+    return target.origin === self.location.origin
+      ? target.pathname + target.search + target.hash
+      : "/today";
   } catch {
     return "/today";
   }

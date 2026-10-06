@@ -532,6 +532,12 @@
       "security": "Sikkerhed: passkeys og totrinsbekræftelse",
       "coachNote": "Du er træner på holdet. Holdets egne valg finder du under Holdet.",
       "memberNote": "Du er med på holdet, men er hverken rytter eller forælder her. Bed en træner om en invitation, hvis du skal være det.",
+      "leave": {
+        "action": "Forlad holdet",
+        "title": "Forlad holdet?",
+        "body": "Du mister adgangen til holdet med det samme. Det, du har lagt ind, bliver hos holdet. Vil du have en kopi, så hent den under Data først. En træner kan invitere dig igen.",
+        "confirm": "Forlad holdet"
+      },
       "sharing": {
         "title": "Hvad dine forældre kan se",
         "body": "Det er dit valg, ikke trænerens eller forældrenes. Du kan ændre det når som helst.",
@@ -678,8 +684,8 @@
   },
   "join": {
     "title": "Du er inviteret",
-    "intro": "{inviter} har inviteret dig på holdet {team}{role, select, coach { som træner} other {}}.",
-    "next": "{role, select, coach {Når du er med, kan du planlægge holdets uge og følge rytterne.} other {Når du er med, finder du din træning eller dit barns uge her.}}",
+    "intro": "{inviter} har inviteret dig på holdet {team}{role, select, coach { som træner} rider { som rytter} parentOf { som forælder til {child}} parent { som forælder} other {}}.",
+    "next": "{role, select, coach {Når du er med, kan du planlægge holdets uge og følge rytterne.} rider {Når du er med, finder du din træning her.} parentOf {Når du er med, og {child} har bekræftet dig, kan du følge træningen her.} parent {Når du er med, og dit barn har bekræftet dig, kan du følge træningen her.} other {Når du er med, finder du din træning eller dit barns uge her.}}",
     "someone": "En træner",
     "invalidTitle": "Linket virker ikke længere",
     "invalidBody": "Invitationen er udløbet eller trukket tilbage. Bed den der inviterede dig om et nyt link.",
@@ -789,6 +795,10 @@
       "ai": {
         "title": "AI'en",
         "body": "AI'en foreslår, og træneren bestemmer. Den kan læse en træners kortform som \"3x10 min Z4 / 5 min pause\" til trin (reglerne klarer det meste uden nogen sprogmodel), bygge et pas ud fra dine ord med \"Byg med AI\" i biblioteket, foreslå en uge under \"Planlæg ugen\" for én rytter eller flere, og skrive et kort resumé af ugens opmærksomhedspunkter i holdets uge. Intet lægges i kalenderen, før en træner trykker. Den skriver aldrig til en rytter og sletter aldrig noget. Ugeforslag og resumé læser rytternes data, så de virker kun, hvis holdet har slået \"Må AI'en læse rytternes data\" til under Indstillinger → Holdet. Uden en sprogmodel virker alt andet som før."
+      },
+      "pilot": {
+        "title": "De første to uger som pilothold",
+        "body": "Er I et nyt hold, der lige er kommet i gang, findes der en guide til de første to uger: hvordan du inviterer hele holdet, lægger sæsonplaner for alle, planlægger den første uge og slår påmindelser til. Den ligger som docs/pilot.md i Kadences kode og er guiden til pilotholdet, som Martin sender dig."
       }
     }
   },
@@ -948,6 +958,7 @@
     "not_a_rider": "Kun en rytter kan forbinde sin egen enhed.",
     "too_many_keys": "Du har allerede så mange nøgler, som du kan have. Fjern en, før du opretter en ny.",
     "too_many_keys_made": "Du har oprettet mange nøgler lige nu. Prøv igen om en time.",
+    "too_many_test_reminders": "Du har sendt tre prøver inden for en time. Prøv igen lidt senere.",
     "flagGone": "Opmærksomhedspunktet er ikke aktivt længere. Genindlæs siden.",
     "uciId": "Et UCI ID er 11 cifre, som det står på licensen.",
     "uciTaken": "En anden rytter på holdet har allerede det UCI ID.",
@@ -1404,6 +1415,74 @@
       "issuedTitle": "Rytteren er tilføjet",
       "issuedBody": "Send linket til rytteren. Når rytteren opretter sig via linket, bliver kontoen koblet til rytteren her.",
       "done": "Færdig"
+    },
+    "bulk": {
+      "button": "Inviter hele holdet",
+      "title": "Inviter hele holdet",
+      "body": "Skriv eller indsæt holdet med én rytter pr. linje. Du ser listen, før noget bliver oprettet.",
+      "listLabel": "Holdet",
+      "placeholder": "Emma Holm, 2010, emma@holm.dk; Anne Holm, anne@holm.dk\nOskar Lund, 2009, oskar@lund.dk\nIda Berg, 2011; Peter Berg, peter@berg.dk",
+      "formatTitle": "Sådan skriver du en linje",
+      "formatRider": "Først rytteren: navn, fødselsår og e-mail, adskilt af komma.",
+      "formatParents": "Så forældrene, hver efter et semikolon: navn og e-mail. Højst to pr. rytter.",
+      "formatEmail": "Den, der har en e-mail på listen, får sit eget link. Uden e-mail bliver personen oprettet uden link.",
+      "formatSiblings": "Søskende kan have samme forælder. Skriv forælderen ens på begge linjer, så får forælderen ét link.",
+      "sharedYear": "Fælles fødselsår",
+      "sharedYearHint": "Bruges på de linjer, der ikke har deres eget år.",
+      "previewTitle": "Det bliver oprettet",
+      "summary": "{riders, plural, one {# rytter} other {# ryttere}} og {parents, plural, one {# forælder} other {# forældre}}. {links, plural, =0 {Ingen får et link.} one {# person får et link.} other {# personer får et link.}}",
+      "blank": "{count, plural, one {# tom linje} other {# tomme linjer}} springes over.",
+      "problemsTitle": "{count, plural, one {# linje skal rettes} other {# linjer skal rettes}}, før holdet kan oprettes",
+      "line": "Linje {line}",
+      "riderMeta": "{year} · {class}",
+      "parents": "Forældre: {names}",
+      "noLink": "uden link",
+      "submit": "Opret {count, plural, one {# rytter} other {# ryttere}}",
+      "doneTitle": "Ryttere og forældre er oprettet",
+      "doneBody": "Del linket med hver person. Teksten fortæller, hvad de skal gøre, og linket virker kun for deres egen adresse.",
+      "noLinkTitle": "Uden link",
+      "noLinkBody": "Der stod ingen e-mail ved dem her, så de har intet link endnu. Når du har adressen, kan du invitere dem fra rytterens side.",
+      "done": "Færdig",
+      "whole": {
+        "empty": "Skriv mindst én rytter.",
+        "tooMany": "Listen har mere end {max} ryttere. Opret dem i to omgange.",
+        "sharedYear": "Det fælles fødselsår passer ikke til en rytter. Vælg et år fra {min} til {max}.",
+        "tooManyWaiting": "Holdet har for mange links, der venter. Træk nogle tilbage under Indstillinger → Arbejdsrum, og prøv igen."
+      },
+      "problem": {
+        "noName": "Linjen mangler et navn.",
+        "twoNames": "“{value}” ligner endnu et navn. Skriv navnet uden komma, og sæt forældre efter et semikolon.",
+        "nameTooLong": "Navnet er længere end 120 tegn.",
+        "unreadable": "“{value}” kan ikke læses. Skriv fødselsåret med fire cifre, fx 2010.",
+        "noYear": "Linjen mangler et fødselsår. Skriv det på linjen, eller vælg et fælles år.",
+        "badYear": "{value} passer ikke som fødselsår for en rytter.",
+        "twoYears": "Linjen har to fødselsår. Skriv kun rytterens.",
+        "parentYear": "Skriv fødselsåret ved rytteren, før det første semikolon.",
+        "badEmail": "“{value}” ligner ikke en e-mailadresse.",
+        "twoEmails": "Der står to e-mailadresser ved samme person.",
+        "tooManyParents": "Der kan stå højst to forældre ved en rytter.",
+        "sameName": "{value} står også på linje {other}.",
+        "sameEmail": "{value} står også på linje {other}. Hver person skal have sin egen adresse.",
+        "twiceOnLine": "{value} står to gange på linjen.",
+        "onTeam": "{value} er allerede på holdet.",
+        "emailMember": "{value} hører til en, der allerede er med på holdet.",
+        "emailInvited": "{value} har allerede et link, der venter."
+      }
+    },
+    "recipients": {
+      "rider": "Rytter",
+      "parentOf": "Forælder til {children}",
+      "until": "Virker til {until}",
+      "share": "Del",
+      "shareLabel": "Del linket med {name}",
+      "copied": "Teksten med linket er kopieret. Sæt den ind i en sms eller en chat.",
+      "failed": "Linket kunne ikke deles eller kopieres. Prøv igen.",
+      "textRider": "Hej {name}. Du er inviteret med på holdet {team} i Kadence som rytter. Åbn linket, og opret din konto med {email}. Linket virker til {until}.",
+      "textParent": "Hej {name}. Du er inviteret med på holdet {team} i Kadence som forælder til {children}. Åbn linket, og opret din konto med {email}. Når {children} har sagt ja til dig i Kadence, kan du følge med. Linket virker til {until}."
+    },
+    "waiting": {
+      "title": "Links, der venter",
+      "body": "De her er inviteret, men er ikke kommet ind endnu. Del linket igen, hvis de ikke har fået det."
     },
     "profile": {
       "title": "Profil",
@@ -2033,6 +2112,27 @@
       "hide": "Skjul",
       "undo": "Fortryd",
       "weekNote": "En afklaring gælder ugen ud, medmindre tallene bliver tydeligt værre. Dukker det samme op i næste uge, er det et nyt punkt. Resuméet fra AI'en og rådene til træneren ser de punkter, der stadig er åbne. Forslaget til ugen ser alle punkter, fordi det planlægger belastning."
+    },
+    "pilot": {
+      "title": "Holdets tre tal",
+      "body": "Tre tal om ugen viser, hvordan Kadence bliver brugt på holdet: hvor mange ryttere der checker ind, hvor mange pas der får en kvittering, og et skøn over tiden til planlægning. Tallene skal hjælpe med at afgøre, hvad Kadence skal være efter vinteren.",
+      "week": "Uge",
+      "weekNumber": "Uge {week}",
+      "inProgress": "i gang",
+      "checkins": "Check-in",
+      "receipts": "Kvittering",
+      "minutes": "Planlægning",
+      "of": "{part} af {whole}",
+      "percent": "{share, number, percent}",
+      "minutesValue": "{minutes} min",
+      "none": "–",
+      "explainCheckins": "Check-in: ryttere med et check-in på mindst fire af ugens dage.",
+      "explainReceipts": "Kvittering: pas til og med i går, der er markeret udført, har fået en RPE eller har fået en tur.",
+      "explainRiders": "En rytter tæller med fra sin første hele uge på holdet. Arkiverede ryttere tæller ikke med.",
+      "explainMinutes": "Planlægning er et groft skøn i minutter ud fra, hvornår trænerne har gemt pas, blokke og sæsonplaner. Ændringer med under ti minutters mellemrum regnes som én omgang, og hver omgang tæller mindst to minutter. Tid til at tænke og læse planen er ikke med. Tallet skal hjælpe med at se, om Kadence sparer tid. Det er ikke en vurdering af nogen.",
+      "clubsTitle": "Tre tal pr. klub, uge {week}",
+      "clubsBody": "Sidste hele uge, mandag til søndag. Kun tal, aldrig en rytter, et navn eller et check-in.",
+      "club": "Klub"
     }
   },
   "wellbeing": {
@@ -3135,6 +3235,7 @@
   "reminders": {
     "title": "Påmindelser",
     "body": "Kadence kan minde dig om det vigtigste på denne enhed. Der kommer ingen påmindelser mellem 21.30 og 7.",
+    "bodyCoach": "Kadence kan minde dig om det vigtigste på denne enhed. Mellem 21.30 og 7 kommer kun påmindelser om trivsel.",
     "privacy": "Selve beskeden hentes fra Kadence, når den kommer. Din browsers push-tjeneste ser kun, at der er noget nyt.",
     "enable": "Slå påmindelser til på denne enhed",
     "disable": "Slå fra",
@@ -3147,6 +3248,27 @@
     "ios": "På iPhone virker påmindelser, når Kadence ligger på hjemmeskærmen (iOS 16.4 eller nyere).",
     "denied": "Browseren har blokeret påmindelser fra Kadence. Du kan tillade dem i browserens indstillinger.",
     "failed": "Påmindelserne kunne ikke slås til i denne browser. Alt andet virker.",
+    "test": "Send en prøve",
+    "testHint": "Kadence sender en påmindelse til dine enheder på dette hold, så du kan se, at den kommer frem. Højst tre i timen.",
+    "testSent": "Prøven er sendt. Den kommer om et øjeblik.",
+    "testGone": "Push-tjenesten kender ikke enheden længere. Slå påmindelser til igen.",
+    "testFailed": "Prøven kom ikke af sted lige nu. Prøv igen om lidt.",
+    "diagnosis": {
+      "label": "Status på denne enhed:",
+      "permission": {
+        "granted": "tilladelse givet",
+        "denied": "tilladelse afvist",
+        "default": "ikke spurgt om tilladelse endnu",
+        "unsupported": "ingen påmindelser i denne browser"
+      },
+      "worker": "service worker registreret",
+      "noWorker": "ingen service worker",
+      "subscribedSince": "abonnement siden {when}",
+      "subscribedElsewhere": "abonnement i browseren, men ikke på dette hold",
+      "noSubscription": "intet abonnement",
+      "standalone": "åbnet fra hjemmeskærmen",
+      "notStandalone": "ikke åbnet fra hjemmeskærmen"
+    },
     "kind": {
       "checkin": "Check-in om aftenen",
       "checkinHint": "Klokken 19, hvis du ikke har checket ind i dag.",
@@ -3156,7 +3278,9 @@
       "plan": "Ændret plan",
       "planHint": "Når en træner lægger eller ændrer et pas i de næste syv dage.",
       "week": "Ugens overblik",
-      "weekHint": "Søndag aften, når ugen er gået."
+      "weekHint": "Søndag aften, når ugen er gået.",
+      "wellbeing": "Trivsel",
+      "wellbeingHint": "Når en rytter checker ind i rød zone, højst én gang om dagen pr. rytter. Den kommer også mellem 21.30 og 7 og nævner ikke rytterens navn."
     },
     "notify": {
       "checkinTitle": "Husk dagens check-in",
@@ -3170,7 +3294,11 @@
       "weekTitle": "{owner} uge er klar",
       "weekBody": "Se, hvordan ugen er gået.",
       "fallbackTitle": "Der er nyt i Kadence",
-      "fallbackBody": "Åbn Kadence for at se det."
+      "fallbackBody": "Åbn Kadence for at se det.",
+      "wellbeingTitle": "En rytter har brug for en snak",
+      "wellbeingBody": "Se, hvem det er, under opmærksomhedspunkterne.",
+      "testTitle": "Sådan ser en påmindelse fra Kadence ud",
+      "testBody": "Prøven kom frem. Påmindelserne virker på denne enhed."
     }
   },
   "records": {
@@ -3483,6 +3611,14 @@
       "slower": "Langsommere",
       "left": "Til venstre",
       "right": "Til højre"
+    },
+    "log": {
+      "title": "Bluetooth-log",
+      "hint": "Kun med ?ble=log i adressen. Vises for dig, ikke for andre; intet sendes, og intet gemmes.",
+      "empty": "Venter på den første hændelse.",
+      "count": "{count, plural, one {# hændelse} other {# hændelser}}",
+      "copy": "Kopiér log",
+      "copied": "Kopieret"
     }
   },
   "club": {

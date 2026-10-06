@@ -16,6 +16,7 @@ import { rideToRate } from "@/components/today/rpe-pick";
 import { addDaysIso, todayInCopenhagen } from "@/core/dates";
 import { listOwnTemplates } from "@/modules/training/templates";
 import { whoAmI } from "@/modules/team/access";
+import { getPilotWeeks } from "@/modules/insight/pilot-service";
 import { adminPool } from "../helpers/db";
 
 /**
@@ -120,6 +121,20 @@ describe("a demo workspace", () => {
       [orgId],
     );
     expect(placed.rows[0].n).toBeGreaterThan(0);
+  });
+
+  it("shows the coach the team's three numbers over the weeks it has planned (ADR 0066)", async () => {
+    const weeks = (await getPilotWeeks({ orgId, userId }))!;
+    expect(weeks).toHaveLength(8);
+    // The last full week: six riders who all checked in, most sessions done.
+    expect(weeks[1]).toMatchObject({ inProgress: false, riders: 6, checkedIn: 6 });
+    expect(weeks[1]!.receipts).toBeGreaterThan(weeks[1]!.sessions / 2);
+    // The riders have been on the team since the first planned week, not before.
+    expect(weeks[6]!.riders).toBe(6);
+    expect(weeks[7]!.riders).toBe(0);
+    // The seeding is this week's planning; no older audit row is made up.
+    expect(weeks[0]!.minutes).toBeGreaterThanOrEqual(2);
+    expect(weeks.slice(1).every((w) => w.minutes === 0)).toBe(true);
   });
 
   it("has a rider and her parent the visitor can switch to, and nobody else can", async () => {

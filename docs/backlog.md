@@ -19,6 +19,16 @@ fokus-bølgen.
 Størrelse: **S** er under en dag, **M** er et par dage, **L** er en uge
 eller mere. Rækkefølgen inden for en prioritet er den anbefalede.
 
+## Status
+
+P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter #21 og #22). Hvert spor bygges i sit eget worktree med egen database og flettes ind på P1-grenen, når det er grønt. Statusloggen nyeste først:
+
+- **6. okt., aften.** P1 er færdig: alle otte stories er flettet ind på `feat/p1-foer-piloten`, hele suiten er grøn (2.243 tests), build kompilerer, og PR #23 er klar til Martin. Samlet forbrug for P1: ca. 1,7M tokens mod et skøn på 1,4–2,2M. Næste skridt er Martins: læse PR'en, prøve påmindelser på en telefon (P1-05) og Rulle på en hometrainer (P1-06), og udfylde kontaktoplysningerne i pilotguiden.
+- **6. okt., eftermiddag.** P1-01, P1-02+05, P1-04 og P1-06 er færdige og flettet ind; hele suiten er grøn (2.243 tests) og build kompilerer. Samlet forbrug for P1-01 til P1-07: ca. 1,4M tokens mod et skøn på 1,2–2,0M. P1-08 (pilotguiden) er sat i gang.
+- **6. okt., eftermiddag.** P1-03 og P1-07 er færdige og flettet ind; hele suiten er grøn (2.143 tests).
+- **6. okt., middag.** De fem parkerede dele er slået til som standard (PR #24, ADR 0057 tillæg), og den ændring er flettet ind i P1-grenen, så P1 bygger oven på den. P1-sporene blev stoppet ved en fejl, før de nåede at skrive noget, og er sat i gang igen fra den opdaterede gren.
+- **6. okt.** P1 sat i gang. Migreringerne 0029 (påmindelser om trivsel), 0030 (invitationens rolle) og 0031 (pilotens tal) er lagt på P1-grenen først, så sporene ikke tager samme nummer. P1-01, P1-02+05, P1-03+07, P1-04 og P1-06 kører parallelt; P1-08 skrives til sidst.
+
 ## Tokens og model
 
 Hver story har et skøn over, hvor mange tokens en Claude Code-session
@@ -78,47 +88,50 @@ Rammen er:
 
 ## Oversigt
 
-| ID    | Story                                             | Prio | Str. | Tokens (ca.) | Model     | Afhænger af       |
-| ----- | ------------------------------------------------- | ---- | ---- | ------------ | --------- | ----------------- |
-| P1-01 | Inviter hele holdet på én gang                    | P1   | M    | 300–450k     | Opus 5.5  |                   |
-| P1-02 | Træneren får besked, når en rytter er i rød zone  | P1   | M    | 250–400k     | Opus 5.5  | ADR 0060 (push)   |
-| P1-03 | Invitationen siger rytter eller forælder          | P1   | S    | 120–200k     | Opus 5.5  |                   |
-| P1-04 | Pilotens tre tal                                  | P1   | M    | 300–450k     | Opus 5.5  |                   |
-| P1-05 | Prøv påmindelser på en rigtig telefon             | P1   | S    | 100–180k     | Sonnet 5  | ADR 0060 (push)   |
-| P1-06 | Rulle møder en rigtig hometrainer                 | P1   | S    | 120–200k     | Sonnet 5  |                   |
-| P1-07 | Ryttere og forældre kan forlade holdet igen       | P1   | S    | 50–100k      | Sonnet 5  |                   |
-| P1-08 | En pilotguide til træneren                        | P1   | S    | 120–200k     | Sonnet 5  | A-05              |
-| P2-01 | Garmin-ture ind af sig selv gennem Tredict        | P2   | L    | 600k–1M      | Opus 5.5  | A-07 (Martins ja) |
-| P2-02 | Mine ture: en liste over rytterens ture           | P2   | S    | 80–150k      | Sonnet 5  |                   |
-| P2-03 | Tid, sted og kørsel på løb og begivenheder        | P2   | M    | 200–300k     | Sonnet 5  |                   |
-| P2-04 | Forældre lægger familiens begivenheder ind        | P2   | M    | 250–400k     | Opus 5.5  | P2-03             |
-| P2-05 | En fælles kladde til ugeplanen for flere trænere  | P2   | M    | 250–400k     | Opus 5.5  |                   |
-| P2-06 | Tilgængelighed: kontrast, bevægelse og fokus      | P2   | S    | 120–200k     | Sonnet 5  |                   |
-| P2-07 | Medlemmer kan ikke læse hinandens e-mailadresser  | P2   | M    | 400–700k     | Fable 5.1 |                   |
-| P2-08 | Rate-limiteren stoler kun på egne proxyer         | P2   | S    | 60–120k      | Sonnet 5  |                   |
-| P2-09 | Parkerede sider svarer 404                        | P2   | S    | 100–200k     | Sonnet 5  |                   |
-| P2-10 | Enhedssiden nævner kun de udbydere, der er sat op | P2   | S    | 60–100k      | Sonnet 5  |                   |
-| P2-11 | En kortere check-in                               | P2   | M    | 250–400k     | Opus 5.5  | A-06 (faglig)     |
-| P2-12 | Planændringer kender deres afsender               | P2   | M    | 300–450k     | Opus 5.5  |                   |
-| P2-13 | Påmindelser fylder ikke revisionssporet           | P2   | S    | 100–180k     | Opus 5.5  | Martins valg      |
-| P2-14 | Demoen viser forløb med egne pas og påmindelser   | P2   | S    | 120–200k     | Sonnet 5  |                   |
-| P3-01 | Evaluér de parkerede dele ud fra pilotens tal     | P3   | S    | 60–120k      | Sonnet 5  | P1-04             |
-| P3-02 | Fremmøde på holdpas                               | P3   | M    | 250–400k     | Opus 5.5  | pilotens ønske    |
-| P3-03 | Saml de gamle indgange til planlægning            | P3   | S    | 120–200k     | Sonnet 5  | en måneds brug    |
-| P3-04 | Holdets uge for tidligere og kommende uger        | P3   | M    | 250–400k     | Opus 5.5  |                   |
-| P3-05 | E-mail som valgfri kanal                          | P3   | L    | 500–800k     | Opus 5.5  | Martins ja        |
-| P3-06 | Trænerrummet tilbage med moderation i klubberne   | P3   | L    | 600k–1M      | Opus 5.5  | P3-01, 3 klubber  |
-| P3-07 | Klubmesterskabet tilbage, sikkert for de unge     | P3   | M    | 300–450k     | Opus 5.5  | P3-01             |
-| P3-08 | Content-Security-Policy med nonce                 | P3   | L    | 500–900k     | Fable 5.1 |                   |
-| A-01  | En sportsdiætist læser madguiden                  | A    | S    | 60–120k      | Sonnet 5  |                   |
-| A-02  | Tilladelse til Rulles ruter og navne              | A    | S    | 60–120k      | Sonnet 5  |                   |
-| A-03  | DCU inviteres til at følge vinteren               | A    | S    | 40–80k       | Sonnet 5  |                   |
-| A-04  | Wahoo: produktionsadgang og puls under 16         | A    | S    | 30–60k       | Haiku 4.5 |                   |
-| A-05  | Aftale med pilotholdet                            | A    | S    | 80–150k      | Opus 5.5  |                   |
-| A-06  | Faglig vurdering af en kortere check-in           | A    | S    | 60–100k      | Sonnet 5  |                   |
-| A-07  | Ja eller nej til Tredict og Connect IQ            | A    | S    | 60–120k      | Opus 5.5  |                   |
-| R-01  | Slet de ubrugte filer                             | R    | S    | 40–80k       | Haiku 4.5 | Martins ja        |
-| R-02  | Små rester fra fokus-bølgen                       | R    | S    | 100–180k     | Sonnet 5  |                   |
+| ID    | Story                                                      | Prio | Str. | Tokens (ca.) | Model     | Afhænger af       | Status       |
+| ----- | ---------------------------------------------------------- | ---- | ---- | ------------ | --------- | ----------------- | ------------ |
+| P1-01 | Inviter hele holdet på én gang                             | P1   | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
+| P1-02 | Træneren får besked, når en rytter er i rød zone           | P1   | M    | 250–400k     | Opus 5.5  | ADR 0060 (push)   | Færdig       |
+| P1-03 | Invitationen siger rytter eller forælder                   | P1   | S    | 120–200k     | Opus 5.5  |                   | Færdig       |
+| P1-04 | Pilotens tre tal                                           | P1   | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
+| P1-05 | Prøv påmindelser på en rigtig telefon                      | P1   | S    | 100–180k     | Sonnet 5  | ADR 0060 (push)   | Færdig       |
+| P1-06 | Rulle møder en rigtig hometrainer                          | P1   | S    | 120–200k     | Sonnet 5  |                   | Færdig       |
+| P1-07 | Ryttere og forældre kan forlade holdet igen                | P1   | S    | 50–100k      | Sonnet 5  |                   | Færdig       |
+| P1-08 | En pilotguide til træneren                                 | P1   | S    | 120–200k     | Sonnet 5  | A-05              | Færdig       |
+| P2-01 | Garmin-ture ind af sig selv gennem Tredict                 | P2   | L    | 600k–1M      | Opus 5.5  | A-07 (Martins ja) | Ikke startet |
+| P2-02 | Mine ture: en liste over rytterens ture                    | P2   | S    | 80–150k      | Sonnet 5  |                   | Ikke startet |
+| P2-03 | Tid, sted og kørsel på løb og begivenheder                 | P2   | M    | 200–300k     | Sonnet 5  |                   | Ikke startet |
+| P2-04 | Forældre lægger familiens begivenheder ind                 | P2   | M    | 250–400k     | Opus 5.5  | P2-03             | Ikke startet |
+| P2-05 | En fælles kladde til ugeplanen for flere trænere           | P2   | M    | 250–400k     | Opus 5.5  |                   | Ikke startet |
+| P2-06 | Tilgængelighed: kontrast, bevægelse og fokus               | P2   | S    | 120–200k     | Sonnet 5  |                   | Ikke startet |
+| P2-07 | Medlemmer kan ikke læse hinandens e-mailadresser           | P2   | M    | 400–700k     | Fable 5.1 |                   | Ikke startet |
+| P2-08 | Rate-limiteren stoler kun på egne proxyer                  | P2   | S    | 60–120k      | Sonnet 5  |                   | Ikke startet |
+| P2-09 | Parkerede sider svarer 404                                 | P2   | S    | 100–200k     | Sonnet 5  |                   | Ikke startet |
+| P2-10 | Enhedssiden nævner kun de udbydere, der er sat op          | P2   | S    | 60–100k      | Sonnet 5  |                   | Ikke startet |
+| P2-11 | En kortere check-in                                        | P2   | M    | 250–400k     | Opus 5.5  | A-06 (faglig)     | Ikke startet |
+| P2-12 | Planændringer kender deres afsender                        | P2   | M    | 300–450k     | Opus 5.5  |                   | Ikke startet |
+| P2-13 | Påmindelser fylder ikke revisionssporet                    | P2   | S    | 100–180k     | Opus 5.5  | Martins valg      | Ikke startet |
+| P2-14 | Demoen viser forløb med egne pas og påmindelser            | P2   | S    | 120–200k     | Sonnet 5  |                   | Ikke startet |
+| P2-15 | Invitationslinks, der holder en uge                        | P2   | S    | 60–120k      | Sonnet 5  | P1-01             | Ikke startet |
+| P2-16 | En forælder på holdet kobles til endnu et barn             | P2   | M    | 200–350k     | Opus 5.5  | P1-01             | Ikke startet |
+| P2-17 | Trivselspåmindelsen ser en check-in, der bliver rød senere | P2   | S    | 150–250k     | Opus 5.5  | P1-02             | Ikke startet |
+| P3-01 | Evaluér de parkerede dele ud fra pilotens tal              | P3   | S    | 60–120k      | Sonnet 5  | P1-04             | Ikke startet |
+| P3-02 | Fremmøde på holdpas                                        | P3   | M    | 250–400k     | Opus 5.5  | pilotens ønske    | Ikke startet |
+| P3-03 | Saml de gamle indgange til planlægning                     | P3   | S    | 120–200k     | Sonnet 5  | en måneds brug    | Ikke startet |
+| P3-04 | Holdets uge for tidligere og kommende uger                 | P3   | M    | 250–400k     | Opus 5.5  |                   | Ikke startet |
+| P3-05 | E-mail som valgfri kanal                                   | P3   | L    | 500–800k     | Opus 5.5  | Martins ja        | Ikke startet |
+| P3-06 | Trænerrummet tilbage med moderation i klubberne            | P3   | L    | 600k–1M      | Opus 5.5  | P3-01, 3 klubber  | Ikke startet |
+| P3-07 | Klubmesterskabet tilbage, sikkert for de unge              | P3   | M    | 300–450k     | Opus 5.5  | P3-01             | Ikke startet |
+| P3-08 | Content-Security-Policy med nonce                          | P3   | L    | 500–900k     | Fable 5.1 |                   | Ikke startet |
+| A-01  | En sportsdiætist læser madguiden                           | A    | S    | 60–120k      | Sonnet 5  |                   | Ikke startet |
+| A-02  | Tilladelse til Rulles ruter og navne                       | A    | S    | 60–120k      | Sonnet 5  |                   | Ikke startet |
+| A-03  | DCU inviteres til at følge vinteren                        | A    | S    | 40–80k       | Sonnet 5  |                   | Ikke startet |
+| A-04  | Wahoo: produktionsadgang og puls under 16                  | A    | S    | 30–60k       | Haiku 4.5 |                   | Ikke startet |
+| A-05  | Aftale med pilotholdet                                     | A    | S    | 80–150k      | Opus 5.5  |                   | Ikke startet |
+| A-06  | Faglig vurdering af en kortere check-in                    | A    | S    | 60–100k      | Sonnet 5  |                   | Ikke startet |
+| A-07  | Ja eller nej til Tredict og Connect IQ                     | A    | S    | 60–120k      | Opus 5.5  |                   | Ikke startet |
+| R-01  | Slet de ubrugte filer                                      | R    | S    | 40–80k       | Haiku 4.5 | Martins ja        | Ikke startet |
+| R-02  | Små rester fra fokus-bølgen                                | R    | S    | 100–180k     | Sonnet 5  |                   | Ikke startet |
 
 ---
 
@@ -141,6 +154,8 @@ kan få tolv ryttere i gang på ti minutter i stedet for en time.
 **Størrelse:** M
 
 **Tokens:** ca. 300–450k · **Model:** Opus 5.5 (`claude-opus-5-5`), flere services i én transaktion, invitationer og roller; fejl her rammer adgangen til holdet.
+
+**Status:** Færdig 6. oktober, flettet ind på `feat/p1-foer-piloten`. "Inviter hele holdet" på Ryttere: én rytter pr. linje med år, op til to forældre efter semikolon, forhåndsvisning og en forklaring pr. linje, der ikke kan læses; bagefter "Del" pr. person og et kort med de links, der venter. Alt eller intet: links laves først og trækkes tilbage, hvis rækkerne fejler (ADR 0064). Bemærk: et link kræver en e-mailadresse og gælder 48 timer (Better Auths standard); uden adresse oprettes personen uden link. Søskende kan dele en forælder. Faktisk forbrug: 310k tokens på 30 min (skøn 300–450k).
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/inviter-holdet.
@@ -178,6 +193,8 @@ ske, mens det betyder noget.
 
 **Tokens:** ca. 250–400k · **Model:** Opus 5.5 (`claude-opus-5-5`), migrering, trivselsdata om mindreårige og påmindelsernes logik.
 
+**Status:** Færdig 6. oktober, flettet ind. Ny påmindelse "Trivsel" kun for trænere: en check-in i rød zone i dag (smerte 3, syg eller humør 1) giver én tom push, også om natten; teksten nævner hverken navn eller svar og fører til opmærksomhedspunkterne. Højst én pr. rytter pr. dag uden ny kolonne. Accepteret hul (i ADR 0060): en check-in, der først gemmes grøn og senere rettes til rød, kan blive overset, hvis træneren fik en anden påmindelse imellem; listen viser den stadig. Trænere, der allerede har påmindelser slået til, skal selv slå "Trivsel" til. Faktisk forbrug for P1-02 og P1-05 samlet: 307k tokens på 31 min (skøn 350–580k).
+
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/trivsel-paamindelse.
 Læs docs/adr/0060-reminders-without-content.md og src/modules/push
@@ -211,6 +228,8 @@ jeg** kunne se, at jeg inviteres som rytter (eller forælder) på holdet X,
 
 **Tokens:** ca. 120–200k · **Model:** Opus 5.5 (`claude-opus-5-5`), en SECURITY DEFINER-funktion, som auth-rollen kalder før login.
 
+**Status:** Færdig 6. oktober, flettet ind på `feat/p1-foer-piloten` (PR #23). Join-siden siger "som rytter", "som forælder til Emma" eller "som træner" gennem `invitation_kind()` (migrering 0030), som kun auth-rollen må kalde, og som kun svarer for en gyldig invitation. ADR 0065. Valgt undervejs: rækker for arkiverede ryttere og allerede brugte rækker tæller ikke, så siden siger mindre frem for for meget. Faktisk forbrug for P1-03 og P1-07 samlet: 215k tokens på 18 min (skøn 170–300k).
+
 ```text
 Følg rammen i docs/backlog.md §0. Gren: fix/invitation-rolle.
 Join-siden (src/app/[locale]/(auth)/join/[id]/page.tsx) kan i dag kun
@@ -243,6 +262,8 @@ uge, **så** vinteren kan afgøre, hvad Kadence skal være (dogme syv).
 **Størrelse:** M
 
 **Tokens:** ca. 300–450k · **Model:** Opus 5.5 (`claude-opus-5-5`), audit-loggen, udvidelse af platform_overview og privatlivsgrænsen for ejeren.
+
+**Status:** Færdig 6. oktober, flettet ind. Træneren ser de seneste 8 uger under Indstillinger → Holdet: andel ryttere med check-in mindst 4 dage, andel pas med kvittering, og anslåede minutter på planlægning ud fra revisionssporet (strækninger med under 10 minutters pause, mindst 2 minutter hver). Ejeren ser tallene for sidste hele uge pr. klub på installationssiden, kun tal (migrering 0031, ADR 0066). Demoen har fået historik, så kortet ikke er tomt. Til Martin: læs de danske tekster, og vurder tærsklerne på 10 og 2 minutter. Faktisk forbrug: 283k tokens på 28 min (skøn 300–450k).
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/pilotens-tal.
@@ -278,6 +299,8 @@ kommer.
 
 **Tokens:** ca. 100–180k · **Model:** Sonnet 5 (`claude-sonnet-5`), afgrænset brugerflade og en action med rate-limit.
 
+**Status:** Færdig 6. oktober sammen med P1-02. "Send en prøve" under Indstillinger → Mig → Påmindelser (højst 3 i timen) og en statuslinje: tilladelse, service worker, abonnement siden hvornår, og på iPhone om Kadence er åbnet fra hjemmeskærmen. `docs/deploy.md` §6d forklarer prøven på iPhone og Android. Kan kun bekræftes på en rigtig telefon; det er næste skridt for Martin.
+
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/proevepaamindelse.
 Læs ADR 0060 og src/modules/push. Tilføj under Indstillinger → Mig →
@@ -306,6 +329,8 @@ Rulle uden fejl, **så** indendørsdagene tæller med.
 **Størrelse:** S
 
 **Tokens:** ca. 120–200k · **Model:** Sonnet 5 (`claude-sonnet-5`), logning omkring de eksisterende parsere, ingen ændring i deres logik.
+
+**Status:** Færdig 6. oktober, flettet ind. `/rulle?ble=log` viser en log over de seneste 500 Bluetooth-hændelser med rå bytes, de tal parserne læser og trainerens svar med FTMS-navne, og "Kopiér log". Intet gemmes eller sendes. `docs/rulle-proevetur.md` er tjeklisten til den første tur på en rigtig hometrainer. Faktisk forbrug: 288k tokens på 31 min (skøn 120–200k; mere end ventet, fordi kontrolpunktets kø blev trukket ud af trainer-link.ts for at holde 300-linjersgrænsen).
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/rulle-ble-log.
@@ -336,6 +361,8 @@ egne indstillinger, **så** jeg ikke skal kende en adresse for at gøre det.
 
 **Tokens:** ca. 50–100k · **Model:** Sonnet 5 (`claude-sonnet-5`), en komponent flyttes, guards er uændrede.
 
+**Status:** Færdig 6. oktober, flettet ind på `feat/p1-foer-piloten`. "Forlad holdet" står nederst på Mig for alle, der ikke er trænere, med samme action og bekræftelse som før; trænere har den stadig under Arbejdsrum. Bemærkning: trænerens tekst siger stadig "Forlad arbejdsrummet … dine samtaler" (arvet fra Haij) og kan rettes i en senere oprydning.
+
 ```text
 Følg rammen i docs/backlog.md §0. Gren: fix/forlad-holdet.
 Efter ADR 0061 ser ryttere og forældre ikke fanen Arbejdsrum, hvor
@@ -359,6 +386,8 @@ sidde ved siden af.
 **Størrelse:** S · **Afhænger af:** A-05
 
 **Tokens:** ca. 120–200k · **Model:** Sonnet 5 (`claude-sonnet-5`), dansk tekst og skærmbilleder mod demoen.
+
+**Status:** Færdig 6. oktober, flettet ind. `docs/pilot.md` fører træneren gennem de første to uger med otte skærmbilleder fra demoen i `docs/pilot/`, og Hjælp har fået et afsnit om guiden. Martins kontaktoplysninger står som en pladsholder, der skal udfyldes. Undervejs fandt guiden, at tabellen med holdets tre tal blev skåret af på en telefon; det er rettet. Faktisk forbrug: 285k tokens på 31 min (skøn 120–200k; mere end ventet, fordi hvert trin blev klikket igennem på en rigtig demo).
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: docs/pilotguide.
@@ -718,8 +747,84 @@ seed-weeks.ts til ugerne og forløbet), og lad demoens forløb "Vinterblok,
 4 uger" indeholde mindst ét pas bygget i forløbet selv med tid og sted
 (ADR 0059, drizzle/0027). Vis i demoen, at påmindelser findes: når
 installationen har PUSH-nøgler, står kortet under Indstillinger → Mig; når
-den ikke har, skriver demobanneret intet om det. Udvid
-tests/demo/demo.test.ts.
+den ikke har, skriver demobanneret intet om det. Giv demoen check-ins for
+flere end 14 dage, så pilotens tal (P1-04) har mere end to uger at vise.
+Udvid tests/demo/demo.test.ts.
+```
+
+### P2-15 Invitationslinks, der holder en uge
+
+**Som** træner, der sender links ud over en weekend, **vil jeg** have, at et
+invitationslink holder en uge, **så** jeg ikke skal lave nye links, fordi en
+rytter først åbner sit på tredjedagen.
+
+- Links gælder 7 dage i stedet for Better Auths standard på 48 timer.
+- Teksten i "Del" og på kortet med links, der venter, siger den rigtige dato.
+
+**Størrelse:** S · **Afhænger af:** P1-01
+
+**Tokens:** ca. 60–120k · **Model:** Sonnet 5 (`claude-sonnet-5`), én indstilling og teksterne omkring den.
+
+**Status:** Ikke startet. Fundet under P1-01 (6. oktober).
+
+```text
+Følg rammen i docs/backlog.md §0. Gren: fix/links-en-uge.
+Læs ADR 0004 og 0064 og src/core/auth/auth.ts. Sæt Better Auths
+organization-plugin til at lade invitationer gælde 7 dage
+(invitationExpiresIn), som en navngiven konstant ved siden af
+TEAM_INVITATION_LIMIT. Tjek, at "Del"-teksten fra "Inviter hele holdet",
+kortet "Links, der venter" og invitationerne under Arbejdsrum viser den
+rigtige udløbsdato. Tests: en ny invitation udløber om 7 dage. Ret ADR
+0064's afsnit om de 48 timer.
+```
+
+### P2-16 En forælder på holdet kobles til endnu et barn
+
+**Som** forælder med to børn på holdet **vil jeg** kunne kobles til det
+andet barn uden en ny konto, **så** jeg ser begge børns uger samme sted.
+
+- En træner kan koble et eksisterende medlem som forælder til en rytter.
+- Rytteren bekræfter stadig forbindelsen, som i dag (ADR 0010).
+
+**Størrelse:** M · **Afhænger af:** P1-01
+
+**Tokens:** ca. 200–350k · **Model:** Opus 5.5 (`claude-opus-5-5`), forældrelinks går gennem rytteradskillelsen og RLS.
+
+**Status:** Ikke startet. Fundet under P1-01: en forælder, der allerede er medlem, må i dag skrives uden adresse og får ingen konto koblet på.
+
+```text
+Følg rammen i docs/backlog.md §0. Gren: feat/foraelder-til-flere.
+Læs ADR 0010, 0011 og 0064 og src/modules/team/guardians.ts. Plan
+først: lad en træner vælge et eksisterende medlem af holdet som forælder
+til en rytter (en guardian-række med user_id sat og bekræftelse fra
+rytteren som i dag), både fra rytterens side og i "Inviter hele holdet",
+hvor en adresse, der allerede er medlem, så kobles i stedet for at blive
+afvist. Rider-isolationstesten skal bevise, at forælderen kun ser det
+barn, der har bekræftet. Opdatér ADR 0064.
+```
+
+### P2-17 Trivselspåmindelsen ser en check-in, der bliver rød senere
+
+**Som** træner **vil jeg** også få besked, når en rytter retter sin
+check-in til rød zone senere på dagen, **så** ingen falder ud mellem to
+påmindelser.
+
+**Størrelse:** S · **Afhænger af:** P1-02
+
+**Tokens:** ca. 150–250k · **Model:** Opus 5.5 (`claude-opus-5-5`), en migrering på trivselsdata og påmindelsernes logik.
+
+**Status:** Ikke startet. Det accepterede hul fra P1-02 (ADR 0060).
+
+```text
+Følg rammen i docs/backlog.md §0. Gren: fix/trivsel-roed-senere.
+Læs ADR 0060 (afsnittet om trivsel) og src/modules/push/wellbeing.ts.
+Tilføj en kolonne på checkins, fx red_since (timestamptz, null), som
+service-laget sætter, når en check-in første gang bliver rød, og
+nulstiller, hvis den rettes væk fra rød. Lad trivselspåmindelsen tælle
+fra red_since i stedet for created_at. RLS er uændret (kolonnen følger
+rækken). Tests i tests/push/job-wellbeing.test.ts for en check-in, der
+gemmes grøn og senere rettes til rød, med en anden påmindelse imellem.
+Opdatér ADR 0060.
 ```
 
 ## P3 — efter vinteren
@@ -1012,7 +1117,10 @@ Følg rammen i docs/backlog.md §0. Gren: chore/rester.
 den. 2) Tilføj de rene tests i tests/insight, tests/calendar og
 tests/today til vitest.unit.config.mts. 3) Ret kommentaren i
 src/modules/assist/coach-brief.ts, der stadig siger
-"Mandagsoverblikket". 4) Når en træner fjerner et medlem, bliver
+"Mandagsoverblikket". 4) Trænerens knap under Arbejdsrum siger stadig "Forlad arbejdsrummet …
+dine samtaler" (arvet fra Haij); sig "Forlad holdet" som på Mig. 5) Gør
+tests/rulle/side-roads.test.ts robust over for en travl maskine (den
+rammer 5 sekunders timeout i pnpm test:unit under belastning). 6) Når en træner fjerner et medlem, bliver
 medlemmets rækker i push_subscriptions liggende uden at blive brugt;
 fjern dem i samme transaktion (en SECURITY DEFINER eller en trigger på
 memberships), med en test.

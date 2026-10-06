@@ -24,6 +24,10 @@ export default defineConfig({
       "tests/club/standings.test.ts",
       // Reminders' keys, timing and words; the job and the policies need the database.
       "tests/push/{vapid,due,texts}.test.ts",
+      // The pilot's three numbers (docs/adr/0066); the service and the overview need the database.
+      "tests/insight/pilot-numbers.test.ts",
+      // The list "Inviter hele holdet" reads and who its links go to; the service needs the database.
+      "tests/team/{bulk-parse,invitation-recipients}.test.ts",
     ],
   },
 });

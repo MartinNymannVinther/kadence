@@ -211,6 +211,15 @@ the laptop a family actually has in front of the bike. The two metres
 the numbers are sized for are measured on paper; a rider on a real
 trainer says whether they read.
 
+A diagnostics log (`?ble=log` on `/rulle`; P1-06) now keeps the last 500
+Bluetooth events in the browser — every connect, every service and
+characteristic found, every FTMS, Cycling Power and Heart Rate
+notification with its raw bytes and what the parsers read, and every
+Control Point write and the trainer's answer — and copies them as plain
+text. `docs/rulle-proevetur.md` is Martin's checklist for the first real
+ride; what it finds, named by trainer and strap, is what closes this
+item.
+
 ### Whether the small things are too many, or too few
 
 The things that pass, the cowbell and the coffee stop (ADR 0034) have

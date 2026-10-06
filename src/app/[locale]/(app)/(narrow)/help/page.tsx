@@ -32,6 +32,7 @@ const HOW_TO = [
   "parentsPage",
   "ai",
   "data",
+  "pilot",
 ] as const;
 
 /**

@@ -12,10 +12,14 @@ import type { PushKind } from "@/core/db/schema/push";
  * - plan: a session of the rider's in the next seven days laid or changed
  *   by someone else since the last reminder.
  * - week: a parent, once a week, on Sunday from 18.00.
+ * - wellbeing: a coach, when a rider on the team has checked in today in
+ *   the red zone (src/modules/load/wellbeing.ts), once per rider per day.
  *
  * Nothing goes out in the quiet hours, 21.30 to 7.00; what is due waits.
- * One reminder at a time: when several are due, the first in that order
- * goes now and the next on a later run.
+ * The one exception is wellbeing: a rider who needs a talk does not wait
+ * for the morning. One reminder at a time: when several are due,
+ * wellbeing goes first, then the rest in the order above, and the next
+ * on a later run.
  */
 
 export const QUIET_FROM = 21 * 60 + 30;
@@ -26,7 +30,13 @@ export const WEEK_FROM = 18 * 60;
 export const PLAN_DAYS = 7;
 
 /** The order a person's choices are shown and stored in. */
-export const KIND_ORDER: readonly PushKind[] = ["checkin", "comment", "plan", "week"];
+export const KIND_ORDER: readonly PushKind[] = ["checkin", "comment", "plan", "week", "wellbeing"];
+/**
+ * How long after a red check-in its reminder can have gone out and still
+ * be the one the text names, when a check-in or a week reminder went out
+ * the same way (see `mayBeWellbeing`): a run and a retry.
+ */
+export const WELLBEING_TOLD_WITHIN_MS = 15 * 60 * 1000;
 
 export type Clock = {
   /** yyyy-mm-dd in Copenhagen. */
@@ -71,7 +81,7 @@ export function planWindow(today: string): { from: string; to: string } {
 export function kindsFor(roles: { isCoach: boolean; isRider: boolean; isParent: boolean }) {
   const kinds = new Set<PushKind>();
   if (roles.isRider) for (const kind of ["checkin", "comment", "plan"] as const) kinds.add(kind);
-  if (roles.isCoach) kinds.add("comment");
+  if (roles.isCoach) for (const kind of ["comment", "wellbeing"] as const) kinds.add(kind);
   if (roles.isParent) for (const kind of ["week", "comment"] as const) kinds.add(kind);
   return KIND_ORDER.filter((kind) => kinds.has(kind));
 }
@@ -85,6 +95,12 @@ export type Facts = {
   newestComment: Date | null;
   /** When a session in the rider's next seven days was last laid or changed by someone else. */
   newestPlanChange: Date | null;
+  isCoach: boolean;
+  /**
+   * When the newest of today's check-ins in the red zone was first saved,
+   * among the riders the coach can see, the coach's own left out.
+   */
+  newestRedCheckin: Date | null;
 };
 
 /** One subscription's state, as the job reads it. */
@@ -98,6 +114,8 @@ export type SubscriptionState = {
 /** What the job writes when a reminder goes out, so it never goes out twice. */
 export type Mark =
   | { slot: "news"; toldUpTo: Date }
+  /** `told_up_to` moves to the told check-in's first save, not to now; see `decide`. */
+  | { slot: "wellbeing"; toldUpTo: Date }
   | { slot: "checkin"; checkinRemindedOn: string }
   | { slot: "week"; weekToldOn: string };
 
@@ -106,8 +124,22 @@ export type Decision = { kind: PushKind; mark: Mark };
 /** The one reminder due now for this subscription, or null. */
 export function decide(sub: SubscriptionState, facts: Facts, now: Date): Decision | null {
   const clock = copenhagenClock(now);
-  if (isQuiet(clock)) return null;
   const wants = (kind: PushKind) => sub.kinds.includes(kind);
+
+  // A rider in the red zone comes first, quiet hours or not. A check-in is
+  // saved once per rider per day and then changed in place, so its first
+  // save is told once: the mark moves `told_up_to` to it, and a change to
+  // the same check-in later that day is not news. Moving the mark only that
+  // far, not to now, leaves a comment written since then to be told next.
+  if (
+    wants("wellbeing") &&
+    facts.isCoach &&
+    facts.newestRedCheckin &&
+    facts.newestRedCheckin > sub.toldUpTo
+  )
+    return { kind: "wellbeing", mark: { slot: "wellbeing", toldUpTo: facts.newestRedCheckin } };
+
+  if (isQuiet(clock)) return null;
 
   // Comments and plan changes are news: one reminder tells all of it up
   // to now, about whichever came last.
@@ -165,4 +197,19 @@ export function lastTold(
   if (sub.kinds.includes("week") && told.weekday === 7 && sub.weekToldOn === mondayOf(told.date))
     return "week";
   return null;
+}
+
+/**
+ * Whether the last push may have been about a rider in the red zone. Its
+ * mark leaves `told_up_to` on the check-in's first save, behind
+ * `updated_at`; `latest` then confirms there is such a check-in. When a
+ * check-in or a week reminder fits the marks as well — a coach who also
+ * rides or is a parent on the team — the red one is taken only if it went
+ * out soon after the check-in was saved, as it does.
+ */
+export function mayBeWellbeing(sub: SubscriptionState & { updatedAt: Date }): boolean {
+  if (!sub.kinds.includes("wellbeing")) return false;
+  const gap = sub.updatedAt.getTime() - sub.toldUpTo.getTime();
+  if (gap <= 0) return false;
+  return lastTold(sub) === null || gap <= WELLBEING_TOLD_WITHIN_MS;
 }

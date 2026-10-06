@@ -44,7 +44,13 @@ export async function teamsOf(userId: string): Promise<string[]> {
   return rows.map((r) => r.orgId);
 }
 
-export type ReminderState = { subscribed: boolean; kinds: PushKind[]; offered: PushKind[] };
+export type ReminderState = {
+  subscribed: boolean;
+  kinds: PushKind[];
+  offered: PushKind[];
+  /** When this browser's reminders were turned on here, for the card's status line. */
+  since: string | null;
+};
 
 const ordered = (kinds: readonly string[]) => KIND_ORDER.filter((kind) => kinds.includes(kind));
 
@@ -63,10 +69,15 @@ export async function reminderState(ctx: OrgContext, endpoint: string): Promise<
     const me = await whoAmIIn(tx, ctx);
     if (!me) throw new Refused("forbidden");
     const [row] = await tx
-      .select({ kinds: pushSubscriptions.kinds })
+      .select({ kinds: pushSubscriptions.kinds, createdAt: pushSubscriptions.createdAt })
       .from(pushSubscriptions)
       .where(thisBrowser(ctx, endpoint));
-    return { subscribed: Boolean(row), kinds: ordered(row?.kinds ?? []), offered: kindsForMe(me) };
+    return {
+      subscribed: Boolean(row),
+      kinds: ordered(row?.kinds ?? []),
+      offered: kindsForMe(me),
+      since: row?.createdAt.toISOString() ?? null,
+    };
   });
 }
 
@@ -83,18 +94,32 @@ export async function subscribe(ctx: OrgContext, endpoint: string): Promise<Remi
     const offered = kindsForMe(me);
     if (offered.length === 0) throw new Refused("forbidden");
     const [existing] = await tx
-      .select({ kinds: pushSubscriptions.kinds })
+      .select({ kinds: pushSubscriptions.kinds, createdAt: pushSubscriptions.createdAt })
       .from(pushSubscriptions)
       .where(thisBrowser(ctx, endpoint));
-    if (existing) return { subscribed: true, kinds: ordered(existing.kinds), offered };
-    await tx.insert(pushSubscriptions).values({
-      orgId: ctx.orgId,
-      userId: ctx.userId,
-      endpoint,
+    if (existing)
+      return {
+        subscribed: true,
+        kinds: ordered(existing.kinds),
+        offered,
+        since: existing.createdAt.toISOString(),
+      };
+    const [made] = await tx
+      .insert(pushSubscriptions)
+      .values({
+        orgId: ctx.orgId,
+        userId: ctx.userId,
+        endpoint,
+        kinds: offered,
+        toldUpTo: new Date(),
+      })
+      .returning({ createdAt: pushSubscriptions.createdAt });
+    return {
+      subscribed: true,
       kinds: offered,
-      toldUpTo: new Date(),
-    });
-    return { subscribed: true, kinds: offered, offered };
+      offered,
+      since: made?.createdAt.toISOString() ?? null,
+    };
   });
 }
 
@@ -114,9 +139,10 @@ export async function setKinds(
       .update(pushSubscriptions)
       .set({ kinds: chosen })
       .where(thisBrowser(ctx, endpoint))
-      .returning({ id: pushSubscriptions.id });
-    if (rows.length === 0) throw new Refused("notFound");
-    return { subscribed: true, kinds: chosen, offered };
+      .returning({ createdAt: pushSubscriptions.createdAt });
+    const [row] = rows;
+    if (!row) throw new Refused("notFound");
+    return { subscribed: true, kinds: chosen, offered, since: row.createdAt.toISOString() };
   });
 }
 

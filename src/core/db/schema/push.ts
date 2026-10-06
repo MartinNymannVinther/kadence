@@ -3,8 +3,11 @@ import { check, date, index, pgTable, text, timestamp, uniqueIndex } from "drizz
 import { domainId, users } from "./foundation";
 import { tenant, timestamps } from "./shared";
 
-/** What a person can be reminded of (docs/adr/0060). */
-export const PUSH_KINDS = ["checkin", "comment", "plan", "week"] as const;
+/**
+ * What a person can be reminded of (docs/adr/0060). `wellbeing` is a
+ * coach's: a rider on the team checked in in the red zone (drizzle/0029).
+ */
+export const PUSH_KINDS = ["checkin", "comment", "plan", "week", "wellbeing"] as const;
 export type PushKind = (typeof PUSH_KINDS)[number];
 
 /**
@@ -47,7 +50,7 @@ export const pushSubscriptions = pgTable(
     ),
     check(
       "push_subscriptions_kinds",
-      sql`${t.kinds} <@ array['checkin','comment','plan','week']::text[]`,
+      sql`${t.kinds} <@ array['checkin','comment','plan','week','wellbeing']::text[]`,
     ),
   ],
 );

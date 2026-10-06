@@ -5,7 +5,9 @@ import {
   isQuiet,
   kindsFor,
   lastTold,
+  mayBeWellbeing,
   planWindow,
+  WELLBEING_TOLD_WITHIN_MS,
   type Facts,
   type SubscriptionState,
 } from "@/modules/push/due";
@@ -14,7 +16,8 @@ import {
  * When a reminder is due (docs/adr/0060), in Copenhagen time: the
  * check-in from 19.00, news since the last reminder, the parents' week on
  * Sunday from 18.00, nothing in the quiet hours from 21.30 to 7.00, one
- * reminder at a time, and only what the person chose.
+ * reminder at a time, and only what the person chose. A coach hears of a
+ * rider in the red zone at once, quiet hours or not, once per check-in.
  *
  * Tuesday 6 October 2026 is summer time (UTC+2); Sunday 1 November is
  * winter time (UTC+1).
@@ -39,10 +42,14 @@ const rider = (over: Partial<Facts> = {}): Facts => ({
   isParent: false,
   newestComment: null,
   newestPlanChange: null,
+  isCoach: false,
+  newestRedCheckin: null,
   ...over,
 });
 const parent = (over: Partial<Facts> = {}): Facts =>
   rider({ isRider: false, isParent: true, ...over });
+const coach = (over: Partial<Facts> = {}): Facts =>
+  rider({ isRider: false, isCoach: true, ...over });
 
 describe("Copenhagen's clock", () => {
   it("reads the day, the minute and the weekday across summer and winter time", () => {
@@ -77,9 +84,12 @@ describe("which reminders a person is offered", () => {
   it("follows the roles on the team", () => {
     const none = { isCoach: false, isRider: false, isParent: false };
     expect(kindsFor({ ...none, isRider: true })).toEqual(["checkin", "comment", "plan"]);
-    expect(kindsFor({ ...none, isCoach: true })).toEqual(["comment"]);
+    expect(kindsFor({ ...none, isCoach: true })).toEqual(["comment", "wellbeing"]);
     expect(kindsFor({ ...none, isParent: true })).toEqual(["comment", "week"]);
-    expect(kindsFor({ isCoach: true, isRider: true, isParent: true })).toEqual(ALL);
+    expect(kindsFor({ isCoach: true, isRider: true, isParent: true })).toEqual([
+      ...ALL,
+      "wellbeing",
+    ]);
     expect(kindsFor(none)).toEqual([]);
   });
 });
@@ -178,5 +188,66 @@ describe("what was told last", () => {
     const sunday = at("2026-11-01T17:10:00Z");
     expect(lastTold({ ...sub({ weekToldOn: "2026-10-26" }), updatedAt: sunday })).toBe("week");
     expect(lastTold({ ...sub(), updatedAt: pushed })).toBeNull();
+  });
+});
+
+describe("a rider in the red zone", () => {
+  const WITH = [...ALL, "wellbeing"];
+  const saved = at("2026-10-06T09:58:00Z");
+  const noon = at("2026-10-06T10:00:00Z");
+
+  it("tells a coach once, moving the mark to the check-in's first save", () => {
+    const decision = decide(sub({ kinds: WITH }), coach({ newestRedCheckin: saved }), noon);
+    expect(decision).toEqual({ kind: "wellbeing", mark: { slot: "wellbeing", toldUpTo: saved } });
+    // The same check-in saved again later that day is not news.
+    expect(
+      decide(sub({ kinds: WITH, toldUpTo: saved }), coach({ newestRedCheckin: saved }), noon),
+    ).toBeNull();
+  });
+
+  it("goes through the quiet hours, when nothing else does", () => {
+    const night = at("2026-10-06T21:00:00Z"); // 23.00
+    const late = at("2026-10-06T20:55:00Z");
+    expect(
+      decide(sub({ kinds: WITH }), coach({ newestRedCheckin: late, newestComment: late }), night)
+        ?.kind,
+    ).toBe("wellbeing");
+    expect(decide(sub({ kinds: WITH }), coach({ newestComment: late }), night)).toBeNull();
+  });
+
+  it("comes before news, and leaves news written since for the next run", () => {
+    const comment = at("2026-10-06T09:59:00Z");
+    const facts = coach({ newestRedCheckin: saved, newestComment: comment });
+    expect(decide(sub({ kinds: WITH }), facts, noon)?.kind).toBe("wellbeing");
+    expect(decide(sub({ kinds: WITH, toldUpTo: saved }), facts, noon)).toEqual({
+      kind: "comment",
+      mark: { slot: "news", toldUpTo: noon },
+    });
+  });
+
+  it("is a coach's, and only when chosen", () => {
+    expect(decide(sub({ kinds: ALL }), coach({ newestRedCheckin: saved }), noon)).toBeNull();
+    expect(decide(sub({ kinds: WITH }), rider({ newestRedCheckin: saved }), noon)).toBeNull();
+    expect(decide(sub({ kinds: WITH }), parent({ newestRedCheckin: saved }), noon)).toBeNull();
+  });
+
+  it("is read back as the last push when its mark is the newest", () => {
+    const pushed = at("2026-10-06T10:05:00Z");
+    const told = { ...sub({ kinds: WITH, toldUpTo: saved }), updatedAt: pushed };
+    expect(lastTold(told)).toBeNull();
+    expect(mayBeWellbeing(told)).toBe(true);
+    // Not news, and not for a browser that did not choose it.
+    expect(mayBeWellbeing({ ...told, toldUpTo: pushed })).toBe(false);
+    expect(mayBeWellbeing({ ...told, kinds: ALL })).toBe(false);
+  });
+
+  it("gives way to a check-in reminder that went out after it", () => {
+    const later = new Date(saved.getTime() + WELLBEING_TOLD_WITHIN_MS + 60_000);
+    const evening = { checkinRemindedOn: TUESDAY };
+    const soon = { ...sub({ kinds: WITH, toldUpTo: saved, ...evening }), updatedAt: noon };
+    expect(mayBeWellbeing(soon)).toBe(true);
+    const after = { ...sub({ kinds: WITH, toldUpTo: saved, ...evening }), updatedAt: later };
+    expect(lastTold(after)).toBe("checkin");
+    expect(mayBeWellbeing(after)).toBe(false);
   });
 });

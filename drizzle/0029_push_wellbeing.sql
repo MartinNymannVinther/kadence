@@ -1,0 +1,2 @@
+ALTER TABLE "push_subscriptions" DROP CONSTRAINT "push_subscriptions_kinds";--> statement-breakpoint
+ALTER TABLE "push_subscriptions" ADD CONSTRAINT "push_subscriptions_kinds" CHECK ("push_subscriptions"."kinds" <@ array['checkin','comment','plan','week','wellbeing']::text[]);

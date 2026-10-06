@@ -45,15 +45,26 @@ export function joinUrl(invitationId: string): string {
 
 export type InviteError = "alreadyMember" | "alreadyInvited" | "forbidden" | "invalid" | "generic";
 
+/**
+ * `organizationId` is for server code that already holds the team it
+ * works in (bulk-invite.ts), so the invitation lands on the same team as
+ * the rows it is attached to; without it, the session's active team.
+ * Never taken from a request.
+ */
 export async function inviteMember(
   headers: Headers,
   input: unknown,
+  organizationId?: string,
 ): Promise<{ ok: true; invitation: IssuedTeamInvitation } | { ok: false; error: InviteError }> {
   const parsed = InviteSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: "invalid" };
   try {
     const invitation = await auth.api.createInvitation({
-      body: { email: parsed.data.email, role: parsed.data.role },
+      body: {
+        email: parsed.data.email,
+        role: parsed.data.role,
+        ...(organizationId ? { organizationId } : {}),
+      },
       headers,
     });
     return {

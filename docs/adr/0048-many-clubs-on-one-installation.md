@@ -1,6 +1,6 @@
 # ADR 0048: Many clubs on one installation
 
-Status: accepted · Date: 2026-10-03
+Status: accepted · Date: 2026-10-03 · Amended by ADR 0066 (the overview adds the pilot's three numbers for the last full week)
 
 ## Context
 

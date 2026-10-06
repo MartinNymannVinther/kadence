@@ -1,6 +1,6 @@
 # ADR 0047: Open guides and calculators, without an account
 
-Status: accepted · Date: 2026-10-03 · Amended by ADR 0055 (one suggested build instead of a neutral list of products), ADR 0056 (energy advice for the day, for a class instead of a weight), ADR 0057 (the energy calculator and the food guide behind flags, off by default) and ADR 0061 (the hub left the signed-in menu; Hjælp links to it)
+Status: accepted · Date: 2026-10-03 · Amended by ADR 0055 (one suggested build instead of a neutral list of products), ADR 0056 (energy advice for the day, for a class instead of a weight), ADR 0057 (the energy calculator and the food guide behind flags; on by default, "off" parks them) and ADR 0061 (the hub left the signed-in menu; Hjælp links to it)
 
 ## Context
 

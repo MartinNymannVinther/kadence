@@ -1,6 +1,6 @@
 # ADR 0057: Focus for the first winter — five parts behind installation flags
 
-Status: accepted · Date: 2026-10-06 · Amends ADR 0045, 0047, 0051, 0052 and 0054
+Status: accepted, amended the same day · Date: 2026-10-06 · Amends ADR 0045, 0047, 0051, 0052 and 0054
 
 ## Context
 
@@ -119,3 +119,18 @@ Three ways were open: delete the five, leave them on, or park them.
 - **What brings them back is decided after the winter**, by the three
   numbers in the plan: riders who check in at least four days a week,
   sessions with a receipt, and a coach's minutes a week spent planning.
+
+## Amended the same day: on by default
+
+Once PR #21 was on main, Martin found the energy calculator and Rulle's
+maps and routes gone from his own installation, and chose to have all
+five parts on by default. The flags stay: each is now `on` unless an
+installation sets it to `off`, so parking a part is still one variable
+away, and the gates, the demo's two ways and their tests are unchanged.
+The food guide is shown by default too; its section on low energy
+availability still waits for a sports dietitian (backlog A-01), and
+`GUIDE_FOOD=off` holds it back until then.
+
+What changes in the trade-offs above: the demo shows every part again
+(ADR 0054 holds by default), and a new installation sees all of Kadence
+unless its owner parks something.

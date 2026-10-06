@@ -532,6 +532,12 @@
       "security": "Security: passkeys and two-step verification",
       "coachNote": "You are a coach on the team. The team's own choices are under Team.",
       "memberNote": "You are on the team, but neither a rider nor a parent here. Ask a coach for an invitation if you should be.",
+      "leave": {
+        "action": "Leave the team",
+        "title": "Leave the team?",
+        "body": "You lose access to the team straight away. What you have entered stays with the team. If you want a copy, download it under Data first. A coach can invite you again.",
+        "confirm": "Leave the team"
+      },
       "sharing": {
         "title": "What your parents can see",
         "body": "It is your choice, not the coach's or your parents'. You can change it at any time.",
@@ -678,8 +684,8 @@
   },
   "join": {
     "title": "You are invited",
-    "intro": "{inviter} has invited you to the team {team}{role, select, coach { as a coach} other {}}.",
-    "next": "{role, select, coach {Once you are in, you can plan the team's week and follow the riders.} other {Once you are in, you will find your training or your child's week here.}}",
+    "intro": "{inviter} has invited you to the team {team}{role, select, coach { as a coach} rider { as a rider} parentOf { as {child}'s parent} parent { as a parent} other {}}.",
+    "next": "{role, select, coach {Once you are in, you can plan the team's week and follow the riders.} rider {Once you are in, you will find your training here.} parentOf {Once you are in and {child} has confirmed you, you can follow the training here.} parent {Once you are in and your child has confirmed you, you can follow the training here.} other {Once you are in, you will find your training or your child's week here.}}",
     "someone": "A coach",
     "invalidTitle": "This link no longer works",
     "invalidBody": "The invitation has expired or been withdrawn. Ask the person who invited you for a new link.",
@@ -789,6 +795,10 @@
       "ai": {
         "title": "The AI",
         "body": "The AI proposes, and the coach decides. It can read a coach's shorthand like \"3x10 min Z4 / 5 min rest\" into steps (the rules manage most of it without any language model), build a session from your own words with \"Build with AI\" in the library, propose a week under \"Plan the week\" for one rider or several, and write a short summary of the week's points of attention in the team's week. Nothing goes in the calendar until a coach presses. It never writes to a rider and never deletes anything. Week proposals and the summary read the riders' data, so they only work if the team has turned on \"May the AI read the riders' data\" under Settings → Team. Without a language model everything else works as before."
+      },
+      "pilot": {
+        "title": "The first two weeks as a pilot team",
+        "body": "If your team has just started out, there is a guide to the first two weeks: how to invite the whole team, lay out season plans for everyone, plan the first week and turn reminders on. It lives as docs/pilot.md in Kadence's code, and is the guide to the pilot team that Martin sends you."
       }
     }
   },
@@ -948,6 +958,7 @@
     "not_a_rider": "Only a rider can connect their own device.",
     "too_many_keys": "You already have as many keys as you can have. Remove one before you create a new one.",
     "too_many_keys_made": "You have created many keys just now. Try again in an hour.",
+    "too_many_test_reminders": "You have sent three tests within an hour. Try again a little later.",
     "flagGone": "That point of attention is no longer active. Reload the page.",
     "uciId": "A UCI ID is 11 digits, as on the licence.",
     "uciTaken": "Another rider on the team already has that UCI ID.",
@@ -1404,6 +1415,74 @@
       "issuedTitle": "The rider was added",
       "issuedBody": "Send the link to the rider. When they sign up through it, the account is linked to the rider here.",
       "done": "Done"
+    },
+    "bulk": {
+      "button": "Invite the whole team",
+      "title": "Invite the whole team",
+      "body": "Type or paste the team with one rider per line. You see the list before anything is created.",
+      "listLabel": "The team",
+      "placeholder": "Emma Holm, 2010, emma@holm.dk; Anne Holm, anne@holm.dk\nOskar Lund, 2009, oskar@lund.dk\nIda Berg, 2011; Peter Berg, peter@berg.dk",
+      "formatTitle": "How to write a line",
+      "formatRider": "First the rider: name, birth year and e-mail, separated by commas.",
+      "formatParents": "Then the parents, each after a semicolon: name and e-mail. At most two per rider.",
+      "formatEmail": "Everyone with an e-mail on the list gets their own link. Without an e-mail the person is created without a link.",
+      "formatSiblings": "Siblings can share a parent. Write the parent the same way on both lines, and the parent gets one link.",
+      "sharedYear": "Shared birth year",
+      "sharedYearHint": "Used on the lines that have no year of their own.",
+      "previewTitle": "What will be created",
+      "summary": "{riders, plural, one {# rider} other {# riders}} and {parents, plural, one {# parent} other {# parents}}. {links, plural, =0 {Nobody gets a link.} one {# person gets a link.} other {# people get a link.}}",
+      "blank": "{count, plural, one {# empty line is} other {# empty lines are}} skipped.",
+      "problemsTitle": "{count, plural, one {# line needs} other {# lines need}} fixing before the team can be created",
+      "line": "Line {line}",
+      "riderMeta": "{year} · {class}",
+      "parents": "Parents: {names}",
+      "noLink": "no link",
+      "submit": "Create {count, plural, one {# rider} other {# riders}}",
+      "doneTitle": "Riders and parents are created",
+      "doneBody": "Share the link with each person. The text tells them what to do, and the link only works for their own address.",
+      "noLinkTitle": "No link",
+      "noLinkBody": "There was no e-mail for these, so they have no link yet. When you have the address, you can invite them from the rider's page.",
+      "done": "Done",
+      "whole": {
+        "empty": "Write at least one rider.",
+        "tooMany": "The list has more than {max} riders. Create them in two goes.",
+        "sharedYear": "The shared birth year does not fit a rider. Choose a year from {min} to {max}.",
+        "tooManyWaiting": "The team has too many links waiting. Withdraw some under Settings → Workspace and try again."
+      },
+      "problem": {
+        "noName": "The line has no name.",
+        "twoNames": "“{value}” looks like another name. Write the name without a comma, and put parents after a semicolon.",
+        "nameTooLong": "The name is longer than 120 characters.",
+        "unreadable": "“{value}” cannot be read. Write the birth year with four digits, e.g. 2010.",
+        "noYear": "The line has no birth year. Write it on the line, or choose a shared year.",
+        "badYear": "{value} does not fit as a rider's birth year.",
+        "twoYears": "The line has two birth years. Write only the rider's.",
+        "parentYear": "Write the birth year with the rider, before the first semicolon.",
+        "badEmail": "“{value}” does not look like an e-mail address.",
+        "twoEmails": "There are two e-mail addresses for one person.",
+        "tooManyParents": "A rider can have at most two parents on the line.",
+        "sameName": "{value} is also on line {other}.",
+        "sameEmail": "{value} is also on line {other}. Each person needs their own address.",
+        "twiceOnLine": "{value} is on the line twice.",
+        "onTeam": "{value} is already on the team.",
+        "emailMember": "{value} belongs to someone already on the team.",
+        "emailInvited": "{value} already has a link waiting."
+      }
+    },
+    "recipients": {
+      "rider": "Rider",
+      "parentOf": "Parent of {children}",
+      "until": "Works until {until}",
+      "share": "Share",
+      "shareLabel": "Share the link with {name}",
+      "copied": "The text with the link is copied. Paste it into a text message or a chat.",
+      "failed": "The link could not be shared or copied. Try again.",
+      "textRider": "Hi {name}. You are invited to the team {team} in Kadence as a rider. Open the link and create your account with {email}. The link works until {until}.",
+      "textParent": "Hi {name}. You are invited to the team {team} in Kadence as a parent of {children}. Open the link and create your account with {email}. Once {children} {count, plural, one {has} other {have}} said yes to you in Kadence, you can follow along. The link works until {until}."
+    },
+    "waiting": {
+      "title": "Links waiting",
+      "body": "These are invited but have not joined yet. Share the link again if they did not get it."
     },
     "profile": {
       "title": "Profile",
@@ -2033,6 +2112,27 @@
       "hide": "Hide",
       "undo": "Undo",
       "weekNote": "A resolution lasts the week unless the numbers get clearly worse. If the same thing comes up next week, it is a new point. The AI's summary and the advice for the coach see the points still open. The week draft sees every point, because it plans load."
+    },
+    "pilot": {
+      "title": "The team's three numbers",
+      "body": "Three numbers a week show how the team uses Kadence: how many riders check in, how many sessions get a receipt, and an estimate of the time spent planning. They are there to help decide what Kadence should be after the winter.",
+      "week": "Week",
+      "weekNumber": "Week {week}",
+      "inProgress": "in progress",
+      "checkins": "Check-in",
+      "receipts": "Receipt",
+      "minutes": "Planning",
+      "of": "{part} of {whole}",
+      "percent": "{share, number, percent}",
+      "minutesValue": "{minutes} min",
+      "none": "–",
+      "explainCheckins": "Check-in: riders with a check-in on at least four days of the week.",
+      "explainReceipts": "Receipt: sessions up to and including yesterday that are marked done, have an RPE or have a ride.",
+      "explainRiders": "A rider counts from their first full week on the team. Archived riders do not count.",
+      "explainMinutes": "Planning is a rough estimate in minutes, from when the coaches saved sessions, blocks and season plans. Changes less than ten minutes apart count as one sitting, and each sitting counts at least two minutes. Time spent thinking and reading the plan is not included. The number is there to help see whether Kadence saves time. It is not a judgement of anyone.",
+      "clubsTitle": "Three numbers per club, week {week}",
+      "clubsBody": "The last full week, Monday to Sunday. Numbers only, never a rider, a name or a check-in.",
+      "club": "Club"
     }
   },
   "wellbeing": {
@@ -3135,6 +3235,7 @@
   "reminders": {
     "title": "Reminders",
     "body": "Kadence can remind you of what matters on this device. No reminders come between 21:30 and 7:00.",
+    "bodyCoach": "Kadence can remind you of what matters on this device. Between 21:30 and 7:00 only wellbeing reminders come.",
     "privacy": "The message itself is fetched from Kadence when it arrives. Your browser's push service only sees that there is something new.",
     "enable": "Turn on reminders on this device",
     "disable": "Turn off",
@@ -3147,6 +3248,27 @@
     "ios": "On an iPhone, reminders work when Kadence is on the home screen (iOS 16.4 or later).",
     "denied": "The browser has blocked reminders from Kadence. You can allow them in the browser's settings.",
     "failed": "Reminders could not be turned on in this browser. Everything else works.",
+    "test": "Send a test",
+    "testHint": "Kadence sends a reminder to your devices on this team, so you can see that it arrives. At most three an hour.",
+    "testSent": "The test is on its way. It arrives in a moment.",
+    "testGone": "The push service no longer knows this device. Turn reminders on again.",
+    "testFailed": "The test could not be sent just now. Try again in a little while.",
+    "diagnosis": {
+      "label": "Status on this device:",
+      "permission": {
+        "granted": "permission given",
+        "denied": "permission refused",
+        "default": "not asked for permission yet",
+        "unsupported": "no reminders in this browser"
+      },
+      "worker": "service worker registered",
+      "noWorker": "no service worker",
+      "subscribedSince": "subscribed since {when}",
+      "subscribedElsewhere": "subscribed in the browser, but not on this team",
+      "noSubscription": "no subscription",
+      "standalone": "opened from the home screen",
+      "notStandalone": "not opened from the home screen"
+    },
     "kind": {
       "checkin": "Check-in in the evening",
       "checkinHint": "At 19:00, if you have not checked in today.",
@@ -3156,7 +3278,9 @@
       "plan": "Changed plan",
       "planHint": "When a coach adds or changes a session in the next seven days.",
       "week": "The week in short",
-      "weekHint": "Sunday evening, when the week is over."
+      "weekHint": "Sunday evening, when the week is over.",
+      "wellbeing": "Wellbeing",
+      "wellbeingHint": "When a rider checks in in the red zone, at most once a day per rider. It also comes between 21:30 and 7:00 and does not name the rider."
     },
     "notify": {
       "checkinTitle": "Remember today's check-in",
@@ -3170,7 +3294,11 @@
       "weekTitle": "{owner} training week is ready",
       "weekBody": "See how the week went.",
       "fallbackTitle": "There is something new in Kadence",
-      "fallbackBody": "Open Kadence to see it."
+      "fallbackBody": "Open Kadence to see it.",
+      "wellbeingTitle": "A rider could use a talk",
+      "wellbeingBody": "See who it is under the points of attention.",
+      "testTitle": "This is what a reminder from Kadence looks like",
+      "testBody": "The test arrived. Reminders work on this device."
     }
   },
   "records": {
@@ -3483,6 +3611,14 @@
       "slower": "Slower",
       "left": "Left",
       "right": "Right"
+    },
+    "log": {
+      "title": "Bluetooth log",
+      "hint": "Only with ?ble=log in the address. Shown to you, not to others; nothing is sent, and nothing is stored.",
+      "empty": "Waiting for the first event.",
+      "count": "{count, plural, one {# event} other {# events}}",
+      "copy": "Copy log",
+      "copied": "Copied"
     }
   },
   "club": {

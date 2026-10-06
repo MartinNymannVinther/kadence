@@ -3,6 +3,7 @@ import { ShieldCheck } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { buttonVariants } from "@/components/ui/button";
 import { guardianState } from "@/components/team/guardian-state";
+import { LeaveTeamButton } from "@/components/team/leave-team-button";
 import { MyChildren } from "@/components/team/my-children";
 import { MyGuardians } from "@/components/team/my-guardians";
 import { RemindersCard } from "@/components/push/reminders-card";
@@ -21,6 +22,7 @@ import { dcuProfileUrl, formatUciId } from "@/modules/results/uci-id";
 import { whoAmI } from "@/modules/team/access";
 import { listGuardians } from "@/modules/team/guardians";
 import { getRider } from "@/modules/team/riders";
+import { leavesFromMe } from "../settings-items";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("settings.me");
@@ -31,7 +33,8 @@ export async function generateMetadata(): Promise<Metadata> {
  * The person's own corner. A rider decides what their parents see,
  * confirms each parent, keeps their thresholds and may give their UCI ID;
  * a parent sees their links and may end one; everybody finds their
- * security settings here.
+ * security settings here, and whoever is not a coach the way off the team
+ * at the bottom (P1-07).
  */
 export default async function MePage() {
   const ctx = await getOrgContext();
@@ -110,6 +113,12 @@ export default async function MePage() {
         <ShieldCheck data-icon="inline-start" />
         {t("security")}
       </Link>
+
+      {leavesFromMe(me) && (
+        <div className="border-hairline border-t pt-5">
+          <LeaveTeamButton place="me" />
+        </div>
+      )}
     </div>
   );
 }

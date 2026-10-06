@@ -71,7 +71,8 @@ minutes on a phone, and a rider who spends twenty seconds a day.
 - **A rider's settings drop Arbejdsrum and AI.** "Forlad holdet" lives on
   the workspace page, so a rider who wants to leave a team now reaches it
   by its address or through a coach; it is rare, and a page of members
-  and model choices is not a rider's.
+  and model choices is not a rider's. (Since P1-07, "Forlad holdet" also
+  stands at the bottom of Mig for everybody who is not a coach.)
 - **Two labels for one page.** `/parents` is "Forældre" for a coach and
   "Barnet" for a parent, because each reads the menu as themselves.
 - **The page reaches under the home indicator** (`viewport-fit=cover`).

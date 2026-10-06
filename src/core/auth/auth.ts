@@ -26,6 +26,9 @@ import {
 
 const baseUrl = new URL(env.BETTER_AUTH_URL);
 
+/** Open invitations a team may hold at once; "Inviter hele holdet" checks it before it starts. */
+export const TEAM_INVITATION_LIMIT = 200;
+
 export const auth = betterAuth({
   appName: "Kadence",
   baseURL: env.BETTER_AUTH_URL,
@@ -185,7 +188,7 @@ export const auth = betterAuth({
       // A club with forty riders, their parents and the coaches is past
       // Better Auth's default of 100 members.
       membershipLimit: 500,
-      invitationLimit: 200,
+      invitationLimit: TEAM_INVITATION_LIMIT,
       schema: {
         organization: { modelName: "organizations" },
         member: { modelName: "memberships" },
