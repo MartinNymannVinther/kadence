@@ -2036,7 +2036,13 @@
       "drift": "Heart-rate drift",
       "driftHint": "How much more pulse each watt cost in the second half than in the first",
       "kmh": "{kmh} km/h",
-      "pct": "{pct} %"
+      "pct": "{pct} %",
+      "plan": "Against the plan",
+      "planSteps": "{hit} of {judged} steps hit the target"
+    },
+    "more": {
+      "title": "More data",
+      "body": "Watts, pulse, curves, laps, climbs, zones and the power curve"
     },
     "streams": {
       "show": "Show curves",

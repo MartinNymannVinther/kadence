@@ -2036,7 +2036,13 @@
       "drift": "Pulsdrift",
       "driftHint": "Hvor meget mere puls hver watt kostede i anden halvdel end i første",
       "kmh": "{kmh} km/t",
-      "pct": "{pct} %"
+      "pct": "{pct} %",
+      "plan": "Mod planen",
+      "planSteps": "{hit} af {judged} trin ramte målet"
+    },
+    "more": {
+      "title": "Mere data",
+      "body": "Watt, puls, kurver, omgange, stigninger, zoner og wattkurven"
     },
     "streams": {
       "show": "Vis kurver",
