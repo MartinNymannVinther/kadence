@@ -23,6 +23,7 @@ eller mere. Rækkefølgen inden for en prioritet er den anbefalede.
 
 P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter #21 og #22). Hvert spor bygges i sit eget worktree med egen database og flettes ind på P1-grenen, når det er grønt. Statusloggen nyeste først:
 
+- **6. okt., nat.** Ø-02 og Ø-04 er færdige og flettet ind; hele suiten er grøn (2.430 tests, 1.329 enhedstests) og build kompilerer. Ø-05 (demo, hjælp og ADR) er sat i gang. Forbrug for Ø-01 til Ø-04: ca. 1,6M tokens mod et skøn på 1,6–2,7M.
 - **6. okt., aften.** Ø-01 er færdig og flettet ind (23 øvelser, 4 programmer, tegnefunktionen og de fælles komponenter); hele suiten er grøn (2.340 tests). Ø-02 og Ø-04 er sat i gang parallelt.
 - **6. okt., aften.** Ø-03 (holdets egne øvelser og programmer i databasen) er færdig og flettet ind; hele suiten er grøn (2.297 tests). Ø-01 arbejder stadig.
 - **6. okt., aften.** Øvelser og programmer (Ø-01 til Ø-05) er godkendt og sat i gang på `feat/ovelser-og-programmer`: kontrakten i `src/modules/exercises/types.ts` er lagt, Ø-01 og Ø-03 kører parallelt.
@@ -136,10 +137,10 @@ Rammen er:
 | R-01  | Slet de ubrugte filer                                      | R    | S    | 40–80k       | Haiku 4.5 | Martins ja        | Ikke startet |
 | R-02  | Små rester fra fokus-bølgen                                | R    | S    | 100–180k     | Sonnet 5  |                   | Ikke startet |
 | Ø-01  | Tegnefunktion og indbyggede øvelser og programmer          | Ø    | M    | 400–700k     | Opus 5.5  |                   | Færdig       |
-| Ø-02  | Åben side, sammensæt og download                           | Ø    | M    | 300–500k     | Sonnet 5  | Ø-01              | I gang       |
+| Ø-02  | Åben side, sammensæt og download                           | Ø    | M    | 300–500k     | Sonnet 5  | Ø-01              | Færdig       |
 | Ø-03  | Holdets egne øvelser og programmer i databasen             | Ø    | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
-| Ø-04  | Appen: bibliotek, tegneværktøj, programbygger, kalender    | Ø    | L    | 600k–1M      | Opus 5.5  | Ø-01, Ø-03        | I gang       |
-| Ø-05  | Demo, hjælp og ADR                                         | Ø    | S    | 100–200k     | Sonnet 5  | Ø-02, Ø-04        | Venter       |
+| Ø-04  | Appen: bibliotek, tegneværktøj, programbygger, kalender    | Ø    | L    | 600k–1M      | Opus 5.5  | Ø-01, Ø-03        | Færdig       |
+| Ø-05  | Demo, hjælp og ADR                                         | Ø    | S    | 100–200k     | Sonnet 5  | Ø-02, Ø-04        | I gang       |
 
 ---
 
@@ -1020,7 +1021,7 @@ net.
 
 **Tokens:** ca. 300–500k · **Model:** Sonnet 5 (`claude-sonnet-5`), en side og en filbygger på det, Ø-01 har lagt.
 
-**Status:** I gang siden 6. oktober aften (Sonnet 5).
+**Status:** Færdig 6. oktober, flettet ind. Åben side `/guides/programs` i "Viden og beregnere": Kadences fire programmer og "Sammensæt dit eget" med filtre, dosis pr. øvelse og rækkefølge; valget ligger kun i adressen. `GET /api/programs/download` giver én HTML-fil, der virker uden net på telefonen, følger lys og mørk tilstand og husker Færdig-markeringer; holdets programmer kræver login og svarer 404 for andre. PDF via browserens print med alle dele og to kort pr. række. Undervejs rettet: programvisningen kunne ikke vise alle dele ved print. Faktisk forbrug: 425k tokens på 52 min (skøn 300–500k).
 
 ### Ø-03 Holdets egne øvelser og programmer i databasen
 
@@ -1039,13 +1040,13 @@ planen.
 
 **Tokens:** ca. 600k–1M · **Model:** Opus 5.5 (`claude-opus-5-5`), tegneværktøj, kalenderen og rettigheder.
 
-**Status:** I gang siden 6. oktober aften (Opus 5.5).
+**Status:** Færdig 6. oktober, flettet ind. Biblioteket har fanen "Øvelser og programmer" med Kadences og holdets egne; programsiden har Hent, Udskriv og for trænere Læg i kalenderen, Ret, Kopiér og tilpas og Arkivér. Tegneværktøjet: seks grundstillinger, træk led med finger eller mus, flyt med piletaster, pile, rekvisitter, spejl og fortryd, altid inden for rammen. Programbyggeren blander begge slags øvelser. Et program lagt i kalenderen bliver et styrkepas, hvis øvelser viser tegning og instruks. Bemærk: et rent mobilitetsprogram tæller som styrke i belastning og opmærksomhedspunkter, og minutterne er anslået (4 sek pr. gentagelse, 30 sek pause mellem sæt). Faktisk forbrug: 525k tokens på 51 min (skøn 600k–1M).
 
 ### Ø-05 Demo, hjælp og ADR
 
 **Tokens:** ca. 100–200k · **Model:** Sonnet 5 (`claude-sonnet-5`).
 
-**Status:** Venter.
+**Status:** I gang siden 6. oktober nat (Sonnet 5).
 
 ## A — afklaringer uden kode
 
