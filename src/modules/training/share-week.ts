@@ -1,4 +1,5 @@
 import { addDaysIso, mondayOf, weekNumber } from "@/core/dates";
+import { eventLines, sharedEvents, type ShareEvent, type ShareEventWords } from "./share-events";
 import { byStartTime, clockOf, clockText } from "./time-place";
 
 /**
@@ -8,7 +9,9 @@ import { byStartTime, clockOf, clockText } from "./time-place";
  * together is one line with how many riders have it, and in the team's
  * week no rider is named. Nothing about how anyone is, did or felt: no
  * check-ins, no rides, no flags. A single rider's week names the rider
- * once, at the top.
+ * once, at the top. The team's races and camps stand among the day's
+ * sessions with when and where they start and who drives
+ * (share-events.ts, docs/backlog.md P2-03).
  *
  * Pure: imports nothing from the database. The words come in from the
  * reader's language (calendar.share and training.duration).
@@ -31,8 +34,9 @@ export type ShareWords = {
   riders: (count: number) => string;
   /** "1 t 30 min" */
   duration: (minutes: number) => string;
-  /** When the week holds no session. */
+  /** When the week holds no session and no event. */
   empty: string;
+  events: ShareEventWords;
 };
 
 function intlLocale(locale: string): string {
@@ -88,6 +92,8 @@ export function shareWeekText(
     team: string;
     monday: string;
     sessions: ShareSession[];
+    /** The week's events; only the ones fit to share are written (share-events.ts). */
+    events?: ShareEvent[];
     /** A single rider's week: the rider's name. Without it, the team's week. */
     rider?: string;
     locale: string;
@@ -96,18 +102,29 @@ export function shareWeekText(
 ): string {
   const { locale } = input;
   const monday = mondayOf(input.monday);
+  const sunday = addDaysIso(monday, 6);
   const header = [input.team.trim(), input.rider?.trim(), words.week(weekNumber(monday))]
     .filter(Boolean)
     .join(" · ");
+  // An event is written once, on its first day in the week.
+  const events = sharedEvents(input.events ?? [], input.rider !== undefined).filter(
+    (e) => e.startsOn <= sunday && e.endsOn >= monday,
+  );
   const days = Array.from({ length: 7 }, (_, i) => addDaysIso(monday, i)).flatMap((date) => {
-    const lines = linesOf(input.sessions.filter((s) => s.onDate === date));
-    if (lines.length === 0) return [];
-    return [
-      [
-        dayHeading(date, locale),
-        ...lines.map((l) => lineText(l, words, locale, input.rider === undefined)),
-      ].join("\n"),
+    const items = [
+      ...events
+        .filter((e) => (e.startsOn < monday ? monday : e.startsOn) === date)
+        .map((e) => ({
+          startTime: e.startsOn === date ? e.startTime : null,
+          text: eventLines(e, date, words.events, locale).join("\n"),
+        })),
+      ...linesOf(input.sessions.filter((s) => s.onDate === date)).map((l) => ({
+        startTime: l.startTime,
+        text: lineText(l, words, locale, input.rider === undefined),
+      })),
     ];
+    if (items.length === 0) return [];
+    return [[dayHeading(date, locale), ...byStartTime(items).map((i) => i.text)].join("\n")];
   });
   return [header, ...(days.length > 0 ? days : [words.empty])].join("\n\n");
 }

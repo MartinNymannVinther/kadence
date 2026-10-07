@@ -17,15 +17,28 @@ import {
 import { Input } from "@/components/ui/input";
 import { NativeSelect } from "@/components/ui/native-select";
 import { addGuardianAction } from "@/modules/team/actions";
+import type { LinkableMember } from "@/modules/team/member-guardians";
+import { GuardianModeSwitch, LinkMemberForm, type GuardianMode } from "./link-member-form";
 
 const RELATIONS = ["mother", "father", "guardian", "other"] as const;
 
 /**
  * "Tilføj forælder": a parent's link to this rider, with an invitation to
- * copy. The link shows the parent nothing until the rider has said yes to
- * it (ADR 0011) — the dialog says so, so nobody is surprised.
+ * copy — or, for a parent already on the team, their account linked
+ * directly (link-member-form.tsx, backlog P2-16). The link shows the
+ * parent nothing until the rider has said yes to it (ADR 0011) — the
+ * dialog says so, so nobody is surprised.
  */
-export function AddGuardianDialog({ riderId, riderName }: { riderId: string; riderName: string }) {
+export function AddGuardianDialog({
+  riderId,
+  riderName,
+  members,
+}: {
+  riderId: string;
+  riderName: string;
+  /** The team's members who could be this rider's parent too. */
+  members: LinkableMember[];
+}) {
   const t = useTranslations("riders.addGuardian");
   const relations = useTranslations("riders.relation");
   const common = useTranslations("common");
@@ -36,6 +49,9 @@ export function AddGuardianDialog({ riderId, riderName }: { riderId: string; rid
   const [relation, setRelation] = useState<(typeof RELATIONS)[number]>("mother");
   const [email, setEmail] = useState("");
   const [issued, setIssued] = useState<{ url: string; email: string } | null>(null);
+  const [mode, setMode] = useState<GuardianMode>("new");
+  const switcher =
+    members.length > 0 ? <GuardianModeSwitch mode={mode} onChange={setMode} /> : null;
 
   function toggle(next: boolean) {
     setOpen(next);
@@ -43,6 +59,7 @@ export function AddGuardianDialog({ riderId, riderName }: { riderId: string; rid
       setName("");
       setEmail("");
       setIssued(null);
+      setMode("new");
     }
   }
 
@@ -78,12 +95,27 @@ export function AddGuardianDialog({ riderId, riderName }: { riderId: string; rid
                 </Button>
               </DialogFooter>
             </div>
+          ) : mode === "member" ? (
+            <div className="flex flex-col gap-4">
+              <DialogHeader>
+                <DialogTitle>{t("title")}</DialogTitle>
+                <DialogDescription>{t("body", { rider: riderName })}</DialogDescription>
+              </DialogHeader>
+              <LinkMemberForm
+                riderId={riderId}
+                riderName={riderName}
+                members={members}
+                switcher={switcher}
+                onClose={() => toggle(false)}
+              />
+            </div>
           ) : (
             <form onSubmit={submit} className="flex flex-col gap-4">
               <DialogHeader>
                 <DialogTitle>{t("title")}</DialogTitle>
                 <DialogDescription>{t("body", { rider: riderName })}</DialogDescription>
               </DialogHeader>
+              {switcher}
               <div className="grid gap-3 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
                 <div className="flex flex-col gap-1.5">
                   <label htmlFor={`${base}-name`} className="text-sm font-medium">

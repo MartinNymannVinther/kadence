@@ -2,7 +2,7 @@ import { Check, ExternalLink, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { SLEEP_URL } from "./guide-links";
 
-const CAN = ["training", "wellbeing", "comments"] as const;
+const CAN = ["training", "wellbeing", "comments", "calendar"] as const;
 const CANNOT = ["others", "change", "hidden"] as const;
 
 /**

@@ -274,6 +274,7 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
       endsOn: addDaysIso(startsOn, e.days - 1),
       priority: e.priority,
       note: "",
+      ...e.where?.[l],
     });
   }
   await createEvent(ctx, {

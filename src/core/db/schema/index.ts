@@ -10,6 +10,7 @@ export * from "./foundation";
 export * from "./team";
 export * from "./training";
 export * from "./wellbeing";
+export * from "./calendar";
 export * from "./devices";
 export * from "./session-deletions";
 export * from "./upload";

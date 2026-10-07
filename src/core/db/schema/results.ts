@@ -3,7 +3,7 @@ import { check, date, index, pgTable, smallint, text, uniqueIndex } from "drizzl
 import { domainId } from "./foundation";
 import { tenant, timestamps } from "./shared";
 import { riders } from "./team";
-import { calendarEvents } from "./training";
+import { calendarEvents } from "./calendar";
 
 /**
  * A rider's result in a race, as Cykling Danmark published it

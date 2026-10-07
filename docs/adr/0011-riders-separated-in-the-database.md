@@ -1,6 +1,6 @@
 # ADR 0011: Riders are separated inside a team, in the database
 
-Status: accepted · Date: 2026-09-27
+Status: accepted · Date: 2026-09-27 · Amended by ADR 0069 (a parent puts the family's days into their child's calendar)
 
 ## Context
 

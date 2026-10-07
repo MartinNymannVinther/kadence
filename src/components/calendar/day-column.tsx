@@ -89,7 +89,7 @@ export function DayColumn({
       {events.length > 0 && (
         <div className="flex flex-col gap-1">
           {events.map((event) => (
-            <EventChip key={event.id} event={event} onOpen={onOpenEvent?.(event)} />
+            <EventChip key={event.id} event={event} onOpen={onOpenEvent?.(event)} day={date} full />
           ))}
         </div>
       )}

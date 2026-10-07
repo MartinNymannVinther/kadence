@@ -14,9 +14,11 @@ import { getRiders } from "@/modules/team/riders";
 import { recentRides } from "@/modules/today/recent-rides";
 import { rideToRate } from "@/components/today/rpe-pick";
 import { addDaysIso, mondayOf, todayInCopenhagen } from "@/core/dates";
+import { listEvents } from "@/modules/training/events";
 import { listOwnTemplates } from "@/modules/training/templates";
 import { getWeekPlanDraft } from "@/modules/training/week-plan-draft";
 import { whoAmI } from "@/modules/team/access";
+import { listLinkableMembers } from "@/modules/team/member-guardians";
 import { getPilotWeeks } from "@/modules/insight/pilot-service";
 import { adminPool } from "../helpers/db";
 
@@ -131,6 +133,20 @@ describe("a demo workspace", () => {
     expect(placed.rows[0].n).toBeGreaterThan(0);
   });
 
+  it("says when and where the season opener starts, and who drives (backlog P2-03)", async () => {
+    const race = await admin.query(
+      `select start_time, meeting_place, transport_note from calendar_events
+        where org_id = $1 and kind = 'race' and start_time is not null`,
+      [orgId],
+    );
+    expect(race.rows).toHaveLength(1);
+    expect(race.rows[0]).toMatchObject({
+      start_time: "09:30:00",
+      meeting_place: "Hillerød Stadion",
+    });
+    expect(race.rows[0].transport_note).toMatch(/^Klubbens bus/);
+  });
+
   it("has the team's own drawn exercise, mixed into a programme laid into today's calendar (ADR 0067)", async () => {
     const exercises = await admin.query(`select name, pose from team_exercises where org_id = $1`, [
       orgId,
@@ -207,6 +223,17 @@ describe("a demo workspace", () => {
     const parent = accounts.find((a) => a.role === "parent")!;
     const me = await whoAmI(orgId, parent.userId);
     expect(me?.children).toMatchObject([{ name: "Emma Holm", confirmed: true }]);
+
+    // The parent's holiday in Emma's calendar, seen by the coach as a parent's (ADR 0069).
+    const ahead = addDaysIso(todayInCopenhagen(), 40);
+    const events = await listEvents({ orgId, userId }, { from: todayInCopenhagen(), to: ahead });
+    expect(events.filter((e) => e.fromParent)).toMatchObject([
+      { kind: "holiday", title: "Efterårsferie i sommerhuset", createdBy: parent.userId },
+    ]);
+    // The coach can link her to a second child from that rider's page (backlog P2-16).
+    const oskar = (await getRiders({ orgId, userId })).find((r) => r.name === "Oskar Lund")!;
+    const members = await listLinkableMembers({ orgId, userId }, oskar.id);
+    expect(members.find((m) => m.userId === parent.userId)?.parentOf).toEqual(["Emma Holm"]);
 
     const switched = await switchDemoRole({ userId, orgId }, "parent");
     expect(switched?.getSetCookie().join(";")).toMatch(/better-auth/);

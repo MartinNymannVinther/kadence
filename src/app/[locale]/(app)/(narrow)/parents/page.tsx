@@ -30,7 +30,8 @@ const hrefFor = (sessionId: string) => withQuery("/parents", { session: sessionI
  * the child's name — each confirmed child's week with when and where each
  * session starts, what is coming the next 30 days, how the child is doing
  * if the child shares it, the conversations about the training and the
- * form in plain words; never a pen. Below, for everyone, "Forældreguiden"
+ * form in plain words; the one pen is for the family's own days in the
+ * child's calendar (docs/adr/0069). Below, for everyone, "Forældreguiden"
  * in Kadence's own words with links to Team Danmark's originals, and
  * three plain sections: sleep, school beside sport, and what a parent can
  * see here and why.

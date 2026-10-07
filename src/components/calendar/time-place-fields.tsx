@@ -22,14 +22,18 @@ export function timePlaceValue(draft: TimePlaceDraft): TimePlace {
 /**
  * When and where a session starts (ADR 0058): a clock time in Copenhagen
  * and a meeting place, both optional — for the session a group rides
- * together. Every form that writes a session carries these two.
+ * together. Every form that writes a session carries these two, and so
+ * does a race's or a camp's (event-where-fields.tsx), with its own hint.
  */
 export function TimePlaceFields({
   value,
   onChange,
+  hint,
 }: {
   value: TimePlaceDraft;
   onChange: (value: TimePlaceDraft) => void;
+  /** What the fields are for, when it is not a session ridden together. */
+  hint?: string;
 }) {
   const t = useTranslations("calendar.timePlace");
   const ids = { time: useId(), place: useId(), hint: useId() };
@@ -38,7 +42,7 @@ export function TimePlaceFields({
     <fieldset className="flex min-w-0 flex-col gap-2" aria-describedby={ids.hint}>
       <legend className="text-sm font-medium">{t("legend")}</legend>
       <p id={ids.hint} className="text-meta -mt-1 text-xs">
-        {t("hint")}
+        {hint ?? t("hint")}
       </p>
       <div className="grid min-w-0 gap-3 sm:grid-cols-[10rem_minmax(0,1fr)]">
         <div className="flex min-w-0 flex-col gap-1">

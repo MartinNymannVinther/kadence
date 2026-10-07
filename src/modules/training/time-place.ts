@@ -11,11 +11,14 @@ import { z } from "zod";
  */
 
 export const MAX_PLACE = 120;
+/** A race's or a camp's note on who drives: "Annes bil fra klubhuset kl. 7.30". */
+export const MAX_TRANSPORT = 200;
 
 const HH_MM = /^([01]\d|2[0-3]):[0-5]\d$/;
 
 export const StartTime = z.string().regex(HH_MM);
 export const MeetingPlace = z.string().trim().max(MAX_PLACE);
+export const TransportNote = z.string().trim().max(MAX_TRANSPORT);
 
 /**
  * The two fields as an input carries them: left out, they leave a session

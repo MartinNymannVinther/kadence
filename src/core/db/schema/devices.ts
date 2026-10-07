@@ -1,8 +1,8 @@
 import { sql } from "drizzle-orm";
 import { check, pgTable, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
 import { domainId } from "./foundation";
-import { riders } from "./team";
 import { tenant, timestamps } from "./shared";
+import { riders } from "./team";
 
 /**
  * A rider's connection to Wahoo, Garmin or Polar. The tokens are sealed with the

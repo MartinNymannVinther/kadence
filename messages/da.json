@@ -959,7 +959,14 @@
     "goals": "Dine mål",
     "records": "Dine rekorder",
     "upload": "Upload tur",
-    "uploadBody": "Filer fra cykelcomputeren, uret eller hometraineren. Turen lander på dagens pas af sig selv. Herunder kan du også sende ugens pas til din Garmin."
+    "uploadBody": "Filer fra cykelcomputeren, uret eller hometraineren. Turen lander på dagens pas af sig selv. Herunder kan du også sende ugens pas til din Garmin.",
+    "rides": {
+      "title": "Dine ture",
+      "body": "Dine seneste ture, den nyeste først. Farven viser, hvor tæt turen kom på passet.",
+      "empty": "Du har ingen ture endnu. Upload en fil herunder, så kommer den her.",
+      "km": "{km} km",
+      "more": "Vis flere"
+    }
   },
   "errors": {
     "too_many_reset_links": "Du har lavet mange links lige nu. Prøv igen om en time.",
@@ -972,6 +979,8 @@
     "alreadyDone": "Passet er allerede markeret som udført. Genindlæs siden.",
     "alreadyInvited": "Der er allerede et åbent link til den adresse. Kopiér det, der findes, eller træk det tilbage under Indstillinger → Arbejdsrum.",
     "alreadyMember": "Personen er allerede med på holdet.",
+    "alreadyParent": "Personen er allerede forælder til rytteren.",
+    "parentIsRider": "En rytter kan ikke være sin egen forælder.",
     "youthWeight": "Vægt er slået fra for ryttere under 19. En træner kan slå det til under Indstillinger → Holdet.",
     "not_connected": "Der er ingen forbindelse at afbryde. Genindlæs siden.",
     "not_a_rider": "Kun en rytter kan forbinde sin egen enhed.",
@@ -1133,6 +1142,8 @@
       "week": "Uge {n}",
       "riders": "{count, plural, one {# rytter} other {# ryttere}}",
       "empty": "Ingen pas i ugen.",
+      "until": "til og med {day}",
+      "transport": "Kørsel: {note}",
       "copied": "Ugen er kopieret som tekst. Sæt den ind i holdets chat.",
       "failed": "Ugen kunne ikke deles eller kopieres. Prøv igen."
     },
@@ -1186,6 +1197,10 @@
       "note": "Note",
       "deleteTitle": "Slet begivenheden?",
       "deleteBody": "Den forsvinder fra kalenderen.",
+      "whereHint": "Hvornår og hvor det starter, og hvem der kører. Alt kan stå tomt.",
+      "transport": "Kørsel",
+      "transportPlaceholder": "Fx Annes bil fra klubhuset kl. 7.30",
+      "fromParent": "En forælder har lagt den ind. Rytteren og trænerne kan rette og slette den.",
       "results": {
         "source": "Hentet fra Cykling Danmark.",
         "label": "Resultater",
@@ -1460,7 +1475,7 @@
       "formatTitle": "Sådan skriver du en linje",
       "formatRider": "Først rytteren: navn, fødselsår og e-mail, adskilt af komma.",
       "formatParents": "Så forældrene, hver efter et semikolon: navn og e-mail. Højst to pr. rytter.",
-      "formatEmail": "Den, der har en e-mail på listen, får sit eget link. Uden e-mail bliver personen oprettet uden link.",
+      "formatEmail": "Den, der har en e-mail på listen, får sit eget link. Uden e-mail bliver personen oprettet uden link. Er en forælder allerede med på holdet, bliver kontoen koblet på i stedet.",
       "formatSiblings": "Søskende kan have samme forælder. Skriv forælderen ens på begge linjer, så får forælderen ét link.",
       "sharedYear": "Fælles fødselsår",
       "sharedYearHint": "Bruges på de linjer, der ikke har deres eget år.",
@@ -1477,6 +1492,8 @@
       "doneBody": "Del linket med hver person. Teksten fortæller, hvad de skal gøre, og linket virker kun for deres egen adresse.",
       "noLinkTitle": "Uden link",
       "noLinkBody": "Der stod ingen e-mail ved dem her, så de har intet link endnu. Når du har adressen, kan du invitere dem fra rytterens side.",
+      "linkedTitle": "Koblet til deres konto",
+      "linkedBody": "De er allerede med på holdet, så de får ikke et nyt link. De ser barnet, når rytteren har sagt ja til dem.",
       "done": "Færdig",
       "whole": {
         "empty": "Skriv mindst én rytter.",
@@ -1500,7 +1517,7 @@
         "sameEmail": "{value} står også på linje {other}. Hver person skal have sin egen adresse.",
         "twiceOnLine": "{value} står to gange på linjen.",
         "onTeam": "{value} er allerede på holdet.",
-        "emailMember": "{value} hører til en, der allerede er med på holdet.",
+        "emailMember": "{value} hører til en, der allerede er med på holdet. En ny rytter skal have sin egen adresse.",
         "emailInvited": "{value} har allerede et link, der venter."
       }
     },
@@ -1579,7 +1596,17 @@
       "added": "Forælderen er tilføjet.",
       "issuedTitle": "Forælderen er tilføjet",
       "issuedBody": "Send linket til forælderen. Bagefter skal {rider} bekræfte forbindelsen under Indstillinger → Mig.",
-      "done": "Færdig"
+      "done": "Færdig",
+      "who": "Hvem er forælderen?",
+      "modeNew": "En ny forælder",
+      "modeMember": "En, der allerede er med på holdet",
+      "memberBody": "Har forælderen allerede en konto på holdet, fx som forælder til en søskende, kobler du kontoen på {rider} her. Der kommer intet nyt link. {rider} skal stadig bekræfte forbindelsen, før forælderen ser noget.",
+      "member": "Medlem af holdet",
+      "memberParentOf": "forælder til {names}",
+      "memberCoach": "træner",
+      "memberRider": "rytter",
+      "link": "Kobl på",
+      "linked": "{name} er koblet til {rider}. Forbindelsen gælder, når {rider} har bekræftet den."
     },
     "archive": {
       "button": "Arkivér rytteren",
@@ -1773,6 +1800,7 @@
     "priority": "{priority}-løb",
     "group": "Holdpas",
     "teamEvent": "Hele holdet",
+    "transport": "Kørsel: {note}",
     "zone": {
       "1": "restitution",
       "2": "udholdenhed",
@@ -2973,6 +3001,7 @@
       "noForm": "Der er ikke gennemført træning nok til at vise formen endnu.",
       "upcoming": "De næste 30 dage",
       "noUpcoming": "Ingen løb, eksamener eller lejre den næste måned.",
+      "family": "Familiens kalender",
       "threads": "Samtaler om træningen",
       "noThreads": "Ingen kommentarer de seneste to uger.",
       "comments": "{count, plural, one {# kommentar} other {# kommentarer}}",
@@ -2981,6 +3010,24 @@
       "wellbeingNote": "Grøn er balance. Gul i en periode er et signal om at tage en snak sammen med træneren. Rød betyder, at der skal hjælp til. Spørg åbent, og lyt.",
       "noCheckins": "Ingen check-ins de seneste 14 dage.",
       "wellbeingHidden": "{name} deler ikke sine check-ins med dig. Det er rytterens eget valg, og det er helt i orden."
+    },
+    "family": {
+      "body": "Læg ferie, eksamen eller andet ind, som træneren skal kende til. {name} og trænerne ser det i kalenderen, og {name} kan slette det.",
+      "empty": "Du har ikke lagt noget ind endnu.",
+      "add": "Tilføj til kalenderen",
+      "edit": "Ret",
+      "editOne": "Ret {title}",
+      "range": "{from} – {to}",
+      "addTitle": "Tilføj til {name}s kalender",
+      "editTitle": "Ret i {name}s kalender",
+      "dialogBody": "Trænerne ser det og kan planlægge uden om det. {name} ser det også og kan slette det.",
+      "kind": "Hvad",
+      "titleLabel": "Titel",
+      "titlePlaceholder": "Fx efterårsferie i sommerhuset",
+      "from": "Fra",
+      "to": "Til og med",
+      "deleteTitle": "Slet fra kalenderen?",
+      "deleteBody": "Det forsvinder fra {name}s kalender og fra trænernes."
     },
     "guide": {
       "title": "Forældreguiden",
@@ -3086,7 +3133,8 @@
       "can": {
         "training": "Dit barns træning: pas, hvad der er udført, og timerne, når dit barn har bekræftet forbindelsen og deler træningen.",
         "wellbeing": "Hvordan dit barn har det (check-ins), men kun hvis dit barn vælger at dele det.",
-        "comments": "Samtalen om træningen: du kan læse med, men ikke skrive. Der findes ingen private beskeder mellem en voksen og en ung rytter."
+        "comments": "Samtalen om træningen: du kan læse med, men ikke skrive. Der findes ingen private beskeder mellem en voksen og en ung rytter.",
+        "calendar": "Lægge ferie, eksamen og andet ind i dit barns kalender, så træneren kan planlægge uden om det. Dit barn ser det og kan slette det."
       },
       "cannot": {
         "others": "Se andre ryttere på holdet.",

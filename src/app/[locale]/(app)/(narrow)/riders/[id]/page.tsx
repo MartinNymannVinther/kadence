@@ -38,6 +38,7 @@ import { raceStatus } from "@/modules/results/service";
 import { dcuProfileUrl, formatUciId } from "@/modules/results/uci-id";
 import { whoAmI } from "@/modules/team/access";
 import { listGuardians } from "@/modules/team/guardians";
+import { listLinkableMembers } from "@/modules/team/member-guardians";
 import { getRider } from "@/modules/team/riders";
 import { getTeamSettings } from "@/modules/team/settings";
 import { dcuProposalFor, listGoals } from "@/modules/training/goals";
@@ -94,6 +95,7 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
     goals,
     uploadKeys,
     races,
+    members,
   ] = await Promise.all([
     listGuardians(ctx, rider.id),
     listPendingInvitations(ctx.orgId),
@@ -105,6 +107,7 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
     listGoals(ctx, rider.id, today),
     listUploadKeys(ctx, rider.id),
     raceStatus(ctx, rider.id),
+    listLinkableMembers(ctx, rider.id),
   ]);
   after(() => refreshStaleRaces(ctx, [rider.id]));
   const insight = insights[0] ?? null;
@@ -267,6 +270,7 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
         <GuardianList
           riderId={rider.id}
           riderName={rider.name}
+          members={members}
           guardians={guardians.map((g) => {
             const state = guardianState(g, rider.birthYear, pending);
             return {
