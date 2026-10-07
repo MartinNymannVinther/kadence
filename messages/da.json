@@ -186,10 +186,20 @@
       "library": "Bibliotek",
       "season": "Sæson",
       "club": "Klubmester",
-      "parents": "Forældre",
       "rulle": "Rulle",
       "me": "Mig",
       "child": "Barnet",
+      "guides": "Viden og beregnere",
+      "guidesShort": "Viden",
+      "coachGuide": "Trænerguide",
+      "parentsGuide": "Forældreguide",
+      "groups": {
+        "planning": "Planlægning",
+        "training": "Træning",
+        "team": "Holdet",
+        "tools": "Værktøjer",
+        "knowledge": "Viden"
+      },
       "more": "Mere",
       "moreNews": "Mere, der er noget nyt",
       "barLabel": "Hovedmenu"
@@ -839,7 +849,7 @@
       "where": "Se holdets uge i kalenderen"
     },
     "parent": {
-      "link": "{count, plural, one {Se dit barns uge under Forældre} other {Se dine børns uger under Forældre}}"
+      "link": "{count, plural, one {Se dit barns uge} other {Se dine børns uger}}"
     },
     "start": {
       "title": "Kom godt i gang",

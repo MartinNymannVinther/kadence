@@ -44,8 +44,9 @@ const HOW_TO = [
  * adds the part it built. Every section can be linked to: `/help#help-keys`.
  * The coach guide is offered to coaches and riders; a parent who is
  * neither has the parents' page instead, so the card is left out for them.
- * The open guides and calculators are not in the signed-in menu (ADR
- * 0061); the line under the introduction is the way to them from here.
+ * The open guides and calculators are back in the menu under Viden (ADR
+ * 0068); the line under the introduction still leads to them from here,
+ * and says they are open to everyone.
  * Rulle's world is described only where the installation has it on (ADR 0057).
  */
 export default async function HelpPage() {

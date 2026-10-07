@@ -33,6 +33,8 @@ export default defineConfig({
       // draft and a programme as a session. The team's own, laying a programme in and the
       // download route need the database.
       "tests/exercises/{builtin,contract,figure,view,compose,download-html,html-escape,library-paths,pose-edit,program-draft,program-session}.test.ts",
+      // The menu and the settings tabs by role and group (docs/adr/0068).
+      "tests/core/{nav-items,settings-items}.test.ts",
     ],
   },
 });

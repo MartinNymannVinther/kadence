@@ -17,7 +17,7 @@ import { whoAmI } from "@/modules/team/access";
 import { AppSidebar } from "./app-sidebar";
 import { BottomBar } from "./bottom-bar";
 import { MobileHeader } from "./mobile-header";
-import { barItems, homeHref, menuItems, navFlags, navRole } from "./nav-items";
+import { barItems, homeHref, menuGroups, navFlags, navRole } from "./nav-items";
 import { SidebarShell, SidebarToggle } from "./sidebar-shell";
 import { getTeamSettings } from "@/modules/team/settings";
 import { unreadThreadCount } from "@/modules/community/service";
@@ -62,15 +62,16 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   // background after the page, and only what is more than three hours old.
   if (context && me?.isCoach) after(() => refreshStaleRaces(context));
   else if (context && me?.rider) after(() => refreshOwnRacesLater(context));
-  // One menu per role (ADR 0061). The club championship is in it once the
-  // installation has it (ADR 0057) and the club has turned it on (ADR 0051);
-  // Trænerrummet once the installation has it (ADR 0052).
+  // One menu per role, grouped by task (ADR 0061, 0068). The club
+  // championship is in it once the installation has it (ADR 0057) and the
+  // club has turned it on (ADR 0051); Trænerrummet once the installation
+  // has it (ADR 0052).
   const clubOn = featureOn("clubChampionship");
   const club = context && clubOn ? (await getTeamSettings(context)).clubChampionship : false;
   const coachesRoom = featureOn("coachesRoom");
   const role = navRole(me);
   const flags = navFlags(me, { club, coachesRoom });
-  const menu = menuItems(role, flags);
+  const groups = menuGroups(role, flags);
   const bar = barItems(role);
   const home = homeHref(role);
   // Threads with something new in Trænerrummet, for a coach (ADR 0052).
@@ -101,7 +102,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             logo={logo}
             canCreate={canCreate}
             attention={attention}
-            items={menu}
+            groups={groups}
             home={home}
             counts={counts}
             toggle={<SidebarToggle placement="sidebar" />}
@@ -113,7 +114,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         {children}
         <BottomBar
           bar={bar}
-          menu={menu}
+          groups={groups}
           counts={counts}
           attention={attention}
           canCreate={canCreate}

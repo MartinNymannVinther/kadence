@@ -186,10 +186,20 @@
       "library": "Library",
       "season": "Season",
       "club": "Club champion",
-      "parents": "Parents",
       "rulle": "Rulle",
       "me": "Me",
       "child": "Your child",
+      "guides": "Guides and calculators",
+      "guidesShort": "Guides",
+      "coachGuide": "Coach guide",
+      "parentsGuide": "Parents' guide",
+      "groups": {
+        "planning": "Planning",
+        "training": "Training",
+        "team": "Team",
+        "tools": "Tools",
+        "knowledge": "Knowledge"
+      },
       "more": "More",
       "moreNews": "More, something new",
       "barLabel": "Main menu"
@@ -839,7 +849,7 @@
       "where": "See the team's week in the calendar"
     },
     "parent": {
-      "link": "{count, plural, one {See your child's week under Parents} other {See your children's weeks under Parents}}"
+      "link": "{count, plural, one {See your child's week} other {See your children's weeks}}"
     },
     "start": {
       "title": "Getting started",

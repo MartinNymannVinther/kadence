@@ -1,35 +1,17 @@
 "use client";
 
-import {
-  Bike,
-  CalendarDays,
-  CircleUser,
-  Ellipsis,
-  House,
-  LibraryBig,
-  Users,
-  type LucideIcon,
-} from "lucide-react";
+import { Ellipsis, type LucideIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { MoreSheetContent, type MoreSheetProps } from "./more-sheet";
-import { isActive, type NavItem, type NavKey } from "./nav-items";
-
-/** The bar's places; only these keys are ever on it (barItems in ./nav-items.ts). */
-const ICONS: Partial<Record<NavKey, LucideIcon>> = {
-  today: House,
-  calendar: CalendarDays,
-  riders: Users,
-  library: LibraryBig,
-  me: CircleUser,
-  child: Bike,
-};
+import { NAV_ICONS } from "./nav-icons";
+import { activeHref, barLabelKey, type NavItem } from "./nav-items";
 
 /**
- * The phone's navigation (ADR 0061): a bar at the foot of the screen with
+ * The phone's navigation (ADR 0061, 0068): a bar at the foot of the screen with
  * the few places a role goes every day and "Mere" for the rest, within
  * reach of a thumb. Below lg, so an iPad held upright gets it too; the
  * sidebar takes over from lg. Fixed over the home indicator with the safe
@@ -47,12 +29,20 @@ export function BottomBar({ bar, ...sheet }: MoreSheetProps & { bar: NavItem[] }
   const [open, setOpen] = useState(false);
   if (pathname === "/rulle" || pathname.startsWith("/rulle/")) return null;
 
-  const onBar = bar.some((item) => isActive(pathname, item.href));
+  const menu = sheet.groups.flatMap((group) => group.items);
+  // The bar's place is lit only when it is the menu's closest match: on
+  // the coach guide (/help/coach) neither a bar place nor Help is, and
+  // "Mere" is.
+  const lit = activeHref(
+    pathname,
+    menu.map((item) => item.href),
+  );
+  const onBar = bar.some((item) => item.href === lit);
   const counts = sheet.counts ?? {};
   // Something new waits behind "Mere": unread threads, or people at the door.
   const news =
     (sheet.attention ?? 0) > 0 ||
-    sheet.menu.some((item) => !bar.some((b) => b.key === item.key) && (counts[item.key] ?? 0) > 0);
+    menu.some((item) => !bar.some((b) => b.key === item.key) && (counts[item.key] ?? 0) > 0);
 
   return (
     <nav
@@ -61,8 +51,8 @@ export function BottomBar({ bar, ...sheet }: MoreSheetProps & { bar: NavItem[] }
     >
       <ul className="mx-auto flex h-full max-w-xl items-stretch px-1">
         {bar.map((item) => {
-          const Icon = ICONS[item.key] ?? House;
-          const active = isActive(pathname, item.href);
+          const Icon = NAV_ICONS[item.key];
+          const active = item.href === lit;
           return (
             <li key={item.key} className="flex flex-1">
               <Link
@@ -71,7 +61,7 @@ export function BottomBar({ bar, ...sheet }: MoreSheetProps & { bar: NavItem[] }
                 className={barItemClass}
               >
                 <BarMark Icon={Icon} active={active} />
-                <BarLabel active={active}>{t(item.key)}</BarLabel>
+                <BarLabel active={active}>{t(barLabelKey(item.key))}</BarLabel>
               </Link>
             </li>
           );

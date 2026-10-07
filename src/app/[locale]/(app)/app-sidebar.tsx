@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { WordmarkLockup } from "@/components/wordmark";
 import { Link } from "@/i18n/navigation";
-import type { NavItem } from "./nav-items";
+import type { NavGroup } from "./nav-items";
 import { OrgSwitcher } from "./org-switcher";
 import { SidebarNav, SidebarSettingsLink } from "./sidebar-nav";
 import { SIDEBAR_ID } from "./sidebar-shell";
@@ -20,7 +20,7 @@ export async function AppSidebar({
   logo = null,
   canCreate = false,
   attention = 0,
-  items,
+  groups,
   home,
   counts = {},
   toggle,
@@ -34,8 +34,8 @@ export async function AppSidebar({
   canCreate?: boolean;
   /** Items waiting for the installation's owner; zero for everyone else. */
   attention?: number;
-  /** The role's list (menuItems in ./nav-items.ts, ADR 0061). */
-  items: NavItem[];
+  /** The role's grouped list (menuGroups in ./nav-items.ts, ADR 0068). */
+  groups: NavGroup[];
   /** Where the wordmark leads: the first place in the role's day. */
   home: string;
   /** Counts beside menu items (ADR 0052). */
@@ -60,7 +60,7 @@ export async function AppSidebar({
         </Link>
         {toggle}
       </div>
-      <SidebarNav items={items} counts={counts} />
+      <SidebarNav groups={groups} counts={counts} />
       <div className="flex flex-col gap-1.5 px-3 pt-1 pb-3">
         <OrgSwitcher
           canCreate={canCreate}
