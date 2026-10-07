@@ -1,3 +1,4 @@
+import { ArrowLeft } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { buttonVariants } from "@/components/ui/button";
 import { Wordmark } from "@/components/wordmark";
@@ -7,9 +8,13 @@ import { cn } from "@/lib/utils";
 
 /**
  * The open pages: guides and calculators anyone may read without an
- * account (ADR 0047). Signed in or not, they look the same; the corner
- * leads back into Kadence or to the login. Nothing on these pages reads
- * the database beyond the session cookie that decides that one link.
+ * account (ADR 0047). They look the same signed in or not, but for a
+ * person who is signed in the corner says "Tilbage til Kadence" with an
+ * arrow, so knowledge reached from the menu (ADR 0068) does not feel like
+ * leaving the app; for everyone else it is the login. Nothing on these
+ * pages reads the database beyond the session cookie that decides that one
+ * link, and without the cookie not even that: Better Auth answers "no
+ * session" before it looks anything up.
  */
 export default async function OpenLayout({ children }: { children: React.ReactNode }) {
   const t = await getTranslations("open");
@@ -28,12 +33,19 @@ export default async function OpenLayout({ children }: { children: React.ReactNo
           >
             {t("nav.hub")}
           </Link>
-          <Link
-            href={session ? "/today" : "/login"}
-            className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
-          >
-            {session ? t("nav.toApp") : t("nav.login")}
-          </Link>
+          {session ? (
+            <Link
+              href="/today"
+              className={cn(buttonVariants({ variant: "outline", size: "sm" }), "max-sm:h-11")}
+            >
+              <ArrowLeft aria-hidden data-icon="inline-start" />
+              {t("nav.toApp")}
+            </Link>
+          ) : (
+            <Link href="/login" className={cn(buttonVariants({ variant: "outline", size: "sm" }))}>
+              {t("nav.login")}
+            </Link>
+          )}
         </nav>
       </header>
 

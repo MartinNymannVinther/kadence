@@ -3832,7 +3832,7 @@
   "open": {
     "nav": {
       "hub": "Viden og beregnere",
-      "toApp": "Til Kadence",
+      "toApp": "Tilbage til Kadence",
       "login": "Log ind"
     },
     "footer": "Kadence er open source træningsplanlægning for unge landevejsryttere, deres trænere og forældre. Siderne her er åbne for alle, og det, du skriver i beregnerne, bliver i din browser.",
