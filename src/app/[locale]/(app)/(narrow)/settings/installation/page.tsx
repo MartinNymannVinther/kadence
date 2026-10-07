@@ -93,7 +93,7 @@ export default async function InstallationPage() {
         <p>{t("privacy")}</p>
         <p>
           {t("newClub")}{" "}
-          <Link href="/settings/access" className="text-primary hover:underline">
+          <Link href="/settings/access" className="focus-ring text-primary hover:underline">
             {t("toAccess")}
           </Link>
         </p>

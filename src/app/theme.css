@@ -49,7 +49,13 @@
   --meta: oklch(0.5 0.008 82); /* #65635e meta text */
   --hairline: oklch(0.935 0.008 85); /* #f0ece5 table rules, skeletons */
   --border: oklch(0.918 0.008 85); /* #eae5dc */
-  --input: oklch(0.872 0.009 85); /* #ddd8cf */
+  /*
+   * Raised from the handoff's 0.872 (#ddd8cf): at that lightness an input's
+   * border reads 1.45:1 against the card, short of WCAG 1.4.11's 3:1 for a
+   * non-text boundary (tests/meta/contrast.test.ts). Same hue and chroma,
+   * darker: 3.3:1 at this lightness (#8f8c86).
+   */
+  --input: oklch(0.64 0.009 85); /* #8f8c86 */
   --ring: oklch(0.505 0.055 150);
   --chart-1: oklch(0.505 0.055 150); /* #4a6b53 */
   --chart-2: oklch(0.635 0.04 150); /* #7a9a80 */
@@ -129,7 +135,8 @@
   --meta: oklch(0.7 0.008 82);
   --hairline: oklch(1 0 0 / 7%);
   --border: oklch(1 0 0 / 9%);
-  --input: oklch(1 0 0 / 14%);
+  /* Raised from 14% for the same reason as the light pair: 3.3:1 against the card at 36%. */
+  --input: oklch(1 0 0 / 36%);
   --ring: oklch(0.66 0.075 150);
   --chart-1: oklch(0.66 0.075 150);
   --chart-2: oklch(0.72 0.05 150);

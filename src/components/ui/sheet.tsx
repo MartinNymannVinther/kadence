@@ -37,12 +37,15 @@ function SheetContent({
     <DialogPrimitive.Portal>
       <DialogPrimitive.Backdrop
         data-slot="sheet-overlay"
-        className="fixed inset-0 isolate z-50 bg-[var(--scrim)] duration-150 data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0"
+        // The ! forces !important: data-open:animate-in carries the same
+        // specificity and sits later in Tailwind's generated sheet, so it
+        // would otherwise win even under prefers-reduced-motion.
+        className="fixed inset-0 isolate z-50 bg-[var(--scrim)] duration-150 motion-reduce:!animate-none data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0"
       />
       <DialogPrimitive.Popup
         data-slot="sheet-content"
         className={cn(
-          "bg-background fixed inset-y-0 z-50 flex h-full w-72 max-w-[calc(100%-3rem)] flex-col text-sm duration-200 outline-none data-closed:animate-out data-open:animate-in",
+          "bg-background fixed inset-y-0 z-50 flex h-full w-72 max-w-[calc(100%-3rem)] flex-col text-sm duration-200 outline-none motion-reduce:!animate-none data-closed:animate-out data-open:animate-in",
           side === "left"
             ? "left-0 border-r data-closed:slide-out-to-left data-open:slide-in-from-left"
             : "right-0 border-l data-closed:slide-out-to-right data-open:slide-in-from-right",
