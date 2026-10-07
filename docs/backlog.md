@@ -23,6 +23,7 @@ eller mere. Rækkefølgen inden for en prioritet er den anbefalede.
 
 P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter #21 og #22). Hvert spor bygges i sit eget worktree med egen database og flettes ind på P1-grenen, når det er grønt. Statusloggen nyeste først:
 
+- **7. okt.** Energigels i løbseksemplet fra U17 (PR #28). Ø-06 (øvelser med udstyr) og hele P2 undtagen P2-01 er sat i gang på Martins bud. P2-11 og P2-13 bygges uden at svække trivselszonerne eller revisionssporet; valgene står i ADR'erne.
 - **7. okt.** P1-09 er færdig: en demo kan aldrig blive installationens ejer; hele suiten er grøn (2.456 tests).
 - **7. okt.** PR #26 (navigation efter opgaver) er merget. P1-09 er sat i gang.
 - **7. okt.** N-01 (navigation efter opgaver) er færdig; hele suiten er grøn (2.450 tests, 1.365 enhedstests) og build kompilerer. Ny P1-09: en demo må aldrig blive installationens ejer (fundet under N-01). Den ustabile Rulle-test er rettet.
@@ -147,6 +148,7 @@ Rammen er:
 | Ø-03  | Holdets egne øvelser og programmer i databasen             | Ø    | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
 | Ø-04  | Appen: bibliotek, tegneværktøj, programbygger, kalender    | Ø    | L    | 600k–1M      | Opus 5.5  | Ø-01, Ø-03        | Færdig       |
 | Ø-05  | Demo, hjælp og ADR                                         | Ø    | S    | 100–200k     | Sonnet 5  | Ø-02, Ø-04        | Færdig       |
+| Ø-06  | Øvelser og programmer med udstyr                           | Ø    | M    | 400–600k     | Opus 5.5  |                   | I gang       |
 | N-01  | Navigation efter opgaver                                   | N    | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
 
 ---
@@ -1107,6 +1109,32 @@ uden at lede i en lang flad liste, **så** Kadence føles enkel fra første dag.
 **Tokens:** ca. 300–450k · **Model:** Opus 5.5 (`claude-opus-5-5`), struktur og design på tværs af alle roller.
 
 **Status:** Færdig 7. oktober (ADR 0068). Menuen er grupperet med ikoner for alle roller, Viden og beregnere, Trænerguide, Forældreguide og Hjælp står under Viden, bundbjælken følger rollen, holdnavnet er holdskifteren (kun som knap ved flere hold eller for ejeren), indstillinger står i Dig, Holdet og Installationen, og de åbne sider har "Tilbage til Kadence". Valgt undervejs: menupunktet hedder "Barnet" som før; forældre beholder Klubmester, når den er slået til; punkterne i sidemenuen er 34 px høje på computer, så trænerens længste liste står uden at rulle, og mindst 44 px på telefonen. Faktisk forbrug: 306k tokens på 30 min (skøn 300–450k).
+
+### Ø-06 Øvelser og programmer med udstyr
+
+**Som** træner med et styrkerum **vil jeg** have øvelser og programmer,
+der bruger det udstyr, klubben har, **så** rytterne kan træne styrke med
+rack og vægtstang, håndvægte, kettlebells, måtter, TRX, en bar til
+kropshævninger og elastikker.
+
+- Nyt udstyr i kontrakten: vægtstang (rack), håndvægte, TRX og bar til
+  kropshævninger; kettlebell, måtte og elastik findes.
+- Omkring 15 nye indbyggede øvelser med tegninger og kilder: squat og
+  dødløft med stang, bænkpres eller skulderpres, udfald og step-up med
+  håndvægte, kettlebell-sving, goblet squat, roning med stang eller TRX,
+  TRX-rækker og -udfald, kropshævninger (også med elastik), elastik-
+  øvelser til hofte og skulder.
+- Tre programmer: "Styrke i rummet" (helkrop med stang og håndvægte),
+  "TRX og kropsvægt" og "Elastikker og kettlebell".
+- Doser efter DCU's styrkeprogrammer og ATK: teknik før vægt, belastning
+  som "let", "moderat" eller "tung" frem for kilo, og aldrig til udmattelse
+  for U17.
+- Tegnefunktionen får rekvisitter til stang, håndvægte, TRX-stropper og
+  bar, så holdets egne øvelser også kan bruge dem.
+
+**Tokens:** ca. 400–600k · **Model:** Opus 5.5 (`claude-opus-5-5`), styrketræning for unge med kilder, nye rekvisitter i tegningerne.
+
+**Status:** I gang siden 7. oktober. Bedt om af Martin samme dag.
 
 ## A — afklaringer uden kode
 
