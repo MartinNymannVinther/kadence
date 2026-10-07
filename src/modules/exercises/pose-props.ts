@@ -1,4 +1,5 @@
-import { FIGURE } from "./figure";
+import { FIGURE, geometryBounds } from "./figure";
+import { propPrimitives } from "./figure-props";
 import { clampPoint, keepInside } from "./pose-fit";
 import { BOX, type Point, type Pose, type Prop } from "./types";
 
@@ -19,12 +20,16 @@ export const PROP_KINDS = [
   "band",
   "ball",
   "kettlebell",
+  "barbell",
+  "dumbbell",
+  "trx",
+  "pullupBar",
 ] as const satisfies ReadonlyArray<Prop["kind"]>;
 
 /** The contract's limit (`poseSchema`). */
 export const MAX_PROPS = 6;
-/** One of each: two floors or two walls say nothing a drawing needs. */
-const ONCE: ReadonlySet<Prop["kind"]> = new Set(["floor", "wall"]);
+/** One of each: two floors, two walls or two barbells say nothing a drawing needs. */
+const ONCE: ReadonlySet<Prop["kind"]> = new Set(["floor", "wall", "barbell", "trx", "pullupBar"]);
 
 /** The floor a pose stands on, or where it would be. */
 export function floorY(pose: Pose): number {
@@ -37,6 +42,7 @@ export function defaultProp(kind: Prop["kind"], pose: Pose): Prop {
   const floor = floorY(pose);
   const right = pose.joints.hip[0] < BOX.width / 2;
   const x = (width: number) => (right ? BOX.width - 30 - width : 30);
+  const inward = (by: number) => x(0) + (right ? -by : by);
   switch (kind) {
     case "floor":
       return { kind, y: 122 };
@@ -51,9 +57,24 @@ export function defaultProp(kind: Prop["kind"], pose: Pose): Prop {
     case "band":
       return { kind, from: [x(70), 60], to: [x(70) + 70, 60] };
     case "ball":
-      return { kind, at: [x(0) + (right ? -12 : 12), floor - 14], radius: 12 };
+      return { kind, at: [inward(12), floor - 14], radius: 12 };
     case "kettlebell":
-      return { kind, at: [x(0) + (right ? -8 : 8), floor - 18] };
+      return { kind, at: [inward(8), floor - 18] };
+    case "barbell":
+      // Lying on the floor, its plates on the floor.
+      return { kind, at: [inward(16), floor - 14] };
+    case "dumbbell":
+      return { kind, at: [inward(10), floor - 8] };
+    case "trx":
+      // Hanging from above, the handles together at chest height.
+      return {
+        kind,
+        anchor: [inward(10), 14],
+        handleA: [inward(10), 70],
+        handleB: [inward(10), 70],
+      };
+    case "pullupBar":
+      return { kind, at: [inward(30), 14], width: 60 };
   }
 }
 
@@ -72,8 +93,8 @@ export function removeProp(pose: Pose, index: number): Pose {
   return { ...pose, props: (pose.props ?? []).filter((_, i) => i !== index) };
 }
 
-/** Which handle of a prop: its one point, or one of its two ends. */
-export type PropHandle = "at" | "from" | "to";
+/** Which handle of a prop: its one point, one of its two ends, or a TRX's anchor and handles. */
+export type PropHandle = "at" | "from" | "to" | "anchor" | "handleA" | "handleB";
 
 /** The handles a prop is moved by, where they are drawn. */
 export function propHandles(prop: Prop): Array<{ handle: PropHandle; at: Point }> {
@@ -94,9 +115,62 @@ export function propHandles(prop: Prop): Array<{ handle: PropHandle; at: Point }
       return [{ handle: "at", at: [prop.at[0] + prop.width / 2, prop.at[1]] }];
     case "ball":
     case "kettlebell":
+    case "barbell":
+    case "dumbbell":
+    case "pullupBar":
       return [{ handle: "at", at: prop.at }];
+    case "trx":
+      return [
+        { handle: "anchor", at: prop.anchor },
+        { handle: "handleA", at: prop.handleA },
+        { handle: "handleB", at: prop.handleB },
+      ];
   }
 }
+
+/** The prop moved by `dx`, `dy` units, every point of it. */
+export function shiftProp(prop: Prop, dx: number, dy: number): Prop {
+  const move = ([x, y]: Point): Point => [x + dx, y + dy];
+  switch (prop.kind) {
+    case "floor":
+      return { ...prop, y: prop.y + dy };
+    case "wall":
+      return { ...prop, x: prop.x + dx };
+    case "mat":
+    case "band":
+      return { ...prop, from: move(prop.from), to: move(prop.to) };
+    case "bench":
+    case "step":
+    case "ball":
+    case "kettlebell":
+    case "barbell":
+    case "dumbbell":
+    case "pullupBar":
+      return { ...prop, at: move(prop.at) };
+    case "trx":
+      return {
+        ...prop,
+        anchor: move(prop.anchor),
+        handleA: move(prop.handleA),
+        handleB: move(prop.handleB),
+      };
+  }
+}
+
+/** A prop held by one point, moved to `to` and then back inside the box by what it paints. */
+function placedInside(prop: Extract<Prop, { at: Point }>, to: Point): Prop {
+  const moved = shiftProp(prop, Math.round(to[0]) - prop.at[0], Math.round(to[1]) - prop.at[1]);
+  const b = geometryBounds(propPrimitives([moved]));
+  const back = (low: number, high: number, max: number) =>
+    low < 0 ? Math.ceil(-low) : high > max ? Math.floor(max - high) : 0;
+  return shiftProp(moved, back(b.minX, b.maxX, BOX.width), back(b.minY, b.maxY, BOX.height));
+}
+
+/** How far a TRX's anchor ring and a handle's grip reach round their points. */
+const TRX_MARGIN = {
+  anchor: FIGURE.trx.ring + FIGURE.trx.strap,
+  handle: FIGURE.trx.grip + FIGURE.propStroke,
+} as const;
 
 /** The prop with the handle moved to `to`, kept inside the box by what it paints. */
 function movedProp(prop: Prop, handle: PropHandle, to: Point, floor: number): Prop {
@@ -124,6 +198,15 @@ function movedProp(prop: Prop, handle: PropHandle, to: Point, floor: number): Pr
       const k = FIGURE.kettlebell;
       return { ...prop, at: clampPoint(to, k.handle + 2, k.drop + k.bell, k.bell) };
     }
+    case "barbell":
+    case "dumbbell":
+    case "pullupBar":
+      return placedInside(prop, to);
+    case "trx": {
+      if (handle === "anchor") return { ...prop, anchor: clampPoint(to, TRX_MARGIN.anchor) };
+      const key = handle === "handleB" ? "handleB" : "handleA";
+      return { ...prop, [key]: clampPoint(to, TRX_MARGIN.handle) };
+    }
   }
 }
 
@@ -134,6 +217,9 @@ export function movePropHandle(pose: Pose, index: number, handle: PropHandle, to
   const moved = movedProp(prop, handle, to, floorY(pose));
   return keepInside(pose, { ...pose, props: props.map((p, i) => (i === index ? moved : p)) });
 }
+
+/** An angle seen in a mirror: clockwise becomes anticlockwise, and none stays none. */
+const mirrorAngle = (angle: number | undefined) => (angle === undefined ? angle : -angle || 0);
 
 /** A prop seen in a mirror: the box's left is its right. */
 export function mirrorProp(prop: Prop): Prop {
@@ -152,6 +238,21 @@ export function mirrorProp(prop: Prop): Prop {
       return { ...prop, at: [BOX.width - prop.at[0] - prop.width, prop.at[1]] };
     case "ball":
     case "kettlebell":
+    case "pullupBar":
       return { ...prop, at: flip(prop.at) };
+    case "barbell":
+    case "dumbbell": {
+      const angle = mirrorAngle(prop.angle);
+      return angle === undefined
+        ? { ...prop, at: flip(prop.at) }
+        : { ...prop, at: flip(prop.at), angle };
+    }
+    case "trx":
+      return {
+        ...prop,
+        anchor: flip(prop.anchor),
+        handleA: flip(prop.handleA),
+        handleB: flip(prop.handleB),
+      };
   }
 }

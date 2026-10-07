@@ -1,4 +1,12 @@
-import { doseSchema, PART_KEYS, programPartsSchema, type Dose, type ProgramPart } from "./types";
+import {
+  doseSchema,
+  LOADS,
+  PART_KEYS,
+  programPartsSchema,
+  type Dose,
+  type Load,
+  type ProgramPart,
+} from "./types";
 
 /**
  * "Sammensæt dit eget" (docs/plan-ovelser-og-programmer.md): a programme a
@@ -10,8 +18,10 @@ import { doseSchema, PART_KEYS, programPartsSchema, type Dose, type ProgramPart 
  * Grammar: parts separated by ";"; a part is its key, "=", then its items
  * separated by ","; an item is a built-in exercise's id and, when its dose
  * differs from the exercise's own, "-" and a dose code. A dose code is
- * "t" (time) or "r" (reps), the amount, "s" when per side, and "x" with the
- * sets when more than one: "t30sx3" is 30 seconds per side, 3 sets.
+ * "t" (time) or "r" (reps), the amount, "s" when per side, "x" with the
+ * sets when more than one, and the load's first letter when it has one —
+ * "l" light, "m" moderate, "h" heavy: "t30sx3" is 30 seconds per side, 3
+ * sets, and "r10x3m" is 3 × 10 at a moderate load.
  * "squat;plank-t60x2" is the part "any" (a bare id is never seen alone —
  * every item sits under a part) — in practice: "any=squat,plank-t60x2".
  *
@@ -29,26 +39,30 @@ export const COMPOSE_MAX_ITEMS = 40;
 
 const BUILTIN_PREFIX = "builtin:";
 const BUILTIN_ID = /^[a-z][a-zA-Z0-9]{1,40}$/;
-const DOSE_CODE = /^(t|r)(\d{1,4})(s)?(?:x(\d{1,2}))?$/;
+const DOSE_CODE = /^(t|r)(\d{1,4})(s)?(?:x(\d{1,2}))?([lmh])?$/;
+/** A load by its first letter, which the three words do not share. */
+const LOAD_BY_LETTER = new Map<string, Load>(LOADS.map((load) => [load[0]!, load]));
 
 function encodeDose(dose: Dose): string {
   const amount = dose.kind === "time" ? dose.seconds : dose.reps;
   const sets = dose.sets ?? 1;
   const perSide = dose.perSide ?? false;
   const kind = dose.kind === "time" ? "t" : "r";
-  return `${kind}${amount}${perSide ? "s" : ""}${sets > 1 ? `x${sets}` : ""}`;
+  const load = dose.load ? dose.load[0] : "";
+  return `${kind}${amount}${perSide ? "s" : ""}${sets > 1 ? `x${sets}` : ""}${load}`;
 }
 
 function decodeDose(code: string): Dose | null {
   const match = DOSE_CODE.exec(code);
   if (!match) return null;
-  const [, kind, amountRaw, perSideFlag, setsRaw] = match;
+  const [, kind, amountRaw, perSideFlag, setsRaw, loadLetter] = match;
   const amount = Number(amountRaw);
   const sets = setsRaw ? Number(setsRaw) : 1;
+  const load = loadLetter ? { load: LOAD_BY_LETTER.get(loadLetter) } : {};
   const draft =
     kind === "t"
-      ? { kind: "time" as const, seconds: amount, perSide: Boolean(perSideFlag), sets }
-      : { kind: "reps" as const, reps: amount, perSide: Boolean(perSideFlag), sets };
+      ? { kind: "time" as const, seconds: amount, perSide: Boolean(perSideFlag), sets, ...load }
+      : { kind: "reps" as const, reps: amount, perSide: Boolean(perSideFlag), sets, ...load };
   const parsed = doseSchema.safeParse(draft);
   return parsed.success ? parsed.data : null;
 }

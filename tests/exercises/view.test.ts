@@ -113,6 +113,10 @@ describe("a dose in words", () => {
     [time(90), "90 sek", "90 sec"],
     [time(20, true, 3), "3 × 20 sek pr. side", "3 × 20 sec per side"],
     [reps(8, true, 3), "3 × 8 pr. side", "3 × 8 per side"],
+    [{ ...reps(10, false, 3), load: "moderate" }, "3 × 10 · moderat", "3 × 10 · moderate"],
+    [{ ...reps(20), load: "light" }, "20 gange · let", "20 times · light"],
+    [{ ...reps(6, true, 4), load: "heavy" }, "4 × 6 pr. side · tung", "4 × 6 per side · heavy"],
+    [{ ...time(30, false, 3), load: "light" }, "3 × 30 sek · let", "3 × 30 sec · light"],
   ];
 
   for (const [dose, inDanish, inEnglish] of cases) {

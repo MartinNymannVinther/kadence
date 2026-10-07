@@ -5,8 +5,8 @@ type T = (key: string, values?: Record<string, string | number>) => string;
 
 /**
  * What a handle is called, for its label and the screen reader: "Forreste
- * knæ", "Spids på pil 2", "Bænk", "Elastik, den ene ende". `t` reads the
- * `exercises.editor` namespace.
+ * knæ", "Spids på pil 2", "Bænk", "Elastik, den ene ende", "TRX, ophænget".
+ * `t` reads the `exercises.editor` namespace.
  */
 export function handleName(pose: Pose, selection: Selection, t: T): string {
   switch (selection.kind) {
@@ -17,9 +17,20 @@ export function handleName(pose: Pose, selection: Selection, t: T): string {
     case "prop": {
       const prop = pose.props?.[selection.index];
       const name = prop ? t(`prop.${prop.kind}`) : "";
-      if (selection.handle === "from") return t("propFrom", { name });
-      if (selection.handle === "to") return t("propTo", { name });
-      return name;
+      switch (selection.handle) {
+        case "from":
+          return t("propFrom", { name });
+        case "to":
+          return t("propTo", { name });
+        case "anchor":
+          return t("propAnchor", { name });
+        case "handleA":
+          return t("propHandleA", { name });
+        case "handleB":
+          return t("propHandleB", { name });
+        case "at":
+          return name;
+      }
     }
   }
 }

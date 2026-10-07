@@ -4793,6 +4793,81 @@
         "name": "Band row",
         "how": "Fix an elastic band at chest height, for example in a door. Stand with your knees slightly bent and pull your elbows back along your body until your hands reach your chest. Squeeze your shoulder blades together and let go slowly.",
         "why": "Trains the upper back that holds your shoulders back over the bars."
+      },
+      "backSquat": {
+        "name": "Back squat",
+        "how": "Rest the bar on your upper back, not on your neck, and hold it with both hands. Stand with your feet shoulder-width apart. Sit down and back with a straight back and your knees in line with your feet, and stand up with full force. Start light, and add weight only once the technique is there. A coach watches when you lift with a bar.",
+        "why": "Trains the big muscles of the legs and buttocks that push the pedals round, with a weight that can grow a little at a time."
+      },
+      "deadlift": {
+        "name": "Deadlift",
+        "how": "Stand with your feet hip-width apart and the bar over the middle of your feet. Bend at the hips and knees, and take hold just outside your knees. Keep your back straight and the bar close to your legs. Press your feet into the floor and stand up tall, then lower the bar the same way. Start light. A coach watches when you lift with a bar.",
+        "why": "Trains the hamstrings, buttocks and back to work together, as when you push hard on the pedals."
+      },
+      "barbellRdl": {
+        "name": "Romanian deadlift with a bar",
+        "how": "Stand tall with the bar in straight arms and your knees slightly bent. Push your hips back and lower the bar along your thighs until you feel a stretch at the back of them. Keep your back straight all the way. Stand up by pushing your hips forward. Start light. A coach watches when you lift with a bar.",
+        "why": "Trains the hamstrings and buttocks, and teaches you to bend at the hip with a straight back."
+      },
+      "overheadPress": {
+        "name": "Overhead press",
+        "how": "Stand with your feet hip-width apart and the bar on the front of your shoulders. Tighten your stomach and buttocks, and press the bar straight up over your head until your arms are straight. Lower it calmly to your shoulders again. Don't arch your lower back. Start light. A coach watches when you lift with a bar.",
+        "why": "Strengthens the shoulders and arms that carry some of your weight on the bars."
+      },
+      "benchPress": {
+        "name": "Bench press",
+        "how": "Lie on the bench with your feet on the floor and the bar in straight arms over your chest. Lower it calmly to the middle of your chest with your elbows slightly in, and press it back up. Keep your back and head on the bench. Start light. A coach stands at the head end and can take the bar.",
+        "why": "Strengthens the chest, shoulders and arms that keep your upper body still when you push hard."
+      },
+      "dumbbellLunge": {
+        "name": "Dumbbell lunge",
+        "how": "Hold a dumbbell in each hand with your arms down by your sides. Take a long step forward and lower your back knee towards the floor. Keep your upper body upright and your front knee over your foot. Push back with your front leg and change legs. Start light.",
+        "why": "Trains one leg at a time with extra weight, as when you pedal."
+      },
+      "dumbbellStepUp": {
+        "name": "Dumbbell step-up",
+        "how": "Hold a dumbbell in each hand and put one foot on a step or a low bench that stands firm. Step up until your leg is straight, without pushing off with the other leg. Step down calmly, and change legs after the set. Start light.",
+        "why": "Builds strength in one leg at a time, in a movement much like a pedal stroke."
+      },
+      "dumbbellRow": {
+        "name": "Dumbbell row",
+        "how": "Put one knee and the hand on the same side on a bench, and keep your back flat. Hold the dumbbell in your other hand with a straight arm. Pull your elbow up along your body until the dumbbell reaches your hip, and lower it calmly. Change sides after the set. Start light.",
+        "why": "Trains the upper back that holds your shoulders back over the bars."
+      },
+      "kettlebellSwing": {
+        "name": "Kettlebell swing",
+        "how": "Stand with your feet a little wider than your hips and the kettlebell in both hands. Push your hips back with a straight back, so the kettlebell swings in between your legs. Then drive your hips forward hard, so it swings up to chest height. Your hips lift it, not your arms. Start light.",
+        "why": "Trains the buttocks and hamstrings to give power quickly, as when you accelerate out of a corner."
+      },
+      "trxRow": {
+        "name": "TRX row",
+        "how": "Hold a handle in each hand and walk your feet forward until you hang back with straight arms. Keep your body straight like a plank. Pull your chest up towards the handles with your elbows close to your body, and lower yourself calmly. The more you lean, the harder it is.",
+        "why": "Trains the upper back and arms with your own weight."
+      },
+      "trxSplitSquat": {
+        "name": "TRX split squat",
+        "how": "Stand with your back to the TRX and put your back foot in the straps. Lower yourself on your front leg until the thigh is nearly level, with your knee over your foot. Push back up with your front leg and keep your upper body upright. Change legs after the set.",
+        "why": "Gives one leg at a time hard work, and gives your balance something to do."
+      },
+      "pullUp": {
+        "name": "Pull-up",
+        "how": "Hang from the bar with straight arms and your hands a little wider than your shoulders. Pull yourself up until your chin is over the bar, and lower yourself calmly all the way down. Don't swing your legs. If you can't do them all, use a band.",
+        "why": "Strengthens the back and arms that keep you steady when you pull on the bars uphill."
+      },
+      "bandPullUp": {
+        "name": "Band-assisted pull-up",
+        "how": "Loop a strong elastic band over the bar and stand with your feet in the loop. Hang with straight arms, pull yourself up until your chin is over the bar, and lower yourself calmly. The band takes some of your weight. Use a thinner band when it gets easy.",
+        "why": "The same exercise as the pull-up, with help, so you can do the whole movement."
+      },
+      "monsterWalk": {
+        "name": "Monster walk with a band",
+        "how": "Put an elastic band round your legs just above the ankles. Stand with your feet hip-width apart and bend slightly at the knees and hips. Take small steps to the side without letting your knees fall in, and walk back the same way. Keep your upper body still.",
+        "why": "Trains the muscles on the side of the hip that keep your knee in line over the pedal."
+      },
+      "bandExternalRotation": {
+        "name": "Band external rotation",
+        "how": "Fix a light elastic band at elbow height, for example to wall bars or a door, and stand side-on to it. Hold it in the hand farther away, with your elbow at your side and your forearm across your stomach. Move your hand out to the side while your elbow stays by your body, and bring it calmly back. Change sides after the set.",
+        "why": "Gives your shoulders a counterweight to the bent-over position on the bike."
       }
     },
     "programs": {
@@ -4811,6 +4886,18 @@
       "strengthNoMachines": {
         "name": "Strength without machines",
         "description": "Legs, back and arms with body weight, a kettlebell and an elastic band. Warm up with 8 minutes on the bike first. DCU recommends at least 48 hours between two strength sessions, and technique before load."
+      },
+      "strengthRoom": {
+        "name": "Strength in the gym",
+        "description": "Whole body with a barbell and dumbbells in the club's strength room. Warm up with 8 minutes on the bike and 20 squats with a light bar. Technique before weight, and as a U17 rider you never lift to exhaustion. Keep at least 48 hours between two strength sessions, and stretch afterwards."
+      },
+      "trxBodyweight": {
+        "name": "TRX and body weight",
+        "description": "The whole body with TRX straps, a pull-up bar and your own weight. Warm up with 8 minutes on the bike and 20 squats. The more you lean in the straps, the harder it is. Keep at least 48 hours between two strength sessions."
+      },
+      "bandsKettlebell": {
+        "name": "Bands and a kettlebell",
+        "description": "Hips, legs and shoulders with elastic bands and a kettlebell. Warm up with 8 minutes on the bike and 20 squats. Start light, and let your hips do the work in the swing. Keep at least 48 hours between two strength sessions."
       }
     },
     "library": {
@@ -4929,10 +5016,17 @@
         "step": "Step",
         "band": "Elastic band",
         "ball": "Ball",
-        "kettlebell": "Kettlebell"
+        "kettlebell": "Kettlebell",
+        "barbell": "Barbell",
+        "dumbbell": "Dumbbell",
+        "trx": "TRX straps",
+        "pullupBar": "Pull-up bar"
       },
       "propFrom": "{name}, one end",
       "propTo": "{name}, the other end",
+      "propAnchor": "{name}, anchor",
+      "propHandleA": "{name}, near handle",
+      "propHandleB": "{name}, far handle",
       "removeProp": "Remove {name}",
       "maxProps": "A drawing can have six things.",
       "preview": "How the card looks",
@@ -4945,6 +5039,8 @@
       "repsCount": "Times",
       "perSide": "Per side",
       "sets": "Sets",
+      "load": "Load",
+      "loadNone": "Not given",
       "save": "Save the exercise",
       "created": "The exercise is saved in the team's library.",
       "saved": "The changes are saved.",
@@ -5020,14 +5116,24 @@
       "step": "Step",
       "band": "Elastic band",
       "kettlebell": "Kettlebell",
-      "ball": "Ball"
+      "ball": "Ball",
+      "barbell": "Barbell",
+      "dumbbell": "Dumbbells",
+      "trx": "TRX straps",
+      "pullupBar": "Pull-up bar"
     },
     "dose": {
       "seconds": "{seconds} sec",
       "minutes": "{minutes} min",
       "times": "{reps, plural, one {# time} other {# times}}",
       "perSide": "{amount} per side",
-      "sets": "{sets} × {amount}"
+      "sets": "{sets} × {amount}",
+      "withLoad": "{amount} · {load}",
+      "loads": {
+        "light": "light",
+        "moderate": "moderate",
+        "heavy": "heavy"
+      }
     },
     "card": {
       "done": "Done"

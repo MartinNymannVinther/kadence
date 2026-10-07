@@ -7,6 +7,7 @@ import {
   EQUIPMENT,
   EXERCISE_GROUPS,
   exerciseRefSchema,
+  LOADS,
   PART_KEYS,
   poseSchema,
   programPartsSchema,
@@ -148,12 +149,130 @@ describe("Kadence's own programmes", () => {
   });
 });
 
+describe("the strength room's exercises (Ø-06)", () => {
+  /** What a figure draws when an exercise needs it, and needs when it draws it. */
+  const DRAWN = ["kettlebell", "band", "barbell", "dumbbell", "trx", "pullupBar"] as const;
+  const text = (messages: Messages, id: string, field: string) =>
+    String(word(messages, `exercises.items.${id}.${field}`));
+
+  it("use every new piece of equipment, about fifteen exercises in all", () => {
+    const strength = BUILTIN_EXERCISES.filter((e) =>
+      e.equipment.some((q) => ["barbell", "dumbbell", "trx", "pullupBar"].includes(q)),
+    );
+    expect(strength.length).toBeGreaterThanOrEqual(10);
+    for (const item of ["barbell", "dumbbell", "trx", "pullupBar"] as const)
+      expect(
+        BUILTIN_EXERCISES.some((e) => e.equipment.includes(item)),
+        item,
+      ).toBe(true);
+  });
+
+  it("draw the weight, band or straps they need, and nothing they do not", () => {
+    for (const e of BUILTIN_EXERCISES)
+      for (const kind of DRAWN)
+        expect(
+          e.pose.props.some((p) => p.kind === kind),
+          `${e.id}: ${kind}`,
+        ).toBe(e.equipment.includes(kind));
+  });
+
+  it("start light with a free weight and have a coach watch the barbell", () => {
+    for (const e of BUILTIN_EXERCISES) {
+      const weight = e.equipment.some((q) => q === "barbell" || q === "dumbbell");
+      if (!weight && !(e.equipment.includes("kettlebell") && e.dose.load)) continue;
+      expect(text(da as unknown as Messages, e.id, "how"), e.id).toContain("Start let");
+      expect(text(en as unknown as Messages, e.id, "how"), e.id).toContain("Start light");
+      if (!e.equipment.includes("barbell")) continue;
+      expect(text(da as unknown as Messages, e.id, "how"), e.id).toMatch(/[Tt]ræner/);
+      expect(text(en as unknown as Messages, e.id, "how"), e.id).toContain("coach");
+      // A bar is lifted with a straight back and the load in a word, not kilos.
+      expect(e.dose.load, e.id).toBeDefined();
+      expect(text(da as unknown as Messages, e.id, "how"), e.id).not.toMatch(/\bkg\b|kilo/);
+    }
+  });
+
+  it("cite the free-weight sources where a weight is lifted", () => {
+    for (const e of BUILTIN_EXERCISES.filter((x) =>
+      x.equipment.some((q) => q === "barbell" || q === "dumbbell"),
+    )) {
+      expect(e.source, e.id).toContain("ATK 2.0");
+      expect(e.source, e.id).toContain("Lloyd et al. 2014");
+    }
+  });
+});
+
+describe("the strength room's programmes (Ø-06)", () => {
+  const ROOM = ["strengthRoom", "trxBodyweight", "bandsKettlebell"];
+  const programs = BUILTIN_PROGRAMS.filter((p) => ROOM.includes(p.id));
+  const exercise = (ref: string) => BUILTIN_EXERCISES.find((e) => `builtin:${e.id}` === ref)!;
+
+  it("are three, in DCU's frame: a warm-up before and stretches after", () => {
+    expect(programs.map((p) => p.id)).toEqual(ROOM);
+    for (const p of programs) {
+      expect(
+        p.parts.map((part) => part.key),
+        p.id,
+      ).toEqual(["before", "any", "after"]);
+      expect(p.source, p.id).toContain("48 h");
+    }
+  });
+
+  it("use the room's equipment between them", () => {
+    const used = new Set(
+      programs.flatMap((p) =>
+        p.parts.flatMap((part) => part.items.flatMap((i) => exercise(i.exercise).equipment)),
+      ),
+    );
+    for (const item of ["barbell", "dumbbell", "trx", "pullupBar", "kettlebell", "band"] as const)
+      expect(used.has(item), item).toBe(true);
+  });
+
+  it("say the bike's 8 minutes and DCU's 48 hours in both languages", () => {
+    for (const p of programs) {
+      const daText = String(
+        word(da as unknown as Messages, `exercises.programs.${p.id}.description`),
+      );
+      const enText = String(
+        word(en as unknown as Messages, `exercises.programs.${p.id}.description`),
+      );
+      expect(daText, p.id).toContain("8 minutter");
+      expect(daText, p.id).toContain("48 timer");
+      expect(enText, p.id).toContain("8 minutes");
+      expect(enText, p.id).toContain("48 hours");
+    }
+  });
+
+  it("follow DCU's start-up in the strength room: 3 × 12, not to exhaustion for U17", () => {
+    const room = programs.find((p) => p.id === "strengthRoom")!;
+    const squat = room.parts[1]!.items.find((i) => i.exercise === "builtin:backSquat")!;
+    expect(squat.dose).toEqual({
+      kind: "reps",
+      reps: 12,
+      perSide: false,
+      sets: 3,
+      load: "moderate",
+    });
+    // The warm-up is DCU's 1 × 20 at a low load.
+    expect(room.parts[0]!.items[0]!.dose).toEqual({
+      kind: "reps",
+      reps: 20,
+      perSide: false,
+      sets: 1,
+      load: "light",
+    });
+    expect(
+      String(word(da as unknown as Messages, "exercises.programs.strengthRoom.description")),
+    ).toContain("udmattelse");
+  });
+});
+
 describe("the words around them", () => {
   it("name every part, group and piece of equipment in both languages", () => {
     const paths = [
       ...PART_KEYS.map((k) => `exercises.parts.${k}`),
       ...EXERCISE_GROUPS.map((g) => `exercises.groups.${g}`),
       ...[...EQUIPMENT, "none"].map((q) => `exercises.equipment.${q}`),
+      ...LOADS.map((l) => `exercises.dose.loads.${l}`),
     ];
     for (const path of paths)
       for (const [locale, messages] of catalogues)

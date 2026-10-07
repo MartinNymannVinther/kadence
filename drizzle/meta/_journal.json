@@ -232,6 +232,13 @@
       "when": 1791317875004,
       "tag": "0032_team_exercises",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1791369512974,
+      "tag": "0033_equipment_strength_room",
+      "breakpoints": true
     }
   ]
 }

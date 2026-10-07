@@ -20,7 +20,10 @@ import { tenant, timestamps } from "./shared";
  * expiry remove both tables through `org_id`'s cascade.
  */
 
-/** The lists in the checks below are EXERCISE_GROUPS and EQUIPMENT; tests/exercises/team-schema proves they agree. */
+/**
+ * The lists in the checks below are EXERCISE_GROUPS and EQUIPMENT (the last
+ * four since drizzle/0033); tests/exercises/team-schema proves they agree.
+ */
 export const teamExercises = pgTable(
   "team_exercises",
   {
@@ -49,7 +52,7 @@ export const teamExercises = pgTable(
     check("team_exercises_group", sql`${t.group} in ('legs','core','upper','mobility','other')`),
     check(
       "team_exercises_equipment",
-      sql`${t.equipment} <@ array['mat','wall','bench','step','band','kettlebell','ball']::text[]`,
+      sql`${t.equipment} <@ array['mat','wall','bench','step','band','kettlebell','ball','barbell','dumbbell','trx','pullupBar']::text[]`,
     ),
     check("team_exercises_name", sql`char_length(${t.name}) between 1 and 60`),
     check("team_exercises_how", sql`char_length(${t.how}) between 1 and 500`),
