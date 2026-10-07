@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { FitUpload } from "@/components/activities/fit-upload";
+import { OwnRidesList } from "@/components/activities/own-rides-list";
 import { GoalsCard, type GoalView } from "@/components/activities/goals-card";
 import { RecordsCard } from "@/components/activities/records-card";
 import { withQuery } from "@/components/calendar/href";
@@ -51,7 +52,8 @@ function Section({
 
 /**
  * Mig: the rider's own page (docs/adr/0063). Everything about the rider
- * that is not today — the week, the form with the words that explain it,
+ * that is not today — the week, the latest rides (docs/backlog.md P2-02),
+ * the form with the words that explain it,
  * the last two weeks of check-ins, goals, records, and the upload and the
  * way to a bike computer. Today keeps today. A coach or a parent who opens
  * it goes back to their own front page.
@@ -92,6 +94,10 @@ export default async function MePage({
           events={data.events}
           hrefFor={hrefFor}
         />
+      </Section>
+
+      <Section id="rides" title={t("rides.title")} body={t("rides.body")}>
+        <OwnRidesList first={data.rides} today={today} />
       </Section>
 
       {data.insight && (

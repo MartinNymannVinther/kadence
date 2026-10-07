@@ -959,7 +959,14 @@
     "goals": "Dine mål",
     "records": "Dine rekorder",
     "upload": "Upload tur",
-    "uploadBody": "Filer fra cykelcomputeren, uret eller hometraineren. Turen lander på dagens pas af sig selv. Herunder kan du også sende ugens pas til din Garmin."
+    "uploadBody": "Filer fra cykelcomputeren, uret eller hometraineren. Turen lander på dagens pas af sig selv. Herunder kan du også sende ugens pas til din Garmin.",
+    "rides": {
+      "title": "Dine ture",
+      "body": "Dine seneste ture, den nyeste først. Farven viser, hvor tæt turen kom på passet.",
+      "empty": "Du har ingen ture endnu. Upload en fil herunder, så kommer den her.",
+      "km": "{km} km",
+      "more": "Vis flere"
+    }
   },
   "errors": {
     "too_many_reset_links": "Du har lavet mange links lige nu. Prøv igen om en time.",

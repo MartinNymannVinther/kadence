@@ -7,6 +7,7 @@ import { getInsights } from "@/modules/insight/service";
 import { getRider } from "@/modules/team/riders";
 import { listEvents } from "@/modules/training/events";
 import { dcuProposalFor, listGoals } from "@/modules/training/goals";
+import { listOwnRides } from "@/modules/training/own-rides";
 import { getRiderRecords } from "@/modules/training/records";
 import { listSessions } from "@/modules/training/sessions";
 import { weekDates, weekFrom } from "@/modules/training/week";
@@ -15,16 +16,16 @@ import { readStructure } from "@/modules/workouts/structure";
 
 /**
  * What a rider's own page holds (docs/adr/0063): this week, the next
- * week's bike sessions a bike computer can ride (ADR 0031), the form,
- * two weeks of check-ins, goals and records. Read under the rider's own
- * RLS, as Today read them before.
+ * week's bike sessions a bike computer can ride (ADR 0031), the latest
+ * rides, the form, two weeks of check-ins, goals and records. Read under
+ * the rider's own RLS, as Today read them before.
  */
 export async function meData(ctx: OrgContext, riderId: string, today: string) {
   const monday = weekFrom(undefined, today);
   const days = weekDates(monday);
   const sunday = days[6] ?? today;
   const lastDay = addDaysIso(today, 6);
-  const [sessions, events, checkins, insights, records, goals, rider] = await Promise.all([
+  const [sessions, events, checkins, insights, records, goals, rider, rides] = await Promise.all([
     listSessions(ctx, { from: monday, to: maxIso([sunday, lastDay]), riderIds: [riderId] }),
     listEvents(ctx, { from: monday, to: sunday, riderIds: [riderId] }),
     listCheckins(ctx, { from: addDaysIso(today, -13), to: today, riderIds: [riderId] }),
@@ -32,6 +33,7 @@ export async function meData(ctx: OrgContext, riderId: string, today: string) {
     getRiderRecords(ctx, riderId, { today }),
     listGoals(ctx, riderId, today),
     getRider(ctx, riderId),
+    listOwnRides(ctx, { today }),
   ]);
   // The next seven days' bike sessions with steps: what a bike computer can ride.
   const toDevice = sessions
@@ -46,6 +48,7 @@ export async function meData(ctx: OrgContext, riderId: string, today: string) {
     sessions: sessions.filter((s) => s.onDate <= sunday).map(toTodayCard),
     events: events.map(toEventCard),
     toDevice,
+    rides,
     zones: zoneDays(checkins, today),
     insight: insights[0] ?? null,
     records,

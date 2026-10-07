@@ -959,7 +959,14 @@
     "goals": "Your goals",
     "records": "Your records",
     "upload": "Upload a ride",
-    "uploadBody": "Files from your bike computer, watch or trainer. The ride lands on the day's session by itself. Below, you can also send the week's sessions to your Garmin."
+    "uploadBody": "Files from your bike computer, watch or trainer. The ride lands on the day's session by itself. Below, you can also send the week's sessions to your Garmin.",
+    "rides": {
+      "title": "Your rides",
+      "body": "Your latest rides, the newest first. The colour shows how close the ride came to the session.",
+      "empty": "You have no rides yet. Upload a file below and it will show up here.",
+      "km": "{km} km",
+      "more": "Show more"
+    }
   },
   "errors": {
     "too_many_reset_links": "You have made many links just now. Try again in an hour.",
