@@ -23,6 +23,7 @@ eller mere. Rækkefølgen inden for en prioritet er den anbefalede.
 
 P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter #21 og #22). Hvert spor bygges i sit eget worktree med egen database og flettes ind på P1-grenen, når det er grønt. Statusloggen nyeste først:
 
+- **8. okt.** P2 er færdig (alle 16 stories undtagen P2-01, som venter) sammen med Ø-06: alt er flettet ind på `feat/p2-vinteren`, hele suiten er grøn (2.695 tests, 1.417 enhedstests), build kompilerer, og PR'en er klar til Martin. Samlet forbrug for sporene: ca. 2,4M tokens mod et skøn på 2,5–4,3M for de samme stories. Rester er skrevet ind som P2-18.
 - **7. okt., nat.** P2-02/03/04/16 og P2-12/13/15/17 er flettet ind; migreringerne er nummereret 0033–0040 i rækkefølge og snapshot-kæden bygget op igen; hele suiten er grøn (2.666 tests, 1.417 enhedstests). Kun P2-06/10/14 mangler.
 - **7. okt., aften.** Ø-06, P2-05, P2-07, P2-08, P2-09 og P2-11 er færdige og flettet ind på `feat/p2-vinteren` med migreringerne 0033–0035; hele suiten er grøn (2.593 tests). P2-02/03/04/16, P2-12/13/15/17 og P2-06/10/14 er tæt på.
 - **7. okt.** Energigels i løbseksemplet fra U17 (PR #28). Ø-06 (øvelser med udstyr) og hele P2 undtagen P2-01 er sat i gang på Martins bud. P2-11 og P2-13 bygges uden at svække trivselszonerne eller revisionssporet; valgene står i ADR'erne.
@@ -100,58 +101,59 @@ Rammen er:
 
 ## Oversigt
 
-| ID    | Story                                                      | Prio | Str. | Tokens (ca.) | Model     | Afhænger af       | Status       |
-| ----- | ---------------------------------------------------------- | ---- | ---- | ------------ | --------- | ----------------- | ------------ |
-| P1-01 | Inviter hele holdet på én gang                             | P1   | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
-| P1-02 | Træneren får besked, når en rytter er i rød zone           | P1   | M    | 250–400k     | Opus 5.5  | ADR 0060 (push)   | Færdig       |
-| P1-03 | Invitationen siger rytter eller forælder                   | P1   | S    | 120–200k     | Opus 5.5  |                   | Færdig       |
-| P1-04 | Pilotens tre tal                                           | P1   | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
-| P1-05 | Prøv påmindelser på en rigtig telefon                      | P1   | S    | 100–180k     | Sonnet 5  | ADR 0060 (push)   | Færdig       |
-| P1-06 | Rulle møder en rigtig hometrainer                          | P1   | S    | 120–200k     | Sonnet 5  |                   | Færdig       |
-| P1-07 | Ryttere og forældre kan forlade holdet igen                | P1   | S    | 50–100k      | Sonnet 5  |                   | Færdig       |
-| P1-08 | En pilotguide til træneren                                 | P1   | S    | 120–200k     | Sonnet 5  | A-05              | Færdig       |
-| P1-09 | En demo kan aldrig blive installationens ejer              | P1   | S    | 100–180k     | Opus 5.5  |                   | Færdig       |
-| P2-01 | Garmin-ture ind af sig selv gennem Tredict                 | P2   | L    | 600k–1M      | Opus 5.5  | A-07 (Martins ja) | Ikke startet |
-| P2-02 | Mine ture: en liste over rytterens ture                    | P2   | S    | 80–150k      | Sonnet 5  |                   | Færdig       |
-| P2-03 | Tid, sted og kørsel på løb og begivenheder                 | P2   | M    | 200–300k     | Sonnet 5  |                   | Færdig       |
-| P2-04 | Forældre lægger familiens begivenheder ind                 | P2   | M    | 250–400k     | Opus 5.5  | P2-03             | Færdig       |
-| P2-05 | En fælles kladde til ugeplanen for flere trænere           | P2   | M    | 250–400k     | Opus 5.5  |                   | Færdig       |
-| P2-06 | Tilgængelighed: kontrast, bevægelse og fokus               | P2   | S    | 120–200k     | Sonnet 5  |                   | Ikke startet |
-| P2-07 | Medlemmer kan ikke læse hinandens e-mailadresser           | P2   | M    | 400–700k     | Fable 5.1 |                   | Færdig       |
-| P2-08 | Rate-limiteren stoler kun på egne proxyer                  | P2   | S    | 60–120k      | Sonnet 5  |                   | Færdig       |
-| P2-09 | Parkerede sider svarer 404                                 | P2   | S    | 100–200k     | Sonnet 5  |                   | Færdig       |
-| P2-10 | Enhedssiden nævner kun de udbydere, der er sat op          | P2   | S    | 60–100k      | Sonnet 5  |                   | Ikke startet |
-| P2-11 | En kortere check-in                                        | P2   | M    | 250–400k     | Opus 5.5  | A-06 (faglig)     | Færdig       |
-| P2-12 | Planændringer kender deres afsender                        | P2   | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
-| P2-13 | Påmindelser fylder ikke revisionssporet                    | P2   | S    | 100–180k     | Opus 5.5  | Martins valg      | Færdig       |
-| P2-14 | Demoen viser forløb med egne pas og påmindelser            | P2   | S    | 120–200k     | Sonnet 5  |                   | Ikke startet |
-| P2-15 | Invitationslinks, der holder en uge                        | P2   | S    | 60–120k      | Sonnet 5  | P1-01             | Færdig       |
-| P2-16 | En forælder på holdet kobles til endnu et barn             | P2   | M    | 200–350k     | Opus 5.5  | P1-01             | Færdig       |
-| P2-17 | Trivselspåmindelsen ser en check-in, der bliver rød senere | P2   | S    | 150–250k     | Opus 5.5  | P1-02             | Færdig       |
-| P3-01 | Evaluér de parkerede dele ud fra pilotens tal              | P3   | S    | 60–120k      | Sonnet 5  | P1-04             | Ikke startet |
-| P3-02 | Fremmøde på holdpas                                        | P3   | M    | 250–400k     | Opus 5.5  | pilotens ønske    | Ikke startet |
-| P3-03 | Saml de gamle indgange til planlægning                     | P3   | S    | 120–200k     | Sonnet 5  | en måneds brug    | Ikke startet |
-| P3-04 | Holdets uge for tidligere og kommende uger                 | P3   | M    | 250–400k     | Opus 5.5  |                   | Ikke startet |
-| P3-05 | E-mail som valgfri kanal                                   | P3   | L    | 500–800k     | Opus 5.5  | Martins ja        | Ikke startet |
-| P3-06 | Trænerrummet tilbage med moderation i klubberne            | P3   | L    | 600k–1M      | Opus 5.5  | P3-01, 3 klubber  | Ikke startet |
-| P3-07 | Klubmesterskabet tilbage, sikkert for de unge              | P3   | M    | 300–450k     | Opus 5.5  | P3-01             | Ikke startet |
-| P3-08 | Content-Security-Policy med nonce                          | P3   | L    | 500–900k     | Fable 5.1 |                   | Ikke startet |
-| A-01  | En sportsdiætist læser madguiden                           | A    | S    | 60–120k      | Sonnet 5  |                   | Ikke startet |
-| A-02  | Tilladelse til Rulles ruter og navne                       | A    | S    | 60–120k      | Sonnet 5  |                   | Ikke startet |
-| A-03  | DCU inviteres til at følge vinteren                        | A    | S    | 40–80k       | Sonnet 5  |                   | Ikke startet |
-| A-04  | Wahoo: produktionsadgang og puls under 16                  | A    | S    | 30–60k       | Haiku 4.5 |                   | Ikke startet |
-| A-05  | Aftale med pilotholdet                                     | A    | S    | 80–150k      | Opus 5.5  |                   | Ikke startet |
-| A-06  | Faglig vurdering af en kortere check-in                    | A    | S    | 60–100k      | Sonnet 5  |                   | Ikke startet |
-| A-07  | Ja eller nej til Tredict og Connect IQ                     | A    | S    | 60–120k      | Opus 5.5  |                   | Ikke startet |
-| R-01  | Slet de ubrugte filer                                      | R    | S    | 40–80k       | Haiku 4.5 | Martins ja        | Ikke startet |
-| R-02  | Små rester fra fokus-bølgen                                | R    | S    | 100–180k     | Sonnet 5  |                   | Ikke startet |
-| Ø-01  | Tegnefunktion og indbyggede øvelser og programmer          | Ø    | M    | 400–700k     | Opus 5.5  |                   | Færdig       |
-| Ø-02  | Åben side, sammensæt og download                           | Ø    | M    | 300–500k     | Sonnet 5  | Ø-01              | Færdig       |
-| Ø-03  | Holdets egne øvelser og programmer i databasen             | Ø    | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
-| Ø-04  | Appen: bibliotek, tegneværktøj, programbygger, kalender    | Ø    | L    | 600k–1M      | Opus 5.5  | Ø-01, Ø-03        | Færdig       |
-| Ø-05  | Demo, hjælp og ADR                                         | Ø    | S    | 100–200k     | Sonnet 5  | Ø-02, Ø-04        | Færdig       |
-| Ø-06  | Øvelser og programmer med udstyr                           | Ø    | M    | 400–600k     | Opus 5.5  |                   | Færdig       |
-| N-01  | Navigation efter opgaver                                   | N    | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
+| ID    | Story                                                                        | Prio | Str. | Tokens (ca.) | Model     | Afhænger af       | Status       |
+| ----- | ---------------------------------------------------------------------------- | ---- | ---- | ------------ | --------- | ----------------- | ------------ |
+| P1-01 | Inviter hele holdet på én gang                                               | P1   | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
+| P1-02 | Træneren får besked, når en rytter er i rød zone                             | P1   | M    | 250–400k     | Opus 5.5  | ADR 0060 (push)   | Færdig       |
+| P1-03 | Invitationen siger rytter eller forælder                                     | P1   | S    | 120–200k     | Opus 5.5  |                   | Færdig       |
+| P1-04 | Pilotens tre tal                                                             | P1   | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
+| P1-05 | Prøv påmindelser på en rigtig telefon                                        | P1   | S    | 100–180k     | Sonnet 5  | ADR 0060 (push)   | Færdig       |
+| P1-06 | Rulle møder en rigtig hometrainer                                            | P1   | S    | 120–200k     | Sonnet 5  |                   | Færdig       |
+| P1-07 | Ryttere og forældre kan forlade holdet igen                                  | P1   | S    | 50–100k      | Sonnet 5  |                   | Færdig       |
+| P1-08 | En pilotguide til træneren                                                   | P1   | S    | 120–200k     | Sonnet 5  | A-05              | Færdig       |
+| P1-09 | En demo kan aldrig blive installationens ejer                                | P1   | S    | 100–180k     | Opus 5.5  |                   | Færdig       |
+| P2-01 | Garmin-ture ind af sig selv gennem Tredict                                   | P2   | L    | 600k–1M      | Opus 5.5  | A-07 (Martins ja) | Ikke startet |
+| P2-02 | Mine ture: en liste over rytterens ture                                      | P2   | S    | 80–150k      | Sonnet 5  |                   | Færdig       |
+| P2-03 | Tid, sted og kørsel på løb og begivenheder                                   | P2   | M    | 200–300k     | Sonnet 5  |                   | Færdig       |
+| P2-04 | Forældre lægger familiens begivenheder ind                                   | P2   | M    | 250–400k     | Opus 5.5  | P2-03             | Færdig       |
+| P2-05 | En fælles kladde til ugeplanen for flere trænere                             | P2   | M    | 250–400k     | Opus 5.5  |                   | Færdig       |
+| P2-06 | Tilgængelighed: kontrast, bevægelse og fokus                                 | P2   | S    | 120–200k     | Sonnet 5  |                   | Færdig       |
+| P2-07 | Medlemmer kan ikke læse hinandens e-mailadresser                             | P2   | M    | 400–700k     | Fable 5.1 |                   | Færdig       |
+| P2-08 | Rate-limiteren stoler kun på egne proxyer                                    | P2   | S    | 60–120k      | Sonnet 5  |                   | Færdig       |
+| P2-09 | Parkerede sider svarer 404                                                   | P2   | S    | 100–200k     | Sonnet 5  |                   | Færdig       |
+| P2-10 | Enhedssiden nævner kun de udbydere, der er sat op                            | P2   | S    | 60–100k      | Sonnet 5  |                   | Færdig       |
+| P2-11 | En kortere check-in                                                          | P2   | M    | 250–400k     | Opus 5.5  | A-06 (faglig)     | Færdig       |
+| P2-12 | Planændringer kender deres afsender                                          | P2   | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
+| P2-13 | Påmindelser fylder ikke revisionssporet                                      | P2   | S    | 100–180k     | Opus 5.5  | Martins valg      | Færdig       |
+| P2-14 | Demoen viser forløb med egne pas og påmindelser                              | P2   | S    | 120–200k     | Sonnet 5  |                   | Færdig       |
+| P2-15 | Invitationslinks, der holder en uge                                          | P2   | S    | 60–120k      | Sonnet 5  | P1-01             | Færdig       |
+| P2-16 | En forælder på holdet kobles til endnu et barn                               | P2   | M    | 200–350k     | Opus 5.5  | P1-01             | Færdig       |
+| P2-17 | Trivselspåmindelsen ser en check-in, der bliver rød senere                   | P2   | S    | 150–250k     | Opus 5.5  | P1-02             | Færdig       |
+| P2-18 | Tid og sted på trænerens I dag, og en forælder på holdet i "Tilføj forælder" | P2   | S    | 60–120k      | Sonnet 5  | P2-03, P2-16      | Ikke startet |
+| P3-01 | Evaluér de parkerede dele ud fra pilotens tal                                | P3   | S    | 60–120k      | Sonnet 5  | P1-04             | Ikke startet |
+| P3-02 | Fremmøde på holdpas                                                          | P3   | M    | 250–400k     | Opus 5.5  | pilotens ønske    | Ikke startet |
+| P3-03 | Saml de gamle indgange til planlægning                                       | P3   | S    | 120–200k     | Sonnet 5  | en måneds brug    | Ikke startet |
+| P3-04 | Holdets uge for tidligere og kommende uger                                   | P3   | M    | 250–400k     | Opus 5.5  |                   | Ikke startet |
+| P3-05 | E-mail som valgfri kanal                                                     | P3   | L    | 500–800k     | Opus 5.5  | Martins ja        | Ikke startet |
+| P3-06 | Trænerrummet tilbage med moderation i klubberne                              | P3   | L    | 600k–1M      | Opus 5.5  | P3-01, 3 klubber  | Ikke startet |
+| P3-07 | Klubmesterskabet tilbage, sikkert for de unge                                | P3   | M    | 300–450k     | Opus 5.5  | P3-01             | Ikke startet |
+| P3-08 | Content-Security-Policy med nonce                                            | P3   | L    | 500–900k     | Fable 5.1 |                   | Ikke startet |
+| A-01  | En sportsdiætist læser madguiden                                             | A    | S    | 60–120k      | Sonnet 5  |                   | Ikke startet |
+| A-02  | Tilladelse til Rulles ruter og navne                                         | A    | S    | 60–120k      | Sonnet 5  |                   | Ikke startet |
+| A-03  | DCU inviteres til at følge vinteren                                          | A    | S    | 40–80k       | Sonnet 5  |                   | Ikke startet |
+| A-04  | Wahoo: produktionsadgang og puls under 16                                    | A    | S    | 30–60k       | Haiku 4.5 |                   | Ikke startet |
+| A-05  | Aftale med pilotholdet                                                       | A    | S    | 80–150k      | Opus 5.5  |                   | Ikke startet |
+| A-06  | Faglig vurdering af en kortere check-in                                      | A    | S    | 60–100k      | Sonnet 5  |                   | Ikke startet |
+| A-07  | Ja eller nej til Tredict og Connect IQ                                       | A    | S    | 60–120k      | Opus 5.5  |                   | Ikke startet |
+| R-01  | Slet de ubrugte filer                                                        | R    | S    | 40–80k       | Haiku 4.5 | Martins ja        | Ikke startet |
+| R-02  | Små rester fra fokus-bølgen                                                  | R    | S    | 100–180k     | Sonnet 5  |                   | Ikke startet |
+| Ø-01  | Tegnefunktion og indbyggede øvelser og programmer                            | Ø    | M    | 400–700k     | Opus 5.5  |                   | Færdig       |
+| Ø-02  | Åben side, sammensæt og download                                             | Ø    | M    | 300–500k     | Sonnet 5  | Ø-01              | Færdig       |
+| Ø-03  | Holdets egne øvelser og programmer i databasen                               | Ø    | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
+| Ø-04  | Appen: bibliotek, tegneværktøj, programbygger, kalender                      | Ø    | L    | 600k–1M      | Opus 5.5  | Ø-01, Ø-03        | Færdig       |
+| Ø-05  | Demo, hjælp og ADR                                                           | Ø    | S    | 100–200k     | Sonnet 5  | Ø-02, Ø-04        | Færdig       |
+| Ø-06  | Øvelser og programmer med udstyr                                             | Ø    | M    | 400–600k     | Opus 5.5  |                   | Færdig       |
+| N-01  | Navigation efter opgaver                                                     | N    | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
 
 ---
 
@@ -608,6 +610,8 @@ Kadence kan bruges af alle.
 
 **Tokens:** ca. 120–200k · **Model:** Sonnet 5 (`claude-sonnet-5`), tokens, klasser og en kontrasttest.
 
+**Status:** Færdig 7. oktober. Inputfelters kant har nu mindst 3:1 mod kortet i lys og mørk (`--input` fra 1,45 til 3,3), pinnet af en test, der regner kontrasten ud fra tokens. Zone 1 og 4 har et tal og navn, hvor farven stod alene. Animationer slås fra under `prefers-reduced-motion`; det kræver `motion-reduce:!animate-none`, da Tailwind v4's egen animation ellers vinder, og en test holder det. 20 links uden fokusstil har fået `.focus-ring`. Andel af sporets forbrug: ca. 285k tokens (skøn 120–200k; kontrastberegningen og animationerne tog tid).
+
 ```text
 Følg rammen i docs/backlog.md §0. Gren: fix/tilgaengelighed.
 Rettelser fra designgennemgangen den 5. oktober: --input mod --card har
@@ -698,6 +702,8 @@ byggede app eller en enhedstest af proxyens beslutning.
 **Størrelse:** S
 
 **Tokens:** ca. 60–100k · **Model:** Sonnet 5 (`claude-sonnet-5`), tekstvalg ud fra en eksisterende funktion.
+
+**Status:** Færdig 7. oktober. Kortet om udbydernes hjemland bygges ud fra de udbydere, installationen har sat op ("Polar er et finsk firma", "Garmin er et amerikansk firma, Polar er et finsk firma"), og sætningen om at sende pas kommer kun med, når en udbyder kan modtage dem. Andel: ca. 130k tokens (skøn 60–100k).
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: fix/enheder-tekst.
@@ -799,6 +805,8 @@ af produktet kan ses.
 
 **Tokens:** ca. 120–200k · **Model:** Sonnet 5 (`claude-sonnet-5`), opdeling af demo-seed og en test.
 
+**Status:** Færdig 7. oktober. `seed.ts` er delt op; demoens forløb "Vinterblok, 4 uger" rummer et pas bygget i planlæggeren ("Teknik og sving", fredag 16.00 med mødested), og demoen har 6 ugers check-ins, så holdets tre tal har historik. Påmindelseskortet vises allerede, når installationen har nøgler. Andel: ca. 100k tokens (skøn 120–200k).
+
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/demo-forloeb.
 src/modules/demo/seed.ts er tæt på 300 linjer. Del den (fx
@@ -884,6 +892,25 @@ fra red_since i stedet for created_at. RLS er uændret (kolonnen følger
 rækken). Tests i tests/push/job-wellbeing.test.ts for en check-in, der
 gemmes grøn og senere rettes til rød, med en anden påmindelse imellem.
 Opdatér ADR 0060.
+```
+
+### P2-18 Tid og sted på trænerens I dag, og en forælder på holdet i "Tilføj forælder"
+
+To små rester fra P2-03 og P2-16.
+
+**Tokens:** ca. 60–120k · **Model:** Sonnet 5 (`claude-sonnet-5`).
+
+**Status:** Ikke startet. Fundet 7. oktober.
+
+```text
+Følg rammen i docs/backlog.md §0. Gren: fix/smaa-rester-p2.
+1) Trænerens liste over holdets begivenheder på I dag (coach-today.tsx)
+viser ikke tid og sted; vis dem som på kalenderens chips. 2) "Tilføj
+forælder" på rytterens side med en indtastet adresse, der allerede er
+medlem, opretter rækken og fejler bagefter med alreadyMember; afvis før
+oprettelsen, og peg på valget "Nogen, der allerede er på holdet". 3)
+Danske ejefald skrives "{name}s" også ved navne på s (Magnus); brug
+"{name}'" der. Tests for alle tre.
 ```
 
 ## P3 — efter vinteren
