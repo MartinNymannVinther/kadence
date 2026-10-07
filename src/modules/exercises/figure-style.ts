@@ -25,6 +25,14 @@ export const FIGURE = {
   benchSeat: 5,
   matStroke: 4,
   kettlebell: { handle: 4, bell: 7, drop: 9 },
+  /** Half the bar's length, where the plates sit from its middle, half a plate's height and its thickness. */
+  barbell: { half: 40, plateAt: 31, plateHalf: 11, plateWidth: 5 },
+  /** Half the handle, half an end's height and an end's thickness. */
+  dumbbell: { half: 7, endHalf: 5, endWidth: 5 },
+  /** Half a TRX handle's grip, across the strap, and the ring it hangs from. */
+  trx: { grip: 4, ring: 3 },
+  /** The pull-up bar's thickness and the brackets that hold it up. */
+  pullupBar: { stroke: 4, mount: 7 },
   /** The floor and the wall leave this much of the box clear at each end. */
   margin: 10,
 } as const;

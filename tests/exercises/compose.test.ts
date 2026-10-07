@@ -40,6 +40,38 @@ describe("a composition", () => {
     expect(decodeComposition(encoded)).toEqual(parts);
   });
 
+  it("carries a dose's load as its first letter, and reads a link without one as before", () => {
+    const parts: ProgramPart[] = [
+      {
+        key: "any",
+        items: [
+          {
+            exercise: "builtin:backSquat",
+            dose: { kind: "reps", reps: 12, perSide: false, sets: 3, load: "moderate" },
+          },
+          {
+            exercise: "builtin:dumbbellLunge",
+            dose: { kind: "reps", reps: 8, perSide: true, sets: 3, load: "light" },
+          },
+          {
+            exercise: "builtin:plank",
+            dose: { kind: "time", seconds: 30, perSide: false, sets: 1, load: "heavy" },
+          },
+        ],
+      },
+    ];
+    const encoded = encodeComposition(parts);
+    expect(encoded).toBe("any=backSquat-r12x3m,dumbbellLunge-r8sx3l,plank-t30h");
+    expect(decodeComposition(encoded)).toEqual(parts);
+    expect(decodeComposition("any=backSquat-r12x3")![0]!.items[0]!.dose).toEqual({
+      kind: "reps",
+      reps: 12,
+      perSide: false,
+      sets: 3,
+    });
+    expect(decodeComposition("any=backSquat-r12x3q")).toBeNull();
+    expect(decodeComposition("any=backSquat-r12mx3")).toBeNull();
+  });
   it("leaves out a dose that matches nothing special: a bare id decodes with no override", () => {
     const parts: ProgramPart[] = [{ key: "any", items: [{ exercise: "builtin:squat" }] }];
     const encoded = encodeComposition(parts);

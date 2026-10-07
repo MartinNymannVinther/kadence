@@ -32,10 +32,12 @@ export function ComposerDoseEditor({
 
   function setKind(kind: "time" | "reps") {
     if (kind === dose.kind) return;
+    // The load, when the exercise has one, stays with the new kind.
+    const load = dose.load ? { load: dose.load } : {};
     onChange(
       kind === "time"
-        ? { kind: "time", seconds: clamp(amount, 5, 600), perSide, sets }
-        : { kind: "reps", reps: clamp(amount, 1, 100), perSide, sets },
+        ? { kind: "time", seconds: clamp(amount, 5, 600), perSide, sets, ...load }
+        : { kind: "reps", reps: clamp(amount, 1, 100), perSide, sets, ...load },
     );
   }
 

@@ -4929,10 +4929,17 @@
         "step": "Step",
         "band": "Elastic band",
         "ball": "Ball",
-        "kettlebell": "Kettlebell"
+        "kettlebell": "Kettlebell",
+        "barbell": "Barbell",
+        "dumbbell": "Dumbbell",
+        "trx": "TRX straps",
+        "pullupBar": "Pull-up bar"
       },
       "propFrom": "{name}, one end",
       "propTo": "{name}, the other end",
+      "propAnchor": "{name}, anchor",
+      "propHandleA": "{name}, near handle",
+      "propHandleB": "{name}, far handle",
       "removeProp": "Remove {name}",
       "maxProps": "A drawing can have six things.",
       "preview": "How the card looks",
@@ -4945,6 +4952,8 @@
       "repsCount": "Times",
       "perSide": "Per side",
       "sets": "Sets",
+      "load": "Load",
+      "loadNone": "Not given",
       "save": "Save the exercise",
       "created": "The exercise is saved in the team's library.",
       "saved": "The changes are saved.",
@@ -5020,14 +5029,24 @@
       "step": "Step",
       "band": "Elastic band",
       "kettlebell": "Kettlebell",
-      "ball": "Ball"
+      "ball": "Ball",
+      "barbell": "Barbell",
+      "dumbbell": "Dumbbells",
+      "trx": "TRX straps",
+      "pullupBar": "Pull-up bar"
     },
     "dose": {
       "seconds": "{seconds} sec",
       "minutes": "{minutes} min",
       "times": "{reps, plural, one {# time} other {# times}}",
       "perSide": "{amount} per side",
-      "sets": "{sets} × {amount}"
+      "sets": "{sets} × {amount}",
+      "withLoad": "{amount} · {load}",
+      "loads": {
+        "light": "light",
+        "moderate": "moderate",
+        "heavy": "heavy"
+      }
     },
     "card": {
       "done": "Done"

@@ -1,10 +1,12 @@
 import { FIGURE, line, type FigurePrimitive } from "./figure-style";
+import { strengthPropPrimitives } from "./figure-props-strength";
 import { BOX, type Prop } from "./types";
 
 /**
  * What the figure stands on and uses, as primitives: the ground (floor,
  * wall, mat), drawn first, and the props (bench, step, band, ball,
- * kettlebell), drawn behind the figure so its hands hold them.
+ * kettlebell, and the strength room's in ./figure-props-strength), drawn
+ * behind the figure so its hands hold them.
  */
 
 function floorOf(props: readonly Prop[]): number | null {
@@ -131,6 +133,7 @@ export function propPrimitives(props: readonly Prop[]): FigurePrimitive[] {
         break;
       }
       default:
+        out.push(...strengthPropPrimitives(p));
         break;
     }
   }

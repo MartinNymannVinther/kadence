@@ -14,8 +14,9 @@ import {
   FIGURE_TOKENS,
   type FigureColours,
 } from "@/modules/exercises/figure-colours";
+import { propPrimitives } from "@/modules/exercises/figure-props";
 import { figureSvg } from "@/modules/exercises/figure-svg";
-import { poseSchema, type Pose } from "@/modules/exercises/types";
+import { poseSchema, propSchema, type Pose } from "@/modules/exercises/types";
 
 /**
  * One drawing for every exercise: the geometry keeps the fixed style and
@@ -71,6 +72,96 @@ describe("the figure's geometry", () => {
     const b = geometryBounds(figureGeometry(hipFlexor));
     expect(b.minY).toBeCloseTo(26 - FIGURE.headRadius);
     expect(b.maxY).toBeCloseTo(122 + FIGURE.groundStroke / 2);
+  });
+});
+
+describe("the strength room's props", () => {
+  const lines = (props: unknown[]) =>
+    propPrimitives(props.map((p) => propSchema.parse(p))).filter(
+      (p): p is Extract<FigurePrimitive, { shape: "polyline" }> => p.shape === "polyline",
+    );
+
+  it("draws a barbell as a level bar with a plate at each end, round its middle", () => {
+    const [bar, plateL, plateR] = lines([{ kind: "barbell", at: [120, 60] }]);
+    expect(bar!.points).toEqual([
+      [120 - FIGURE.barbell.half, 60],
+      [120 + FIGURE.barbell.half, 60],
+    ]);
+    for (const [plate, x] of [
+      [plateL!, 120 - FIGURE.barbell.plateAt],
+      [plateR!, 120 + FIGURE.barbell.plateAt],
+    ] as const) {
+      expect(plate.width).toBe(FIGURE.barbell.plateWidth);
+      expect(plate.points.map(([px]) => px)).toEqual([x, x]);
+      expect(Math.abs(plate.points[0]![1] - plate.points[1]![1])).toBeCloseTo(
+        2 * FIGURE.barbell.plateHalf,
+      );
+    }
+    expect([bar, plateL, plateR].every((p) => p!.tone === "prop")).toBe(true);
+  });
+
+  it("turns a barbell and a dumbbell by their angle, clockwise", () => {
+    const [bar] = lines([{ kind: "barbell", at: [120, 60], angle: 90 }]);
+    expect(bar!.points[0]![0]).toBeCloseTo(120);
+    expect(bar!.points[1]![1]).toBeCloseTo(60 + FIGURE.barbell.half);
+    const [handle] = lines([{ kind: "dumbbell", at: [100, 60], angle: 90 }]);
+    expect(handle!.points[1]![1]).toBeCloseTo(60 + FIGURE.dumbbell.half);
+  });
+
+  it("draws a dumbbell as a short handle with an end on each side", () => {
+    const parts = lines([{ kind: "dumbbell", at: [100, 60] }]);
+    expect(parts).toHaveLength(3);
+    const b = geometryBounds(parts);
+    expect((b.minX + b.maxX) / 2).toBeCloseTo(100);
+    expect((b.minY + b.maxY) / 2).toBeCloseTo(60);
+    expect(b.maxX - b.minX).toBeLessThan(30);
+  });
+
+  it("hangs TRX straps from the anchor, the far one fainter, a grip on each", () => {
+    const prims = propPrimitives([
+      propSchema.parse({ kind: "trx", anchor: [60, 12], handleA: [100, 70], handleB: [110, 72] }),
+    ]);
+    const straps = prims.filter(
+      (p): p is Extract<FigurePrimitive, { shape: "polyline" }> =>
+        p.shape === "polyline" && p.width === FIGURE.bandStroke,
+    );
+    expect(straps.map((s) => s.points)).toEqual([
+      [
+        [60, 12],
+        [110, 72],
+      ],
+      [
+        [60, 12],
+        [100, 70],
+      ],
+    ]);
+    expect(straps.map((s) => s.opacity)).toEqual([FIGURE.farOpacity, 1]);
+    expect(
+      prims.filter((p) => p.shape === "polyline" && p.width === FIGURE.propStroke),
+    ).toHaveLength(2);
+    expect(prims.some((p) => p.shape === "circle" && p.center[0] === 60)).toBe(true);
+  });
+
+  it("draws a pull-up bar at its height and width, held up from each end", () => {
+    const [bar, ...brackets] = lines([{ kind: "pullupBar", at: [120, 14], width: 96 }]);
+    expect(bar!.points).toEqual([
+      [72, 14],
+      [168, 14],
+    ]);
+    expect(brackets).toHaveLength(2);
+    for (const b of brackets) expect(Math.min(b.points[0]![1], b.points[1]![1])).toBeLessThan(14);
+  });
+
+  it("refuses a strength prop the contract does not hold", () => {
+    expect(propSchema.safeParse({ kind: "barbell", at: [120, 60], angle: 120 }).success).toBe(
+      false,
+    );
+    expect(propSchema.safeParse({ kind: "pullupBar", at: [120, 14], width: 300 }).success).toBe(
+      false,
+    );
+    expect(
+      propSchema.safeParse({ kind: "trx", anchor: [60, 12], handleA: [100, 70] }).success,
+    ).toBe(false);
   });
 });
 

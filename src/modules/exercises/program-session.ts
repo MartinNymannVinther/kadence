@@ -1,13 +1,14 @@
 import type { Exercise, StrengthStructure } from "@/modules/workouts/structure";
-import type { Translate } from "./dose";
+import { loadWord, type Translate } from "./dose";
 import type { Dose, ProgramView } from "./types";
 
 /**
  * A programme as a session in the calendar ("Læg i kalenderen"): a
  * strength session whose exercises are the programme's, in its order,
  * each with its dose written the way the strength builder writes sets and
- * reps ("3 × 30 sek", "3 × 10 pr. side") and a reference to the exercise
- * in the library, so the session can show its figure and how-to.
+ * reps ("3 × 30 sek", "3 × 10 pr. side"), its load in a word ("moderat")
+ * and a reference to the exercise in the library, so the session can show
+ * its figure and how-to.
  *
  * Pure: the words come through the translator it is handed (the
  * `exercises` namespace), in the language of the coach who lays it in —
@@ -91,7 +92,7 @@ export function programStructure(
       group: exercise.group,
       sets: dose.sets ?? 1,
       reps: doseAmount(dose, t),
-      load: "",
+      load: loadWord(dose, t),
       note: named ? t(`parts.${part.key}`) : "",
       ref: exercise.ref,
     })),

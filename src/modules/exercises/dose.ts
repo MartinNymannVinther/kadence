@@ -6,12 +6,23 @@ import type { Dose, ProgramView } from "./types";
  */
 export type Translate = (key: string, values?: Record<string, string | number>) => string;
 
+/** How heavy, in a word ("let", "moderat", "tung"), or "" when the dose does not say. */
+export function loadWord(dose: Dose, t: Translate): string {
+  return dose.load ? t(`dose.loads.${dose.load}`) : "";
+}
+
 /**
  * A dose in words, as the card shows it beside the name: "30 sek pr. side",
- * "3 × 10", "3 × 30 sek", "10 pr. side", "10 gange". Whole minutes from a
- * minute up read as minutes ("2 min"); anything else as seconds.
+ * "3 × 10", "3 × 30 sek", "10 pr. side", "10 gange", and the load after a
+ * dot when it has one: "3 × 10 · moderat". Whole minutes from a minute up
+ * read as minutes ("2 min"); anything else as seconds.
  */
 export function formatDose(dose: Dose, t: Translate): string {
+  const amount = amountWithSets(dose, t);
+  return dose.load ? t("dose.withLoad", { amount, load: loadWord(dose, t) }) : amount;
+}
+
+function amountWithSets(dose: Dose, t: Translate): string {
   const sets = dose.sets ?? 1;
   const perSide = dose.perSide ?? false;
   let amount: string;

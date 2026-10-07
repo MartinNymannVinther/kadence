@@ -4929,10 +4929,17 @@
         "step": "Trin",
         "band": "Elastik",
         "ball": "Bold",
-        "kettlebell": "Kettlebell"
+        "kettlebell": "Kettlebell",
+        "barbell": "Vægtstang",
+        "dumbbell": "Håndvægt",
+        "trx": "TRX",
+        "pullupBar": "Bar til kropshævninger"
       },
       "propFrom": "{name}, den ene ende",
       "propTo": "{name}, den anden ende",
+      "propAnchor": "{name}, ophænget",
+      "propHandleA": "{name}, forreste håndtag",
+      "propHandleB": "{name}, bagerste håndtag",
       "removeProp": "Fjern {name}",
       "maxProps": "En tegning kan have seks ting.",
       "preview": "Sådan ser kortet ud",
@@ -4945,6 +4952,8 @@
       "repsCount": "Gange",
       "perSide": "Pr. side",
       "sets": "Sæt",
+      "load": "Belastning",
+      "loadNone": "Ikke angivet",
       "save": "Gem øvelsen",
       "created": "Øvelsen er gemt i holdets bibliotek.",
       "saved": "Ændringerne er gemt.",
@@ -5020,14 +5029,24 @@
       "step": "Trin",
       "band": "Elastik",
       "kettlebell": "Kettlebell",
-      "ball": "Bold"
+      "ball": "Bold",
+      "barbell": "Vægtstang",
+      "dumbbell": "Håndvægte",
+      "trx": "TRX",
+      "pullupBar": "Bar til kropshævninger"
     },
     "dose": {
       "seconds": "{seconds} sek",
       "minutes": "{minutes} min",
       "times": "{reps, plural, one {# gang} other {# gange}}",
       "perSide": "{amount} pr. side",
-      "sets": "{sets} × {amount}"
+      "sets": "{sets} × {amount}",
+      "withLoad": "{amount} · {load}",
+      "loads": {
+        "light": "let",
+        "moderate": "moderat",
+        "heavy": "tung"
+      }
     },
     "card": {
       "done": "Færdig"

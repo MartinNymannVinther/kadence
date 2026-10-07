@@ -1,14 +1,17 @@
 "use client";
 
+import { useId } from "react";
 import { useTranslations } from "next-intl";
 import { NumberField } from "@/components/workouts/number-field";
+import { NativeSelect } from "@/components/ui/native-select";
 import { SegmentedChoice } from "@/components/ui/segmented";
-import type { Dose } from "@/modules/exercises/types";
+import { LOADS, type Dose, type Load } from "@/modules/exercises/types";
 
 /**
  * How much of an exercise: a time or a number of repetitions, per side or
- * not, in sets — the contract's dose (`doseSchema`), with its limits on
- * the fields so the browser says when a number is out of range.
+ * not, in sets, and how heavy in a word or not at all — the contract's
+ * dose (`doseSchema`), with its limits on the fields so the browser says
+ * when a number is out of range.
  */
 export function DoseFields({
   value,
@@ -22,8 +25,11 @@ export function DoseFields({
   hideLegend?: boolean;
 }) {
   const t = useTranslations("exercises.editor");
+  const tDose = useTranslations("exercises.dose");
+  const loadId = useId();
   const perSide = value.perSide ?? false;
   const sets = value.sets ?? 1;
+  const load = value.load ? { load: value.load } : {};
 
   return (
     <fieldset className="flex min-w-0 flex-col gap-2">
@@ -40,8 +46,8 @@ export function DoseFields({
           if (kind === value.kind) return;
           onChange(
             kind === "time"
-              ? { kind, seconds: 30, perSide, sets }
-              : { kind, reps: 10, perSide, sets },
+              ? { kind, seconds: 30, perSide, sets, ...load }
+              : { kind, reps: 10, perSide, sets, ...load },
           );
         }}
       />
@@ -79,6 +85,29 @@ export function DoseFields({
           />
           {t("perSide")}
         </label>
+      </div>
+      <div className="flex min-w-0 flex-col gap-1">
+        <label htmlFor={loadId} className="text-label text-xs font-medium">
+          {t("load")}
+        </label>
+        <NativeSelect
+          id={loadId}
+          variant="sm"
+          className="w-44 max-sm:h-11"
+          value={value.load ?? ""}
+          onChange={(e) => {
+            const { load: _old, ...rest } = value;
+            const chosen = e.target.value as Load | "";
+            onChange(chosen ? { ...rest, load: chosen } : rest);
+          }}
+        >
+          <option value="">{t("loadNone")}</option>
+          {LOADS.map((l) => (
+            <option key={l} value={l}>
+              {tDose(`loads.${l}`)}
+            </option>
+          ))}
+        </NativeSelect>
       </div>
     </fieldset>
   );
