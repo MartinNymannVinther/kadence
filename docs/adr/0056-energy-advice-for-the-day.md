@@ -1,6 +1,6 @@
 # ADR 0056: Energy advice for the day — a timeline for a class, instead of a calculator that asks for a weight
 
-Status: accepted · Date: 2026-10-05 · Amends ADR 0047 (the energy calculator answers in number fields and asks for a weight)
+Status: accepted · Date: 2026-10-05 · Amends ADR 0047 (the energy calculator answers in number fields and asks for a weight) · Amended 2026-10-07 (a gel without caffeine in a race from U17)
 
 ## Context
 
@@ -106,3 +106,23 @@ Danish sources DCU leans on.
 - **DCU is thin on food.** Most of the advice is Team Danmark's; DCU's own
   part is the ride the day before and the recovery meal in its strength
   programmes.
+
+## Amended 2026-10-07: a gel without caffeine in a race from U17
+
+The advice kept to ordinary food and homemade drinks, as Team Danmark's
+ATK advises for children and young people. Martin's reading of the sport
+is that from U17 gels are what riders meet in a race: they train a lot and
+race hard and long. So:
+
+- the pantry has a standard gel without caffeine, 25 g carbohydrate, the
+  model's default (docs/research/ernaering.md, section 3, input 10);
+- the example uses it only in a race, and only from U17 (`gelsFor` in
+  `src/modules/calc/fuel-day.ts`). Training and U15 stay as they were;
+- ordinary food still comes first: rice cakes while they keep, then gels
+  as the standard piece, bananas as the reserve (`fuel-suggest.ts`);
+- the note under the example says why, asks for gels without caffeine
+  (EFSA's 3 mg/kg for under-18s, ernaering.md 1.8), water with them and a
+  rinse afterwards for the teeth (Tandlægeforeningen, ernaering.md 2.12).
+
+Trade-off: the calculator now departs from ATK's letter for U17 and up on
+one point, at Martin's own decision, and says so on the page.

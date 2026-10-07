@@ -4635,6 +4635,7 @@
         "fuel": { "name": "Strong sports drink (8 %)" },
         "riceCake": { "name": "Rice cake" },
         "banana": { "name": "Banana" },
+        "gel": { "name": "Gel without caffeine" },
         "oats": { "name": "Oats" },
         "milk": { "name": "Milk" },
         "whiteBread": { "name": "White bread" },
@@ -4657,7 +4658,8 @@
         "practise": "Practise it on long training rides over the next 2–4 weeks before using it in a race.",
         "multiple": "Above 60 g an hour takes glucose and fructose together. Ordinary sugar is both.",
         "cages": "The example has {n} bottles, and the bike has room for two. You can be handed the rest on the way, where the race allows it.",
-        "products": "Team Danmark does not recommend sports products such as gels and energy bars for children and young people, and advises against energy drinks with caffeine. Ordinary food and homemade sports drink are enough."
+        "products": "Team Danmark does not recommend sports products such as gels and energy bars for children and young people, and advises against energy drinks with caffeine. Ordinary food and homemade sports drink are enough.",
+        "productsGels": "From U17, gels are common in races where the pace is high and the race is long, so the example uses them once the rice cakes are eaten. Choose gels without caffeine, drink water with them, and rinse your mouth with water afterwards for your teeth. For training and for the youngest, Team Danmark advises ordinary food and homemade sports drink, and the example follows that."
       },
       "print": {
         "button": "Print or save as PDF"

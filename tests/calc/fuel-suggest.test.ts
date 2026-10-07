@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { checkPlan, MAX_MINUTES, MIN_MINUTES, type FuelRace } from "@/modules/calc/fuel-check";
-import { carbAdvice, DEFAULT_DAY } from "@/modules/calc/fuel-day";
+import { carbAdvice, DEFAULT_DAY, gelsFor } from "@/modules/calc/fuel-day";
 import { suggestPlan } from "@/modules/calc/fuel-suggest";
 
 /** Notes that would point out a flaw in the plan itself, as opposed to advice about the race. */
@@ -64,5 +64,41 @@ describe("Kadence's own plan", () => {
     expect(suggestPlan({ minutes: 30, celsius: 18, gutTrained: false, bottleMl: 500 })).toEqual([
       ["water"],
     ]);
+  });
+});
+
+describe("gels in the example", () => {
+  it("come only in a race from U17, never in training or for U15", () => {
+    expect(gelsFor({ session: "race", riderClass: "U17" })).toBe(true);
+    expect(gelsFor({ session: "race", riderClass: "U19" })).toBe(true);
+    expect(gelsFor({ session: "race", riderClass: "U23" })).toBe(true);
+    expect(gelsFor({ session: "race", riderClass: "U15" })).toBe(false);
+    expect(gelsFor({ session: "training", riderClass: "U19" })).toBe(false);
+  });
+
+  it("are used in a long race once the rice cakes are eaten, and stay on target", () => {
+    const race: FuelRace = { minutes: 240, celsius: 18, gutTrained: true, bottleMl: 750 };
+    const withGels = suggestPlan(race, undefined, { gels: true });
+    const without = suggestPlan(race);
+    expect(withGels.flat()).toContain("gel");
+    expect(without.flat()).not.toContain("gel");
+    // Rice cakes keep for two hours; gels take over after them.
+    expect(withGels.slice(0, 2).flat()).not.toContain("gel");
+    expect(checkPlan(race, withGels).podium).toBe(true);
+  });
+
+  it("stay on target every hour, without a flaw, for every race with gels", () => {
+    const misses: string[] = [];
+    for (let minutes = MIN_MINUTES; minutes <= MAX_MINUTES; minutes += 15)
+      for (const celsius of [-5, 5, 18, 24, 25, 30, 40])
+        for (const gutTrained of [false, true])
+          for (const bottleMl of [500, 750] as const) {
+            const race: FuelRace = { minutes, celsius, gutTrained, bottleMl };
+            const check = checkPlan(race, suggestPlan(race, undefined, { gels: true }));
+            const flaws = check.notes.filter((n) => FLAWS.includes(n));
+            if (!check.podium || flaws.length > 0)
+              misses.push(`${minutes} min ${celsius} °C ${gutTrained} ${bottleMl}: ${flaws}`);
+          }
+    expect(misses).toEqual([]);
   });
 });

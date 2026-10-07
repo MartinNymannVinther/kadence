@@ -70,6 +70,19 @@ export function carbAdvice(day: Day): CarbAdvice {
   return { low, high, target: Math.round((low + high) / 2 / 5) * 5, kind: "single", capped: false };
 }
 
+/**
+ * Whether the example may use a gel: in a race, from U17. Team Danmark's
+ * ATK advises ordinary food and homemade drinks for children and young
+ * people (ATK 2.0, nutrition chapter 2025), and Kadence keeps to that for
+ * U15 and for every training session. From U17 riders train a lot and
+ * race hard and long, and gels are what they meet in a race; Martin chose
+ * on 7 October 2026 to show them there (ADR 0056, amended). A gel without
+ * caffeine: young people under 18 should stay under 3 mg caffeine per kg
+ * a day (EFSA; ernaering.md 1.8).
+ */
+export const gelsFor = (day: Pick<Day, "session" | "riderClass">) =>
+  day.session === "race" && day.riderClass !== "U15";
+
 /** A race, or training that is not easy. */
 export const hardToday = (day: Day) => day.session === "race" || day.intensity !== "easy";
 

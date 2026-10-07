@@ -43,12 +43,19 @@ describe("the energy advice's words", () => {
     expect(typeof at(en, key)).toBe("string");
   });
 
-  it("asks for no weight, names no gel, and uses no TrainingPeaks terms or exclamation marks", () => {
+  it("asks for no weight, and uses no TrainingPeaks terms or exclamation marks", () => {
     const text = JSON.stringify(at(da, "calculators.energy"));
     expect(text).not.toMatch(/\b(TSS|CTL|ATL|TSB|NP|IF)\b/);
     expect(text).not.toContain("!");
     expect(text).not.toContain("Vægt (valgfri)");
-    expect(at(da, "calculators.energy.items.gel")).toBeUndefined();
+  });
+
+  it("names the gel as one without caffeine, and says why it is for races from U17", () => {
+    // Martin's choice of 7 October 2026: gels are what riders meet in a race
+    // from U17; caffeine stays out (EFSA, ernaering.md 1.8).
+    expect(at(da, "calculators.energy.items.gel.name")).toBe("Gel uden koffein");
+    expect(at(da, "calculators.energy.warnings.productsGels")).toContain("U17");
+    expect(at(da, "calculators.energy.warnings.productsGels")).toContain("uden koffein");
   });
 
   it("says hard training, not just hard, for what comes next", () => {

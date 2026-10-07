@@ -29,8 +29,11 @@ describe("the pantry", () => {
     expect(itemContent("banana", 500).carbs).toBe(25);
   });
 
-  it("has six things for the bike, four of them bottles and no sports products, and sixteen meals", () => {
-    expect(RIDE_ITEM_IDS).toHaveLength(6);
+  it("has seven things for the bike, four of them bottles and one gel, and sixteen meals", () => {
+    expect(RIDE_ITEM_IDS).toHaveLength(7);
+    expect(RIDE_ITEM_IDS).toContain("gel");
+    // A standard gel without caffeine: 25 g, the model's default (ernaering.md section 3).
+    expect(itemContent("gel", 750).carbs).toBe(25);
     expect(RIDE_ITEM_IDS.filter((id) => itemContent(id, 750).fluidL > 0)).toHaveLength(4);
     expect(MEAL_ITEM_IDS).toHaveLength(16);
   });

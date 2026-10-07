@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { num } from "@/components/charts/format";
 import { kcalRacing, spread } from "@/modules/calc/energy";
 import { checkPlan, type Note } from "@/modules/calc/fuel-check";
-import { carbAdvice, type Day } from "@/modules/calc/fuel-day";
+import { carbAdvice, gelsFor, type Day } from "@/modules/calc/fuel-day";
 import { contentOf } from "@/modules/calc/fuel-items";
 import { suggestPlan } from "@/modules/calc/fuel-suggest";
 import type { DayTimes } from "@/modules/calc/fuel-times";
@@ -38,7 +38,8 @@ export function EnergyDuring({
   const warnings = useTranslations("calculators.energy.warnings");
   const locale = useLocale();
   const advice = carbAdvice(day);
-  const lanes = suggestPlan(day, advice);
+  const gels = gelsFor(day);
+  const lanes = suggestPlan(day, advice, { gels });
   const check = checkPlan(day, lanes, advice);
   const fluid = check.fluidPerHour;
   const carbs =
@@ -120,17 +121,18 @@ export function EnergyDuring({
       </div>
       {kcal && <EnergyBudget kcal={kcal} gutCap={check.gutCap} />}
       <ul className="flex flex-col gap-2">
-        {[...notes.map((n) => warnings(n, { n: check.totals.bottles })), warnings("products")].map(
-          (text) => (
-            <li
-              key={text}
-              className="bg-secondary flex items-start gap-2 rounded-md px-3 py-2 text-2sm leading-relaxed"
-            >
-              <Info aria-hidden className="text-meta mt-0.5 size-4 shrink-0" />
-              {text}
-            </li>
-          ),
-        )}
+        {[
+          ...notes.map((n) => warnings(n, { n: check.totals.bottles })),
+          warnings(gels ? "productsGels" : "products"),
+        ].map((text) => (
+          <li
+            key={text}
+            className="bg-secondary flex items-start gap-2 rounded-md px-3 py-2 text-2sm leading-relaxed"
+          >
+            <Info aria-hidden className="text-meta mt-0.5 size-4 shrink-0" />
+            {text}
+          </li>
+        ))}
       </ul>
     </EnergyStep>
   );
