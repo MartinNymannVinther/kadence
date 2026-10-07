@@ -63,7 +63,7 @@ is not kept on the server" above:
 
 - **The draft is kept on the server**, per team, week and scope — the
   team's plan, or a plan begun from one rider's calendar (ADR 0059) — in
-  `week_plan_drafts` (drizzle/0038), in the shape the week is laid in
+  `week_plan_drafts` (drizzle/0035), in the shape the week is laid in
   with and checked by that schema on the way in and out. The team's
   coaches alone read and write it (forced RLS; a rider's draft must name a
   rider of the team), every save is audited, and it is deleted when the

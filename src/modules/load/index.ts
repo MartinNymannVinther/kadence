@@ -109,6 +109,7 @@ export {
   SHORT_NIGHT_HOURS,
   WELLBEING_WINDOW_DAYS,
   checkinZone,
+  isRedCheckin,
   wellbeingStatus,
   type Checkin,
   type CheckinZone,

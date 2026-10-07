@@ -14,7 +14,7 @@ import { tenant, timestamps } from "./shared";
  * `rider_id` is the planner's scope: empty for the team's plan, a rider's
  * id for a plan begun from that rider's calendar (ADR 0059), which is kept
  * apart from the team's for the same week. The rider is checked by the
- * database (drizzle/0038) and the drafts go with the rider when the rider
+ * database (drizzle/0035) and the drafts go with the rider when the rider
  * is erased.
  *
  * `payload` is the planner's draft in the shape the server is sent when

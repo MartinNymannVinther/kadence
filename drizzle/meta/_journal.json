@@ -253,6 +253,27 @@
       "when": 1791368681990,
       "tag": "0035_week_plan_drafts",
       "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1791368808987,
+      "tag": "0036_checkin_red_since",
+      "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "7",
+      "when": 1791369880323,
+      "tag": "0037_plan_change_sender",
+      "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "7",
+      "when": 1791370839348,
+      "tag": "0038_push_runs",
+      "breakpoints": true
     }
   ]
 }

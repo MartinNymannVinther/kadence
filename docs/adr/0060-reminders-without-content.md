@@ -1,7 +1,9 @@
 # ADR 0060: Reminders without content
 
 Status: accepted · Date: 2026-10-06 · Amended 2026-10-06: a coach's
-wellbeing reminder (P1-02) and a test push (P1-05)
+wellbeing reminder (P1-02) and a test push (P1-05) · Amended 2026-10-07:
+a check-in that turns red later (P2-17), plan changes that know their
+sender (P2-12) and reminders that leave the audit trail alone (P2-13)
 
 ## Context
 
@@ -49,8 +51,8 @@ the browser, not Kadence, decides which one is used.
   - check-in: a rider who has not checked in today, once a day from 19.00;
   - comment: a comment by someone else in a thread the person can read —
     a coach hears from riders and parents, not from the other coaches;
-  - plan: a session in the rider's next seven days laid or changed by
-    someone else;
+  - plan: a session in the rider's next seven days laid, changed or
+    deleted by someone else (see the amendment below);
   - week: a parent, on Sunday from 18.00, "Emmas uge er klar";
   - wellbeing: a coach, when a rider checks in in the red zone (see the
     amendment below).
@@ -111,11 +113,12 @@ the browser, not Kadence, decides which one is used.
   price of reaching a phone at all without a native app; it is opt-in,
   per person and per browser, and nothing reaches a push service for
   anyone who has not turned reminders on.
-- **"Someone else" is "laid by someone else".** Kadence records who laid a
-  session, not who changed it last, and a rider cannot read the audit
-  trail. So a rider who moves a session the coach laid hears once that the
-  plan changed, a session the coach removes is not told, and matching a
-  ride to a session is not a change. No column was added for it.
+- **"Someone else" was "laid by someone else"** until 2026-10-07: Kadence
+  recorded who laid a session, not who changed it last, so a rider who
+  moved a session the coach laid heard that the plan changed, and a
+  session the coach removed was not told. Both are closed by the
+  amendment on plan changes below (P2-12). Matching a ride to a session is
+  still not a change.
 - **The text follows the newest reminder.** `latest` reads back which
   reminder went out last from the marks the job wrote, on the person's
   most recently told browser. A push that arrives late, after the person
@@ -146,12 +149,18 @@ while it matters.
   and nothing from another team. Only a coach is offered the kind, and
   the job decides it only for a coach, whatever a row says; a rider or a
   parent never gets it.
-- **Once per rider per day, with no new column.** A check-in is one row
-  per rider per day, changed in place when the rider saves again. The
-  reminder counts from its first save (`created_at`), and its mark moves
-  `told_up_to` to the newest told check-in's first save, not to now. So
-  saving the same check-in again is not news, and a comment written after
-  the check-in is still told on the next run.
+- **Once each time a check-in turns red.** A check-in is one row per
+  rider per day, changed in place when the rider saves again. It carries
+  `red_since` (drizzle/0036, amended 2026-10-07, P2-17): the check-in
+  service sets it when the check-in turns red, keeps it while it stays
+  red, and clears it when it is put right, by the one rule the reminder
+  goes by as well (`isRedCheckin` in src/modules/load/wellbeing.ts). The
+  reminder counts from `red_since`, and its mark moves `told_up_to` to the
+  newest told check-in's `red_since`, not to now. So saving a red
+  check-in again is not news, one saved green and changed to red later in
+  the day is, and a comment written after the check-in is still told on
+  the next run. A check-in put right and then red again the same day is
+  told again; it said something new.
 - **Quiet hours do not apply.** They keep evenings and nights free of what
   can wait. A rider who is ill, in pain during and after training, or at
   the bottom of the mood scale has said something that should not wait
@@ -166,18 +175,21 @@ normal`), not an alarm; the coach decides what to do. The job therefore
   login, on the attention list, under the same policies. The service
   worker keeps the anchor when it opens the page.
 - **What the text says** is read back from the mark: `told_up_to` equal,
-  to the millisecond, to the first save of a red check-in the coach can
+  to the millisecond, to the `red_since` of a red check-in the coach can
   see.
 
 ### Trade-offs accepted
 
-- **A check-in that turns red later in the day** is told only if no other
-  reminder went to that coach since it was first saved. Kadence keeps no
-  history of a check-in's zone outside the audit trail, so a change from
-  green to red cannot be told from a red check-in saved twice without a
-  column. The attention list shows it either way; if the pilot shows it
-  matters, a column on `checkins` saying when it last turned red closes
-  it.
+- **A check-in that turns red later in the day** was told only if no
+  other reminder went to that coach since it was first saved, because
+  without a column a change from green to red could not be told from a
+  red check-in saved twice. The gap is closed (2026-10-07, P2-17):
+  `checkins.red_since` says when it last turned red, and the reminder
+  counts from it. The column rides with the check-in, under its policies,
+  its audit trigger and its place in the export; the check-ins already
+  red when it came got their first save as the moment, so none was told
+  twice. A check-in written past the service, which nothing in Kadence
+  does, has no `red_since` and is not told.
 - **News waiting in the quiet hours** from before the red check-in is
   folded into its reminder, as news always is.
 - **A coach who also rides or is a parent on the team** and gets a
@@ -204,9 +216,8 @@ due.
   worker asks `latest`, which answers "Sådan ser en påmindelse fra Kadence
   ud" until a real reminder goes out after the test. The server keeps the
   moment of the test in memory, for the six hours a push can wait, and
-  writes nothing: a test is not a reminder, and a mark in
-  `push_subscriptions` would move the run's marks and add a row to the
-  audit trail for nothing.
+  writes nothing: a test is not a reminder, and a mark in `push_runs`
+  would move the run's marks for nothing.
 - **The status line** under the card is worked out in the browser: the
   notification permission, whether `/sw.js` is registered, whether the
   browser holds a subscription, and on an iPhone or iPad whether Kadence
@@ -221,3 +232,100 @@ due.
 - **The test goes to every browser** the person has on the team, not only
   the one they pressed it on, so a person with reminders on a phone and a
   computer sees it on both.
+
+## Amendment: plan changes know their sender (P2-12)
+
+A rider's "Planen er ændret" is about a session in the next seven days
+that somebody else laid, changed or deleted, so a rider is not told of
+their own change and is told when the coach takes a session away.
+
+- **Who last changed a session** is `planned_sessions.updated_by`
+  (drizzle/0037). The database stamps it, from the caller in the
+  transaction's context, whenever the app writes the row: a trigger before
+  insert, and before every update that moves `updated_at`, which drizzle
+  does on every update the app makes. So every path is covered — create,
+  edit, move, copy, a group, a series, copy week, a block, a programme,
+  done and undone, a ride matched on import — and no caller can name
+  somebody else. An update that does not move `updated_at` is the database
+  itself (a template or a ride removed, an account deleted) and leaves it
+  as it was; an account's deletion still sets it to null. There is no
+  backfill: a session last written before has none, and who laid it
+  stands in, which is what the reminder went by until then.
+- **The rule** (`newestPlanChange`, src/modules/push/facts.ts): a session
+  in the rider's next seven days, not yet ridden, last written by
+  somebody other than the rider, since the last reminder. A coach who
+  rides on the team is a rider here like any other.
+- **A deleted session** leaves no row, so the session service writes one
+  down as it deletes (`planned_session_deletions`, src/modules/training/
+  deletions.ts): the rider, the day, the title, who deleted it and when.
+  Only what a reminder could tell: a session not yet ridden, from today
+  through the seventh day (the week, and the day it reaches by the
+  morning after the quiet hours), deleted by somebody other than the
+  rider, on an installation with reminders. The table is the rider's
+  training: forced RLS through `app_can_read_rider(rider_id, 'training')`
+  to read and `app_can_write_rider` to write, only in the writer's own
+  name; nobody changes or removes a row; every row is audited; it goes
+  with the rider (erase_rider) and the workspace by cascade. The reminder
+  reads it as the rider, like the sessions.
+- **Seven days.** Each reminder run calls
+  `planned_session_deletions_sweep()`, which removes the rows past seven
+  days across workspaces and returns only a count; it is the one thing the
+  run does with nobody signed in besides `push_subscriptions_due()`.
+
+### Trade-offs accepted
+
+- **A session moved out of the week** by the coach is a change to a
+  session that is no longer in the week the reminder reads, so it is not
+  told; only a deletion is written down. The calendar shows it where it
+  went.
+- **A deleted session's title** is kept for seven days beyond the session.
+  It is not in the export's sheets, being short-lived; the deletion and
+  this record of it are in the audit trail, which is.
+- **An installation that turns reminders off** keeps the rows it had until
+  reminders are on again and a run sweeps them; it writes no new ones.
+- **The sweep writes the audit trail.** A row's insert and its removal
+  are each an audit row, the removal as the system. Deletions in the next
+  days are few.
+
+## Amendment: reminders do not fill the audit trail (P2-13)
+
+Every reminder moved `told_up_to`, `checkin_reminded_on` or
+`week_told_on` on `push_subscriptions`, and the table's audit trigger
+wrote a row for each: a coach reading the trail for changes to the
+training found a row per rider per evening.
+
+- **The run's marks have a table of their own,** `push_runs`
+  (drizzle/0038): one row per subscription with the three marks and
+  `told_at`, the moment the last reminder went out, which `lastTold` and
+  `latest` read where they read the subscription's `updated_at` before.
+  The run makes a subscription's row the first time it reads it, starting
+  at the subscription's own making, and it goes with the subscription by
+  cascade. Its policy is the subscription's: its owner's alone, in that
+  team, and only for a subscription that is theirs; no delete.
+- **`push_runs` has no audit trigger**, the one exception this amendment
+  makes. Its rows are technical timestamps the job writes: no personal
+  data beyond whose subscription it is, which the audited subscription
+  already says, and nothing a person changes. Auditing them recorded the
+  job, not anybody's change, and buried the changes the trail is for. The
+  exception is named, with this reason, in the migration and in the list
+  of tables without an audit trigger in tests/rls/tenant-isolation.test.ts,
+  beside the auth machinery and the other markers.
+- **Turning reminders on, choosing which, and turning them off** stay on
+  `push_subscriptions`, audited as before, without the address.
+  tests/push/isolation.test.ts proves both: a run that sends a reminder
+  writes no audit row, and a subscription made, changed and removed
+  writes one each.
+
+Option (a), an audit trigger that skips an update touching only the
+three marks, was not chosen: it would make the audit trigger on one table
+decide what is worth recording, where every other table records every
+change; a table that is not audited, named and argued for, is easier to
+see and to check.
+
+### Trade-offs accepted
+
+- **When a reminder went out is not in the audit trail.** It never said
+  more than that a push went out; the push services' own metadata is the
+  same fact (see above), and the person's own phone shows it.
+- **Not in the export,** like the subscription: when a reminder went out
+  is about a browser, not about training.

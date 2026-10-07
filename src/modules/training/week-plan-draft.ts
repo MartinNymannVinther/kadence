@@ -16,7 +16,7 @@ import { TEAM_SCOPE } from "./week-draft-merge";
  * then; the last save wins, and who made it is kept beside it. Nothing
  * here reaches a calendar: laying the week in is `applyWeekPlan`, after
  * which the draft is cleared. A coach's; the database lets nobody else
- * read one (drizzle/0038).
+ * read one (drizzle/0035).
  */
 
 const id = z.string().min(1).max(100);

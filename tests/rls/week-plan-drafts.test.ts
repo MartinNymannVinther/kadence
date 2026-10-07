@@ -4,7 +4,7 @@ import { adminPool, appClient, asApp, asAppCommit, expectSqlError } from "../hel
 import { insertSql, seedPerson } from "../helpers/rows";
 
 /**
- * The week planner's shared draft (drizzle/0038; ADR 0043, amended
+ * The week planner's shared draft (drizzle/0035; ADR 0043, amended
  * 2026-10-07), proven as the application role with raw SQL: the team's
  * coaches read and write it; its riders and parents read none — not even
  * a draft begun from the rider's own calendar — and write none; a coach

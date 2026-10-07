@@ -104,7 +104,7 @@ describe("one push per person per run", () => {
     expect(team.pushed()).toEqual(["rider"]);
     const told = await team.row("rider");
     expect(told?.told_up_to.getTime()).toBe(EVENING.getTime());
-    expect(told?.updated_at.getTime()).toBe(EVENING.getTime());
+    expect(told?.told_at?.getTime()).toBe(EVENING.getTime());
     expect(told?.checkin).toBeNull();
     expect(await latestFor(RIDER.userId)).toEqual({
       kind: "comment",

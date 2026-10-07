@@ -33,12 +33,6 @@ export const pushSubscriptions = pgTable(
       .array()
       .notNull()
       .default(sql`'{checkin,comment,plan,week}'::text[]`),
-    /** Everything before this moment has been told; the next push is about what came after. */
-    toldUpTo: timestamp("told_up_to", { withTimezone: true }).notNull().defaultNow(),
-    /** The Copenhagen day the last check-in reminder went out. */
-    checkinRemindedOn: date("checkin_reminded_on"),
-    /** The Monday of the last week a parent was told about. */
-    weekToldOn: date("week_told_on"),
     ...timestamps,
   },
   (t) => [
@@ -56,3 +50,35 @@ export const pushSubscriptions = pgTable(
 );
 
 export type PushSubscriptionRow = typeof pushSubscriptions.$inferSelect;
+
+/**
+ * What the reminder run has told one subscription, so nothing goes out
+ * twice (docs/adr/0060, drizzle/0038): technical timestamps the job
+ * writes on every reminder, kept apart from the subscription so they do
+ * not write the audit trail. One row per subscription, its owner's alone
+ * like the subscription; made by the run the first time it reads it, and
+ * gone with the subscription.
+ */
+export const pushRuns = pgTable(
+  "push_runs",
+  {
+    subscriptionId: text("subscription_id")
+      .primaryKey()
+      .references(() => pushSubscriptions.id, { onDelete: "cascade" }),
+    orgId: tenant(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    /** Everything before this moment has been told; the next push is about what came after. */
+    toldUpTo: timestamp("told_up_to", { withTimezone: true }).notNull(),
+    /** The Copenhagen day the last check-in reminder went out. */
+    checkinRemindedOn: date("checkin_reminded_on"),
+    /** The Monday of the last week a parent was told about. */
+    weekToldOn: date("week_told_on"),
+    /** When the last reminder went out; null until one has (see `lastTold`). */
+    toldAt: timestamp("told_at", { withTimezone: true }),
+  },
+  (t) => [index("push_runs_user_idx").on(t.userId)],
+);
+
+export type PushRunRow = typeof pushRuns.$inferSelect;

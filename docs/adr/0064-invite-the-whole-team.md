@@ -88,8 +88,15 @@ sends no mail (ADR 0032): the coach passes every link on by hand.
   a member — with an older child on the team — is written without an
   address; linking an existing member as a parent is not something
   Kadence does yet, one at a time either.
-- **The links work for 48 hours**, Better Auth's default, the same as one
-  at a time. A coach who shares them the next weekend makes new ones
-  from the rider's page. The text says until when, so nobody wonders.
+- **The links work for a week**, the same as one at a time and as a
+  renewed link (`TEAM_INVITATION_DAYS` in src/core/auth/auth.ts, given to
+  Better Auth's `invitationExpiresIn`; amended 2026-10-07, P2-15). Better
+  Auth's default of 48 hours meant that a link shared on a Friday was out
+  of date when a rider first opened it on the Monday. A week is longer
+  for a link to be found in somebody else's chat, and it still admits
+  only the address it was made for. A coach who shares one later still
+  makes a new one from the rider's page. The "Del" text, the links that
+  wait, and the invitations under Arbejdsrum all read the date from the
+  invitation itself, so nobody wonders.
 - **The text is in the coach's language.** A coach writing in English
   shares English; the join page itself follows the reader.

@@ -6,7 +6,6 @@ import {
   index,
   integer,
   jsonb,
-  numeric,
   pgTable,
   real,
   smallint,
@@ -20,8 +19,9 @@ import { riders, workoutTemplates } from "./team";
 import { tenant, timestamps } from "./shared";
 
 /**
- * The training: what was planned, what was done, how the rider felt, what
- * else is in the calendar, and the conversation about it. Every row
+ * The training: what was planned, what was done, what else is in the
+ * calendar, and the conversation about it. How the rider felt is in
+ * wellbeing.ts and the links to their devices in devices.ts. Every row
  * belongs to one rider (the calendar's team events excepted) and is read
  * under the rider policies in drizzle/0003.
  */
@@ -78,6 +78,13 @@ export const plannedSessions = pgTable(
     origin: text("origin").notNull().default("manual"),
     activityId: text("activity_id").references(() => activities.id, { onDelete: "set null" }),
     createdBy: text("created_by").references(() => users.id, { onDelete: "set null" }),
+    /**
+     * Who last changed it: stamped by the database from the caller's
+     * context whenever the app writes the row (drizzle/0037), so no path
+     * can leave it out or name somebody else. Null for a session last
+     * written before; who laid it stands in (docs/adr/0060).
+     */
+    updatedBy: text("updated_by").references(() => users.id, { onDelete: "set null" }),
     ...timestamps,
   },
   (t) => [
@@ -195,48 +202,6 @@ export const activityFiles = pgTable(
 );
 
 /**
- * How the rider is: one short check-in a day. Scales run 1–5 with 5 the
- * good end; pain follows ATK's four steps (0 none … 3 stops training).
- */
-export const checkins = pgTable(
-  "checkins",
-  {
-    id: domainId("id"),
-    orgId: tenant(),
-    riderId: text("rider_id")
-      .notNull()
-      .references(() => riders.id, { onDelete: "cascade" }),
-    onDate: date("on_date").notNull(),
-    sleepHours: numeric("sleep_hours", { precision: 3, scale: 1, mode: "number" }),
-    sleepQuality: smallint("sleep_quality"),
-    energy: smallint("energy"),
-    mood: smallint("mood"),
-    /** 5 = fresh legs, 1 = very sore. */
-    soreness: smallint("soreness"),
-    /** 5 = calm, 1 = a lot on (school, exams, life). */
-    stress: smallint("stress"),
-    pain: smallint("pain").notNull().default(0),
-    painWhere: text("pain_where").notNull().default(""),
-    ill: smallint("ill").notNull().default(0),
-    note: text("note").notNull().default(""),
-    ...timestamps,
-  },
-  (t) => [
-    uniqueIndex("checkins_rider_date_uq").on(t.riderId, t.onDate),
-    index("checkins_org_rider_idx").on(t.orgId, t.riderId, t.onDate),
-    check(
-      "checkins_scales",
-      sql`coalesce(${t.sleepQuality},3) between 1 and 5 and coalesce(${t.energy},3) between 1 and 5
-        and coalesce(${t.mood},3) between 1 and 5 and coalesce(${t.soreness},3) between 1 and 5
-        and coalesce(${t.stress},3) between 1 and 5`,
-    ),
-    check("checkins_pain", sql`${t.pain} between 0 and 3`),
-    check("checkins_ill", sql`${t.ill} between 0 and 1`),
-    check("checkins_sleep", sql`${t.sleepHours} is null or ${t.sleepHours} between 0 and 24`),
-  ],
-);
-
-/**
  * Everything else in the calendar: races, school, exams, camps, holidays,
  * illness. Without a rider it is the team's and every member sees it.
  */
@@ -304,41 +269,7 @@ export const comments = pgTable(
   ],
 );
 
-/**
- * A rider's connection to Wahoo, Garmin or Polar. The tokens are sealed with the
- * installation's secret box (src/core/crypto) and never leave the server.
- */
-export const deviceLinks = pgTable(
-  "device_links",
-  {
-    id: domainId("id"),
-    orgId: tenant(),
-    riderId: text("rider_id")
-      .notNull()
-      .references(() => riders.id, { onDelete: "cascade" }),
-    /** wahoo | garmin | polar */
-    provider: text("provider").notNull(),
-    externalUserId: text("external_user_id").notNull(),
-    accessTokenSealed: text("access_token_sealed").notNull(),
-    refreshTokenSealed: text("refresh_token_sealed"),
-    expiresAt: timestamp("expires_at", { withTimezone: true }),
-    /** connected | error | revoked */
-    status: text("status").notNull().default("connected"),
-    lastSyncAt: timestamp("last_sync_at", { withTimezone: true }),
-    lastError: text("last_error").notNull().default(""),
-    ...timestamps,
-  },
-  (t) => [
-    uniqueIndex("device_links_rider_provider_uq").on(t.riderId, t.provider),
-    uniqueIndex("device_links_external_uq").on(t.provider, t.externalUserId),
-    check("device_links_provider", sql`${t.provider} in ('wahoo','garmin','polar')`),
-    check("device_links_status", sql`${t.status} in ('connected','error','revoked')`),
-  ],
-);
-
 export type PlannedSessionRow = typeof plannedSessions.$inferSelect;
 export type ActivityRow = typeof activities.$inferSelect;
-export type CheckinRow = typeof checkins.$inferSelect;
 export type CalendarEventRow = typeof calendarEvents.$inferSelect;
 export type CommentRow = typeof comments.$inferSelect;
-export type DeviceLinkRow = typeof deviceLinks.$inferSelect;

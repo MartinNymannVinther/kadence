@@ -27,7 +27,7 @@ Du ser, hvad der bliver oprettet, før du trykker opret.
 Bagefter får du en liste med alle, der har fået et link, og en
 **"Del"**-knap ved hver: på telefonen åbner den delingsmenuen (sms,
 chat), ellers kopierer den teksten, så du selv kan sætte den ind. Et
-link kræver en e-mailadresse og virker i 48 timer; mangler adressen,
+link kræver en e-mailadresse og virker i en uge; mangler adressen,
 oprettes personen uden link, og du inviterer dem senere fra rytterens
 side. Er der nogen, der ikke har åbnet linket endnu et par dage efter,
 finder du dem under **"Links, der venter"** på samme side og kan dele

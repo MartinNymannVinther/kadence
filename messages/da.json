@@ -522,7 +522,7 @@
       "leaveBody": "Du mister adgangen til arbejdsrummet og dine samtaler i det. En ejer eller administrator kan invitere dig igen.",
       "leaveConfirm": "Forlad",
       "inviteTitle": "Inviter en kollega",
-      "inviteBody": "Skriv adressen, og du får et link. Send det selv, sådan som I ellers taler sammen. Linket gælder kun den adresse og i 48 timer.",
+      "inviteBody": "Skriv adressen, og du får et link. Send det selv, sådan som I ellers taler sammen. Linket gælder kun den adresse og i en uge.",
       "invite": "Lav et link",
       "issued": "Link til {email}",
       "issuedHint": "Kopiér og send. Har personen ingen konto, oprettes den gennem linket; ellers logger de ind og siger ja.",
@@ -694,7 +694,7 @@
     "subprocessorsNote": "Hvem der kan se hvad, står i",
     "shareLinks": {
       "title": "Invitationer",
-      "body": "Et invitationslink gælder én adresse og udløber efter to døgn. Det er dig der sender det; vi sender ingen mails."
+      "body": "Et invitationslink gælder én adresse og udløber efter en uge. Det er dig der sender det; vi sender ingen mails."
     }
   },
   "join": {
@@ -3318,11 +3318,11 @@
       "commentHint": "Når en anden skriver på et pas eller en tur, du kan se.",
       "commentHintCoach": "Når en rytter eller en forælder skriver på et pas eller en tur.",
       "plan": "Ændret plan",
-      "planHint": "Når en træner lægger eller ændrer et pas i de næste syv dage.",
+      "planHint": "Når en træner lægger, ændrer eller sletter et pas i de næste syv dage.",
       "week": "Ugens overblik",
       "weekHint": "Søndag aften, når ugen er gået.",
       "wellbeing": "Trivsel",
-      "wellbeingHint": "Når en rytter checker ind i rød zone, højst én gang om dagen pr. rytter. Den kommer også mellem 21.30 og 7 og nævner ikke rytterens navn."
+      "wellbeingHint": "Når en rytters check-in bliver rød, også hvis den rettes til rød senere på dagen. Den kommer også mellem 21.30 og 7 og nævner ikke rytterens navn."
     },
     "notify": {
       "checkinTitle": "Husk dagens check-in",

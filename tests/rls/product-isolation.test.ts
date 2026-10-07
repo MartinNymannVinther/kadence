@@ -69,7 +69,7 @@ const TABLES: Array<{ table: string; row: (s: string) => Record<string, unknown>
     row: (s) => ({ name: `Øvelse ${s}`, group: "core", dose: {}, how: "x", pose: {} }),
   },
   { table: "team_programs", row: (s) => ({ name: `Program ${s}`, parts: [] }) },
-  // The week planner's shared draft, the coaches' (drizzle/0038); tests/rls/week-plan-drafts.
+  // The week planner's shared draft, the coaches' (drizzle/0035); tests/rls/week-plan-drafts.
   {
     table: "week_plan_drafts",
     row: () => ({ week_monday: DAY, payload: { riderIds: [], items: [] } }),

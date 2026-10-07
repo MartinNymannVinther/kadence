@@ -107,20 +107,26 @@ export function pushTeam(admin: Pool, key: string) {
         user_id: who.userId,
         endpoint: `https://fcm.googleapis.com/fcm/send${marker}${options.address ?? name}`,
         kinds: `{${kinds.join(",")}}`,
-        told_up_to: options.toldUpTo ?? MORNING,
         created_at: MORNING,
         updated_at: MORNING,
       });
+      await insert("push_runs", {
+        subscription_id: `${key}_${name}`,
+        org_id: who.orgId,
+        user_id: who.userId,
+        told_up_to: options.toldUpTo ?? MORNING,
+      });
     },
 
+    /** What the run has told a subscription (push_runs, drizzle/0038). */
     async row(name: string) {
       const result = await admin.query(
-        `select told_up_to, updated_at, checkin_reminded_on::text as checkin, week_told_on::text as week
-         from push_subscriptions where id = $1`,
+        `select told_up_to, told_at, checkin_reminded_on::text as checkin, week_told_on::text as week
+         from push_runs where subscription_id = $1`,
         [`${key}_${name}`],
       );
       return result.rows[0] as
-        | { told_up_to: Date; updated_at: Date; checkin: string | null; week: string | null }
+        | { told_up_to: Date; told_at: Date | null; checkin: string | null; week: string | null }
         | undefined;
     },
 
@@ -138,6 +144,18 @@ export function pushTeam(admin: Pool, key: string) {
       });
     },
 
+    /** A session somebody deleted, as the session service writes it down (drizzle/0037). */
+    async deletion(riderId: string, onDate: string, by: string, when: Date) {
+      await insert("planned_session_deletions", {
+        org_id: ORG,
+        rider_id: riderId,
+        on_date: onDate,
+        title: "Et slettet pas",
+        deleted_by: by,
+        deleted_at: when,
+      });
+    },
+
     async comment(id: string, sessionId: string, riderId: string, by: string, when: Date) {
       await insert("comments", {
         id,
@@ -151,13 +169,14 @@ export function pushTeam(admin: Pool, key: string) {
       });
     },
 
-    /** Between tests: every subscription, comment, session and check-in gone, the stand-in reset. */
+    /** Between tests: every subscription, comment, session, deletion and check-in gone, the stand-in reset. */
     async clear() {
       calls.length = 0;
       answer = () => 201;
       await admin.query("delete from push_subscriptions where org_id in ($1, $2)", [ORG, ORG_B]);
       await admin.query("delete from comments where org_id = $1", [ORG]);
       await admin.query("delete from planned_sessions where org_id = $1", [ORG]);
+      await admin.query("delete from planned_session_deletions where org_id = $1", [ORG]);
       await admin.query("delete from checkins where org_id in ($1, $2)", [ORG, ORG_B]);
     },
   };

@@ -39,7 +39,7 @@ Two ways were open, and the backlog named both.
 
 - **Column privileges on `users` for the application role.** `SELECT` on
   the table is revoked and granted back on `id` and `name` only
-  (drizzle/0036). The policies are unchanged: a member still reads the
+  (drizzle/0034). The policies are unchanged: a member still reads the
   rows of everyone on the team, and of those rows two columns. Postgres
   refuses `select email`, `select *`, a `where` on the column and an
   `order by` on it alike, with `permission denied for table users`.

@@ -522,7 +522,7 @@
       "leaveBody": "You lose access to the workspace and your conversations in it. An owner or admin can invite you again.",
       "leaveConfirm": "Leave",
       "inviteTitle": "Invite a colleague",
-      "inviteBody": "Type the address and you get a link. Send it yourself, the way you talk to each other anyway. The link is for that address only and lasts 48 hours.",
+      "inviteBody": "Type the address and you get a link. Send it yourself, the way you talk to each other anyway. The link is for that address only and lasts a week.",
       "invite": "Make a link",
       "issued": "Link for {email}",
       "issuedHint": "Copy and send. If the person has no account, it is created through the link; otherwise they sign in and accept.",
@@ -694,7 +694,7 @@
     "subprocessorsNote": "Who can see what is listed in",
     "shareLinks": {
       "title": "Invitations",
-      "body": "An invitation link is for one address and expires after two days. You send it; we send no mail."
+      "body": "An invitation link is for one address and expires after a week. You send it; we send no mail."
     }
   },
   "join": {
@@ -3318,11 +3318,11 @@
       "commentHint": "When someone else writes on a session or a ride you can see.",
       "commentHintCoach": "When a rider or a parent writes on a session or a ride.",
       "plan": "Changed plan",
-      "planHint": "When a coach adds or changes a session in the next seven days.",
+      "planHint": "When a coach adds, changes or removes a session in the next seven days.",
       "week": "The week in short",
       "weekHint": "Sunday evening, when the week is over.",
       "wellbeing": "Wellbeing",
-      "wellbeingHint": "When a rider checks in in the red zone, at most once a day per rider. It also comes between 21:30 and 7:00 and does not name the rider."
+      "wellbeingHint": "When a rider's check-in turns red, also when it is changed to red later in the day. It also comes between 21:30 and 7:00 and does not name the rider."
     },
     "notify": {
       "checkinTitle": "Remember today's check-in",

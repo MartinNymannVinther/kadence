@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 
 /**
- * The addresses the caller may read, as a table to join (drizzle/0036,
+ * The addresses the caller may read, as a table to join (drizzle/0034,
  * docs/adr/0070).
  *
  * The application role has no SELECT on `users.email` any more — a member
