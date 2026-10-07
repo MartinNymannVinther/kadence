@@ -130,6 +130,20 @@ describe("a demo workspace", () => {
     expect(placed.rows[0].n).toBeGreaterThan(0);
   });
 
+  it("says when and where the season opener starts, and who drives (backlog P2-03)", async () => {
+    const race = await admin.query(
+      `select start_time, meeting_place, transport_note from calendar_events
+        where org_id = $1 and kind = 'race' and start_time is not null`,
+      [orgId],
+    );
+    expect(race.rows).toHaveLength(1);
+    expect(race.rows[0]).toMatchObject({
+      start_time: "09:30:00",
+      meeting_place: "Hillerød Stadion",
+    });
+    expect(race.rows[0].transport_note).toMatch(/^Klubbens bus/);
+  });
+
   it("has the team's own drawn exercise, mixed into a programme laid into today's calendar (ADR 0067)", async () => {
     const exercises = await admin.query(`select name, pose from team_exercises where org_id = $1`, [
       orgId,

@@ -127,7 +127,12 @@ export function TeamGrid({
           <CopyPlus data-icon="inline-start" />
           {copy("open")}
         </Button>
-        <ShareWeekButton team={teamName} monday={days[0] ?? today} sessions={sessions} />
+        <ShareWeekButton
+          team={teamName}
+          monday={days[0] ?? today}
+          sessions={sessions}
+          events={events}
+        />
       </div>
       <p aria-live="polite" className="sr-only">
         {announcement}
@@ -192,7 +197,7 @@ export function TeamGrid({
                     {teamEvents
                       .filter((e) => on(date, e))
                       .map((e) => (
-                        <EventChip key={e.id} event={e} onOpen={openEvent(e, date)} />
+                        <EventChip key={e.id} event={e} onOpen={openEvent(e, date)} day={date} />
                       ))}
                   </span>
                 </th>
@@ -245,7 +250,12 @@ export function TeamGrid({
                         {events
                           .filter((e) => e.riderId === rider.id && on(date, e))
                           .map((e) => (
-                            <EventChip key={e.id} event={e} onOpen={openEvent(e, date)} />
+                            <EventChip
+                              key={e.id}
+                              event={e}
+                              onOpen={openEvent(e, date)}
+                              day={date}
+                            />
                           ))}
                         {mine
                           .filter((s) => s.onDate === date)

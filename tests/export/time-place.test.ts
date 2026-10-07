@@ -6,8 +6,9 @@ import { insertSql, seedPerson } from "../helpers/rows";
 
 /**
  * Dogma three for the newest columns: a session's time and place
- * (ADR 0058) and a block's own sessions (ADR 0059) leave with the rest of
- * the team's data. The export reads every column of the tables it lists,
+ * (ADR 0058), a block's own sessions (ADR 0059) and an event's time,
+ * place and driving (docs/backlog.md P2-03) leave with the rest of the
+ * team's data. The export reads every column of the tables it lists,
  * so this proves the columns are there and carry what was written.
  */
 
@@ -33,6 +34,15 @@ beforeAll(async () => {
     start_time: "17:30",
     meeting_place: "Klubhuset",
   });
+  await insert("calendar_events", {
+    kind: "race",
+    title: "Fyn Rundt",
+    starts_on: "2026-11-07",
+    ends_on: "2026-11-07",
+    start_time: "09:30",
+    meeting_place: "Odense Havn",
+    transport_note: "Bus fra klubhuset kl. 7.45",
+  });
   await insert("training_blocks", { id: "etp_block", name: "Uge 45", weeks: 1 });
   await insert("training_block_items", {
     block_id: "etp_block",
@@ -57,6 +67,15 @@ describe("the export", () => {
     const row = sheet.rows[0]!;
     expect(row[sheet.columns.indexOf("start_time")]).toBe("17:30:00");
     expect(row[sheet.columns.indexOf("meeting_place")]).toBe("Klubhuset");
+  });
+
+  it("carries an event's time, place and driving", async () => {
+    const data = await buildOrgExport(COACH);
+    const sheet = data.sections.find((s) => s.sheet === "Kalender")!;
+    const row = sheet.rows[0]!;
+    expect(row[sheet.columns.indexOf("start_time")]).toBe("09:30:00");
+    expect(row[sheet.columns.indexOf("meeting_place")]).toBe("Odense Havn");
+    expect(row[sheet.columns.indexOf("transport_note")]).toBe("Bus fra klubhuset kl. 7.45");
   });
 
   it("carries a block's own session, steps, time and place included", async () => {

@@ -22,14 +22,19 @@ import {
   updateEventAction,
 } from "@/modules/training/actions";
 import { EventResults } from "./event-results";
+import { EventWhereFields, eventWhereDraft, eventWhereValue } from "./event-where-fields";
 import type { CalendarEventCard, RiderOption } from "./types";
 
 const KINDS = ["race", "exam", "school", "camp", "holiday", "ill", "other"] as const;
+/** A holiday or a week ill has no hour and no meeting place. */
+const WITHOUT_WHERE = new Set(["holiday", "ill"]);
 
 /**
  * A race, an exam, school, a camp, a holiday or a week ill in the
  * calendar (ADR 0013). A rider puts in their own — an exam, a day ill; a
  * coach puts in anyone's, and the team's own days that everyone sees.
+ * A race, a camp or an exam may say when and where it starts and who
+ * drives (docs/backlog.md P2-03).
  */
 export function EventDialog({
   open,
@@ -72,6 +77,8 @@ export function EventDialog({
   const [priority, setPriority] = useState(event?.priority ?? "");
   const [riderId, setRiderId] = useState<string | null>(event ? event.riderId : defaultRiderId);
   const [note, setNote] = useState(event?.note ?? "");
+  const [where, setWhere] = useState(() => eventWhereDraft(event));
+  const hasWhere = !WITHOUT_WHERE.has(kind);
 
   async function save(e: React.FormEvent) {
     e.preventDefault();
@@ -83,6 +90,7 @@ export function EventDialog({
       endsOn: endsOn < startsOn ? startsOn : endsOn,
       priority: kind === "race" && priority ? priority : null,
       note: note.trim(),
+      ...eventWhereValue(hasWhere ? where : eventWhereDraft()),
     };
     const done = event
       ? await run(() => updateEventAction({ eventId: event.id, event: input }), {
@@ -182,6 +190,7 @@ export function EventDialog({
               />
             </div>
           </div>
+          {hasWhere && <EventWhereFields value={where} onChange={setWhere} />}
           {isCoach ? (
             <div className="flex flex-col gap-1.5">
               <label htmlFor={ids.who} className="text-sm font-medium">

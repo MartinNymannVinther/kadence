@@ -1140,6 +1140,8 @@
       "week": "Week {n}",
       "riders": "{count, plural, one {# rider} other {# riders}}",
       "empty": "No sessions this week.",
+      "until": "until {day}",
+      "transport": "Driving: {note}",
       "copied": "The week is copied as text. Paste it into the team's chat.",
       "failed": "The week could not be shared or copied. Try again."
     },
@@ -1193,6 +1195,9 @@
       "note": "Note",
       "deleteTitle": "Delete the event?",
       "deleteBody": "It disappears from the calendar.",
+      "whereHint": "When and where it starts, and who drives. All of it may stay empty.",
+      "transport": "Driving",
+      "transportPlaceholder": "E.g. Anne drives from the clubhouse at 7:30",
       "results": {
         "source": "Read from Cykling Danmark.",
         "label": "Results",
@@ -1766,6 +1771,7 @@
     "priority": "{priority} race",
     "group": "Group session",
     "teamEvent": "Whole team",
+    "transport": "Driving: {note}",
     "zone": {
       "1": "recovery",
       "2": "endurance",

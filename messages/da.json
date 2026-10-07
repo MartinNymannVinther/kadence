@@ -1140,6 +1140,8 @@
       "week": "Uge {n}",
       "riders": "{count, plural, one {# rytter} other {# ryttere}}",
       "empty": "Ingen pas i ugen.",
+      "until": "til og med {day}",
+      "transport": "Kørsel: {note}",
       "copied": "Ugen er kopieret som tekst. Sæt den ind i holdets chat.",
       "failed": "Ugen kunne ikke deles eller kopieres. Prøv igen."
     },
@@ -1193,6 +1195,9 @@
       "note": "Note",
       "deleteTitle": "Slet begivenheden?",
       "deleteBody": "Den forsvinder fra kalenderen.",
+      "whereHint": "Hvornår og hvor det starter, og hvem der kører. Alt kan stå tomt.",
+      "transport": "Kørsel",
+      "transportPlaceholder": "Fx Annes bil fra klubhuset kl. 7.30",
       "results": {
         "source": "Hentet fra Cykling Danmark.",
         "label": "Resultater",
@@ -1766,6 +1771,7 @@
     "priority": "{priority}-løb",
     "group": "Holdpas",
     "teamEvent": "Hele holdet",
+    "transport": "Kørsel: {note}",
     "zone": {
       "1": "restitution",
       "2": "udholdenhed",

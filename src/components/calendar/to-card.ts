@@ -59,6 +59,9 @@ export function toEventCard(e: CalendarEventRow): CalendarEventCard {
     endsOn: e.endsOn,
     priority: e.priority,
     note: e.note,
+    startTime: clockOf(e.startTime),
+    meetingPlace: e.meetingPlace,
+    transportNote: e.transportNote,
     source: e.source,
   };
 }

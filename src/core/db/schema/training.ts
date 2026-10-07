@@ -20,10 +20,10 @@ import { riders, workoutTemplates } from "./team";
 import { tenant, timestamps } from "./shared";
 
 /**
- * The training: what was planned, what was done, how the rider felt, what
- * else is in the calendar, and the conversation about it. Every row
- * belongs to one rider (the calendar's team events excepted) and is read
- * under the rider policies in drizzle/0003.
+ * The training: what was planned, what was done, how the rider felt, and
+ * the conversation about it. Every row belongs to one rider and is read
+ * under the rider policies in drizzle/0003. What else is in the calendar
+ * is in calendar.ts, a rider's device connections in devices.ts.
  */
 
 const bytea = customType<{ data: Buffer; driverData: Buffer }>({
@@ -237,41 +237,6 @@ export const checkins = pgTable(
 );
 
 /**
- * Everything else in the calendar: races, school, exams, camps, holidays,
- * illness. Without a rider it is the team's and every member sees it.
- */
-export const calendarEvents = pgTable(
-  "calendar_events",
-  {
-    id: domainId("id"),
-    orgId: tenant(),
-    riderId: text("rider_id").references(() => riders.id, { onDelete: "cascade" }),
-    /** race | exam | school | camp | holiday | ill | other */
-    kind: text("kind").notNull(),
-    title: text("title").notNull(),
-    startsOn: date("starts_on").notNull(),
-    endsOn: date("ends_on").notNull(),
-    /** A race's priority: A | B | C. */
-    priority: text("priority"),
-    note: text("note").notNull().default(""),
-    /** Where the event came from when no person typed it: "dcu", a race read from Cykling Danmark (docs/adr/0039). */
-    source: text("source"),
-    createdBy: text("created_by").references(() => users.id, { onDelete: "set null" }),
-    ...timestamps,
-  },
-  (t) => [
-    index("calendar_events_org_dates_idx").on(t.orgId, t.startsOn),
-    check("calendar_events_source", sql`${t.source} is null or ${t.source} = 'dcu'`),
-    check(
-      "calendar_events_kind",
-      sql`${t.kind} in ('race','exam','school','camp','holiday','ill','other')`,
-    ),
-    check("calendar_events_dates", sql`${t.endsOn} >= ${t.startsOn}`),
-    check("calendar_events_priority", sql`${t.priority} is null or ${t.priority} in ('A','B','C')`),
-  ],
-);
-
-/**
  * The conversation about a rider's training: on a planned session, on an
  * activity, or on a day. Coach, rider and the rider's guardians read the
  * same thread; there are no private threads between an adult and a young
@@ -304,41 +269,7 @@ export const comments = pgTable(
   ],
 );
 
-/**
- * A rider's connection to Wahoo, Garmin or Polar. The tokens are sealed with the
- * installation's secret box (src/core/crypto) and never leave the server.
- */
-export const deviceLinks = pgTable(
-  "device_links",
-  {
-    id: domainId("id"),
-    orgId: tenant(),
-    riderId: text("rider_id")
-      .notNull()
-      .references(() => riders.id, { onDelete: "cascade" }),
-    /** wahoo | garmin | polar */
-    provider: text("provider").notNull(),
-    externalUserId: text("external_user_id").notNull(),
-    accessTokenSealed: text("access_token_sealed").notNull(),
-    refreshTokenSealed: text("refresh_token_sealed"),
-    expiresAt: timestamp("expires_at", { withTimezone: true }),
-    /** connected | error | revoked */
-    status: text("status").notNull().default("connected"),
-    lastSyncAt: timestamp("last_sync_at", { withTimezone: true }),
-    lastError: text("last_error").notNull().default(""),
-    ...timestamps,
-  },
-  (t) => [
-    uniqueIndex("device_links_rider_provider_uq").on(t.riderId, t.provider),
-    uniqueIndex("device_links_external_uq").on(t.provider, t.externalUserId),
-    check("device_links_provider", sql`${t.provider} in ('wahoo','garmin','polar')`),
-    check("device_links_status", sql`${t.status} in ('connected','error','revoked')`),
-  ],
-);
-
 export type PlannedSessionRow = typeof plannedSessions.$inferSelect;
 export type ActivityRow = typeof activities.$inferSelect;
 export type CheckinRow = typeof checkins.$inferSelect;
-export type CalendarEventRow = typeof calendarEvents.$inferSelect;
 export type CommentRow = typeof comments.$inferSelect;
-export type DeviceLinkRow = typeof deviceLinks.$inferSelect;

@@ -126,6 +126,7 @@ export function RiderWeek({
               team={teamName}
               monday={monday}
               sessions={sessions}
+              events={events}
               rider={riders.find((r) => r.id === riderId)?.name ?? ""}
             />
             {isCoach && (

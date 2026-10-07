@@ -4,6 +4,7 @@ import { Refused } from "@/core/action";
 import { calendarEvents, type CalendarEventRow } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
 import { requireCoach, requireWriteFor } from "@/modules/team/access";
+import { TimePlaceFields, TransportNote } from "./time-place";
 import { id, isoDate } from "./vocabulary";
 
 /**
@@ -11,6 +12,10 @@ import { id, isoDate } from "./vocabulary";
  * camps, holidays, illness (ADR 0013). A team event has no rider and is
  * the coaches' to write; a rider's own — an exam, a week ill — is the
  * rider's or a coach's.
+ *
+ * A race or a camp may say when and where it starts and who drives
+ * (docs/backlog.md P2-03). As on a session (ADR 0058), a change that does
+ * not mention them leaves them as they were; `null` and "" clear them.
  */
 
 export const EVENT_KINDS = ["race", "exam", "school", "camp", "holiday", "ill", "other"] as const;
@@ -24,6 +29,8 @@ export const EventInput = z
     endsOn: isoDate,
     priority: z.enum(["A", "B", "C"]).nullable().default(null),
     note: z.string().trim().max(2000).default(""),
+    ...TimePlaceFields,
+    transportNote: TransportNote.optional(),
   })
   .refine((e) => e.endsOn >= e.startsOn, { path: ["endsOn"] });
 export type EventInputT = z.infer<typeof EventInput>;

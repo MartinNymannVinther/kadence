@@ -50,6 +50,10 @@ export type CalendarEventCard = {
   endsOn: string;
   priority: string | null;
   note: string;
+  /** "09:30", when it starts on the first day; where; and who drives (P2-03). */
+  startTime: string | null;
+  meetingPlace: string;
+  transportNote: string;
   /** "dcu" for a race Kadence read from Cykling Danmark (ADR 0039). */
   source: string | null;
   /** The results on the race: given to a coach's calendar only. */

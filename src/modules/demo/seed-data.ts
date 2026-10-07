@@ -62,6 +62,8 @@ export const EVENTS: Array<{
   seasonDay: number | null;
   days: number;
   priority: "A" | "B" | null;
+  /** When and where it starts and who drives (docs/backlog.md P2-03). */
+  where?: Record<L, { startTime: string; meetingPlace: string; transportNote: string }>;
 }> = [
   {
     kind: "race",
@@ -70,6 +72,19 @@ export const EVENTS: Array<{
     seasonDay: 11,
     days: 1,
     priority: "B",
+    where: {
+      da: {
+        startTime: "09:30",
+        meetingPlace: "Hillerød Stadion",
+        transportNote: "Klubbens bus fra klubhuset kl. 7.45. Sig til træneren, hvis du kører selv.",
+      },
+      en: {
+        startTime: "09:30",
+        meetingPlace: "Hillerød Stadion",
+        transportNote:
+          "The club's bus from the clubhouse at 7:45. Tell the coach if you drive yourself.",
+      },
+    },
   },
   {
     kind: "camp",
