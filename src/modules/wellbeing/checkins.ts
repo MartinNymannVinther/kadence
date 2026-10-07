@@ -1,4 +1,4 @@
-import { and, asc, eq, gte, inArray, lte } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, lt, lte } from "drizzle-orm";
 import { z } from "zod";
 import { checkins, type CheckinRow } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
@@ -68,6 +68,26 @@ export async function getCheckin(
       .select()
       .from(checkins)
       .where(and(eq(checkins.riderId, riderId), eq(checkins.onDate, onDate)));
+    return row ?? null;
+  });
+}
+
+/**
+ * The rider's last check-in before a day: what the shorter check-in starts
+ * the answers behind "Mere" from (src/modules/wellbeing/prefill.ts).
+ */
+export async function getLastCheckin(
+  ctx: OrgContext,
+  riderId: string,
+  before: string,
+): Promise<CheckinRow | null> {
+  return withOrgContext(ctx, async (tx) => {
+    const [row] = await tx
+      .select()
+      .from(checkins)
+      .where(and(eq(checkins.riderId, riderId), lt(checkins.onDate, before)))
+      .orderBy(desc(checkins.onDate))
+      .limit(1);
     return row ?? null;
   });
 }

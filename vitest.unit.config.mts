@@ -38,6 +38,8 @@ export default defineConfig({
       // Which week plan the planner shows when this device and the shared draft differ
       // (docs/adr/0043, amended 2026-10-07); the draft's service and policies need the database.
       "tests/training/week-draft-merge.test.ts",
+      // The shorter check-in's starting answers (backlog P2-11; docs/adr/0021, amended 2026-10-07).
+      "tests/wellbeing/checkin-prefill.test.ts",
     ],
   },
 });
