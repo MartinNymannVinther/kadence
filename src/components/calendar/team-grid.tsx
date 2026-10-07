@@ -77,6 +77,9 @@ export function TeamGrid({
   const teamEvents = events.filter((e) => e.riderId === null);
   const openEvent = (event: CalendarEventCard, date: string) => () =>
     setDialog({ kind: "event", date, riderId: event.riderId, event });
+  const chip = (e: CalendarEventCard, date: string) => (
+    <EventChip key={e.id} event={e} onOpen={openEvent(e, date)} day={date} />
+  );
 
   // When the grid is wider than the screen, start it at today, not at Monday.
   useEffect(() => {
@@ -127,12 +130,7 @@ export function TeamGrid({
           <CopyPlus data-icon="inline-start" />
           {copy("open")}
         </Button>
-        <ShareWeekButton
-          team={teamName}
-          monday={days[0] ?? today}
-          sessions={sessions}
-          events={events}
-        />
+        <ShareWeekButton team={teamName} monday={days[0] ?? today} {...{ sessions, events }} />
       </div>
       <p aria-live="polite" className="sr-only">
         {announcement}
@@ -194,11 +192,7 @@ export function TeamGrid({
                     )}
                   </span>
                   <span className="mt-1 flex flex-col gap-1">
-                    {teamEvents
-                      .filter((e) => on(date, e))
-                      .map((e) => (
-                        <EventChip key={e.id} event={e} onOpen={openEvent(e, date)} day={date} />
-                      ))}
+                    {teamEvents.filter((e) => on(date, e)).map((e) => chip(e, date))}
                   </span>
                 </th>
               ))}
@@ -249,14 +243,7 @@ export function TeamGrid({
                       <div className="flex flex-col gap-1">
                         {events
                           .filter((e) => e.riderId === rider.id && on(date, e))
-                          .map((e) => (
-                            <EventChip
-                              key={e.id}
-                              event={e}
-                              onOpen={openEvent(e, date)}
-                              day={date}
-                            />
-                          ))}
+                          .map((e) => chip(e, date))}
                         {mine
                           .filter((s) => s.onDate === date)
                           .map((s) => (
