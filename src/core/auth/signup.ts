@@ -1,5 +1,5 @@
 import { randomBytes, timingSafeEqual } from "node:crypto";
-import { count } from "drizzle-orm";
+import { count, notLike } from "drizzle-orm";
 import { invitationAdmits } from "@/core/access/service";
 import { teamInvitationAdmits } from "@/core/team/service";
 import { authDb } from "@/core/db/client";
@@ -62,8 +62,28 @@ export function signupAllowedFor(mode: SignupMode, existingUsers: number): boole
   return mode === "open" || existingUsers === 0;
 }
 
+/**
+ * Every account the demo makes is at this domain (src/modules/demo): the
+ * visitor's and the demo's rider and parent. `.invalid` is reserved
+ * (RFC 6761), so no person's real address ends here.
+ */
+export const DEMO_EMAIL_DOMAIN = "demo.invalid";
+
+export function isDemoEmail(email: string | null | undefined): boolean {
+  return Boolean(email && email.toLowerCase().endsWith(`@${DEMO_EMAIL_DOMAIN}`));
+}
+
+/**
+ * The people on the installation: every account but the demo's. A demo
+ * opened on an empty installation must not close the door the first real
+ * person comes in by, nor make the visitor the installation's owner
+ * (backlog P1-09), so neither the door nor the owner counts demo accounts.
+ */
 export async function countUsers(): Promise<number> {
-  const [row] = await authDb.select({ total: count() }).from(users);
+  const [row] = await authDb
+    .select({ total: count() })
+    .from(users)
+    .where(notLike(users.email, `%@${DEMO_EMAIL_DOMAIN}`));
   return Number(row?.total ?? 0);
 }
 

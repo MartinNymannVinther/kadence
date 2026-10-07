@@ -4,7 +4,7 @@ import { arrivalHost } from "@/modules/demo/origin";
 import {
   createDemoWorkspace,
   demoCookieSecure,
-  demoEnabled,
+  demoReady,
   demoLandingUrl,
 } from "@/modules/demo/service";
 
@@ -37,7 +37,8 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ locale: string }> },
 ) {
-  if (!demoEnabled()) return refusal("Not found", 404);
+  // Not before somebody owns the installation (backlog P1-09).
+  if (!(await demoReady())) return refusal("Not found", 404);
 
   const limit = rateLimit(callerKey(request.headers, "demo"), 5, 60 * 60 * 1000);
   if (!limit.allowed)

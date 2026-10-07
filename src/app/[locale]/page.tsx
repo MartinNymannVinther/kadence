@@ -6,7 +6,7 @@ import { getSession } from "@/core/auth/session";
 import { buildInfo } from "@/core/version";
 import { signupAllowed } from "@/core/auth/signup";
 import { Link, redirect } from "@/i18n/navigation";
-import { demoEnabled, DEMO_TTL_HOURS } from "@/modules/demo/service";
+import { demoReady, DEMO_TTL_HOURS } from "@/modules/demo/service";
 import { cn } from "@/lib/utils";
 
 const VALUES = [
@@ -26,7 +26,7 @@ export default async function HomePage() {
   // The same button leads to /register either way; what it promises should
   // match what is behind it: an account, or an application for one.
   const open = await signupAllowed();
-  const demo = demoEnabled();
+  const demo = await demoReady();
   if (session) {
     redirect({ href: "/today", locale });
     return null;

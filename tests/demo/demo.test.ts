@@ -51,9 +51,16 @@ let people: string[] = [];
 
 beforeAll(async () => {
   admin = adminPool();
+  // A demo opens only on an installation somebody owns (backlog P1-09).
+  await admin.query(
+    `insert into users (id, name, email, email_verified, platform_role)
+     values ('user_demo_suite_owner', 'Ejer', 'demo-suite-owner@example.org', false, 'owner')
+     on conflict (id) do update set platform_role = 'owner'`,
+  );
 });
 
 afterAll(async () => {
+  await admin.query("delete from users where id = 'user_demo_suite_owner'");
   await admin.end();
 });
 
