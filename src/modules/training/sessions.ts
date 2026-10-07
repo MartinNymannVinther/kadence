@@ -10,6 +10,7 @@ import {
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
 import { isCoachRole, requireCoach, requireWriteFor, roleIn } from "@/modules/team/access";
 import { readStructure, structureMinutes } from "@/modules/workouts/structure";
+import { recordDeletionsIn, recordMoveIn } from "./deletions";
 import { estimatePlannedLoad } from "./load-bridge";
 import { clockOf } from "./time-place";
 import type { Scope, SessionInputT } from "./vocabulary";
@@ -266,6 +267,7 @@ export async function moveSession(
         .update(plannedSessions)
         .set({ onDate, activityId: row.onDate === onDate ? row.activityId : null })
         .where(eq(plannedSessions.id, id));
+      await recordMoveIn(tx, ctx, row, onDate);
       return { id };
     }
     return createSessionIn(tx, ctx, {
@@ -289,6 +291,7 @@ export async function deleteSession(ctx: OrgContext, id: string, scope: Scope): 
     const row = await loadOwn(tx, ctx, id);
     const copies = await targets(tx, ctx, row, scope);
     const ids = copies.map((c) => c.id);
+    await recordDeletionsIn(tx, ctx, copies);
     await tx.delete(plannedSessions).where(inArray(plannedSessions.id, ids));
     return ids.length;
   });

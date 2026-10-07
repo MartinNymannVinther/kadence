@@ -9,8 +9,8 @@ import type { PushKind } from "@/core/db/schema/push";
  * - checkin: a rider who has not checked in today, once a day from 19.00.
  * - comment: a comment by someone else, in a thread the person can read,
  *   since the last reminder.
- * - plan: a session of the rider's in the next seven days laid or changed
- *   by someone else since the last reminder.
+ * - plan: a session of the rider's in the next seven days laid, changed or
+ *   deleted by someone else since the last reminder.
  * - week: a parent, once a week, on Sunday from 18.00.
  * - wellbeing: a coach, when a check-in today by a rider on the team has
  *   turned red (src/modules/load/wellbeing.ts), once each time it turns red.
@@ -93,7 +93,7 @@ export type Facts = {
   isParent: boolean;
   /** When the newest comment by someone else that the person can read was written. */
   newestComment: Date | null;
-  /** When a session in the rider's next seven days was last laid or changed by someone else. */
+  /** When a session in the rider's next seven days was last laid, changed or deleted by someone else. */
   newestPlanChange: Date | null;
   isCoach: boolean;
   /**

@@ -28,6 +28,10 @@ import { sendPush, type PushConfig } from "./send";
  * deleted; one that fails for a moment has the mark taken back, so the
  * next run tries again. In the quiet hours only a coach's wellbeing
  * reminder goes out; the rest waits (due.ts).
+ *
+ * Each run also sweeps the deleted sessions past their seven days
+ * (`planned_session_deletions_sweep()`, drizzle/0035), the record a plan
+ * reminder reads a deletion from.
  */
 
 export type RunReport = {
@@ -49,6 +53,15 @@ async function dueSubscriptions(): Promise<Due[]> {
     orgId: r.org_id,
     userId: r.user_id,
   }));
+}
+
+/** Deleted sessions past their seven days go; a failure waits for the next run. */
+async function sweepDeletions(): Promise<void> {
+  try {
+    await appDb.execute(sql`select planned_session_deletions_sweep()`);
+  } catch (error) {
+    console.error("reminders: could not sweep", error instanceof Error ? error.message : "");
+  }
 }
 
 /** Each person's teams, in order, with the subscriptions on each. */
@@ -144,6 +157,7 @@ async function forget(ctx: OrgContext, id: string): Promise<void> {
 export async function runReminders(config: PushConfig, now: Date = new Date()): Promise<RunReport> {
   const quiet = isQuiet(copenhagenClock(now));
   const report: RunReport = { quiet, people: 0, sent: 0, gone: 0, failed: 0 };
+  await sweepDeletions();
 
   for (const [userId, teams] of byPerson(await dueSubscriptions())) {
     report.people += 1;

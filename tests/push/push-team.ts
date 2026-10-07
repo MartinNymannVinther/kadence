@@ -138,6 +138,18 @@ export function pushTeam(admin: Pool, key: string) {
       });
     },
 
+    /** A session somebody deleted, as the session service writes it down (drizzle/0035). */
+    async deletion(riderId: string, onDate: string, by: string, when: Date) {
+      await insert("planned_session_deletions", {
+        org_id: ORG,
+        rider_id: riderId,
+        on_date: onDate,
+        title: "Et slettet pas",
+        deleted_by: by,
+        deleted_at: when,
+      });
+    },
+
     async comment(id: string, sessionId: string, riderId: string, by: string, when: Date) {
       await insert("comments", {
         id,
@@ -151,13 +163,14 @@ export function pushTeam(admin: Pool, key: string) {
       });
     },
 
-    /** Between tests: every subscription, comment, session and check-in gone, the stand-in reset. */
+    /** Between tests: every subscription, comment, session, deletion and check-in gone, the stand-in reset. */
     async clear() {
       calls.length = 0;
       answer = () => 201;
       await admin.query("delete from push_subscriptions where org_id in ($1, $2)", [ORG, ORG_B]);
       await admin.query("delete from comments where org_id = $1", [ORG]);
       await admin.query("delete from planned_sessions where org_id = $1", [ORG]);
+      await admin.query("delete from planned_session_deletions where org_id = $1", [ORG]);
       await admin.query("delete from checkins where org_id in ($1, $2)", [ORG, ORG_B]);
     },
   };

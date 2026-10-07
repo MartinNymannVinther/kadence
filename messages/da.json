@@ -3297,7 +3297,7 @@
       "commentHint": "Når en anden skriver på et pas eller en tur, du kan se.",
       "commentHintCoach": "Når en rytter eller en forælder skriver på et pas eller en tur.",
       "plan": "Ændret plan",
-      "planHint": "Når en træner lægger eller ændrer et pas i de næste syv dage.",
+      "planHint": "Når en træner lægger, ændrer eller sletter et pas i de næste syv dage.",
       "week": "Ugens overblik",
       "weekHint": "Søndag aften, når ugen er gået.",
       "wellbeing": "Trivsel",

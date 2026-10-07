@@ -2,7 +2,8 @@
 
 Status: accepted · Date: 2026-10-06 · Amended 2026-10-06: a coach's
 wellbeing reminder (P1-02) and a test push (P1-05) · Amended 2026-10-07:
-a check-in that turns red later (P2-17)
+a check-in that turns red later (P2-17) and plan changes that know their
+sender (P2-12)
 
 ## Context
 
@@ -50,8 +51,8 @@ the browser, not Kadence, decides which one is used.
   - check-in: a rider who has not checked in today, once a day from 19.00;
   - comment: a comment by someone else in a thread the person can read —
     a coach hears from riders and parents, not from the other coaches;
-  - plan: a session in the rider's next seven days laid or changed by
-    someone else;
+  - plan: a session in the rider's next seven days laid, changed or
+    deleted by someone else (see the amendment below);
   - week: a parent, on Sunday from 18.00, "Emmas uge er klar";
   - wellbeing: a coach, when a rider checks in in the red zone (see the
     amendment below).
@@ -112,11 +113,12 @@ the browser, not Kadence, decides which one is used.
   price of reaching a phone at all without a native app; it is opt-in,
   per person and per browser, and nothing reaches a push service for
   anyone who has not turned reminders on.
-- **"Someone else" is "laid by someone else".** Kadence records who laid a
-  session, not who changed it last, and a rider cannot read the audit
-  trail. So a rider who moves a session the coach laid hears once that the
-  plan changed, a session the coach removes is not told, and matching a
-  ride to a session is not a change. No column was added for it.
+- **"Someone else" was "laid by someone else"** until 2026-10-07: Kadence
+  recorded who laid a session, not who changed it last, so a rider who
+  moved a session the coach laid heard that the plan changed, and a
+  session the coach removed was not told. Both are closed by the
+  amendment on plan changes below (P2-12). Matching a ride to a session is
+  still not a change.
 - **The text follows the newest reminder.** `latest` reads back which
   reminder went out last from the marks the job wrote, on the person's
   most recently told browser. A push that arrives late, after the person
@@ -231,3 +233,57 @@ due.
 - **The test goes to every browser** the person has on the team, not only
   the one they pressed it on, so a person with reminders on a phone and a
   computer sees it on both.
+
+## Amendment: plan changes know their sender (P2-12)
+
+A rider's "Planen er ændret" is about a session in the next seven days
+that somebody else laid, changed or deleted, so a rider is not told of
+their own change and is told when the coach takes a session away.
+
+- **Who last changed a session** is `planned_sessions.updated_by`
+  (drizzle/0035). The database stamps it, from the caller in the
+  transaction's context, whenever the app writes the row: a trigger before
+  insert, and before every update that moves `updated_at`, which drizzle
+  does on every update the app makes. So every path is covered — create,
+  edit, move, copy, a group, a series, copy week, a block, a programme,
+  done and undone, a ride matched on import — and no caller can name
+  somebody else. An update that does not move `updated_at` is the database
+  itself (a template or a ride removed, an account deleted) and leaves it
+  as it was; an account's deletion still sets it to null. There is no
+  backfill: a session last written before has none, and who laid it
+  stands in, which is what the reminder went by until then.
+- **The rule** (`newestPlanChange`, src/modules/push/facts.ts): a session
+  in the rider's next seven days, not yet ridden, last written by
+  somebody other than the rider, since the last reminder. A coach who
+  rides on the team is a rider here like any other.
+- **A deleted session** leaves no row, so the session service writes one
+  down as it deletes (`planned_session_deletions`, src/modules/training/
+  deletions.ts): the rider, the day, the title, who deleted it and when.
+  Only what a reminder could tell: a session not yet ridden, from today
+  through the seventh day (the week, and the day it reaches by the
+  morning after the quiet hours), deleted by somebody other than the
+  rider, on an installation with reminders. The table is the rider's
+  training: forced RLS through `app_can_read_rider(rider_id, 'training')`
+  to read and `app_can_write_rider` to write, only in the writer's own
+  name; nobody changes or removes a row; every row is audited; it goes
+  with the rider (erase_rider) and the workspace by cascade. The reminder
+  reads it as the rider, like the sessions.
+- **Seven days.** Each reminder run calls
+  `planned_session_deletions_sweep()`, which removes the rows past seven
+  days across workspaces and returns only a count; it is the one thing the
+  run does with nobody signed in besides `push_subscriptions_due()`.
+
+### Trade-offs accepted
+
+- **A session moved out of the week** by the coach is a change to a
+  session that is no longer in the week the reminder reads, so it is not
+  told; only a deletion is written down. The calendar shows it where it
+  went.
+- **A deleted session's title** is kept for seven days beyond the session.
+  It is not in the export's sheets, being short-lived; the deletion and
+  this record of it are in the audit trail, which is.
+- **An installation that turns reminders off** keeps the rows it had until
+  reminders are on again and a run sweeps them; it writes no new ones.
+- **The sweep writes the audit trail.** A row's insert and its removal
+  are each an audit row, the removal as the system. Deletions in the next
+  days are few.

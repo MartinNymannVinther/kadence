@@ -1,5 +1,12 @@
 import { and, desc, eq, gt, isNotNull, isNull, lte, ne, or, sql, type SQL } from "drizzle-orm";
-import { activities, checkins, comments, plannedSessions, users } from "@/core/db/schema";
+import {
+  activities,
+  checkins,
+  comments,
+  plannedSessionDeletions,
+  plannedSessions,
+  users,
+} from "@/core/db/schema";
 import type { AppTransaction, OrgContext } from "@/core/db/tenant";
 import type { Me } from "@/modules/team/access";
 import { planWindow, type Facts } from "./due";
@@ -86,10 +93,12 @@ export async function newestComment(
 }
 
 /**
- * When a session in the rider's next seven days was last laid or changed
- * by someone else. Kadence keeps who laid a session, not who changed it
- * last, so "someone else" is "laid by someone else"; a session already
- * ridden is done, and matching a ride to it is no change to the plan.
+ * When a session in the rider's next seven days was last laid, changed or
+ * deleted by someone else. Who last wrote a session is `updated_by`,
+ * stamped by the database (drizzle/0035); a session last written before it
+ * came has none, and who laid it stands in. A deleted one is read from
+ * `planned_session_deletions`. A session already ridden is done, and
+ * matching a ride to it is no change to the plan.
  */
 export async function newestPlanChange(
   tx: AppTransaction,
@@ -99,7 +108,7 @@ export async function newestPlanChange(
   today: string,
 ): Promise<Date | null> {
   const days = planWindow(today);
-  const [row] = await tx
+  const [changed] = await tx
     .select({
       at: sql<Date | null>`max(${plannedSessions.updatedAt})`.mapWith(plannedSessions.updatedAt),
     })
@@ -110,12 +119,27 @@ export async function newestPlanChange(
         eq(plannedSessions.riderId, riderId),
         sql`${plannedSessions.onDate} between ${days.from} and ${days.to}`,
         isNull(plannedSessions.activityId),
-        sql`${plannedSessions.createdBy} is distinct from ${ctx.userId}`,
+        sql`coalesce(${plannedSessions.updatedBy}, ${plannedSessions.createdBy}) is distinct from ${ctx.userId}`,
         gt(plannedSessions.updatedAt, range.after),
         lte(plannedSessions.updatedAt, range.upTo),
       ),
     );
-  return row?.at ?? null;
+  const deletions = plannedSessionDeletions;
+  const [deleted] = await tx
+    .select({ at: sql<Date | null>`max(${deletions.deletedAt})`.mapWith(deletions.deletedAt) })
+    .from(deletions)
+    .where(
+      and(
+        eq(deletions.orgId, ctx.orgId),
+        eq(deletions.riderId, riderId),
+        sql`${deletions.onDate} between ${days.from} and ${days.to}`,
+        sql`${deletions.deletedBy} is distinct from ${ctx.userId}`,
+        gt(deletions.deletedAt, range.after),
+        lte(deletions.deletedAt, range.upTo),
+      ),
+    );
+  const times = [changed?.at, deleted?.at].filter((at): at is Date => Boolean(at));
+  return times.reduce<Date | null>((newest, at) => (!newest || at > newest ? at : newest), null);
 }
 
 async function checkedIn(tx: AppTransaction, riderId: string, today: string): Promise<boolean> {

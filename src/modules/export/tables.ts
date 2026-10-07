@@ -82,6 +82,10 @@ export const EXPORT_TABLES: ExportTable[] = [
  *   0060) — a capability that could wake that browser, owned by the person
  *   rather than the team, and nothing about training. That reminders were
  *   turned on and off is in the audit trail, without the address.
+ * - `planned_session_deletions`: a deleted session's day and title, kept
+ *   for seven days so a rider's reminder can say the plan changed (ADR
+ *   0060, drizzle/0035). The deletion itself, and this record of it, are
+ *   in the audit trail, which is exported.
  * - `ai_calls`: a counter for rate limiting, not something a workspace owns.
  * - `workspace_llm_settings`: the model choice, which holds an encrypted
  *   key; a workspace that leaves gets its data, not its secrets.

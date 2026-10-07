@@ -392,6 +392,12 @@ describe("rls coverage (guards future tables)", () => {
     // tests/team/invitation-kind.test.ts proves it, and that the
     // application role cannot call it.
     "invitation_kind",
+    // Removes the deleted sessions past their seven days, for the reminder
+    // job that runs with nobody signed in (drizzle/0035, docs/adr/0060).
+    // It takes no arguments, removes only rows older than seven days, and
+    // answers how many; nothing is read out. tests/rls/session-deletions
+    // proves it keeps the rest.
+    "planned_session_deletions_sweep",
     // The installation's overview for its owner (drizzle/0019, docs/adr/0048):
     // one row per workspace with counts only — no name of a person, no
     // training, no check-in. The pilot's three numbers (drizzle/0031,
