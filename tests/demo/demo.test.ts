@@ -17,6 +17,7 @@ import { addDaysIso, todayInCopenhagen } from "@/core/dates";
 import { listEvents } from "@/modules/training/events";
 import { listOwnTemplates } from "@/modules/training/templates";
 import { whoAmI } from "@/modules/team/access";
+import { listLinkableMembers } from "@/modules/team/member-guardians";
 import { getPilotWeeks } from "@/modules/insight/pilot-service";
 import { adminPool } from "../helpers/db";
 
@@ -211,6 +212,10 @@ describe("a demo workspace", () => {
     expect(events.filter((e) => e.fromParent)).toMatchObject([
       { kind: "holiday", title: "Efterårsferie i sommerhuset", createdBy: parent.userId },
     ]);
+    // The coach can link her to a second child from that rider's page (backlog P2-16).
+    const oskar = (await getRiders({ orgId, userId })).find((r) => r.name === "Oskar Lund")!;
+    const members = await listLinkableMembers({ orgId, userId }, oskar.id);
+    expect(members.find((m) => m.userId === parent.userId)?.parentOf).toEqual(["Emma Holm"]);
 
     const switched = await switchDemoRole({ userId, orgId }, "parent");
     expect(switched?.getSetCookie().join(";")).toMatch(/better-auth/);

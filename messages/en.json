@@ -979,6 +979,8 @@
     "alreadyDone": "The session is already marked as done. Reload the page.",
     "alreadyInvited": "There is already an open link for that address. Copy the one that exists, or withdraw it under Settings → Workspace.",
     "alreadyMember": "The person is already on the team.",
+    "alreadyParent": "That person is already the rider's parent.",
+    "parentIsRider": "A rider cannot be their own parent.",
     "youthWeight": "Weight is turned off for riders under 19. A coach can turn it on under Settings → Team.",
     "not_connected": "There is no connection to end. Reload the page.",
     "not_a_rider": "Only a rider can connect their own device.",
@@ -1459,7 +1461,7 @@
       "formatTitle": "How to write a line",
       "formatRider": "First the rider: name, birth year and e-mail, separated by commas.",
       "formatParents": "Then the parents, each after a semicolon: name and e-mail. At most two per rider.",
-      "formatEmail": "Everyone with an e-mail on the list gets their own link. Without an e-mail the person is created without a link.",
+      "formatEmail": "Everyone with an e-mail on the list gets their own link. Without an e-mail the person is created without a link. A parent already on the team has their account linked instead.",
       "formatSiblings": "Siblings can share a parent. Write the parent the same way on both lines, and the parent gets one link.",
       "sharedYear": "Shared birth year",
       "sharedYearHint": "Used on the lines that have no year of their own.",
@@ -1476,6 +1478,8 @@
       "doneBody": "Share the link with each person. The text tells them what to do, and the link only works for their own address.",
       "noLinkTitle": "No link",
       "noLinkBody": "There was no e-mail for these, so they have no link yet. When you have the address, you can invite them from the rider's page.",
+      "linkedTitle": "Linked to their account",
+      "linkedBody": "They are already on the team, so they get no new link. They see the child once the rider has said yes to them.",
       "done": "Done",
       "whole": {
         "empty": "Write at least one rider.",
@@ -1499,7 +1503,7 @@
         "sameEmail": "{value} is also on line {other}. Each person needs their own address.",
         "twiceOnLine": "{value} is on the line twice.",
         "onTeam": "{value} is already on the team.",
-        "emailMember": "{value} belongs to someone already on the team.",
+        "emailMember": "{value} belongs to someone already on the team. A new rider needs an address of their own.",
         "emailInvited": "{value} already has a link waiting."
       }
     },
@@ -1578,7 +1582,17 @@
       "added": "The parent was added.",
       "issuedTitle": "The parent was added",
       "issuedBody": "Send the link to the parent. Afterwards {rider} must confirm the link under Settings → Me.",
-      "done": "Done"
+      "done": "Done",
+      "who": "Who is the parent?",
+      "modeNew": "A new parent",
+      "modeMember": "Someone already on the team",
+      "memberBody": "If the parent already has an account on the team, say as the parent of a brother or sister, you link that account to {rider} here. No new link is made. {rider} still has to confirm the connection before the parent sees anything.",
+      "member": "Member of the team",
+      "memberParentOf": "parent of {names}",
+      "memberCoach": "coach",
+      "memberRider": "rider",
+      "link": "Link",
+      "linked": "{name} is linked to {rider}. It takes effect once {rider} has confirmed it."
     },
     "archive": {
       "button": "Archive the rider",

@@ -979,6 +979,8 @@
     "alreadyDone": "Passet er allerede markeret som udført. Genindlæs siden.",
     "alreadyInvited": "Der er allerede et åbent link til den adresse. Kopiér det, der findes, eller træk det tilbage under Indstillinger → Arbejdsrum.",
     "alreadyMember": "Personen er allerede med på holdet.",
+    "alreadyParent": "Personen er allerede forælder til rytteren.",
+    "parentIsRider": "En rytter kan ikke være sin egen forælder.",
     "youthWeight": "Vægt er slået fra for ryttere under 19. En træner kan slå det til under Indstillinger → Holdet.",
     "not_connected": "Der er ingen forbindelse at afbryde. Genindlæs siden.",
     "not_a_rider": "Kun en rytter kan forbinde sin egen enhed.",
@@ -1459,7 +1461,7 @@
       "formatTitle": "Sådan skriver du en linje",
       "formatRider": "Først rytteren: navn, fødselsår og e-mail, adskilt af komma.",
       "formatParents": "Så forældrene, hver efter et semikolon: navn og e-mail. Højst to pr. rytter.",
-      "formatEmail": "Den, der har en e-mail på listen, får sit eget link. Uden e-mail bliver personen oprettet uden link.",
+      "formatEmail": "Den, der har en e-mail på listen, får sit eget link. Uden e-mail bliver personen oprettet uden link. Er en forælder allerede med på holdet, bliver kontoen koblet på i stedet.",
       "formatSiblings": "Søskende kan have samme forælder. Skriv forælderen ens på begge linjer, så får forælderen ét link.",
       "sharedYear": "Fælles fødselsår",
       "sharedYearHint": "Bruges på de linjer, der ikke har deres eget år.",
@@ -1476,6 +1478,8 @@
       "doneBody": "Del linket med hver person. Teksten fortæller, hvad de skal gøre, og linket virker kun for deres egen adresse.",
       "noLinkTitle": "Uden link",
       "noLinkBody": "Der stod ingen e-mail ved dem her, så de har intet link endnu. Når du har adressen, kan du invitere dem fra rytterens side.",
+      "linkedTitle": "Koblet til deres konto",
+      "linkedBody": "De er allerede med på holdet, så de får ikke et nyt link. De ser barnet, når rytteren har sagt ja til dem.",
       "done": "Færdig",
       "whole": {
         "empty": "Skriv mindst én rytter.",
@@ -1499,7 +1503,7 @@
         "sameEmail": "{value} står også på linje {other}. Hver person skal have sin egen adresse.",
         "twiceOnLine": "{value} står to gange på linjen.",
         "onTeam": "{value} er allerede på holdet.",
-        "emailMember": "{value} hører til en, der allerede er med på holdet.",
+        "emailMember": "{value} hører til en, der allerede er med på holdet. En ny rytter skal have sin egen adresse.",
         "emailInvited": "{value} har allerede et link, der venter."
       }
     },
@@ -1578,7 +1582,17 @@
       "added": "Forælderen er tilføjet.",
       "issuedTitle": "Forælderen er tilføjet",
       "issuedBody": "Send linket til forælderen. Bagefter skal {rider} bekræfte forbindelsen under Indstillinger → Mig.",
-      "done": "Færdig"
+      "done": "Færdig",
+      "who": "Hvem er forælderen?",
+      "modeNew": "En ny forælder",
+      "modeMember": "En, der allerede er med på holdet",
+      "memberBody": "Har forælderen allerede en konto på holdet, fx som forælder til en søskende, kobler du kontoen på {rider} her. Der kommer intet nyt link. {rider} skal stadig bekræfte forbindelsen, før forælderen ser noget.",
+      "member": "Medlem af holdet",
+      "memberParentOf": "forælder til {names}",
+      "memberCoach": "træner",
+      "memberRider": "rytter",
+      "link": "Kobl på",
+      "linked": "{name} er koblet til {rider}. Forbindelsen gælder, når {rider} har bekræftet den."
     },
     "archive": {
       "button": "Arkivér rytteren",

@@ -6,6 +6,7 @@ import { useRun } from "@/components/common/use-run";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ConfirmButton } from "@/components/ui/confirm-button";
 import { removeGuardianAction } from "@/modules/team/actions";
+import type { LinkableMember } from "@/modules/team/member-guardians";
 import { AddGuardianDialog } from "./add-guardian-dialog";
 import { GuardianBadge } from "./guardian-badge";
 import type { GuardianState } from "./guardian-state";
@@ -27,10 +28,13 @@ export function GuardianList({
   riderId,
   riderName,
   guardians,
+  members,
 }: {
   riderId: string;
   riderName: string;
   guardians: GuardianView[];
+  /** The team's members who could be this rider's parent too (backlog P2-16). */
+  members: LinkableMember[];
 }) {
   const t = useTranslations("riders.guardians");
   const relations = useTranslations("riders.relation");
@@ -76,7 +80,7 @@ export function GuardianList({
           </ul>
         )}
         <div>
-          <AddGuardianDialog riderId={riderId} riderName={riderName} />
+          <AddGuardianDialog riderId={riderId} riderName={riderName} members={members} />
         </div>
       </CardContent>
     </Card>

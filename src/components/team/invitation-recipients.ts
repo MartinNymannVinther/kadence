@@ -17,6 +17,8 @@ export type Recipient = {
   /** For a parent: the riders' names. */
   children: string[];
   link: RecipientLink | null;
+  /** A parent already on the team, linked to their account: no link to share (P2-16). */
+  linked?: boolean;
 };
 
 type Collect = {
@@ -24,13 +26,21 @@ type Collect = {
   list: () => Recipient[];
 };
 
-/** Rows in order, a parent's further children folded into the first row with the same link. */
+/**
+ * Rows in order, a parent's further children folded into the first row
+ * with the same link — or, for a parent linked to their account, the same
+ * name.
+ */
 function collector(): Collect {
   const rows: Recipient[] = [];
   const byLink = new Map<string, Recipient>();
   return {
     add(recipient, child) {
-      const key = recipient.link ? `${recipient.kind}:${recipient.link.url}` : null;
+      const key = recipient.link
+        ? `${recipient.kind}:${recipient.link.url}`
+        : recipient.linked
+          ? `linked:${recipient.name}`
+          : null;
       const shared = key ? byLink.get(key) : undefined;
       if (shared) {
         if (child && !shared.children.includes(child)) shared.children.push(child);
@@ -49,7 +59,16 @@ export function recipientsFromCreated(lines: CreatedLine[]): Recipient[] {
   for (const { rider, parents } of lines) {
     out.add({ key: rider.id, name: rider.name, kind: "rider", link: rider.link });
     for (const parent of parents) {
-      out.add({ key: parent.id, name: parent.name, kind: "parent", link: parent.link }, rider.name);
+      out.add(
+        {
+          key: parent.id,
+          name: parent.name,
+          kind: "parent",
+          link: parent.link,
+          linked: parent.linked ?? false,
+        },
+        rider.name,
+      );
     }
   }
   return out.list();

@@ -726,3 +726,54 @@ describe("a parent and the family's calendar (docs/adr/0069)", () => {
     expect(theirs.rowCount).toBe(0);
   });
 });
+
+describe("a parent on the team linked to a second child (backlog P2-16)", () => {
+  it("sees the second child only once that child has confirmed, and the first as before", async () => {
+    const seen = await asApp(app, COACH, async (c) => {
+      const as = (who: string) => c.query("select set_config('app.user_id', $1, true)", [who]);
+      const n = async (table: string, where: string) =>
+        (await c.query(`select count(*)::int as n from "${table}" where ${where}`)).rows[0]
+          .n as number;
+      const sees = async () => ({
+        r1: await n("riders", "id = 'r1'"),
+        r2: await n("riders", "id = 'r2'"),
+        r2Sessions: await n("planned_sessions", "rider_id = 'r2'"),
+      });
+      // The coach links the parent's existing account to r2: no invitation.
+      await c.query(
+        `insert into guardians (id, org_id, rider_id, user_id, name) values ('g_second', $1, 'r2', $2, 'Forælder')`,
+        [ORG, PARENT.userId],
+      );
+      await as(PARENT.userId);
+      const before = await sees();
+      await as(R1.userId);
+      const byTeammate = (
+        await c.query(`update guardians set confirmed_at = now() where id = 'g_second'`)
+      ).rowCount;
+      await as(R2.userId);
+      const byChild = (
+        await c.query(`update guardians set confirmed_at = now() where id = 'g_second'`)
+      ).rowCount;
+      await as(PARENT.userId);
+      return { before, byTeammate, byChild, after: await sees() };
+    });
+    expect(seen).toEqual({
+      before: { r1: 1, r2: 0, r2Sessions: 0 },
+      byTeammate: 0,
+      byChild: 1,
+      after: { r1: 1, r2: 1, r2Sessions: 1 },
+    });
+  });
+
+  it("is the coach's to make: a parent cannot link themselves to another child", async () => {
+    const q = insertSql("guardians", {
+      org_id: ORG,
+      rider_id: "r2",
+      user_id: PARENT.userId,
+      name: "Forælder",
+    });
+    expect(await expectSqlError(asApp(app, PARENT, (c) => c.query(q.text, q.values)))).toBe(
+      "42501",
+    );
+  });
+});
