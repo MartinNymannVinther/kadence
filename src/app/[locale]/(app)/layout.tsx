@@ -4,6 +4,7 @@ import { after } from "next/server";
 import { getLocale, getTranslations } from "next-intl/server";
 import { ownerAccessSummary } from "@/core/access/summary";
 import { getOrgContext, getSession } from "@/core/auth/session";
+import { teamCount } from "@/core/auth/teams";
 import { featureOn } from "@/core/features";
 import { organizations } from "@/core/db/schema";
 import { withOrgContext } from "@/core/db/tenant";
@@ -52,6 +53,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const attention = owner?.pending ?? 0;
   // Only the installation's owner creates workspaces (ADR 0048).
   const canCreate = owner !== null;
+  // The team's name is the switcher only when there is somewhere to go:
+  // another team, or for the owner a new one to create (ADR 0068).
+  const switchable = canCreate || (await teamCount(session.user.id)) > 1;
   const logo = context ? (await orgImageUrls(context)).logo : null;
   const t = await getTranslations("app.nav");
   const demo = context ? await isDemoWorkspace(context.orgId) : false;
@@ -81,6 +85,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   // Read on the server so the first paint is already the layout this
   // person left behind, rather than a rail that appears and vanishes.
   const sidebarHidden = (await cookies()).get("kadence-sidebar")?.value === "hidden";
+  const team = { organization: organization?.name ?? "", logo, switchable, canCreate };
 
   return (
     <div className="flex min-h-svh">
@@ -98,9 +103,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           <AppSidebar
             userName={session.user.name}
             userEmail={session.user.email}
-            organization={organization?.name ?? ""}
-            logo={logo}
-            canCreate={canCreate}
+            {...team}
             attention={attention}
             groups={groups}
             home={home}
@@ -117,9 +120,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           groups={groups}
           counts={counts}
           attention={attention}
-          canCreate={canCreate}
-          organization={organization?.name ?? ""}
-          logo={logo}
+          {...team}
           userName={session.user.name}
           userEmail={session.user.email}
         />

@@ -205,7 +205,6 @@
       "barLabel": "Hovedmenu"
     },
     "orgSwitcher": {
-      "label": "Arbejdsrum",
       "create": "Opret arbejdsrum",
       "createTitle": "Opret nyt arbejdsrum",
       "name": "Navn",
@@ -213,7 +212,8 @@
       "switched": "Skiftet til {name}",
       "created": "{name} er oprettet",
       "error": "Arbejdsrummet kunne ikke oprettes. Prøv igen.",
-      "switch": "Skift arbejdsrum"
+      "switchError": "Holdet kunne ikke skiftes. Prøv igen.",
+      "switch": "Skift hold"
     },
     "security": {
       "resets": {

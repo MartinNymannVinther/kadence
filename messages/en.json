@@ -205,7 +205,6 @@
       "barLabel": "Main menu"
     },
     "orgSwitcher": {
-      "label": "Workspace",
       "create": "Create workspace",
       "createTitle": "Create new workspace",
       "name": "Name",
@@ -213,7 +212,8 @@
       "switched": "Switched to {name}",
       "created": "{name} has been created",
       "error": "The workspace could not be created. Please try again.",
-      "switch": "Switch workspace"
+      "switchError": "The team could not be switched. Please try again.",
+      "switch": "Switch team"
     },
     "security": {
       "resets": {
