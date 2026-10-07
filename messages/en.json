@@ -2982,8 +2982,11 @@
     },
     "uploadInstead": "Without a connection you can always upload your rides as FIT files.",
     "uploadLink": "Upload a ride",
-    "usTitle": "Wahoo and Garmin are US companies, Polar is Finnish",
-    "usBody": "Kadence itself is in the EU, and so is Polar. When you connect, Wahoo, Garmin or Polar send your rides to Kadence, and Kadence sends the sessions you choose to Wahoo or Garmin. It is your choice, and you can disconnect at any time.",
+    "usTitle": {
+      "us": "{names} {count, plural, one {is a US company} other {are US companies}}",
+      "eu": "{names} {count, plural, one {is a Finnish company} other {are Finnish companies}}"
+    },
+    "usBody": "Kadence itself is in the EU{hasEu, select, yes {, and so is {euNames}} other {}}. When you connect, {providers} send your rides to Kadence{hasPushers, select, yes {, and Kadence sends the sessions you choose to {pushers}} other {}}. It is your choice, and you can disconnect at any time.",
     "usLink": "Who can see what"
   },
   "parents": {

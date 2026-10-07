@@ -87,7 +87,7 @@ describe("a demo workspace", () => {
     expect(seeded.rows[0].riders).toBe(6);
     expect(seeded.rows[0].sessions).toBeGreaterThan(150);
     expect(seeded.rows[0].done).toBeGreaterThan(100);
-    expect(seeded.rows[0].checkins).toBe(6 * 14);
+    expect(seeded.rows[0].checkins).toBe(6 * 42);
     expect(seeded.rows[0].dcu).toBe(3);
   });
 
@@ -145,6 +145,23 @@ describe("a demo workspace", () => {
       meeting_place: "Hillerød Stadion",
     });
     expect(race.rows[0].transport_note).toMatch(/^Klubbens bus/);
+  });
+
+  it("holds a session the coach built in the planner itself, not the library (ADR 0059)", async () => {
+    const own = await admin.query(
+      `select tbi.sport, tbi.title, tbi.start_time, tbi.meeting_place
+         from training_block_items tbi
+         join training_blocks tb on tb.id = tbi.block_id
+        where tb.org_id = $1 and tb.name = 'Vinterblok, 4 uger' and tbi.template_id is null`,
+      [orgId],
+    );
+    expect(own.rows).toHaveLength(1);
+    expect(own.rows[0]).toMatchObject({
+      sport: "bike",
+      title: "Teknik og sving",
+      start_time: "16:00:00",
+    });
+    expect(own.rows[0].meeting_place.length).toBeGreaterThan(0);
   });
 
   it("has the team's own drawn exercise, mixed into a programme laid into today's calendar (ADR 0067)", async () => {

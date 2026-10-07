@@ -131,7 +131,10 @@ export function LoginForm({ signupOpen }: { signupOpen: boolean }) {
       {signupOpen ? (
         <CardFooter className="justify-center text-sm">
           <span className="text-muted-foreground">{t("noAccount")}&nbsp;</span>
-          <Link href="/register" className="font-medium underline-offset-4 hover:underline">
+          <Link
+            href="/register"
+            className="focus-ring font-medium underline-offset-4 hover:underline"
+          >
             {t("registerLink")}
           </Link>
         </CardFooter>

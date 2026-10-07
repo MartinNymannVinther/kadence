@@ -2982,8 +2982,11 @@
     },
     "uploadInstead": "Uden en forbindelse kan du altid uploade dine ture som FIT-filer.",
     "uploadLink": "Upload tur",
-    "usTitle": "Wahoo og Garmin er amerikanske firmaer, Polar er finsk",
-    "usBody": "Kadence selv ligger i EU, og det gør Polar også. Når du forbinder, sender Wahoo, Garmin eller Polar dine ture til Kadence, og Kadence sender de pas, du vælger, til Wahoo eller Garmin. Det er dit valg, og du kan afbryde når som helst.",
+    "usTitle": {
+      "us": "{names} er {count, plural, one {et amerikansk firma} other {amerikanske firmaer}}",
+      "eu": "{names} er {count, plural, one {et finsk firma} other {finske firmaer}}"
+    },
+    "usBody": "Kadence selv ligger i EU{hasEu, select, yes {, og det gør {euNames} også} other {}}. Når du forbinder, sender {providers} dine ture til Kadence{hasPushers, select, yes {, og Kadence sender de pas, du vælger, til {pushers}} other {}}. Det er dit valg, og du kan afbryde når som helst.",
     "usLink": "Hvem der kan se hvad"
   },
   "parents": {

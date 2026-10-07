@@ -37,7 +37,7 @@ function SegmentedFilter({
           key={item.key}
           href={item.href}
           aria-current={item.active ? "true" : undefined}
-          className={segment(item.active)}
+          className={cn("focus-ring", segment(item.active))}
         >
           {item.label}
         </Link>

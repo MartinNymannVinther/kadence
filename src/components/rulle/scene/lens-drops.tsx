@@ -24,7 +24,7 @@ export function LensDrops({ seed, top, bottom }: { seed: number; top: number; bo
       {drops.map((drop, i) => (
         <span
           key={i}
-          className="animate-rulle-drop absolute rounded-full opacity-0"
+          className="animate-rulle-drop absolute rounded-full opacity-0 motion-reduce:!animate-none"
           style={{
             [drop.side]: drop.inset,
             top: drop.from,

@@ -50,6 +50,17 @@ export const TEMPLATES: Array<{ name: Text; text: string }> = [
 ];
 
 /**
+ * One session the coach built once in the week planner itself, for this
+ * block only (ADR 0059): not in the library above, kept in the block with
+ * its own time and place (P2-14, drizzle/0027).
+ */
+export const BLOCK_OWN_SESSION = {
+  name: { da: "Teknik og sving", en: "Technique and cornering" },
+  text: "15 min opvarmning, 8x30 s sprint / 3 min pause, 10 min nedkørsel",
+  place: { da: "Parkeringspladsen ved skoven", en: "The car park by the forest" },
+} satisfies { name: Text; text: string; place: Text };
+
+/**
  * The team's events. `inDays` counts from today while the racing season
  * runs (April to September); from October to March races wait for the
  * season, so `seasonDay` places them from 1 April of the racing year

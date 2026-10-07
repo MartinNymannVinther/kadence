@@ -8,6 +8,7 @@ import { getOrgContext } from "@/core/auth/session";
 import { env } from "@/core/env";
 import { Link, redirect } from "@/i18n/navigation";
 import { listDeviceLinks } from "@/modules/devices/links";
+import { providerOrigin } from "@/modules/devices/origin";
 import {
   configuredProviders,
   isProviderId,
@@ -56,7 +57,25 @@ export default async function DevicesPage({
     new Intl.ListFormat(locale === "en" ? "en-GB" : "da-DK", { type: "disjunction" }).format(
       ids.map((id) => t(`name.${id}`)),
     );
+  const namesAnd = (ids: ProviderId[]) =>
+    new Intl.ListFormat(locale === "en" ? "en-GB" : "da-DK", { type: "conjunction" }).format(
+      ids.map((id) => t(`name.${id}`)),
+    );
   const pushers = offered.filter((id) => Boolean(providerById(id).pushWorkout));
+  // Only the providers this installation has keys for, so the page never
+  // tells a rider their data could go to a company nobody here can
+  // actually connect to (P2-10).
+  const origin = providerOrigin(offered);
+  const originTitle = [
+    origin.us.length > 0
+      ? t("usTitle.us", { names: namesAnd(origin.us), count: origin.us.length })
+      : null,
+    origin.eu.length > 0
+      ? t("usTitle.eu", { names: namesAnd(origin.eu), count: origin.eu.length })
+      : null,
+  ]
+    .filter(Boolean)
+    .join(", ");
   const search = await searchParams;
   const connected = typeof search.connected === "string" ? search.connected : undefined;
   const error = connectErrorKey(typeof search.error === "string" ? search.error : undefined);
@@ -158,10 +177,18 @@ export default async function DevicesPage({
         </div>
       </details>
 
-      {shown.length > 0 && (
+      {offered.length > 0 && originTitle && (
         <div className="border-border bg-secondary/40 flex flex-col gap-1.5 rounded-xl border p-4">
-          <h3 className="text-sm font-semibold">{t("usTitle")}</h3>
-          <p className="text-2sm leading-relaxed">{t("usBody")}</p>
+          <h3 className="text-sm font-semibold">{originTitle}</h3>
+          <p className="text-2sm leading-relaxed">
+            {t("usBody", {
+              hasEu: origin.eu.length > 0 ? "yes" : "no",
+              euNames: origin.eu.length > 0 ? names(origin.eu) : "",
+              providers: names(offered),
+              hasPushers: pushers.length > 0 ? "yes" : "no",
+              pushers: pushers.length > 0 ? names(pushers) : "",
+            })}
+          </p>
           <a
             href={SUBPROCESSORS}
             target="_blank"

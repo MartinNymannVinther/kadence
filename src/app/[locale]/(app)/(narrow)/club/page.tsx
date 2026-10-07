@@ -55,7 +55,7 @@ export default async function ClubPage({
       <div className="flex max-w-3xl flex-col gap-5">
         <PageHeader title={t("title")} subtitle={t("subtitle")} />
         <EmptyState title={t("off.title")} hint={t("off.body")} />
-        <Link href="/settings/team" className="text-primary text-2sm hover:underline">
+        <Link href="/settings/team" className="focus-ring text-primary text-2sm hover:underline">
           {t("off.link")}
         </Link>
       </div>
@@ -91,7 +91,7 @@ export default async function ClubPage({
               href={`/club?c=${c.id}`}
               aria-current={c.id === selected?.id ? "page" : undefined}
               className={cn(
-                "rounded-md border px-3 py-1.5 text-2sm",
+                "focus-ring rounded-md border px-3 py-1.5 text-2sm",
                 c.id === selected?.id ? "border-primary font-semibold" : "border-border",
               )}
             >

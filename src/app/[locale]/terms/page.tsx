@@ -36,7 +36,7 @@ export default async function TermsPage() {
         <Link href="/">
           <Wordmark className="text-xl" />
         </Link>
-        <Link href="/" className="text-meta hover:text-foreground text-sm">
+        <Link href="/" className="focus-ring text-meta hover:text-foreground text-sm">
           {t("back")}
         </Link>
       </header>
@@ -71,7 +71,7 @@ export default async function TermsPage() {
           {t("subprocessorsNote")}{" "}
           <a
             href="https://github.com/MartinNymannVinther/kadence/blob/main/docs/subprocessors.md"
-            className="text-foreground font-medium underline-offset-4 hover:underline"
+            className="focus-ring text-foreground font-medium underline-offset-4 hover:underline"
           >
             docs/subprocessors.md
           </a>
@@ -81,7 +81,7 @@ export default async function TermsPage() {
           <Link
             href="/"
             locale={locale === "da" ? "en" : "da"}
-            className="underline-offset-4 hover:underline"
+            className="focus-ring underline-offset-4 hover:underline"
           >
             {t("language")}
           </Link>

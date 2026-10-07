@@ -126,7 +126,7 @@ export function JoinRegisterForm({
         <span className="text-muted-foreground">{t("haveAccount")}&nbsp;</span>
         <Link
           href={`/login?next=/join/${invitationId}`}
-          className="font-medium underline-offset-4 hover:underline"
+          className="focus-ring font-medium underline-offset-4 hover:underline"
         >
           {t("loginLink")}
         </Link>

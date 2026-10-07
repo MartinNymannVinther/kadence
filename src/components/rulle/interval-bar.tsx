@@ -40,6 +40,8 @@ export function IntervalBar({
 }) {
   const t = useTranslations("rulle.ride");
   const duration = useTranslations("training.duration");
+  const view = useTranslations("workouts.view");
+  const zones = useTranslations("training.zone");
   const total = Math.max(1, timeline.seconds);
   const pcts = timeline.blocks.map((b) => drawPct(b.target, b.intent));
   const ceiling = Math.min(MAX_CEILING, Math.max(MIN_CEILING, Math.max(0, ...pcts) * 1.1));
@@ -70,6 +72,7 @@ export function IntervalBar({
       >
         {timeline.blocks.map((b, i) => {
           const top = y(Math.max(20, pcts[i] ?? 0));
+          const zone = zoneOfTarget(b.target, b.intent);
           return (
             <rect
               key={i}
@@ -78,8 +81,13 @@ export function IntervalBar({
               width={Math.max(x(b.to) - x(b.from) - 1.5, 1)}
               height={HEIGHT - top}
               rx={1.5}
-              style={{ fill: zoneFill(zoneOfTarget(b.target, b.intent)) }}
-            />
+              style={{ fill: zoneFill(zone) }}
+            >
+              {/* The block's colour is never the only way to tell its zone. */}
+              {zone !== null && (
+                <title>{view("zone", { zone, name: zones(String(zone) as "1") })}</title>
+              )}
+            </rect>
           );
         })}
         <rect
