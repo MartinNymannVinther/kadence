@@ -1,8 +1,9 @@
 /**
  * The food in the calculator's examples: bottles and food for the bike,
- * and meals for before and after. Ordinary food and homemade drinks only:
- * Team Danmark's ATK does not recommend sports products such as gels for
- * children and young people (ATK 2.0, nutrition chapter 2025).
+ * and meals for before and after. Ordinary food and homemade drinks, as
+ * Team Danmark's ATK advises for children and young people (ATK 2.0,
+ * nutrition chapter 2025), with one exception Kadence makes on purpose: a
+ * gel without caffeine in a race from U17 (`gelsFor`, fuel-day.ts).
  *
  * On the bike the numbers are docs/research/ernaering.md, section 2, where
  * each recipe and product has its source; homemade recipes are counted at
@@ -16,7 +17,15 @@
  * Pure: imports nothing from the database, and runs in the browser.
  */
 
-export const RIDE_ITEM_IDS = ["water", "saltWater", "drink", "fuel", "riceCake", "banana"] as const;
+export const RIDE_ITEM_IDS = [
+  "water",
+  "saltWater",
+  "drink",
+  "fuel",
+  "riceCake",
+  "banana",
+  "gel",
+] as const;
 
 export const MEAL_ITEM_IDS = [
   "oats",
@@ -107,6 +116,13 @@ export const FUEL_ITEMS: Record<FuelItemId, FuelItem> = {
   fuel: bottle(80, 629),
   /** Recipe C, sweet rice cakes without egg: 31–33 g and about 39 mg sodium each. */
   riceCake: piece(32, 39, { perishable: true }),
+  /**
+   * A standard energy gel without caffeine: 25 g carbohydrate, the model's
+   * default (ernaering.md section 3, input 10; Maurten Gel 100 has 25 g,
+   * SiS GO Isotonic 22 g, section 2.10). Its salt varies between brands
+   * and is not counted.
+   */
+  gel: piece(25, 0),
 
   /** 2½ dl oats, 75 g (Team Danmark); food 59, Havregryn, uspec. */
   oats: portion(75, { carbs: 58.3, protein: 12.9, fibre: 9.9, fat: 6.9, sodiumMg: 1.6 }),

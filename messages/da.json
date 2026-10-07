@@ -4635,6 +4635,7 @@
         "fuel": { "name": "Stærk sportsdrik (8 %)" },
         "riceCake": { "name": "Riskage" },
         "banana": { "name": "Banan" },
+        "gel": { "name": "Gel uden koffein" },
         "oats": { "name": "Havregryn" },
         "milk": { "name": "Mælk" },
         "whiteBread": { "name": "Franskbrød" },
@@ -4657,7 +4658,8 @@
         "practise": "Øv det på de lange træningsture de næste 2–4 uger, før du bruger det i et løb.",
         "multiple": "Over 60 g i timen kræver glukose og fruktose sammen. Almindeligt sukker er begge dele.",
         "cages": "Eksemplet har {n} dunke, og cyklen har plads til to. Resten kan du få langet op undervejs, hvor løbet tillader det.",
-        "products": "Team Danmark anbefaler ikke sportsprodukter som geler og energibarer til børn og unge, og energidrikke med koffein frarådes. Almindelig mad og hjemmelavet sportsdrik er nok."
+        "products": "Team Danmark anbefaler ikke sportsprodukter som geler og energibarer til børn og unge, og energidrikke med koffein frarådes. Almindelig mad og hjemmelavet sportsdrik er nok.",
+        "productsGels": "Fra U17 er geler almindelige i løb, hvor farten er høj og løbet langt, så eksemplet bruger dem, når riskagerne er spist. Vælg geler uden koffein, drik vand til, og skyl munden med vand bagefter for tændernes skyld. Til træning og for de yngste anbefaler Team Danmark almindelig mad og hjemmelavet sportsdrik, og det følger eksemplet."
       },
       "print": {
         "button": "Udskriv eller gem som PDF"

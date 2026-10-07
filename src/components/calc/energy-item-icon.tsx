@@ -14,6 +14,7 @@ export const ITEM_COLOUR: Record<FuelItemId, string> = {
   fuel: "#d4407a",
   riceCake: "#c9b48a",
   banana: "#e8c22a",
+  gel: "#6fae7f",
   oats: "#d9c8a8",
   milk: "#9fc6e0",
   whiteBread: "#e8bf72",
@@ -94,7 +95,23 @@ function Banana() {
   );
 }
 
-/** One food drawn small: a bottle in its drink's colour, a rice cake in foil, a banana, or a meal. */
+function Gel() {
+  return (
+    <>
+      <path
+        d="M9 6 H23 L21.5 25 Q21 28 18 28.5 L16.8 30 H15.2 L14 28.5 Q11 28 10.5 25 Z"
+        fill={ITEM_COLOUR.gel}
+        stroke="#00000033"
+        strokeWidth="0.8"
+      />
+      <rect x="9" y="5" width="14" height="3" rx="0.8" fill="#3f6e4c" />
+      <rect x="11.5" y="13" width="9" height="6" rx="1" fill="#ffffffcc" />
+      <path d="M12 21 V25" stroke="#ffffff88" strokeWidth="1.2" strokeLinecap="round" />
+    </>
+  );
+}
+
+/** One food drawn small: a bottle in its drink's colour, a rice cake in foil, a banana, a gel, or a meal. */
 export function ItemIcon({ id, className }: { id: FuelItemId; className?: string }) {
   return (
     <svg viewBox="0 0 32 32" aria-hidden className={cn("size-8 shrink-0", className)}>
@@ -104,6 +121,7 @@ export function ItemIcon({ id, className }: { id: FuelItemId; className?: string
       {id === "fuel" && <Bottle colour={ITEM_COLOUR.fuel} />}
       {id === "riceCake" && <RiceCake />}
       {id === "banana" && <Banana />}
+      {id === "gel" && <Gel />}
       <MealIcon id={id} />
     </svg>
   );
