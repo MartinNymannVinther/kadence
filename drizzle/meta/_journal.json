@@ -239,6 +239,13 @@
       "when": 1791368883370,
       "tag": "0033_event_time_place",
       "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1791369559488,
+      "tag": "0034_family_events",
+      "breakpoints": true
     }
   ]
 }

@@ -7,7 +7,8 @@ import { riders } from "./team";
 /**
  * Everything else in the calendar: races, school, exams, camps, holidays,
  * illness. Without a rider it is the team's and every member sees it; a
- * rider's own follows the rider policies in drizzle/0003.
+ * rider's own follows the rider policies in drizzle/0003, and a parent
+ * may put the family's days into their child's (docs/adr/0069).
  */
 export const calendarEvents = pgTable(
   "calendar_events",

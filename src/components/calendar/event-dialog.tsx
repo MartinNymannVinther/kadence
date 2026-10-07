@@ -108,6 +108,7 @@ export function EventDialog({
             <DialogTitle>{event ? t("editTitle") : t("addTitle")}</DialogTitle>
             <DialogDescription>{t("body")}</DialogDescription>
           </DialogHeader>
+          {event?.fromParent && <p className="text-meta -mt-2 text-xs">{t("fromParent")}</p>}
           {event && <EventResults event={event} riders={riders} />}
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="flex flex-col gap-1.5">

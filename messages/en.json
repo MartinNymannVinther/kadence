@@ -1198,6 +1198,7 @@
       "whereHint": "When and where it starts, and who drives. All of it may stay empty.",
       "transport": "Driving",
       "transportPlaceholder": "E.g. Anne drives from the clubhouse at 7:30",
+      "fromParent": "A parent put this in. The rider and the coaches can change and delete it.",
       "results": {
         "source": "Read from Cykling Danmark.",
         "label": "Results",
@@ -2965,6 +2966,7 @@
       "noForm": "Not enough training has been done to show the form yet.",
       "upcoming": "The next 30 days",
       "noUpcoming": "No races, exams or camps in the next month.",
+      "family": "The family's calendar",
       "threads": "Conversations about the training",
       "noThreads": "No comments in the last two weeks.",
       "comments": "{count, plural, one {# comment} other {# comments}}",
@@ -2973,6 +2975,24 @@
       "wellbeingNote": "Green is balance. Yellow for a while is a signal to have a talk together with the coach. Red means help is needed. Ask openly, and listen.",
       "noCheckins": "No check-ins in the last 14 days.",
       "wellbeingHidden": "{name} does not share their check-ins with you. That is the rider's own choice, and that is fine."
+    },
+    "family": {
+      "body": "Add a holiday, an exam or anything else the coach should know about. {name} and the coaches see it in the calendar, and {name} can delete it.",
+      "empty": "You have not added anything yet.",
+      "add": "Add to the calendar",
+      "edit": "Edit",
+      "editOne": "Edit {title}",
+      "range": "{from} – {to}",
+      "addTitle": "Add to {name}'s calendar",
+      "editTitle": "Edit in {name}'s calendar",
+      "dialogBody": "The coaches see it and can plan around it. {name} sees it too and can delete it.",
+      "kind": "What",
+      "titleLabel": "Title",
+      "titlePlaceholder": "E.g. autumn break at the summer house",
+      "from": "From",
+      "to": "Until",
+      "deleteTitle": "Delete from the calendar?",
+      "deleteBody": "It disappears from {name}'s calendar and from the coaches'."
     },
     "guide": {
       "title": "The parents' guide",
@@ -3078,7 +3098,8 @@
       "can": {
         "training": "Your child's training: sessions, what is done, and the hours, once your child has confirmed the link and shares the training.",
         "wellbeing": "How your child is doing (check-ins), but only if your child chooses to share it.",
-        "comments": "The conversation about the training: you can read along, but not write. There are no private messages between an adult and a young rider."
+        "comments": "The conversation about the training: you can read along, but not write. There are no private messages between an adult and a young rider.",
+        "calendar": "Add a holiday, an exam or another day to your child's calendar, so the coach can plan around it. Your child sees it and can delete it."
       },
       "cannot": {
         "others": "See other riders on the team.",

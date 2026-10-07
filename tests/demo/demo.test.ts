@@ -14,6 +14,7 @@ import { getRiders } from "@/modules/team/riders";
 import { recentRides } from "@/modules/today/recent-rides";
 import { rideToRate } from "@/components/today/rpe-pick";
 import { addDaysIso, todayInCopenhagen } from "@/core/dates";
+import { listEvents } from "@/modules/training/events";
 import { listOwnTemplates } from "@/modules/training/templates";
 import { whoAmI } from "@/modules/team/access";
 import { getPilotWeeks } from "@/modules/insight/pilot-service";
@@ -203,6 +204,13 @@ describe("a demo workspace", () => {
     const parent = accounts.find((a) => a.role === "parent")!;
     const me = await whoAmI(orgId, parent.userId);
     expect(me?.children).toMatchObject([{ name: "Emma Holm", confirmed: true }]);
+
+    // The parent's holiday in Emma's calendar, seen by the coach as a parent's (ADR 0069).
+    const ahead = addDaysIso(todayInCopenhagen(), 40);
+    const events = await listEvents({ orgId, userId }, { from: todayInCopenhagen(), to: ahead });
+    expect(events.filter((e) => e.fromParent)).toMatchObject([
+      { kind: "holiday", title: "Efterårsferie i sommerhuset", createdBy: parent.userId },
+    ]);
 
     const switched = await switchDemoRole({ userId, orgId }, "parent");
     expect(switched?.getSetCookie().join(";")).toMatch(/better-auth/);

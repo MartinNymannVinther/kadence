@@ -56,6 +56,8 @@ export type CalendarEventCard = {
   transportNote: string;
   /** "dcu" for a race Kadence read from Cykling Danmark (ADR 0039). */
   source: string | null;
+  /** One of the rider's parents put it in (ADR 0069). */
+  fromParent: boolean;
   /** The results on the race: given to a coach's calendar only. */
   results?: EventResult[];
 };

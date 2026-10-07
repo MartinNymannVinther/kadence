@@ -1198,6 +1198,7 @@
       "whereHint": "Hvornår og hvor det starter, og hvem der kører. Alt kan stå tomt.",
       "transport": "Kørsel",
       "transportPlaceholder": "Fx Annes bil fra klubhuset kl. 7.30",
+      "fromParent": "En forælder har lagt den ind. Rytteren og trænerne kan rette og slette den.",
       "results": {
         "source": "Hentet fra Cykling Danmark.",
         "label": "Resultater",
@@ -2965,6 +2966,7 @@
       "noForm": "Der er ikke gennemført træning nok til at vise formen endnu.",
       "upcoming": "De næste 30 dage",
       "noUpcoming": "Ingen løb, eksamener eller lejre den næste måned.",
+      "family": "Familiens kalender",
       "threads": "Samtaler om træningen",
       "noThreads": "Ingen kommentarer de seneste to uger.",
       "comments": "{count, plural, one {# kommentar} other {# kommentarer}}",
@@ -2973,6 +2975,24 @@
       "wellbeingNote": "Grøn er balance. Gul i en periode er et signal om at tage en snak sammen med træneren. Rød betyder, at der skal hjælp til. Spørg åbent, og lyt.",
       "noCheckins": "Ingen check-ins de seneste 14 dage.",
       "wellbeingHidden": "{name} deler ikke sine check-ins med dig. Det er rytterens eget valg, og det er helt i orden."
+    },
+    "family": {
+      "body": "Læg ferie, eksamen eller andet ind, som træneren skal kende til. {name} og trænerne ser det i kalenderen, og {name} kan slette det.",
+      "empty": "Du har ikke lagt noget ind endnu.",
+      "add": "Tilføj til kalenderen",
+      "edit": "Ret",
+      "editOne": "Ret {title}",
+      "range": "{from} – {to}",
+      "addTitle": "Tilføj til {name}s kalender",
+      "editTitle": "Ret i {name}s kalender",
+      "dialogBody": "Trænerne ser det og kan planlægge uden om det. {name} ser det også og kan slette det.",
+      "kind": "Hvad",
+      "titleLabel": "Titel",
+      "titlePlaceholder": "Fx efterårsferie i sommerhuset",
+      "from": "Fra",
+      "to": "Til og med",
+      "deleteTitle": "Slet fra kalenderen?",
+      "deleteBody": "Det forsvinder fra {name}s kalender og fra trænernes."
     },
     "guide": {
       "title": "Forældreguiden",
@@ -3078,7 +3098,8 @@
       "can": {
         "training": "Dit barns træning: pas, hvad der er udført, og timerne, når dit barn har bekræftet forbindelsen og deler træningen.",
         "wellbeing": "Hvordan dit barn har det (check-ins), men kun hvis dit barn vælger at dele det.",
-        "comments": "Samtalen om træningen: du kan læse med, men ikke skrive. Der findes ingen private beskeder mellem en voksen og en ung rytter."
+        "comments": "Samtalen om træningen: du kan læse med, men ikke skrive. Der findes ingen private beskeder mellem en voksen og en ung rytter.",
+        "calendar": "Lægge ferie, eksamen og andet ind i dit barns kalender, så træneren kan planlægge uden om det. Dit barn ser det og kan slette det."
       },
       "cannot": {
         "others": "Se andre ryttere på holdet.",

@@ -104,6 +104,12 @@ export const EVENTS: Array<{
   },
 ];
 
+/** What the demo's parent put into Emma's calendar (docs/adr/0069). */
+export const FAMILY_HOLIDAY: Text = {
+  da: "Efterårsferie i sommerhuset",
+  en: "Autumn break at the summer house",
+};
+
 export const EXAM: Text = { da: "Terminsprøve i matematik", en: "Maths mock exam" };
 
 export const COMMENTS: Array<{ coach: Text }> = [

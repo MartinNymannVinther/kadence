@@ -603,3 +603,126 @@ describe("claiming an invitation", () => {
     expect(r).toEqual({ n: 1, ids: ["r_new"] });
   });
 });
+
+describe("a parent and the family's calendar (docs/adr/0069)", () => {
+  const family = (values: Record<string, unknown>) =>
+    insertSql("calendar_events", {
+      org_id: ORG,
+      rider_id: "r1",
+      kind: "holiday",
+      title: "Efterårsferie",
+      starts_on: DAY,
+      ends_on: DAY,
+      created_by: PARENT.userId,
+      ...values,
+    });
+  const write = (who: typeof COACH, values: Record<string, unknown>) => {
+    const q = family(values);
+    return asApp(app, who, (c) => c.query(q.text, q.values));
+  };
+
+  beforeAll(async () => {
+    await seed("calendar_events", {
+      id: "ev_family",
+      rider_id: "r1",
+      kind: "holiday",
+      title: "Sommerhus",
+      starts_on: DAY,
+      ends_on: DAY,
+      created_by: PARENT.userId,
+    });
+  });
+
+  it("lets a parent put a holiday, an exam or another day into their child's calendar", async () => {
+    for (const kind of ["holiday", "exam", "other"]) {
+      expect((await write(PARENT, { kind })).rowCount, kind).toBe(1);
+    }
+  });
+
+  it("refuses every other kind, a race above all", async () => {
+    for (const kind of ["race", "camp", "school", "ill"]) {
+      expect(await expectSqlError(write(PARENT, { kind })), kind).toBe("42501");
+    }
+  });
+
+  it("refuses another child, the team's calendar, and a child who has not confirmed", async () => {
+    expect(await expectSqlError(write(PARENT, { rider_id: "r2" }))).toBe("42501");
+    expect(await expectSqlError(write(PARENT, { rider_id: null }))).toBe("42501");
+    expect(await expectSqlError(write(PENDING, { created_by: PENDING.userId }))).toBe("42501");
+    expect(await expectSqlError(write(OTHER, { created_by: OTHER.userId }))).toBe("42501");
+    // The adult rider has not confirmed the link again (ADR 0011).
+    expect(await expectSqlError(write(PARENT, { rider_id: "r_adult" }))).toBe("42501");
+  });
+
+  it("refuses a row in someone else's name, with a priority, or from Cykling Danmark", async () => {
+    for (const values of [{ created_by: COACH.userId }, { priority: "A" }, { source: "dcu" }]) {
+      const code = await expectSqlError(write(PARENT, values));
+      expect(code, JSON.stringify(values)).toBe("42501");
+    }
+  });
+
+  it("stops when the child stops sharing their training", async () => {
+    const q = family({});
+    const code = await expectSqlError(
+      asApp(app, R1, async (c) => {
+        await c.query(`update riders set share_training = false where id = 'r1'`);
+        await c.query("select set_config('app.user_id', $1, true)", [PARENT.userId]);
+        return c.query(q.text, q.values);
+      }),
+    );
+    expect(code).toBe("42501");
+  });
+
+  it("changes and removes only what the parent wrote, and never into another kind or child", async () => {
+    const own = await asApp(app, PARENT, (c) =>
+      c.query(`update calendar_events set title = 'Ferie' where id = 'ev_family'`),
+    );
+    expect(own.rowCount).toBe(1);
+    // The rider's own exam and the team's race were not the parent's.
+    for (const where of ["rider_id = 'r1' and kind = 'exam'", "rider_id is null"]) {
+      const upd = await asApp(app, PARENT, (c) =>
+        c.query(`update calendar_events set title = 'x' where ${where}`),
+      );
+      expect(upd.rowCount, where).toBe(0);
+      const del = await asApp(app, PARENT, (c) =>
+        c.query(`delete from calendar_events where ${where}`),
+      );
+      expect(del.rowCount, where).toBe(0);
+    }
+    for (const change of [
+      "kind = 'race'",
+      "rider_id = 'r2'",
+      "rider_id = null",
+      `created_by = '${COACH.userId}'`,
+    ]) {
+      const code = await expectSqlError(
+        asApp(app, PARENT, (c) =>
+          c.query(`update calendar_events set ${change} where id = 'ev_family'`),
+        ),
+      );
+      expect(code, change).toBe("42501");
+    }
+    const removed = await asApp(app, PARENT, (c) =>
+      c.query(`delete from calendar_events where id = 'ev_family'`),
+    );
+    expect(removed.rowCount).toBe(1);
+  });
+
+  it("is seen by the coach and the child, who may delete it, and by no teammate", async () => {
+    expect(await count(COACH, "calendar_events", "id = 'ev_family'")).toBe(1);
+    expect(await count(R1, "calendar_events", "id = 'ev_family'")).toBe(1);
+    expect(await count(R2, "calendar_events", "id = 'ev_family'")).toBe(0);
+    expect(await count(OTHER, "calendar_events", "id = 'ev_family'")).toBe(0);
+    const del = await asApp(app, R1, (c) =>
+      c.query(`delete from calendar_events where id = 'ev_family'`),
+    );
+    expect(del.rowCount).toBe(1);
+  });
+
+  it("lets no teammate remove it", async () => {
+    const theirs = await asApp(app, R2, (c) =>
+      c.query(`delete from calendar_events where id = 'ev_family'`),
+    );
+    expect(theirs.rowCount).toBe(0);
+  });
+});

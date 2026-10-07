@@ -1,7 +1,7 @@
-import { and, asc, eq, gte, inArray, isNull, lte, or } from "drizzle-orm";
+import { and, asc, eq, getTableColumns, gte, inArray, isNull, lte, or, sql } from "drizzle-orm";
 import { z } from "zod";
 import { Refused } from "@/core/action";
-import { calendarEvents, type CalendarEventRow } from "@/core/db/schema";
+import { calendarEvents, guardians, type CalendarEventRow } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
 import { requireCoach, requireWriteFor } from "@/modules/team/access";
 import { TimePlaceFields, TransportNote } from "./time-place";
@@ -35,10 +35,13 @@ export const EventInput = z
   .refine((e) => e.endsOn >= e.startsOn, { path: ["endsOn"] });
 export type EventInputT = z.infer<typeof EventInput>;
 
+/** An event as the calendar lists it: whether one of the rider's parents put it in (ADR 0069). */
+export type ListedEvent = CalendarEventRow & { fromParent: boolean };
+
 export async function listEvents(
   ctx: OrgContext,
   range: { from: string; to: string; riderIds?: string[] },
-): Promise<CalendarEventRow[]> {
+): Promise<ListedEvent[]> {
   return withOrgContext(ctx, (tx) => {
     const riderScope = range.riderIds
       ? or(
@@ -46,8 +49,13 @@ export async function listEvents(
           inArray(calendarEvents.riderId, range.riderIds.length ? range.riderIds : [""]),
         )
       : undefined;
+    // Read under the caller's RLS: a coach and the rider see the rider's parents, a parent their own link.
+    const fromParent = sql<boolean>`exists (
+      select 1 from ${guardians}
+      where ${guardians.riderId} = ${calendarEvents.riderId}
+        and ${guardians.userId} = ${calendarEvents.createdBy})`;
     return tx
-      .select()
+      .select({ ...getTableColumns(calendarEvents), fromParent })
       .from(calendarEvents)
       .where(
         and(
