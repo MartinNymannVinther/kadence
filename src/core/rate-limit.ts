@@ -1,3 +1,4 @@
+import { isIP } from "node:net";
 import { env } from "@/core/env";
 
 /**
@@ -60,6 +61,19 @@ export function peekRateLimit(key: string, limit: number): RateLimit {
 }
 
 /**
+ * The one bucket every caller shares when no address can be trusted. It
+ * fails closed rather than open, which is the right way round for a
+ * public endpoint: a flood from one place slows everyone for a minute
+ * instead of buying the flooder a fresh bucket a request.
+ */
+export const SHARED_BUCKET = "unknown";
+
+/** An IPv4 or IPv6 address and nothing else: a proxy writes addresses, so anything else was written by someone else. */
+function isAddress(value: string): boolean {
+  return isIP(value) !== 0;
+}
+
+/**
  * The caller's address, read from the right.
  *
  * X-Forwarded-For is a list a proxy *appends* to, so the leftmost entry is
@@ -68,18 +82,31 @@ export function peekRateLimit(key: string, limit: number): RateLimit {
  * fresh bucket on every request and every limit here would be decoration.
  *
  * The entry our own proxy wrote is TRUSTED_PROXY_HOPS from the end: one
- * for the usual Coolify/Traefik deployment. With no header at all the
- * whole installation shares one bucket, which fails closed rather than
- * open, and that is the right way round for a public endpoint.
+ * for the usual Coolify/Traefik deployment. At 0 — nothing in front —
+ * every entry is the caller's own, so no forwarded header is read at
+ * all. Next does not hand a route the connection's address (NextRequest
+ * lost `ip` in 15; it is "provided by your hosting provider"), so with
+ * nothing in front the whole installation shares one bucket. So does an
+ * installation whose proxy left no header, or whose entry is not an
+ * address (backlog P2-08).
  */
 export function clientAddress(headers: Headers): string {
+  return addressBehind(headers, env.TRUSTED_PROXY_HOPS);
+}
+
+/** The address `hops` proxies in front leave in the headers. Pure, for the tests. */
+export function addressBehind(headers: Headers, hops: number): string {
+  if (hops < 1) return SHARED_BUCKET;
   const list = (headers.get("x-forwarded-for") ?? "")
     .split(",")
     .map((part) => part.trim())
     .filter(Boolean);
-  const hops = Math.max(1, env.TRUSTED_PROXY_HOPS);
   const trusted = list.length >= hops ? list[list.length - hops] : undefined;
-  return trusted || headers.get("x-real-ip")?.trim() || "unknown";
+  if (trusted !== undefined) return isAddress(trusted) ? trusted : SHARED_BUCKET;
+  // Too short a list for the hops: the proxy's own X-Real-Ip, if it set
+  // one and it is an address; otherwise the shared bucket.
+  const real = headers.get("x-real-ip")?.trim() ?? "";
+  return isAddress(real) ? real : SHARED_BUCKET;
 }
 
 export function callerKey(headers: Headers, prefix: string): string {

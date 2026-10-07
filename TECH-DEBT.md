@@ -61,30 +61,6 @@ in June 2026 that Wahoo no longer passes on heart rate for riders under
 16; that report is not confirmed with Wahoo and should be asked about in
 the application.
 
-### The limiter trusts a forwarded address when nothing is in front
-
-`src/core/rate-limit.ts` reads the caller's address from the right of
-X-Forwarded-For, `TRUSTED_PROXY_HOPS` from the end, and treats 0 as 1. An
-installation with no proxy in front, which 0 is there to say, therefore
-believes the one entry the caller sent: a bucket of the caller's
-choosing on every public route, the upload key's door included (the
-review of ADR 0029 found it). The entries are not checked to be
-addresses either. The fix is small — at 0 read neither header, and take
-only what parses as an address — but the file is the family's, and is
-better changed once for all siblings. Kadence's own deployment has
-Traefik in front and is not affected.
-
-### Members can read each other's addresses in the database
-
-The foundation's `users` policy (drizzle/0001, `app_select_org_members`)
-lets any member of a team read the name and email of everyone on it.
-Kadence needs the names (comment authors); no page, export or API shows
-a rider or a parent another member's address any more (ADR 0019), but
-the row is there for a query that bypasses the services. Closing it
-means a narrower view for names only, or column privileges on `users`
-for the application role — family code, better changed once for all
-siblings.
-
 ## Accepted, with the reason written down
 
 ### The content policy still allows inline scripts
@@ -297,3 +273,25 @@ Paid in wave 4: `erase_rider` (drizzle/0006) deletes one rider and the
 audit rows about them, checked by the function itself like
 `delete_workspace`, and records that an erasure happened without naming
 anyone (tests/team/erase.test.ts).
+
+### Members can read each other's addresses in the database
+
+Paid with backlog P2-07 (drizzle/0036, ADR 0070): the application role
+has `SELECT` on `users.id` and `users.name` and on no other column, so
+the address is refused by Postgres to any query that is not the definer
+`team_member_addresses()` — the caller's own, the team's to its coach,
+and to a rider the accounts holding a guardian link to them.
+tests/rls/member-addresses.test.ts proves each. The policy and grant came
+with the foundation; the siblings carry the same debt until they lift the
+migration.
+
+### The limiter trusts a forwarded address when nothing is in front
+
+Paid with backlog P2-08: `addressBehind` in `src/core/rate-limit.ts`
+reads no forwarded header at `TRUSTED_PROXY_HOPS=0` — Next does not
+hand a route the connection's own address, so every caller shares one
+bucket, which fails closed — and takes an entry from X-Forwarded-For or
+X-Real-Ip only when `node:net` parses it as an IPv4 or IPv6 address.
+tests/core/rate-limit.test.ts covers 0, 1 and 2 hops and garbage in the
+header. The file is the family's; the siblings carry the same debt until
+they lift it.

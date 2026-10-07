@@ -239,6 +239,13 @@
       "when": 1791369512974,
       "tag": "0033_equipment_strength_room",
       "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1791368727170,
+      "tag": "0034_users_addresses",
+      "breakpoints": true
     }
   ]
 }

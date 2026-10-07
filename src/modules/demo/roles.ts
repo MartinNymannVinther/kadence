@@ -81,7 +81,8 @@ export async function createDemoRoles(input: {
       password: person.password,
     });
     if (!result.ok) throw new Error(`demo: ${person.email} could not join (${result.error})`);
-    // The auth role reads users by address; the application role cannot yet.
+    // The auth role reads users by address; the application role has no
+    // read on the column at all (docs/adr/0070).
     const [row] = await authDb
       .select({ id: users.id })
       .from(users)

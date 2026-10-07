@@ -1,6 +1,6 @@
 # ADR 0002: Multi-tenancy enforced with RLS and two runtime roles
 
-Status: accepted · Date: 2026-09-18 (inherited from Haij by way of Ajour and Tavle, ADR 0002 in each)
+Status: accepted · Date: 2026-09-18 (inherited from Haij by way of Ajour and Tavle, ADR 0002 in each) · Amended by 0070 (the application role reads `users.id` and `users.name` only)
 
 > Inherited with the foundation from Plot, which took it from Makker and Domino (ADR 0001). The reasoning is the family's and holds here; where an example names a flow, a brick, a run, a conversation or an initiative, that is a sibling's example, not a feature of Kadence.
 

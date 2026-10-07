@@ -45,6 +45,30 @@ export function featureOn(feature: Feature): boolean {
   return features()[feature];
 }
 
+/**
+ * Where the parked parts answer, without a locale prefix: each path and
+ * everything under it. Rulle's world is not a path — the session stays
+ * and the world goes — so it is not here.
+ */
+export const PARKED_PATHS: ReadonlyArray<{ path: string; feature: Feature }> = [
+  { path: "/coaches", feature: "coachesRoom" },
+  { path: "/club", feature: "clubChampionship" },
+  { path: "/calculators/energy", feature: "energyCalculator" },
+  { path: "/guides/food", feature: "foodGuide" },
+];
+
+/**
+ * Whether `pathname` (its locale prefix already stripped) belongs to a
+ * part the installation has off. The proxy asks before anything renders,
+ * so the answer is a real 404 and not a not-found page streamed as 200
+ * (docs/adr/0057, backlog P2-09). Pure, for the tests.
+ */
+export function parkedPath(pathname: string, on: Features): boolean {
+  return PARKED_PATHS.some(
+    ({ path, feature }) => !on[feature] && (pathname === path || pathname.startsWith(`${path}/`)),
+  );
+}
+
 /** Whether reminders can be sent: the installation has a push key pair. */
 export function remindersOn(): boolean {
   return Boolean(env.PUSH_PUBLIC_KEY && env.PUSH_PRIVATE_KEY);
