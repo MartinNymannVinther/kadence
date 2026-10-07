@@ -10,9 +10,10 @@ import type { Pose, Prop } from "@/modules/exercises/types";
 
 /**
  * What the figure stands on and uses: the floor, a wall, a mat, a bench,
- * a step, an elastic band, a ball, a kettlebell — up to six, one floor
- * and one wall. A new one lands on the floor beside the figure and is
- * moved on the drawing.
+ * a step, an elastic band, a ball, a kettlebell, and the strength room's
+ * barbell, dumbbell, TRX straps and pull-up bar — up to six, one floor,
+ * wall, barbell, TRX and bar each. A new one lands beside the figure and
+ * is moved on the drawing.
  */
 export function PropTools({
   pose,

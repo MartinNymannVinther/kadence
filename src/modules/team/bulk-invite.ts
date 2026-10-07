@@ -17,6 +17,7 @@ import {
   type ListProblemCode,
 } from "./bulk-parse";
 import { addGuardianIn, attachGuardianInvitationIn, GuardianInput } from "./guardians";
+import { linkMemberAsGuardianIn } from "./member-guardians";
 import { attachRiderInvitationIn, createRiderIn, RiderInput } from "./riders";
 
 /**
@@ -32,8 +33,11 @@ import { attachRiderInvitationIn, createRiderIn, RiderInput } from "./riders";
  *
  * 1. read the list again (bulk-parse.ts) — the preview is the browser's;
  * 2. check it against the team: the caller coaches it, no rider of that
- *    name is on it, no address is a member's or has a link waiting, and
- *    the team's open links stay under Better Auth's limit;
+ *    name is on it, no rider's address is a member's, no address has a
+ *    link waiting, and the team's open links stay under Better Auth's
+ *    limit. A parent whose address is already a member's is linked to
+ *    their account instead of invited (docs/backlog.md P2-16): no link,
+ *    and the rider confirms them as always;
  * 3. make the links, one address at a time; if one fails, cancel those
  *    already made;
  * 4. create every row in one transaction; if it fails, the rows roll
@@ -48,7 +52,13 @@ export const BulkInviteInput = z.object({
 });
 
 export type IssuedLink = { id: string; url: string; email: string; expiresAt: string };
-export type CreatedPerson = { id: string; name: string; link: IssuedLink | null };
+export type CreatedPerson = {
+  id: string;
+  name: string;
+  link: IssuedLink | null;
+  /** A parent already on the team, linked to their account instead of invited. */
+  linked?: boolean;
+};
 export type CreatedLine = {
   rider: CreatedPerson & { birthYear: number };
   parents: CreatedPerson[];
@@ -70,19 +80,27 @@ export async function bulkInvite(
   if (parsed.listProblem || parsed.problems.length > 0) {
     return { done: false, problems: parsed.problems, listProblem: parsed.listProblem };
   }
-  const clash = await checkAgainstTeam(ctx, parsed.lines);
+  const { clash, members } = await checkAgainstTeam(ctx, parsed.lines);
   if (clash) return clash;
 
-  const links = await makeLinks(ctx, headers, parsed.lines);
+  const invited = addressesIn(parsed.lines).filter((email) => !members.has(email));
+  const links = await makeLinks(ctx, headers, invited);
   try {
-    return { done: true, lines: await createRows(ctx, parsed.lines, links) };
+    return { done: true, lines: await createRows(ctx, parsed.lines, links, members) };
   } catch (error) {
     await cancelAll(headers, [...links.values()]);
     throw error;
   }
 }
 
-async function checkAgainstTeam(ctx: OrgContext, lines: ListLine[]): Promise<BulkOutcome | null> {
+/**
+ * What stands in the way, if anything, and the parents' addresses that
+ * already belong to a member of the team, with whose account they are.
+ */
+async function checkAgainstTeam(
+  ctx: OrgContext,
+  lines: ListLine[],
+): Promise<{ clash: BulkOutcome | null; members: Map<string, string> }> {
   // Only a coach gets as far as reading the team's addresses.
   const onTeam = await withOrgContext(ctx, async (tx) => {
     await requireCoach(tx, ctx);
@@ -103,7 +121,7 @@ async function checkAgainstTeam(ctx: OrgContext, lines: ListLine[]): Promise<Bul
     addresses.length === 0
       ? []
       : authDb
-          .select({ email: users.email })
+          .select({ email: users.email, userId: users.id })
           .from(memberships)
           .innerJoin(users, eq(users.id, memberships.userId))
           .where(
@@ -120,31 +138,39 @@ async function checkAgainstTeam(ctx: OrgContext, lines: ListLine[]): Promise<Bul
           .where(and(open, inArray(sql`lower(${invitations.email})`, addresses))),
     authDb.select({ n: count() }).from(invitations).where(open),
   ]);
-  const member = new Set(members.map((m) => m.email.toLowerCase()));
+  const member = new Map(members.map((m) => [m.email.toLowerCase(), m.userId]));
   const invited = new Set(waiting.map((w) => w.email.toLowerCase()));
 
   const problems: LineProblem[] = [];
+  const linked = new Map<string, string>();
   for (const { line, rider, parents } of lines) {
     if (onTeam.has(nameKey(rider.name))) problems.push({ line, code: "onTeam", value: rider.name });
     for (const { email } of [rider, ...parents]) {
       if (!email) continue;
-      if (member.has(email)) problems.push({ line, code: "emailMember", value: email });
+      const userId = member.get(email);
+      // A rider joins with an address of their own; a parent on the team is linked.
+      if (userId && email === rider.email) {
+        problems.push({ line, code: "emailMember", value: email });
+      } else if (userId) linked.set(email, userId);
       else if (invited.has(email)) problems.push({ line, code: "emailInvited", value: email });
     }
   }
-  const tooMany = (openCount?.n ?? 0) + addresses.length > TEAM_INVITATION_LIMIT;
-  if (problems.length === 0 && !tooMany) return null;
-  return { done: false, problems, listProblem: tooMany ? "tooManyWaiting" : null };
+  const tooMany = (openCount?.n ?? 0) + addresses.length - linked.size > TEAM_INVITATION_LIMIT;
+  if (problems.length === 0 && !tooMany) return { clash: null, members: linked };
+  return {
+    clash: { done: false, problems, listProblem: tooMany ? "tooManyWaiting" : null },
+    members: linked,
+  };
 }
 
 /** One link per address, on this team; on a failure the ones made are cancelled. */
 async function makeLinks(
   ctx: OrgContext,
   headers: Headers,
-  lines: ListLine[],
+  addresses: string[],
 ): Promise<Map<string, IssuedTeamInvitation>> {
   const made = new Map<string, IssuedTeamInvitation>();
-  for (const email of addressesIn(lines)) {
+  for (const email of addresses) {
     const result = await inviteMember(headers, { email, role: "member" }, ctx.orgId);
     if (result.ok) {
       made.set(email, result.invitation);
@@ -175,6 +201,7 @@ async function createRows(
   ctx: OrgContext,
   lines: ListLine[],
   links: Map<string, IssuedTeamInvitation>,
+  members: Map<string, string>,
 ): Promise<CreatedLine[]> {
   const linkFor = (email: string | null): IssuedLink | null => {
     const made = email ? links.get(email) : undefined;
@@ -197,6 +224,12 @@ async function createRows(
       const parents: CreatedPerson[] = [];
       for (const parent of line.parents) {
         const guardianInput = GuardianInput.parse({ riderId: rider.id, name: parent.name });
+        const userId = parent.email ? members.get(parent.email) : undefined;
+        if (userId) {
+          const guardian = await linkMemberAsGuardianIn(tx, ctx, { ...guardianInput, userId });
+          parents.push({ id: guardian.id, name: guardianInput.name, link: null, linked: true });
+          continue;
+        }
         const guardian = await addGuardianIn(tx, ctx, guardianInput);
         const parentLink = linkFor(parent.email);
         if (parentLink) await attachGuardianInvitationIn(tx, ctx, guardian.id, parentLink.id);

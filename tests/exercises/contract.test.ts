@@ -35,6 +35,15 @@ describe("the exercises' contract", () => {
     ).toBe(false);
   });
 
+  it("says how heavy in a word, or not at all", () => {
+    const dose = { kind: "reps", reps: 10, perSide: false, sets: 3 } as const;
+    expect(doseSchema.parse(dose)).toEqual(dose);
+    for (const load of ["light", "moderate", "heavy"])
+      expect(doseSchema.safeParse({ ...dose, load }).success, load).toBe(true);
+    expect(doseSchema.safeParse({ ...dose, load: "20 kg" }).success).toBe(false);
+    expect(doseSchema.safeParse({ kind: "time", seconds: 30, load: "max" }).success).toBe(false);
+  });
+
   it("keeps a figure inside its box", () => {
     const pose = structuredClone(BUILTIN_EXERCISES[0]!.pose);
     pose.joints.head = [300, 20];

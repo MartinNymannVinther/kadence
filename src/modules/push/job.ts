@@ -1,11 +1,12 @@
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { appDb } from "@/core/db/client";
-import { pushSubscriptions, type PushSubscriptionRow } from "@/core/db/schema";
+import { pushSubscriptions } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { whoAmIIn } from "@/modules/team/access";
 import { copenhagenClock, decide, isQuiet, type Mark } from "./due";
 import { pushService } from "./endpoint";
 import { gatherFacts } from "./facts";
+import { markTold, toldFor, unmarkTold, type Told } from "./runs";
 import { sendPush, type PushConfig } from "./send";
 
 /**
@@ -21,13 +22,18 @@ import { sendPush, type PushConfig } from "./send";
  *
  * One reminder per person per run: the first team with something due
  * gets it, on each of the person's browsers there that are due the same
- * kind of reminder, and the rest waits for the next run. The reminder is written down
- * before it is sent, with a check that nobody wrote it first, so two runs
+ * kind of reminder, and the rest waits for the next run. The reminder is
+ * written down before it is sent (`push_runs`, runs.ts, which the audit
+ * trail leaves out), with a check that nobody wrote it first, so two runs
  * at once — the timer and a tick, or two servers — send it once. A push
  * service that says the browser has gone (404, 410) has its address
  * deleted; one that fails for a moment has the mark taken back, so the
  * next run tries again. In the quiet hours only a coach's wellbeing
  * reminder goes out; the rest waits (due.ts).
+ *
+ * Each run also sweeps the deleted sessions past their seven days
+ * (`planned_session_deletions_sweep()`, drizzle/0037), the record a plan
+ * reminder reads a deletion from.
  */
 
 export type RunReport = {
@@ -40,7 +46,7 @@ export type RunReport = {
 };
 
 type Due = { id: string; orgId: string; userId: string };
-type Marked = { row: PushSubscriptionRow; mark: Mark };
+type Marked = { row: Told; mark: Mark };
 
 async function dueSubscriptions(): Promise<Due[]> {
   const result = await appDb.execute(sql`select id, org_id, user_id from push_subscriptions_due()`);
@@ -49,6 +55,15 @@ async function dueSubscriptions(): Promise<Due[]> {
     orgId: r.org_id,
     userId: r.user_id,
   }));
+}
+
+/** Deleted sessions past their seven days go; a failure waits for the next run. */
+async function sweepDeletions(): Promise<void> {
+  try {
+    await appDb.execute(sql`select planned_session_deletions_sweep()`);
+  } catch (error) {
+    console.error("reminders: could not sweep", error instanceof Error ? error.message : "");
+  }
 }
 
 /** Each person's teams, in order, with the subscriptions on each. */
@@ -62,32 +77,13 @@ function byPerson(due: Due[]): Map<string, Map<string, string[]>> {
   return people;
 }
 
-const markValues = (mark: Mark) =>
-  mark.slot === "news" || mark.slot === "wellbeing"
-    ? { toldUpTo: mark.toldUpTo }
-    : mark.slot === "checkin"
-      ? { checkinRemindedOn: mark.checkinRemindedOn }
-      : { weekToldOn: mark.weekToldOn };
-
-/** Written only if nobody has written it since the row was read. */
-function unchanged(row: PushSubscriptionRow, mark: Mark) {
-  if (mark.slot === "news" || mark.slot === "wellbeing")
-    return sql`date_trunc('milliseconds', ${pushSubscriptions.toldUpTo}) = ${row.toldUpTo}`;
-  if (mark.slot === "checkin")
-    return sql`${pushSubscriptions.checkinRemindedOn} is distinct from ${mark.checkinRemindedOn}`;
-  return sql`${pushSubscriptions.weekToldOn} is distinct from ${mark.weekToldOn}`;
-}
-
 /**
  * As the person on one team: what is due on each of their browsers, and
  * the reminder written down on those that get it. Returns what to send.
  */
 async function decideAndMark(ctx: OrgContext, ids: string[], now: Date): Promise<Marked[]> {
   return withOrgContext(ctx, async (tx) => {
-    const rows = await tx
-      .select()
-      .from(pushSubscriptions)
-      .where(inArray(pushSubscriptions.id, ids));
+    const rows = await toldFor(tx, ids);
     if (rows.length === 0) return [];
     const me = await whoAmIIn(tx, ctx);
     if (!me) return [];
@@ -110,13 +106,7 @@ async function decideAndMark(ctx: OrgContext, ids: string[], now: Date): Promise
     const marked: Marked[] = [];
     for (const { row, decision } of decisions) {
       if (decision.mark.slot !== first.decision.mark.slot) continue;
-      const written = await tx
-        .update(pushSubscriptions)
-        // updated_at is the moment it went out; see lastTold in due.ts.
-        .set({ ...markValues(decision.mark), updatedAt: now })
-        .where(and(eq(pushSubscriptions.id, row.id), unchanged(row, decision.mark)))
-        .returning({ id: pushSubscriptions.id });
-      if (written.length === 1) marked.push({ row, mark: decision.mark });
+      if (await markTold(tx, row, decision.mark, now)) marked.push({ row, mark: decision.mark });
     }
     return marked;
   });
@@ -124,15 +114,7 @@ async function decideAndMark(ctx: OrgContext, ids: string[], now: Date): Promise
 
 /** The reminder could not go out this time: take the mark back for the next run. */
 async function unmark(ctx: OrgContext, { row, mark }: Marked): Promise<void> {
-  const previous =
-    mark.slot === "news" || mark.slot === "wellbeing"
-      ? { toldUpTo: row.toldUpTo }
-      : mark.slot === "checkin"
-        ? { checkinRemindedOn: row.checkinRemindedOn }
-        : { weekToldOn: row.weekToldOn };
-  await withOrgContext(ctx, (tx) =>
-    tx.update(pushSubscriptions).set(previous).where(eq(pushSubscriptions.id, row.id)),
-  );
+  await withOrgContext(ctx, (tx) => unmarkTold(tx, row, mark));
 }
 
 async function forget(ctx: OrgContext, id: string): Promise<void> {
@@ -144,6 +126,7 @@ async function forget(ctx: OrgContext, id: string): Promise<void> {
 export async function runReminders(config: PushConfig, now: Date = new Date()): Promise<RunReport> {
   const quiet = isQuiet(copenhagenClock(now));
   const report: RunReport = { quiet, people: 0, sent: 0, gone: 0, failed: 0 };
+  await sweepDeletions();
 
   for (const [userId, teams] of byPerson(await dueSubscriptions())) {
     report.people += 1;

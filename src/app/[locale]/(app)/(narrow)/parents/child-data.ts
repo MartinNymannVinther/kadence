@@ -9,6 +9,7 @@ import { getInsights } from "@/modules/insight/service";
 import { getRider } from "@/modules/team/riders";
 import { listUnplanned } from "@/modules/training/activities";
 import { listEvents } from "@/modules/training/events";
+import { listFamilyEvents } from "@/modules/training/family-events";
 import { listSessions } from "@/modules/training/sessions";
 import { listCheckins } from "@/modules/wellbeing/checkins";
 
@@ -26,12 +27,13 @@ export async function childView(
   if (!rider) return null;
   const ahead = addDaysIso(week.today, 30);
   const from = minIso([week.monday, addDaysIso(week.today, -(THREAD_DAYS - 1))]);
-  const [sessions, unplanned, events, insights, checkins] = await Promise.all([
+  const [sessions, unplanned, events, insights, checkins, family] = await Promise.all([
     listSessions(ctx, { from, to: week.sunday, riderIds: [riderId] }),
     listUnplanned(ctx, { from, to: week.sunday, riderIds: [riderId] }),
     listEvents(ctx, { from: week.monday, to: ahead, riderIds: [riderId] }),
     getInsights(ctx, { riderIds: [riderId], today: week.today }),
     listCheckins(ctx, { from: addDaysIso(week.today, -13), to: week.today, riderIds: [riderId] }),
+    listFamilyEvents(ctx, riderId, week.today),
   ]);
   const cards = events.map(toEventCard);
   const threads: ChildThread[] = [
@@ -60,6 +62,7 @@ export async function childView(
       .filter((e) => e.endsOn >= week.today && e.kind !== "holiday")
       .sort((a, b) => a.startsOn.localeCompare(b.startsOn))
       .slice(0, 6),
+    family,
     threads,
     load: (insights[0]?.series ?? []).map((d) => ({
       date: d.date,

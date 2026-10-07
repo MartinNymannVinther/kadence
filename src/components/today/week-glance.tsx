@@ -12,8 +12,8 @@ import { timePlaceText, type TimePlace } from "./time-place";
 /**
  * A week at a glance, read-only: each day with its sessions (title,
  * length, how it went, and when and where it starts if the coach said)
- * and its events. The rider's own week on Mig, and each child's week for
- * a parent.
+ * and its events, with when and where they start and who drives. The
+ * rider's own week on Mig, and each child's week for a parent.
  */
 export function WeekGlance({
   days,
@@ -32,6 +32,7 @@ export function WeekGlance({
   const t = useTranslations("today.week");
   const states = useTranslations("training.state");
   const kinds = useTranslations("training.eventKind");
+  const training = useTranslations("training");
   const duration = useTranslations("training.duration");
   const locale = useLocale();
 
@@ -56,13 +57,27 @@ export function WeekGlance({
               <span className="text-meta text-xs">{dayMonth(date, locale)}</span>
             </span>
             <div className="flex min-w-0 flex-col gap-1">
-              {dayEvents.map((e) => (
-                <span key={e.id} className="text-sticky-ink flex items-center gap-1.5 text-xs">
-                  <EventIcon kind={e.kind} />
-                  <span className="sr-only">{kinds(e.kind as "race")}: </span>
-                  <span className="truncate">{e.title}</span>
-                </span>
-              ))}
+              {dayEvents.map((e) => {
+                // When, where and who drives, on the day it starts (docs/backlog.md P2-03).
+                const first = e.startsOn === date;
+                const when = first ? timePlaceText(e, locale) : null;
+                const transport = first ? e.transportNote.trim() : "";
+                return (
+                  <span key={e.id} className="text-sticky-ink flex min-w-0 flex-col text-xs">
+                    <span className="flex min-w-0 items-center gap-1.5">
+                      <EventIcon kind={e.kind} />
+                      <span className="sr-only">{kinds(e.kind as "race")}: </span>
+                      <span className="truncate">{e.title}</span>
+                    </span>
+                    {when && <span className="text-meta truncate pl-5">{when}</span>}
+                    {transport && (
+                      <span className="text-meta pl-5">
+                        {training("transport", { note: transport })}
+                      </span>
+                    )}
+                  </span>
+                );
+              })}
               {day.length === 0 && dayEvents.length === 0 && (
                 <span className="text-meta text-xs">{t("nothing")}</span>
               )}

@@ -52,7 +52,12 @@ export function RiderToday({
       <RiderChecklist facts={day.checklist} />
       {list("today")}
       {day.toRate && <RpePrompt ride={day.toRate} />}
-      <CheckinSection riderId={riderId} today={today} initial={day.checkin} />
+      <CheckinSection
+        riderId={riderId}
+        today={today}
+        initial={day.checkin}
+        start={day.checkinStart}
+      />
       {list("tomorrow")}
     </>
   );

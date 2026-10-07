@@ -68,7 +68,7 @@ export default async function HomePage() {
           />
           <div className="mx-auto flex w-full max-w-3xl flex-col items-center px-6 pt-16 pb-12 text-center sm:pt-24">
             <p className="border-border/80 bg-card/60 text-muted-foreground mb-7 inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs shadow-xs">
-              <span className="bg-primary inline-block size-1.5 animate-pulse rounded-full" />
+              <span className="bg-primary inline-block size-1.5 animate-pulse rounded-full motion-reduce:!animate-none" />
               {/* Read from the build rather than written into the copy:
                   a version in a sentence is a version that goes stale. */}
               {t("status", { version: buildInfo.version })}
@@ -163,7 +163,7 @@ export default async function HomePage() {
             {t("family.body")}{" "}
             <a
               href={HAIJ_URL}
-              className="text-foreground font-medium underline-offset-4 hover:underline"
+              className="focus-ring text-foreground font-medium underline-offset-4 hover:underline"
             >
               {t("family.link")}
             </a>
@@ -178,13 +178,13 @@ export default async function HomePage() {
             <span>· {t("footer.license")}</span>
           </p>
           <div className="flex flex-wrap items-center gap-4">
-            <Link href="/terms" className="underline-offset-4 hover:underline">
+            <Link href="/terms" className="focus-ring underline-offset-4 hover:underline">
               {t("footer.terms")}
             </Link>
             <Link
               href="/"
               locale={locale === "da" ? "en" : "da"}
-              className="underline-offset-4 hover:underline"
+              className="focus-ring underline-offset-4 hover:underline"
             >
               {t("footer.language")}
             </Link>

@@ -1,6 +1,6 @@
 # ADR 0064: Invite the whole team at once
 
-Status: accepted · Date: 2026-10-06 · Builds on 0004, 0010, 0032 · docs/backlog.md P1-01
+Status: accepted · Date: 2026-10-06 · Builds on 0004, 0010, 0032 · docs/backlog.md P1-01 · Amended 2026-10-07 (a parent already on the team is linked, not refused; P2-16)
 
 ## Context
 
@@ -88,8 +88,50 @@ sends no mail (ADR 0032): the coach passes every link on by hand.
   a member — with an older child on the team — is written without an
   address; linking an existing member as a parent is not something
   Kadence does yet, one at a time either.
-- **The links work for 48 hours**, Better Auth's default, the same as one
-  at a time. A coach who shares them the next weekend makes new ones
-  from the rider's page. The text says until when, so nobody wonders.
+- **The links work for a week**, the same as one at a time and as a
+  renewed link (`TEAM_INVITATION_DAYS` in src/core/auth/auth.ts, given to
+  Better Auth's `invitationExpiresIn`; amended 2026-10-07, P2-15). Better
+  Auth's default of 48 hours meant that a link shared on a Friday was out
+  of date when a rider first opened it on the Monday. A week is longer
+  for a link to be found in somebody else's chat, and it still admits
+  only the address it was made for. A coach who shares one later still
+  makes a new one from the rider's page. The "Del" text, the links that
+  wait, and the invitations under Arbejdsrum all read the date from the
+  invitation itself, so nobody wonders.
 - **The text is in the coach's language.** A coach writing in English
   shares English; the join page itself follows the reader.
+
+## Amended 2026-10-07: a parent already on the team is linked
+
+The trade-off above — "an address already on the team is refused" — met
+its first case at once: a mother with two children on the team, one
+already joined. Backlog P2-16 lifts it for parents.
+
+- **On the rider's page**, "Tilføj forælder" asks who the parent is: a
+  new parent, as before, or someone already on the team. The second
+  lists the team's members by name, each with what they already are —
+  "forælder til Emma Holm", "træner", "rytter" — leaving out the rider
+  and anyone already linked to them, and makes a guardian row with that
+  member's account on it (`linkMemberAsGuardian`,
+  `src/modules/team/member-guardians.ts`). Only a coach may, and only a
+  member of this team can be picked; the service checks both, and RLS
+  and the guardians' trigger hold the rest as before.
+- **In "Inviter hele holdet"**, a parent's address that belongs to a
+  member is linked to that account instead of refused, through the same
+  function in the same transaction; no invitation is made for it, and
+  the result lists them apart: "Koblet til deres konto". A new rider's
+  address that belongs to a member is still refused — a rider joins with
+  an address of their own.
+- **Nothing changes for the rider's yes.** The link shows the parent
+  nothing until the rider has confirmed that person (ADR 0011), as for
+  every parent. A parent of two sees each child once that child has said
+  yes, and the rider-isolation test proves the second child stays hidden
+  until then.
+- No schema change and no new policy: a coach could always write a
+  guardian row with an account on it; what was missing was the way to
+  pick one.
+
+What it costs: the coach sees the team's members by name, which a coach
+already did under Settings → Arbejdsrum; no address leaves the server.
+Two members with the same name are told apart only by what they already
+are on the team.

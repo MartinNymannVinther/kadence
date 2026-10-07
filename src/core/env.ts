@@ -79,7 +79,9 @@ export const EnvSchema = z
     // rightmost entries are the ones your own infrastructure wrote and are
     // therefore the only ones worth trusting; everything to the left of
     // them was supplied by the caller. Coolify/Traefik is one hop, which
-    // is the default. See src/core/rate-limit.ts.
+    // is the default. At 0 no forwarded header is read at all, and every
+    // caller shares one bucket, because Next does not hand a route the
+    // connection's own address. See src/core/rate-limit.ts.
     TRUSTED_PROXY_HOPS: z.coerce.number().int().min(0).max(8).default(1),
     // Wahoo, Garmin and Polar (src/modules/devices). External services —
     // Wahoo and Garmin US companies, Polar a Finnish one: a rider chooses

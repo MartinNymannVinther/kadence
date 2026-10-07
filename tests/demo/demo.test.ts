@@ -13,9 +13,12 @@ import { getTeamSettings } from "@/modules/team/settings";
 import { getRiders } from "@/modules/team/riders";
 import { recentRides } from "@/modules/today/recent-rides";
 import { rideToRate } from "@/components/today/rpe-pick";
-import { addDaysIso, todayInCopenhagen } from "@/core/dates";
+import { addDaysIso, mondayOf, todayInCopenhagen } from "@/core/dates";
+import { listEvents } from "@/modules/training/events";
 import { listOwnTemplates } from "@/modules/training/templates";
+import { getWeekPlanDraft } from "@/modules/training/week-plan-draft";
 import { whoAmI } from "@/modules/team/access";
+import { listLinkableMembers } from "@/modules/team/member-guardians";
 import { getPilotWeeks } from "@/modules/insight/pilot-service";
 import { adminPool } from "../helpers/db";
 
@@ -84,7 +87,7 @@ describe("a demo workspace", () => {
     expect(seeded.rows[0].riders).toBe(6);
     expect(seeded.rows[0].sessions).toBeGreaterThan(150);
     expect(seeded.rows[0].done).toBeGreaterThan(100);
-    expect(seeded.rows[0].checkins).toBe(6 * 14);
+    expect(seeded.rows[0].checkins).toBe(6 * 42);
     expect(seeded.rows[0].dcu).toBe(3);
   });
 
@@ -130,6 +133,37 @@ describe("a demo workspace", () => {
     expect(placed.rows[0].n).toBeGreaterThan(0);
   });
 
+  it("says when and where the season opener starts, and who drives (backlog P2-03)", async () => {
+    const race = await admin.query(
+      `select start_time, meeting_place, transport_note from calendar_events
+        where org_id = $1 and kind = 'race' and start_time is not null`,
+      [orgId],
+    );
+    expect(race.rows).toHaveLength(1);
+    expect(race.rows[0]).toMatchObject({
+      start_time: "09:30:00",
+      meeting_place: "Hillerød Stadion",
+    });
+    expect(race.rows[0].transport_note).toMatch(/^Klubbens bus/);
+  });
+
+  it("holds a session the coach built in the planner itself, not the library (ADR 0059)", async () => {
+    const own = await admin.query(
+      `select tbi.sport, tbi.title, tbi.start_time, tbi.meeting_place
+         from training_block_items tbi
+         join training_blocks tb on tb.id = tbi.block_id
+        where tb.org_id = $1 and tb.name = 'Vinterblok, 4 uger' and tbi.template_id is null`,
+      [orgId],
+    );
+    expect(own.rows).toHaveLength(1);
+    expect(own.rows[0]).toMatchObject({
+      sport: "bike",
+      title: "Teknik og sving",
+      start_time: "16:00:00",
+    });
+    expect(own.rows[0].meeting_place.length).toBeGreaterThan(0);
+  });
+
   it("has the team's own drawn exercise, mixed into a programme laid into today's calendar (ADR 0067)", async () => {
     const exercises = await admin.query(`select name, pose from team_exercises where org_id = $1`, [
       orgId,
@@ -164,6 +198,23 @@ describe("a demo workspace", () => {
     expect(refsInSession.some((r) => r?.startsWith("team:"))).toBe(true);
   });
 
+  it("has the week after next half planned, as the coaches' shared draft (ADR 0043)", async () => {
+    const monday = addDaysIso(mondayOf(todayInCopenhagen()), 14);
+    const draft = await getWeekPlanDraft({ orgId, userId }, { monday, scope: "team" });
+    expect(draft?.by.me).toBe(true);
+    expect(draft?.payload.riderIds).toHaveLength(6);
+    expect(draft?.payload.items.map((i) => [i.day, i.startTime, i.meetingPlace])).toEqual([
+      [1, "17:30", "Klubhuset"],
+      [5, "09:00", "Klubhuset"],
+    ]);
+    const laidIn = await admin.query(
+      `select count(*)::int as n from planned_sessions
+        where org_id = $1 and on_date between $2 and $3`,
+      [orgId, monday, addDaysIso(monday, 6)],
+    );
+    expect(laidIn.rows[0].n).toBe(0);
+  });
+
   it("shows the coach the team's three numbers over the weeks it has planned (ADR 0066)", async () => {
     const weeks = (await getPilotWeeks({ orgId, userId }))!;
     expect(weeks).toHaveLength(8);
@@ -189,6 +240,17 @@ describe("a demo workspace", () => {
     const parent = accounts.find((a) => a.role === "parent")!;
     const me = await whoAmI(orgId, parent.userId);
     expect(me?.children).toMatchObject([{ name: "Emma Holm", confirmed: true }]);
+
+    // The parent's holiday in Emma's calendar, seen by the coach as a parent's (ADR 0069).
+    const ahead = addDaysIso(todayInCopenhagen(), 40);
+    const events = await listEvents({ orgId, userId }, { from: todayInCopenhagen(), to: ahead });
+    expect(events.filter((e) => e.fromParent)).toMatchObject([
+      { kind: "holiday", title: "Efterårsferie i sommerhuset", createdBy: parent.userId },
+    ]);
+    // The coach can link her to a second child from that rider's page (backlog P2-16).
+    const oskar = (await getRiders({ orgId, userId })).find((r) => r.name === "Oskar Lund")!;
+    const members = await listLinkableMembers({ orgId, userId }, oskar.id);
+    expect(members.find((m) => m.userId === parent.userId)?.parentOf).toEqual(["Emma Holm"]);
 
     const switched = await switchDemoRole({ userId, orgId }, "parent");
     expect(switched?.getSetCookie().join(";")).toMatch(/better-auth/);

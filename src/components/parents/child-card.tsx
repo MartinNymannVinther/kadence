@@ -6,9 +6,11 @@ import type { TimePlace } from "@/components/today/time-place";
 import { WeekGlance } from "@/components/today/week-glance";
 import { hoursText } from "@/components/training/duration";
 import type { ZoneDay } from "@/components/wellbeing/zone-days";
+import type { FamilyEvent } from "@/modules/training/family-kinds";
 import { ZoneStrip } from "@/components/wellbeing/zone-strip";
 import { ChildThreads, type ChildThread } from "./child-threads";
 import { ChildUpcoming } from "./child-upcoming";
+import { FamilyEvents } from "./family-events";
 
 export type ChildView = {
   riderId: string;
@@ -18,6 +20,8 @@ export type ChildView = {
   sessions: Array<CalendarCard & TimePlace>;
   events: CalendarEventCard[];
   upcoming: CalendarEventCard[];
+  /** What this parent has put into the child's calendar, from today on (ADR 0069). */
+  family: FamilyEvent[];
   threads: ChildThread[];
   load: LoadPoint[];
   zones: ZoneDay[];
@@ -25,10 +29,11 @@ export type ChildView = {
 
 /**
  * One child, for a parent (ADR 0011, docs/adr/0063): the week with when
- * and where each session starts, what is coming the next 30 days, how the
- * child is doing if the child shares it, the conversations about the
- * training, and a simple picture of the form. Read-only: a parent never
- * gets a pen. With one child the page's title is the child's name, and
+ * and where each session starts, what is coming the next 30 days, the
+ * family's own days in the child's calendar, how the child is doing if the
+ * child shares it, the conversations about the training, and a simple
+ * picture of the form. The training is read-only; the one pen a parent
+ * has is for the family's holidays, exams and other days (ADR 0069). With one child the page's title is the child's name, and
  * the parts are the page's own headings; with more, each child has one.
  */
 export function ChildCard({
@@ -93,6 +98,15 @@ export function ChildCard({
           <section className="flex flex-col gap-2">
             <H className={heading}>{t("upcoming")}</H>
             <ChildUpcoming events={child.upcoming} />
+          </section>
+          <section className="flex flex-col gap-2">
+            <H className={heading}>{t("family")}</H>
+            <FamilyEvents
+              riderId={child.riderId}
+              childName={child.name}
+              events={child.family}
+              today={today}
+            />
           </section>
         </>
       ) : (

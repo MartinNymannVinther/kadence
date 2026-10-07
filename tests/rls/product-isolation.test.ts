@@ -69,6 +69,11 @@ const TABLES: Array<{ table: string; row: (s: string) => Record<string, unknown>
     row: (s) => ({ name: `Øvelse ${s}`, group: "core", dose: {}, how: "x", pose: {} }),
   },
   { table: "team_programs", row: (s) => ({ name: `Program ${s}`, parts: [] }) },
+  // The week planner's shared draft, the coaches' (drizzle/0035); tests/rls/week-plan-drafts.
+  {
+    table: "week_plan_drafts",
+    row: () => ({ week_monday: DAY, payload: { riderIds: [], items: [] } }),
+  },
   {
     table: "activities",
     row: (s) => ({
@@ -276,6 +281,10 @@ describe("a row can only name rows of its own team (drizzle/0003)", () => {
       },
     ],
     ["a check-in for B's rider", { table: "checkins", rider_id: "rider_b", on_date: "2026-11-03" }],
+    [
+      "a week plan draft for B's rider",
+      { table: "week_plan_drafts", rider_id: "rider_b", week_monday: DAY, payload: {} },
+    ],
     [
       "an activity for B's rider",
       {

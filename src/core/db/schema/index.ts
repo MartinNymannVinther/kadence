@@ -9,6 +9,10 @@
 export * from "./foundation";
 export * from "./team";
 export * from "./training";
+export * from "./wellbeing";
+export * from "./calendar";
+export * from "./devices";
+export * from "./session-deletions";
 export * from "./upload";
 export * from "./results";
 export * from "./resets";
@@ -19,3 +23,4 @@ export * from "./championship";
 export * from "./community";
 export * from "./push";
 export * from "./exercises";
+export * from "./week-plan";

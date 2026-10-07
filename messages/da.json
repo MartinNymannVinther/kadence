@@ -522,7 +522,7 @@
       "leaveBody": "Du mister adgangen til arbejdsrummet og dine samtaler i det. En ejer eller administrator kan invitere dig igen.",
       "leaveConfirm": "Forlad",
       "inviteTitle": "Inviter en kollega",
-      "inviteBody": "Skriv adressen, og du får et link. Send det selv, sådan som I ellers taler sammen. Linket gælder kun den adresse og i 48 timer.",
+      "inviteBody": "Skriv adressen, og du får et link. Send det selv, sådan som I ellers taler sammen. Linket gælder kun den adresse og i en uge.",
       "invite": "Lav et link",
       "issued": "Link til {email}",
       "issuedHint": "Kopiér og send. Har personen ingen konto, oprettes den gennem linket; ellers logger de ind og siger ja.",
@@ -694,7 +694,7 @@
     "subprocessorsNote": "Hvem der kan se hvad, står i",
     "shareLinks": {
       "title": "Invitationer",
-      "body": "Et invitationslink gælder én adresse og udløber efter to døgn. Det er dig der sender det; vi sender ingen mails."
+      "body": "Et invitationslink gælder én adresse og udløber efter en uge. Det er dig der sender det; vi sender ingen mails."
     }
   },
   "join": {
@@ -780,7 +780,7 @@
       },
       "checkin": {
         "title": "Check-in og trivselszoner",
-        "body": "Rytteren svarer hver morgen på søvn, energi, humør, friske ben, ro på og smerter, og om man er syg. Svarene giver en zone for dagen: grøn, gul eller rød. Kadence ser på mønstret over tre uger, ikke på én dårlig dag. Zonerne bygger på Kolding Talents trivselsmodel fra Team Danmarks forældreguide: er rytteren i gul zone i en periode, tager rytter, forælder og træner en snak inden for 14 dage, og i rød zone skal fagfolk ind over. Træneren ser check-ins; forældrene kun, hvis rytteren deler dem. Kadence stiller aldrig en diagnose."
+        "body": "Rytteren svarer hver morgen på søvn, energi og smerter, og under \"Mere\" på, hvor godt man sov, humør, friske ben, ro på, og om man er syg. Svarer rytteren kun de tre første, står resten som ved sidste check-in. Svarene giver en zone for dagen: grøn, gul eller rød. Kadence ser på mønstret over tre uger, ikke på én dårlig dag. Zonerne bygger på Kolding Talents trivselsmodel fra Team Danmarks forældreguide: er rytteren i gul zone i en periode, tager rytter, forælder og træner en snak inden for 14 dage, og i rød zone skal fagfolk ind over. Træneren ser check-ins; forældrene kun, hvis rytteren deler dem. Kadence stiller aldrig en diagnose."
       },
       "reminders": {
         "title": "Påmindelser",
@@ -959,7 +959,14 @@
     "goals": "Dine mål",
     "records": "Dine rekorder",
     "upload": "Upload tur",
-    "uploadBody": "Filer fra cykelcomputeren, uret eller hometraineren. Turen lander på dagens pas af sig selv. Herunder kan du også sende ugens pas til din Garmin."
+    "uploadBody": "Filer fra cykelcomputeren, uret eller hometraineren. Turen lander på dagens pas af sig selv. Herunder kan du også sende ugens pas til din Garmin.",
+    "rides": {
+      "title": "Dine ture",
+      "body": "Dine seneste ture, den nyeste først. Farven viser, hvor tæt turen kom på passet.",
+      "empty": "Du har ingen ture endnu. Upload en fil herunder, så kommer den her.",
+      "km": "{km} km",
+      "more": "Vis flere"
+    }
   },
   "errors": {
     "too_many_reset_links": "Du har lavet mange links lige nu. Prøv igen om en time.",
@@ -972,6 +979,8 @@
     "alreadyDone": "Passet er allerede markeret som udført. Genindlæs siden.",
     "alreadyInvited": "Der er allerede et åbent link til den adresse. Kopiér det, der findes, eller træk det tilbage under Indstillinger → Arbejdsrum.",
     "alreadyMember": "Personen er allerede med på holdet.",
+    "alreadyParent": "Personen er allerede forælder til rytteren.",
+    "parentIsRider": "En rytter kan ikke være sin egen forælder.",
     "youthWeight": "Vægt er slået fra for ryttere under 19. En træner kan slå det til under Indstillinger → Holdet.",
     "not_connected": "Der er ingen forbindelse at afbryde. Genindlæs siden.",
     "not_a_rider": "Kun en rytter kan forbinde sin egen enhed.",
@@ -1133,6 +1142,8 @@
       "week": "Uge {n}",
       "riders": "{count, plural, one {# rytter} other {# ryttere}}",
       "empty": "Ingen pas i ugen.",
+      "until": "til og med {day}",
+      "transport": "Kørsel: {note}",
       "copied": "Ugen er kopieret som tekst. Sæt den ind i holdets chat.",
       "failed": "Ugen kunne ikke deles eller kopieres. Prøv igen."
     },
@@ -1186,6 +1197,10 @@
       "note": "Note",
       "deleteTitle": "Slet begivenheden?",
       "deleteBody": "Den forsvinder fra kalenderen.",
+      "whereHint": "Hvornår og hvor det starter, og hvem der kører. Alt kan stå tomt.",
+      "transport": "Kørsel",
+      "transportPlaceholder": "Fx Annes bil fra klubhuset kl. 7.30",
+      "fromParent": "En forælder har lagt den ind. Rytteren og trænerne kan rette og slette den.",
       "results": {
         "source": "Hentet fra Cykling Danmark.",
         "label": "Resultater",
@@ -1287,6 +1302,20 @@
       "defaultName": "Uge {n}",
       "submit": "Gem forløbet",
       "saved": "Forløbet er gemt i biblioteket."
+    },
+    "draft": {
+      "hint": "Kladden gemmes, mens du planlægger, så holdets andre trænere kan se og rette den.",
+      "saved": "Sidst gemt af {name} {when}",
+      "savedMine": "Sidst gemt af dig {when}",
+      "savedGone": "Sidst gemt {when}",
+      "today": "kl. {time}",
+      "onDay": "{date} kl. {time}",
+      "newer": "{name} gemte en nyere udgave af ugen {when}. Den ser du nu.",
+      "newerMine": "Du gemte en nyere udgave af ugen et andet sted {when}. Den ser du nu.",
+      "newerGone": "En nyere udgave af ugen blev gemt {when}. Den ser du nu.",
+      "lost": "Dine sidste ændringer her kom ikke med.",
+      "laidIn": "Ugen er lagt ind i kalenderen, så kladden er tom igen.",
+      "offline": "Kladden er gemt på denne enhed, men ikke delt endnu. Den bliver delt, når der er forbindelse igen."
     }
   },
   "library": {
@@ -1446,7 +1475,7 @@
       "formatTitle": "Sådan skriver du en linje",
       "formatRider": "Først rytteren: navn, fødselsår og e-mail, adskilt af komma.",
       "formatParents": "Så forældrene, hver efter et semikolon: navn og e-mail. Højst to pr. rytter.",
-      "formatEmail": "Den, der har en e-mail på listen, får sit eget link. Uden e-mail bliver personen oprettet uden link.",
+      "formatEmail": "Den, der har en e-mail på listen, får sit eget link. Uden e-mail bliver personen oprettet uden link. Er en forælder allerede med på holdet, bliver kontoen koblet på i stedet.",
       "formatSiblings": "Søskende kan have samme forælder. Skriv forælderen ens på begge linjer, så får forælderen ét link.",
       "sharedYear": "Fælles fødselsår",
       "sharedYearHint": "Bruges på de linjer, der ikke har deres eget år.",
@@ -1463,6 +1492,8 @@
       "doneBody": "Del linket med hver person. Teksten fortæller, hvad de skal gøre, og linket virker kun for deres egen adresse.",
       "noLinkTitle": "Uden link",
       "noLinkBody": "Der stod ingen e-mail ved dem her, så de har intet link endnu. Når du har adressen, kan du invitere dem fra rytterens side.",
+      "linkedTitle": "Koblet til deres konto",
+      "linkedBody": "De er allerede med på holdet, så de får ikke et nyt link. De ser barnet, når rytteren har sagt ja til dem.",
       "done": "Færdig",
       "whole": {
         "empty": "Skriv mindst én rytter.",
@@ -1486,7 +1517,7 @@
         "sameEmail": "{value} står også på linje {other}. Hver person skal have sin egen adresse.",
         "twiceOnLine": "{value} står to gange på linjen.",
         "onTeam": "{value} er allerede på holdet.",
-        "emailMember": "{value} hører til en, der allerede er med på holdet.",
+        "emailMember": "{value} hører til en, der allerede er med på holdet. En ny rytter skal have sin egen adresse.",
         "emailInvited": "{value} har allerede et link, der venter."
       }
     },
@@ -1565,7 +1596,17 @@
       "added": "Forælderen er tilføjet.",
       "issuedTitle": "Forælderen er tilføjet",
       "issuedBody": "Send linket til forælderen. Bagefter skal {rider} bekræfte forbindelsen under Indstillinger → Mig.",
-      "done": "Færdig"
+      "done": "Færdig",
+      "who": "Hvem er forælderen?",
+      "modeNew": "En ny forælder",
+      "modeMember": "En, der allerede er med på holdet",
+      "memberBody": "Har forælderen allerede en konto på holdet, fx som forælder til en søskende, kobler du kontoen på {rider} her. Der kommer intet nyt link. {rider} skal stadig bekræfte forbindelsen, før forælderen ser noget.",
+      "member": "Medlem af holdet",
+      "memberParentOf": "forælder til {names}",
+      "memberCoach": "træner",
+      "memberRider": "rytter",
+      "link": "Kobl på",
+      "linked": "{name} er koblet til {rider}. Forbindelsen gælder, når {rider} har bekræftet den."
     },
     "archive": {
       "button": "Arkivér rytteren",
@@ -1759,6 +1800,7 @@
     "priority": "{priority}-løb",
     "group": "Holdpas",
     "teamEvent": "Hele holdet",
+    "transport": "Kørsel: {note}",
     "zone": {
       "1": "restitution",
       "2": "udholdenhed",
@@ -2171,7 +2213,7 @@
   },
   "checkin": {
     "title": "Hvordan har du det?",
-    "body": "Et minut om morgenen. Svarene hjælper dig og din træner med at se, om træningen passer til resten af livet.",
+    "body": "Tre hurtige spørgsmål om morgenen. Svarene hjælper dig og din træner med at se, om træningen passer til resten af livet.",
     "sleep": "Hvor mange timer sov du i nat?",
     "hours": "timer",
     "less": "Mindre søvn",
@@ -2229,6 +2271,13 @@
     "illHint": "Fx feber, forkølelse eller ondt i maven.",
     "note": "Noget, du vil fortælle?",
     "noteHint": "Din træner kan læse det. Dine forældre kun, hvis du deler, hvordan du har det.",
+    "moreQuestions": {
+      "title": "Mere",
+      "today": "Hvor godt du sov, humør, ben, ro, om du er syg, og en note.",
+      "last": "Hvor godt du sov, humør, ben, ro, om du er syg, og en note. Svarene står som sidst, så ret kun det, der har ændret sig.",
+      "neutral": "Hvor godt du sov, humør, ben, ro, om du er syg, og en note. Svarene står i midten, så ret dem, hvis de ikke passer.",
+      "look": "Sidst var noget af det her svært. Tjek, om det stadig passer i dag."
+    },
     "save": "Gem",
     "cancel": "Fortryd",
     "saved": "Tak. Dagens check-in er gemt.",
@@ -2933,8 +2982,11 @@
     },
     "uploadInstead": "Uden en forbindelse kan du altid uploade dine ture som FIT-filer.",
     "uploadLink": "Upload tur",
-    "usTitle": "Wahoo og Garmin er amerikanske firmaer, Polar er finsk",
-    "usBody": "Kadence selv ligger i EU, og det gør Polar også. Når du forbinder, sender Wahoo, Garmin eller Polar dine ture til Kadence, og Kadence sender de pas, du vælger, til Wahoo eller Garmin. Det er dit valg, og du kan afbryde når som helst.",
+    "usTitle": {
+      "us": "{names} er {count, plural, one {et amerikansk firma} other {amerikanske firmaer}}",
+      "eu": "{names} er {count, plural, one {et finsk firma} other {finske firmaer}}"
+    },
+    "usBody": "Kadence selv ligger i EU{hasEu, select, yes {, og det gør {euNames} også} other {}}. Når du forbinder, sender {providers} dine ture til Kadence{hasPushers, select, yes {, og Kadence sender de pas, du vælger, til {pushers}} other {}}. Det er dit valg, og du kan afbryde når som helst.",
     "usLink": "Hvem der kan se hvad"
   },
   "parents": {
@@ -2952,6 +3004,7 @@
       "noForm": "Der er ikke gennemført træning nok til at vise formen endnu.",
       "upcoming": "De næste 30 dage",
       "noUpcoming": "Ingen løb, eksamener eller lejre den næste måned.",
+      "family": "Familiens kalender",
       "threads": "Samtaler om træningen",
       "noThreads": "Ingen kommentarer de seneste to uger.",
       "comments": "{count, plural, one {# kommentar} other {# kommentarer}}",
@@ -2960,6 +3013,24 @@
       "wellbeingNote": "Grøn er balance. Gul i en periode er et signal om at tage en snak sammen med træneren. Rød betyder, at der skal hjælp til. Spørg åbent, og lyt.",
       "noCheckins": "Ingen check-ins de seneste 14 dage.",
       "wellbeingHidden": "{name} deler ikke sine check-ins med dig. Det er rytterens eget valg, og det er helt i orden."
+    },
+    "family": {
+      "body": "Læg ferie, eksamen eller andet ind, som træneren skal kende til. {name} og trænerne ser det i kalenderen, og {name} kan slette det.",
+      "empty": "Du har ikke lagt noget ind endnu.",
+      "add": "Tilføj til kalenderen",
+      "edit": "Ret",
+      "editOne": "Ret {title}",
+      "range": "{from} – {to}",
+      "addTitle": "Tilføj til {name}s kalender",
+      "editTitle": "Ret i {name}s kalender",
+      "dialogBody": "Trænerne ser det og kan planlægge uden om det. {name} ser det også og kan slette det.",
+      "kind": "Hvad",
+      "titleLabel": "Titel",
+      "titlePlaceholder": "Fx efterårsferie i sommerhuset",
+      "from": "Fra",
+      "to": "Til og med",
+      "deleteTitle": "Slet fra kalenderen?",
+      "deleteBody": "Det forsvinder fra {name}s kalender og fra trænernes."
     },
     "guide": {
       "title": "Forældreguiden",
@@ -3065,7 +3136,8 @@
       "can": {
         "training": "Dit barns træning: pas, hvad der er udført, og timerne, når dit barn har bekræftet forbindelsen og deler træningen.",
         "wellbeing": "Hvordan dit barn har det (check-ins), men kun hvis dit barn vælger at dele det.",
-        "comments": "Samtalen om træningen: du kan læse med, men ikke skrive. Der findes ingen private beskeder mellem en voksen og en ung rytter."
+        "comments": "Samtalen om træningen: du kan læse med, men ikke skrive. Der findes ingen private beskeder mellem en voksen og en ung rytter.",
+        "calendar": "Lægge ferie, eksamen og andet ind i dit barns kalender, så træneren kan planlægge uden om det. Dit barn ser det og kan slette det."
       },
       "cannot": {
         "others": "Se andre ryttere på holdet.",
@@ -3297,11 +3369,11 @@
       "commentHint": "Når en anden skriver på et pas eller en tur, du kan se.",
       "commentHintCoach": "Når en rytter eller en forælder skriver på et pas eller en tur.",
       "plan": "Ændret plan",
-      "planHint": "Når en træner lægger eller ændrer et pas i de næste syv dage.",
+      "planHint": "Når en træner lægger, ændrer eller sletter et pas i de næste syv dage.",
       "week": "Ugens overblik",
       "weekHint": "Søndag aften, når ugen er gået.",
       "wellbeing": "Trivsel",
-      "wellbeingHint": "Når en rytter checker ind i rød zone, højst én gang om dagen pr. rytter. Den kommer også mellem 21.30 og 7 og nævner ikke rytterens navn."
+      "wellbeingHint": "Når en rytters check-in bliver rød, også hvis den rettes til rød senere på dagen. Den kommer også mellem 21.30 og 7 og nævner ikke rytterens navn."
     },
     "notify": {
       "checkinTitle": "Husk dagens check-in",
@@ -4793,6 +4865,81 @@
         "name": "Roning med elastik",
         "how": "Sæt en elastik fast i brysthøjde, fx i en dør. Stå med let bøjede knæ og træk albuerne bagud langs kroppen, til hænderne er ved brystet. Klem skulderbladene sammen og slip roligt.",
         "why": "Træner den øvre ryg, som holder skuldrene tilbage over styret."
+      },
+      "backSquat": {
+        "name": "Squat med stang",
+        "how": "Læg stangen på den øverste del af ryggen, ikke på nakken, og hold om den med begge hænder. Stå med fødderne i skulderbredde. Sæt dig ned og bagud med ret ryg og knæene på linje med fødderne, og rejs dig med fuld kraft. Start let, og læg først mere vægt på, når teknikken sidder. En træner ser med, når du løfter med stang.",
+        "why": "Træner de store muskler i ben og balder, som skubber pedalerne rundt, med en vægt, der kan øges lidt ad gangen."
+      },
+      "deadlift": {
+        "name": "Dødløft",
+        "how": "Stå med fødderne i hoftebredde og stangen over midten af foden. Bøj i hofter og knæ, og tag fat lige uden for knæene. Hold ryggen ret og stangen tæt ind til benene. Pres fødderne ned i gulvet og rejs dig, til du står rank, og sænk stangen samme vej. Start let. En træner ser med, når du løfter med stang.",
+        "why": "Træner baglår, balder og ryg til at arbejde sammen, som når du træder hårdt i pedalerne."
+      },
+      "barbellRdl": {
+        "name": "Rumænsk dødløft med stang",
+        "how": "Stå rank med stangen i strakte arme og let bøjede knæ. Skub hoften bagud og før stangen ned langs lårene, til du mærker et stræk bag på lårene. Hold ryggen ret hele vejen. Rejs dig ved at skubbe hoften frem. Start let. En træner ser med, når du løfter med stang.",
+        "why": "Træner baglår og balder og lærer dig at bøje i hoften med ret ryg."
+      },
+      "overheadPress": {
+        "name": "Skulderpres med stang",
+        "how": "Stå med fødderne i hoftebredde og stangen foran på skuldrene. Spænd i mave og balder, og pres stangen lige op over hovedet, til armene er strakte. Sænk den roligt til skuldrene igen. Svaj ikke i lænden. Start let. En træner ser med, når du løfter med stang.",
+        "why": "Styrker skuldre og arme, som bærer en del af din vægt på styret."
+      },
+      "benchPress": {
+        "name": "Bænkpres",
+        "how": "Lig på bænken med fødderne i gulvet og stangen i strakte arme over brystet. Sænk den roligt til midt på brystet med albuerne lidt ind mod kroppen, og pres den op igen. Hold ryggen og hovedet på bænken. Start let. En træner står ved hovedenden og kan tage stangen.",
+        "why": "Styrker bryst, skuldre og arme, som holder overkroppen stille, når du træder hårdt."
+      },
+      "dumbbellLunge": {
+        "name": "Udfald med håndvægte",
+        "how": "Hold en håndvægt i hver hånd med armene ned langs siden. Tag et langt skridt frem og sænk det bageste knæ mod gulvet. Hold overkroppen rank og det forreste knæ over foden. Skub dig tilbage med det forreste ben og skift ben. Start let.",
+        "why": "Træner ét ben ad gangen med ekstra vægt, ligesom når du træder."
+      },
+      "dumbbellStepUp": {
+        "name": "Step-up med håndvægte",
+        "how": "Hold en håndvægt i hver hånd og sæt den ene fod op på et trin eller en lav bænk, der står fast. Træd op, til benet er strakt, uden at skubbe fra med det andet ben. Gå roligt ned igen, og skift ben efter sættet. Start let.",
+        "why": "Bygger styrke i ét ben ad gangen i en bevægelse, der ligner et pedaltråd."
+      },
+      "dumbbellRow": {
+        "name": "Roning med håndvægt",
+        "how": "Sæt det ene knæ og hånden på samme side på en bænk, og hold ryggen lige. Hold håndvægten i den anden hånd med strakt arm. Træk albuen op langs kroppen, til håndvægten er ved hoften, og sænk den roligt. Skift side efter sættet. Start let.",
+        "why": "Træner den øvre ryg, som holder skuldrene tilbage over styret."
+      },
+      "kettlebellSwing": {
+        "name": "Kettlebell-sving",
+        "how": "Stå med fødderne lidt bredere end hofterne og kettlebellen i begge hænder. Skub hoften bagud med ret ryg, så kettlebellen svinger ind mellem benene. Skub så hoften kraftigt frem, så den svinger op til brysthøjde. Det er hoften, der løfter, ikke armene. Start let.",
+        "why": "Træner balder og baglår til at give kraft hurtigt, som når du sætter i gang ud af et sving."
+      },
+      "trxRow": {
+        "name": "TRX-roning",
+        "how": "Hold et håndtag i hver hånd og gå fødderne frem, til du hænger bagud med strakte arme. Hold kroppen lige som en planke. Træk brystet op mod håndtagene med albuerne tæt ind til kroppen, og sænk dig roligt. Jo mere du hælder, jo hårdere er det.",
+        "why": "Træner den øvre ryg og armene med din egen vægt."
+      },
+      "trxSplitSquat": {
+        "name": "TRX-udfald",
+        "how": "Stå med ryggen til TRX'en og sæt den bageste fod i stropperne. Sænk dig på det forreste ben, til låret er næsten vandret, med knæet over foden. Skub dig op igen med det forreste ben, og hold overkroppen rank. Skift ben efter sættet.",
+        "why": "Giver ét ben ad gangen et hårdt arbejde, og balancen får noget at lave."
+      },
+      "pullUp": {
+        "name": "Kropshævning",
+        "how": "Hæng i stangen med strakte arme og hænderne lidt bredere end skuldrene. Træk dig op, til hagen er over stangen, og sænk dig roligt helt ned igen. Sving ikke med benene. Kan du ikke tage dem alle, så brug en elastik.",
+        "why": "Styrker ryg og arme, som holder dig stabil, når du trækker i styret op ad bakke."
+      },
+      "bandPullUp": {
+        "name": "Kropshævning med elastik",
+        "how": "Læg en kraftig elastik over stangen og stå med fødderne i løkken. Hæng med strakte arme, træk dig op, til hagen er over stangen, og sænk dig roligt. Elastikken tager en del af vægten. Tag en tyndere elastik, når det bliver let.",
+        "why": "Den samme øvelse som kropshævning, med hjælp, så du kan lave hele bevægelsen."
+      },
+      "monsterWalk": {
+        "name": "Monstergang med elastik",
+        "how": "Sæt en elastik om benene lige over anklerne. Stå med fødderne i hoftebredde og bøj let i knæ og hofter. Gå små skridt til siden uden at lade knæene falde ind, og gå samme vej tilbage. Hold overkroppen rolig.",
+        "why": "Træner musklerne på siden af hoften, som holder knæet på linje over pedalen."
+      },
+      "bandExternalRotation": {
+        "name": "Udadrotation med elastik",
+        "how": "Sæt en let elastik fast i albuehøjde, fx i ribben eller en dør, og stå med siden til. Hold den i den hånd, der er længst væk, med albuen ind til siden og underarmen ind foran maven. Før hånden ud til siden, mens albuen bliver ved kroppen, og før den roligt tilbage. Skift side efter sættet.",
+        "why": "Giver skuldrene en modvægt til den foroverbøjede stilling på cyklen."
       }
     },
     "programs": {
@@ -4811,6 +4958,18 @@
       "strengthNoMachines": {
         "name": "Styrke uden maskiner",
         "description": "Ben, ryg og arme med kropsvægt, en kettlebell og en elastik. Varm op med 8 minutter på cyklen først. DCU anbefaler mindst 48 timer mellem to styrkepas og teknik før belastning."
+      },
+      "strengthRoom": {
+        "name": "Styrke i rummet",
+        "description": "Helkrop med stang og håndvægte i klubbens styrkerum. Varm op med 8 minutter på cyklen og 20 squat med let stang. Teknik før vægt, og som U17 løfter du aldrig til udmattelse. Hold mindst 48 timer mellem to styrkepas, og stræk ud bagefter."
+      },
+      "trxBodyweight": {
+        "name": "TRX og kropsvægt",
+        "description": "Hele kroppen med TRX, en bar til kropshævninger og din egen vægt. Varm op med 8 minutter på cyklen og 20 squat. Jo mere du hælder i TRX'en, jo hårdere er det. Hold mindst 48 timer mellem to styrkepas."
+      },
+      "bandsKettlebell": {
+        "name": "Elastikker og kettlebell",
+        "description": "Hofte, ben og skuldre med elastikker og en kettlebell. Varm op med 8 minutter på cyklen og 20 squat. Start let, og lad hoften gøre arbejdet i kettlebell-svinget. Hold mindst 48 timer mellem to styrkepas."
       }
     },
     "library": {
@@ -4929,10 +5088,17 @@
         "step": "Trin",
         "band": "Elastik",
         "ball": "Bold",
-        "kettlebell": "Kettlebell"
+        "kettlebell": "Kettlebell",
+        "barbell": "Vægtstang",
+        "dumbbell": "Håndvægt",
+        "trx": "TRX",
+        "pullupBar": "Bar til kropshævninger"
       },
       "propFrom": "{name}, den ene ende",
       "propTo": "{name}, den anden ende",
+      "propAnchor": "{name}, ophænget",
+      "propHandleA": "{name}, forreste håndtag",
+      "propHandleB": "{name}, bagerste håndtag",
       "removeProp": "Fjern {name}",
       "maxProps": "En tegning kan have seks ting.",
       "preview": "Sådan ser kortet ud",
@@ -4945,6 +5111,8 @@
       "repsCount": "Gange",
       "perSide": "Pr. side",
       "sets": "Sæt",
+      "load": "Belastning",
+      "loadNone": "Ikke angivet",
       "save": "Gem øvelsen",
       "created": "Øvelsen er gemt i holdets bibliotek.",
       "saved": "Ændringerne er gemt.",
@@ -5020,14 +5188,24 @@
       "step": "Trin",
       "band": "Elastik",
       "kettlebell": "Kettlebell",
-      "ball": "Bold"
+      "ball": "Bold",
+      "barbell": "Vægtstang",
+      "dumbbell": "Håndvægte",
+      "trx": "TRX",
+      "pullupBar": "Bar til kropshævninger"
     },
     "dose": {
       "seconds": "{seconds} sek",
       "minutes": "{minutes} min",
       "times": "{reps, plural, one {# gang} other {# gange}}",
       "perSide": "{amount} pr. side",
-      "sets": "{sets} × {amount}"
+      "sets": "{sets} × {amount}",
+      "withLoad": "{amount} · {load}",
+      "loads": {
+        "light": "let",
+        "moderate": "moderat",
+        "heavy": "tung"
+      }
     },
     "card": {
       "done": "Færdig"

@@ -1,9 +1,10 @@
-import { and, asc, eq, gte, inArray, isNull, lte, or } from "drizzle-orm";
+import { and, asc, eq, getTableColumns, gte, inArray, isNull, lte, or, sql } from "drizzle-orm";
 import { z } from "zod";
 import { Refused } from "@/core/action";
-import { calendarEvents, type CalendarEventRow } from "@/core/db/schema";
+import { calendarEvents, guardians, type CalendarEventRow } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
 import { requireCoach, requireWriteFor } from "@/modules/team/access";
+import { TimePlaceFields, TransportNote } from "./time-place";
 import { id, isoDate } from "./vocabulary";
 
 /**
@@ -11,6 +12,10 @@ import { id, isoDate } from "./vocabulary";
  * camps, holidays, illness (ADR 0013). A team event has no rider and is
  * the coaches' to write; a rider's own — an exam, a week ill — is the
  * rider's or a coach's.
+ *
+ * A race or a camp may say when and where it starts and who drives
+ * (docs/backlog.md P2-03). As on a session (ADR 0058), a change that does
+ * not mention them leaves them as they were; `null` and "" clear them.
  */
 
 export const EVENT_KINDS = ["race", "exam", "school", "camp", "holiday", "ill", "other"] as const;
@@ -24,14 +29,19 @@ export const EventInput = z
     endsOn: isoDate,
     priority: z.enum(["A", "B", "C"]).nullable().default(null),
     note: z.string().trim().max(2000).default(""),
+    ...TimePlaceFields,
+    transportNote: TransportNote.optional(),
   })
   .refine((e) => e.endsOn >= e.startsOn, { path: ["endsOn"] });
 export type EventInputT = z.infer<typeof EventInput>;
 
+/** An event as the calendar lists it: whether one of the rider's parents put it in (ADR 0069). */
+export type ListedEvent = CalendarEventRow & { fromParent: boolean };
+
 export async function listEvents(
   ctx: OrgContext,
   range: { from: string; to: string; riderIds?: string[] },
-): Promise<CalendarEventRow[]> {
+): Promise<ListedEvent[]> {
   return withOrgContext(ctx, (tx) => {
     const riderScope = range.riderIds
       ? or(
@@ -39,8 +49,13 @@ export async function listEvents(
           inArray(calendarEvents.riderId, range.riderIds.length ? range.riderIds : [""]),
         )
       : undefined;
+    // Read under the caller's RLS: a coach and the rider see the rider's parents, a parent their own link.
+    const fromParent = sql<boolean>`exists (
+      select 1 from ${guardians}
+      where ${guardians.riderId} = ${calendarEvents.riderId}
+        and ${guardians.userId} = ${calendarEvents.createdBy})`;
     return tx
-      .select()
+      .select({ ...getTableColumns(calendarEvents), fromParent })
       .from(calendarEvents)
       .where(
         and(

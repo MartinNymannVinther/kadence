@@ -12,12 +12,14 @@ import { hasAnyRide, recentRides } from "@/modules/today/recent-rides";
 import { listGuardians } from "@/modules/team/guardians";
 import { getRider } from "@/modules/team/riders";
 import { listSessions } from "@/modules/training/sessions";
-import { getCheckin } from "@/modules/wellbeing/checkins";
+import { getCheckin, getLastCheckin } from "@/modules/wellbeing/checkins";
+import { checkinStart } from "@/modules/wellbeing/prefill";
 
 /**
  * What a rider's Today shows (docs/adr/0063): today's and tomorrow's
- * sessions, today's check-in, the ride to say "how hard" about, and what
- * the first steps need to know. The rest of the rider's picture is on Mig.
+ * sessions, today's check-in — and, for a new one, the answers behind
+ * "Mere" from the last (backlog P2-11) — the ride to say "how hard" about,
+ * and what the first steps need to know. The rest of the rider's picture is on Mig.
  */
 export async function riderDay(
   ctx: OrgContext,
@@ -26,9 +28,10 @@ export async function riderDay(
   words: { today: string; yesterday: string; locale: string },
 ) {
   const tomorrow = addDaysIso(today, 1);
-  const [sessions, checkin, rides, rider, guardians, links] = await Promise.all([
+  const [sessions, checkin, last, rides, rider, guardians, links] = await Promise.all([
     listSessions(ctx, { from: today, to: tomorrow, riderIds: [riderId] }),
     getCheckin(ctx, riderId, today),
+    getLastCheckin(ctx, riderId, today),
     recentRides(ctx, riderId, { from: addDaysIso(today, -(RPE_WINDOW_DAYS - 1)), to: today }),
     getRider(ctx, riderId),
     listGuardians(ctx, riderId),
@@ -72,6 +75,10 @@ export async function riderDay(
     today: cards.filter((s) => s.onDate === today),
     tomorrow: cards.filter((s) => s.onDate === tomorrow),
     checkin: checkinValues(checkin),
+    checkinStart: checkinStart(
+      last ? { onDate: last.onDate, answers: checkinValues(last)! } : null,
+      today,
+    ),
     toRate,
     checklist,
   };

@@ -51,10 +51,13 @@ export default async function RegisterPage({
           <CardDescription>{t("invitationInvalidBody")}</CardDescription>
         </CardHeader>
         <CardContent className="flex gap-4 text-sm">
-          <Link href="/register" className="font-medium underline-offset-4 hover:underline">
+          <Link
+            href="/register"
+            className="focus-ring font-medium underline-offset-4 hover:underline"
+          >
             {t("applyLink")}
           </Link>
-          <Link href="/login" className="font-medium underline-offset-4 hover:underline">
+          <Link href="/login" className="focus-ring font-medium underline-offset-4 hover:underline">
             {t("loginLink")}
           </Link>
         </CardContent>

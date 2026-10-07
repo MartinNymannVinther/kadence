@@ -49,7 +49,7 @@ export function toActivityCard(a: CalendarActivity): CalendarActivityCard {
   };
 }
 
-export function toEventCard(e: CalendarEventRow): CalendarEventCard {
+export function toEventCard(e: CalendarEventRow & { fromParent?: boolean }): CalendarEventCard {
   return {
     id: e.id,
     riderId: e.riderId,
@@ -59,7 +59,11 @@ export function toEventCard(e: CalendarEventRow): CalendarEventCard {
     endsOn: e.endsOn,
     priority: e.priority,
     note: e.note,
+    startTime: clockOf(e.startTime),
+    meetingPlace: e.meetingPlace,
+    transportNote: e.transportNote,
     source: e.source,
+    fromParent: e.fromParent ?? false,
   };
 }
 

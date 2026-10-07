@@ -1,6 +1,6 @@
 # ADR 0067: Exercises and programmes, drawn
 
-Status: accepted · Date: 2026-10-06 · Builds on 0014, 0015, 0032, 0047, 0054 · docs/plan-ovelser-og-programmer.md
+Status: accepted · Date: 2026-10-06 · Amended 2026-10-07 (equipment) · Builds on 0014, 0015, 0032, 0047, 0054 · docs/plan-ovelser-og-programmer.md
 
 ## Context
 
@@ -120,3 +120,69 @@ coach present at all.
   request time. A test (`tests/exercises/figure.test.ts`) holds the two
   sides to the same numbers; a theme change that forgets this file keeps
   the download looking as it did.
+
+## Amended 2026-10-07: equipment
+
+Martin asked on 7 October 2026 for exercises and programmes that use what
+his club's strength room has: a rack with a barbell, dumbbells,
+kettlebells, mats, TRX straps, a pull-up bar and elastic bands (backlog
+Ø-06).
+
+- **Equipment.** `EQUIPMENT` gains `barbell`, `dumbbell`, `trx` and
+  `pullupBar` after the seven it had, so every stored list still reads.
+  The database's check on `team_exercises.equipment` enumerated the seven,
+  so drizzle/0033 drops it and adds it again with the eleven; every row
+  already stored passes the new one. `tests/exercises/team-schema` holds
+  the two lists to one, as before.
+- **Props.** The pose gains four kinds, named as the equipment they tick
+  in the editor: a `barbell` (a bar with a plate at each end, its middle
+  at `at`, level unless `angle` turns it), a `dumbbell` (at its handle,
+  `angle` optional), `trx` straps (an `anchor` and the near and far
+  handle, the far strap fainter as the far limbs are) and a `pullupBar`
+  (level, `width` wide, a bracket up from each end). They are drawn in
+  `figure-props-strength.ts` with the props' own tone and strokes, lines
+  and circles only, so the bounds the editor and the tests measure by
+  stay exact. In the editor (`pose-props.ts`) a barbell, a set of straps
+  and a bar come once each and dumbbells in pairs; the straps are moved
+  by their anchor and each handle, the rest by one point that slides
+  along the box's edge rather than out of it.
+- **The barbell is drawn across the figure, also from the side.** Seen
+  truly from the side, the bar points at the reader and only a plate
+  shows; drawn that way it read as a wheel at card size. Drawn across, as
+  a gym's own pictograms draw it, it reads as a barbell at once, so that
+  is the one drawing. The overhead press and the pull-ups are drawn from
+  the front, where both arms show.
+- **Load in words.** A dose may carry `load`: `light`, `moderate` or
+  `heavy` — "let", "moderat", "tung" — never kilos, as DCU's programmes
+  and ATK put it: technique before load, and a weight the rider picks for
+  the day. The card and the download show it after the dose
+  ("3 × 10 · moderat"), a programme laid in the calendar writes it in the
+  strength session's load field, the open page's link carries it as the
+  dose code's last letter (`r12x3m`, older links read as before), and a
+  coach can set it on the team's own exercise. Without it a dose reads as
+  it always did.
+- **Content.** Fifteen exercises (`builtin/strength.ts`,
+  `strength-weights.ts`, `strength-straps.ts`) and three programmes
+  (`builtin/programs-strength.ts`): "Styrke i rummet" with a barbell and
+  dumbbells in DCU's frame — 8 minutes on the bike and 1 × 20 squats with
+  a light bar, 3 × 12 not to exhaustion as DCU's start-up, stretches
+  after, 48 hours between sessions — "TRX og kropsvægt" and "Elastikker
+  og kettlebell". Every lift with a free weight says "start let", every
+  barbell lift has a coach watching, and their sources are ATK 2.0
+  (pp. 56–57), DCU's programmes and the youth resistance-training
+  consensus (Lloyd et al. 2014; Faigenbaum et al. 2009, NSCA), with
+  Kadence's own said plainly where it is.
+
+Trade-offs accepted:
+
+- **A barbell drawn across a side-on figure is not what the eye would
+  see.** It is what a gym's signs draw, and it reads; the true view did
+  not.
+- **"Let", "moderat" and "tung" are vaguer than a percentage of a
+  maximum.** That is on purpose for riders who do not test a maximum, and
+  it matches how DCU's programmes speak of "lav belastning"; a coach who
+  wants kilos writes them in the session's own load field.
+- **The minutes estimate still rests 30 seconds between sets** (`PACE`),
+  where DCU rests about three minutes between heavy sets. A strength-room
+  programme in the calendar is placed shorter than it takes; the coach
+  changes the session's minutes, as with any estimate.

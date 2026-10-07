@@ -232,6 +232,62 @@
       "when": 1791317875004,
       "tag": "0032_team_exercises",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1791369512974,
+      "tag": "0033_equipment_strength_room",
+      "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1791368727170,
+      "tag": "0034_users_addresses",
+      "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "7",
+      "when": 1791368681990,
+      "tag": "0035_week_plan_drafts",
+      "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1791368808987,
+      "tag": "0036_checkin_red_since",
+      "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "7",
+      "when": 1791369880323,
+      "tag": "0037_plan_change_sender",
+      "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "7",
+      "when": 1791370839348,
+      "tag": "0038_push_runs",
+      "breakpoints": true
+    },
+    {
+      "idx": 39,
+      "version": "7",
+      "when": 1791368883370,
+      "tag": "0039_event_time_place",
+      "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "7",
+      "when": 1791369559488,
+      "tag": "0040_family_events",
+      "breakpoints": true
     }
   ]
 }

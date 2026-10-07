@@ -1,6 +1,9 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { Client, Pool } from "pg";
-import { adminPool, appClient, asApp, expectSqlError } from "../helpers/db";
+import { runReminders } from "@/modules/push/job";
+import type { PushConfig } from "@/modules/push/send";
+import { newVapidKeyPair, parseVapidKeys } from "@/modules/push/vapid";
+import { adminPool, appClient, asApp, asAppCommit, expectSqlError } from "../helpers/db";
 import { insertSql, seedPerson } from "../helpers/rows";
 
 /**
@@ -9,6 +12,10 @@ import { insertSql, seedPerson } from "../helpers/rows";
  * could do, and no more. Not a teammate, not a parent, not the coach, and
  * not another team reads or changes them; the job's one door across
  * people says which subscriptions exist and whose, never the address.
+ * What the run has told a browser (`push_runs`, drizzle/0038) is its
+ * owner's alone too, and leaves the audit trail out: a reminder writes no
+ * audit row, while turning reminders on, changing them and turning them
+ * off still do.
  */
 
 const ORG = "org_push_iso";
@@ -187,5 +194,104 @@ describe("the audit trail", () => {
       expect(row.after_data).not.toHaveProperty("endpoint");
       expect(row.after_data).toHaveProperty("user_id", RIDER.userId);
     }
+  });
+});
+
+/** The push services, stood in for: every push answered 201, none sent anywhere. */
+function standIn(): PushConfig {
+  const pair = newVapidKeyPair();
+  return {
+    keys: parseVapidKeys(pair.publicKey, pair.privateKey),
+    subject: "mailto:test@example.dk",
+    fetch: (async () => new Response(null, { status: 201 })) as unknown as typeof fetch,
+  };
+}
+
+const pushAudit = () =>
+  admin
+    .query(
+      `select count(*)::int as n from audit_log
+       where entity_type = 'push_runs'
+          or (entity_type = 'push_subscriptions' and entity_id like 'pi_%')`,
+    )
+    .then((r) => r.rows[0].n as number);
+
+describe("what the run has told a browser", () => {
+  it("is written by a reminder without a row in the audit trail", async () => {
+    const before = await pushAudit();
+    // Tuesday 6 October at 19.05 in Copenhagen: the rider has not checked in.
+    const report = await runReminders(standIn(), new Date("2026-10-06T17:05:00Z"));
+    expect(report.sent).toBeGreaterThanOrEqual(1);
+    const told = await admin.query(
+      "select checkin_reminded_on::text as day from push_runs where subscription_id = 'pi_rider'",
+    );
+    expect(told.rows).toEqual([{ day: "2026-10-06" }]);
+    expect(await pushAudit()).toBe(before);
+  });
+
+  it("is its owner's alone, like the subscription", async () => {
+    const runs = (who: typeof COACH) =>
+      asApp(app, who, (c) =>
+        c.query("select subscription_id from push_runs where subscription_id like 'pi_%'"),
+      ).then((r) => r.rows.map((row) => row.subscription_id as string));
+    expect(await runs(RIDER)).toEqual(["pi_rider"]);
+    expect(await runs(COACH)).toEqual(["pi_coach"]);
+    expect(await runs({ orgId: OTHER_ORG, userId: RIDER.userId })).toEqual([]);
+    const reached = await asApp(app, COACH, (c) =>
+      c.query("update push_runs set week_told_on = null where subscription_id = 'pi_rider'"),
+    );
+    expect(reached.rowCount).toBe(0);
+  });
+
+  it("is never written for someone else's browser, nor removed except with it", async () => {
+    await admin.query("delete from push_runs where subscription_id = 'pi_parent'");
+    const forged = insertSql("push_runs", {
+      subscription_id: "pi_parent",
+      org_id: ORG,
+      user_id: COACH.userId,
+      told_up_to: new Date(),
+    });
+    expect(
+      await expectSqlError(asApp(app, COACH, (c) => c.query(forged.text, forged.values))),
+    ).toBe("42501");
+    expect(
+      await expectSqlError(
+        asApp(app, PARENT, (c) =>
+          c.query("delete from push_runs where subscription_id = 'pi_parent'"),
+        ),
+      ),
+    ).toBe("42501");
+  });
+});
+
+describe("turning reminders on, changing them and turning them off", () => {
+  it("is still in the audit trail, and the run's marks go with the subscription", async () => {
+    const before = await pushAudit();
+    const made = insertSql("push_subscriptions", {
+      id: "pi_rider_new",
+      org_id: ORG,
+      user_id: RIDER.userId,
+      endpoint: endpoint("pi_rider_new"),
+    });
+    await asAppCommit(app, RIDER, (c) => c.query(made.text, made.values));
+    await asAppCommit(app, RIDER, (c) =>
+      c.query("update push_subscriptions set kinds = '{checkin}' where id = 'pi_rider_new'"),
+    );
+    await asAppCommit(app, RIDER, (c) =>
+      c.query("delete from push_subscriptions where id = 'pi_rider'"),
+    );
+    const rows = await admin.query(
+      `select action from audit_log
+       where entity_type = 'push_subscriptions' and entity_id in ('pi_rider', 'pi_rider_new')
+       order by created_at desc, id desc limit 3`,
+    );
+    expect(rows.rows.map((r) => r.action).sort()).toEqual([
+      "push_subscriptions.delete",
+      "push_subscriptions.insert",
+      "push_subscriptions.update",
+    ]);
+    expect(await pushAudit()).toBe(before + 3);
+    const left = await admin.query("select 1 from push_runs where subscription_id = 'pi_rider'");
+    expect(left.rowCount).toBe(0);
   });
 });

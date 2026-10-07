@@ -1,6 +1,6 @@
 # ADR 0057: Focus for the first winter — five parts behind installation flags
 
-Status: accepted, amended the same day · Date: 2026-10-06 · Amends ADR 0045, 0047, 0051, 0052 and 0054
+Status: accepted, amended the same day and on 7 October (the proxy answers 404) · Date: 2026-10-06 · Amends ADR 0045, 0047, 0051, 0052 and 0054
 
 ## Context
 
@@ -134,3 +134,40 @@ availability still waits for a sports dietitian (backlog A-01), and
 What changes in the trade-offs above: the demo shows every part again
 (ADR 0054 holds by default), and a new installation sees all of Kadence
 unless its owner parks something.
+
+## Amended 7 October: a parked page answers a real 404
+
+"`/coaches` answers 404" above was true of the page and not of the
+response. Under `(app)/(narrow)` a `loading.tsx` wraps every page in a
+Suspense boundary, and the response starts streaming the moment that
+fallback renders — before the page's `notFound()` runs. A stream that
+has started is a 200 whatever is thrown afterwards; Next writes the
+not-found page into it with a `noindex` tag and calls it a soft 404
+(node_modules/next/dist/docs, `loading.md`, "Status codes"). Search
+engines were kept out; monitoring and anyone reading the status were
+told the page was there. Backlog P2-09.
+
+The docs name the fix: check before the response streams, in the proxy,
+and rewrite to a not-found route. `src/proxy.ts` now asks
+`parkedPath(pathname, features())` (`src/core/features.ts`) first, and
+for a parked part's page — `/coaches` and under it, `/club`,
+`/calculators/energy`, `/guides/food`, each with or without `/en` —
+rewrites the request to `/<locale>/parked/<path>`, which no page
+matches, so the catch-all in `[locale]/[...rest]` renders the localized
+not-found page with a real 404. The same page a visitor saw before, the
+right status, no session read, and no login redirect for a page that is
+not there. A per-route layout would not have done it: it sits under the
+same loading boundary. `notFoundWithout` stays in every parked page as
+the second lock, and its tests stand.
+
+Two things pin it: `tests/core/features.test.ts` for the decision —
+each parked path and everything under it, its own flag only, a segment
+and not a prefix — and `tests/core/proxy.test.ts` for where the proxy
+sends the request, with next-intl's middleware stood in for because its
+ESM build does not load outside Next's bundler. The status itself is the
+built app's and is checked by hand: `COACHES_ROOM=off CLUB_CHAMPIONSHIP=off
+CALC_ENERGY=off GUIDE_FOOD=off pnpm start -p 3134` after `pnpm build`,
+then `curl -sI http://localhost:3134/club` and the three others answer
+`HTTP/1.1 404`; with the flags on, `/club` answers 307 to `/login` and
+`/calculators/energy` 200. Rulle's world has no path and nothing changes
+for it.

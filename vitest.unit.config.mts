@@ -29,12 +29,17 @@ export default defineConfig({
       // The list "Inviter hele holdet" reads and who its links go to; the service needs the database.
       "tests/team/{bulk-parse,invitation-recipients}.test.ts",
       // Exercises and programmes: the contract, the figures, Kadence's own and their words,
-      // the URL composition, the downloaded file, the pose editor, the programme builder's
+      // the URL composition, the downloaded file, the pose editor and its props, the programme builder's
       // draft and a programme as a session. The team's own, laying a programme in and the
       // download route need the database.
-      "tests/exercises/{builtin,contract,figure,view,compose,download-html,html-escape,library-paths,pose-edit,program-draft,program-session}.test.ts",
+      "tests/exercises/{builtin,contract,figure,view,compose,download-html,html-escape,library-paths,pose-edit,pose-props,program-draft,program-session}.test.ts",
       // The menu and the settings tabs by role and group (docs/adr/0068).
       "tests/core/{nav-items,settings-items}.test.ts",
+      // Which week plan the planner shows when this device and the shared draft differ
+      // (docs/adr/0043, amended 2026-10-07); the draft's service and policies need the database.
+      "tests/training/week-draft-merge.test.ts",
+      // The shorter check-in's starting answers (backlog P2-11; docs/adr/0021, amended 2026-10-07).
+      "tests/wellbeing/checkin-prefill.test.ts",
     ],
   },
 });

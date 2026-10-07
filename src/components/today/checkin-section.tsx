@@ -2,6 +2,7 @@ import { useTranslations } from "next-intl";
 import { CheckinCard, type CheckinValues } from "@/components/wellbeing/checkin-card";
 import type { ZoneDay } from "@/components/wellbeing/zone-days";
 import { ZoneStrip } from "@/components/wellbeing/zone-strip";
+import type { CheckinStart } from "@/modules/wellbeing/prefill";
 
 /**
  * The rider's check-in on today's page: the card, and — where it is asked
@@ -12,11 +13,14 @@ export function CheckinSection({
   riderId,
   today,
   initial,
+  start,
   days,
 }: {
   riderId: string;
   today: string;
   initial: CheckinValues | null;
+  /** Where a new check-in starts: the three first questions blank, the rest from the last. */
+  start: CheckinStart;
   /** The last two weeks under the card; Today leaves them to Mig. */
   days?: ZoneDay[];
 }) {
@@ -26,7 +30,7 @@ export function CheckinSection({
       <h2 id="rider-checkin" className="sr-only">
         {t("title")}
       </h2>
-      <CheckinCard riderId={riderId} today={today} initial={initial} />
+      <CheckinCard riderId={riderId} today={today} initial={initial} start={start} />
       {days && (
         <div className="flex flex-col gap-2">
           <h3 className="text-sm font-semibold">{t("stripTitle")}</h3>

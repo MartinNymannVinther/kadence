@@ -1,7 +1,8 @@
-import { and, asc, eq, gte, inArray, lte } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, lt, lte, sql } from "drizzle-orm";
 import { z } from "zod";
 import { checkins, type CheckinRow } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
+import { isRedCheckin } from "@/modules/load/wellbeing";
 import { requireWriteFor } from "@/modules/team/access";
 
 /**
@@ -31,14 +32,26 @@ export const CheckinInput = z.object({
 });
 export type CheckinInputT = z.infer<typeof CheckinInput>;
 
+/**
+ * Saves the day's check-in, or changes it. `red_since` says when it last
+ * turned red (`isRedCheckin`): set when it becomes red, kept as it was
+ * while it stays red, cleared when it is put right. A coach's wellbeing
+ * reminder counts from it (docs/adr/0060), so saving a red check-in again
+ * is not news, and one changed from green to red later in the day is.
+ */
 export async function saveCheckin(ctx: OrgContext, input: CheckinInputT): Promise<void> {
   await withOrgContext(ctx, async (tx) => {
     await requireWriteFor(tx, ctx, input.riderId);
     const { riderId, onDate, ...values } = input;
+    const red = isRedCheckin(values);
     await tx
       .insert(checkins)
-      .values({ orgId: ctx.orgId, riderId, onDate, ...values })
-      .onConflictDoUpdate({ target: [checkins.riderId, checkins.onDate], set: values });
+      .values({ orgId: ctx.orgId, riderId, onDate, ...values, redSince: red ? sql`now()` : null })
+      .onConflictDoUpdate({
+        target: [checkins.riderId, checkins.onDate],
+        // On conflict, the column names the row as it was before this save.
+        set: { ...values, redSince: red ? sql`coalesce(${checkins.redSince}, now())` : null },
+      });
   });
 }
 
@@ -68,6 +81,26 @@ export async function getCheckin(
       .select()
       .from(checkins)
       .where(and(eq(checkins.riderId, riderId), eq(checkins.onDate, onDate)));
+    return row ?? null;
+  });
+}
+
+/**
+ * The rider's last check-in before a day: what the shorter check-in starts
+ * the answers behind "Mere" from (src/modules/wellbeing/prefill.ts).
+ */
+export async function getLastCheckin(
+  ctx: OrgContext,
+  riderId: string,
+  before: string,
+): Promise<CheckinRow | null> {
+  return withOrgContext(ctx, async (tx) => {
+    const [row] = await tx
+      .select()
+      .from(checkins)
+      .where(and(eq(checkins.riderId, riderId), lt(checkins.onDate, before)))
+      .orderBy(desc(checkins.onDate))
+      .limit(1);
     return row ?? null;
   });
 }

@@ -50,6 +50,17 @@ export const TEMPLATES: Array<{ name: Text; text: string }> = [
 ];
 
 /**
+ * One session the coach built once in the week planner itself, for this
+ * block only (ADR 0059): not in the library above, kept in the block with
+ * its own time and place (P2-14, drizzle/0027).
+ */
+export const BLOCK_OWN_SESSION = {
+  name: { da: "Teknik og sving", en: "Technique and cornering" },
+  text: "15 min opvarmning, 8x30 s sprint / 3 min pause, 10 min nedkørsel",
+  place: { da: "Parkeringspladsen ved skoven", en: "The car park by the forest" },
+} satisfies { name: Text; text: string; place: Text };
+
+/**
  * The team's events. `inDays` counts from today while the racing season
  * runs (April to September); from October to March races wait for the
  * season, so `seasonDay` places them from 1 April of the racing year
@@ -62,6 +73,8 @@ export const EVENTS: Array<{
   seasonDay: number | null;
   days: number;
   priority: "A" | "B" | null;
+  /** When and where it starts and who drives (docs/backlog.md P2-03). */
+  where?: Record<L, { startTime: string; meetingPlace: string; transportNote: string }>;
 }> = [
   {
     kind: "race",
@@ -70,6 +83,19 @@ export const EVENTS: Array<{
     seasonDay: 11,
     days: 1,
     priority: "B",
+    where: {
+      da: {
+        startTime: "09:30",
+        meetingPlace: "Hillerød Stadion",
+        transportNote: "Klubbens bus fra klubhuset kl. 7.45. Sig til træneren, hvis du kører selv.",
+      },
+      en: {
+        startTime: "09:30",
+        meetingPlace: "Hillerød Stadion",
+        transportNote:
+          "The club's bus from the clubhouse at 7:45. Tell the coach if you drive yourself.",
+      },
+    },
   },
   {
     kind: "camp",
@@ -88,6 +114,12 @@ export const EVENTS: Array<{
     priority: "A",
   },
 ];
+
+/** What the demo's parent put into Emma's calendar (docs/adr/0069). */
+export const FAMILY_HOLIDAY: Text = {
+  da: "Efterårsferie i sommerhuset",
+  en: "Autumn break at the summer house",
+};
 
 export const EXAM: Text = { da: "Terminsprøve i matematik", en: "Maths mock exam" };
 

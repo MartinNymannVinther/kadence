@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { auth } from "@/core/auth/auth";
 import { openSecret, sealSecret } from "@/core/crypto/secret-box";
+import { addDaysIso, todayInCopenhagen } from "@/core/dates";
 import { authDb } from "@/core/db/client";
 import { demoWorkspaces, users } from "@/core/db/schema";
 import { registerInvited } from "@/core/team/register";
@@ -10,7 +11,8 @@ import { inviteMember } from "@/core/team/service";
 import { claimPendingLinks } from "@/modules/team/claim";
 import { addGuardian, attachGuardianInvitation, confirmGuardian } from "@/modules/team/guardians";
 import { attachRiderInvitation, getRiders, setSharing } from "@/modules/team/riders";
-import { pick, type L } from "./seed-data";
+import { addFamilyEvent } from "@/modules/training/family-events";
+import { FAMILY_HOLIDAY, pick, type L } from "./seed-data";
 
 /**
  * The demo's three people. Kadence is three roles (ADR 0010), and a demo
@@ -19,7 +21,8 @@ import { pick, type L } from "./seed-data";
  * rider shares. So a demo has a rider and the rider's parent too, created
  * the way real people join — the coach's invitation, the rider's yes to
  * the parent — and the visitor can switch between them from the demo
- * stripe. Every account is thrown away with the demo.
+ * stripe. The parent has put a holiday into the rider's calendar. Every
+ * account is thrown away with the demo.
  */
 
 export const DEMO_ROLES = ["coach", "rider", "parent"] as const;
@@ -81,7 +84,8 @@ export async function createDemoRoles(input: {
       password: person.password,
     });
     if (!result.ok) throw new Error(`demo: ${person.email} could not join (${result.error})`);
-    // The auth role reads users by address; the application role cannot yet.
+    // The auth role reads users by address; the application role has no
+    // read on the column at all (docs/adr/0070).
     const [row] = await authDb
       .select({ id: users.id })
       .from(users)
@@ -116,6 +120,15 @@ export async function createDemoRoles(input: {
   await attachGuardianInvitation(coachCtx, guardian.id, parentPerson.invitationId);
   const parentCtx = await register(parentPerson);
   await confirmGuardian(riderCtx, guardian.id);
+  // The parent's own line in Emma's calendar, three weeks on (ADR 0069).
+  const holiday = addDaysIso(todayInCopenhagen(), 21);
+  await addFamilyEvent(parentCtx, {
+    riderId: rider.id,
+    kind: "holiday",
+    title: pick(FAMILY_HOLIDAY, locale),
+    startsOn: holiday,
+    endsOn: addDaysIso(holiday, 4),
+  });
   accounts.push({
     role: "parent",
     userId: parentCtx.userId,

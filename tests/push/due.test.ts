@@ -183,11 +183,11 @@ describe("the parents' week", () => {
 describe("what was told last", () => {
   it("reads news, the check-in or the week back from the marks", () => {
     const pushed = at("2026-10-06T17:05:00Z");
-    expect(lastTold({ ...sub({ toldUpTo: pushed }), updatedAt: pushed })).toBe("news");
-    expect(lastTold({ ...sub({ checkinRemindedOn: TUESDAY }), updatedAt: pushed })).toBe("checkin");
+    expect(lastTold({ ...sub({ toldUpTo: pushed }), toldAt: pushed })).toBe("news");
+    expect(lastTold({ ...sub({ checkinRemindedOn: TUESDAY }), toldAt: pushed })).toBe("checkin");
     const sunday = at("2026-11-01T17:10:00Z");
-    expect(lastTold({ ...sub({ weekToldOn: "2026-10-26" }), updatedAt: sunday })).toBe("week");
-    expect(lastTold({ ...sub(), updatedAt: pushed })).toBeNull();
+    expect(lastTold({ ...sub({ weekToldOn: "2026-10-26" }), toldAt: sunday })).toBe("week");
+    expect(lastTold({ ...sub(), toldAt: pushed })).toBeNull();
   });
 });
 
@@ -233,7 +233,7 @@ describe("a rider in the red zone", () => {
 
   it("is read back as the last push when its mark is the newest", () => {
     const pushed = at("2026-10-06T10:05:00Z");
-    const told = { ...sub({ kinds: WITH, toldUpTo: saved }), updatedAt: pushed };
+    const told = { ...sub({ kinds: WITH, toldUpTo: saved }), toldAt: pushed };
     expect(lastTold(told)).toBeNull();
     expect(mayBeWellbeing(told)).toBe(true);
     // Not news, and not for a browser that did not choose it.
@@ -244,9 +244,9 @@ describe("a rider in the red zone", () => {
   it("gives way to a check-in reminder that went out after it", () => {
     const later = new Date(saved.getTime() + WELLBEING_TOLD_WITHIN_MS + 60_000);
     const evening = { checkinRemindedOn: TUESDAY };
-    const soon = { ...sub({ kinds: WITH, toldUpTo: saved, ...evening }), updatedAt: noon };
+    const soon = { ...sub({ kinds: WITH, toldUpTo: saved, ...evening }), toldAt: noon };
     expect(mayBeWellbeing(soon)).toBe(true);
-    const after = { ...sub({ kinds: WITH, toldUpTo: saved, ...evening }), updatedAt: later };
+    const after = { ...sub({ kinds: WITH, toldUpTo: saved, ...evening }), toldAt: later };
     expect(lastTold(after)).toBe("checkin");
     expect(mayBeWellbeing(after)).toBe(false);
   });

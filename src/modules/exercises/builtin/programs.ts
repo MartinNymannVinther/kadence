@@ -1,4 +1,5 @@
 import type { BuiltinProgram, Dose } from "../types";
+import { STRENGTH_ROOM_PROGRAMS } from "./programs-strength";
 import { SOURCES } from "./sources";
 
 /**
@@ -130,4 +131,5 @@ export const PROGRAMS: readonly BuiltinProgram[] = [
   AFTER_RIDE,
   CORE_NO_EQUIPMENT,
   STRENGTH_NO_MACHINES,
+  ...STRENGTH_ROOM_PROGRAMS,
 ];

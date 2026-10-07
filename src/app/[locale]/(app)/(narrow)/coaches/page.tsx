@@ -74,7 +74,10 @@ export default async function CoachesRoomPage({
               <li key={r.id} className="flex flex-wrap items-center justify-between gap-2 text-2sm">
                 <span>
                   {r.threadId ? (
-                    <Link href={`/coaches/${r.threadId}`} className="text-primary hover:underline">
+                    <Link
+                      href={`/coaches/${r.threadId}`}
+                      className="focus-ring text-primary hover:underline"
+                    >
                       {t(r.targetKind === "thread" ? "reports.thread" : "reports.post")}
                     </Link>
                   ) : (
@@ -102,7 +105,7 @@ export default async function CoachesRoomPage({
             href={c ? `/coaches?category=${c}` : "/coaches"}
             aria-current={c === category ? "page" : undefined}
             className={cn(
-              "rounded-md border px-3 py-1.5 text-2sm",
+              "focus-ring rounded-md border px-3 py-1.5 text-2sm",
               c === category ? "border-primary font-semibold" : "border-border",
             )}
           >

@@ -45,6 +45,9 @@ export const EXPORT_TABLES: ExportTable[] = [
   { table: "workout_templates", sheet: "Skabeloner", orderBy: "sport, name" },
   { table: "training_blocks", sheet: "Blokke", orderBy: "name" },
   { table: "training_block_items", sheet: "Blokkens pas", orderBy: "block_id, day, sort" },
+  // The week planner's drafts the coaches share (ADR 0043, amended
+  // 2026-10-07): weeks being planned and not yet laid in, as JSON in a cell.
+  { table: "week_plan_drafts", sheet: "Ugekladder", orderBy: "week_monday, rider_id" },
   // The team's own exercises and programmes (drizzle/0032), archived ones
   // included. A pose, a dose and a programme's parts are JSON in a cell;
   // the JSON export keeps them as they are, references and all.
@@ -81,7 +84,12 @@ export const EXPORT_TABLES: ExportTable[] = [
  * - `push_subscriptions`: a browser's push address for reminders (ADR
  *   0060) — a capability that could wake that browser, owned by the person
  *   rather than the team, and nothing about training. That reminders were
- *   turned on and off is in the audit trail, without the address.
+ *   turned on and off is in the audit trail, without the address. Nor
+ *   `push_runs`, the run's marks beside it: when a reminder went out.
+ * - `planned_session_deletions`: a deleted session's day and title, kept
+ *   for seven days so a rider's reminder can say the plan changed (ADR
+ *   0060, drizzle/0037). The deletion itself, and this record of it, are
+ *   in the audit trail, which is exported.
  * - `ai_calls`: a counter for rate limiting, not something a workspace owns.
  * - `workspace_llm_settings`: the model choice, which holds an encrypted
  *   key; a workspace that leaves gets its data, not its secrets.

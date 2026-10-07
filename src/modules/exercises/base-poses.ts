@@ -1,5 +1,6 @@
 import { builtinExercise } from "./builtin";
 import { figureGeometry, geometryBounds } from "./figure";
+import { shiftProp } from "./pose-props";
 import { BOX, JOINTS, type Point, type Pose, type Prop } from "./types";
 
 /**
@@ -45,22 +46,7 @@ function centred(pose: Pose): Pose {
     joints: Object.fromEntries(
       JOINTS.map((joint) => [joint, move(pose.joints[joint])]),
     ) as Pose["joints"],
-    props: (pose.props ?? []).map((p): Prop => {
-      switch (p.kind) {
-        case "bench":
-        case "step":
-        case "ball":
-        case "kettlebell":
-          return { ...p, at: move(p.at) };
-        case "wall":
-          return { ...p, x: p.x + dx };
-        case "mat":
-        case "band":
-          return { ...p, from: move(p.from), to: move(p.to) };
-        case "floor":
-          return p;
-      }
-    }),
+    props: (pose.props ?? []).map((p) => shiftProp(p, dx, 0)),
   };
 }
 

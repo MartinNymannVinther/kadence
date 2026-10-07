@@ -127,7 +127,7 @@ export function RegisterForm({ invitation }: { invitation?: InvitationPrefill })
       </CardContent>
       <CardFooter className="justify-center text-sm">
         <span className="text-muted-foreground">{t("haveAccount")}&nbsp;</span>
-        <Link href="/login" className="font-medium underline-offset-4 hover:underline">
+        <Link href="/login" className="focus-ring font-medium underline-offset-4 hover:underline">
           {t("loginLink")}
         </Link>
       </CardFooter>

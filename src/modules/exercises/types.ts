@@ -15,8 +15,25 @@ import { exerciseRefSchema, type ExerciseRef } from "./ref";
 export { EXERCISE_GROUPS };
 export type { ExerciseGroup } from "@/modules/workouts/structure";
 
-/** What an exercise needs besides a floor; "none" is the empty list. */
-export const EQUIPMENT = ["mat", "wall", "bench", "step", "band", "kettlebell", "ball"] as const;
+/**
+ * What an exercise needs besides a floor; "none" is the empty list. The
+ * last four came with a club's strength room (backlog Ø-06): a barbell in
+ * a rack, dumbbells, TRX straps and a bar for pull-ups. The database's
+ * check lists the same (drizzle/0033).
+ */
+export const EQUIPMENT = [
+  "mat",
+  "wall",
+  "bench",
+  "step",
+  "band",
+  "kettlebell",
+  "ball",
+  "barbell",
+  "dumbbell",
+  "trx",
+  "pullupBar",
+] as const;
 export type Equipment = (typeof EQUIPMENT)[number];
 
 /**
@@ -65,6 +82,32 @@ export const propSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("band"), from: pointSchema, to: pointSchema }),
   z.object({ kind: z.literal("ball"), at: pointSchema, radius: z.number().min(4).max(40) }),
   z.object({ kind: z.literal("kettlebell"), at: pointSchema }),
+  /**
+   * A barbell, a bar with a plate at each end, its middle at `at` where the
+   * hands or the shoulders hold it; level unless `angle` turns it (degrees,
+   * clockwise). Drawn across the figure from the side too, as a gym's
+   * pictograms draw it.
+   */
+  z.object({
+    kind: z.literal("barbell"),
+    at: pointSchema,
+    angle: z.number().min(-90).max(90).optional(),
+  }),
+  /** A dumbbell held at its handle, `at`, level unless `angle` turns it (degrees, clockwise). */
+  z.object({
+    kind: z.literal("dumbbell"),
+    at: pointSchema,
+    angle: z.number().min(-90).max(90).optional(),
+  }),
+  /** TRX straps from where they hang, `anchor`, to the near and the far handle. */
+  z.object({
+    kind: z.literal("trx"),
+    anchor: pointSchema,
+    handleA: pointSchema,
+    handleB: pointSchema,
+  }),
+  /** A bar for pull-ups, level, `width` wide, its middle at `at`. */
+  z.object({ kind: z.literal("pullupBar"), at: pointSchema, width: z.number().min(20).max(220) }),
 ]);
 export type Prop = z.infer<typeof propSchema>;
 
@@ -86,19 +129,28 @@ export const poseSchema = z.object({
 });
 export type Pose = z.infer<typeof poseSchema>;
 
-/** How much: for a time or a number of repetitions, per side or not, in sets. */
+/**
+ * How heavy, in words rather than kilos, as DCU's programmes and ATK put
+ * it: technique before load, and a weight the rider picks for the day.
+ */
+export const LOADS = ["light", "moderate", "heavy"] as const;
+export type Load = (typeof LOADS)[number];
+
+/** How much: for a time or a number of repetitions, per side or not, in sets, and how heavy. */
 export const doseSchema = z.discriminatedUnion("kind", [
   z.object({
     kind: z.literal("time"),
     seconds: z.number().int().min(5).max(600),
     perSide: z.boolean().default(false),
     sets: z.number().int().min(1).max(10).default(1),
+    load: z.enum(LOADS).optional(),
   }),
   z.object({
     kind: z.literal("reps"),
     reps: z.number().int().min(1).max(100),
     perSide: z.boolean().default(false),
     sets: z.number().int().min(1).max(10).default(1),
+    load: z.enum(LOADS).optional(),
   }),
 ]);
 export type Dose = z.infer<typeof doseSchema>;

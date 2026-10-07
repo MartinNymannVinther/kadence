@@ -10,14 +10,16 @@ import { Button } from "@/components/ui/button";
 import { addDaysIso } from "@/core/dates";
 import { useRouter } from "@/i18n/navigation";
 import type { ClassBasis } from "@/modules/dcu";
+import type { SharedDraft } from "@/modules/training/week-plan-draft";
 import { ApplyPlan } from "./apply-plan";
+import { DraftStatus } from "./draft-status";
 import { ItemSheet } from "./item-sheet";
 import { PlanDays } from "./plan-days";
 import { RiderChoice } from "./rider-choice";
 import { SaveAsBlock } from "./save-as-block";
 import { StartFrom, type StartMode } from "./start-from";
 import type { PlanBlock, PlanItem, PlanRider } from "./types";
-import { usePlanDraft } from "./use-plan-draft";
+import { useSharedDraft } from "./use-shared-draft";
 
 /** As many sessions as one press may lay in (src/modules/training/week-plan.ts). */
 const MAX_ITEMS = 21;
@@ -28,10 +30,15 @@ const MAX_ITEMS = 21;
  * started empty, from last week, from a block or from the AI, what it does
  * to each rider's four numbers (ADR 0040), and one press that lays it into
  * every chosen rider's calendar, for as many weeks in a row as asked. The
- * week can be kept as a block. The plan is kept on the device until then.
+ * week can be kept as a block. Until it is laid in, the plan is a draft
+ * the team's coaches share, kept on the server and on this device (ADR
+ * 0043, amended 2026-10-07).
  */
 export function WeekPlanner({
   monday,
+  today,
+  scope,
+  shared,
   riders,
   templates,
   blocks,
@@ -40,6 +47,11 @@ export function WeekPlanner({
   start,
 }: {
   monday: string;
+  today: string;
+  /** "team", or the rider the planner was opened for: whose draft this is. */
+  scope: string;
+  /** The shared draft as the server had it when the page was made. */
+  shared: SharedDraft | null;
   riders: PlanRider[];
   templates: TemplateOption[];
   blocks: PlanBlock[];
@@ -52,13 +64,17 @@ export function WeekPlanner({
   const t = useTranslations("weekPlan");
   const locale = useLocale();
   const router = useRouter();
-  const { draft, setDraft, clear } = usePlanDraft(
-    monday,
-    { riderIds: preselect ? [preselect] : riders.map((r) => r.id), items: [] },
-    preselect,
-  );
   const [editing, setEditing] = useState<{ day: number; item?: PlanItem } | null>(null);
-  const [undo, setUndo] = useState<PlanItem[] | null>(null);
+  // The week before the last "Start fra", while no other coach's draft has replaced it since.
+  const [undo, setUndo] = useState<{ items: PlanItem[]; replaced: number } | null>(null);
+  const { draft, state, setDraft, clear } = useSharedDraft({
+    monday,
+    scope,
+    initial: { riderIds: preselect ? [preselect] : riders.map((r) => r.id), items: [] },
+    first: shared,
+    templates,
+    hold: editing !== null,
+  });
   const { riderIds, items } = draft;
   const dayLabel = (day: number) => {
     const date = addDaysIso(monday, day);
@@ -71,12 +87,13 @@ export function WeekPlanner({
   const change = (next: Partial<typeof draft>) => setDraft({ ...draft, ...next });
   /** A whole new week in — empty, last week, a block or the AI — with the old one a press away. */
   const replace = (next: PlanItem[]) => {
-    setUndo(items);
+    setUndo({ items, replaced: state.replaced });
     change({ items: next.slice(0, MAX_ITEMS) });
   };
 
   return (
     <div className="flex min-w-0 flex-col gap-7">
+      <DraftStatus state={state} today={today} />
       <section aria-labelledby="plan-riders" className="flex flex-col gap-3">
         <h2 id="plan-riders" className="text-lg font-semibold">
           {t("riders.title")}
@@ -104,7 +121,7 @@ export function WeekPlanner({
           initial={start}
           onLoad={replace}
         />
-        {undo && (
+        {undo?.replaced === state.replaced && (
           <p className="text-meta flex items-center gap-1 text-2sm" role="status">
             {t("week.replaced")}
             <Button
@@ -113,7 +130,7 @@ export function WeekPlanner({
               size="sm"
               className="max-sm:h-11"
               onClick={() => {
-                change({ items: undo });
+                change({ items: undo.items });
                 setUndo(null);
               }}
             >

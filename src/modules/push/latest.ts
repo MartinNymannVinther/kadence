@@ -1,12 +1,12 @@
-import { pushSubscriptions, type PushSubscriptionRow } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
 import { mondayOf } from "@/core/dates";
 import { whoAmIIn } from "@/modules/team/access";
 import { copenhagenClock, lastTold, mayBeWellbeing } from "./due";
 import { newestComment, newestPlanChange, visibleChildren } from "./facts";
+import { toldMine, type ToldOnce } from "./runs";
 import { teamsOf } from "./subscriptions";
 import { testSentAt } from "./test-push";
-import { redCheckinFirstSavedAt } from "./wellbeing";
+import { checkinTurnedRedAt } from "./wellbeing";
 
 /**
  * What the service worker shows when a push wakes it (docs/adr/0060).
@@ -56,11 +56,7 @@ function commentPath(c: {
   return week ? `/calendar?week=${week}&rider=${c.riderId}` : "/calendar";
 }
 
-async function news(
-  tx: AppTransaction,
-  ctx: OrgContext,
-  row: PushSubscriptionRow,
-): Promise<Note | null> {
+async function news(tx: AppTransaction, ctx: OrgContext, row: ToldOnce): Promise<Note | null> {
   const me = await whoAmIIn(tx, ctx);
   if (!me) return null;
   const range = { after: new Date(row.toldUpTo.getTime() - NEWS_WINDOW_MS), upTo: row.toldUpTo };
@@ -80,7 +76,7 @@ async function news(
 }
 
 /** The note for one subscription, read as its owner. */
-export async function noteFor(ctx: OrgContext, row: PushSubscriptionRow): Promise<Note | null> {
+export async function noteFor(ctx: OrgContext, row: ToldOnce): Promise<Note | null> {
   const told = lastTold(row);
   const wellbeing = mayBeWellbeing(row);
   if (!told && !wellbeing) return null;
@@ -88,7 +84,7 @@ export async function noteFor(ctx: OrgContext, row: PushSubscriptionRow): Promis
     if (told === "news") return news(tx, ctx, row);
     const me = await whoAmIIn(tx, ctx);
     if (!me) return null;
-    if (wellbeing && (await redCheckinFirstSavedAt(tx, ctx, me, row.toldUpTo)))
+    if (wellbeing && (await checkinTurnedRedAt(tx, ctx, me, row.toldUpTo)))
       return { kind: "wellbeing", path: ATTENTION_PATH };
     if (told === "checkin") return me.rider ? { kind: "checkin", path: "/today" } : null;
     const children = visibleChildren(me);
@@ -105,15 +101,14 @@ export async function noteFor(ctx: OrgContext, row: PushSubscriptionRow): Promis
  * the plain "there is something new".
  */
 export async function latestFor(userId: string, now: Date = new Date()): Promise<Note | null> {
-  let newest: { ctx: OrgContext; row: PushSubscriptionRow } | null = null;
+  let newest: { ctx: OrgContext; row: ToldOnce } | null = null;
   for (const orgId of await teamsOf(userId)) {
     const ctx = { orgId, userId };
-    const rows = await withOrgContext(ctx, (tx) => tx.select().from(pushSubscriptions));
-    for (const row of rows)
-      if (!newest || row.updatedAt > newest.row.updatedAt) newest = { ctx, row };
+    const rows = await withOrgContext(ctx, (tx) => toldMine(tx));
+    for (const row of rows) if (!newest || row.toldAt > newest.row.toldAt) newest = { ctx, row };
   }
   const tested = testSentAt(userId, now);
-  if (tested && (!newest || tested >= newest.row.updatedAt))
+  if (tested && (!newest || tested >= newest.row.toldAt))
     return { kind: "test", path: REMINDERS_PATH };
   return newest ? noteFor(newest.ctx, newest.row) : null;
 }

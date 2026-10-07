@@ -12,6 +12,7 @@ import {
   GuardianInput,
   removeGuardian,
 } from "./guardians";
+import { linkMemberAsGuardian, MemberGuardianInput } from "./member-guardians";
 import {
   archiveRider,
   attachRiderInvitation,
@@ -133,6 +134,11 @@ export async function addGuardianAction(raw: unknown) {
     },
     PATHS,
   );
+}
+
+/** A member already on the team as one more child's parent (P2-16): no invitation, the rider still confirms. */
+export async function linkMemberAsGuardianAction(raw: unknown) {
+  return runAction(raw, MemberGuardianInput, linkMemberAsGuardian, PATHS);
 }
 
 export async function confirmGuardianAction(raw: unknown) {
