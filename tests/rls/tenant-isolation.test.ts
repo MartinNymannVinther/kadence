@@ -408,6 +408,15 @@ describe("rls coverage (guards future tables)", () => {
     // reads all of that as the owner, under the ordinary policies, so what
     // crosses the boundary is that a person has said yes to reminders.
     "push_subscriptions_due",
+    // The addresses the caller may read (drizzle/0036, docs/adr/0070),
+    // now that the application role has no SELECT on users.email: the
+    // caller's own, the whole team's to a coach of the active team, and
+    // to a rider those of the people holding a guardian link to them —
+    // the rider confirms a person and sees who that is first (docs/adr/
+    // 0019). It takes no arguments and answers from the context alone;
+    // tests/rls/member-addresses.test.ts proves each answer and that no
+    // other way to the column is open.
+    "team_member_addresses",
     // Whose upload key a hash is, for a ride file that arrives with a key
     // and nobody signed in (drizzle/0014, docs/adr/0029). It is
     // device_link_owner's question asked of a key: the key's id, the team,

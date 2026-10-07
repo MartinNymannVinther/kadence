@@ -232,6 +232,13 @@
       "when": 1791317875004,
       "tag": "0032_team_exercises",
       "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1791368727170,
+      "tag": "0036_users_addresses",
+      "breakpoints": true
     }
   ]
 }

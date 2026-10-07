@@ -59,15 +59,19 @@ async function readTable(tx: AppTransaction, spec: ExportTable): Promise<ExportS
  * auth tables: who is in this workspace and in what role, without carrying
  * credentials along. A coach's export has the whole team; anybody else's
  * has themselves — a rider's or a parent's export must not hand out the
- * other young riders' addresses (ADR 0011). Everything else is already
- * cut to what the caller may see by RLS.
+ * other young riders' addresses (ADR 0011). The application role cannot
+ * read `users.email` at all; `team_member_addresses()` hands a coach the
+ * team's addresses and anyone else their own (docs/adr/0070). Everything
+ * else is already cut to what the caller may see by RLS.
  */
 async function readMembers(tx: AppTransaction, ctx: OrgContext): Promise<ExportSection> {
   const result = await tx.execute(sql`
-    select u.name, u.email, m.role, m.created_at
+    select u.name, a.email, m.role, m.created_at
     from memberships m
     join users u on u.id = m.user_id
-    where app_is_coach() or m.user_id = ${ctx.userId}
+    join team_member_addresses() a on a.user_id = m.user_id
+    where m.organization_id = ${ctx.orgId}
+      and (app_is_coach() or m.user_id = ${ctx.userId})
     order by m.created_at
   `);
   const rows = result.rows as Array<Record<string, unknown>>;

@@ -74,17 +74,6 @@ only what parses as an address — but the file is the family's, and is
 better changed once for all siblings. Kadence's own deployment has
 Traefik in front and is not affected.
 
-### Members can read each other's addresses in the database
-
-The foundation's `users` policy (drizzle/0001, `app_select_org_members`)
-lets any member of a team read the name and email of everyone on it.
-Kadence needs the names (comment authors); no page, export or API shows
-a rider or a parent another member's address any more (ADR 0019), but
-the row is there for a query that bypasses the services. Closing it
-means a narrower view for names only, or column privileges on `users`
-for the application role — family code, better changed once for all
-siblings.
-
 ## Accepted, with the reason written down
 
 ### The content policy still allows inline scripts
@@ -297,3 +286,14 @@ Paid in wave 4: `erase_rider` (drizzle/0006) deletes one rider and the
 audit rows about them, checked by the function itself like
 `delete_workspace`, and records that an erasure happened without naming
 anyone (tests/team/erase.test.ts).
+
+### Members can read each other's addresses in the database
+
+Paid with backlog P2-07 (drizzle/0036, ADR 0070): the application role
+has `SELECT` on `users.id` and `users.name` and on no other column, so
+the address is refused by Postgres to any query that is not the definer
+`team_member_addresses()` — the caller's own, the team's to its coach,
+and to a rider the accounts holding a guardian link to them.
+tests/rls/member-addresses.test.ts proves each. The policy and grant came
+with the foundation; the siblings carry the same debt until they lift the
+migration.

@@ -4,6 +4,7 @@ import { Refused } from "@/core/action";
 import { guardians, riders, users, type GuardianRow } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
 import { requireCoach, whoAmIIn } from "./access";
+import { memberAddress, memberAddresses } from "./addresses";
 
 /**
  * A rider's parents. A coach adds one and sends the invitation; the link
@@ -24,6 +25,10 @@ export const GuardianInput = z.object({
 export type GuardianWithAccount = GuardianRow & {
   /** The account that holds the link — what the rider says yes to, not the name a coach typed. */
   accountName: string | null;
+  /**
+   * Its address, for the coach and for the rider the link is to; null for
+   * a parent reading beside their own link (docs/adr/0070).
+   */
   accountEmail: string | null;
 };
 
@@ -33,9 +38,10 @@ export async function listGuardians(
 ): Promise<GuardianWithAccount[]> {
   return withOrgContext(ctx, async (tx) => {
     const rows = await tx
-      .select({ guardian: guardians, accountName: users.name, accountEmail: users.email })
+      .select({ guardian: guardians, accountName: users.name, accountEmail: memberAddress.email })
       .from(guardians)
       .leftJoin(users, eq(users.id, guardians.userId))
+      .leftJoin(memberAddresses, eq(memberAddress.userId, guardians.userId))
       .where(eq(guardians.riderId, riderId))
       .orderBy(asc(guardians.createdAt));
     return rows.map((r) => ({
