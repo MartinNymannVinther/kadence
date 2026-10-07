@@ -16,6 +16,12 @@ import { PART_KEYS } from "./types";
  * whether or not a given download uses them all, so this needs no
  * parameter and no per-request work.
  *
+ * Printed (or saved as a PDF) the file is light whatever the screen's
+ * mode, shows every part under its name instead of the tabs, two cards
+ * to a row, keeps a card whole and a part's name with its first cards,
+ * draws the figure smaller and leaves the "Færdig" buttons out — the same
+ * sheet the app prints (src/components/exercises/program-print.tsx).
+ *
  * Pure.
  */
 
@@ -78,5 +84,20 @@ ${TAB_RULES}
 .why{margin:0;font-size:.9rem;line-height:1.5;color:var(--muted-foreground)}
 .done-btn{align-self:flex-start;min-height:2.5rem;min-width:6rem;padding:0 1.1rem;border-radius:999px;border:2px solid var(--warning);background:transparent;color:var(--warning);font-size:.9rem;font-weight:600;cursor:pointer}
 .done-btn[aria-pressed="true"]{background:var(--warning);color:var(--card)}
+.part-title{display:none;margin:0 0 .6rem;font-size:1.15rem;line-height:1.3}
 footer{margin-top:2rem;font-size:.8rem;color:var(--muted-foreground)}
+@media print{
+:root{${vars("light")}}
+@page{margin:14mm}
+html{font-size:13.5px}
+.wrap{max-width:none;padding:0}
+.tab-input,.tab,.done-btn{display:none}
+.panel{display:block;margin-bottom:1.25rem}
+.part-title{display:block;break-after:avoid}
+.cards,.part{grid-template-columns:repeat(2,1fr);gap:.75rem}
+.card{break-inside:avoid}
+.card .figure{padding-top:.5rem}
+.card .figure svg{max-width:12rem}
+.card .body{gap:.5rem;padding:.9rem}
+}
 `;

@@ -11,10 +11,12 @@ import { Switch } from "@/components/ui/switch";
 import { BUILTIN_EXERCISES } from "@/modules/exercises/builtin";
 import { EXERCISE_GROUPS, type ExerciseGroup, type ExerciseView } from "@/modules/exercises/types";
 import { builtinExerciseView } from "@/modules/exercises/view";
+import { ExerciseFigure } from "./exercise-figure";
 
 /**
  * The built-in library, filtered by group, "uden udstyr" and a search of
- * the name, for "sammensæt dit eget" (docs/plan-ovelser-og-programmer.md).
+ * the name, for "sammensæt dit eget" (docs/plan-ovelser-og-programmer.md),
+ * each with a small drawing of the exercise so it can be told at a glance.
  * Adding an exercise is the composer's to do, by its bare id.
  */
 export function ComposerLibrary({
@@ -90,10 +92,15 @@ export function ComposerLibrary({
           {filtered.map((exercise) => (
             <li
               key={exercise.ref}
-              className="border-border bg-card flex items-center justify-between gap-2 rounded-lg border p-2.5"
+              className="border-border bg-card flex items-center gap-3 rounded-lg border p-2"
             >
-              <span className="flex flex-col">
-                <span className="text-reading text-sm font-medium">{exercise.name}</span>
+              <span aria-hidden className="bg-secondary w-20 shrink-0 rounded-md px-1 pt-0.5">
+                <ExerciseFigure pose={exercise.pose} label={exercise.name} />
+              </span>
+              <span className="flex min-w-0 flex-1 flex-col">
+                <span className="text-reading text-sm font-medium break-words">
+                  {exercise.name}
+                </span>
                 <span className="text-meta text-2sm">{t(`groups.${exercise.group}`)}</span>
               </span>
               <Button

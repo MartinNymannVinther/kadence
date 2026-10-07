@@ -4960,7 +4960,7 @@
         "description": "Ben, ryg og arme med kropsvægt, en kettlebell og en elastik. Varm op med 8 minutter på cyklen først. DCU anbefaler mindst 48 timer mellem to styrkepas og teknik før belastning."
       },
       "strengthRoom": {
-        "name": "Styrke i rummet",
+        "name": "Træning med udstyr",
         "description": "Helkrop med stang og håndvægte i klubbens styrkerum. Varm op med 8 minutter på cyklen og 20 squat med let stang. Teknik før vægt, og som U17 løfter du aldrig til udmattelse. Hold mindst 48 timer mellem to styrkepas, og stræk ud bagefter."
       },
       "trxBodyweight": {
@@ -5100,6 +5100,8 @@
       "propHandleA": "{name}, forreste håndtag",
       "propHandleB": "{name}, bagerste håndtag",
       "removeProp": "Fjern {name}",
+      "barbellToFront": "Vis stangen forfra",
+      "barbellToSide": "Vis stangen fra siden",
       "maxProps": "En tegning kan have seks ting.",
       "preview": "Sådan ser kortet ud",
       "untitled": "Ny øvelse",

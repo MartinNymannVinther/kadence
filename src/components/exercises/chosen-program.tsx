@@ -3,12 +3,14 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { ProgramView } from "@/modules/exercises/types";
 import { DownloadActions } from "./download-actions";
+import { ProgramPrint } from "./program-print";
 import { ProgramViewer } from "./program-viewer";
 
 /**
  * One of Kadence's own programmes on the open page: a way back to the
  * gallery, its name and description, the download and print actions, and
- * the live viewer (docs/plan-ovelser-og-programmer.md).
+ * the live viewer (docs/plan-ovelser-og-programmer.md). On paper, every
+ * part under its name (program-print.tsx).
  */
 export async function ChosenProgram({
   program,
@@ -34,7 +36,10 @@ export async function ChosenProgram({
         )}
       </div>
       <DownloadActions downloadHref={downloadHref} printTitle={program.title} />
-      <ProgramViewer program={program} />
+      <div className="print:hidden">
+        <ProgramViewer program={program} />
+      </div>
+      <ProgramPrint program={program} />
     </div>
   );
 }

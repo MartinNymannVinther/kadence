@@ -13,7 +13,7 @@ import {
   toggleLimb,
   type Selection,
 } from "@/modules/exercises/pose-edit";
-import { addProp, removeProp } from "@/modules/exercises/pose-props";
+import { addProp, removeProp, turnBarbell } from "@/modules/exercises/pose-props";
 import type { PoseHistory, PoseHistoryAction } from "@/modules/exercises/pose-history";
 import type { Prop } from "@/modules/exercises/types";
 import { ArrowTools } from "./arrow-tools";
@@ -92,6 +92,7 @@ export function PoseEditor({
           setSelected(null);
           change(removeProp(pose, index));
         }}
+        onTurn={(index) => change(turnBarbell(pose, index))}
       />
     </div>
   );

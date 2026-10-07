@@ -89,6 +89,20 @@ export function addProp(pose: Pose, kind: Prop["kind"]): Pose {
   return keepInside(pose, { ...pose, props: [...(pose.props ?? []), defaultProp(kind, pose)] });
 }
 
+/**
+ * The barbell seen the other way: from the side (the near plate's disc,
+ * the default, for a figure in profile) or from the front (the bar across
+ * the figure with a plate at each end). Any other prop is left alone.
+ */
+export function turnBarbell(pose: Pose, index: number): Pose {
+  const prop = pose.props?.[index];
+  if (!prop || prop.kind !== "barbell") return pose;
+  const view = (prop.view ?? "side") === "side" ? "front" : "side";
+  const props = [...(pose.props ?? [])];
+  props[index] = { ...prop, view };
+  return { ...pose, props };
+}
+
 export function removeProp(pose: Pose, index: number): Pose {
   return { ...pose, props: (pose.props ?? []).filter((_, i) => i !== index) };
 }

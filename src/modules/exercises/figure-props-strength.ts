@@ -28,9 +28,23 @@ function crossbar(at: XY, u: XY, half: number, width: number): FigurePrimitive {
   return line("prop", [plus(at, n, -half), plus(at, n, half)], width);
 }
 
-/** The bar across the drawing, a plate at each end: the gym's own pictogram, seen from the side or the front. */
+/**
+ * The barbell. Seen from the side, as most figures are, the bar points at
+ * the reader: all that shows is the near plate, a filled disc at `at`
+ * with the bar's end as a small dot in its middle, so it sits in the
+ * hands or on the shoulders without crossing the body. Seen from the
+ * front it is the gym's own pictogram: the bar across the drawing with a
+ * plate at each end.
+ */
 function barbell(p: Extract<Prop, { kind: "barbell" }>): FigurePrimitive[] {
   const b = FIGURE.barbell;
+  if ((p.view ?? "side") === "side") {
+    const paint = { tone: "prop", opacity: 1 } as const;
+    return [
+      { ...paint, shape: "circle", center: p.at, r: b.disc, fill: true, width: 0 },
+      { ...paint, shape: "circle", center: p.at, r: b.stub, fill: false, width: FIGURE.propStroke },
+    ];
+  }
   const u = direction(p.angle ?? 0);
   return [
     line("prop", [plus(p.at, u, -b.half), plus(p.at, u, b.half)], FIGURE.propStroke),

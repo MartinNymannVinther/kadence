@@ -4960,7 +4960,7 @@
         "description": "Legs, back and arms with body weight, a kettlebell and an elastic band. Warm up with 8 minutes on the bike first. DCU recommends at least 48 hours between two strength sessions, and technique before load."
       },
       "strengthRoom": {
-        "name": "Strength in the gym",
+        "name": "Training with equipment",
         "description": "Whole body with a barbell and dumbbells in the club's strength room. Warm up with 8 minutes on the bike and 20 squats with a light bar. Technique before weight, and as a U17 rider you never lift to exhaustion. Keep at least 48 hours between two strength sessions, and stretch afterwards."
       },
       "trxBodyweight": {
@@ -5100,6 +5100,8 @@
       "propHandleA": "{name}, near handle",
       "propHandleB": "{name}, far handle",
       "removeProp": "Remove {name}",
+      "barbellToFront": "Show the bar from the front",
+      "barbellToSide": "Show the bar from the side",
       "maxProps": "A drawing can have six things.",
       "preview": "How the card looks",
       "untitled": "New exercise",

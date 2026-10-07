@@ -81,8 +81,26 @@ describe("the strength room's props", () => {
       (p): p is Extract<FigurePrimitive, { shape: "polyline" }> => p.shape === "polyline",
     );
 
-  it("draws a barbell as a level bar with a plate at each end, round its middle", () => {
-    const [bar, plateL, plateR] = lines([{ kind: "barbell", at: [120, 60] }]);
+  it("draws a barbell from the side as the near plate's disc with the bar's stub in it", () => {
+    const circles = propPrimitives([propSchema.parse({ kind: "barbell", at: [120, 60] })]);
+    expect(circles.map((p) => p.shape)).toEqual(["circle", "circle"]);
+    const [disc, stub] = circles as Array<Extract<FigurePrimitive, { shape: "circle" }>>;
+    expect(disc).toMatchObject({
+      center: [120, 60],
+      r: FIGURE.barbell.disc,
+      fill: true,
+      tone: "prop",
+    });
+    expect(stub).toMatchObject({
+      center: [120, 60],
+      r: FIGURE.barbell.stub,
+      fill: false,
+      tone: "prop",
+    });
+  });
+
+  it("draws a barbell from the front as a level bar with a plate at each end, round its middle", () => {
+    const [bar, plateL, plateR] = lines([{ kind: "barbell", at: [120, 60], view: "front" }]);
     expect(bar!.points).toEqual([
       [120 - FIGURE.barbell.half, 60],
       [120 + FIGURE.barbell.half, 60],
@@ -101,7 +119,7 @@ describe("the strength room's props", () => {
   });
 
   it("turns a barbell and a dumbbell by their angle, clockwise", () => {
-    const [bar] = lines([{ kind: "barbell", at: [120, 60], angle: 90 }]);
+    const [bar] = lines([{ kind: "barbell", at: [120, 60], angle: 90, view: "front" }]);
     expect(bar!.points[0]![0]).toBeCloseTo(120);
     expect(bar!.points[1]![1]).toBeCloseTo(60 + FIGURE.barbell.half);
     const [handle] = lines([{ kind: "dumbbell", at: [100, 60], angle: 90 }]);

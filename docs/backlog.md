@@ -23,6 +23,7 @@ eller mere. Rækkefølgen inden for en prioritet er den anbefalede.
 
 P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter #21 og #22). Hvert spor bygges i sit eget worktree med egen database og flettes ind på P1-grenen, når det er grønt. Statusloggen nyeste først:
 
+- **8. okt.** Tre rettelser til øvelser og programmer på Martins bud (Ø-07): stangen tegnes set fra siden på figurer i profil (en skive med stangens stump i), programmet "Styrke i rummet" hedder nu "Træning med udstyr", og print til PDF giver sammenhængende sider på den åbne side, i appen og i den hentede fil — et kort deles aldrig, en dels navn står ved sine kort, og der er ikke længere tvungne sideskift mellem delene. Desuden en lille tegning af hver øvelse i "sammensæt dit eget". Forbrug: ca. 160k tokens.
 - **8. okt.** P2 er færdig (alle 16 stories undtagen P2-01, som venter) sammen med Ø-06: alt er flettet ind på `feat/p2-vinteren`, hele suiten er grøn (2.695 tests, 1.417 enhedstests), build kompilerer, og PR'en er klar til Martin. Samlet forbrug for sporene: ca. 2,4M tokens mod et skøn på 2,5–4,3M for de samme stories. Rester er skrevet ind som P2-18.
 - **7. okt., nat.** P2-02/03/04/16 og P2-12/13/15/17 er flettet ind; migreringerne er nummereret 0033–0040 i rækkefølge og snapshot-kæden bygget op igen; hele suiten er grøn (2.666 tests, 1.417 enhedstests). Kun P2-06/10/14 mangler.
 - **7. okt., aften.** Ø-06, P2-05, P2-07, P2-08, P2-09 og P2-11 er færdige og flettet ind på `feat/p2-vinteren` med migreringerne 0033–0035; hele suiten er grøn (2.593 tests). P2-02/03/04/16, P2-12/13/15/17 og P2-06/10/14 er tæt på.
@@ -153,6 +154,7 @@ Rammen er:
 | Ø-04  | Appen: bibliotek, tegneværktøj, programbygger, kalender                      | Ø    | L    | 600k–1M      | Opus 5.5  | Ø-01, Ø-03        | Færdig       |
 | Ø-05  | Demo, hjælp og ADR                                                           | Ø    | S    | 100–200k     | Sonnet 5  | Ø-02, Ø-04        | Færdig       |
 | Ø-06  | Øvelser og programmer med udstyr                                             | Ø    | M    | 400–600k     | Opus 5.5  |                   | Færdig       |
+| Ø-07  | Stangen fra siden, nyt programnavn og pæne sideskift ved print               | Ø    | S    | 100–200k     | Opus 5.5  | Ø-06              | Færdig       |
 | N-01  | Navigation efter opgaver                                                     | N    | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
 
 ---
@@ -1163,7 +1165,7 @@ kropshævninger og elastikker.
   håndvægte, kettlebell-sving, goblet squat, roning med stang eller TRX,
   TRX-rækker og -udfald, kropshævninger (også med elastik), elastik-
   øvelser til hofte og skulder.
-- Tre programmer: "Styrke i rummet" (helkrop med stang og håndvægte),
+- Tre programmer: "Træning med udstyr" (helkrop med stang og håndvægte),
   "TRX og kropsvægt" og "Elastikker og kettlebell".
 - Doser efter DCU's styrkeprogrammer og ATK: teknik før vægt, belastning
   som "let", "moderat" eller "tung" frem for kilo, og aldrig til udmattelse
@@ -1173,7 +1175,31 @@ kropshævninger og elastikker.
 
 **Tokens:** ca. 400–600k · **Model:** Opus 5.5 (`claude-opus-5-5`), styrketræning for unge med kilder, nye rekvisitter i tegningerne.
 
-**Status:** Færdig 7. oktober. Kontrakten har fået vægtstang, håndvægte, TRX og bar til kropshævninger med egne rekvisitter i tegnefunktionen og i tegneværktøjet; en dosis kan nu bære belastningen som ord (let, moderat, tung). 15 øvelser: squat med stang, dødløft, rumænsk dødløft, skulderpres, bænkpres, udfald og step-up med håndvægte, roning med håndvægt, kettlebell-sving, TRX-roning, TRX-udfald, kropshævning med og uden elastik, monstergang og udadrotation med elastik, alle med kilder (ATK 2.0, DCU's styrkeprogrammer, Lloyd 2014) og en sikkerhedsreplik. Tre programmer: Styrke i rummet, TRX og kropsvægt, Elastikker og kettlebell. Migrering 0033 udvider udstyrstjekket. Alle tegninger tjekket visuelt; to elastik-tegninger blev tegnet om. Faktisk forbrug: 395k tokens på 43 min (skøn 400–600k).
+**Status:** Færdig 7. oktober. Kontrakten har fået vægtstang, håndvægte, TRX og bar til kropshævninger med egne rekvisitter i tegnefunktionen og i tegneværktøjet; en dosis kan nu bære belastningen som ord (let, moderat, tung). 15 øvelser: squat med stang, dødløft, rumænsk dødløft, skulderpres, bænkpres, udfald og step-up med håndvægte, roning med håndvægt, kettlebell-sving, TRX-roning, TRX-udfald, kropshævning med og uden elastik, monstergang og udadrotation med elastik, alle med kilder (ATK 2.0, DCU's styrkeprogrammer, Lloyd 2014) og en sikkerhedsreplik. Tre programmer: Træning med udstyr (hed først Styrke i rummet), TRX og kropsvægt, Elastikker og kettlebell. Migrering 0033 udvider udstyrstjekket. Alle tegninger tjekket visuelt; to elastik-tegninger blev tegnet om. Faktisk forbrug: 395k tokens på 43 min (skøn 400–600k).
+
+### Ø-07 Stangen fra siden, nyt programnavn og pæne sideskift ved print
+
+**Som** træner **vil jeg** have tegninger, der viser stangen som den
+ses, et programnavn, der siger hvad programmet er, og et print, der
+holder sammen på kortene, **så** et udskrevet program kan hænge i
+styrkerummet uden at et kort er delt over to sider.
+
+**Prompt:**
+
+> Tre rettelser til øvelser og programmer. (1) Vægtstangen tegnes i
+> dag på tværs af figuren, også når figuren står i profil; tegn den set
+> fra siden som standard (den nærmeste skives disk med stangens stump
+> i), og behold tegningen forfra, hvor figuren vender mod læseren
+> (skulderpres). Tegneværktøjet skal kunne vende stangen. (2) Kald
+> programmet "Styrke i rummet" for "Træning med udstyr". (3) Print som
+> PDF skal give sammenhængende sider: et kort deles aldrig, en dels navn
+> står ved sine første kort, ingen tvungne sideskift mellem delene, og
+> den hentede HTML-fil printer alle dele, ikke kun den der er på
+> skærmen. Tjek med rigtige PDF'er fra Chromium. Opdater ADR 0067.
+
+**Tokens:** ca. 100–200k · **Model:** Opus 5.5 (`claude-opus-5-5`), sideskift skal ses, ikke gættes.
+
+**Status:** Færdig 8. oktober. Stangen har fået `view` (side som standard, front for skulderpres) og en knap på sin chip i tegneværktøjet; "Træning med udstyr" i begge sprog; én fælles printvisning (`program-print.tsx`) for den åbne side, appen og sammensæt, og den hentede fil har fået sin egen `@media print`. Hver af de seks PDF'er gik fra fire til tre sider uden delte kort. Oveni en lille tegning af øvelsen i "sammensæt dit eget" og i "Dit program". Forbrug: ca. 160k tokens.
 
 ## A — afklaringer uden kode
 

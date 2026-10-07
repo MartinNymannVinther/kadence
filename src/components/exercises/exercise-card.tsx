@@ -15,7 +15,8 @@ import { ExerciseFigure } from "./exercise-figure";
  * marks the card done on this screen only — nothing is saved.
  *
  * Shared by the open page and the app; the dose is the programme's when
- * the card stands in one.
+ * the card stands in one. On paper (program-print.tsx) the figure is
+ * smaller and the "Færdig" button is left out, so more cards fit a sheet.
  */
 export function ExerciseCard({
   exercise,
@@ -40,14 +41,14 @@ export function ExerciseCard({
         className,
       )}
     >
-      <div className="bg-secondary px-4 pt-3 sm:px-6">
+      <div className="bg-secondary px-4 pt-3 sm:px-6 print:pt-2">
         <ExerciseFigure
           pose={exercise.pose}
           label={t("figure.label", { name: exercise.name })}
-          className="mx-auto max-w-md"
+          className="mx-auto max-w-md print:max-w-48"
         />
       </div>
-      <div className="flex flex-col gap-2.5 p-4 sm:p-5">
+      <div className="flex flex-col gap-2.5 p-4 sm:p-5 print:gap-2 print:p-3.5">
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
           <h3 className="text-heading leading-snug font-semibold">
             {number !== undefined && (
@@ -61,7 +62,7 @@ export function ExerciseCard({
         </div>
         <p className="text-reading leading-relaxed">{exercise.how}</p>
         {exercise.why && <p className="text-meta text-2sm leading-relaxed">{exercise.why}</p>}
-        <div className="pt-1.5">
+        <div className="pt-1.5 print:hidden">
           <button
             type="button"
             aria-pressed={done}
