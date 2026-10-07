@@ -780,7 +780,7 @@
       },
       "checkin": {
         "title": "Check-in og trivselszoner",
-        "body": "Rytteren svarer hver morgen på søvn, energi, humør, friske ben, ro på og smerter, og om man er syg. Svarene giver en zone for dagen: grøn, gul eller rød. Kadence ser på mønstret over tre uger, ikke på én dårlig dag. Zonerne bygger på Kolding Talents trivselsmodel fra Team Danmarks forældreguide: er rytteren i gul zone i en periode, tager rytter, forælder og træner en snak inden for 14 dage, og i rød zone skal fagfolk ind over. Træneren ser check-ins; forældrene kun, hvis rytteren deler dem. Kadence stiller aldrig en diagnose."
+        "body": "Rytteren svarer hver morgen på søvn, energi og smerter, og under \"Mere\" på, hvor godt man sov, humør, friske ben, ro på, og om man er syg. Svarer rytteren kun de tre første, står resten som ved sidste check-in. Svarene giver en zone for dagen: grøn, gul eller rød. Kadence ser på mønstret over tre uger, ikke på én dårlig dag. Zonerne bygger på Kolding Talents trivselsmodel fra Team Danmarks forældreguide: er rytteren i gul zone i en periode, tager rytter, forælder og træner en snak inden for 14 dage, og i rød zone skal fagfolk ind over. Træneren ser check-ins; forældrene kun, hvis rytteren deler dem. Kadence stiller aldrig en diagnose."
       },
       "reminders": {
         "title": "Påmindelser",
@@ -1287,6 +1287,20 @@
       "defaultName": "Uge {n}",
       "submit": "Gem forløbet",
       "saved": "Forløbet er gemt i biblioteket."
+    },
+    "draft": {
+      "hint": "Kladden gemmes, mens du planlægger, så holdets andre trænere kan se og rette den.",
+      "saved": "Sidst gemt af {name} {when}",
+      "savedMine": "Sidst gemt af dig {when}",
+      "savedGone": "Sidst gemt {when}",
+      "today": "kl. {time}",
+      "onDay": "{date} kl. {time}",
+      "newer": "{name} gemte en nyere udgave af ugen {when}. Den ser du nu.",
+      "newerMine": "Du gemte en nyere udgave af ugen et andet sted {when}. Den ser du nu.",
+      "newerGone": "En nyere udgave af ugen blev gemt {when}. Den ser du nu.",
+      "lost": "Dine sidste ændringer her kom ikke med.",
+      "laidIn": "Ugen er lagt ind i kalenderen, så kladden er tom igen.",
+      "offline": "Kladden er gemt på denne enhed, men ikke delt endnu. Den bliver delt, når der er forbindelse igen."
     }
   },
   "library": {
@@ -2171,7 +2185,7 @@
   },
   "checkin": {
     "title": "Hvordan har du det?",
-    "body": "Et minut om morgenen. Svarene hjælper dig og din træner med at se, om træningen passer til resten af livet.",
+    "body": "Tre hurtige spørgsmål om morgenen. Svarene hjælper dig og din træner med at se, om træningen passer til resten af livet.",
     "sleep": "Hvor mange timer sov du i nat?",
     "hours": "timer",
     "less": "Mindre søvn",
@@ -2229,6 +2243,13 @@
     "illHint": "Fx feber, forkølelse eller ondt i maven.",
     "note": "Noget, du vil fortælle?",
     "noteHint": "Din træner kan læse det. Dine forældre kun, hvis du deler, hvordan du har det.",
+    "moreQuestions": {
+      "title": "Mere",
+      "today": "Hvor godt du sov, humør, ben, ro, om du er syg, og en note.",
+      "last": "Hvor godt du sov, humør, ben, ro, om du er syg, og en note. Svarene står som sidst, så ret kun det, der har ændret sig.",
+      "neutral": "Hvor godt du sov, humør, ben, ro, om du er syg, og en note. Svarene står i midten, så ret dem, hvis de ikke passer.",
+      "look": "Sidst var noget af det her svært. Tjek, om det stadig passer i dag."
+    },
     "save": "Gem",
     "cancel": "Fortryd",
     "saved": "Tak. Dagens check-in er gemt.",

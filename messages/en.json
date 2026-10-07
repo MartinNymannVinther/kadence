@@ -780,7 +780,7 @@
       },
       "checkin": {
         "title": "Check-in and wellbeing zones",
-        "body": "Every morning the rider answers on sleep, energy, mood, fresh legs, calm and pain, and whether they are ill. The answers give a zone for the day: green, yellow or red. Kadence looks at the pattern over three weeks, not at one bad day. The zones build on Kolding Talent's wellbeing model from Team Danmark's guide for parents: when a rider is in the yellow zone for a while, rider, parent and coach have a talk within 14 days, and in the red zone professionals are involved. The coach sees check-ins; the parents only if the rider shares them. Kadence never diagnoses."
+        "body": "Every morning the rider answers on sleep, energy and pain, and under \"More\" on how well they slept, mood, fresh legs, calm and whether they are ill. When the rider answers only the first three, the rest stay as at the last check-in. The answers give a zone for the day: green, yellow or red. Kadence looks at the pattern over three weeks, not at one bad day. The zones build on Kolding Talent's wellbeing model from Team Danmark's guide for parents: when a rider is in the yellow zone for a while, rider, parent and coach have a talk within 14 days, and in the red zone professionals are involved. The coach sees check-ins; the parents only if the rider shares them. Kadence never diagnoses."
       },
       "reminders": {
         "title": "Reminders",
@@ -1287,6 +1287,20 @@
       "defaultName": "Week {n}",
       "submit": "Save the block",
       "saved": "The block is saved in the library."
+    },
+    "draft": {
+      "hint": "The draft is saved as you plan, so the team's other coaches can see and change it.",
+      "saved": "Last saved by {name} {when}",
+      "savedMine": "Last saved by you {when}",
+      "savedGone": "Last saved {when}",
+      "today": "at {time}",
+      "onDay": "on {date} at {time}",
+      "newer": "{name} saved a newer version of the week {when}. That is what you see now.",
+      "newerMine": "You saved a newer version of the week somewhere else {when}. That is what you see now.",
+      "newerGone": "A newer version of the week was saved {when}. That is what you see now.",
+      "lost": "Your latest changes here did not make it.",
+      "laidIn": "The week has been laid into the calendar, so the draft is empty again.",
+      "offline": "The draft is kept on this device but not shared yet. It will be shared when the connection is back."
     }
   },
   "library": {
@@ -2171,7 +2185,7 @@
   },
   "checkin": {
     "title": "How are you?",
-    "body": "A minute in the morning. Your answers help you and your coach see whether training fits the rest of life.",
+    "body": "Three quick questions in the morning. Your answers help you and your coach see whether training fits the rest of life.",
     "sleep": "How many hours did you sleep last night?",
     "hours": "hours",
     "less": "Less sleep",
@@ -2229,6 +2243,13 @@
     "illHint": "E.g. a fever, a cold or an upset stomach.",
     "note": "Anything you want to say?",
     "noteHint": "Your coach can read it. Your parents only if you share how you are doing.",
+    "moreQuestions": {
+      "title": "More",
+      "today": "How well you slept, mood, legs, calm, whether you are ill, and a note.",
+      "last": "How well you slept, mood, legs, calm, whether you are ill, and a note. The answers are as last time, so only change what is different.",
+      "neutral": "How well you slept, mood, legs, calm, whether you are ill, and a note. The answers sit in the middle, so change them if they do not fit.",
+      "look": "Last time some of this was hard. Check whether it still fits today."
+    },
     "save": "Save",
     "cancel": "Cancel",
     "saved": "Thanks. Today's check-in is saved.",

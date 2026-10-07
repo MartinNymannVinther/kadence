@@ -117,6 +117,15 @@ export function formatDay(value: Date, locale: string): string {
   }).format(value);
 }
 
+/** A moment's clock in Copenhagen: "14.05" in Danish, "14:05" in English. */
+export function formatClock(value: Date, locale: string): string {
+  return new Intl.DateTimeFormat(intlLocale(locale), {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Europe/Copenhagen",
+  }).format(value);
+}
+
 /**
  * A moment with its clock: "26.08.2026, 14.05" / "26/08/2026, 14:05".
  * Used by the activity feed and by anything else that states a point in

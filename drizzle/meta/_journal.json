@@ -246,6 +246,13 @@
       "when": 1791368727170,
       "tag": "0034_users_addresses",
       "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "7",
+      "when": 1791368681990,
+      "tag": "0035_week_plan_drafts",
+      "breakpoints": true
     }
   ]
 }
