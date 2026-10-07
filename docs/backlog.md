@@ -23,6 +23,7 @@ eller mere. Rækkefølgen inden for en prioritet er den anbefalede.
 
 P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter #21 og #22). Hvert spor bygges i sit eget worktree med egen database og flettes ind på P1-grenen, når det er grønt. Statusloggen nyeste først:
 
+- **7. okt.** P1-09 er færdig: en demo kan aldrig blive installationens ejer; hele suiten er grøn (2.456 tests).
 - **7. okt.** PR #26 (navigation efter opgaver) er merget. P1-09 er sat i gang.
 - **7. okt.** N-01 (navigation efter opgaver) er færdig; hele suiten er grøn (2.450 tests, 1.365 enhedstests) og build kompilerer. Ny P1-09: en demo må aldrig blive installationens ejer (fundet under N-01). Den ustabile Rulle-test er rettet.
 - **7. okt.** PR #25 (øvelser og programmer) er merget. N-01 (navigation efter opgaver) er godkendt og i gang på `feat/navigation-efter-opgaver`.
@@ -106,7 +107,7 @@ Rammen er:
 | P1-06 | Rulle møder en rigtig hometrainer                          | P1   | S    | 120–200k     | Sonnet 5  |                   | Færdig       |
 | P1-07 | Ryttere og forældre kan forlade holdet igen                | P1   | S    | 50–100k      | Sonnet 5  |                   | Færdig       |
 | P1-08 | En pilotguide til træneren                                 | P1   | S    | 120–200k     | Sonnet 5  | A-05              | Færdig       |
-| P1-09 | En demo kan aldrig blive installationens ejer              | P1   | S    | 100–180k     | Opus 5.5  |                   | I gang       |
+| P1-09 | En demo kan aldrig blive installationens ejer              | P1   | S    | 100–180k     | Opus 5.5  |                   | Færdig       |
 | P2-01 | Garmin-ture ind af sig selv gennem Tredict                 | P2   | L    | 600k–1M      | Opus 5.5  | A-07 (Martins ja) | Ikke startet |
 | P2-02 | Mine ture: en liste over rytterens ture                    | P2   | S    | 80–150k      | Sonnet 5  |                   | Ikke startet |
 | P2-03 | Tid, sted og kørsel på løb og begivenheder                 | P2   | M    | 200–300k     | Sonnet 5  |                   | Ikke startet |
@@ -429,7 +430,7 @@ der slår demoen til før den første rigtige konto, ikke kan overtages.
 
 **Tokens:** ca. 100–180k · **Model:** Opus 5.5 (`claude-opus-5-5`), adgang og ejerskab af installationen.
 
-**Status:** I gang siden 7. oktober på `fix/demo-aldrig-ejer` (Opus 5.5).
+**Status:** Færdig 7. oktober på `fix/demo-aldrig-ejer`. Demoens konti ligger på det reserverede domæne `@demo.invalid`; de tæller ikke med, når Kadence ser, om installationen er tom, og en demokonto får aldrig ejerens rolle. `/demo` svarer 404, og forsiden viser ingen demo, før installationen har en ejer. ADR 0005 har fået et tillæg, og `docs/launch.md` siger det. Bygget af hovedsessionen selv i stedet for en agent, da rettelsen var lille; omkring 120k tokens (skøn 100–180k).
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: fix/demo-aldrig-ejer.
