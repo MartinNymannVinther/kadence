@@ -317,7 +317,12 @@
       "data": "Data",
       "team": "Holdet",
       "me": "Mig",
-      "devices": "Enheder"
+      "devices": "Enheder",
+      "groups": {
+        "you": "Dig",
+        "team": "Holdet",
+        "installation": "Installationen"
+      }
     },
     "access": {
       "title": "Adgang til installationen",

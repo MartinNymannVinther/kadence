@@ -317,7 +317,12 @@
       "data": "Data",
       "team": "Team",
       "me": "Me",
-      "devices": "Devices"
+      "devices": "Devices",
+      "groups": {
+        "you": "You",
+        "team": "Team",
+        "installation": "Installation"
+      }
     },
     "access": {
       "title": "Access to this installation",
