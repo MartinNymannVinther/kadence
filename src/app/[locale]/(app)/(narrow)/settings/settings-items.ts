@@ -1,13 +1,15 @@
 /**
- * The settings tabs, by role (ADR 0061). Pure, for the tests.
+ * The settings tabs, by role and grouped by whose they are (ADR 0061,
+ * amended by 0068). Pure, for the tests.
  *
- * "Holdet" is the coaches' and comes first for them, then everything a
- * team is run with: the workspace, its AI. A rider's settings are about
- * the rider — themselves, their Wahoo, Garmin and Polar (ADR 0018), their
- * security — and a parent's about the parent. Everyone keeps "Data", the
- * one-click way out (dogma three), and "Om", what is running. The
- * admission and installation pages exist only for the installation's
- * owner, whatever their role on the team.
+ * - "Dig": the person's own — themselves, a rider's Wahoo, Garmin and
+ *   Polar (ADR 0018), their security, and for anyone who is not a coach
+ *   "Data", the one-click way out (dogma three);
+ * - "Holdet", for coaches: everything a team is run with — the team, the
+ *   workspace, its AI, and the team's data;
+ * - "Installationen", for the installation's owner whatever their role on
+ *   the team: admission and the installation (ADR 0048);
+ * - "Om", what is running, last and on its own.
  *
  * A tab that is not listed is only a tab: every page under /settings
  * still decides on the server what the caller may see and do there.
@@ -27,31 +29,38 @@ export type SettingsKey =
 
 export type SettingsItem = { key: SettingsKey; href: string };
 
-export function settingsItems({
-  owner,
-  isCoach,
-  isRider,
-}: {
+/** A group's header; "Om" stands alone without one. */
+export type SettingsGroupKey = "you" | "team" | "installation";
+
+export type SettingsGroup = { key: SettingsGroupKey | null; items: SettingsItem[] };
+
+type Who = {
   /** The installation's owner (ADR 0048). */
   owner: boolean;
   isCoach: boolean;
   isRider: boolean;
-}): SettingsItem[] {
-  const keys: Array<SettingsKey | false> = [
-    isCoach && "team",
-    "me",
-    isRider && "devices",
-    isCoach && "workspace",
-    "security",
-    owner && "access",
-    owner && "installation",
-    isCoach && "ai",
-    "data",
-    "about",
+};
+
+export function settingsGroups({ owner, isCoach, isRider }: Who): SettingsGroup[] {
+  const groups: Array<[SettingsGroupKey | null, Array<SettingsKey | false>]> = [
+    ["you", ["me", isRider && "devices", "security", !isCoach && "data"]],
+    ["team", [isCoach && "team", isCoach && "workspace", isCoach && "ai", isCoach && "data"]],
+    ["installation", [owner && "access", owner && "installation"]],
+    [null, ["about"]],
   ];
-  return keys
-    .filter((key): key is SettingsKey => key !== false)
-    .map((key) => ({ key, href: `/settings/${key}` }));
+  return groups
+    .map(([key, keys]) => ({
+      key,
+      items: keys
+        .filter((item): item is SettingsKey => item !== false)
+        .map((item) => ({ key: item, href: `/settings/${item}` })),
+    }))
+    .filter((group) => group.items.length > 0);
+}
+
+/** The same tabs without their groups, in order. */
+export function settingsItems(who: Who): SettingsItem[] {
+  return settingsGroups(who).flatMap((group) => group.items);
 }
 
 /**

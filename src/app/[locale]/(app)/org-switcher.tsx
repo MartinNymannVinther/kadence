@@ -19,19 +19,26 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { authClient } from "@/core/auth/client";
 import { useRouter } from "@/i18n/navigation";
-import { cn } from "@/lib/utils";
 import { organizationSlug } from "@/lib/slug";
+import { TeamName } from "./team-name";
 
+/**
+ * The team's name under the wordmark, as the switcher (docs/adr/0068):
+ * shown by ./team-lockup.tsx only when the person has somewhere to switch
+ * to. The button reads as the team's name with "Skift hold" after it, so
+ * a screen reader hears both what is chosen and what pressing does.
+ */
 export function OrgSwitcher({
-  triggerClassName,
+  organization,
+  logo = null,
   align = "start",
-  label,
   canCreate = false,
 }: {
-  triggerClassName?: string;
+  /** The active team's name, as the server read it: no flash while the list loads. */
+  organization: string;
+  /** The club's logo, when it has one (ADR 0048). */
+  logo?: string | null;
   align?: "start" | "end" | "center";
-  /** Overrides the trigger text; the 2a lockup already names the active org. */
-  label?: string;
   /**
    * Only the installation's owner creates workspaces (ADR 0048); a new club
    * comes in through an approved application.
@@ -51,7 +58,7 @@ export function OrgSwitcher({
     const target = organizations?.find((o) => o.id === organizationId);
     const { error: switchError } = await authClient.organization.setActive({ organizationId });
     if (switchError) {
-      toast.error(t("error"));
+      toast.error(t("switchError"));
       return;
     }
     if (target) toast.success(t("switched", { name: target.name }));
@@ -83,20 +90,25 @@ export function OrgSwitcher({
       <DropdownMenu>
         <DropdownMenuTrigger
           render={
-            <Button variant="ghost" size="sm" className={cn("gap-2 font-medium", triggerClassName)}>
-              <span className="truncate">{label ?? activeOrganization?.name ?? t("label")}</span>
-              <ChevronsUpDown data-slot="icon" className="shrink-0 opacity-50" />
-            </Button>
+            <button
+              type="button"
+              title={t("switch")}
+              className="focus-ring text-meta hover:text-sidebar-foreground hover:bg-sidebar-hover data-popup-open:bg-sidebar-hover -ml-1.5 flex max-w-full min-w-0 items-center gap-1.5 rounded-md px-1.5 py-1 text-xs leading-none transition-colors duration-[120ms] ease-out max-lg:min-h-11"
+            />
           }
-        />
+        >
+          <TeamName organization={organization} logo={logo} />
+          <span className="sr-only">, {t("switch")}</span>
+          <ChevronsUpDown aria-hidden className="size-3.5 shrink-0 opacity-70" />
+        </DropdownMenuTrigger>
         <DropdownMenuContent align={align} className="min-w-56">
           {/* Base UI: a GroupLabel must live inside a Group. */}
           <DropdownMenuGroup>
-            <DropdownMenuLabel>{t("label")}</DropdownMenuLabel>
-            {(organizations ?? []).map((organization) => (
-              <DropdownMenuItem key={organization.id} onClick={() => switchTo(organization.id)}>
-                <span className="flex-1 truncate">{organization.name}</span>
-                {organization.id === activeOrganization?.id ? <Check data-slot="icon" /> : null}
+            <DropdownMenuLabel>{t("switch")}</DropdownMenuLabel>
+            {(organizations ?? []).map((team) => (
+              <DropdownMenuItem key={team.id} onClick={() => switchTo(team.id)}>
+                <span className="flex-1 truncate">{team.name}</span>
+                {team.id === activeOrganization?.id ? <Check data-slot="icon" /> : null}
               </DropdownMenuItem>
             ))}
           </DropdownMenuGroup>

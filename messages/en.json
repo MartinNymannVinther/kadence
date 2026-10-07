@@ -186,16 +186,25 @@
       "library": "Library",
       "season": "Season",
       "club": "Club champion",
-      "parents": "Parents",
       "rulle": "Rulle",
       "me": "Me",
       "child": "Your child",
+      "guides": "Guides and calculators",
+      "guidesShort": "Guides",
+      "coachGuide": "Coach guide",
+      "parentsGuide": "Parents' guide",
+      "groups": {
+        "planning": "Planning",
+        "training": "Training",
+        "team": "Team",
+        "tools": "Tools",
+        "knowledge": "Knowledge"
+      },
       "more": "More",
       "moreNews": "More, something new",
       "barLabel": "Main menu"
     },
     "orgSwitcher": {
-      "label": "Workspace",
       "create": "Create workspace",
       "createTitle": "Create new workspace",
       "name": "Name",
@@ -203,7 +212,8 @@
       "switched": "Switched to {name}",
       "created": "{name} has been created",
       "error": "The workspace could not be created. Please try again.",
-      "switch": "Switch workspace"
+      "switchError": "The team could not be switched. Please try again.",
+      "switch": "Switch team"
     },
     "security": {
       "resets": {
@@ -307,7 +317,12 @@
       "data": "Data",
       "team": "Team",
       "me": "Me",
-      "devices": "Devices"
+      "devices": "Devices",
+      "groups": {
+        "you": "You",
+        "team": "Team",
+        "installation": "Installation"
+      }
     },
     "access": {
       "title": "Access to this installation",
@@ -839,7 +854,7 @@
       "where": "See the team's week in the calendar"
     },
     "parent": {
-      "link": "{count, plural, one {See your child's week under Parents} other {See your children's weeks under Parents}}"
+      "link": "{count, plural, one {See your child's week} other {See your children's weeks}}"
     },
     "start": {
       "title": "Getting started",
@@ -3817,7 +3832,7 @@
   "open": {
     "nav": {
       "hub": "Guides and calculators",
-      "toApp": "Go to Kadence",
+      "toApp": "Back to Kadence",
       "login": "Sign in"
     },
     "footer": "Kadence is open source training planning for young road cyclists, their coaches and their parents. These pages are open to everyone, and what you type into the calculators stays in your browser.",

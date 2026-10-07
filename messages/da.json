@@ -186,16 +186,25 @@
       "library": "Bibliotek",
       "season": "Sæson",
       "club": "Klubmester",
-      "parents": "Forældre",
       "rulle": "Rulle",
       "me": "Mig",
       "child": "Barnet",
+      "guides": "Viden og beregnere",
+      "guidesShort": "Viden",
+      "coachGuide": "Trænerguide",
+      "parentsGuide": "Forældreguide",
+      "groups": {
+        "planning": "Planlægning",
+        "training": "Træning",
+        "team": "Holdet",
+        "tools": "Værktøjer",
+        "knowledge": "Viden"
+      },
       "more": "Mere",
       "moreNews": "Mere, der er noget nyt",
       "barLabel": "Hovedmenu"
     },
     "orgSwitcher": {
-      "label": "Arbejdsrum",
       "create": "Opret arbejdsrum",
       "createTitle": "Opret nyt arbejdsrum",
       "name": "Navn",
@@ -203,7 +212,8 @@
       "switched": "Skiftet til {name}",
       "created": "{name} er oprettet",
       "error": "Arbejdsrummet kunne ikke oprettes. Prøv igen.",
-      "switch": "Skift arbejdsrum"
+      "switchError": "Holdet kunne ikke skiftes. Prøv igen.",
+      "switch": "Skift hold"
     },
     "security": {
       "resets": {
@@ -307,7 +317,12 @@
       "data": "Data",
       "team": "Holdet",
       "me": "Mig",
-      "devices": "Enheder"
+      "devices": "Enheder",
+      "groups": {
+        "you": "Dig",
+        "team": "Holdet",
+        "installation": "Installationen"
+      }
     },
     "access": {
       "title": "Adgang til installationen",
@@ -839,7 +854,7 @@
       "where": "Se holdets uge i kalenderen"
     },
     "parent": {
-      "link": "{count, plural, one {Se dit barns uge under Forældre} other {Se dine børns uger under Forældre}}"
+      "link": "{count, plural, one {Se dit barns uge} other {Se dine børns uger}}"
     },
     "start": {
       "title": "Kom godt i gang",
@@ -3817,7 +3832,7 @@
   "open": {
     "nav": {
       "hub": "Viden og beregnere",
-      "toApp": "Til Kadence",
+      "toApp": "Tilbage til Kadence",
       "login": "Log ind"
     },
     "footer": "Kadence er open source træningsplanlægning for unge landevejsryttere, deres trænere og forældre. Siderne her er åbne for alle, og det, du skriver i beregnerne, bliver i din browser.",

@@ -15,7 +15,9 @@ const land = readLand(
 const ground = new Ground(odder, land);
 const roads = new SideRoads(land, ground);
 
-describe("the roads round the queen stage (ADR 0046)", () => {
+// Building the land round Odder takes a few seconds; on a busy machine the
+// unit run's default 5 s was not enough, so these get the full suite's 30 s.
+describe("the roads round the queen stage (ADR 0046)", { timeout: 30_000 }, () => {
   it("are Odder's streets and the lanes and tracks round it, but not the route's own", () => {
     const kinds = new Set(land.roads.map((r) => r.kind));
     for (const k of ["main", "minor", "service", "track", "cycle", "foot"] as const)

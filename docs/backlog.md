@@ -23,6 +23,8 @@ eller mere. Rækkefølgen inden for en prioritet er den anbefalede.
 
 P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter #21 og #22). Hvert spor bygges i sit eget worktree med egen database og flettes ind på P1-grenen, når det er grønt. Statusloggen nyeste først:
 
+- **7. okt.** N-01 (navigation efter opgaver) er færdig; hele suiten er grøn (2.450 tests, 1.365 enhedstests) og build kompilerer. Ny P1-09: en demo må aldrig blive installationens ejer (fundet under N-01). Den ustabile Rulle-test er rettet.
+- **7. okt.** PR #25 (øvelser og programmer) er merget. N-01 (navigation efter opgaver) er godkendt og i gang på `feat/navigation-efter-opgaver`.
 - **7. okt.** Øvelser og programmer er færdig: Ø-01 til Ø-05 er flettet ind på `feat/ovelser-og-programmer`, hele suiten er grøn (2.431 tests, 1.329 enhedstests), build kompilerer, og PR #25 er klar til Martin. Samlet forbrug: ca. 1,9M tokens mod et skøn på 1,7–2,85M.
 - **6. okt., nat.** Ø-02 og Ø-04 er færdige og flettet ind; hele suiten er grøn (2.430 tests, 1.329 enhedstests) og build kompilerer. Ø-05 (demo, hjælp og ADR) er sat i gang. Forbrug for Ø-01 til Ø-04: ca. 1,6M tokens mod et skøn på 1,6–2,7M.
 - **6. okt., aften.** Ø-01 er færdig og flettet ind (23 øvelser, 4 programmer, tegnefunktionen og de fælles komponenter); hele suiten er grøn (2.340 tests). Ø-02 og Ø-04 er sat i gang parallelt.
@@ -103,6 +105,7 @@ Rammen er:
 | P1-06 | Rulle møder en rigtig hometrainer                          | P1   | S    | 120–200k     | Sonnet 5  |                   | Færdig       |
 | P1-07 | Ryttere og forældre kan forlade holdet igen                | P1   | S    | 50–100k      | Sonnet 5  |                   | Færdig       |
 | P1-08 | En pilotguide til træneren                                 | P1   | S    | 120–200k     | Sonnet 5  | A-05              | Færdig       |
+| P1-09 | En demo kan aldrig blive installationens ejer              | P1   | S    | 100–180k     | Opus 5.5  |                   | Ikke startet |
 | P2-01 | Garmin-ture ind af sig selv gennem Tredict                 | P2   | L    | 600k–1M      | Opus 5.5  | A-07 (Martins ja) | Ikke startet |
 | P2-02 | Mine ture: en liste over rytterens ture                    | P2   | S    | 80–150k      | Sonnet 5  |                   | Ikke startet |
 | P2-03 | Tid, sted og kørsel på løb og begivenheder                 | P2   | M    | 200–300k     | Sonnet 5  |                   | Ikke startet |
@@ -142,6 +145,7 @@ Rammen er:
 | Ø-03  | Holdets egne øvelser og programmer i databasen             | Ø    | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
 | Ø-04  | Appen: bibliotek, tegneværktøj, programbygger, kalender    | Ø    | L    | 600k–1M      | Opus 5.5  | Ø-01, Ø-03        | Færdig       |
 | Ø-05  | Demo, hjælp og ADR                                         | Ø    | S    | 100–200k     | Sonnet 5  | Ø-02, Ø-04        | Færdig       |
+| N-01  | Navigation efter opgaver                                   | N    | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
 
 ---
 
@@ -409,6 +413,35 @@ Planlæg ugen med "Start fra", Del ugen, påmindelser (ADR 0060), Holdets
 uge med opmærksomhedspunkterne (ADR 0062), rytterens kom-i-gang (ADR
 0063). Kort, i du-form, med skærmbilleder taget med Playwright mod demoen
 (DEMO=on) gemt i docs/pilot/. Ingen nye funktioner.
+```
+
+### P1-09 En demo kan aldrig blive installationens ejer
+
+**Som** den, der driver installationen, **vil jeg** være sikker på, at en
+besøgende i demoen aldrig bliver installationens ejer, **så** en installation,
+der slår demoen til før den første rigtige konto, ikke kan overtages.
+
+- Fundet under N-01 (7. oktober): på en tom installation med `DEMO=on` blev
+  den første demobesøgendes trænerkonto installationens ejer.
+- `docs/launch.md` beskytter i dag kun ved rækkefølgen (egen konto først,
+  demoen bagefter); koden skal beskytte uanset rækkefølgen.
+
+**Tokens:** ca. 100–180k · **Model:** Opus 5.5 (`claude-opus-5-5`), adgang og ejerskab af installationen.
+
+**Status:** Ikke startet. Fundet 7. oktober.
+
+```text
+Følg rammen i docs/backlog.md §0. Gren: fix/demo-aldrig-ejer.
+Læs ADR 0004, 0005, 0048 og 0054, src/core/auth/signup.ts (den første
+konto på en tom installation bliver ejer og lukker døren),
+src/modules/demo/service.ts og roles.ts. Sørg for, at en konto, demoen
+opretter, aldrig får platform_role = 'owner' og aldrig tæller som "den
+første konto": demoens konti oprettes uden om den regel, og reglen ser
+bort fra dem. Afvis også at slå demoen til (DEMO=on) uden en ejer: start
+med en klar besked eller lad /demo svare 404, indtil der findes en ejer.
+Tests: en tom installation med DEMO=on, hvor /demo åbnes først, har
+bagefter ingen ejer, og den første rigtige registrering bliver ejer.
+Opdatér docs/launch.md.
 ```
 
 ---
@@ -1049,6 +1082,30 @@ planen.
 
 **Status:** Færdig 7. oktober, flettet ind. Demoen har holdets egen øvelse "Rygstræk på bænk" med egen tegning, programmet "Holdets mobilitet efter fællestræning", der blander Kadences og holdets øvelser, og det program lagt i alle demorytteres kalender i dag, så Emma ser passet med tegninger. Hjælp har et afsnit om øvelser og programmer, pilotguiden og README nævner dem, og ADR 0067 samler beslutningerne. Undervejs rettet: en test fra P1-04, der af og til fejlede efter rækkefølgen af testfilerne. Faktisk forbrug: 311k tokens på 32 min (skøn 100–200k; mere end ventet, fordi demoen blev klikket igennem som træner og rytter).
 
+## N — navigation
+
+### N-01 Navigation efter opgaver
+
+**Som** træner, rytter eller forælder **vil jeg** finde det, jeg skal bruge,
+uden at lede i en lang flad liste, **så** Kadence føles enkel fra første dag.
+
+- Samme struktur for alle roller med små grupper og ikoner: I dag, så
+  Planlægning eller Træning, Holdet, Værktøjer og Viden; punkterne følger
+  rollen.
+- "Viden og beregnere" er tilbage i menuen sammen med Trænerguide,
+  Forældreguide og Hjælp.
+- Bundbjælken: træner I dag · Kalender · Ryttere · Bibliotek · Mere;
+  rytter I dag · Kalender · Bibliotek · Mig · Mere; forælder Barnet ·
+  Kalender · Viden · Mere.
+- Holdskifteren sidder i holdnavnet øverst og hedder "Skift hold".
+- Indstillinger er grupperet i Dig, Holdet og Installationen.
+- De åbne sider viser "Tilbage til Kadence" for den, der er logget ind.
+- Ingen adresser ændres.
+
+**Tokens:** ca. 300–450k · **Model:** Opus 5.5 (`claude-opus-5-5`), struktur og design på tværs af alle roller.
+
+**Status:** Færdig 7. oktober (ADR 0068). Menuen er grupperet med ikoner for alle roller, Viden og beregnere, Trænerguide, Forældreguide og Hjælp står under Viden, bundbjælken følger rollen, holdnavnet er holdskifteren (kun som knap ved flere hold eller for ejeren), indstillinger står i Dig, Holdet og Installationen, og de åbne sider har "Tilbage til Kadence". Valgt undervejs: menupunktet hedder "Barnet" som før; forældre beholder Klubmester, når den er slået til; punkterne i sidemenuen er 34 px høje på computer, så trænerens længste liste står uden at rulle, og mindst 44 px på telefonen. Faktisk forbrug: 306k tokens på 30 min (skøn 300–450k).
+
 ## A — afklaringer uden kode
 
 ### A-01 En sportsdiætist læser madguiden
@@ -1181,9 +1238,7 @@ den. 2) Tilføj de rene tests i tests/insight, tests/calendar og
 tests/today til vitest.unit.config.mts. 3) Ret kommentaren i
 src/modules/assist/coach-brief.ts, der stadig siger
 "Mandagsoverblikket". 4) Trænerens knap under Arbejdsrum siger stadig "Forlad arbejdsrummet …
-dine samtaler" (arvet fra Haij); sig "Forlad holdet" som på Mig. 5) Gør
-tests/rulle/side-roads.test.ts robust over for en travl maskine (den
-rammer 5 sekunders timeout i pnpm test:unit under belastning). 6) Når en træner fjerner et medlem, bliver
+dine samtaler" (arvet fra Haij); sig "Forlad holdet" som på Mig. 5) (Gjort 7. oktober: tests/rulle/side-roads.test.ts har fået 30 sekunder.) 6) Når en træner fjerner et medlem, bliver
 medlemmets rækker i push_subscriptions liggende uden at blive brugt;
 fjern dem i samme transaktion (en SECURITY DEFINER eller en trigger på
 memberships), med en test.

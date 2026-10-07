@@ -1,6 +1,6 @@
 # ADR 0061: One menu per role, a bottom bar on the phone, and the guides out of the signed-in menu
 
-Status: accepted · Date: 2026-10-06 · Amends ADR 0007 (named heading steps) and ADR 0047 (the hub's entry points)
+Status: accepted · Date: 2026-10-06 · Amends ADR 0007 (named heading steps) and ADR 0047 (the hub's entry points) · Amended by ADR 0068 (the lists in groups by task with icons, the open guides and both guides back in the menu under Viden, a fuller bar for riders and parents, the team's name as the switcher, settings in sections)
 
 ## Context
 

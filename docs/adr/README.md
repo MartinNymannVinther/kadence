@@ -87,3 +87,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0065](0065-the-invitation-says-who.md)                                    | The invitation says who: rider, parent of a named child, or coach, from one definer function before sign-in | → 0004, 0010, 0063             |
 | [0066](0066-the-pilots-three-numbers.md)                                   | The pilot's three numbers: check-ins, receipts and estimated planning minutes, counts only for the owner    | → 0003, 0048                   |
 | [0067](0067-exercises-and-programmes.md)                                   | Exercises and programmes, drawn: one contract, one geometry, a team's own beside Kadence's, no DELETE       | → 0014, 0015, 0032, 0047, 0054 |
+| [0068](0068-navigation-by-task.md)                                         | Navigation by task: groups with icons, knowledge back in the menu, the team's name as the switcher          | → 0047, 0048, 0061             |
