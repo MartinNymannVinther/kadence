@@ -23,6 +23,7 @@ eller mere. Rækkefølgen inden for en prioritet er den anbefalede.
 
 P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter #21 og #22). Hvert spor bygges i sit eget worktree med egen database og flettes ind på P1-grenen, når det er grønt. Statusloggen nyeste først:
 
+- **7. okt., nat.** P2-02/03/04/16 og P2-12/13/15/17 er flettet ind; migreringerne er nummereret 0033–0040 i rækkefølge og snapshot-kæden bygget op igen; hele suiten er grøn (2.666 tests, 1.417 enhedstests). Kun P2-06/10/14 mangler.
 - **7. okt., aften.** Ø-06, P2-05, P2-07, P2-08, P2-09 og P2-11 er færdige og flettet ind på `feat/p2-vinteren` med migreringerne 0033–0035; hele suiten er grøn (2.593 tests). P2-02/03/04/16, P2-12/13/15/17 og P2-06/10/14 er tæt på.
 - **7. okt.** Energigels i løbseksemplet fra U17 (PR #28). Ø-06 (øvelser med udstyr) og hele P2 undtagen P2-01 er sat i gang på Martins bud. P2-11 og P2-13 bygges uden at svække trivselszonerne eller revisionssporet; valgene står i ADR'erne.
 - **7. okt.** P1-09 er færdig: en demo kan aldrig blive installationens ejer; hele suiten er grøn (2.456 tests).
@@ -111,9 +112,9 @@ Rammen er:
 | P1-08 | En pilotguide til træneren                                 | P1   | S    | 120–200k     | Sonnet 5  | A-05              | Færdig       |
 | P1-09 | En demo kan aldrig blive installationens ejer              | P1   | S    | 100–180k     | Opus 5.5  |                   | Færdig       |
 | P2-01 | Garmin-ture ind af sig selv gennem Tredict                 | P2   | L    | 600k–1M      | Opus 5.5  | A-07 (Martins ja) | Ikke startet |
-| P2-02 | Mine ture: en liste over rytterens ture                    | P2   | S    | 80–150k      | Sonnet 5  |                   | Ikke startet |
-| P2-03 | Tid, sted og kørsel på løb og begivenheder                 | P2   | M    | 200–300k     | Sonnet 5  |                   | Ikke startet |
-| P2-04 | Forældre lægger familiens begivenheder ind                 | P2   | M    | 250–400k     | Opus 5.5  | P2-03             | Ikke startet |
+| P2-02 | Mine ture: en liste over rytterens ture                    | P2   | S    | 80–150k      | Sonnet 5  |                   | Færdig       |
+| P2-03 | Tid, sted og kørsel på løb og begivenheder                 | P2   | M    | 200–300k     | Sonnet 5  |                   | Færdig       |
+| P2-04 | Forældre lægger familiens begivenheder ind                 | P2   | M    | 250–400k     | Opus 5.5  | P2-03             | Færdig       |
 | P2-05 | En fælles kladde til ugeplanen for flere trænere           | P2   | M    | 250–400k     | Opus 5.5  |                   | Færdig       |
 | P2-06 | Tilgængelighed: kontrast, bevægelse og fokus               | P2   | S    | 120–200k     | Sonnet 5  |                   | Ikke startet |
 | P2-07 | Medlemmer kan ikke læse hinandens e-mailadresser           | P2   | M    | 400–700k     | Fable 5.1 |                   | Færdig       |
@@ -121,12 +122,12 @@ Rammen er:
 | P2-09 | Parkerede sider svarer 404                                 | P2   | S    | 100–200k     | Sonnet 5  |                   | Færdig       |
 | P2-10 | Enhedssiden nævner kun de udbydere, der er sat op          | P2   | S    | 60–100k      | Sonnet 5  |                   | Ikke startet |
 | P2-11 | En kortere check-in                                        | P2   | M    | 250–400k     | Opus 5.5  | A-06 (faglig)     | Færdig       |
-| P2-12 | Planændringer kender deres afsender                        | P2   | M    | 300–450k     | Opus 5.5  |                   | Ikke startet |
-| P2-13 | Påmindelser fylder ikke revisionssporet                    | P2   | S    | 100–180k     | Opus 5.5  | Martins valg      | Ikke startet |
+| P2-12 | Planændringer kender deres afsender                        | P2   | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
+| P2-13 | Påmindelser fylder ikke revisionssporet                    | P2   | S    | 100–180k     | Opus 5.5  | Martins valg      | Færdig       |
 | P2-14 | Demoen viser forløb med egne pas og påmindelser            | P2   | S    | 120–200k     | Sonnet 5  |                   | Ikke startet |
-| P2-15 | Invitationslinks, der holder en uge                        | P2   | S    | 60–120k      | Sonnet 5  | P1-01             | Ikke startet |
-| P2-16 | En forælder på holdet kobles til endnu et barn             | P2   | M    | 200–350k     | Opus 5.5  | P1-01             | Ikke startet |
-| P2-17 | Trivselspåmindelsen ser en check-in, der bliver rød senere | P2   | S    | 150–250k     | Opus 5.5  | P1-02             | Ikke startet |
+| P2-15 | Invitationslinks, der holder en uge                        | P2   | S    | 60–120k      | Sonnet 5  | P1-01             | Færdig       |
+| P2-16 | En forælder på holdet kobles til endnu et barn             | P2   | M    | 200–350k     | Opus 5.5  | P1-01             | Færdig       |
+| P2-17 | Trivselspåmindelsen ser en check-in, der bliver rød senere | P2   | S    | 150–250k     | Opus 5.5  | P1-02             | Færdig       |
 | P3-01 | Evaluér de parkerede dele ud fra pilotens tal              | P3   | S    | 60–120k      | Sonnet 5  | P1-04             | Ikke startet |
 | P3-02 | Fremmøde på holdpas                                        | P3   | M    | 250–400k     | Opus 5.5  | pilotens ønske    | Ikke startet |
 | P3-03 | Saml de gamle indgange til planlægning                     | P3   | S    | 120–200k     | Sonnet 5  | en måneds brug    | Ikke startet |
@@ -499,6 +500,8 @@ jeg kan finde en tur uden at bladre i kalenderen.
 
 **Tokens:** ca. 80–150k · **Model:** Sonnet 5 (`claude-sonnet-5`), en liste og en service under eksisterende RLS.
 
+**Status:** Færdig 7. oktober. "Dine ture" på Mig: de seneste 20 ture med dato, titel, tid, distance og farve for, hvor tæt de kom på planen, og "Vis flere". Læses under RLS ud fra den indloggede, aldrig fra et id fra browseren. Andel af sporets forbrug: ca. 70k tokens (skøn 80–150k).
+
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/mine-ture.
 Tilføj sektionen "Dine ture" på /me (src/app/[locale]/(app)/(narrow)/me,
@@ -522,6 +525,8 @@ der kører, **så** weekenden kan planlægges.
 **Størrelse:** M
 
 **Tokens:** ca. 200–300k · **Model:** Sonnet 5 (`claude-sonnet-5`), enkle kolonner ført gennem formularer, visninger og eksport.
+
+**Status:** Færdig 7. oktober. Begivenheder har fået starttid, mødested og en note om kørsel (migrering 0039), vist på kalenderens chips, på Mig, på forældresiden og i "Del ugen", hvor løb og lejre blandes ind efter tid; eksamen, skole, ferie og sygdom deles aldrig. Ikke gjort: trænerens liste over begivenheder på I dag viser endnu ikke tid og sted. Andel: ca. 135k tokens (skøn 200–300k).
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/begivenhed-tid-sted.
@@ -547,6 +552,8 @@ dem.
 **Størrelse:** M · **Afhænger af:** P2-03
 
 **Tokens:** ca. 250–400k · **Model:** Opus 5.5 (`claude-opus-5-5`), en ny skrivepolicy for værger; rytteradskillelsen skal bevises.
+
+**Status:** Færdig 7. oktober (ADR 0069). En forælder med bekræftet link kan lægge ferie, eksamen og andet ind for sit eget barn (migrering 0040), aldrig løb eller holdets begivenheder, og kan kun rette og slette sine egne rækker; rytteren og træneren kan rette alt. Rytteradskillelsen er bevist med en ny testblok. Træneren ser i kalenderen, at en forælder har lagt den ind. Andel: ca. 135k tokens (skøn 250–400k).
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/familiens-begivenheder.
@@ -744,6 +751,8 @@ af mine kommende pas, **så** jeg ikke møder op til noget, der er aflyst.
 
 **Tokens:** ca. 300–450k · **Model:** Opus 5.5 (`claude-opus-5-5`), ny kolonne eller trigger, en tombstone-tabel med RLS og påmindelsernes logik.
 
+**Status:** Færdig 7. oktober. `planned_sessions.updated_by` sættes af en trigger ud fra den, der skriver (migrering 0037), og slettede pas i de næste 7 dage gemmes i `planned_session_deletions` med tvungen RLS gennem rytteradskillelsen, audit og en fejning efter 7 dage. Påmindelsen "Planen er ændret" dækker nu også sletninger og pas flyttet ud af ugen, og kun andres ændringer. ADR 0060 har fået et tillæg. Andel: ca. 150k tokens (skøn 300–450k).
+
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/plan-afsender.
 Læs docs/adr/0060-reminders-without-content.md (afsnittet om "by someone
@@ -765,6 +774,8 @@ træningen og ikke en række for hver påmindelse, **så** sporet kan læses.
 **Størrelse:** S · **Afhænger af:** Martins valg af løsning
 
 **Tokens:** ca. 100–180k · **Model:** Opus 5.5 (`claude-opus-5-5`), ændrer audit-triggere, som dogme seks hviler på.
+
+**Status:** Færdig 7. oktober. Påmindelsernes tidsstempler ligger nu i `push_runs` (migrering 0038) uden audit-trigger, med begrundelsen i SQL og en dokumenteret undtagelse i meta-testen; tilmelding og afmelding auditeres stadig. Valgt løsning (b), så audit-triggerne forbliver urørte; ADR 0060 siger hvorfor (a) blev fravalgt. Andel: ca. 95k tokens (skøn 100–180k).
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: fix/audit-paamindelser.
@@ -813,7 +824,7 @@ rytter først åbner sit på tredjedagen.
 
 **Tokens:** ca. 60–120k · **Model:** Sonnet 5 (`claude-sonnet-5`), én indstilling og teksterne omkring den.
 
-**Status:** Færdig 7. oktober. Check-in'en spørger først om søvn, energi og smerte; resten står bag "Mere" med gårsdagens svar udfyldt (3 på hver skala, når der ingen er), så en hurtig check-in er tre tryk og Gem, og rækken er stadig komplet. Zonerne regnes uændret på alle svar, fordi den faglige vurdering (A-06) ikke er lavet; "Mere" åbner selv, når et svar i går var lavt. ADR 0021 har fået et tillæg. Andel af sporets forbrug: ca. 100k tokens (skøn 250–400k).
+**Status:** Færdig 7. oktober. Invitationslinks gælder 7 dage (`TEAM_INVITATION_DAYS`); teksterne, der sagde 48 timer, er rettet, og ADR 0064 opdateret. Andel: ca. 40k tokens (skøn 60–120k).
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: fix/links-en-uge.
@@ -838,7 +849,7 @@ andet barn uden en ny konto, **så** jeg ser begge børns uger samme sted.
 
 **Tokens:** ca. 200–350k · **Model:** Opus 5.5 (`claude-opus-5-5`), forældrelinks går gennem rytteradskillelsen og RLS.
 
-**Status:** Ikke startet. Fundet under P1-01: en forælder, der allerede er medlem, må i dag skrives uden adresse og får ingen konto koblet på.
+**Status:** Færdig 7. oktober. En træner kan koble et medlem af holdet som forælder til en rytter, både fra rytterens side ("Hvem er forælderen?") og i "Inviter hele holdet", hvor en adresse, der allerede er medlem, kobles i stedet for at blive afvist. Rytteren bekræfter stadig. ADR 0064 har fået et tillæg. Andel: ca. 110k tokens (skøn 200–350k).
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: feat/foraelder-til-flere.
@@ -861,7 +872,7 @@ påmindelser.
 
 **Tokens:** ca. 150–250k · **Model:** Opus 5.5 (`claude-opus-5-5`), en migrering på trivselsdata og påmindelsernes logik.
 
-**Status:** Ikke startet. Det accepterede hul fra P1-02 (ADR 0060).
+**Status:** Færdig 7. oktober. `checkins.red_since` (migrering 0036) sættes, når en check-in bliver rød, og nulstilles, når den rettes; trivselspåmindelsen tæller fra den. Én fælles regel for "rød" deles af check-in og påmindelse. Bemærk: en check-in, der bliver rød, grøn og rød igen samme dag, giver nu to beskeder. Andel: ca. 95k tokens (skøn 150–250k).
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: fix/trivsel-roed-senere.
