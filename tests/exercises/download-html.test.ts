@@ -120,6 +120,14 @@ describe("the downloaded programme", () => {
     expect(soloHtml).toContain('class="part"');
   });
 
+  it("names every part for paper, where the tabs are not shown", () => {
+    const html = render();
+    expect(html).toContain('<h2 class="part-title">Morgen</h2>');
+    expect(html).toContain("@media print{");
+    expect(html).toContain(".card{break-inside:avoid}");
+    expect(html).toContain(".tab-input,.tab,.done-btn{display:none}");
+  });
+
   it("keys the 'Færdig' script to the programme it was downloaded as", () => {
     const html = render();
     expect(html).toContain("kadence:programme:builtin:mobilityDay");

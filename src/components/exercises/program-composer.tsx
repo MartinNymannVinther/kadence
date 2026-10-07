@@ -17,6 +17,7 @@ import { builtinLookup, programParts } from "@/modules/exercises/view";
 import { ComposerBuilder } from "./composer-builder";
 import { ComposerLibrary } from "./composer-library";
 import { DownloadActions } from "./download-actions";
+import { ProgramPrint } from "./program-print";
 import { ProgramViewer } from "./program-viewer";
 
 /**
@@ -109,9 +110,9 @@ export function ProgramComposer({ initial }: { initial: ProgramPart[] }) {
 
   return (
     <div className="flex flex-col gap-8">
-      <p className="text-reading leading-relaxed">{tc("intro")}</p>
+      <p className="text-reading leading-relaxed print:hidden">{tc("intro")}</p>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 print:hidden">
         <div className="flex flex-wrap items-end gap-3">
           <div className="flex flex-col gap-1">
             <Label htmlFor="compose-add-to">{tc("addTo")}</Label>
@@ -136,7 +137,7 @@ export function ProgramComposer({ initial }: { initial: ProgramPart[] }) {
         <ComposerLibrary onAdd={addExercise} disabled={atCap} />
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 print:hidden">
         <h2 className="text-lg font-semibold">{tc("builderHeading")}</h2>
         <ComposerBuilder
           parts={parts}
@@ -149,11 +150,17 @@ export function ProgramComposer({ initial }: { initial: ProgramPart[] }) {
 
       {preview && (
         <div className="flex flex-col gap-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center justify-between gap-3 print:hidden">
             <h2 className="text-lg font-semibold">{tc("preview")}</h2>
             <DownloadActions downloadHref={downloadHref} printTitle={preview.title} />
           </div>
-          <ProgramViewer program={preview} />
+          <h2 className="hidden font-heading text-2xl font-semibold print:block">
+            {preview.title}
+          </h2>
+          <div className="print:hidden">
+            <ProgramViewer program={preview} />
+          </div>
+          <ProgramPrint program={preview} />
         </div>
       )}
     </div>

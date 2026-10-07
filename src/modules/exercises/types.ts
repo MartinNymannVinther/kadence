@@ -85,13 +85,16 @@ export const propSchema = z.discriminatedUnion("kind", [
   /**
    * A barbell, a bar with a plate at each end, its middle at `at` where the
    * hands or the shoulders hold it; level unless `angle` turns it (degrees,
-   * clockwise). Drawn across the figure from the side too, as a gym's
-   * pictograms draw it.
+   * clockwise). Seen from the side, as most figures are, the bar comes
+   * towards the reader and one plate shows as a disc at `at`; `view:
+   * "front"` draws it across the figure with a plate at each end, for a
+   * figure seen from the front.
    */
   z.object({
     kind: z.literal("barbell"),
     at: pointSchema,
     angle: z.number().min(-90).max(90).optional(),
+    view: z.enum(["side", "front"]).optional(),
   }),
   /** A dumbbell held at its handle, `at`, level unless `angle` turns it (degrees, clockwise). */
   z.object({

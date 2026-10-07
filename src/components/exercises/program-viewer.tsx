@@ -12,12 +12,8 @@ import { ExerciseCard } from "./exercise-card";
  * exercises as numbered cards. One part shows its cards without tabs.
  * Every part stays mounted, so a card marked done stays done when the
  * reader looks at another part and comes back. The programme's title and
- * description are the page's to show.
- *
- * Printed (or saved as a PDF), every part shows at once, not only the one
- * on screen, two cards to a row where an A4 page has room, with a page
- * break between parts; a card keeps its figure with its text
- * (`[data-print-keep]`, src/app/globals.css).
+ * description are the page's to show. On paper the page shows
+ * `ProgramPrint` instead (program-print.tsx) and hides this.
  */
 export function ProgramViewer({ program }: { program: ProgramView }) {
   const t = useTranslations("exercises");
@@ -84,15 +80,7 @@ export function ProgramViewer({ program }: { program: ProgramView }) {
           id={`${id}-panel-${i}`}
           role={tabbed ? "tabpanel" : undefined}
           aria-labelledby={tabbed ? `${id}-tab-${i}` : undefined}
-          // Tailwind's `hidden`/`grid` utilities, not the `hidden` attribute:
-          // preflight resets `[hidden]` with `display: none !important`,
-          // which no layered utility — `!` included — can out-rank, and
-          // printing needs every part shown, not only the one on screen.
-          className={cn(
-            "gap-4 lg:grid-cols-2 print:grid print:grid-cols-2 print:break-before-page",
-            i === active ? "grid" : "hidden",
-            i === 0 && "print:break-before-avoid",
-          )}
+          className={cn("gap-4 lg:grid-cols-2", i === active ? "grid" : "hidden")}
         >
           {part.items.map((item, n) => (
             <ExerciseCard

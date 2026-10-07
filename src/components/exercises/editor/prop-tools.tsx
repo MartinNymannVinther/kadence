@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, RefreshCw, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { NativeSelect } from "@/components/ui/native-select";
@@ -19,10 +19,13 @@ export function PropTools({
   pose,
   onAdd,
   onRemove,
+  onTurn,
 }: {
   pose: Pose;
   onAdd: (kind: Prop["kind"]) => void;
   onRemove: (index: number) => void;
+  /** The barbell seen from the side or the front. */
+  onTurn: (index: number) => void;
 }) {
   const t = useTranslations("exercises.editor");
   const kindId = useId();
@@ -42,6 +45,21 @@ export function PropTools({
               className="border-border bg-card flex items-center gap-1 rounded-full border py-0.5 pr-0.5 pl-3 text-2sm"
             >
               {t(`prop.${prop.kind}`)}
+              {prop.kind === "barbell" && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-xs"
+                  className="size-10 rounded-full sm:size-7"
+                  aria-label={t(
+                    (prop.view ?? "side") === "side" ? "barbellToFront" : "barbellToSide",
+                  )}
+                  title={t((prop.view ?? "side") === "side" ? "barbellToFront" : "barbellToSide")}
+                  onClick={() => onTurn(index)}
+                >
+                  <RefreshCw />
+                </Button>
+              )}
               <Button
                 type="button"
                 variant="ghost"

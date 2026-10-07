@@ -43,7 +43,9 @@ export default async function ProgramsPage({ searchParams }: { searchParams: Sea
       const downloadHref = `/api/programs/download?program=${programParam}&locale=${locale}`;
       return (
         <>
-          <OpenPageHead title={to("title")} intro={to("intro")} />
+          <div className="print:hidden">
+            <OpenPageHead title={to("title")} intro={to("intro")} />
+          </div>
           <ChosenProgram program={view} downloadHref={downloadHref} />
         </>
       );
@@ -55,7 +57,9 @@ export default async function ProgramsPage({ searchParams }: { searchParams: Sea
     const notFound = Boolean(compositionParam) && decoded === null;
     return (
       <>
-        <OpenPageHead title={to("title")} intro={to("intro")} />
+        <div className="print:hidden">
+          <OpenPageHead title={to("title")} intro={to("intro")} />
+        </div>
         {notFound && (
           <Alert className="mb-6">
             <AlertDescription>{to("notFound")}</AlertDescription>

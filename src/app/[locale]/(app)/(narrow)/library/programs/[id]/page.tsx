@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { ProgramViewer } from "@/components/exercises/program-viewer";
 import { ProgramActions } from "@/components/exercises/library/program-actions";
-import { ProgramPrint } from "@/components/exercises/library/program-print";
+import { ProgramPrint } from "@/components/exercises/program-print";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { getOrgContext } from "@/core/auth/session";

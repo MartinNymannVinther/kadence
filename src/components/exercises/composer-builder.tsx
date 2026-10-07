@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import type { ExerciseLookup } from "@/modules/exercises/view";
 import type { Dose, ProgramPart } from "@/modules/exercises/types";
 import { ComposerDoseEditor } from "./composer-dose-editor";
+import { ExerciseFigure } from "./exercise-figure";
 
 /**
  * What has been added so far, by part, with its order and its dose
@@ -45,9 +46,17 @@ export function ComposerBuilder({
                   key={`${item.exercise}-${itemIndex}`}
                   className="border-border bg-card flex flex-col gap-2.5 rounded-lg border p-3"
                 >
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-reading text-sm font-medium">{view.name}</span>
-                    <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2.5">
+                    <span
+                      aria-hidden
+                      className="bg-secondary hidden w-16 shrink-0 rounded-md px-1 pt-0.5 sm:block"
+                    >
+                      <ExerciseFigure pose={view.pose} label={view.name} />
+                    </span>
+                    <span className="text-reading min-w-0 flex-1 text-sm font-medium break-words">
+                      {view.name}
+                    </span>
+                    <div className="flex shrink-0 items-center gap-1">
                       <Button
                         type="button"
                         variant="ghost"

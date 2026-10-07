@@ -79,6 +79,16 @@ coach present at all.
   served only to a signed-in member of that team, 404 for anyone else
   signed in or not, and the route is rate-limited. The PDF is the
   browser's own print of the same file; no library renders one.
+  Printed — from the open page, the app or the downloaded file — the
+  sheet is the same (`program-print.tsx`, the file's own `@media print`):
+  light whatever the screen's mode, every part under its name instead of
+  the tabs, two cards to a row, a card never split and a part's name
+  never left alone at the foot of a page, with no forced page break
+  between parts, so a part of one card does not take a sheet of its own.
+  The figure is drawn smaller on paper and the "Færdig" buttons are left
+  out, so more cards fit a sheet (7 October 2026; the first cut broke
+  the page between parts and let the downloaded file print only the
+  part on screen).
 
 - **In the app:** a library tab beside sessions and blocks
   (`library/programs`), a pose editor for a coach's own exercise with six
@@ -135,8 +145,10 @@ kettlebells, mats, TRX straps, a pull-up bar and elastic bands (backlog
   already stored passes the new one. `tests/exercises/team-schema` holds
   the two lists to one, as before.
 - **Props.** The pose gains four kinds, named as the equipment they tick
-  in the editor: a `barbell` (a bar with a plate at each end, its middle
-  at `at`, level unless `angle` turns it), a `dumbbell` (at its handle,
+  in the editor: a `barbell` (seen from the side by default, the near
+  plate's disc at `at` with the bar's stub inside it; `view: "front"`
+  draws the bar across with a plate at each end, level unless `angle`
+  turns it), a `dumbbell` (at its handle,
   `angle` optional), `trx` straps (an `anchor` and the near and far
   handle, the far strap fainter as the far limbs are) and a `pullupBar`
   (level, `width` wide, a bracket up from each end). They are drawn in
@@ -146,12 +158,16 @@ kettlebells, mats, TRX straps, a pull-up bar and elastic bands (backlog
   and a bar come once each and dumbbells in pairs; the straps are moved
   by their anchor and each handle, the rest by one point that slides
   along the box's edge rather than out of it.
-- **The barbell is drawn across the figure, also from the side.** Seen
-  truly from the side, the bar points at the reader and only a plate
-  shows; drawn that way it read as a wheel at card size. Drawn across, as
-  a gym's own pictograms draw it, it reads as a barbell at once, so that
-  is the one drawing. The overhead press and the pull-ups are drawn from
-  the front, where both arms show.
+- **The barbell follows the figure's view.** The first cut drew the bar
+  across the figure even when the figure stood in profile, as a gym's
+  pictograms do; Martin read it as a bar pointing the wrong way
+  (7 October 2026). Now a figure seen from the side carries the bar seen
+  from the side — the near plate's disc, with the bar's stub showing
+  inside it so it is not read as a ball — at the shoulders of a squat, in
+  the hands of a deadlift, over the chest of a bench press. The overhead
+  press and the pull-ups are drawn from the front, where both arms show,
+  and there the bar is drawn across (`view: "front"`); the editor turns a
+  barbell between the two with one button on its chip (`turnBarbell`).
 - **Load in words.** A dose may carry `load`: `light`, `moderate` or
   `heavy` — "let", "moderat", "tung" — never kilos, as DCU's programmes
   and ATK put it: technique before load, and a weight the rider picks for
@@ -163,7 +179,7 @@ kettlebells, mats, TRX straps, a pull-up bar and elastic bands (backlog
   it always did.
 - **Content.** Fifteen exercises (`builtin/strength.ts`,
   `strength-weights.ts`, `strength-straps.ts`) and three programmes
-  (`builtin/programs-strength.ts`): "Styrke i rummet" with a barbell and
+  (`builtin/programs-strength.ts`): "Træning med udstyr" with a barbell and
   dumbbells in DCU's frame — 8 minutes on the bike and 1 × 20 squats with
   a light bar, 3 × 12 not to exhaustion as DCU's start-up, stretches
   after, 48 hours between sessions — "TRX og kropsvægt" and "Elastikker
@@ -175,9 +191,10 @@ kettlebells, mats, TRX straps, a pull-up bar and elastic bands (backlog
 
 Trade-offs accepted:
 
-- **A barbell drawn across a side-on figure is not what the eye would
-  see.** It is what a gym's signs draw, and it reads; the true view did
-  not.
+- **A barbell seen from the side is a disc, and a disc could be read as
+  a ball.** The bar's stub inside it and the place it sits — at the
+  shoulders, in the hands — carry the meaning; a bar drawn across a
+  side-on figure, which the first cut chose, was read as wrong.
 - **"Let", "moderat" and "tung" are vaguer than a percentage of a
   maximum.** That is on purpose for riders who do not test a maximum, and
   it matches how DCU's programmes speak of "lav belastning"; a coach who

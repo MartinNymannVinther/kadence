@@ -27,7 +27,16 @@ export const FIGURE = {
   matStroke: 4,
   kettlebell: { handle: 4, bell: 7, drop: 9 },
   /** Half the bar's length, where the plates sit from its middle, half a plate's height and its thickness. */
-  barbell: { half: 40, plateAt: 31, plateHalf: 11, plateWidth: 5 },
+  barbell: {
+    /** Seen from the front: half the bar, where each plate sits, half a plate's height and its thickness. */
+    half: 40,
+    plateAt: 31,
+    plateHalf: 11,
+    plateWidth: 5,
+    /** Seen from the side: the disc of the near plate, and the stub of bar that shows inside it. */
+    disc: 12,
+    stub: 4,
+  },
   /** Half the handle, half an end's height and an end's thickness. */
   dumbbell: { half: 7, endHalf: 5, endWidth: 5 },
   /** A TRX strap's thickness, half a handle's grip across it, and the ring it hangs from. */

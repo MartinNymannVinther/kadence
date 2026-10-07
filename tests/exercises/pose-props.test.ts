@@ -13,6 +13,7 @@ import {
   PROP_KINDS,
   propHandles,
   shiftProp,
+  turnBarbell,
 } from "@/modules/exercises/pose-props";
 import { BOX, EQUIPMENT, poseSchema, type Pose, type Prop } from "@/modules/exercises/types";
 
@@ -104,6 +105,20 @@ describe("the strength room's props in the editor", () => {
     for (const kind of STRENGTH) pose = addProp(pose, kind);
     valid(mirrorPose(pose));
     expect(mirrorPose(mirrorPose(pose))).toEqual(pose);
+  });
+
+  it("show the barbell from the side until it is turned, and from the front after", () => {
+    const pose = addProp(addProp(bare(), "barbell"), "dumbbell");
+    const at = pose.props!.findIndex((p) => p.kind === "barbell");
+    const other = pose.props!.findIndex((p) => p.kind === "dumbbell");
+    expect(pose.props?.[at]).not.toHaveProperty("view");
+    const front = turnBarbell(pose, at);
+    expect(front.props?.[at]).toMatchObject({ kind: "barbell", view: "front" });
+    expect(turnBarbell(front, at).props?.[at]).toMatchObject({ kind: "barbell", view: "side" });
+    expect(turnBarbell(pose, other)).toBe(pose);
+    expect(turnBarbell(pose, 99)).toBe(pose);
+    valid(front);
+    expect(mirrorPose(front).props?.[at]).toMatchObject({ view: "front" });
   });
 
   it("move every point of a prop together", () => {

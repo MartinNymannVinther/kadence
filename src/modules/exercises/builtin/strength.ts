@@ -2,11 +2,11 @@ import type { BuiltinExercise } from "../types";
 import { SOURCES } from "./sources";
 
 /**
- * The strength room with a barbell in a rack (backlog Ø-06). The bar is
- * drawn across the figure with a plate at each end, as a gym's pictograms
- * draw it — on the upper back, in the hands, over the head or over the
- * chest — and the overhead press is seen from the front so both arms
- * show. The load is a word, not kilos; every how-to starts light and has
+ * The strength room with a barbell in a rack (backlog Ø-06). The figures
+ * are seen from the side, so the bar points at the reader and shows as
+ * the near plate's disc — on the upper back, in the hands or over the
+ * chest; the overhead press is seen from the front so both arms show,
+ * and there the bar is drawn across with a plate at each end. The load is a word, not kilos; every how-to starts light and has
  * a coach watching (`SOURCES.freeWeights`).
  */
 
@@ -124,7 +124,7 @@ export const OVERHEAD_PRESS: BuiltinExercise = {
     hidden: [],
     props: [
       { kind: "floor", y: 122 },
-      { kind: "barbell", at: [120, 15] },
+      { kind: "barbell", at: [120, 15], view: "front" },
     ],
     arrows: [{ from: [176, 44], to: [176, 20], bend: 0 }],
   },

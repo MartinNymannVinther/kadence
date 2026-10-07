@@ -62,6 +62,7 @@ function tabHtml(key: PartKey, index: number, t: Translate): string {
   );
 }
 
+/** A tabbed part: its name is for paper only, where the tabs are not shown (download-style.ts). */
 function partHtml(
   part: ProgramView["parts"][number],
   index: number,
@@ -72,7 +73,7 @@ function partHtml(
     .map((item, i) => cardHtml(item, i + 1, `${part.key}:${i}:${item.exercise.ref}`, t))
     .join("");
   return tabbed
-    ? `<div class="panel" id="panel-${index}"><div class="cards">${cards}</div></div>`
+    ? `<div class="panel" id="panel-${index}"><h2 class="part-title">${escapeHtml(t(`parts.${part.key}`))}</h2><div class="cards">${cards}</div></div>`
     : `<div class="part">${cards}</div>`;
 }
 
