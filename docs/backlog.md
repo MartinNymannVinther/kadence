@@ -23,6 +23,11 @@ eller mere. Rækkefølgen inden for en prioritet er den anbefalede.
 
 P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter #21 og #22). Hvert spor bygges i sit eget worktree med egen database og flettes ind på P1-grenen, når det er grønt. Statusloggen nyeste først:
 
+- **7. okt.** Øvelser og programmer er færdig: Ø-01 til Ø-05 er flettet ind på `feat/ovelser-og-programmer`, hele suiten er grøn (2.431 tests, 1.329 enhedstests), build kompilerer, og PR #25 er klar til Martin. Samlet forbrug: ca. 1,9M tokens mod et skøn på 1,7–2,85M.
+- **6. okt., nat.** Ø-02 og Ø-04 er færdige og flettet ind; hele suiten er grøn (2.430 tests, 1.329 enhedstests) og build kompilerer. Ø-05 (demo, hjælp og ADR) er sat i gang. Forbrug for Ø-01 til Ø-04: ca. 1,6M tokens mod et skøn på 1,6–2,7M.
+- **6. okt., aften.** Ø-01 er færdig og flettet ind (23 øvelser, 4 programmer, tegnefunktionen og de fælles komponenter); hele suiten er grøn (2.340 tests). Ø-02 og Ø-04 er sat i gang parallelt.
+- **6. okt., aften.** Ø-03 (holdets egne øvelser og programmer i databasen) er færdig og flettet ind; hele suiten er grøn (2.297 tests). Ø-01 arbejder stadig.
+- **6. okt., aften.** Øvelser og programmer (Ø-01 til Ø-05) er godkendt og sat i gang på `feat/ovelser-og-programmer`: kontrakten i `src/modules/exercises/types.ts` er lagt, Ø-01 og Ø-03 kører parallelt.
 - **6. okt., aften.** P1 er færdig: alle otte stories er flettet ind på `feat/p1-foer-piloten`, hele suiten er grøn (2.243 tests), build kompilerer, og PR #23 er klar til Martin. Samlet forbrug for P1: ca. 1,7M tokens mod et skøn på 1,4–2,2M. Næste skridt er Martins: læse PR'en, prøve påmindelser på en telefon (P1-05) og Rulle på en hometrainer (P1-06), og udfylde kontaktoplysningerne i pilotguiden.
 - **6. okt., eftermiddag.** P1-01, P1-02+05, P1-04 og P1-06 er færdige og flettet ind; hele suiten er grøn (2.243 tests) og build kompilerer. Samlet forbrug for P1-01 til P1-07: ca. 1,4M tokens mod et skøn på 1,2–2,0M. P1-08 (pilotguiden) er sat i gang.
 - **6. okt., eftermiddag.** P1-03 og P1-07 er færdige og flettet ind; hele suiten er grøn (2.143 tests).
@@ -132,6 +137,11 @@ Rammen er:
 | A-07  | Ja eller nej til Tredict og Connect IQ                     | A    | S    | 60–120k      | Opus 5.5  |                   | Ikke startet |
 | R-01  | Slet de ubrugte filer                                      | R    | S    | 40–80k       | Haiku 4.5 | Martins ja        | Ikke startet |
 | R-02  | Små rester fra fokus-bølgen                                | R    | S    | 100–180k     | Sonnet 5  |                   | Ikke startet |
+| Ø-01  | Tegnefunktion og indbyggede øvelser og programmer          | Ø    | M    | 400–700k     | Opus 5.5  |                   | Færdig       |
+| Ø-02  | Åben side, sammensæt og download                           | Ø    | M    | 300–500k     | Sonnet 5  | Ø-01              | Færdig       |
+| Ø-03  | Holdets egne øvelser og programmer i databasen             | Ø    | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
+| Ø-04  | Appen: bibliotek, tegneværktøj, programbygger, kalender    | Ø    | L    | 600k–1M      | Opus 5.5  | Ø-01, Ø-03        | Færdig       |
+| Ø-05  | Demo, hjælp og ADR                                         | Ø    | S    | 100–200k     | Sonnet 5  | Ø-02, Ø-04        | Færdig       |
 
 ---
 
@@ -985,6 +995,59 @@ afvejningen.
 ```
 
 ---
+
+## Ø — øvelser og programmer
+
+Martin bad den 6. oktober om at kunne sammensætte et træningsprogram og
+hente det med instrukser og tegninger, bygget dynamisk, så flere øvelser og
+programmer kan komme til. Planen er godkendt og står i
+`docs/plan-ovelser-og-programmer.md`; sporene bygges på
+`feat/ovelser-og-programmer`.
+
+### Ø-01 Tegnefunktion og indbyggede øvelser og programmer
+
+**Som** rytter **vil jeg** se, hvordan en øvelse udføres, på en tydelig
+tegning med instruks, **så** jeg laver den rigtigt uden en træner ved siden
+af.
+
+**Tokens:** ca. 400–700k · **Model:** Opus 5.5 (`claude-opus-5-5`), tegninger, der skal være rigtige, og råd til unge med kilder.
+
+**Status:** Færdig 6. oktober, flettet ind. Én tegnefunktion med to tynde lag (SVG-tekst til download og en React-komponent) i Kadences farver: figuren i forgrundsfarven, pil og dosis i `--warning` (6,0:1 lys, 7,9:1 mørk), gulvet bevidst stille. 23 indbyggede øvelser (mobilitet, core, ben, overkrop) og 4 programmer: mobilitetsdag (morgen/middag/aften), efter turen, core uden udstyr og styrke uden maskiner, med kilder fra DCU og Team Danmark først, derefter ACSM, NSCA, Lloyd og McGill. Hver tegning er tjekket visuelt i lys og mørk tilstand. Øvelseskortet med Færdig-knap og programvisningen med faner er fælles for den åbne side og appen. Faktisk forbrug: 404k tokens på 38 min (skøn 400–700k).
+
+### Ø-02 Åben side, sammensæt og download
+
+**Som** rytter eller forælder **vil jeg** vælge eller sammensætte et
+program uden login og hente det til telefonen, **så** det kan bruges uden
+net.
+
+**Tokens:** ca. 300–500k · **Model:** Sonnet 5 (`claude-sonnet-5`), en side og en filbygger på det, Ø-01 har lagt.
+
+**Status:** Færdig 6. oktober, flettet ind. Åben side `/guides/programs` i "Viden og beregnere": Kadences fire programmer og "Sammensæt dit eget" med filtre, dosis pr. øvelse og rækkefølge; valget ligger kun i adressen. `GET /api/programs/download` giver én HTML-fil, der virker uden net på telefonen, følger lys og mørk tilstand og husker Færdig-markeringer; holdets programmer kræver login og svarer 404 for andre. PDF via browserens print med alle dele og to kort pr. række. Undervejs rettet: programvisningen kunne ikke vise alle dele ved print. Faktisk forbrug: 425k tokens på 52 min (skøn 300–500k).
+
+### Ø-03 Holdets egne øvelser og programmer i databasen
+
+**Som** træner **vil jeg** kunne gemme holdets egne øvelser og programmer,
+**så** holdet har dem samme sted som resten af træningen.
+
+**Tokens:** ca. 300–450k · **Model:** Opus 5.5 (`claude-opus-5-5`), nye tabeller med RLS, audit og eksport.
+
+**Status:** Færdig 6. oktober, flettet ind på `feat/ovelser-og-programmer` (PR #25). Migrering 0032 med `team_exercises` og `team_programs`: tvungen RLS, hvor kun holdets medlemmer læser og kun trænere skriver, audit, isolationstest og eksport ("Øvelser" og "Øvelsesprogrammer"). Der slettes ikke; en øvelse arkiveres, fordi programmer peger på den i JSON uden fremmednøgle, og arkiverede øvelser virker stadig i de programmer, der har dem. Faktisk forbrug: 234k tokens på 18 min (skøn 300–450k).
+
+### Ø-04 Appen: bibliotek, tegneværktøj, programbygger, kalender
+
+**Som** træner **vil jeg** tegne en ny øvelse, bygge et program og lægge
+det i rytternes kalender, **så** mobilitet og styrke bliver en del af
+planen.
+
+**Tokens:** ca. 600k–1M · **Model:** Opus 5.5 (`claude-opus-5-5`), tegneværktøj, kalenderen og rettigheder.
+
+**Status:** Færdig 6. oktober, flettet ind. Biblioteket har fanen "Øvelser og programmer" med Kadences og holdets egne; programsiden har Hent, Udskriv og for trænere Læg i kalenderen, Ret, Kopiér og tilpas og Arkivér. Tegneværktøjet: seks grundstillinger, træk led med finger eller mus, flyt med piletaster, pile, rekvisitter, spejl og fortryd, altid inden for rammen. Programbyggeren blander begge slags øvelser. Et program lagt i kalenderen bliver et styrkepas, hvis øvelser viser tegning og instruks. Bemærk: et rent mobilitetsprogram tæller som styrke i belastning og opmærksomhedspunkter, og minutterne er anslået (4 sek pr. gentagelse, 30 sek pause mellem sæt). Faktisk forbrug: 525k tokens på 51 min (skøn 600k–1M).
+
+### Ø-05 Demo, hjælp og ADR
+
+**Tokens:** ca. 100–200k · **Model:** Sonnet 5 (`claude-sonnet-5`).
+
+**Status:** Færdig 7. oktober, flettet ind. Demoen har holdets egen øvelse "Rygstræk på bænk" med egen tegning, programmet "Holdets mobilitet efter fællestræning", der blander Kadences og holdets øvelser, og det program lagt i alle demorytteres kalender i dag, så Emma ser passet med tegninger. Hjælp har et afsnit om øvelser og programmer, pilotguiden og README nævner dem, og ADR 0067 samler beslutningerne. Undervejs rettet: en test fra P1-04, der af og til fejlede efter rækkefølgen af testfilerne. Faktisk forbrug: 311k tokens på 32 min (skøn 100–200k; mere end ventet, fordi demoen blev klikket igennem som træner og rytter).
 
 ## A — afklaringer uden kode
 

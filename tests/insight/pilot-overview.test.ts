@@ -200,6 +200,11 @@ describe("the installation's overview", () => {
       minutes: card.minutes,
     });
     expect(clubs!.find((c) => c.orgId === OTHER)!.pilot).toMatchObject({ riders: 1, minutes: 2 });
-    expect(JSON.stringify(clubs)).not.toMatch(/Hemmelig|Forælder|pr1|user_pilot/);
+    // Only this file's own clubs: other suites share the test database and
+    // may name a team anything; what must hold is that these rows carry no
+    // person's name or id, whichever order the files run in.
+    const ours = clubs!.filter((c) => c.orgId === ORG || c.orgId === OTHER);
+    expect(ours).toHaveLength(2);
+    expect(JSON.stringify(ours)).not.toMatch(/Hemmelig|Forælder|pr1|user_pilot/);
   });
 });

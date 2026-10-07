@@ -8,7 +8,7 @@ import type { Feature, Features } from "@/core/features";
  * Pure: the caller reads the installation's features and hands them in.
  */
 
-export type HubKey = "energy" | "gearing" | "classes" | "equipment" | "food";
+export type HubKey = "energy" | "gearing" | "classes" | "equipment" | "food" | "programs";
 export type HubItem = { key: HubKey; href: string; feature?: Feature };
 
 export const HUB_CALCULATORS: readonly HubItem[] = [
@@ -20,6 +20,7 @@ export const HUB_GUIDES: readonly HubItem[] = [
   { key: "classes", href: "/guides/classes" },
   { key: "equipment", href: "/guides/equipment" },
   { key: "food", href: "/guides/food", feature: "foodGuide" },
+  { key: "programs", href: "/guides/programs" },
 ];
 
 /** The items this installation shows: those that wait for nothing, and those it has turned on. */

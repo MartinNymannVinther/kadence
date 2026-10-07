@@ -735,6 +735,10 @@
         "title": "Sessions and templates",
         "body": "A session is built in steps: warm-up, work, rest and cool-down, each with a length and a target in zones, percent of FTP or threshold heart rate, or by feel. Repeats gather steps that are ridden several times. Once the rider's thresholds are set, the targets read in watts and pulse. Strength sessions have exercises, and a programme has a progression, so sets and reps follow along from session to session. A coach can also press \"Build with AI\" and write the session in their own words, e.g. \"5x4 min VO2max\" or \"strength 45 min, legs and core\", or what to change in the session as it stands. The proposal is shown first, and nothing is saved until the coach saves the session. Bike sessions can be built from building blocks with one tap, say a warm-up, threshold intervals or sprints, and strength exercises are suggested as you type the name, DCU's exercises and ones without machines. Save a session as a template in the library and it can be given to one rider or the whole team at once. Several weeks of sessions can be gathered in a block and laid in from a Monday."
       },
+      "exercises": {
+        "title": "Exercises and programmes",
+        "body": "Exercises and programmes with drawings live under Library → Exercises and programmes, and \"Exercises and programmes\" is also one of the open guides anyone can open without signing in. You choose one of Kadence's own programmes, or put together your own from the library's exercises. Download it as one file that works on a phone without the internet, or print it as a PDF from the browser. As a coach, you draw the team's own exercises with a drawing tool and build them into programmes that sit beside Kadence's own. \"Put in the calendar\" lays the programme in as a session, where each exercise shows its drawing."
+      },
       "done": {
         "title": "Done and RPE",
         "body": "When the session is done, the rider presses \"Done\". The minutes are already there from the plan. Then the rider says how hard it was on a scale from 1 to 10 (RPE): 1 is very, very easy, 5 is hard, and 10 is the hardest you can. Think of the whole session. Minutes times RPE gives the session's load, even without a power meter. A wrong press can be undone."
@@ -969,7 +973,9 @@
     "repeatTooMany": "That is too many sessions at once. Choose fewer riders or a shorter period.",
     "copySameWeek": "A week cannot be copied into itself.",
     "uciBirthYear": "That UCI ID belongs to a rider born in another year. Check the number on the licence.",
-    "uciUnknown": "Cykling Danmark does not know that UCI ID. Check the number on the licence."
+    "uciUnknown": "Cykling Danmark does not know that UCI ID. Check the number on the licence.",
+    "exerciseUnknown": "One of the exercises no longer exists. Reload the page and choose again.",
+    "exerciseArchived": "One of the exercises is archived, so it cannot go into a programme. You can bring it back in the library or choose another."
   },
   "calendar": {
     "title": "Calendar",
@@ -3856,6 +3862,11 @@
           "title": "Food and drink",
           "body": "Everyday food and race-day food, recipes for homemade energy, teeth and supplements.",
           "topic": "food and drink"
+        },
+        "programs": {
+          "title": "Exercises and programmes",
+          "body": "Kadence's own programmes with drawings, or put together your own. Download as one file, or print it.",
+          "topic": "exercises and programmes"
         }
       },
       "fromParents": "About the sport, for parents: {topics}.",
@@ -4647,6 +4658,408 @@
           "6": "What a race in a bunch uses is worked out with MET values (Compendium 2024) and shown with ±15 %. The advice never says what you should eat in a whole day, and it is not medical advice."
         }
       }
+    }
+  },
+  "exercises": {
+    "items": {
+      "hipFlexor": {
+        "name": "Hip flexor stretch",
+        "how": "Put one knee on the floor and the other foot in front. Tighten your stomach a little, stand tall and push the hip forward until you feel a stretch at the front of the thigh.",
+        "why": "Eases the tight hip flexors that pull on the lower back when you sit and ride."
+      },
+      "catCow": {
+        "name": "Cat-cow",
+        "how": "Kneel on all fours with your hands under your shoulders and your knees under your hips. Round your back up like a cat and let your head hang. Then let your stomach sink and lift your gaze. Move slowly between the two.",
+        "why": "Gets your back moving after hours bent over the bars."
+      },
+      "hamstringStretch": {
+        "name": "Hamstring stretch",
+        "how": "Lie on your back. Lift one leg as straight as you can and hold the thigh with both hands. Pull the leg gently towards you until you feel a stretch at the back of the thigh. The other leg stays flat on the floor.",
+        "why": "On the bike your hamstrings never stretch out fully, so here they get the chance."
+      },
+      "figureFour": {
+        "name": "Figure-four stretch",
+        "how": "Sit on a chair or bench and put one ankle over the other knee. Keep your back straight and lean slowly forward until you feel a stretch in your buttock.",
+        "why": "Stretches the buttock and hip, which work in every pedal stroke."
+      },
+      "calfStretch": {
+        "name": "Calf stretch",
+        "how": "Stand with your hands against a wall and one leg far behind you. Keep the back leg straight and the heel on the floor. Lean towards the wall until you feel a stretch in the calf.",
+        "why": "Your calves work in every pedal stroke and do well with a stretch afterwards."
+      },
+      "quadStretch": {
+        "name": "Quad stretch",
+        "how": "Stand on one leg with one hand against a wall. Hold the other foot and pull the heel towards your buttock. Keep your knees together and your hip slightly forward.",
+        "why": "The front of the thigh is the big engine on the bike, so it gets a stretch after the ride."
+      },
+      "thoracicOpener": {
+        "name": "Upper-back opener",
+        "how": "Kneel in front of a bench or chair and put your hands on it with straight arms. Push your hips back a little and let your chest sink towards the floor. Breathe calmly.",
+        "why": "Gives your upper back a counterweight to the rounded position over the bars."
+      },
+      "chinTuck": {
+        "name": "Chin tuck",
+        "how": "Stand with your back against a wall. Pull your chin straight back so the back of your head touches the wall, without looking up or down. Hold for a moment and let go.",
+        "why": "Gives your neck a counterweight to holding your head up for hours on the bike."
+      },
+      "plank": {
+        "name": "Plank",
+        "how": "Rest on your forearms with your elbows under your shoulders and stand on your toes. Keep your body straight as a plank from head to heel. Tighten your stomach a little and breathe calmly.",
+        "why": "Trains the muscles that keep your body still while your legs work."
+      },
+      "sidePlank": {
+        "name": "Side plank",
+        "how": "Lie on your side and rest on your forearm with the elbow under your shoulder. Lift your hip so your body is straight from head to feet. Your top arm can point at the ceiling.",
+        "why": "Trains the side of your trunk, which keeps your hips steady as you pedal."
+      },
+      "deadBug": {
+        "name": "Dead bug",
+        "how": "Lie on your back with your arms straight up and your knees bent above your hips. Press your lower back into the floor. Reach one arm back and the opposite leg out, then come back. Switch sides each time.",
+        "why": "Teaches your stomach to keep your lower back still while your arms and legs move."
+      },
+      "birdDog": {
+        "name": "Bird dog",
+        "how": "Kneel on all fours. Stretch one arm forward and the opposite leg back so they line up with your back. Hold for a moment, lower and switch sides. Keep your back still all the way.",
+        "why": "Trains your back and buttocks to work together without twisting your body."
+      },
+      "superman": {
+        "name": "Superman",
+        "how": "Lie on your stomach with your arms stretched forward. Lift your arms, chest and legs a little off the floor at the same time, and lower them slowly. Look down at the floor.",
+        "why": "Trains the muscles along your back that hold you in position on the bike."
+      },
+      "squat": {
+        "name": "Squat",
+        "how": "Stand with your feet shoulder-width apart. Sit down and back as if onto a chair, with a straight back and your arms forward. Keep your knees in line with your feet, and stand up again.",
+        "why": "Trains the same muscles that push the pedals round."
+      },
+      "gobletSquat": {
+        "name": "Goblet squat",
+        "how": "Hold a kettlebell against your chest with both hands. Sit down and back with a straight back and your knees in line with your feet. Go down slowly and stand up with full force.",
+        "why": "The weight in front helps you keep your back straight while your legs get stronger."
+      },
+      "gluteBridge": {
+        "name": "Glute bridge",
+        "how": "Lie on your back with your knees bent and your feet on the floor. Press your heels down and lift your hips until your body is straight from shoulders to knees. Lower slowly.",
+        "why": "Trains your buttocks, which give power as you push the pedal down."
+      },
+      "lunge": {
+        "name": "Lunge",
+        "how": "Take a long step forward and lower your back knee towards the floor. Keep your upper body upright and your front knee over your foot. Push back with the front leg and switch legs.",
+        "why": "Trains one leg at a time, just as you do when you pedal."
+      },
+      "stepUp": {
+        "name": "Step-up",
+        "how": "Put one foot on a step or a low bench. Step up until the leg is straight, without pushing off with the other leg. Step down slowly, and switch legs after the set.",
+        "why": "Builds strength in one leg at a time, in a movement much like a pedal stroke."
+      },
+      "splitSquat": {
+        "name": "Bulgarian split squat",
+        "how": "Stand with your back to a bench and put your back foot on it. Lower yourself until your front thigh is nearly level. Keep your upper body upright and your knee over your foot, and push back up.",
+        "why": "Gives one leg at a time hard work, without machines."
+      },
+      "romanianDeadlift": {
+        "name": "Romanian deadlift",
+        "how": "Stand with a kettlebell in your hands and your knees slightly bent. Push your hips back and lower the weight along your legs with a straight back. Stand up by pushing your hips forward.",
+        "why": "Trains the hamstrings and buttocks, and teaches you to bend at the hip with a straight back."
+      },
+      "calfRaise": {
+        "name": "Calf raise",
+        "how": "Stand with the balls of your feet on the edge of a step and one hand against the wall. Keep your legs straight, rise onto your toes and lower your heels slowly.",
+        "why": "Trains your calves, which take part in every pedal stroke."
+      },
+      "pushUp": {
+        "name": "Push-ups",
+        "how": "Put your hands on the floor a little wider than your shoulders and keep your body straight. Lower your chest towards the floor with your elbows slightly in, and press back up. If that is too hard, rest on your knees.",
+        "why": "Strengthens the arms and shoulders that carry some of your weight on the bars."
+      },
+      "bandRow": {
+        "name": "Band row",
+        "how": "Fix an elastic band at chest height, for example in a door. Stand with your knees slightly bent and pull your elbows back along your body until your hands reach your chest. Squeeze your shoulder blades together and let go slowly.",
+        "why": "Trains the upper back that holds your shoulders back over the bars."
+      }
+    },
+    "programs": {
+      "mobilityDay": {
+        "name": "Mobility through the day",
+        "description": "Short stretches morning, midday and evening, about five minutes each. Good on days when you sit a lot."
+      },
+      "afterRide": {
+        "name": "After the ride",
+        "description": "Six stretches in about ten minutes, when you are home from the ride and still warm. Hold each stretch calmly without bouncing."
+      },
+      "coreNoEquipment": {
+        "name": "Core without equipment",
+        "description": "Stomach, back and buttocks with nothing but a mat. About a quarter of an hour, two or three times a week."
+      },
+      "strengthNoMachines": {
+        "name": "Strength without machines",
+        "description": "Legs, back and arms with body weight, a kettlebell and an elastic band. Warm up with 8 minutes on the bike first. DCU recommends at least 48 hours between two strength sessions, and technique before load."
+      }
+    },
+    "library": {
+      "tabs": {
+        "label": "Parts of the library",
+        "sessions": "Sessions and blocks",
+        "programs": "Exercises and programmes"
+      },
+      "subtitle": "Programmes and exercises with drawings that riders can follow at home. Kadence's own sit beside the team's own.",
+      "newProgram": "New programme",
+      "newExercise": "New exercise",
+      "programs": "Programmes",
+      "programsHint": "Open a programme to see its exercises, download it as a file or put it in the calendar.",
+      "exercises": "Exercises",
+      "exercisesHint": "Each exercise has a drawing, a dose and a short explanation.",
+      "team": "Team's",
+      "archived": "Archived",
+      "meta": "{count, plural, one {# exercise} other {# exercises}} · about {minutes} min",
+      "search": "Search for an exercise",
+      "groupFilter": "Show exercises for",
+      "allGroups": "All",
+      "equipmentFilter": "Equipment",
+      "allEquipment": "Any equipment",
+      "found": "{count, plural, one {# exercise shown} other {# exercises shown}}",
+      "noMatch": "No exercises match the search.",
+      "showArchived": "Show archived too",
+      "hideArchived": "Hide archived",
+      "back": "Back to exercises and programmes",
+      "kadenceProgram": "Kadence's programme",
+      "teamProgram": "The team's programme",
+      "kadenceExercise": "Kadence's exercise",
+      "teamExercise": "The team's exercise",
+      "download": "Download",
+      "downloadHint": "The programme as a file with drawings, to keep or print",
+      "print": "Print",
+      "edit": "Edit",
+      "copy": "Copy and adapt",
+      "copyName": "{name} (copy)",
+      "archive": "Archive",
+      "restore": "Restore",
+      "archivedDone": "The programme is archived. Sessions already in the calendar stay there.",
+      "restoredDone": "The programme is back in the library.",
+      "archivedNote": "The programme is archived, so it is not in the list. You can still see it and download it.",
+      "needs": "Needs: {equipment}",
+      "emptyProgram": "The programme's exercises no longer exist, so there is nothing to show.",
+      "coachOnly": "The coaches make the team's exercises and programmes.",
+      "coachOnlyHint": "You can see and download every programme in the library."
+    },
+    "editor": {
+      "newTitle": "New exercise",
+      "newSubtitle": "Draw the exercise, give it a dose and explain how it is done. It goes into the team's library.",
+      "editSubtitle": "Programmes that have the exercise show your changes straight away.",
+      "details": "About the exercise",
+      "name": "Name",
+      "namePlaceholder": "For example Plank on the knees",
+      "group": "Group",
+      "equipment": "Equipment",
+      "how": "How to do it",
+      "howPlaceholder": "Short and concrete: the position, the movement and what the rider should feel.",
+      "why": "Why",
+      "whyPlaceholder": "What the exercise does for a rider.",
+      "drawing": "Drawing",
+      "drawingHint": "Drag the points to move the head, joints, arrows and equipment. With a keyboard, Tab to a point and move it with the arrow keys. With Shift it moves further.",
+      "canvas": "Drawing of the exercise. The points can be moved.",
+      "base": "Start from",
+      "basePick": "Choose a position",
+      "baseHint": "A new start replaces the drawing. You can undo.",
+      "bases": {
+        "standing": "Standing",
+        "kneeling": "Kneeling",
+        "back": "On the back",
+        "front": "On the stomach or in a plank",
+        "seated": "Seated",
+        "side": "On the side"
+      },
+      "undo": "Undo",
+      "mirror": "Mirror",
+      "limbs": "Arms and legs",
+      "limb": {
+        "armA": "Near arm",
+        "armB": "Far arm",
+        "legA": "Near leg",
+        "legB": "Far leg"
+      },
+      "joints": {
+        "head": "Head",
+        "neck": "Shoulders",
+        "hip": "Hip",
+        "elbowA": "Near elbow",
+        "handA": "Near hand",
+        "elbowB": "Far elbow",
+        "handB": "Far hand",
+        "kneeA": "Near knee",
+        "footA": "Near foot",
+        "kneeB": "Far knee",
+        "footB": "Far foot"
+      },
+      "position": "{name}: {x} from the left, {y} from the top",
+      "arrows": "Arrows",
+      "arrowsHint": "An arrow shows the movement. Drag its two ends, and bend it with the slider.",
+      "addArrow": "Add arrow",
+      "arrow": "Arrow {n}",
+      "arrowFrom": "Start of arrow {n}",
+      "arrowTo": "Tip of arrow {n}",
+      "bend": "Bend",
+      "removeArrow": "Remove arrow {n}",
+      "maxArrows": "A drawing can have three arrows.",
+      "props": "Equipment in the drawing",
+      "propKind": "Equipment to add",
+      "addProp": "Add",
+      "prop": {
+        "floor": "Floor",
+        "wall": "Wall",
+        "mat": "Mat",
+        "bench": "Bench",
+        "step": "Step",
+        "band": "Elastic band",
+        "ball": "Ball",
+        "kettlebell": "Kettlebell"
+      },
+      "propFrom": "{name}, one end",
+      "propTo": "{name}, the other end",
+      "removeProp": "Remove {name}",
+      "maxProps": "A drawing can have six things.",
+      "preview": "How the card looks",
+      "untitled": "New exercise",
+      "dose": "Dose",
+      "doseKind": "Dose as",
+      "time": "Time",
+      "reps": "Repetitions",
+      "seconds": "Seconds",
+      "repsCount": "Times",
+      "perSide": "Per side",
+      "sets": "Sets",
+      "save": "Save the exercise",
+      "created": "The exercise is saved in the team's library.",
+      "saved": "The changes are saved.",
+      "archive": "Archive",
+      "restore": "Restore",
+      "archived": "The exercise is archived. Programmes that have it still show it.",
+      "restored": "The exercise is back in the library.",
+      "archivedNote": "The exercise is archived. It can go into new programmes again when you restore it.",
+      "missing": "The exercise needs a name and an explanation before it can be saved."
+    },
+    "builder": {
+      "newTitle": "New programme",
+      "newSubtitle": "Put exercises together in parts of the day. You can choose from Kadence's and the team's own exercises.",
+      "editSubtitle": "Sessions already in the calendar keep the exercises they were given.",
+      "name": "Name",
+      "namePlaceholder": "For example Strength before the season",
+      "description": "Description",
+      "descriptionPlaceholder": "When and how the programme is used.",
+      "parts": "Parts",
+      "partKey": "Part of the day",
+      "addPart": "Add part",
+      "removePart": "Remove the part {name}",
+      "addExercise": "Add exercise",
+      "emptyPart": "The part has no exercises yet.",
+      "maxItems": "A part can have 20 exercises.",
+      "ownDose": "Own dose in the programme",
+      "exerciseDose": "The exercise's dose: {dose}",
+      "pickerTitle": "Choose an exercise",
+      "pickerHint": "It goes into {part}.",
+      "pick": "Add {name}",
+      "added": "{name} is added.",
+      "preview": "How the programme looks",
+      "previewEmpty": "When you add exercises, you can see the programme here.",
+      "save": "Save the programme",
+      "created": "The programme is saved in the team's library.",
+      "saved": "The changes are saved.",
+      "missing": "The programme needs a name and at least one exercise in each part before it can be saved.",
+      "archive": "Archive",
+      "restore": "Restore"
+    },
+    "schedule": {
+      "button": "Put in the calendar",
+      "title": "Put the programme in the calendar",
+      "intro": "The programme becomes a strength session with {count, plural, one {# exercise} other {# exercises}} of about {minutes} min. The riders see the drawings in the session.",
+      "forRider": "For {name}",
+      "date": "Date",
+      "submit": "Put in the calendar",
+      "done": "{count, plural, one {The programme is in the calendar.} other {The programme is in # calendars.}}",
+      "doneSeries": "{count, plural, one {The series is in: # session.} other {The series is in: # sessions.}}",
+      "tooLong": "A session holds 30 exercises, and the programme has {count}. You can split it into two programmes and put them in one by one.",
+      "noRiders": "There are no riders on the team yet."
+    },
+    "parts": {
+      "any": "Exercises",
+      "morning": "Morning",
+      "midday": "Midday",
+      "evening": "Evening",
+      "before": "Before",
+      "after": "After"
+    },
+    "groups": {
+      "legs": "Legs",
+      "core": "Core",
+      "upper": "Upper body",
+      "mobility": "Mobility",
+      "other": "Other"
+    },
+    "equipment": {
+      "none": "No equipment",
+      "mat": "Mat",
+      "wall": "Wall",
+      "bench": "Bench or chair",
+      "step": "Step",
+      "band": "Elastic band",
+      "kettlebell": "Kettlebell",
+      "ball": "Ball"
+    },
+    "dose": {
+      "seconds": "{seconds} sec",
+      "minutes": "{minutes} min",
+      "times": "{reps, plural, one {# time} other {# times}}",
+      "perSide": "{amount} per side",
+      "sets": "{sets} × {amount}"
+    },
+    "card": {
+      "done": "Done"
+    },
+    "figure": {
+      "label": "Drawing: {name}"
+    },
+    "viewer": {
+      "parts": "Parts of the programme"
+    },
+    "open": {
+      "title": "Exercises and programmes",
+      "intro": "Kadence's own programmes with drawings and a \"Done\" button, or put together your own from the library. Download as one file, or print it.",
+      "builtinHeading": "Kadence's own programmes",
+      "composeTitle": "Put together your own",
+      "composeBody": "Choose exercises from the library, put them into the parts of the day you want, and see it right away.",
+      "parts": "{count, plural, one {1 part} other {# parts}}",
+      "backToGallery": "All programmes",
+      "notFound": "We don't know that programme or that composition. Here are the ones we have."
+    },
+    "compose": {
+      "title": "Put together your own",
+      "intro": "Choose exercises from the library, and put them into the parts of the day you want. It all lives in the link — nothing is stored about you.",
+      "previewTitle": "Your programme",
+      "addTo": "Add to",
+      "group": "Group",
+      "allGroups": "All groups",
+      "noEquipment": "No equipment",
+      "search": "Search",
+      "searchPlaceholder": "Search for an exercise",
+      "libraryEmpty": "No exercises match. Try another filter.",
+      "add": "Add {name} to the programme",
+      "builderHeading": "Your programme",
+      "builderEmpty": "Choose exercises from the library to get started.",
+      "remove": "Remove {name}",
+      "moveUp": "Move {name} up",
+      "moveDown": "Move {name} down",
+      "doseTime": "Time",
+      "doseReps": "Number",
+      "seconds": "Seconds",
+      "reps": "Repetitions",
+      "perSide": "Per side",
+      "sets": "Sets",
+      "preview": "What it looks like",
+      "limitReached": "There is room for at most {max} exercises in total."
+    },
+    "download": {
+      "button": "Download as a file",
+      "print": "Print or save as PDF"
     }
   }
 }

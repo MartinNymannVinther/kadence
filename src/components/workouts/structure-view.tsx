@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import type { ExerciseView } from "@/modules/exercises/types";
 import type { Thresholds } from "@/modules/load";
 import type { Structure } from "@/modules/workouts/structure";
 import { durationText } from "@/components/training/duration";
@@ -12,15 +13,24 @@ export function StructureView({
   structure,
   rider,
   programmeSession = null,
+  exercises = {},
 }: {
   structure: Structure;
   rider: Thresholds | null;
   programmeSession?: number | null;
+  /** The library's exercises a strength session names, by reference, for their figures. */
+  exercises?: Readonly<Record<string, ExerciseView>>;
 }) {
   const duration = useTranslations("training.duration");
   if (structure.kind === "bike") return <BikeView structure={structure} rider={rider} />;
   if (structure.kind === "strength")
-    return <StrengthView structure={structure} programmeSession={programmeSession} />;
+    return (
+      <StrengthView
+        structure={structure}
+        programmeSession={programmeSession}
+        exercises={exercises}
+      />
+    );
   return (
     <div className="flex flex-col gap-1">
       {structure.text && (

@@ -735,6 +735,10 @@
         "title": "Pas og skabeloner",
         "body": "Et pas bygges i trin: opvarmning, arbejde, pause og nedkørsel, med en længde og et mål i zoner, procent af FTP eller tærskelpuls, eller efter følelse. Gentagelser samler trin, der køres flere gange. Når rytterens tærskler er sat, står målene i watt og puls. Styrkepas har øvelser, og et program har en progression, så sæt og gentagelser følger med fra pas til pas. Træneren kan også trykke \"Byg med AI\" og skrive passet med sine egne ord, fx \"5x4 min VO2max\" eller \"styrke 45 min, ben og core\", eller hvad der skal ændres i det pas, der står. Forslaget vises først, og intet gemmes, før træneren gemmer passet. Cykelpas kan bygges med byggeklodser med ét tryk, fx opvarmning, tærskelintervaller eller sprint, og styrkeøvelser foreslås, mens du skriver navnet, med DCU's øvelser og øvelser uden maskiner. Gem et pas som skabelon i biblioteket, så kan det lægges til én rytter eller hele holdet på én gang. Flere ugers pas kan samles i et forløb og lægges ind fra en mandag."
       },
+      "exercises": {
+        "title": "Øvelser og programmer",
+        "body": "Øvelser og programmer med tegninger ligger under Bibliotek → Øvelser og programmer, og \"Øvelser og programmer\" er også en af de åbne guider, som alle kan åbne uden at logge ind. Du vælger et af Kadences egne programmer, eller sammensætter dit eget ud fra øvelserne i biblioteket. Hent det som én fil, der virker på telefonen uden internet, eller udskriv det som PDF fra browseren. Som træner tegner du holdets egne øvelser med et tegneværktøj og sætter dem sammen til programmer, der står ved siden af Kadences egne. \"Læg i kalenderen\" lægger programmet ind som et pas, hvor hver øvelse viser sin tegning."
+      },
       "done": {
         "title": "Udført og RPE",
         "body": "Når passet er gjort, trykker rytteren \"Udført\". Minutterne står der allerede fra planen. Så svarer rytteren på, hvor hårdt det var på en skala fra 1 til 10 (RPE): 1 er meget, meget let, 5 er hårdt, og 10 er det hårdeste, man kan. Tænk på hele passet. Minutter gange RPE giver passets belastning, også uden wattmåler. Har man trykket forkert, kan det fortrydes."
@@ -969,7 +973,9 @@
     "repeatTooMany": "Det bliver for mange pas på én gang. Vælg færre ryttere eller en kortere periode.",
     "copySameWeek": "En uge kan ikke kopieres ind i sig selv.",
     "uciBirthYear": "Det UCI ID tilhører en rytter med et andet fødselsår. Tjek tallet på licensen.",
-    "uciUnknown": "Cykling Danmark kender ikke det UCI ID. Tjek tallet på licensen."
+    "uciUnknown": "Cykling Danmark kender ikke det UCI ID. Tjek tallet på licensen.",
+    "exerciseUnknown": "En af øvelserne findes ikke længere. Genindlæs siden og vælg igen.",
+    "exerciseArchived": "En af øvelserne er arkiveret, så den kan ikke komme med i et program. Du kan tage den frem igen i biblioteket eller vælge en anden."
   },
   "calendar": {
     "title": "Kalender",
@@ -3856,6 +3862,11 @@
           "title": "Mad og drikke",
           "body": "Mad i hverdagen og på løbsdagen, opskrifter på hjemmelavet energi, tænder og kosttilskud.",
           "topic": "mad og drikke"
+        },
+        "programs": {
+          "title": "Øvelser og programmer",
+          "body": "Kadences egne programmer med tegninger, eller sammensæt dit eget. Hent som én fil, eller udskriv.",
+          "topic": "øvelser og programmer"
         }
       },
       "fromParents": "Viden om sporten til forældre: {topics}.",
@@ -4647,6 +4658,408 @@
           "6": "Forbruget i et feltløb er regnet med MET-tal (Compendium 2024) og vist med ±15 %. Rådene siger aldrig, hvad du skal spise på en hel dag, og de er ikke medicinsk rådgivning."
         }
       }
+    }
+  },
+  "exercises": {
+    "items": {
+      "hipFlexor": {
+        "name": "Hoftebøjerstræk",
+        "how": "Sæt det ene knæ i gulvet og den anden fod foran. Spænd let i maven, stå ret og skub hoften fremad, til du mærker et stræk foran på låret.",
+        "why": "Modvirker de stramme hoftebøjere, der trækker i lænden, når man sidder og cykler."
+      },
+      "catCow": {
+        "name": "Kat og ko",
+        "how": "Stå på alle fire med hænderne under skuldrene og knæene under hofterne. Skyd ryggen op som en kat og lad hovedet hænge. Lad så maven synke og løft blikket. Skift roligt mellem de to.",
+        "why": "Får ryggen i gang efter mange timer bøjet over styret."
+      },
+      "hamstringStretch": {
+        "name": "Baglårsstræk",
+        "how": "Lig på ryggen. Løft det ene ben så strakt, du kan, og hold om låret med begge hænder. Træk benet roligt mod dig, til du mærker et stræk bag på låret. Det andet ben ligger fladt i gulvet.",
+        "why": "På cyklen bliver baglårene aldrig helt strakt ud, så her får de lov."
+      },
+      "figureFour": {
+        "name": "Firetalsstræk",
+        "how": "Sid på en stol eller bænk og læg den ene ankel over det andet knæ. Hold ryggen rank og læn dig langsomt frem, til du mærker et stræk i ballen.",
+        "why": "Strækker ballen og hoften, som arbejder i hvert eneste pedaltråd."
+      },
+      "calfStretch": {
+        "name": "Lægstræk",
+        "how": "Stå med hænderne mod en væg og det ene ben langt bagude. Hold det bageste ben strakt og hælen i gulvet. Læn dig mod væggen, til du mærker et stræk i læggen.",
+        "why": "Læggene arbejder i hvert pedaltråd og har godt af et stræk bagefter."
+      },
+      "quadStretch": {
+        "name": "Forlårsstræk",
+        "how": "Stå på ét ben med den ene hånd mod en væg. Tag fat om den anden fod og træk hælen mod ballen. Hold knæene samlet og hoften let fremme.",
+        "why": "Forlåret er den store motor på cyklen, så det får et stræk efter turen."
+      },
+      "thoracicOpener": {
+        "name": "Brystrygstræk",
+        "how": "Knæl foran en bænk eller stol og læg hænderne på den med strakte arme. Skub hoften lidt tilbage og lad brystet synke mod gulvet. Træk vejret roligt.",
+        "why": "Giver den øvre ryg en modvægt til den krumme stilling over styret."
+      },
+      "chinTuck": {
+        "name": "Hagetræk",
+        "how": "Stå med ryggen mod en væg. Træk hagen lige bagud, så baghovedet rører væggen, uden at kigge op eller ned. Hold et øjeblik og slip igen.",
+        "why": "Giver nakken en modvægt til at holde hovedet oppe i mange timer på cyklen."
+      },
+      "plank": {
+        "name": "Planke",
+        "how": "Støt på underarmene med albuerne under skuldrene og stå på tæerne. Hold kroppen lige som en planke fra hoved til hæl. Spænd let i maven og træk vejret roligt.",
+        "why": "Træner musklerne, der holder kroppen stille, mens benene arbejder."
+      },
+      "sidePlank": {
+        "name": "Sideplanke",
+        "how": "Lig på siden og støt på underarmen med albuen under skulderen. Løft hoften, så kroppen er lige fra hoved til fødder. Den øverste arm kan pege op mod loftet.",
+        "why": "Træner siden af maven, som holder hoften rolig, når du træder."
+      },
+      "deadBug": {
+        "name": "Dead bug",
+        "how": "Lig på ryggen med armene lodret op og knæene bøjet over hoften. Pres lænden mod gulvet. Stræk den ene arm bagud og det modsatte ben frem, og kom tilbage. Skift side hver gang.",
+        "why": "Lærer maven at holde lænden i ro, mens arme og ben bevæger sig."
+      },
+      "birdDog": {
+        "name": "Fuglehund",
+        "how": "Stå på alle fire. Stræk den ene arm frem og det modsatte ben bagud, så de er i linje med ryggen. Hold et øjeblik, sænk og skift side. Hold ryggen stille hele vejen.",
+        "why": "Træner ryg og balder til at arbejde sammen uden at vride kroppen."
+      },
+      "superman": {
+        "name": "Faldskærm",
+        "how": "Lig på maven med armene strakt frem. Løft arme, bryst og ben lidt fra gulvet på samme tid, og sænk roligt igen. Kig ned i gulvet.",
+        "why": "Træner musklerne langs ryggen, som bærer dig i stillingen på cyklen."
+      },
+      "squat": {
+        "name": "Squat",
+        "how": "Stå med fødderne i skulderbredde. Sæt dig ned og bagud som mod en stol, med ret ryg og armene frem. Hold knæene på linje med fødderne, og rejs dig igen.",
+        "why": "Træner de samme muskler, som skubber pedalerne rundt."
+      },
+      "gobletSquat": {
+        "name": "Goblet squat",
+        "how": "Hold en kettlebell ind mod brystet med begge hænder. Sæt dig ned og bagud med ret ryg og knæene på linje med fødderne. Gå roligt ned og rejs dig med fuld kraft.",
+        "why": "Vægten foran hjælper dig med at holde ryggen rank, mens benene bliver stærkere."
+      },
+      "gluteBridge": {
+        "name": "Hoftehæv",
+        "how": "Lig på ryggen med bøjede knæ og fødderne i gulvet. Pres hælene ned og løft hoften, til kroppen er lige fra skuldre til knæ. Sænk roligt igen.",
+        "why": "Træner ballerne, som giver kraft, når du træder pedalen ned."
+      },
+      "lunge": {
+        "name": "Udfald",
+        "how": "Tag et langt skridt frem og sænk det bageste knæ mod gulvet. Hold overkroppen rank og det forreste knæ over foden. Skub dig tilbage med det forreste ben og skift ben.",
+        "why": "Træner ét ben ad gangen, ligesom når du træder."
+      },
+      "stepUp": {
+        "name": "Step-up",
+        "how": "Sæt den ene fod op på et trin eller en lav bænk. Træd op, til benet er strakt, uden at skubbe fra med det andet ben. Gå roligt ned igen, og skift ben efter sættet.",
+        "why": "Bygger styrke i ét ben ad gangen i en bevægelse, der ligner et pedaltråd."
+      },
+      "splitSquat": {
+        "name": "Bulgarsk split squat",
+        "how": "Stå med ryggen til en bænk og læg den bageste fod op på den. Sænk dig, til det forreste lår er næsten vandret. Hold overkroppen rank og knæet over foden, og skub dig op igen.",
+        "why": "Giver ét ben ad gangen et tungt arbejde, uden maskiner."
+      },
+      "romanianDeadlift": {
+        "name": "Rumænsk dødløft",
+        "how": "Stå med en kettlebell i hænderne og let bøjede knæ. Skub hoften bagud og før vægten ned langs benene med ret ryg. Rejs dig ved at skubbe hoften frem.",
+        "why": "Træner baglår og balder og lærer dig at bøje i hoften med ret ryg."
+      },
+      "calfRaise": {
+        "name": "Tåhævning",
+        "how": "Stå med forfoden på kanten af et trin og en hånd mod væggen. Hold benene strakte, gå op på tæerne og sænk hælene langsomt.",
+        "why": "Træner læggene, som er med i hvert eneste pedaltråd."
+      },
+      "pushUp": {
+        "name": "Armstrækninger",
+        "how": "Sæt hænderne i gulvet lidt bredere end skuldrene og hold kroppen lige. Sænk brystet mod gulvet med albuerne lidt ind mod kroppen, og pres dig op igen. Er det for hårdt, så støt på knæene.",
+        "why": "Styrker arme og skuldre, som bærer en del af din vægt på styret."
+      },
+      "bandRow": {
+        "name": "Roning med elastik",
+        "how": "Sæt en elastik fast i brysthøjde, fx i en dør. Stå med let bøjede knæ og træk albuerne bagud langs kroppen, til hænderne er ved brystet. Klem skulderbladene sammen og slip roligt.",
+        "why": "Træner den øvre ryg, som holder skuldrene tilbage over styret."
+      }
+    },
+    "programs": {
+      "mobilityDay": {
+        "name": "Bevægelighed hele dagen",
+        "description": "Korte stræk morgen, middag og aften, cirka fem minutter ad gangen. Godt på dage, hvor du sidder meget."
+      },
+      "afterRide": {
+        "name": "Efter turen",
+        "description": "Seks stræk på cirka ti minutter, når du er hjemme fra turen og stadig varm. Hold hvert stræk roligt uden at fjedre."
+      },
+      "coreNoEquipment": {
+        "name": "Mave og ryg uden udstyr",
+        "description": "Mave, ryg og balder med kun et underlag. Cirka et kvarter, to til tre gange om ugen."
+      },
+      "strengthNoMachines": {
+        "name": "Styrke uden maskiner",
+        "description": "Ben, ryg og arme med kropsvægt, en kettlebell og en elastik. Varm op med 8 minutter på cyklen først. DCU anbefaler mindst 48 timer mellem to styrkepas og teknik før belastning."
+      }
+    },
+    "library": {
+      "tabs": {
+        "label": "Bibliotekets dele",
+        "sessions": "Pas og forløb",
+        "programs": "Øvelser og programmer"
+      },
+      "subtitle": "Programmer og øvelser med tegninger, som rytterne kan følge derhjemme. Kadences egne står ved siden af holdets egne.",
+      "newProgram": "Nyt program",
+      "newExercise": "Ny øvelse",
+      "programs": "Programmer",
+      "programsHint": "Åbn et program for at se øvelserne, hente det som fil eller lægge det i kalenderen.",
+      "exercises": "Øvelser",
+      "exercisesHint": "Hver øvelse har en tegning, en dosis og en kort forklaring.",
+      "team": "Holdets",
+      "archived": "Arkiveret",
+      "meta": "{count, plural, one {# øvelse} other {# øvelser}} · ca. {minutes} min",
+      "search": "Søg efter en øvelse",
+      "groupFilter": "Vis øvelser for",
+      "allGroups": "Alle",
+      "equipmentFilter": "Udstyr",
+      "allEquipment": "Alt udstyr",
+      "found": "{count, plural, one {# øvelse vises} other {# øvelser vises}}",
+      "noMatch": "Ingen øvelser passer til søgningen.",
+      "showArchived": "Vis også arkiverede",
+      "hideArchived": "Skjul arkiverede",
+      "back": "Tilbage til øvelser og programmer",
+      "kadenceProgram": "Kadences program",
+      "teamProgram": "Holdets program",
+      "kadenceExercise": "Kadences øvelse",
+      "teamExercise": "Holdets øvelse",
+      "download": "Hent",
+      "downloadHint": "Programmet som fil med tegninger, til at gemme eller udskrive",
+      "print": "Udskriv",
+      "edit": "Ret",
+      "copy": "Kopiér og tilpas",
+      "copyName": "{name} (kopi)",
+      "archive": "Arkivér",
+      "restore": "Gendan",
+      "archivedDone": "Programmet er arkiveret. De pas, der allerede ligger i kalenderen, er der stadig.",
+      "restoredDone": "Programmet er tilbage i biblioteket.",
+      "archivedNote": "Programmet er arkiveret, så det står ikke i listen. Du kan stadig se det og hente det.",
+      "needs": "Kræver: {equipment}",
+      "emptyProgram": "Programmets øvelser findes ikke længere, så der er intet at vise.",
+      "coachOnly": "Det er trænerne, der laver holdets øvelser og programmer.",
+      "coachOnlyHint": "Du kan se og hente alle programmerne i biblioteket."
+    },
+    "editor": {
+      "newTitle": "Ny øvelse",
+      "newSubtitle": "Tegn øvelsen, giv den en dosis og forklar, hvordan den laves. Den kommer i holdets bibliotek.",
+      "editSubtitle": "Programmer, der har øvelsen, viser dine ændringer med det samme.",
+      "details": "Om øvelsen",
+      "name": "Navn",
+      "namePlaceholder": "For eksempel Planke på knæ",
+      "group": "Gruppe",
+      "equipment": "Udstyr",
+      "how": "Sådan gør du",
+      "howPlaceholder": "Kort og konkret: stillingen, bevægelsen og hvad rytteren skal mærke.",
+      "why": "Hvorfor",
+      "whyPlaceholder": "Hvad øvelsen gør godt for en rytter.",
+      "drawing": "Tegning",
+      "drawingHint": "Træk i punkterne for at flytte hoved, led, pile og udstyr. Med tastaturet går du til et punkt med Tab og flytter det med piletasterne. Med Skift flytter det længere.",
+      "canvas": "Tegning af øvelsen. Punkterne kan flyttes.",
+      "base": "Start fra",
+      "basePick": "Vælg en stilling",
+      "baseHint": "En ny start erstatter tegningen. Du kan fortryde.",
+      "bases": {
+        "standing": "Stående",
+        "kneeling": "Knælende",
+        "back": "På ryggen",
+        "front": "På maven eller i planke",
+        "seated": "Siddende",
+        "side": "Sidelæns"
+      },
+      "undo": "Fortryd",
+      "mirror": "Spejlvend",
+      "limbs": "Arme og ben",
+      "limb": {
+        "armA": "Forreste arm",
+        "armB": "Bagerste arm",
+        "legA": "Forreste ben",
+        "legB": "Bagerste ben"
+      },
+      "joints": {
+        "head": "Hoved",
+        "neck": "Skuldre",
+        "hip": "Hofte",
+        "elbowA": "Forreste albue",
+        "handA": "Forreste hånd",
+        "elbowB": "Bagerste albue",
+        "handB": "Bagerste hånd",
+        "kneeA": "Forreste knæ",
+        "footA": "Forreste fod",
+        "kneeB": "Bagerste knæ",
+        "footB": "Bagerste fod"
+      },
+      "position": "{name}: {x} fra venstre, {y} fra toppen",
+      "arrows": "Pile",
+      "arrowsHint": "En pil viser bevægelsen. Træk i dens to ender, og bøj den med skyderen.",
+      "addArrow": "Tilføj pil",
+      "arrow": "Pil {n}",
+      "arrowFrom": "Start på pil {n}",
+      "arrowTo": "Spids på pil {n}",
+      "bend": "Bøjning",
+      "removeArrow": "Fjern pil {n}",
+      "maxArrows": "En tegning kan have tre pile.",
+      "props": "Udstyr på tegningen",
+      "propKind": "Udstyr at tilføje",
+      "addProp": "Tilføj",
+      "prop": {
+        "floor": "Gulv",
+        "wall": "Væg",
+        "mat": "Underlag",
+        "bench": "Bænk",
+        "step": "Trin",
+        "band": "Elastik",
+        "ball": "Bold",
+        "kettlebell": "Kettlebell"
+      },
+      "propFrom": "{name}, den ene ende",
+      "propTo": "{name}, den anden ende",
+      "removeProp": "Fjern {name}",
+      "maxProps": "En tegning kan have seks ting.",
+      "preview": "Sådan ser kortet ud",
+      "untitled": "Ny øvelse",
+      "dose": "Dosis",
+      "doseKind": "Dosis som",
+      "time": "Tid",
+      "reps": "Gentagelser",
+      "seconds": "Sekunder",
+      "repsCount": "Gange",
+      "perSide": "Pr. side",
+      "sets": "Sæt",
+      "save": "Gem øvelsen",
+      "created": "Øvelsen er gemt i holdets bibliotek.",
+      "saved": "Ændringerne er gemt.",
+      "archive": "Arkivér",
+      "restore": "Gendan",
+      "archived": "Øvelsen er arkiveret. Programmer, der har den, viser den stadig.",
+      "restored": "Øvelsen er tilbage i biblioteket.",
+      "archivedNote": "Øvelsen er arkiveret. Den kan komme med i nye programmer igen, når du gendanner den.",
+      "missing": "Øvelsen skal have et navn og en forklaring, før den kan gemmes."
+    },
+    "builder": {
+      "newTitle": "Nyt program",
+      "newSubtitle": "Sæt øvelser sammen i dele af dagen. Du kan vælge blandt Kadences og holdets egne øvelser.",
+      "editSubtitle": "Pas, der allerede ligger i kalenderen, beholder de øvelser, de fik.",
+      "name": "Navn",
+      "namePlaceholder": "For eksempel Styrke før sæsonen",
+      "description": "Beskrivelse",
+      "descriptionPlaceholder": "Hvornår og hvordan programmet bruges.",
+      "parts": "Dele",
+      "partKey": "Del af dagen",
+      "addPart": "Tilføj del",
+      "removePart": "Fjern delen {name}",
+      "addExercise": "Tilføj øvelse",
+      "emptyPart": "Delen har ingen øvelser endnu.",
+      "maxItems": "En del kan have 20 øvelser.",
+      "ownDose": "Egen dosis i programmet",
+      "exerciseDose": "Øvelsens dosis: {dose}",
+      "pickerTitle": "Vælg en øvelse",
+      "pickerHint": "Den kommer med i {part}.",
+      "pick": "Tilføj {name}",
+      "added": "{name} er tilføjet.",
+      "preview": "Sådan ser programmet ud",
+      "previewEmpty": "Når du tilføjer øvelser, kan du se programmet her.",
+      "save": "Gem programmet",
+      "created": "Programmet er gemt i holdets bibliotek.",
+      "saved": "Ændringerne er gemt.",
+      "missing": "Programmet skal have et navn og mindst én øvelse i hver del, før det kan gemmes.",
+      "archive": "Arkivér",
+      "restore": "Gendan"
+    },
+    "schedule": {
+      "button": "Læg i kalenderen",
+      "title": "Læg programmet i kalenderen",
+      "intro": "Programmet bliver et styrkepas med {count, plural, one {# øvelse} other {# øvelser}} på ca. {minutes} min. Rytterne ser tegningerne i passet.",
+      "forRider": "For {name}",
+      "date": "Dato",
+      "submit": "Læg i kalenderen",
+      "done": "{count, plural, one {Programmet er lagt i kalenderen.} other {Programmet er lagt i # kalendere.}}",
+      "doneSeries": "{count, plural, one {Serien er lagt ind: # pas.} other {Serien er lagt ind: # pas.}}",
+      "tooLong": "Et pas kan rumme 30 øvelser, og programmet har {count}. Du kan dele det i to programmer og lægge dem ind hver for sig.",
+      "noRiders": "Der er ingen ryttere på holdet endnu."
+    },
+    "parts": {
+      "any": "Øvelser",
+      "morning": "Morgen",
+      "midday": "Middag",
+      "evening": "Aften",
+      "before": "Før",
+      "after": "Efter"
+    },
+    "groups": {
+      "legs": "Ben",
+      "core": "Mave og ryg",
+      "upper": "Overkrop",
+      "mobility": "Bevægelighed",
+      "other": "Andet"
+    },
+    "equipment": {
+      "none": "Intet udstyr",
+      "mat": "Underlag",
+      "wall": "Væg",
+      "bench": "Bænk eller stol",
+      "step": "Trin",
+      "band": "Elastik",
+      "kettlebell": "Kettlebell",
+      "ball": "Bold"
+    },
+    "dose": {
+      "seconds": "{seconds} sek",
+      "minutes": "{minutes} min",
+      "times": "{reps, plural, one {# gang} other {# gange}}",
+      "perSide": "{amount} pr. side",
+      "sets": "{sets} × {amount}"
+    },
+    "card": {
+      "done": "Færdig"
+    },
+    "figure": {
+      "label": "Tegning: {name}"
+    },
+    "viewer": {
+      "parts": "Dele af programmet"
+    },
+    "open": {
+      "title": "Øvelser og programmer",
+      "intro": "Kadences egne programmer med tegninger og en \"Færdig\"-knap, eller sammensæt dit eget ud fra biblioteket. Hent som én fil, eller udskriv.",
+      "builtinHeading": "Kadences egne programmer",
+      "composeTitle": "Sammensæt dit eget",
+      "composeBody": "Vælg øvelser fra biblioteket, sæt dem i de dele af dagen, du vil, og se det med det samme.",
+      "parts": "{count, plural, one {1 del} other {# dele}}",
+      "backToGallery": "Alle programmer",
+      "notFound": "Vi kender ikke det program eller den sammensætning. Her er dem, vi har."
+    },
+    "compose": {
+      "title": "Sammensæt dit eget",
+      "intro": "Vælg øvelser fra biblioteket, og sæt dem i de dele af dagen, du vil. Det hele ligger i linket — intet gemmes om dig.",
+      "previewTitle": "Dit program",
+      "addTo": "Tilføj til",
+      "group": "Gruppe",
+      "allGroups": "Alle grupper",
+      "noEquipment": "Uden udstyr",
+      "search": "Søg",
+      "searchPlaceholder": "Søg efter en øvelse",
+      "libraryEmpty": "Ingen øvelser matcher. Prøv et andet filter.",
+      "add": "Tilføj {name} til programmet",
+      "builderHeading": "Dit program",
+      "builderEmpty": "Vælg øvelser fra biblioteket for at komme i gang.",
+      "remove": "Fjern {name}",
+      "moveUp": "Flyt {name} op",
+      "moveDown": "Flyt {name} ned",
+      "doseTime": "Tid",
+      "doseReps": "Antal",
+      "seconds": "Sekunder",
+      "reps": "Gentagelser",
+      "perSide": "Pr. side",
+      "sets": "Sæt",
+      "preview": "Sådan ser det ud",
+      "limitReached": "Der er plads til højst {max} øvelser i alt."
+    },
+    "download": {
+      "button": "Hent som fil",
+      "print": "Udskriv eller gem som PDF"
     }
   }
 }
