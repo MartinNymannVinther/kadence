@@ -3,6 +3,7 @@ import type { Pool } from "pg";
 import { NotAllowed } from "@/modules/ai/service";
 import { buildCoachBrief } from "@/modules/assist/coach-brief";
 import { proposeBuiltWorkout } from "@/modules/assist/build-workout";
+import { proposeProgramTurn } from "@/modules/exercises/ai/propose";
 import { sanitizeParsed } from "@/modules/assist/parse-workout";
 import { proposeWeek, sanitizeWeekDraft } from "@/modules/assist/week-draft";
 import { adminPool } from "../helpers/db";
@@ -102,6 +103,22 @@ describe("without a model", () => {
     await expect(
       proposeBuiltWorkout(RIDER, { sport: "bike", text: "2 t Z2", category: null }, "da"),
     ).rejects.toMatchObject({ code: "forbidden" });
+  });
+
+  it("composes a programme for coaches only, and only with a model", async () => {
+    const turn = {
+      text: "Core i 20 min",
+      draft: { name: "", description: "", parts: [] },
+      turns: [],
+      category: null,
+    };
+    const t = (key: string) => key;
+    await expect(proposeProgramTurn(RIDER, turn, t, "da")).rejects.toMatchObject({
+      code: "forbidden",
+    });
+    await expect(proposeProgramTurn(COACH, turn, t, "da")).rejects.toMatchObject({
+      name: "NoModel",
+    });
   });
 
   it("lists who needs attention from the guardrails, without a summary", async () => {

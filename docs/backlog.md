@@ -23,6 +23,7 @@ eller mere. Rækkefølgen inden for en prioritet er den anbefalede.
 
 P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter #21 og #22). Hvert spor bygges i sit eget worktree med egen database og flettes ind på P1-grenen, når det er grønt. Statusloggen nyeste først:
 
+- **8. okt.** Ø-08 "Byg med AI" for et program er færdig: en samtale i programbyggeren, hvor hvert svar lægges direkte i byggeren, med Fortryd. Prøvet mod en lokal Ollama-model (qwen2.5-coder:14b) i to ture plus fortryd. Plan B (holdsiden, Ø-09) er godkendt med DCU-læser bag flag og point for U19/U23. Forbrug: ca. 250k tokens.
 - **8. okt.** Tre rettelser til øvelser og programmer på Martins bud (Ø-07): stangen tegnes set fra siden på figurer i profil (en skive med stangens stump i), programmet "Styrke i rummet" hedder nu "Træning med udstyr", og print til PDF giver sammenhængende sider på den åbne side, i appen og i den hentede fil — et kort deles aldrig, en dels navn står ved sine kort, og der er ikke længere tvungne sideskift mellem delene. Desuden en lille tegning af hver øvelse i "sammensæt dit eget". Forbrug: ca. 160k tokens.
 - **8. okt.** P2 er færdig (alle 16 stories undtagen P2-01, som venter) sammen med Ø-06: alt er flettet ind på `feat/p2-vinteren`, hele suiten er grøn (2.695 tests, 1.417 enhedstests), build kompilerer, og PR'en er klar til Martin. Samlet forbrug for sporene: ca. 2,4M tokens mod et skøn på 2,5–4,3M for de samme stories. Rester er skrevet ind som P2-18.
 - **7. okt., nat.** P2-02/03/04/16 og P2-12/13/15/17 er flettet ind; migreringerne er nummereret 0033–0040 i rækkefølge og snapshot-kæden bygget op igen; hele suiten er grøn (2.666 tests, 1.417 enhedstests). Kun P2-06/10/14 mangler.
@@ -155,6 +156,8 @@ Rammen er:
 | Ø-05  | Demo, hjælp og ADR                                                           | Ø    | S    | 100–200k     | Sonnet 5  | Ø-02, Ø-04        | Færdig       |
 | Ø-06  | Øvelser og programmer med udstyr                                             | Ø    | M    | 400–600k     | Opus 5.5  |                   | Færdig       |
 | Ø-07  | Stangen fra siden, nyt programnavn og pæne sideskift ved print               | Ø    | S    | 100–200k     | Opus 5.5  | Ø-06              | Færdig       |
+| Ø-08  | Byg et program med AI, i samtale                                             | Ø    | M    | 400–600k     | Opus 5.5  | Ø-04              | Færdig       |
+| Ø-09  | Holdsiden: Junior- og U23-hold i Danmark, med trøjer, kontakt og point       | Ø    | L    | 500–800k     | Opus 5.5  |                   | Godkendt     |
 | N-01  | Navigation efter opgaver                                                     | N    | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
 
 ---
@@ -1200,6 +1203,64 @@ styrkerummet uden at et kort er delt over to sider.
 **Tokens:** ca. 100–200k · **Model:** Opus 5.5 (`claude-opus-5-5`), sideskift skal ses, ikke gættes.
 
 **Status:** Færdig 8. oktober. Stangen har fået `view` (side som standard, front for skulderpres) og en knap på sin chip i tegneværktøjet; "Træning med udstyr" i begge sprog; én fælles printvisning (`program-print.tsx`) for den åbne side, appen og sammensæt, og den hentede fil har fået sin egen `@media print`. Hver af de seks PDF'er gik fra fire til tre sider uden delte kort. Oveni en lille tegning af øvelsen i "sammensæt dit eget" og i "Dit program". Forbrug: ca. 160k tokens.
+
+### Ø-08 Byg et program med AI, i samtale
+
+**Som** træner **vil jeg** kunne tale med en AI om, hvordan et program
+skal sættes sammen, og se byggeren ændre sig undervejs, **så** jeg kan
+komme fra en idé til et færdigt program på et par minutter og stadig
+bestemme alt selv.
+
+**Prompt:**
+
+> Læg et panel "Byg med AI" i programbyggeren (`/library/programs/new`
+> og `…/edit`), for trænere. En samtale: træneren skriver, hvad
+> programmet skal kunne, eller hvad der skal ændres; AI'en svarer med et
+> par sætninger og hele programmet, som det nu skal stå, og svaret
+> lægges direkte i byggeren (navn, beskrivelse, dele, øvelser, doser) med
+> "Fortryd sidste ændring". Intet gemmes, før træneren trykker Gem.
+> Modellen får kun biblioteket (Kadences og holdets egne øvelser som
+> linjer med reference, navn, gruppe, udstyr og dosis), udkastet, de
+> sidste ture og trænerens ord — alt indhegnet som data — og ingen
+> rytterdata. Svaret læses felt for felt: ukendte øvelser droppes, doser
+> uden for kontrakten udelades, dele uden øvelser droppes. Gå gennem
+> `askForJson` i `src/modules/ai` på en egen rute `/api/ai/build-program`
+> som "Byg med AI" på et pas (ADR 0038). Uden model siger panelet det.
+> Skriv ADR 0071 og tests af katalog, prompt og læsning.
+
+**Tokens:** ca. 400–600k · **Model:** Opus 5.5 (`claude-opus-5-5`), prompt og sanering skal være rigtige første gang.
+
+**Status:** Færdig 8. oktober. `src/modules/exercises/ai/` (katalog, prompt, læsning, forslag), ruten `/api/ai/build-program`, panelet `builder/ai-dialog.tsx` med udskrift, `AiKind` "build_program". Prøvet i browseren mod en lokal Ollama-model: første tur lagde navn, beskrivelse og 13 øvelser i byggeren, anden tur byttede planken ud med sideplanke, Fortryd satte planken tilbage. Læsningen tager også en øvelse ved dens bare id eller navn, fordi små modeller skriver `plank` for `builtin:plank`. Forbrug: ca. 250k tokens.
+
+### Ø-09 Holdsiden: Junior- og U23-hold i Danmark
+
+**Som** forælder eller rytter, der er ny i sporten, **vil jeg** kunne se,
+hvilke U19- og U23-hold der findes i Danmark, og hvilke udenlandske hold
+danske juniorer kører på, med trøje, officiel kontakt og hvem der kører
+der, **så** vejen videre er til at få øje på.
+
+**Prompt:**
+
+> En åben side `/guides/teams` under Viden, linket fra "Klasserne og
+> vejen videre" afsnit 6. Danske U19- og U23-hold (DCU-teams og UCI
+> Continental) og udenlandske hold med danske juniorer i denne og seneste
+> sæson: navn, klasse, hjemby, trøje tegnet i Kadences streg ud fra
+> holdets farver (ingen fotos eller logoer), hjemmeside og de
+> kontaktoplysninger holdet selv offentliggør, rytterne som holdet lister
+> dem, og UCI-/DCU-point og placering for U19 og U23 (Martins beslutning 8. oktober; ADR 0013 gælder stadig for rytterens egne resultater i
+> appen). Kilder: UCI dataride (holdregister og ranglister pr.
+> nationalitet) dagligt, DCU's holdliste og rangliste bag flaget
+> `TEAMS_DCU` (slået til, så Martin kan vise det for DCU i uge 42;
+> DCU's ja er stadig udestående), holdenes egne hjemmesider ugentligt.
+> Kadence har ingen planlagt job (ADR 0039): hent, når siden åbnes og
+> øjebliksbilledet er over et døgn gammelt, én ad gangen med lås, og
+> skriv til `./data/teams/` — ingen ny tabel. Det kuraterede register
+> ligger i `src/modules/teams/registry/*.json` med "sidst tjekket".
+> Skriv ADR 0072 og `docs/research/teams.md` med kilder og vilkår.
+
+**Tokens:** ca. 500–800k · **Model:** Opus 5.5 (`claude-opus-5-5`), kildearbejdet skal være rigtigt.
+
+**Status:** Godkendt 8. oktober, i gang efter Ø-08.
 
 ## A — afklaringer uden kode
 

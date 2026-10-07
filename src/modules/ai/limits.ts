@@ -33,7 +33,13 @@ export const MAX_CALLS_PER_INSTALLATION_PER_DAY = env.AI_DAILY_CALL_CAP;
  * under Settings → AI.
  */
 export type AiKind =
-  "week_draft" | "build_workout" | "parse_workout" | "group_week" | "coach_brief" | "test";
+  | "week_draft"
+  | "build_workout"
+  | "build_program"
+  | "parse_workout"
+  | "group_week"
+  | "coach_brief"
+  | "test";
 
 export class RateLimited extends Error {
   constructor() {

@@ -813,7 +813,7 @@
       },
       "ai": {
         "title": "The AI",
-        "body": "The AI proposes, and the coach decides. It can read a coach's shorthand like \"3x10 min Z4 / 5 min rest\" into steps (the rules manage most of it without any language model), build a session from your own words with \"Build with AI\" in the library, propose a week under \"Plan the week\" for one rider or several, and write a short summary of the week's points of attention in the team's week. Nothing goes in the calendar until a coach presses. It never writes to a rider and never deletes anything. Week proposals and the summary read the riders' data, so they only work if the team has turned on \"May the AI read the riders' data\" under Settings → Team. Without a language model everything else works as before."
+        "body": "The AI proposes, and the coach decides. It can read a coach's shorthand like \"3x10 min Z4 / 5 min rest\" into steps (the rules manage most of it without any language model), build a session from your own words with \"Build with AI\" in the library, compose a training programme in a conversation under Exercises and programmes, where every answer goes straight into the builder, propose a week under \"Plan the week\" for one rider or several, and write a short summary of the week's points of attention in the team's week. Nothing goes in the calendar until a coach presses. It never writes to a rider and never deletes anything. Week proposals and the summary read the riders' data, so they only work if the team has turned on \"May the AI read the riders' data\" under Settings → Team. Without a language model everything else works as before."
       },
       "pilot": {
         "title": "The first two weeks as a pilot team",
@@ -5153,7 +5153,32 @@
       "saved": "The changes are saved.",
       "missing": "The programme needs a name and at least one exercise in each part before it can be saved.",
       "archive": "Archive",
-      "restore": "Restore"
+      "restore": "Restore",
+      "ai": {
+        "open": "Build with AI",
+        "title": "Build the programme with AI",
+        "intro": "Say what the programme should do, and adjust it in the conversation. Every answer goes straight into the builder, where you can change anything. Nothing is saved until you save the programme.",
+        "label": "Your message",
+        "placeholderFirst": "E.g. 30 min core and mobility without equipment for U17, three times a week",
+        "placeholderNext": "E.g. swap the plank for a side plank, or make it shorter",
+        "examples": "Try e.g.",
+        "example1": "Core and mobility in 20 min at home",
+        "example2": "Strength with a barbell and dumbbells for U19, technique first",
+        "example3": "Stretches before and after a long ride",
+        "category": "Class",
+        "categoryNone": "None in particular",
+        "hint": "Choose a class and the proposal keeps to DCU's recommendations for it. No rider data goes along. Cmd+Enter sends.",
+        "send": "Send",
+        "sending": "Thinking … this can take a moment.",
+        "you": "You",
+        "ai": "AI",
+        "applied": "Placed in the builder",
+        "updated": "The programme in the builder is updated.",
+        "undo": "Undo last change",
+        "undone": "The last change is undone.",
+        "restart": "Start over",
+        "close": "Close"
+      }
     },
     "schedule": {
       "button": "Put in the calendar",
