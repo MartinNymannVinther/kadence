@@ -3301,7 +3301,7 @@
       "week": "Ugens overblik",
       "weekHint": "Søndag aften, når ugen er gået.",
       "wellbeing": "Trivsel",
-      "wellbeingHint": "Når en rytter checker ind i rød zone, højst én gang om dagen pr. rytter. Den kommer også mellem 21.30 og 7 og nævner ikke rytterens navn."
+      "wellbeingHint": "Når en rytters check-in bliver rød, også hvis den rettes til rød senere på dagen. Den kommer også mellem 21.30 og 7 og nævner ikke rytterens navn."
     },
     "notify": {
       "checkinTitle": "Husk dagens check-in",

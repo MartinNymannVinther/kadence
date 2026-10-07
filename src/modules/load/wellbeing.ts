@@ -141,6 +141,16 @@ export function checkinZone(checkin: Checkin): CheckinZone {
     : { zone: "green", signs: [] };
 }
 
+/**
+ * Whether one check-in is in the red zone. The one rule both the
+ * check-in's `red_since` (src/modules/wellbeing/checkins.ts) and a coach's
+ * wellbeing reminder (src/modules/push/wellbeing.ts) go by, so the moment
+ * a check-in turned red and the reminder about it can never disagree.
+ */
+export function isRedCheckin(checkin: Checkin): boolean {
+  return checkinZone(checkin).zone === "red";
+}
+
 interface Week {
   total: number;
   bad: { date: string; zone: WellbeingZone; signs: WellbeingSign[] }[];

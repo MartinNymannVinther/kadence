@@ -1,9 +1,12 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Pool } from "pg";
 import { withOrgContext } from "@/core/db/tenant";
+import { isRedCheckin, type Checkin } from "@/modules/load/wellbeing";
+import { copenhagenClock } from "@/modules/push/due";
 import { runReminders } from "@/modules/push/job";
 import { latestFor } from "@/modules/push/latest";
 import { newestRedCheckin } from "@/modules/push/wellbeing";
+import { saveCheckin, type CheckinInputT } from "@/modules/wellbeing/checkins";
 import { adminPool } from "../helpers/db";
 import { at, MORNING, NOON, pushTeam } from "./push-team";
 
@@ -49,20 +52,23 @@ afterAll(async () => {
 });
 
 let checkins = 0;
-/** A check-in saved at `when`: red with pain 3 unless the answers say otherwise. */
-async function checkin(riderId: string, when: Date, answers: Record<string, unknown> = {}) {
+/**
+ * A check-in saved at `when`: red with pain 3 unless the answers say
+ * otherwise, with `red_since` as the check-in service writes it.
+ */
+async function checkin(riderId: string, when: Date, answers: Partial<Checkin> = {}) {
   checkins += 1;
   const id = `ck_pw_${checkins}`;
+  const values = { energy: 3, pain: 3, ill: 0, ...answers };
   await team.insert("checkins", {
     id,
     org_id: team.ORG,
     rider_id: riderId,
     on_date: "2026-10-06",
-    energy: 3,
-    pain: 3,
     created_at: when,
     updated_at: when,
-    ...answers,
+    red_since: isRedCheckin(values) ? when : null,
+    ...values,
   });
   return id;
 }
@@ -158,6 +164,82 @@ describe("a rider in the red zone", () => {
     await runReminders(team.config, at("2026-10-06T10:10:00Z"));
     expect(team.pushed()).toEqual(["coach", "coach"]);
     expect(await latestFor(team.COACH.userId)).toEqual(ATTENTION);
+  });
+});
+
+describe("a check-in that turns red later in the day", () => {
+  it("is told once, though another reminder went to the coach in between", async () => {
+    const { COACH, RIDER } = team;
+    await team.subscribe("coach", COACH, WELLBEING);
+    const id = await checkin(team.riders.first, at("2026-10-06T09:00:00Z"), { pain: 0 });
+    await team.session("s_pw_later", team.riders.first, "2026-10-07", COACH.userId, MORNING);
+    await team.comment(
+      "c_pw_later",
+      "s_pw_later",
+      team.riders.first,
+      RIDER.userId,
+      at("2026-10-06T09:10:00Z"),
+    );
+    await runReminders(team.config, at("2026-10-06T09:20:00Z"));
+    expect(await latestFor(COACH.userId)).toMatchObject({ kind: "comment" });
+
+    // Changed to red after the comment was told; first saved before it.
+    const red = at("2026-10-06T09:30:00Z");
+    await admin.query(
+      "update checkins set pain = 3, red_since = $1, updated_at = $1 where id = $2",
+      [red, id],
+    );
+    await runReminders(team.config, at("2026-10-06T09:40:00Z"));
+    expect(team.pushed()).toEqual(["coach", "coach"]);
+    expect((await team.row("coach"))?.told_up_to.getTime()).toBe(red.getTime());
+    expect(await latestFor(COACH.userId)).toEqual(ATTENTION);
+
+    await runReminders(team.config, at("2026-10-06T09:50:00Z"));
+    expect(team.pushed()).toHaveLength(2);
+  });
+
+  it("is told through the check-in service, and saving it red again tells nothing", async () => {
+    const { COACH, RIDER, RIDER2 } = team;
+    // Real time: the service stamps red_since with the database's clock.
+    const soon = () => new Date(Date.now() + 2000);
+    const today = copenhagenClock(new Date()).date;
+    const save = (who: typeof RIDER, riderId: string, answers: Partial<CheckinInputT>) =>
+      saveCheckin(who, {
+        riderId,
+        onDate: today,
+        sleepHours: 8,
+        sleepQuality: 4,
+        energy: 4,
+        mood: 4,
+        soreness: 4,
+        stress: 4,
+        pain: 0,
+        painWhere: "",
+        ill: 0,
+        note: "",
+        ...answers,
+      });
+    await team.subscribe("coach", COACH, { ...WELLBEING, toldUpTo: new Date(Date.now() - 60_000) });
+
+    await save(RIDER, team.riders.first, {});
+    await runReminders(team.config, soon());
+    expect(team.pushed()).toEqual([]);
+
+    // Another rider in the red zone: told, and the mark moves past the first save.
+    await save(RIDER2, team.riders.second, { ill: 1 });
+    await runReminders(team.config, soon());
+    expect(team.pushed()).toEqual(["coach"]);
+
+    // The first rider changes the green check-in to red.
+    await save(RIDER, team.riders.first, { pain: 3, painWhere: "Knæ" });
+    await runReminders(team.config, soon());
+    expect(team.pushed()).toEqual(["coach", "coach"]);
+    expect(await latestFor(COACH.userId, soon())).toEqual(ATTENTION);
+
+    // Saved again, still red: the same moment, not news.
+    await save(RIDER, team.riders.first, { pain: 3, painWhere: "Knæ og hofte" });
+    await runReminders(team.config, soon());
+    expect(team.pushed()).toHaveLength(2);
   });
 });
 

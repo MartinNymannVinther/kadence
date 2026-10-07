@@ -3301,7 +3301,7 @@
       "week": "The week in short",
       "weekHint": "Sunday evening, when the week is over.",
       "wellbeing": "Wellbeing",
-      "wellbeingHint": "When a rider checks in in the red zone, at most once a day per rider. It also comes between 21:30 and 7:00 and does not name the rider."
+      "wellbeingHint": "When a rider's check-in turns red, also when it is changed to red later in the day. It also comes between 21:30 and 7:00 and does not name the rider."
     },
     "notify": {
       "checkinTitle": "Remember today's check-in",

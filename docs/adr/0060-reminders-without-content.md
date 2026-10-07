@@ -1,7 +1,8 @@
 # ADR 0060: Reminders without content
 
 Status: accepted · Date: 2026-10-06 · Amended 2026-10-06: a coach's
-wellbeing reminder (P1-02) and a test push (P1-05)
+wellbeing reminder (P1-02) and a test push (P1-05) · Amended 2026-10-07:
+a check-in that turns red later (P2-17)
 
 ## Context
 
@@ -146,12 +147,18 @@ while it matters.
   and nothing from another team. Only a coach is offered the kind, and
   the job decides it only for a coach, whatever a row says; a rider or a
   parent never gets it.
-- **Once per rider per day, with no new column.** A check-in is one row
-  per rider per day, changed in place when the rider saves again. The
-  reminder counts from its first save (`created_at`), and its mark moves
-  `told_up_to` to the newest told check-in's first save, not to now. So
-  saving the same check-in again is not news, and a comment written after
-  the check-in is still told on the next run.
+- **Once each time a check-in turns red.** A check-in is one row per
+  rider per day, changed in place when the rider saves again. It carries
+  `red_since` (drizzle/0034, amended 2026-10-07, P2-17): the check-in
+  service sets it when the check-in turns red, keeps it while it stays
+  red, and clears it when it is put right, by the one rule the reminder
+  goes by as well (`isRedCheckin` in src/modules/load/wellbeing.ts). The
+  reminder counts from `red_since`, and its mark moves `told_up_to` to the
+  newest told check-in's `red_since`, not to now. So saving a red
+  check-in again is not news, one saved green and changed to red later in
+  the day is, and a comment written after the check-in is still told on
+  the next run. A check-in put right and then red again the same day is
+  told again; it said something new.
 - **Quiet hours do not apply.** They keep evenings and nights free of what
   can wait. A rider who is ill, in pain during and after training, or at
   the bottom of the mood scale has said something that should not wait
@@ -166,18 +173,21 @@ normal`), not an alarm; the coach decides what to do. The job therefore
   login, on the attention list, under the same policies. The service
   worker keeps the anchor when it opens the page.
 - **What the text says** is read back from the mark: `told_up_to` equal,
-  to the millisecond, to the first save of a red check-in the coach can
+  to the millisecond, to the `red_since` of a red check-in the coach can
   see.
 
 ### Trade-offs accepted
 
-- **A check-in that turns red later in the day** is told only if no other
-  reminder went to that coach since it was first saved. Kadence keeps no
-  history of a check-in's zone outside the audit trail, so a change from
-  green to red cannot be told from a red check-in saved twice without a
-  column. The attention list shows it either way; if the pilot shows it
-  matters, a column on `checkins` saying when it last turned red closes
-  it.
+- **A check-in that turns red later in the day** was told only if no
+  other reminder went to that coach since it was first saved, because
+  without a column a change from green to red could not be told from a
+  red check-in saved twice. The gap is closed (2026-10-07, P2-17):
+  `checkins.red_since` says when it last turned red, and the reminder
+  counts from it. The column rides with the check-in, under its policies,
+  its audit trigger and its place in the export; the check-ins already
+  red when it came got their first save as the moment, so none was told
+  twice. A check-in written past the service, which nothing in Kadence
+  does, has no `red_since` and is not told.
 - **News waiting in the quiet hours** from before the red check-in is
   folded into its reminder, as news always is.
 - **A coach who also rides or is a parent on the team** and gets a

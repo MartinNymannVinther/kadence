@@ -219,6 +219,13 @@ export const checkins = pgTable(
     painWhere: text("pain_where").notNull().default(""),
     ill: smallint("ill").notNull().default(0),
     note: text("note").notNull().default(""),
+    /**
+     * When the check-in last turned red (`isRedCheckin`), kept while it
+     * stays red and cleared when it is put right; null when it is not red.
+     * A coach's wellbeing reminder counts from it (docs/adr/0060), so a
+     * check-in saved green and changed to red later in the day is told.
+     */
+    redSince: timestamp("red_since", { withTimezone: true }),
     ...timestamps,
   },
   (t) => [

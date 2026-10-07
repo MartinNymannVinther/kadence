@@ -1,8 +1,8 @@
-import { and, eq, gte, ne, sql, type SQL } from "drizzle-orm";
+import { and, eq, gte, isNotNull, ne, sql, type SQL } from "drizzle-orm";
 import { addDaysIso } from "@/core/dates";
 import { checkins, riders } from "@/core/db/schema";
 import type { AppTransaction, OrgContext } from "@/core/db/tenant";
-import { checkinZone } from "@/modules/load/wellbeing";
+import { isRedCheckin } from "@/modules/load/wellbeing";
 import type { Me } from "@/modules/team/access";
 import { copenhagenClock } from "./due";
 
@@ -10,7 +10,7 @@ import { copenhagenClock } from "./due";
  * A rider in the red zone, as a coach's reminder sees it (docs/adr/0060).
  * Read as the coach, under the ordinary policies: the team's check-ins of
  * riders still on it, never the coach's own (a coach who also rides knows).
- * The zone is the check-in's own (`checkinZone`): pain 3, ill, or mood at
+ * The zone is the check-in's own (`isRedCheckin`): pain 3, ill, or mood at
  * the bottom of the scale. What is read here is a time and nothing else;
  * the reminder never carries who, or what they answered.
  */
@@ -21,13 +21,19 @@ function teamCheckins(ctx: OrgContext, me: Me): SQL | undefined {
     eq(checkins.orgId, ctx.orgId),
     eq(riders.archived, false),
     me.rider ? ne(checkins.riderId, me.rider.id) : undefined,
+    isNotNull(checkins.redSince),
   );
 }
 
-async function redFirstSaves(tx: AppTransaction, where: SQL | undefined): Promise<Date[]> {
+/**
+ * When each red check-in turned red. `red_since` is kept by the check-in
+ * service by the same rule; the answers are read again here, so a row
+ * written past the service is never told as red when it is not.
+ */
+async function turnedRed(tx: AppTransaction, where: SQL | undefined): Promise<Date[]> {
   const rows = await tx
     .select({
-      createdAt: checkins.createdAt,
+      redSince: checkins.redSince,
       pain: checkins.pain,
       ill: checkins.ill,
       mood: checkins.mood,
@@ -35,13 +41,14 @@ async function redFirstSaves(tx: AppTransaction, where: SQL | undefined): Promis
     .from(checkins)
     .innerJoin(riders, eq(riders.id, checkins.riderId))
     .where(where);
-  return rows.filter((row) => checkinZone(row).zone === "red").map((row) => row.createdAt);
+  return rows.flatMap((row) => (row.redSince && isRedCheckin(row) ? [row.redSince] : []));
 }
 
 /**
- * When the newest of today's red check-ins was first saved, or null. A
+ * When the newest of today's red check-ins turned red, or null. A
  * check-in is one row per rider per day, changed in place when the rider
- * saves again, so its first save is the moment the reminder counts from.
+ * saves again; `red_since` stays as it was while it stays red, so saving
+ * it again is not news, and moves when a check-in saved green turns red.
  */
 export async function newestRedCheckin(
   tx: AppTransaction,
@@ -50,16 +57,16 @@ export async function newestRedCheckin(
   today: string,
 ): Promise<Date | null> {
   if (!me.isCoach) return null;
-  const saves = await redFirstSaves(tx, and(teamCheckins(ctx, me), eq(checkins.onDate, today)));
-  return saves.reduce<Date | null>((newest, at) => (!newest || at > newest ? at : newest), null);
+  const times = await turnedRed(tx, and(teamCheckins(ctx, me), eq(checkins.onDate, today)));
+  return times.reduce<Date | null>((newest, at) => (!newest || at > newest ? at : newest), null);
 }
 
 /**
- * Whether a red check-in the coach can see was first saved at exactly
- * `at`: the mark a wellbeing reminder leaves in `told_up_to`. To the
+ * Whether a red check-in the coach can see turned red at exactly `at`:
+ * the mark a wellbeing reminder leaves in `told_up_to`. To the
  * millisecond, as the job wrote it.
  */
-export async function redCheckinFirstSavedAt(
+export async function checkinTurnedRedAt(
   tx: AppTransaction,
   ctx: OrgContext,
   me: Me,
@@ -67,13 +74,13 @@ export async function redCheckinFirstSavedAt(
 ): Promise<boolean> {
   if (!me.isCoach) return false;
   const day = copenhagenClock(at).date;
-  const saves = await redFirstSaves(
+  const times = await turnedRed(
     tx,
     and(
       teamCheckins(ctx, me),
       gte(checkins.onDate, addDaysIso(day, -1)),
-      sql`date_trunc('milliseconds', ${checkins.createdAt}) = ${at}`,
+      sql`date_trunc('milliseconds', ${checkins.redSince}) = ${at}`,
     ),
   );
-  return saves.length > 0;
+  return times.length > 0;
 }

@@ -6,7 +6,7 @@ import { copenhagenClock, lastTold, mayBeWellbeing } from "./due";
 import { newestComment, newestPlanChange, visibleChildren } from "./facts";
 import { teamsOf } from "./subscriptions";
 import { testSentAt } from "./test-push";
-import { redCheckinFirstSavedAt } from "./wellbeing";
+import { checkinTurnedRedAt } from "./wellbeing";
 
 /**
  * What the service worker shows when a push wakes it (docs/adr/0060).
@@ -88,7 +88,7 @@ export async function noteFor(ctx: OrgContext, row: PushSubscriptionRow): Promis
     if (told === "news") return news(tx, ctx, row);
     const me = await whoAmIIn(tx, ctx);
     if (!me) return null;
-    if (wellbeing && (await redCheckinFirstSavedAt(tx, ctx, me, row.toldUpTo)))
+    if (wellbeing && (await checkinTurnedRedAt(tx, ctx, me, row.toldUpTo)))
       return { kind: "wellbeing", path: ATTENTION_PATH };
     if (told === "checkin") return me.rider ? { kind: "checkin", path: "/today" } : null;
     const children = visibleChildren(me);
