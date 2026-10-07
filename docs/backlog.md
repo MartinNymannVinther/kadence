@@ -23,6 +23,7 @@ eller mere. Rækkefølgen inden for en prioritet er den anbefalede.
 
 P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter #21 og #22). Hvert spor bygges i sit eget worktree med egen database og flettes ind på P1-grenen, når det er grønt. Statusloggen nyeste først:
 
+- **7. okt., aften.** Ø-06, P2-05, P2-07, P2-08, P2-09 og P2-11 er færdige og flettet ind på `feat/p2-vinteren` med migreringerne 0033–0035; hele suiten er grøn (2.593 tests). P2-02/03/04/16, P2-12/13/15/17 og P2-06/10/14 er tæt på.
 - **7. okt.** Energigels i løbseksemplet fra U17 (PR #28). Ø-06 (øvelser med udstyr) og hele P2 undtagen P2-01 er sat i gang på Martins bud. P2-11 og P2-13 bygges uden at svække trivselszonerne eller revisionssporet; valgene står i ADR'erne.
 - **7. okt.** P1-09 er færdig: en demo kan aldrig blive installationens ejer; hele suiten er grøn (2.456 tests).
 - **7. okt.** PR #26 (navigation efter opgaver) er merget. P1-09 er sat i gang.
@@ -113,13 +114,13 @@ Rammen er:
 | P2-02 | Mine ture: en liste over rytterens ture                    | P2   | S    | 80–150k      | Sonnet 5  |                   | Ikke startet |
 | P2-03 | Tid, sted og kørsel på løb og begivenheder                 | P2   | M    | 200–300k     | Sonnet 5  |                   | Ikke startet |
 | P2-04 | Forældre lægger familiens begivenheder ind                 | P2   | M    | 250–400k     | Opus 5.5  | P2-03             | Ikke startet |
-| P2-05 | En fælles kladde til ugeplanen for flere trænere           | P2   | M    | 250–400k     | Opus 5.5  |                   | Ikke startet |
+| P2-05 | En fælles kladde til ugeplanen for flere trænere           | P2   | M    | 250–400k     | Opus 5.5  |                   | Færdig       |
 | P2-06 | Tilgængelighed: kontrast, bevægelse og fokus               | P2   | S    | 120–200k     | Sonnet 5  |                   | Ikke startet |
-| P2-07 | Medlemmer kan ikke læse hinandens e-mailadresser           | P2   | M    | 400–700k     | Fable 5.1 |                   | Ikke startet |
-| P2-08 | Rate-limiteren stoler kun på egne proxyer                  | P2   | S    | 60–120k      | Sonnet 5  |                   | Ikke startet |
-| P2-09 | Parkerede sider svarer 404                                 | P2   | S    | 100–200k     | Sonnet 5  |                   | Ikke startet |
+| P2-07 | Medlemmer kan ikke læse hinandens e-mailadresser           | P2   | M    | 400–700k     | Fable 5.1 |                   | Færdig       |
+| P2-08 | Rate-limiteren stoler kun på egne proxyer                  | P2   | S    | 60–120k      | Sonnet 5  |                   | Færdig       |
+| P2-09 | Parkerede sider svarer 404                                 | P2   | S    | 100–200k     | Sonnet 5  |                   | Færdig       |
 | P2-10 | Enhedssiden nævner kun de udbydere, der er sat op          | P2   | S    | 60–100k      | Sonnet 5  |                   | Ikke startet |
-| P2-11 | En kortere check-in                                        | P2   | M    | 250–400k     | Opus 5.5  | A-06 (faglig)     | Ikke startet |
+| P2-11 | En kortere check-in                                        | P2   | M    | 250–400k     | Opus 5.5  | A-06 (faglig)     | Færdig       |
 | P2-12 | Planændringer kender deres afsender                        | P2   | M    | 300–450k     | Opus 5.5  |                   | Ikke startet |
 | P2-13 | Påmindelser fylder ikke revisionssporet                    | P2   | S    | 100–180k     | Opus 5.5  | Martins valg      | Ikke startet |
 | P2-14 | Demoen viser forløb med egne pas og påmindelser            | P2   | S    | 120–200k     | Sonnet 5  |                   | Ikke startet |
@@ -148,7 +149,7 @@ Rammen er:
 | Ø-03  | Holdets egne øvelser og programmer i databasen             | Ø    | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
 | Ø-04  | Appen: bibliotek, tegneværktøj, programbygger, kalender    | Ø    | L    | 600k–1M      | Opus 5.5  | Ø-01, Ø-03        | Færdig       |
 | Ø-05  | Demo, hjælp og ADR                                         | Ø    | S    | 100–200k     | Sonnet 5  | Ø-02, Ø-04        | Færdig       |
-| Ø-06  | Øvelser og programmer med udstyr                           | Ø    | M    | 400–600k     | Opus 5.5  |                   | I gang       |
+| Ø-06  | Øvelser og programmer med udstyr                           | Ø    | M    | 400–600k     | Opus 5.5  |                   | Færdig       |
 | N-01  | Navigation efter opgaver                                   | N    | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
 
 ---
@@ -812,7 +813,7 @@ rytter først åbner sit på tredjedagen.
 
 **Tokens:** ca. 60–120k · **Model:** Sonnet 5 (`claude-sonnet-5`), én indstilling og teksterne omkring den.
 
-**Status:** Ikke startet. Fundet under P1-01 (6. oktober).
+**Status:** Færdig 7. oktober. Check-in'en spørger først om søvn, energi og smerte; resten står bag "Mere" med gårsdagens svar udfyldt (3 på hver skala, når der ingen er), så en hurtig check-in er tre tryk og Gem, og rækken er stadig komplet. Zonerne regnes uændret på alle svar, fordi den faglige vurdering (A-06) ikke er lavet; "Mere" åbner selv, når et svar i går var lavt. ADR 0021 har fået et tillæg. Andel af sporets forbrug: ca. 100k tokens (skøn 250–400k).
 
 ```text
 Følg rammen i docs/backlog.md §0. Gren: fix/links-en-uge.
@@ -1134,7 +1135,7 @@ kropshævninger og elastikker.
 
 **Tokens:** ca. 400–600k · **Model:** Opus 5.5 (`claude-opus-5-5`), styrketræning for unge med kilder, nye rekvisitter i tegningerne.
 
-**Status:** I gang siden 7. oktober. Bedt om af Martin samme dag.
+**Status:** Færdig 7. oktober. Kontrakten har fået vægtstang, håndvægte, TRX og bar til kropshævninger med egne rekvisitter i tegnefunktionen og i tegneværktøjet; en dosis kan nu bære belastningen som ord (let, moderat, tung). 15 øvelser: squat med stang, dødløft, rumænsk dødløft, skulderpres, bænkpres, udfald og step-up med håndvægte, roning med håndvægt, kettlebell-sving, TRX-roning, TRX-udfald, kropshævning med og uden elastik, monstergang og udadrotation med elastik, alle med kilder (ATK 2.0, DCU's styrkeprogrammer, Lloyd 2014) og en sikkerhedsreplik. Tre programmer: Styrke i rummet, TRX og kropsvægt, Elastikker og kettlebell. Migrering 0033 udvider udstyrstjekket. Alle tegninger tjekket visuelt; to elastik-tegninger blev tegnet om. Faktisk forbrug: 395k tokens på 43 min (skøn 400–600k).
 
 ## A — afklaringer uden kode
 
