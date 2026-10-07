@@ -1,6 +1,6 @@
 # ADR 0059: One place to plan a week
 
-Status: accepted · Date: 2026-10-06 · Builds on 0017, 0025, 0041, 0042, 0043, 0058 · docs/plan-fokus-vinter.md
+Status: accepted · Date: 2026-10-06 · Builds on 0017, 0025, 0041, 0042, 0043, 0058 · docs/plan-fokus-vinter.md · "Never on the server" amended by ADR 0043's amendment of 2026-10-07 (the draft is shared by the team's coaches)
 
 ## Context
 

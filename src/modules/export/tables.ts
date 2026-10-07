@@ -45,6 +45,9 @@ export const EXPORT_TABLES: ExportTable[] = [
   { table: "workout_templates", sheet: "Skabeloner", orderBy: "sport, name" },
   { table: "training_blocks", sheet: "Blokke", orderBy: "name" },
   { table: "training_block_items", sheet: "Blokkens pas", orderBy: "block_id, day, sort" },
+  // The week planner's drafts the coaches share (ADR 0043, amended
+  // 2026-10-07): weeks being planned and not yet laid in, as JSON in a cell.
+  { table: "week_plan_drafts", sheet: "Ugekladder", orderBy: "week_monday, rider_id" },
   // The team's own exercises and programmes (drizzle/0032), archived ones
   // included. A pose, a dose and a programme's parts are JSON in a cell;
   // the JSON export keeps them as they are, references and all.

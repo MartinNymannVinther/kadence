@@ -1287,6 +1287,20 @@
       "defaultName": "Uge {n}",
       "submit": "Gem forløbet",
       "saved": "Forløbet er gemt i biblioteket."
+    },
+    "draft": {
+      "hint": "Kladden gemmes, mens du planlægger, så holdets andre trænere kan se og rette den.",
+      "saved": "Sidst gemt af {name} {when}",
+      "savedMine": "Sidst gemt af dig {when}",
+      "savedGone": "Sidst gemt {when}",
+      "today": "kl. {time}",
+      "onDay": "{date} kl. {time}",
+      "newer": "{name} gemte en nyere udgave af ugen {when}. Den ser du nu.",
+      "newerMine": "Du gemte en nyere udgave af ugen et andet sted {when}. Den ser du nu.",
+      "newerGone": "En nyere udgave af ugen blev gemt {when}. Den ser du nu.",
+      "lost": "Dine sidste ændringer her kom ikke med.",
+      "laidIn": "Ugen er lagt ind i kalenderen, så kladden er tom igen.",
+      "offline": "Kladden er gemt på denne enhed, men ikke delt endnu. Den bliver delt, når der er forbindelse igen."
     }
   },
   "library": {

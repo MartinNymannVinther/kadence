@@ -1287,6 +1287,20 @@
       "defaultName": "Week {n}",
       "submit": "Save the block",
       "saved": "The block is saved in the library."
+    },
+    "draft": {
+      "hint": "The draft is saved as you plan, so the team's other coaches can see and change it.",
+      "saved": "Last saved by {name} {when}",
+      "savedMine": "Last saved by you {when}",
+      "savedGone": "Last saved {when}",
+      "today": "at {time}",
+      "onDay": "on {date} at {time}",
+      "newer": "{name} saved a newer version of the week {when}. That is what you see now.",
+      "newerMine": "You saved a newer version of the week somewhere else {when}. That is what you see now.",
+      "newerGone": "A newer version of the week was saved {when}. That is what you see now.",
+      "lost": "Your latest changes here did not make it.",
+      "laidIn": "The week has been laid into the calendar, so the draft is empty again.",
+      "offline": "The draft is kept on this device but not shared yet. It will be shared when the connection is back."
     }
   },
   "library": {

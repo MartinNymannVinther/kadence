@@ -13,8 +13,9 @@ import { getTeamSettings } from "@/modules/team/settings";
 import { getRiders } from "@/modules/team/riders";
 import { recentRides } from "@/modules/today/recent-rides";
 import { rideToRate } from "@/components/today/rpe-pick";
-import { addDaysIso, todayInCopenhagen } from "@/core/dates";
+import { addDaysIso, mondayOf, todayInCopenhagen } from "@/core/dates";
 import { listOwnTemplates } from "@/modules/training/templates";
+import { getWeekPlanDraft } from "@/modules/training/week-plan-draft";
 import { whoAmI } from "@/modules/team/access";
 import { getPilotWeeks } from "@/modules/insight/pilot-service";
 import { adminPool } from "../helpers/db";
@@ -162,6 +163,23 @@ describe("a demo workspace", () => {
     );
     expect(refsInSession.some((r) => r?.startsWith("builtin:"))).toBe(true);
     expect(refsInSession.some((r) => r?.startsWith("team:"))).toBe(true);
+  });
+
+  it("has the week after next half planned, as the coaches' shared draft (ADR 0043)", async () => {
+    const monday = addDaysIso(mondayOf(todayInCopenhagen()), 14);
+    const draft = await getWeekPlanDraft({ orgId, userId }, { monday, scope: "team" });
+    expect(draft?.by.me).toBe(true);
+    expect(draft?.payload.riderIds).toHaveLength(6);
+    expect(draft?.payload.items.map((i) => [i.day, i.startTime, i.meetingPlace])).toEqual([
+      [1, "17:30", "Klubhuset"],
+      [5, "09:00", "Klubhuset"],
+    ]);
+    const laidIn = await admin.query(
+      `select count(*)::int as n from planned_sessions
+        where org_id = $1 and on_date between $2 and $3`,
+      [orgId, monday, addDaysIso(monday, 6)],
+    );
+    expect(laidIn.rows[0].n).toBe(0);
   });
 
   it("shows the coach the team's three numbers over the weeks it has planned (ADR 0066)", async () => {

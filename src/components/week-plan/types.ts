@@ -3,6 +3,7 @@ import type { DraftValue } from "@/components/workouts/session-draft";
 import type { ClassBasis } from "@/modules/dcu";
 import type { BlockItemInputT } from "@/modules/training/blocks";
 import type { PlanItemInputT } from "@/modules/training/week-plan";
+import type { WeekPlanDraftPayloadT } from "@/modules/training/week-plan-draft";
 
 /**
  * The week planner's own words (ADR 0043): a session of the plan on a
@@ -61,6 +62,25 @@ export function fromInput(input: PlanItemInputT, templates: TemplateOption[]): P
         ...at,
       }
     : null;
+}
+
+/** The planner's week as the server keeps the shared draft (ADR 0043, amended 2026-10-07). */
+export function toDraftPayload(draft: {
+  riderIds: string[];
+  items: PlanItem[];
+}): WeekPlanDraftPayloadT {
+  return { riderIds: draft.riderIds, items: draft.items.map(toInput) };
+}
+
+/** The shared draft as the planner holds it; a template no longer there drops out. */
+export function fromDraftPayload(
+  payload: WeekPlanDraftPayloadT,
+  templates: TemplateOption[],
+): { riderIds: string[]; items: PlanItem[] } {
+  return {
+    riderIds: payload.riderIds,
+    items: payload.items.flatMap((input) => fromInput(input, templates) ?? []),
+  };
 }
 
 export function itemTitle(item: PlanItem): string {

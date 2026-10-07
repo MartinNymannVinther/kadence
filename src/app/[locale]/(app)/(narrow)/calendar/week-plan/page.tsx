@@ -17,6 +17,8 @@ import { blockPlanItem } from "@/modules/training/block-items";
 import { listBlocks } from "@/modules/training/blocks";
 import { listTemplates } from "@/modules/training/templates";
 import { weekFrom } from "@/modules/training/week";
+import { TEAM_SCOPE } from "@/modules/training/week-draft-merge";
+import { getWeekPlanDraft } from "@/modules/training/week-plan-draft";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("weekPlan");
@@ -28,7 +30,9 @@ export async function generateMetadata(): Promise<Metadata> {
  * for the whole team, chosen riders, or the one rider whose calendar it
  * was opened from — with its own way between weeks. `?week=` is the
  * week's Monday, this week's by default; `?rider=` the rider it was
- * opened for; `?start=ai` when a rider's "Foreslå ugen" led here.
+ * opened for; `?start=ai` when a rider's "Foreslå ugen" led here. The
+ * week's draft so far, shared by the team's coaches, comes along (ADR
+ * 0043, amended 2026-10-07).
  */
 export default async function WeekPlanPage({
   searchParams,
@@ -73,7 +77,12 @@ export default async function WeekPlanPage({
     );
 
   const season = seasonStartYear(monday);
-  const [templates, blocks] = await Promise.all([listTemplates(ctx), listBlocks(ctx)]);
+  const scope = rider?.id ?? TEAM_SCOPE;
+  const [templates, blocks, shared] = await Promise.all([
+    listTemplates(ctx),
+    listBlocks(ctx),
+    getWeekPlanDraft(ctx, { monday, scope }),
+  ]);
 
   return (
     <div className="flex min-w-0 flex-col gap-5">
@@ -87,6 +96,9 @@ export default async function WeekPlanPage({
       <WeekPlanner
         key={`${monday} ${rider?.id ?? ""}`}
         monday={monday}
+        today={today}
+        scope={scope}
+        shared={shared}
         backHref={backHref}
         preselect={rider?.id}
         start={param("start") === "ai" ? "ai" : undefined}

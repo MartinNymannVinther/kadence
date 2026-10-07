@@ -232,6 +232,13 @@
       "when": 1791317875004,
       "tag": "0032_team_exercises",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1791368681990,
+      "tag": "0038_week_plan_drafts",
+      "breakpoints": true
     }
   ]
 }
