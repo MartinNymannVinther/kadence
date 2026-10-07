@@ -1,5 +1,6 @@
 import { randomBytes } from "node:crypto";
 import { lt, sql } from "drizzle-orm";
+import { installationHasOwner } from "@/core/access/service";
 import { auth } from "@/core/auth/auth";
 import { authDb } from "@/core/db/client";
 import { demoWorkspaces } from "@/core/db/schema";
@@ -30,6 +31,16 @@ export const MAX_LIVE_DEMOS = 200;
 
 export function demoEnabled(): boolean {
   return env.DEMO === "on";
+}
+
+/**
+ * Whether a visitor may open a demo now: the installation has asked for
+ * demos and somebody already owns it. Until the first real account exists,
+ * /demo answers 404 and the front page offers no demo, so a demo can never
+ * be the first account on an installation (backlog P1-09, docs/launch.md).
+ */
+export async function demoReady(): Promise<boolean> {
+  return demoEnabled() && (await installationHasOwner());
 }
 
 /**
@@ -121,7 +132,7 @@ async function liveDemoCount(): Promise<number> {
  * guard behaves the way it will for a real user.
  */
 export async function createDemoWorkspace(locale: "da" | "en"): Promise<DemoSession> {
-  if (!demoEnabled()) return null;
+  if (!(await demoReady())) return null;
   await cleanupExpiredDemos();
   if ((await liveDemoCount()) >= MAX_LIVE_DEMOS) return null;
 

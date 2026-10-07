@@ -19,6 +19,7 @@ import {
   countUsers,
   DEMO_HEADER,
   INVITATION_HEADER,
+  isDemoEmail,
   isDemoSignup,
   signupAllowed,
   TEAM_INVITATION_HEADER,
@@ -97,7 +98,10 @@ export const auth = betterAuth({
         // here, at the moment of creation, so it holds for every path
         // that can create a user and not only for the registration form.
         before: async (user) => ({
-          data: { ...user, platformRole: platformRoleForNewUser(await countUsers()) },
+          data: {
+            ...user,
+            platformRole: platformRoleForNewUser(await countUsers(), isDemoEmail(user.email)),
+          },
         }),
       },
     },
