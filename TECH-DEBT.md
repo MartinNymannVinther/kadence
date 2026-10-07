@@ -61,19 +61,6 @@ in June 2026 that Wahoo no longer passes on heart rate for riders under
 16; that report is not confirmed with Wahoo and should be asked about in
 the application.
 
-### The limiter trusts a forwarded address when nothing is in front
-
-`src/core/rate-limit.ts` reads the caller's address from the right of
-X-Forwarded-For, `TRUSTED_PROXY_HOPS` from the end, and treats 0 as 1. An
-installation with no proxy in front, which 0 is there to say, therefore
-believes the one entry the caller sent: a bucket of the caller's
-choosing on every public route, the upload key's door included (the
-review of ADR 0029 found it). The entries are not checked to be
-addresses either. The fix is small — at 0 read neither header, and take
-only what parses as an address — but the file is the family's, and is
-better changed once for all siblings. Kadence's own deployment has
-Traefik in front and is not affected.
-
 ## Accepted, with the reason written down
 
 ### The content policy still allows inline scripts
@@ -297,3 +284,14 @@ and to a rider the accounts holding a guardian link to them.
 tests/rls/member-addresses.test.ts proves each. The policy and grant came
 with the foundation; the siblings carry the same debt until they lift the
 migration.
+
+### The limiter trusts a forwarded address when nothing is in front
+
+Paid with backlog P2-08: `addressBehind` in `src/core/rate-limit.ts`
+reads no forwarded header at `TRUSTED_PROXY_HOPS=0` — Next does not
+hand a route the connection's own address, so every caller shares one
+bucket, which fails closed — and takes an entry from X-Forwarded-For or
+X-Real-Ip only when `node:net` parses it as an IPv4 or IPv6 address.
+tests/core/rate-limit.test.ts covers 0, 1 and 2 hops and garbage in the
+header. The file is the family's; the siblings carry the same debt until
+they lift it.
