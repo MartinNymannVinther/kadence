@@ -3,6 +3,9 @@ import { CORE } from "./core";
 import { LEGS } from "./legs";
 import { MOBILITY } from "./mobility";
 import { PROGRAMS } from "./programs";
+import { STRENGTH } from "./strength";
+import { STRENGTH_STRAPS } from "./strength-straps";
+import { STRENGTH_WEIGHTS } from "./strength-weights";
 import { UPPER } from "./upper";
 
 /**
@@ -21,6 +24,9 @@ export const BUILTIN_EXERCISES: readonly BuiltinExercise[] = [
   ...CORE,
   ...LEGS,
   ...UPPER,
+  ...STRENGTH,
+  ...STRENGTH_WEIGHTS,
+  ...STRENGTH_STRAPS,
 ];
 
 export const BUILTIN_PROGRAMS: readonly BuiltinProgram[] = PROGRAMS;

@@ -16,6 +16,15 @@ export const SOURCES = {
     "DCU's strength programmes (Team Danmark, Jarl Pors Jakobsen, 2015): warm up 8 min on the bike and 1 × 20 squats, at least 48 h between sessions, technique before load, full effort up and control down, stretch afterwards (DCU_U17/U19/U23_styrketraening.pdf; U17 compendium p. 18, U19 p. 23)",
   /** The starting points of the strength builder's own exercises (src/modules/workouts/exercise-catalogue.ts, ADR 0044). */
   catalogue: "Kadence's own starting point, as in the strength builder's catalogue (ADR 0044)",
+  /** Lifts with a barbell, dumbbells or a kettlebell: technique first, start light, a coach watches. */
+  freeWeights:
+    "Lifts with free weights take time to learn, so technique comes before load (Team Danmark, ATK 2.0, pp. 56–57; 'Teknik før belastning', DCU_U17_styrketraening.pdf p. 2); learn them light, and with a qualified coach watching (Lloyd et al. 2014, the international consensus on youth resistance training, Br J Sports Med 48(7):498–505; Faigenbaum et al. 2009, the NSCA's position statement, J Strength Cond Res 23(5 Suppl))",
+  /** DCU's squat and its cues, in all three programmes. */
+  dcuSquat:
+    "DCU's squat (Deep back squat 03553): a straight back or a slight arch, knees in line with the feet, feet shoulder-width apart; 1 × 20 at a low load is the warm-up in all three programmes, and in U19 (4 × 6 RM once the technique is there) and U23 (3 × 10–12 RM to begin) it is an exercise of its own (DCU_U17/U19/U23_styrketraening.pdf p. 1; docs/research/dcu-traeningsanbefalinger.md, sections 6.2–6.4)",
+  /** DCU's start-up for the leg exercises. */
+  dcuStartUp:
+    "DCU's start-up: 3 × 16 in U17's sessions 1–6 and 3 × 12 in U19's sessions 1–4, 'træn ikke til udmattelse', before the load goes up (DCU_U17_styrketraening.pdf p. 1–2; DCU_U19_styrketraening.pdf p. 1–2)",
   /** The side bridge and the bird dog. */
   mcGill:
     "one of McGill's 'big three' for the trunk (S. McGill, Low Back Disorders, 3rd ed., Human Kinetics 2016)",

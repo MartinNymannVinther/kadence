@@ -73,6 +73,10 @@ describe("a dose's time", () => {
     expect(minutes.afterRide).toBeLessThanOrEqual(12);
     expect(minutes.strengthNoMachines).toBeGreaterThanOrEqual(25);
     expect(minutes.strengthNoMachines).toBeLessThanOrEqual(45);
+    for (const id of ["strengthRoom", "trxBodyweight", "bandsKettlebell"]) {
+      expect(minutes[id], id).toBeGreaterThanOrEqual(20);
+      expect(minutes[id], id).toBeLessThanOrEqual(60);
+    }
   });
 });
 
@@ -118,6 +122,17 @@ describe("a programme as a strength session", () => {
     expect(structure.exercises.map((e) => e.ref)).toEqual(
       view.parts[0]!.items.map((i) => i.exercise.ref),
     );
+  });
+
+  it("writes a dose's load in a word in the session's load, in the coach's language", () => {
+    const structure = programStructure(builtinProgramView("strengthRoom", tDa)!, tDa);
+    const squat = structure.exercises.find((e) => e.ref === "builtin:backSquat" && e.sets === 3)!;
+    expect(squat).toMatchObject({ sets: 3, reps: "12", load: "moderat", note: "Øvelser" });
+    expect(structure.exercises[0]).toMatchObject({ reps: "20", load: "let", note: "Før" });
+    const inEnglish = programStructure(builtinProgramView("strengthRoom", tEn)!, tEn);
+    expect(inEnglish.exercises[0]!.load).toBe("light");
+    // An exercise without a load leaves the field empty, as before.
+    expect(structure.exercises.find((e) => e.ref === "builtin:superman")!.load).toBe("");
   });
 
   it("names the part in each exercise's note when there is more than one", () => {

@@ -4793,6 +4793,81 @@
         "name": "Roning med elastik",
         "how": "Sæt en elastik fast i brysthøjde, fx i en dør. Stå med let bøjede knæ og træk albuerne bagud langs kroppen, til hænderne er ved brystet. Klem skulderbladene sammen og slip roligt.",
         "why": "Træner den øvre ryg, som holder skuldrene tilbage over styret."
+      },
+      "backSquat": {
+        "name": "Squat med stang",
+        "how": "Læg stangen på den øverste del af ryggen, ikke på nakken, og hold om den med begge hænder. Stå med fødderne i skulderbredde. Sæt dig ned og bagud med ret ryg og knæene på linje med fødderne, og rejs dig med fuld kraft. Start let, og læg først mere vægt på, når teknikken sidder. En træner ser med, når du løfter med stang.",
+        "why": "Træner de store muskler i ben og balder, som skubber pedalerne rundt, med en vægt, der kan øges lidt ad gangen."
+      },
+      "deadlift": {
+        "name": "Dødløft",
+        "how": "Stå med fødderne i hoftebredde og stangen over midten af foden. Bøj i hofter og knæ, og tag fat lige uden for knæene. Hold ryggen ret og stangen tæt ind til benene. Pres fødderne ned i gulvet og rejs dig, til du står rank, og sænk stangen samme vej. Start let. En træner ser med, når du løfter med stang.",
+        "why": "Træner baglår, balder og ryg til at arbejde sammen, som når du træder hårdt i pedalerne."
+      },
+      "barbellRdl": {
+        "name": "Rumænsk dødløft med stang",
+        "how": "Stå rank med stangen i strakte arme og let bøjede knæ. Skub hoften bagud og før stangen ned langs lårene, til du mærker et stræk bag på lårene. Hold ryggen ret hele vejen. Rejs dig ved at skubbe hoften frem. Start let. En træner ser med, når du løfter med stang.",
+        "why": "Træner baglår og balder og lærer dig at bøje i hoften med ret ryg."
+      },
+      "overheadPress": {
+        "name": "Skulderpres med stang",
+        "how": "Stå med fødderne i hoftebredde og stangen foran på skuldrene. Spænd i mave og balder, og pres stangen lige op over hovedet, til armene er strakte. Sænk den roligt til skuldrene igen. Svaj ikke i lænden. Start let. En træner ser med, når du løfter med stang.",
+        "why": "Styrker skuldre og arme, som bærer en del af din vægt på styret."
+      },
+      "benchPress": {
+        "name": "Bænkpres",
+        "how": "Lig på bænken med fødderne i gulvet og stangen i strakte arme over brystet. Sænk den roligt til midt på brystet med albuerne lidt ind mod kroppen, og pres den op igen. Hold ryggen og hovedet på bænken. Start let. En træner står ved hovedenden og kan tage stangen.",
+        "why": "Styrker bryst, skuldre og arme, som holder overkroppen stille, når du træder hårdt."
+      },
+      "dumbbellLunge": {
+        "name": "Udfald med håndvægte",
+        "how": "Hold en håndvægt i hver hånd med armene ned langs siden. Tag et langt skridt frem og sænk det bageste knæ mod gulvet. Hold overkroppen rank og det forreste knæ over foden. Skub dig tilbage med det forreste ben og skift ben. Start let.",
+        "why": "Træner ét ben ad gangen med ekstra vægt, ligesom når du træder."
+      },
+      "dumbbellStepUp": {
+        "name": "Step-up med håndvægte",
+        "how": "Hold en håndvægt i hver hånd og sæt den ene fod op på et trin eller en lav bænk, der står fast. Træd op, til benet er strakt, uden at skubbe fra med det andet ben. Gå roligt ned igen, og skift ben efter sættet. Start let.",
+        "why": "Bygger styrke i ét ben ad gangen i en bevægelse, der ligner et pedaltråd."
+      },
+      "dumbbellRow": {
+        "name": "Roning med håndvægt",
+        "how": "Sæt det ene knæ og hånden på samme side på en bænk, og hold ryggen lige. Hold håndvægten i den anden hånd med strakt arm. Træk albuen op langs kroppen, til håndvægten er ved hoften, og sænk den roligt. Skift side efter sættet. Start let.",
+        "why": "Træner den øvre ryg, som holder skuldrene tilbage over styret."
+      },
+      "kettlebellSwing": {
+        "name": "Kettlebell-sving",
+        "how": "Stå med fødderne lidt bredere end hofterne og kettlebellen i begge hænder. Skub hoften bagud med ret ryg, så kettlebellen svinger ind mellem benene. Skub så hoften kraftigt frem, så den svinger op til brysthøjde. Det er hoften, der løfter, ikke armene. Start let.",
+        "why": "Træner balder og baglår til at give kraft hurtigt, som når du sætter i gang ud af et sving."
+      },
+      "trxRow": {
+        "name": "TRX-roning",
+        "how": "Hold et håndtag i hver hånd og gå fødderne frem, til du hænger bagud med strakte arme. Hold kroppen lige som en planke. Træk brystet op mod håndtagene med albuerne tæt ind til kroppen, og sænk dig roligt. Jo mere du hælder, jo hårdere er det.",
+        "why": "Træner den øvre ryg og armene med din egen vægt."
+      },
+      "trxSplitSquat": {
+        "name": "TRX-udfald",
+        "how": "Stå med ryggen til TRX'en og sæt den bageste fod i stropperne. Sænk dig på det forreste ben, til låret er næsten vandret, med knæet over foden. Skub dig op igen med det forreste ben, og hold overkroppen rank. Skift ben efter sættet.",
+        "why": "Giver ét ben ad gangen et hårdt arbejde, og balancen får noget at lave."
+      },
+      "pullUp": {
+        "name": "Kropshævning",
+        "how": "Hæng i stangen med strakte arme og hænderne lidt bredere end skuldrene. Træk dig op, til hagen er over stangen, og sænk dig roligt helt ned igen. Sving ikke med benene. Kan du ikke tage dem alle, så brug en elastik.",
+        "why": "Styrker ryg og arme, som holder dig stabil, når du trækker i styret op ad bakke."
+      },
+      "bandPullUp": {
+        "name": "Kropshævning med elastik",
+        "how": "Læg en kraftig elastik over stangen og stå med fødderne i løkken. Hæng med strakte arme, træk dig op, til hagen er over stangen, og sænk dig roligt. Elastikken tager en del af vægten. Tag en tyndere elastik, når det bliver let.",
+        "why": "Den samme øvelse som kropshævning, med hjælp, så du kan lave hele bevægelsen."
+      },
+      "monsterWalk": {
+        "name": "Monstergang med elastik",
+        "how": "Sæt en elastik om benene lige over knæene. Stå med fødderne i hoftebredde og bøj let i knæ og hofter. Gå små skridt til siden uden at lade knæene falde ind, og gå samme vej tilbage. Hold overkroppen rolig.",
+        "why": "Træner musklerne på siden af hoften, som holder knæet på linje over pedalen."
+      },
+      "bandExternalRotation": {
+        "name": "Udadrotation med elastik",
+        "how": "Hold en let elastik i begge hænder med albuerne ind til siden og underarmene frem. Før hænderne ud til siden, mens albuerne bliver ved kroppen. Klem skulderbladene let sammen, og før hænderne roligt tilbage.",
+        "why": "Giver skuldrene en modvægt til den foroverbøjede stilling på cyklen."
       }
     },
     "programs": {
@@ -4811,6 +4886,18 @@
       "strengthNoMachines": {
         "name": "Styrke uden maskiner",
         "description": "Ben, ryg og arme med kropsvægt, en kettlebell og en elastik. Varm op med 8 minutter på cyklen først. DCU anbefaler mindst 48 timer mellem to styrkepas og teknik før belastning."
+      },
+      "strengthRoom": {
+        "name": "Styrke i rummet",
+        "description": "Helkrop med stang og håndvægte i klubbens styrkerum. Varm op med 8 minutter på cyklen og 20 squat med let stang. Teknik før vægt, og som U17 løfter du aldrig til udmattelse. Hold mindst 48 timer mellem to styrkepas, og stræk ud bagefter."
+      },
+      "trxBodyweight": {
+        "name": "TRX og kropsvægt",
+        "description": "Hele kroppen med TRX, en bar til kropshævninger og din egen vægt. Varm op med 8 minutter på cyklen og 20 squat. Jo mere du hælder i TRX'en, jo hårdere er det. Hold mindst 48 timer mellem to styrkepas."
+      },
+      "bandsKettlebell": {
+        "name": "Elastikker og kettlebell",
+        "description": "Hofte, ben og skuldre med elastikker og en kettlebell. Varm op med 8 minutter på cyklen og 20 squat. Start let, og lad hoften gøre arbejdet i kettlebell-svinget. Hold mindst 48 timer mellem to styrkepas."
       }
     },
     "library": {
