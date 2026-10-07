@@ -168,7 +168,7 @@ function placedInside(prop: Extract<Prop, { at: Point }>, to: Point): Prop {
 
 /** How far a TRX's anchor ring and a handle's grip reach round their points. */
 const TRX_MARGIN = {
-  anchor: FIGURE.trx.ring + FIGURE.bandStroke,
+  anchor: FIGURE.trx.ring + FIGURE.trx.strap,
   handle: FIGURE.trx.grip + FIGURE.propStroke,
 } as const;
 

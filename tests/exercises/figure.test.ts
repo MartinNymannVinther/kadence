@@ -123,7 +123,7 @@ describe("the strength room's props", () => {
     ]);
     const straps = prims.filter(
       (p): p is Extract<FigurePrimitive, { shape: "polyline" }> =>
-        p.shape === "polyline" && p.width === FIGURE.bandStroke,
+        p.shape === "polyline" && p.width === FIGURE.trx.strap,
     );
     expect(straps.map((s) => s.points)).toEqual([
       [

@@ -56,7 +56,7 @@ function trx(p: Extract<Prop, { kind: "trx" }>): FigurePrimitive[] {
     const length = Math.hypot(handle[0] - p.anchor[0], handle[1] - p.anchor[1]) || 1;
     const u: XY = [(handle[0] - p.anchor[0]) / length, (handle[1] - p.anchor[1]) / length];
     return [
-      line("prop", [p.anchor, handle], FIGURE.bandStroke, opacity),
+      line("prop", [p.anchor, handle], t.strap, opacity),
       { ...crossbar(handle, u, t.grip, FIGURE.propStroke), opacity },
     ];
   };
@@ -69,7 +69,7 @@ function trx(p: Extract<Prop, { kind: "trx" }>): FigurePrimitive[] {
       center: p.anchor,
       r: t.ring,
       fill: false,
-      width: FIGURE.bandStroke,
+      width: t.strap,
       opacity: 1,
     },
   ];

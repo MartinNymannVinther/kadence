@@ -127,7 +127,7 @@ export const BAND_PULL_UP: BuiltinExercise = {
   },
 };
 
-/** From the front, low in the hips with a band above the knees; the arrow is the step aside. */
+/** From the front, low in the hips with a band round the ankles; the arrow is the step aside. */
 export const MONSTER_WALK: BuiltinExercise = {
   id: "monsterWalk",
   group: "legs",
@@ -151,42 +151,44 @@ export const MONSTER_WALK: BuiltinExercise = {
     hidden: [],
     props: [
       { kind: "floor", y: 122 },
-      { kind: "band", from: [107, 87], to: [133, 87] },
+      { kind: "band", from: [99, 111], to: [141, 111] },
     ],
     arrows: [{ from: [158, 104], to: [186, 104], bend: 0 }],
   },
 };
 
-/** From the front, elbows at the sides and a band between the hands; the arrows open them. */
+/**
+ * From the front, one arm at work: the elbow at the side, the forearm
+ * across the stomach against a band fixed to a wall; the bent arrow is the
+ * forearm swinging out.
+ */
 export const BAND_EXTERNAL_ROTATION: BuiltinExercise = {
   id: "bandExternalRotation",
   group: "upper",
   equipment: ["band"],
-  dose: { kind: "reps", reps: 12, perSide: false, sets: 3, load: "light" },
+  dose: { kind: "reps", reps: 12, perSide: true, sets: 3, load: "light" },
   source: `Kadence's own for the back of the shoulder, with a band; ${SOURCES.youthStrength}`,
   pose: {
     joints: {
       head: [120, 22],
       neck: [120, 37],
       hip: [120, 68],
-      elbowA: [112, 58],
-      handA: [97, 44],
-      elbowB: [128, 58],
-      handB: [143, 44],
+      elbowA: [111, 58],
+      handA: [128, 64],
+      elbowB: [128, 57],
+      handB: [131, 75],
       kneeA: [116, 94],
       footA: [114, 118],
       kneeB: [124, 94],
       footB: [126, 118],
     },
-    hidden: [],
+    hidden: ["armB"],
     props: [
       { kind: "floor", y: 122 },
-      { kind: "band", from: [97, 44], to: [143, 44] },
+      { kind: "wall", x: 206 },
+      { kind: "band", from: [129, 64], to: [206, 56] },
     ],
-    arrows: [
-      { from: [87, 44], to: [65, 44], bend: 0 },
-      { from: [153, 44], to: [175, 44], bend: 0 },
-    ],
+    arrows: [{ from: [124, 78], to: [82, 66], bend: 0.5 }],
   },
 };
 
