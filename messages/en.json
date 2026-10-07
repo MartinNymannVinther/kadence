@@ -522,7 +522,7 @@
       "leaveBody": "You lose access to the workspace and your conversations in it. An owner or admin can invite you again.",
       "leaveConfirm": "Leave",
       "inviteTitle": "Invite a colleague",
-      "inviteBody": "Type the address and you get a link. Send it yourself, the way you talk to each other anyway. The link is for that address only and lasts 48 hours.",
+      "inviteBody": "Type the address and you get a link. Send it yourself, the way you talk to each other anyway. The link is for that address only and lasts a week.",
       "invite": "Make a link",
       "issued": "Link for {email}",
       "issuedHint": "Copy and send. If the person has no account, it is created through the link; otherwise they sign in and accept.",
@@ -694,7 +694,7 @@
     "subprocessorsNote": "Who can see what is listed in",
     "shareLinks": {
       "title": "Invitations",
-      "body": "An invitation link is for one address and expires after two days. You send it; we send no mail."
+      "body": "An invitation link is for one address and expires after a week. You send it; we send no mail."
     }
   },
   "join": {

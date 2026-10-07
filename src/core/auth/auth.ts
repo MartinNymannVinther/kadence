@@ -30,6 +30,14 @@ const baseUrl = new URL(env.BETTER_AUTH_URL);
 /** Open invitations a team may hold at once; "Inviter hele holdet" checks it before it starts. */
 export const TEAM_INVITATION_LIMIT = 200;
 
+/**
+ * How long an invitation link works: a week, so a link a coach shares over
+ * a weekend still works when a rider first opens it on the third day
+ * (docs/adr/0064). Better Auth's default is 48 hours. The texts that say
+ * until when read the date from the invitation itself.
+ */
+export const TEAM_INVITATION_DAYS = 7;
+
 export const auth = betterAuth({
   appName: "Kadence",
   baseURL: env.BETTER_AUTH_URL,
@@ -193,6 +201,8 @@ export const auth = betterAuth({
       // Better Auth's default of 100 members.
       membershipLimit: 500,
       invitationLimit: TEAM_INVITATION_LIMIT,
+      // In seconds; a new link and a renewed one alike.
+      invitationExpiresIn: TEAM_INVITATION_DAYS * 24 * 60 * 60,
       schema: {
         organization: { modelName: "organizations" },
         member: { modelName: "memberships" },
