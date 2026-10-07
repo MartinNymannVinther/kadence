@@ -278,6 +278,15 @@ describe("rls coverage (guards future tables)", () => {
     // Where a coach last read a thread in Trænerrummet (ADR 0052): their
     // own marker, rewritten on every visit, not something anybody owns.
     "community_reads",
+    // What the reminder run has told a browser (drizzle/0036, docs/adr/0060):
+    // technical timestamps the job writes on every reminder, how far the
+    // news it told reached and the day of the last check-in or week
+    // reminder. No personal data beyond whose subscription it is, which the
+    // audited push_subscriptions already says, and no person changes them;
+    // audited, they filled the trail with a row per reminder. Turning
+    // reminders on, changing them and turning them off stay audited, and
+    // tests/push/isolation.test.ts proves both.
+    "push_runs",
   ];
 
   it("every domain table has an audit trigger", async () => {

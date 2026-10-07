@@ -107,20 +107,26 @@ export function pushTeam(admin: Pool, key: string) {
         user_id: who.userId,
         endpoint: `https://fcm.googleapis.com/fcm/send${marker}${options.address ?? name}`,
         kinds: `{${kinds.join(",")}}`,
-        told_up_to: options.toldUpTo ?? MORNING,
         created_at: MORNING,
         updated_at: MORNING,
       });
+      await insert("push_runs", {
+        subscription_id: `${key}_${name}`,
+        org_id: who.orgId,
+        user_id: who.userId,
+        told_up_to: options.toldUpTo ?? MORNING,
+      });
     },
 
+    /** What the run has told a subscription (push_runs, drizzle/0036). */
     async row(name: string) {
       const result = await admin.query(
-        `select told_up_to, updated_at, checkin_reminded_on::text as checkin, week_told_on::text as week
-         from push_subscriptions where id = $1`,
+        `select told_up_to, told_at, checkin_reminded_on::text as checkin, week_told_on::text as week
+         from push_runs where subscription_id = $1`,
         [`${key}_${name}`],
       );
       return result.rows[0] as
-        | { told_up_to: Date; updated_at: Date; checkin: string | null; week: string | null }
+        | { told_up_to: Date; told_at: Date | null; checkin: string | null; week: string | null }
         | undefined;
     },
 

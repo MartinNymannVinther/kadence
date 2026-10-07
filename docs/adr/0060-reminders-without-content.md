@@ -2,8 +2,8 @@
 
 Status: accepted · Date: 2026-10-06 · Amended 2026-10-06: a coach's
 wellbeing reminder (P1-02) and a test push (P1-05) · Amended 2026-10-07:
-a check-in that turns red later (P2-17) and plan changes that know their
-sender (P2-12)
+a check-in that turns red later (P2-17), plan changes that know their
+sender (P2-12) and reminders that leave the audit trail alone (P2-13)
 
 ## Context
 
@@ -216,9 +216,8 @@ due.
   worker asks `latest`, which answers "Sådan ser en påmindelse fra Kadence
   ud" until a real reminder goes out after the test. The server keeps the
   moment of the test in memory, for the six hours a push can wait, and
-  writes nothing: a test is not a reminder, and a mark in
-  `push_subscriptions` would move the run's marks and add a row to the
-  audit trail for nothing.
+  writes nothing: a test is not a reminder, and a mark in `push_runs`
+  would move the run's marks for nothing.
 - **The status line** under the card is worked out in the browser: the
   notification permission, whether `/sw.js` is registered, whether the
   browser holds a subscription, and on an iPhone or iPad whether Kadence
@@ -287,3 +286,46 @@ their own change and is told when the coach takes a session away.
 - **The sweep writes the audit trail.** A row's insert and its removal
   are each an audit row, the removal as the system. Deletions in the next
   days are few.
+
+## Amendment: reminders do not fill the audit trail (P2-13)
+
+Every reminder moved `told_up_to`, `checkin_reminded_on` or
+`week_told_on` on `push_subscriptions`, and the table's audit trigger
+wrote a row for each: a coach reading the trail for changes to the
+training found a row per rider per evening.
+
+- **The run's marks have a table of their own,** `push_runs`
+  (drizzle/0036): one row per subscription with the three marks and
+  `told_at`, the moment the last reminder went out, which `lastTold` and
+  `latest` read where they read the subscription's `updated_at` before.
+  The run makes a subscription's row the first time it reads it, starting
+  at the subscription's own making, and it goes with the subscription by
+  cascade. Its policy is the subscription's: its owner's alone, in that
+  team, and only for a subscription that is theirs; no delete.
+- **`push_runs` has no audit trigger**, the one exception this amendment
+  makes. Its rows are technical timestamps the job writes: no personal
+  data beyond whose subscription it is, which the audited subscription
+  already says, and nothing a person changes. Auditing them recorded the
+  job, not anybody's change, and buried the changes the trail is for. The
+  exception is named, with this reason, in the migration and in the list
+  of tables without an audit trigger in tests/rls/tenant-isolation.test.ts,
+  beside the auth machinery and the other markers.
+- **Turning reminders on, choosing which, and turning them off** stay on
+  `push_subscriptions`, audited as before, without the address.
+  tests/push/isolation.test.ts proves both: a run that sends a reminder
+  writes no audit row, and a subscription made, changed and removed
+  writes one each.
+
+Option (a), an audit trigger that skips an update touching only the
+three marks, was not chosen: it would make the audit trigger on one table
+decide what is worth recording, where every other table records every
+change; a table that is not audited, named and argued for, is easier to
+see and to check.
+
+### Trade-offs accepted
+
+- **When a reminder went out is not in the audit trail.** It never said
+  more than that a push went out; the push services' own metadata is the
+  same fact (see above), and the person's own phone shows it.
+- **Not in the export,** like the subscription: when a reminder went out
+  is about a browser, not about training.

@@ -81,7 +81,8 @@ export const EXPORT_TABLES: ExportTable[] = [
  * - `push_subscriptions`: a browser's push address for reminders (ADR
  *   0060) — a capability that could wake that browser, owned by the person
  *   rather than the team, and nothing about training. That reminders were
- *   turned on and off is in the audit trail, without the address.
+ *   turned on and off is in the audit trail, without the address. Nor
+ *   `push_runs`, the run's marks beside it: when a reminder went out.
  * - `planned_session_deletions`: a deleted session's day and title, kept
  *   for seven days so a rider's reminder can say the plan changed (ADR
  *   0060, drizzle/0035). The deletion itself, and this record of it, are

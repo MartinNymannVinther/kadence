@@ -185,16 +185,16 @@ export function decide(sub: SubscriptionState, facts: Facts, now: Date): Decisio
 
 /**
  * Which reminder a subscription was last sent, read back from what the
- * job wrote: news moves `told_up_to` and `updated_at` to the same moment;
- * a check-in or a week reminder moves `updated_at` and its own day. What
- * the service worker shows is computed from this, so the text matches the
- * reminder without the push ever carrying it.
+ * job wrote (`push_runs`): news moves `told_up_to` and `told_at` to the
+ * same moment; a check-in or a week reminder moves `told_at` and its own
+ * day. What the service worker shows is computed from this, so the text
+ * matches the reminder without the push ever carrying it.
  */
 export function lastTold(
-  sub: SubscriptionState & { updatedAt: Date },
+  sub: SubscriptionState & { toldAt: Date },
 ): "news" | "checkin" | "week" | null {
-  if (sub.toldUpTo.getTime() === sub.updatedAt.getTime()) return "news";
-  const told = copenhagenClock(sub.updatedAt);
+  if (sub.toldUpTo.getTime() === sub.toldAt.getTime()) return "news";
+  const told = copenhagenClock(sub.toldAt);
   if (sub.kinds.includes("checkin") && sub.checkinRemindedOn === told.date) return "checkin";
   if (sub.kinds.includes("week") && told.weekday === 7 && sub.weekToldOn === mondayOf(told.date))
     return "week";
@@ -204,14 +204,14 @@ export function lastTold(
 /**
  * Whether the last push may have been about a rider in the red zone. Its
  * mark leaves `told_up_to` on the moment the check-in turned red, behind
- * `updated_at`; `latest` then confirms there is such a check-in. When a
+ * `told_at`; `latest` then confirms there is such a check-in. When a
  * check-in or a week reminder fits the marks as well — a coach who also
  * rides or is a parent on the team — the red one is taken only if it went
  * out soon after the check-in turned red, as it does.
  */
-export function mayBeWellbeing(sub: SubscriptionState & { updatedAt: Date }): boolean {
+export function mayBeWellbeing(sub: SubscriptionState & { toldAt: Date }): boolean {
   if (!sub.kinds.includes("wellbeing")) return false;
-  const gap = sub.updatedAt.getTime() - sub.toldUpTo.getTime();
+  const gap = sub.toldAt.getTime() - sub.toldUpTo.getTime();
   if (gap <= 0) return false;
   return lastTold(sub) === null || gap <= WELLBEING_TOLD_WITHIN_MS;
 }

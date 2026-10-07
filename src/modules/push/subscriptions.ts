@@ -106,13 +106,9 @@ export async function subscribe(ctx: OrgContext, endpoint: string): Promise<Remi
       };
     const [made] = await tx
       .insert(pushSubscriptions)
-      .values({
-        orgId: ctx.orgId,
-        userId: ctx.userId,
-        endpoint,
-        kinds: offered,
-        toldUpTo: new Date(),
-      })
+      // Nothing before now is told: the run's marks start at the
+      // subscription's own making (runs.ts).
+      .values({ orgId: ctx.orgId, userId: ctx.userId, endpoint, kinds: offered })
       .returning({ createdAt: pushSubscriptions.createdAt });
     return {
       subscribed: true,
