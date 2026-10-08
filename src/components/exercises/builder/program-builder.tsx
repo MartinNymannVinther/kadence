@@ -18,6 +18,7 @@ import * as draft from "@/modules/exercises/program-draft";
 import type { DraftPart } from "@/modules/exercises/program-draft";
 import { programParts } from "@/modules/exercises/view";
 import { ProgramViewer } from "../program-viewer";
+import { AiDialog } from "./ai-dialog";
 import { ExercisePicker } from "./exercise-picker";
 import { PartEditor } from "./part-editor";
 
@@ -35,9 +36,10 @@ export type ProgramBuilderInitial = {
  * line on what it is for, and parts of the day with exercises of either
  * kind — Kadence's own and the team's own — each with the exercise's dose
  * or the programme's own. Below the parts the programme shows as the
- * riders will see it, in the same viewer and at the same width. Saved
- * through the team's own actions, which check every exercise again on the
- * server.
+ * riders will see it, in the same viewer and at the same width. "Byg med
+ * AI" (ai-dialog.tsx) composes it in conversation and lays each answer
+ * straight in here. Saved through the team's own actions, which check
+ * every exercise again on the server.
  */
 export function ProgramBuilder({
   initial,
@@ -118,6 +120,14 @@ export function ProgramBuilder({
           onChange={(e) => setDescription(e.target.value)}
         />
       </div>
+      <AiDialog
+        draft={{ name, description, parts }}
+        onApply={(next) => {
+          setName(next.name);
+          setDescription(next.description);
+          change(() => next.parts);
+        }}
+      />
       <section aria-labelledby="builder-parts" className="flex min-w-0 flex-col gap-3">
         <h2 id="builder-parts" className="text-lg font-semibold">
           {t("parts")}

@@ -813,7 +813,7 @@
       },
       "ai": {
         "title": "AI'en",
-        "body": "AI'en foreslår, og træneren bestemmer. Den kan læse en træners kortform som \"3x10 min Z4 / 5 min pause\" til trin (reglerne klarer det meste uden nogen sprogmodel), bygge et pas ud fra dine ord med \"Byg med AI\" i biblioteket, foreslå en uge under \"Planlæg ugen\" for én rytter eller flere, og skrive et kort resumé af ugens opmærksomhedspunkter i holdets uge. Intet lægges i kalenderen, før en træner trykker. Den skriver aldrig til en rytter og sletter aldrig noget. Ugeforslag og resumé læser rytternes data, så de virker kun, hvis holdet har slået \"Må AI'en læse rytternes data\" til under Indstillinger → Holdet. Uden en sprogmodel virker alt andet som før."
+        "body": "AI'en foreslår, og træneren bestemmer. Den kan læse en træners kortform som \"3x10 min Z4 / 5 min pause\" til trin (reglerne klarer det meste uden nogen sprogmodel), bygge et pas ud fra dine ord med \"Byg med AI\" i biblioteket, sammensætte et træningsprogram i en samtale under Øvelser og programmer, hvor hvert svar lægges direkte i byggeren, foreslå en uge under \"Planlæg ugen\" for én rytter eller flere, og skrive et kort resumé af ugens opmærksomhedspunkter i holdets uge. Intet lægges i kalenderen, før en træner trykker. Den skriver aldrig til en rytter og sletter aldrig noget. Ugeforslag og resumé læser rytternes data, så de virker kun, hvis holdet har slået \"Må AI'en læse rytternes data\" til under Indstillinger → Holdet. Uden en sprogmodel virker alt andet som før."
       },
       "pilot": {
         "title": "De første to uger som pilothold",
@@ -5153,7 +5153,32 @@
       "saved": "Ændringerne er gemt.",
       "missing": "Programmet skal have et navn og mindst én øvelse i hver del, før det kan gemmes.",
       "archive": "Arkivér",
-      "restore": "Gendan"
+      "restore": "Gendan",
+      "ai": {
+        "open": "Byg med AI",
+        "title": "Byg programmet med AI",
+        "intro": "Skriv, hvad programmet skal kunne, og ret til i samtalen. Hvert svar lægges direkte i byggeren, hvor du kan rette alt. Intet gemmes, før du gemmer programmet.",
+        "label": "Din besked",
+        "placeholderFirst": "Fx 30 min core og bevægelighed uden udstyr til U17, tre gange om ugen",
+        "placeholderNext": "Fx byt planken ud med sideplanke, eller gør det kortere",
+        "examples": "Prøv fx",
+        "example1": "Core og bevægelighed i 20 min derhjemme",
+        "example2": "Styrke med stang og håndvægte til U19, teknik først",
+        "example3": "Stræk før og efter en lang tur",
+        "category": "Årgang",
+        "categoryNone": "Ingen bestemt",
+        "hint": "Vælger du årgang, holder forslaget sig til DCU's anbefalinger for den. Der går ingen rytterdata med. Cmd+Enter sender.",
+        "send": "Send",
+        "sending": "Tænker … det kan tage lidt tid.",
+        "you": "Du",
+        "ai": "AI",
+        "applied": "Lagt i byggeren",
+        "updated": "Programmet er opdateret i byggeren.",
+        "undo": "Fortryd sidste ændring",
+        "undone": "Sidste ændring er fortrudt.",
+        "restart": "Start forfra",
+        "close": "Luk"
+      }
     },
     "schedule": {
       "button": "Læg i kalenderen",

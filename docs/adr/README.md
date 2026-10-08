@@ -90,3 +90,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0068](0068-navigation-by-task.md)                                         | Navigation by task: groups with icons, knowledge back in the menu, the team's name as the switcher          | → 0047, 0048, 0061             |
 | [0069](0069-parents-add-family-events.md)                                  | Parents put the family's days into their child's calendar: a holiday, an exam or other, their own rows only | → 0010, 0011                   |
 | [0070](0070-addresses-stay-with-the-coach.md)                              | Addresses stay with the coach: column privileges on `users`, one definer function for the rest              | → 0002, 0019                   |
+| [0071](0071-compose-a-programme-with-ai.md)                                | Compose a programme with AI, in conversation: every answer laid into the builder, nothing saved until Gem   | → 0010, 0034, 0038, 0067       |
