@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { Check } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Thinking } from "@/components/assist/thinking";
 import { cn } from "@/lib/utils";
 
 /** What has been said in the dialogue: the coach, the AI, or a note from the panel itself. */
@@ -53,11 +54,7 @@ export function AiTranscript({ spoken, busy }: { spoken: Spoken[]; busy: boolean
           </div>
         ),
       )}
-      {busy && (
-        <p className="text-meta self-start text-2sm" role="status">
-          {t("sending")}
-        </p>
-      )}
+      {busy && <Thinking className="self-start">{t("sending")}</Thinking>}
       <div ref={end} />
     </div>
   );

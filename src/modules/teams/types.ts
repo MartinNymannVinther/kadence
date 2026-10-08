@@ -23,6 +23,19 @@ export type TeamLevel = (typeof TEAM_LEVELS)[number];
 
 const hex = z.string().regex(/^#[0-9a-f]{6}$/i, "a hex colour");
 
+/** How the jersey's third colour is laid on: a chest band, stripes, the upper body, or one half. */
+export const JERSEY_PATTERNS = ["band", "stripes", "chest", "halves"] as const;
+export type JerseyPattern = (typeof JERSEY_PATTERNS)[number];
+
+export const jerseyColoursSchema = z.object({
+  body: hex,
+  sleeves: hex,
+  band: hex.optional(),
+  /** Where `band` goes; "band" unless said otherwise. */
+  pattern: z.enum(JERSEY_PATTERNS).optional(),
+});
+export type JerseyColours = z.infer<typeof jerseyColoursSchema>;
+
 /** A team as the registry describes it: what no source lists in a form a machine can read. */
 export const registryTeamSchema = z.object({
   /** A stable slug, the page's anchor. */
@@ -38,7 +51,17 @@ export const registryTeamSchema = z.object({
   home: z.string().trim().max(80).optional(),
   website: z.string().url().max(200).optional(),
   /** The jersey, drawn from these; without them the jersey is neutral. */
-  colours: z.object({ body: hex, sleeves: hex, band: hex.optional() }).optional(),
+  colours: jerseyColoursSchema.optional(),
+  /**
+   * A photograph of the team on Wikimedia Commons, by its file name, with
+   * a licence that allows showing it with credit. Copied to the
+   * installation on refresh (photos.ts), never loaded from Commons by a
+   * reader's browser.
+   */
+  photo: z
+    .string()
+    .regex(/^File:.+\.(jpe?g|png)$/i)
+    .optional(),
   /** The name as the UCI or DCU write it, when that differs from `name`; matching ignores case and punctuation. */
   aliases: z.array(z.string().trim().min(1).max(80)).max(8).default([]),
   /** When a person last checked the website, the colours and the home. */
@@ -102,11 +125,25 @@ export type DcuData = {
   lastSeason: { season: number; u19Men: RankedRider[]; u19Women: RankedRider[] } | null;
 };
 
+/** A photograph as copied from Wikimedia Commons: who took it and under what licence, for the credit line. */
+export type TeamPhoto = {
+  file: string;
+  artist: string;
+  licence: string;
+  /** The file's page on Commons, where the credit links. */
+  pageUrl: string;
+  fetchedAt: string;
+  width: number;
+  height: number;
+};
+
 /** What the page is built from: the sources as last read, on disk. */
 export type TeamsSnapshot = {
   version: 1;
   uci: SourceRead<UciData>;
   dcu: SourceRead<DcuData>;
+  /** By registry id; absent while the photo has not been copied. */
+  photos?: Record<string, TeamPhoto>;
 };
 
 export const EMPTY_SNAPSHOT: TeamsSnapshot = {

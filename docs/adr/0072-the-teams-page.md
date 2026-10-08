@@ -1,6 +1,6 @@
 # ADR 0072: The teams page — Danish U19 and U23 teams, read from the lists
 
-Status: accepted · Date: 2026-10-08 · Builds on 0013, 0023, 0039, 0047, 0057 · Amends 0013 (points on an open guide)
+Status: accepted · Date: 2026-10-08 · Builds on 0013, 0023, 0039, 0047, 0057 · Amends 0013 (points on an open guide) · Amended the same day (photographs from Commons, jersey patterns)
 
 ## Context
 
@@ -54,9 +54,19 @@ an API or terms for reuse; DCU has not yet said yes to being read (ADR
   points, and the page says so.
 - **Jerseys are drawn, not copied.** One hand-drawn jersey in Kadence's
   line (`components/teams/jersey.tsx`), filled from the registry's
-  colours; a team without checked colours wears a neutral one with its
-  initials and the words "farver ikke tjekket". No photograph, no logo:
-  those are the teams' own.
+  colours and laid out by its pattern — a chest band, stripes, the upper
+  body or one half; a team without checked colours wears a neutral one
+  with its initials and the words "farver ikke tjekket". No logo: that is
+  the team's own.
+- **Photographs come from Wikimedia Commons, copied, with credit.** A
+  person names a file per team in the registry after looking at the
+  photo and its licence; on refresh Kadence asks Commons' API for the
+  640-pixel rendering, the photographer and the licence, refuses any
+  licence outside CC0, public domain and CC BY(-SA), copies the rendering
+  to `TEAMS_DIR/photos/` and serves it from `/api/teams/photo/<id>` with
+  the credit line linked to the file's page. A reader's browser never
+  reaches Commons. Sites that show kits behind a challenge page
+  (ProCyclingStats, FirstCycling) are not read.
 - **Contacts are the ones DCU publishes.** The team manager's name and
   the address on DCU's own page, as DCU lists them for the team; nothing
   looked up elsewhere. The registry never holds a person.
@@ -95,10 +105,15 @@ an API or terms for reuse; DCU has not yet said yes to being read (ADR
   the page with its last snapshot and the word that the latest read
   failed, until the reader is fixed. The fixtures in `tests/teams` are
   the shapes as they were on 8 October 2026.
-- **Colours are a person's work.** Five teams have colours, from their
-  sponsors' well-known kits rather than 2026 photographs; the rest wear
-  neutral jerseys until someone who knows fills the registry in. The
-  page says which is which rather than guessing.
+- **Colours are a person's work.** Eleven teams have colours — seven
+  read from Commons photographs, four from their sponsors' well-known
+  kits; the rest, the junior teams above all, wear neutral jerseys until
+  someone who knows fills the registry in. The page says which is which
+  rather than guessing.
+- **A photograph is a person in a jersey.** The photographs are of
+  teams at public races, published by their photographers under licences
+  made for reuse, and show the team as a team; still, a rider who wants
+  a photo gone asks, and the file name comes out of the registry.
 - **Team managers' addresses on an open page.** They are what DCU
   publishes for the team on its own open page, for this purpose. The
   snapshot holds them on the installation's disk, never in the

@@ -22,6 +22,7 @@ import { acceptDraftSessionsAction } from "@/modules/assist/actions";
 import type { Structure } from "@/modules/workouts/structure";
 import { AiFailureText } from "./ai-failure";
 import { ProposalFrame } from "./proposal-frame";
+import { Thinking } from "./thinking";
 
 type DraftSession = {
   date: string;
@@ -123,11 +124,7 @@ export function WeekDraftDialog({ riderId, monday }: { riderId: string; monday: 
             <DialogTitle>{t("title")}</DialogTitle>
             <DialogDescription>{t("body")}</DialogDescription>
           </DialogHeader>
-          {busy && (
-            <p className="text-meta text-2sm" aria-live="polite">
-              {t("thinking")}
-            </p>
-          )}
+          {busy && <Thinking>{t("thinking")}</Thinking>}
           {error && <AiFailureText error={error} />}
           {draft && draft.week.sessions.length === 0 && (
             <p className="text-2sm">{draft.week.note || t("empty")}</p>

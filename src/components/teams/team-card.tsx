@@ -3,6 +3,7 @@ import { useTranslations } from "next-intl";
 import type { TeamView } from "@/modules/teams/view";
 import { initialsOf, Jersey } from "./jersey";
 import { RiderLines } from "./rider-lines";
+import { TeamPhotoFigure } from "./team-photo";
 
 /**
  * One team on the teams page (ADR 0072): its drawn jersey, its name and
@@ -70,6 +71,7 @@ export function TeamCard({ team }: { team: TeamView }) {
             )}
           </p>
         )}
+        {team.photo && <TeamPhotoFigure id={team.id} name={team.name} photo={team.photo} />}
         <RiderLines riders={team.riders} lastSeason={team.lastSeasonRiders} />
       </div>
     </li>

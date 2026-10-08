@@ -124,7 +124,9 @@ describe("the downloaded programme", () => {
     const html = render();
     expect(html).toContain('<h2 class="part-title">Morgen</h2>');
     expect(html).toContain("@media print{");
-    expect(html).toContain(".card{break-inside:avoid}");
+    expect(html).toContain(
+      ".card{display:block;margin-bottom:.75rem;break-inside:avoid;page-break-inside:avoid}",
+    );
     expect(html).toContain(".tab-input,.tab,.done-btn{display:none}");
   });
 

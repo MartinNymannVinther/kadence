@@ -8,6 +8,7 @@ import { Link } from "@/i18n/navigation";
 import { askAi } from "@/modules/ai/read-client";
 import type { AiFailure } from "@/modules/ai/wire";
 import { AiFailureText } from "./ai-failure";
+import { Thinking } from "./thinking";
 import { ProposalFrame } from "./proposal-frame";
 
 type Brief = { riders: Array<{ riderId: string; name: string }>; summary: string | null };
@@ -59,16 +60,19 @@ export function CoachBrief({ allowed }: { allowed: boolean }) {
   return (
     <div className="flex flex-col gap-3">
       {!answer && (
-        <Button
-          type="button"
-          variant="outline"
-          className="self-start max-sm:h-11"
-          disabled={busy}
-          onClick={() => void ask()}
-        >
-          <Sparkles data-icon="inline-start" />
-          {busy ? t("thinking") : t("ask")}
-        </Button>
+        <div className="flex flex-wrap items-center gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            className="max-sm:h-11"
+            disabled={busy}
+            onClick={() => void ask()}
+          >
+            <Sparkles data-icon="inline-start" />
+            {t("ask")}
+          </Button>
+          {busy && <Thinking>{t("thinking")}</Thinking>}
+        </div>
       )}
       {error && <AiFailureText error={error} />}
       {answer &&
