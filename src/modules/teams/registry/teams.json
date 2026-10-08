@@ -1,0 +1,304 @@
+[
+  {
+    "id": "bhs-pl-beton-bornholm",
+    "name": "BHS – PL Beton Bornholm",
+    "level": "uciContinental",
+    "country": "DK",
+    "home": "Bornholm",
+    "aliases": ["BHS - PL Beton Bornholm", "BHS-PL BETON BORNHOLM"],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "airtox-carl-ras",
+    "name": "Airtox – Carl Ras",
+    "level": "uciContinental",
+    "country": "DK",
+    "home": "Holbæk",
+    "website": "https://gsholbaek.dk/",
+    "aliases": ["Airtox - Carl Ras", "AIRTOX - CARL RAS"],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "team-coloquick",
+    "name": "Team ColoQuick",
+    "level": "uciContinental",
+    "country": "DK",
+    "home": "Nykøbing Mors",
+    "website": "https://www.coloquickcycling.dk/",
+    "aliases": ["Team coloQuick", "TEAM COLOQUICK"],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "team-give-steel",
+    "name": "Team Give Steel",
+    "level": "uciContinental",
+    "country": "DK",
+    "home": "Give",
+    "aliases": ["Team Give Steele"],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "ceramicspeed-racing",
+    "name": "CeramicSpeed Racing p/b Aros Forsikring",
+    "level": "dcuEliteMen",
+    "country": "DK",
+    "home": "Herning",
+    "aliases": [],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "team-hac-elite",
+    "name": "Team HAC Elite",
+    "level": "dcuEliteMen",
+    "country": "DK",
+    "home": "Horsens",
+    "aliases": [],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "team-aalborg",
+    "name": "Team Aalborg Sparekassen Danmark",
+    "level": "dcuEliteMen",
+    "country": "DK",
+    "home": "Aalborg",
+    "aliases": [],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "team-cranks",
+    "name": "Team Cranks",
+    "level": "dcuEliteMen",
+    "country": "DK",
+    "home": "Klampenborg",
+    "aliases": [],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "reffen-coplay-giant-store",
+    "name": "Reffen CO:PLAY Giant Store",
+    "level": "dcuEliteMen",
+    "country": "DK",
+    "home": "København",
+    "aliases": [],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "team-aalborg-women",
+    "name": "Team Aalborg Sparekassen Danmark Women",
+    "level": "dcuEliteWomen",
+    "country": "DK",
+    "home": "Aalborg",
+    "aliases": [],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "team-friis",
+    "name": "Team FRIIS",
+    "level": "dcuEliteWomen",
+    "country": "DK",
+    "home": "København",
+    "aliases": [],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "al-sydbank-quooker-njord-law",
+    "name": "AL Sydbank Quooker Njord Law",
+    "level": "dcuEliteWomen",
+    "country": "DK",
+    "home": "Ordrup",
+    "aliases": [],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "team-strada-elite-women",
+    "name": "Team Strada Elite Women",
+    "level": "dcuEliteWomen",
+    "country": "DK",
+    "aliases": [],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "team-kvickly-odder",
+    "name": "Team Kvickly Odder",
+    "level": "u19Men",
+    "country": "DK",
+    "home": "Odder",
+    "aliases": [],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "team-improv-giant-store-cec-junior",
+    "name": "Team IMPROV – Giant Store – CEC Junior",
+    "level": "u19Men",
+    "country": "DK",
+    "home": "København",
+    "aliases": ["Team IMPROV - Giant Store - CEC Junior"],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "ale-js-holstebro-junior",
+    "name": "Alé JS Holstebro CC – Junior Team",
+    "level": "u19Men",
+    "country": "DK",
+    "home": "Holstebro",
+    "aliases": ["Alé JS Holstebro CC - Junior Team", "ALÈ JS Holstebro CC - Junior Team"],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "ceramicspeed-aros-herning-junior",
+    "name": "CeramicSpeed Aros Forsikring Herning CK Junior",
+    "level": "u19Men",
+    "country": "DK",
+    "home": "Herning",
+    "aliases": [
+      "CeramicSpeed Aros forsikring Herning CK Junior",
+      "CeramicSpeed Aros Forsikring Herning CK Junio"
+    ],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "tscherning-cycling-academy",
+    "name": "Tscherning Cycling Academy",
+    "level": "u19Men",
+    "country": "DK",
+    "home": "Ordrup og Greve",
+    "aliases": [],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "team-uno-x-carl-ras-roskilde-junior",
+    "name": "Team Uno-X – Carl Ras Roskilde Junior",
+    "level": "u19Men",
+    "country": "DK",
+    "home": "Roskilde",
+    "colours": {
+      "body": "#f5d20a",
+      "sleeves": "#e3001b"
+    },
+    "aliases": ["Team Uno-X - Carl Ras Roskilde Junior"],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "ck-fix-cycling-team-junior",
+    "name": "CK FIX Cycling Team Junior",
+    "level": "u19Men",
+    "country": "DK",
+    "home": "Rødovre",
+    "aliases": [],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "airtox-carl-ras-junior-women",
+    "name": "Airtox Carl Ras Junior Women",
+    "level": "u19Women",
+    "country": "DK",
+    "home": "Odder",
+    "aliases": ["Airtox  Carl Ras Junior Women"],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "lidl-trek-future-racing",
+    "name": "Lidl-Trek Future Racing",
+    "level": "foreign",
+    "country": "US",
+    "colours": {
+      "body": "#e30613",
+      "sleeves": "#0f1e3c",
+      "band": "#ffffff"
+    },
+    "aliases": ["LIDL-TREK FUTURE RACING"],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "general-store-essegibi-flli-curia",
+    "name": "General Store – Essegibi – F.lli Curia",
+    "level": "foreign",
+    "country": "IT",
+    "aliases": ["GENERAL STORE - ESSEGIBI - F.LLI CURIA"],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "nsn-development-team",
+    "name": "NSN Development Team",
+    "level": "foreign",
+    "aliases": ["NSN DEVELOPMENT TEAM"],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "ef-education-aevolo",
+    "name": "EF Education – Aevolo",
+    "level": "foreign",
+    "country": "US",
+    "colours": {
+      "body": "#f29ac1",
+      "sleeves": "#1b1b1b"
+    },
+    "aliases": ["EF EDUCATION - AEVOLO"],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "hagens-berman-jayco",
+    "name": "Hagens Berman Jayco",
+    "level": "foreign",
+    "country": "US",
+    "aliases": ["HAGENS BERMAN JAYCO"],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "red-bull-bora-hansgrohe-rookies",
+    "name": "Red Bull – Bora – Hansgrohe Rookies",
+    "level": "foreign",
+    "country": "DE",
+    "colours": {
+      "body": "#0b1f3a",
+      "sleeves": "#e2001a",
+      "band": "#ffffff"
+    },
+    "aliases": ["RED BULL - BORA - HANSGROHE ROOKIES"],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "jegg-skil-djr",
+    "name": "JEGG-SKIL-DJR",
+    "level": "foreign",
+    "country": "NL",
+    "aliases": [],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "cannibal-b-victorious",
+    "name": "Cannibal B Victorious",
+    "level": "foreign",
+    "country": "BE",
+    "aliases": [],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "team-grenke-auto-eder",
+    "name": "Team Grenke – Auto Eder",
+    "level": "foreign",
+    "country": "DE",
+    "aliases": ["TEAM GRENKE - AUTO EDER"],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "watersley-rd-cycling-team",
+    "name": "Watersley R+D Cycling Team",
+    "level": "foreign",
+    "country": "NL",
+    "aliases": [],
+    "checkedOn": "2026-10-08"
+  },
+  {
+    "id": "decathlon-ag2r-la-mondiale-junior-team",
+    "name": "Decathlon AG2R La Mondiale Junior Team",
+    "level": "foreign",
+    "country": "FR",
+    "colours": {
+      "body": "#4fa9e2",
+      "sleeves": "#0b2545"
+    },
+    "aliases": ["DECATHLON AG2R LA MONDIALE Junior team"],
+    "checkedOn": "2026-10-08"
+  }
+]

@@ -142,6 +142,15 @@ export const EnvSchema = z
     // availability has not yet been read by a sports dietitian (ADR 0047);
     // "off" holds it back until one has.
     GUIDE_FOOD: z.enum(["off", "on"]).default("on"),
+    // The open page of Danish U19 and U23 teams (ADR 0072), read from the
+    // UCI and from Cykling Danmark once a day into TEAMS_DIR.
+    GUIDE_TEAMS: z.enum(["off", "on"]).default("on"),
+    // Whether that page reads Cykling Danmark's team list and points lists
+    // (src/modules/teams/dcu). An external service that has not yet said
+    // yes to being read: "off" leaves the page with the UCI's part alone.
+    TEAMS_DCU: z.enum(["off", "on"]).default("on"),
+    // Where the teams page keeps what it last read; ./data/teams unless set.
+    TEAMS_DIR: z.string().min(1).optional(),
     // Reminders by web push (docs/adr/0060). The push carries no content;
     // Apple's, Google's or Mozilla's push service, whichever the person's
     // browser uses, sees that a reminder went out and when, never what it

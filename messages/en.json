@@ -3950,6 +3950,11 @@
           "body": "Everyday food and race-day food, recipes for homemade energy, teeth and supplements.",
           "topic": "food and drink"
         },
+        "teams": {
+          "title": "Teams for U19 and U23",
+          "body": "Which teams there are in Denmark, who rides for them, and which foreign teams Danish riders ride for. From the UCI and Cykling Danmark.",
+          "topic": "teams for U19 and U23"
+        },
         "programs": {
           "title": "Exercises and programmes",
           "body": "Kadence's own programmes with drawings, or put together your own. Download as one file, or print it.",
@@ -3959,7 +3964,82 @@
       "fromParents": "About the sport, for parents: {topics}.",
       "fromHelp": "Guides and calculators for riders, parents and coaches: {topics}."
     },
+    "teams": {
+      "title": "Teams for U19 and U23",
+      "intro": "Which teams there are in Denmark for U19 and U23, who rides for them, and which foreign teams Danish riders ride for. Read from the UCI's and Cykling Danmark's own lists, fetched once a day.",
+      "contents": "Contents",
+      "nationsCupMen": "In {season} Denmark is {rank} in the UCI Nations' Cup for junior men with {points, plural, one {# point} other {# points}}.",
+      "nationsCupWomen": "The junior women are {rank} with {points, plural, one {# point} other {# points}}.",
+      "level": {
+        "uciContinental": {
+          "title": "UCI Continental teams",
+          "intro": "Danish teams registered with the UCI. U23 riders and older ride side by side; the Danish U23 riders are shown with their place in the UCI World Ranking (U23)."
+        },
+        "dcuEliteMen": {
+          "title": "DCU elite teams, men",
+          "intro": "Danish elite teams under Cykling Danmark. Denmark has no U23 class on the road, so U23 riders race in class A; the riders shown are those of U23 age."
+        },
+        "dcuEliteWomen": {
+          "title": "DCU elite teams, women",
+          "intro": "Danish elite teams for women under Cykling Danmark."
+        },
+        "u19Men": {
+          "title": "U19 teams, men",
+          "intro": "DCU's registered junior teams. A team has four to nine U19 riders; the riders are shown with their place on DCU's points list for U19."
+        },
+        "u19Women": {
+          "title": "U19 teams, women",
+          "intro": "DCU's registered junior teams for women. Most U19 women ride for their club."
+        },
+        "foreign": {
+          "title": "Foreign teams with Danish riders",
+          "intro": "Teams outside Denmark that Danish U19 and U23 riders ride for, or rode for last season, according to the UCI's U23 ranking and DCU's points lists."
+        }
+      },
+      "jerseyLabel": "The jersey of {name}",
+      "jerseyUnchecked": "colours not checked",
+      "parentClub": "Parent club: {club}",
+      "manager": "Team manager: {name}",
+      "website": "Website",
+      "noRidersListed": "No riders on the lists this season.",
+      "lastSeasonOnly": "{count, plural, one {# Danish rider last season, none this season.} other {# Danish riders last season, none this season.}}",
+      "lastSeasonAlso": "{count, plural, one {And # Danish rider last season.} other {And # Danish riders last season.}}",
+      "more": "{count, plural, one {# more rider} other {# more riders}}",
+      "uciStanding": "UCI U23 no. {rank} · {points, plural, one {# point} other {# points}}",
+      "dcuStanding": "DCU {list} no. {rank} · {points, plural, one {# point} other {# points}}",
+      "list": {
+        "u19Men": "U19",
+        "u19Women": "U19 women",
+        "eliteMen": "A"
+      },
+      "country": {
+        "DK": "Denmark",
+        "US": "USA",
+        "IT": "Italy",
+        "DE": "Germany",
+        "NL": "Netherlands",
+        "BE": "Belgium",
+        "FR": "France",
+        "NO": "Norway",
+        "SE": "Sweden",
+        "LU": "Luxembourg",
+        "ES": "Spain",
+        "GB": "United Kingdom",
+        "CH": "Switzerland"
+      },
+      "sources": {
+        "title": "Sources",
+        "uci": "The UCI World Ranking (U23) and the Nations' Cup from UCI DataRide, fetched {when}.",
+        "computedOn": "The UCI computed the ranking on {date}.",
+        "dcu": "The team list from cyklingdanmark.dk and the points lists from Cykling Danmark's member portal, fetched {when}.",
+        "dcuOff": "Cykling Danmark's lists are switched off on this installation, so the teams stand as Kadence knows them, without contacts and without DCU points.",
+        "failed": "The latest fetch did not succeed; the numbers are from the last time it did.",
+        "never": "never",
+        "registry": "Home town, website and the jersey's colours are Kadence's own notes on each team. A jersey without colours has not been checked yet. The contacts are those Cykling Danmark itself publishes for the team."
+      }
+    },
     "classes": {
+      "toTeams": "See the teams for U19 and U23",
       "title": "The classes and the way on",
       "intro": "What the difference is between U15, U17, U19 and U23, what it costs, and how riders move on. For parents and riders who are new to the sport.",
       "sections": {

@@ -13,6 +13,7 @@ const off: Features = {
   clubChampionship: false,
   energyCalculator: false,
   foodGuide: false,
+  teamsGuide: false,
 };
 
 describe("the open hub", () => {
@@ -39,6 +40,13 @@ describe("the open hub", () => {
       "equipment",
       "programs",
       "energy",
+      "gearing",
+    ]);
+    expect(shownTopics({ ...off, teamsGuide: true })).toEqual([
+      "classes",
+      "equipment",
+      "programs",
+      "teams",
       "gearing",
     ]);
   });

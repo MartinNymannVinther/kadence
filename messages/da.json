@@ -3950,6 +3950,11 @@
           "body": "Mad i hverdagen og på løbsdagen, opskrifter på hjemmelavet energi, tænder og kosttilskud.",
           "topic": "mad og drikke"
         },
+        "teams": {
+          "title": "Hold for U19 og U23",
+          "body": "Hvilke hold der findes i Danmark, hvem der kører for dem, og hvilke udenlandske hold danske ryttere kører på. Hentet fra UCI og Cykling Danmark.",
+          "topic": "hold for U19 og U23"
+        },
         "programs": {
           "title": "Øvelser og programmer",
           "body": "Kadences egne programmer med tegninger, eller sammensæt dit eget. Hent som én fil, eller udskriv.",
@@ -3959,7 +3964,82 @@
       "fromParents": "Viden om sporten til forældre: {topics}.",
       "fromHelp": "Guides og beregnere til ryttere, forældre og trænere: {topics}."
     },
+    "teams": {
+      "title": "Hold for U19 og U23",
+      "intro": "Hvilke hold der findes i Danmark for U19 og U23, hvem der kører for dem, og hvilke udenlandske hold danske ryttere kører på. Læst fra UCI's og Cykling Danmarks egne lister, hentet én gang i døgnet.",
+      "contents": "Indhold",
+      "nationsCupMen": "I {season} ligger Danmark nr. {rank} i UCI's Nations' Cup for juniorherrer med {points} point.",
+      "nationsCupWomen": "Juniorkvinderne ligger nr. {rank} med {points} point.",
+      "level": {
+        "uciContinental": {
+          "title": "UCI Continental-hold",
+          "intro": "Danske hold registreret hos UCI. Her kører U23-ryttere og ældre side om side; de danske U23'ere på listen står med deres plads i UCI's U23-verdensrangliste."
+        },
+        "dcuEliteMen": {
+          "title": "DCU-elitehold, herrer",
+          "intro": "Danske elitehold under Cykling Danmark. Danmark har ingen U23-klasse på landevej, så U23-ryttere kører i A-klassen; her vises de ryttere på holdet, der er i U23-alderen."
+        },
+        "dcuEliteWomen": {
+          "title": "DCU-elitehold, kvinder",
+          "intro": "Danske elitehold for kvinder under Cykling Danmark."
+        },
+        "u19Men": {
+          "title": "U19-hold, herrer",
+          "intro": "DCU's registrerede juniorhold. Et hold har fire til ni U19-ryttere; rytterne står med deres plads på DCU's pointliste for U19."
+        },
+        "u19Women": {
+          "title": "U19-hold, kvinder",
+          "intro": "DCU's registrerede juniorhold for kvinder. De fleste U19-kvinder kører for deres klub."
+        },
+        "foreign": {
+          "title": "Udenlandske hold med danske ryttere",
+          "intro": "Hold uden for Danmark, som danske U19- og U23-ryttere kører eller sidste sæson kørte for, ifølge UCI's U23-rangliste og DCU's pointlister."
+        }
+      },
+      "jerseyLabel": "Trøjen for {name}",
+      "jerseyUnchecked": "farver ikke tjekket",
+      "parentClub": "Moderklub: {club}",
+      "manager": "Team manager: {name}",
+      "website": "Hjemmeside",
+      "noRidersListed": "Ingen ryttere på listerne i denne sæson.",
+      "lastSeasonOnly": "{count, plural, one {# dansk rytter sidste sæson, ingen i denne.} other {# danske ryttere sidste sæson, ingen i denne.}}",
+      "lastSeasonAlso": "{count, plural, one {Og # dansk rytter sidste sæson.} other {Og # danske ryttere sidste sæson.}}",
+      "more": "{count, plural, one {# rytter mere} other {# ryttere mere}}",
+      "uciStanding": "UCI U23 nr. {rank} · {points} point",
+      "dcuStanding": "DCU {list} nr. {rank} · {points} point",
+      "list": {
+        "u19Men": "U19",
+        "u19Women": "U19P",
+        "eliteMen": "A"
+      },
+      "country": {
+        "DK": "Danmark",
+        "US": "USA",
+        "IT": "Italien",
+        "DE": "Tyskland",
+        "NL": "Holland",
+        "BE": "Belgien",
+        "FR": "Frankrig",
+        "NO": "Norge",
+        "SE": "Sverige",
+        "LU": "Luxembourg",
+        "ES": "Spanien",
+        "GB": "Storbritannien",
+        "CH": "Schweiz"
+      },
+      "sources": {
+        "title": "Kilder",
+        "uci": "UCI's U23-verdensrangliste og Nations' Cup fra UCI DataRide, hentet {when}.",
+        "computedOn": "UCI har beregnet ranglisten {date}.",
+        "dcu": "Holdlisten fra cyklingdanmark.dk og pointlisterne fra Cykling Danmarks medlemsportal, hentet {when}.",
+        "dcuOff": "Cykling Danmarks lister er slået fra på denne installation, så holdene står som Kadence kender dem, uden kontakt og uden DCU-point.",
+        "failed": "Seneste hentning lykkedes ikke; tallene er fra sidste gang, det lykkedes.",
+        "never": "aldrig",
+        "registry": "Hjemby, hjemmeside og trøjens farver er Kadences egne noter om hvert hold. En trøje uden farver er ikke tjekket endnu. Kontaktoplysningerne er dem, Cykling Danmark selv offentliggør for holdet."
+      }
+    },
     "classes": {
+      "toTeams": "Se holdene for U19 og U23",
       "title": "Klasserne og vejen videre",
       "intro": "Hvad forskellen er på U15, U17, U19 og U23, hvad det koster, og hvordan ryttere kommer videre. Til forældre og ryttere, der er nye i sporten.",
       "sections": {
