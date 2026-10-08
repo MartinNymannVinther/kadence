@@ -37,18 +37,18 @@ export function ExerciseCard({
     <article
       data-print-keep
       className={cn(
-        "bg-card text-card-foreground border-border flex flex-col overflow-hidden rounded-xl border shadow-surface",
+        "bg-card text-card-foreground border-border flex flex-col overflow-hidden rounded-xl border shadow-surface print:block",
         className,
       )}
     >
-      <div className="bg-secondary px-4 pt-3 sm:px-6 print:pt-2">
+      <div className="bg-secondary px-4 pt-3 sm:px-6 print:pt-1.5">
         <ExerciseFigure
           pose={exercise.pose}
           label={t("figure.label", { name: exercise.name })}
-          className="mx-auto max-w-md print:max-w-48"
+          className="mx-auto max-w-md print:max-w-44"
         />
       </div>
-      <div className="flex flex-col gap-2.5 p-4 sm:p-5 print:gap-2 print:p-3.5">
+      <div className="flex flex-col gap-2.5 p-4 sm:p-5 print:block print:space-y-1.5 print:p-3">
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
           <h3 className="text-heading leading-snug font-semibold">
             {number !== undefined && (

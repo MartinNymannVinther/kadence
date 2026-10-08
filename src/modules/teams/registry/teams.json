@@ -6,7 +6,14 @@
     "country": "DK",
     "home": "Bornholm",
     "aliases": ["BHS - PL Beton Bornholm", "BHS-PL BETON BORNHOLM"],
-    "checkedOn": "2026-10-08"
+    "checkedOn": "2026-10-08",
+    "colours": {
+      "body": "#161616",
+      "sleeves": "#2a7fd5",
+      "band": "#ffffff",
+      "pattern": "chest"
+    },
+    "photo": "File:2026 NXT Classic men - start BHS-PL Beton Bornholm.jpg"
   },
   {
     "id": "airtox-carl-ras",
@@ -16,7 +23,12 @@
     "home": "Holbæk",
     "website": "https://gsholbaek.dk/",
     "aliases": ["Airtox - Carl Ras", "AIRTOX - CARL RAS"],
-    "checkedOn": "2026-10-08"
+    "checkedOn": "2026-10-08",
+    "colours": {
+      "body": "#1b4fae",
+      "sleeves": "#2f7be0"
+    },
+    "photo": "File:PostNord Danmark Rundt 2024 - Airtox-Carl Ras.jpg"
   },
   {
     "id": "team-coloquick",
@@ -26,7 +38,14 @@
     "home": "Nykøbing Mors",
     "website": "https://www.coloquickcycling.dk/",
     "aliases": ["Team coloQuick", "TEAM COLOQUICK"],
-    "checkedOn": "2026-10-08"
+    "checkedOn": "2026-10-08",
+    "colours": {
+      "body": "#161616",
+      "sleeves": "#2f9e5b",
+      "band": "#ffffff",
+      "pattern": "stripes"
+    },
+    "photo": "File:ColoQuick Cycling - Fyen Rundt 2023.jpg"
   },
   {
     "id": "team-give-steel",
@@ -35,7 +54,12 @@
     "country": "DK",
     "home": "Give",
     "aliases": ["Team Give Steele"],
-    "checkedOn": "2026-10-08"
+    "checkedOn": "2026-10-08",
+    "colours": {
+      "body": "#9fb8d3",
+      "sleeves": "#c8102e"
+    },
+    "photo": "File:PostNord Danmark Rundt 2025 - Team Give Steel 01.jpg"
   },
   {
     "id": "ceramicspeed-racing",
@@ -80,7 +104,14 @@
     "country": "DK",
     "home": "København",
     "aliases": [],
-    "checkedOn": "2026-10-08"
+    "checkedOn": "2026-10-08",
+    "colours": {
+      "body": "#ffffff",
+      "sleeves": "#1f5f3a",
+      "band": "#d7262e",
+      "pattern": "stripes"
+    },
+    "photo": "File:Reffen CO PLAY Giant Store - Fyen Rundt 2026.jpg"
   },
   {
     "id": "team-aalborg-women",
@@ -202,12 +233,14 @@
     "level": "foreign",
     "country": "US",
     "colours": {
-      "body": "#e30613",
-      "sleeves": "#0f1e3c",
-      "band": "#ffffff"
+      "body": "#1d4fb5",
+      "sleeves": "#1d4fb5",
+      "band": "#ffd500",
+      "pattern": "band"
     },
     "aliases": ["LIDL-TREK FUTURE RACING"],
-    "checkedOn": "2026-10-08"
+    "checkedOn": "2026-10-08",
+    "photo": "File:Lidl-Trek Future Racing - Fyen Rundt 2024.jpg"
   },
   {
     "id": "general-store-essegibi-flli-curia",
@@ -215,7 +248,12 @@
     "level": "foreign",
     "country": "IT",
     "aliases": ["GENERAL STORE - ESSEGIBI - F.LLI CURIA"],
-    "checkedOn": "2026-10-08"
+    "checkedOn": "2026-10-08",
+    "colours": {
+      "body": "#c6f04a",
+      "sleeves": "#1c3d2a"
+    },
+    "photo": "File:Memorial Marco Pantani 2026 - General Store-Essegibi-F.lli Curia (cropped).jpg"
   },
   {
     "id": "nsn-development-team",
@@ -252,7 +290,8 @@
     "colours": {
       "body": "#0b1f3a",
       "sleeves": "#e2001a",
-      "band": "#ffffff"
+      "band": "#ffffff",
+      "pattern": "band"
     },
     "aliases": ["RED BULL - BORA - HANSGROHE ROOKIES"],
     "checkedOn": "2026-10-08"
@@ -296,7 +335,9 @@
     "country": "FR",
     "colours": {
       "body": "#4fa9e2",
-      "sleeves": "#0b2545"
+      "sleeves": "#0b2545",
+      "band": "#0b2545",
+      "pattern": "chest"
     },
     "aliases": ["DECATHLON AG2R LA MONDIALE Junior team"],
     "checkedOn": "2026-10-08"

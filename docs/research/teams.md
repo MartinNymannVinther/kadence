@@ -67,20 +67,35 @@ on, and Martin meets DCU in the week of 12 October 2026.
 ## What no source lists
 
 - **Jerseys.** No source has a team's colours in a form a machine can
-  read, and photographs and logos are the teams' own. Kadence draws one
-  jersey from colours noted in `src/modules/teams/registry/teams.json`
-  and says plainly which teams' colours have not been checked. On 8
-  October 2026 colours were set for five teams from their sponsors'
-  well-known kits (Uno-X, Lidl-Trek, EF, Red Bull–Bora, Decathlon AG2R),
-  not from 2026 photographs; the rest wait for someone who knows.
+  read. Kadence draws one jersey from colours and a pattern noted in
+  `src/modules/teams/registry/teams.json` and says plainly which teams'
+  colours have not been checked. On 8 October 2026 the colours of seven
+  teams were read from photographs on Wikimedia Commons (below) —
+  ColoQuick's black with white stripes and green sleeves, Airtox–Carl
+  Ras's blue, BHS–PL Beton Bornholm's white chest over black with blue
+  sleeves, Give Steel's steel blue with red, Reffen CO:PLAY's white
+  with green and red, Lidl-Trek Future Racing's blue with the yellow
+  band, General Store–Essegibi's lime with dark green — and four from
+  their sponsors' well-known kits (Uno-X, EF, Red Bull–Bora, Decathlon
+  AG2R). The rest wait for someone who knows; the junior teams have no
+  photographs on Commons.
+- **Photographs.** Wikimedia Commons has team photographs under
+  licences that allow a copy with credit — CC BY-SA 4.0 and CC0, most by
+  Danish photographers at Fyen Rundt and Danmark Rundt, some from 2026
+  — found through its API (`action=query&list=search&srnamespace=6`,
+  then `prop=imageinfo` with `iiurlwidth` for a rendering and
+  `extmetadata` for the photographer and licence). ProCyclingStats and
+  FirstCycling, which show kits, answer software with a challenge page;
+  those doors are closed and stay closed. Kadence names a file per team
+  in the registry, copies the 640-pixel rendering to the installation on
+  refresh (`photos.ts`) and serves it itself with the credit line the
+  licence asks for; a licence outside CC0, public domain and CC BY(-SA)
+  is refused. Nothing is loaded from Commons by a reader's browser.
 - **Websites and home towns.** Noted in the registry from the teams'
   own pages and from Wikidata (which has `official website`, the UCI team
   code and a Commons photo for most UCI teams: Airtox–Carl Ras is
   Q102352846). Reading Wikidata daily would add websites for every UCI
-  team, and Commons photographs come with licences that allow use with
-  attribution; neither is done yet, since a photograph would have to be
-  copied to the installation first — Kadence loads nothing from a third
-  party into a reader's browser.
+  team; not done yet.
 
 ## Manners
 

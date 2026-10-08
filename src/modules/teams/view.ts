@@ -1,6 +1,6 @@
 import { nameKey, tidyCase } from "./normalise";
 import { REGISTRY, registryTeam } from "./registry";
-import type { RankedRider, RegistryTeam, TeamLevel, TeamsSnapshot } from "./types";
+import type { RankedRider, RegistryTeam, TeamLevel, TeamPhoto, TeamsSnapshot } from "./types";
 
 /**
  * What the teams page shows (ADR 0072), from the registry and the
@@ -33,6 +33,8 @@ export type TeamView = {
   home: string | null;
   website: string | null;
   colours: NonNullable<RegistryTeam["colours"]> | null;
+  /** A photograph copied from Commons, with its credit; null until copied. */
+  photo: TeamPhoto | null;
   parentClub: string | null;
   manager: string | null;
   contact: string | null;
@@ -74,6 +76,7 @@ function fresh(id: string, name: string, level: TeamLevel, reg: RegistryTeam | n
     home: reg?.home ?? null,
     website: reg?.website ?? null,
     colours: reg?.colours ?? null,
+    photo: null,
     parentClub: null,
     manager: null,
     contact: null,
@@ -197,7 +200,10 @@ export function buildTeamsView(snapshot: TeamsSnapshot, dcuOn: boolean): TeamsVi
     }
   }
 
-  for (const team of teams.values()) team.riders.sort((a, b) => order(a) - order(b));
+  for (const team of teams.values()) {
+    team.riders.sort((a, b) => order(a) - order(b));
+    team.photo = snapshot.photos?.[team.id] ?? null;
+  }
   const all = [...teams.values()];
   const byLevel = Object.fromEntries(
     LEVELS.map((level) => [

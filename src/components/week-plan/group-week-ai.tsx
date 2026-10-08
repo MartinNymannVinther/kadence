@@ -18,6 +18,7 @@ import { askAi } from "@/modules/ai/read-client";
 import type { AiFailure } from "@/modules/ai/wire";
 import type { WeekDraft } from "@/modules/assist/week-draft";
 import { CLASS_BASES, DCU_TOTALS_2025, type ClassBasis } from "@/modules/dcu";
+import { Thinking } from "@/components/assist/thinking";
 import { newKey, type PlanItem } from "./types";
 
 /**
@@ -183,11 +184,7 @@ export function GroupWeekAi({
           {t("close")}
         </Button>
       </div>
-      {busy && (
-        <p className="text-meta text-2sm" role="status">
-          {t("thinking")}
-        </p>
-      )}
+      {busy && <Thinking>{t("thinking")}</Thinking>}
       {error && <AiFailureText error={error} />}
       {result && (
         <ProposalFrame

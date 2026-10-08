@@ -5,6 +5,7 @@ import { RotateCcw, Send, Sparkles, Undo2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { AiFailureText } from "@/components/assist/ai-failure";
 import { EngineLine } from "@/components/assist/engine-line";
+import { Thinking } from "@/components/assist/thinking";
 import { Button } from "@/components/ui/button";
 import { NativeSelect } from "@/components/ui/native-select";
 import { Textarea } from "@/components/ui/textarea";
@@ -131,11 +132,7 @@ export function AiDialog({
         <p className="text-meta text-xs leading-relaxed">{t("intro")}</p>
       </div>
       {!first && <AiTranscript spoken={spoken} busy={busy} />}
-      {busy && first && (
-        <p className="text-meta text-2sm" role="status">
-          {t("sending")}
-        </p>
-      )}
+      {busy && first && <Thinking>{t("sending")}</Thinking>}
       {error && <AiFailureText error={error} />}
       {/* Not a form: the builder already sits inside the programme's own. */}
       <div className="flex min-w-0 flex-col gap-2">

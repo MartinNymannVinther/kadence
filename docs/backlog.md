@@ -23,6 +23,7 @@ eller mere. Rækkefølgen inden for en prioritet er den anbefalede.
 
 P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter #21 og #22). Hvert spor bygges i sit eget worktree med egen database og flettes ind på P1-grenen, når det er grønt. Statusloggen nyeste først:
 
+- **8. okt.** Tre rettelser på Martins bud (Ø-10): AI'en viser nu, at den tænker — tre prikker og en gnist, stille ved nedsat bevægelse — i alle fem AI-paneler; print er lagt om til ren bloklayout med ét kort pr. række, så Safari også holder kortene hele; holdsiden har fået trøjefarver og mønstre for elleve hold, syv læst fra fotos på Wikimedia Commons, og selve fotografierne kopieret til installationen med kreditering. Forbrug: ca. 180k tokens.
 - **8. okt.** Ø-09 holdsiden er bygget: `/guides/teams` læser UCI's U23-verdensrangliste og Nations' Cup fra DataRide og Cykling Danmarks holdliste og pointlister én gang i døgnet til et øjebliksbillede på disk, tegner trøjer ud fra registret, og viser kontakt som DCU selv offentliggør den. Fundet undervejs: UCI har ingen individuel juniorrangliste på landevej, så juniorernes point er DCU's. Forbrug: ca. 420k tokens.
 - **8. okt.** Ø-08 "Byg med AI" for et program er færdig: en samtale i programbyggeren, hvor hvert svar lægges direkte i byggeren, med Fortryd. Prøvet mod en lokal Ollama-model (qwen2.5-coder:14b) i to ture plus fortryd. Plan B (holdsiden, Ø-09) er godkendt med DCU-læser bag flag og point for U19/U23. Forbrug: ca. 250k tokens.
 - **8. okt.** Tre rettelser til øvelser og programmer på Martins bud (Ø-07): stangen tegnes set fra siden på figurer i profil (en skive med stangens stump i), programmet "Styrke i rummet" hedder nu "Træning med udstyr", og print til PDF giver sammenhængende sider på den åbne side, i appen og i den hentede fil — et kort deles aldrig, en dels navn står ved sine kort, og der er ikke længere tvungne sideskift mellem delene. Desuden en lille tegning af hver øvelse i "sammensæt dit eget". Forbrug: ca. 160k tokens.
@@ -159,6 +160,7 @@ Rammen er:
 | Ø-07  | Stangen fra siden, nyt programnavn og pæne sideskift ved print               | Ø    | S    | 100–200k     | Opus 5.5  | Ø-06              | Færdig       |
 | Ø-08  | Byg et program med AI, i samtale                                             | Ø    | M    | 400–600k     | Opus 5.5  | Ø-04              | Færdig       |
 | Ø-09  | Holdsiden: Junior- og U23-hold i Danmark, med trøjer, kontakt og point       | Ø    | L    | 500–800k     | Opus 5.5  |                   | Færdig       |
+| Ø-10  | AI'en viser at den tænker, print der holder i Safari, trøjer og fotos        | Ø    | S    | 150–250k     | Opus 5.5  | Ø-07, Ø-09        | Færdig       |
 | N-01  | Navigation efter opgaver                                                     | N    | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
 
 ---
@@ -1262,6 +1264,28 @@ der, **så** vejen videre er til at få øje på.
 **Tokens:** ca. 500–800k · **Model:** Opus 5.5 (`claude-opus-5-5`), kildearbejdet skal være rigtigt.
 
 **Status:** Færdig 8. oktober. `src/modules/teams/` med UCI-læser (`uci/`), DCU-læser (`dcu/`, bag `TEAMS_DCU`), registret `registry/teams.json`, øjebliksbillede i `TEAMS_DIR`, opfriskning efter alder med lås, og visningen `view.ts`; siden `/guides/teams` med tegnet trøje, kort pr. hold og kildenote. 25 tests mod anonymiserede fixtures fra 8. oktober. Fundet: UCI har ingen individuel juniorrangliste på landevej — juniorernes point er DCU's; udenlandske hold findes i data (UCI's U23-liste og DCU's holdkolonne), ikke i hukommelsen. Rester til en Ø-10: trøjefarver for de øvrige hold (fem er sat efter sponsorernes kendte dragter), Wikidata som daglig kilde til hjemmesider, og Commons-fotos kopieret til installationen med kreditering. Forbrug: ca. 420k tokens.
+
+### Ø-10 AI'en viser at den tænker, print der holder i Safari, trøjer og fotos
+
+**Som** træner **vil jeg** kunne se, at AI'en arbejder, få et print, der ikke deler et kort, og se holdenes trøjer og et foto af dem, **så** siderne føles færdige.
+
+**Prompt:**
+
+> (1) Én fælles "tænker"-markør (gnist og tre prikker, stille ved
+> `prefers-reduced-motion`) i alle AI-paneler: Byg med AI for pas og
+> program, ugeforslag, holdets uge og resuméet. (2) Print af programmer
+> deler kort i Safari, fordi `break-inside: avoid` ignoreres i grid og
+> flex; læg print om til ren bloklayout med ét kort pr. række og de gamle
+> `page-break-*`-navne, både i appen og i den hentede fil. (3) Flere
+> trøjer på holdsiden: farver og mønstre (bånd, striber, bryst, halve)
+> læst fra fotos på Wikimedia Commons, og fotografierne kopieret til
+> installationen ved opfriskning med kreditering som licensen kræver;
+> afvis licenser uden for CC0/PD/CC BY(-SA). Intet hentes fra Commons i
+> læserens browser.
+
+**Tokens:** ca. 150–250k · **Model:** Opus 5.5 (`claude-opus-5-5`).
+
+**Status:** Færdig 8. oktober. `components/assist/thinking.tsx` i fem paneler; `program-print.tsx` og den hentede fils print-CSS i bloklayout; `teams/photos.ts`, ruten `/api/teams/photo/[id]`, mønstre i `jersey.tsx`, elleve hold med farver og syv med foto. Rester: farver for de resterende hold (juniorholdene har ingen fotos på Commons), Wikidata som daglig kilde til hjemmesider. Forbrug: ca. 180k tokens.
 
 ## A — afklaringer uden kode
 

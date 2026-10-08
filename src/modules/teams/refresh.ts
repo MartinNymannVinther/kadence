@@ -1,5 +1,6 @@
 import { env } from "@/core/env";
 import { fetchDcu } from "./dcu/fetch";
+import { refreshPhotos } from "./photos";
 import { readSnapshot, writeSnapshot } from "./snapshot";
 import { SourceError } from "./http";
 import type { SourceRead, TeamsSnapshot } from "./types";
@@ -70,8 +71,14 @@ export function refreshTeams(
       env.TEAMS_DCU === "on" && wantsRefresh(previous.dcu, now.getTime())
         ? await readSource(previous.dcu, () => fetchDcu(fetchFn, today), now)
         : previous.dcu;
-    const next: TeamsSnapshot = { version: 1, uci, dcu };
-    if (uci !== previous.uci || dcu !== previous.dcu) await writeSnapshot(next);
+    // Photos ride along with the UCI's day: asked for only when something else is.
+    const photos =
+      uci !== previous.uci || dcu !== previous.dcu || !previous.photos
+        ? await refreshPhotos(fetchFn, previous.photos ?? {}, now)
+        : previous.photos;
+    const next: TeamsSnapshot = { version: 1, uci, dcu, photos };
+    if (uci !== previous.uci || dcu !== previous.dcu || photos !== previous.photos)
+      await writeSnapshot(next);
     return next;
   })().finally(() => {
     running = null;

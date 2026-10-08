@@ -17,10 +17,11 @@ import { PART_KEYS } from "./types";
  * parameter and no per-request work.
  *
  * Printed (or saved as a PDF) the file is light whatever the screen's
- * mode, shows every part under its name instead of the tabs, two cards
- * to a row, keeps a card whole and a part's name with its first cards,
- * draws the figure smaller and leaves the "Færdig" buttons out — the same
- * sheet the app prints (src/components/exercises/program-print.tsx).
+ * mode, shows every part under its name instead of the tabs, one card to
+ * a row in plain block layout — Safari keeps a block whole where it
+ * splits a grid cell — keeps a part's name with its first card, draws the
+ * figure smaller and leaves the "Færdig" buttons out: the same sheet the
+ * app prints (src/components/exercises/program-print.tsx).
  *
  * Pure.
  */
@@ -93,11 +94,12 @@ html{font-size:13.5px}
 .wrap{max-width:none;padding:0}
 .tab-input,.tab,.done-btn{display:none}
 .panel{display:block;margin-bottom:1.25rem}
-.part-title{display:block;break-after:avoid}
-.cards,.part{grid-template-columns:repeat(2,1fr);gap:.75rem}
-.card{break-inside:avoid}
-.card .figure{padding-top:.5rem}
-.card .figure svg{max-width:12rem}
-.card .body{gap:.5rem;padding:.9rem}
+.part-title{display:block;break-after:avoid;page-break-after:avoid}
+.cards,.part{display:block}
+.card{display:block;margin-bottom:.75rem;break-inside:avoid;page-break-inside:avoid}
+.card .figure{padding-top:.4rem}
+.card .figure svg{max-width:11rem}
+.card .body{display:block;padding:.8rem}
+.card .body>*+*{margin-top:.4rem}
 }
 `;
