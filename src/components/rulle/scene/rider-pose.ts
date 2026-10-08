@@ -9,13 +9,13 @@ import { CLAMP } from "./road-bike";
  * of the saddle, hips over the cranks, the bike rocking from side to side
  * under a rider who stays upright, once each pedal stroke; and tucked, a
  * flat back and the hands in the drops — and two no road calls for, the
- * challenger's (ADR 0049): forward on the saddle's nose, the upper arms
+ * challenger's (ADR 0074): forward on the saddle's nose, the upper arms
  * straight down, the forearms along the top of the bar and the hands on
  * the hoods, a little ahead of his face, his head down between his
  * shoulders, over the long front of his bike (`Kit.bars`); in the drops,
  * flat in the saddle; and his sprint, out of it, low over the bars with
  * his hands in the drops — and the sprinter's throw at the line (ADR
- * 0050), the hips far back and the arms straight. In
+ * 0075), the hips far back and the arms straight. In
  * the bike's own coordinates: facing -z, y up, x to the rider's right.
  * The legs and arms are hung from these points by `twoBones`.
  */

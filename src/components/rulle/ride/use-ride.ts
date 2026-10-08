@@ -170,7 +170,7 @@ export function useRide(options: RideOptions) {
     finish: () => act((ride, now) => ride.finish(now)),
     setIntensity: (value: number) => act((ride) => ride.setIntensity(value)),
     setErg: (on: boolean) => act((ride) => ride.setErg(on)),
-    /** The challenger now (ADR 0049), called by JOHAN — or the sprinter, by HYLDTOFT (ADR 0050): on a free ride only. */
+    /** The challenger now (ADR 0074), called by JOHAN — or the sprinter, by HYLDTOFT (ADR 0075): on a free ride only. */
     challenge: (who: Rival = "challenger") => act((ride) => ride.shown.race.call(who)),
     /** The rider's answer to an offer of a race: yes, and the count begins. */
     answerRace: (yes: boolean) => act((ride) => ride.shown.race.answer(yes)),
@@ -191,7 +191,7 @@ export function useRide(options: RideOptions) {
       act((ride) => {
         ride.shown.warp.factor = factor;
       }),
-    /** A cheat code typed (ADR 0045, 0048): on, off or over to the other; the page hears which is on. */
+    /** A cheat code typed (ADR 0045, 0073): on, off or over to the other; the page hears which is on. */
     toggleCheat: (mode: CheatMode): CheatMode | null => {
       const ride = engine.current;
       if (!ride) return null;

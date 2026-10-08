@@ -8,7 +8,7 @@ import type { CheatMode, CheatState, Push } from "./ride/cheat";
 import type { WattTune } from "./ride/watt-dial";
 
 /**
- * The cheat code in the tiles' place (ADR 0045, 0048): while one is on,
+ * The cheat code in the tiles' place (ADR 0045, 0073): while one is on,
  * the watts, the time and the body's numbers make way for the cheat's
  * own, in the old arcade machine's colours and a little smaller — on
  * SPURT the bike's speed, on WATT its watts, W/kg and the avatar's weight

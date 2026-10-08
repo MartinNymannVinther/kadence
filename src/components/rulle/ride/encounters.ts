@@ -1,7 +1,7 @@
 import { CHALLENGE, challengeIn, type ChallengeStart, type Course } from "@/modules/rulle";
 
 /**
- * Who turns up on a ride, and where (ADR 0049, 0050): each stretch of the
+ * Who turns up on a ride, and where (ADR 0074, 0075): each stretch of the
  * route is looked at once, as the rider comes into it (`challengeIn`), and
  * its race is due when they reach its start. No React and no browser in it.
  */

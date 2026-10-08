@@ -10,8 +10,8 @@ import type { RaceLive } from "./ride/race";
 const GO = 1.5;
 
 /**
- * The challenger's race on the screen (ADR 0049), or the sprinter's (ADR
- * 0050), each with his own words: as he comes up of himself, his offer of
+ * The challenger's race on the screen (ADR 0074), or the sprinter's (ADR
+ * 0075), each with his own words: as he comes up of himself, his offer of
  * a race, with a yes and a no to click; said yes to, or called by his
  * code, a call
  * in the cheat code's arcade manner — a race, how far, that his wheel

@@ -10,14 +10,14 @@ export type ShownAt = CoursePoint & {
   line: number | null;
   lean: number;
   cheat: boolean;
-  /** The challenger, while he races or rides on after it (ADR 0049). */
+  /** The challenger, while he races or rides on after it (ADR 0074). */
   challenger: ChallengerAt | null;
 };
 
 /**
  * Where the rider is shown, as against where they have ridden (ADR 0045):
  * moved on by the developer's warp (`warp.ts`), by the challenger's
- * slipstream (`race.ts`, ADR 0049) and by the cheat codes (`cheat.ts`),
+ * slipstream (`race.ts`, ADR 0074) and by the cheat codes (`cheat.ts`),
  * each a shift of its own. What is recorded is always what was ridden;
  * only the landscape, the map and the profile follow this.
  */

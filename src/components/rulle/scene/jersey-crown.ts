@@ -1,5 +1,5 @@
 /**
- * The crown on the sprinter's jersey (ADR 0050), drawn once on a canvas
+ * The crown on the sprinter's jersey (ADR 0075), drawn once on a canvas
  * of its own in one colour, for `jersey-pattern.ts` to set on the chest
  * and the back: a rimmed band set with lozenges and studs and a ring over
  * it, small crosses standing on the ring, four beaded arches curving in

@@ -12,7 +12,7 @@
  * climbs a little slower on the screen than on the road; the watts, which
  * are what is recorded and what the load is computed from, are the
  * rider's own. Only the WATT cheat code's avatar rides another mass, the
- * weight chosen for it on the screen and kept nowhere (ADR 0048).
+ * weight chosen for it on the screen and kept nowhere (ADR 0073).
  *
  * Pure: no browser, no database.
  */

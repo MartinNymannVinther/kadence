@@ -68,7 +68,7 @@ export type Moment = {
   lean?: number;
   /** Whether the cheat code is on: the speed lines streak past. */
   cheat?: boolean;
-  /** The challenger, while he races the rider or rides on after (ADR 0049). */
+  /** The challenger, while he races the rider or rides on after (ADR 0074). */
   challenger?: ChallengerAt | null;
 };
 

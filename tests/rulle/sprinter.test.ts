@@ -8,7 +8,7 @@ import {
   wattsFor,
 } from "@/modules/rulle";
 
-describe("the sprinter's legs (ADR 0050)", () => {
+describe("the sprinter's legs (ADR 0075)", () => {
   it("holds 300 W for as long as he likes and has 18 kJ above it, from 600 W for a minute and 360 W for five", () => {
     const { cp, wPrime } = criticalPower({ watts: 600, seconds: 60 }, { watts: 360, seconds: 300 });
     expect(cp).toBeCloseTo(300, 6);

@@ -60,7 +60,7 @@ function StepButton({
 }
 
 /**
- * The WATT cheat code's numbers (ADR 0048), in the panel that takes the
+ * The WATT cheat code's numbers (ADR 0073), in the panel that takes the
  * tiles' place (`CheatPanel`): the watts the avatar rides at, with a step
  * down and up either side — 5 W, or 0.1 W/kg — in watts or in watts per
  * kilo, a press switches; the other of the two and the speed they give

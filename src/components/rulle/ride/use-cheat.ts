@@ -6,13 +6,13 @@ import type { Beeps } from "./beeps";
 import type { CheatMode, Push } from "./cheat";
 
 /**
- * The cheat codes on the ride screen (ADR 0045, 0048, 0049): typed —
+ * The cheat codes on the ride screen (ADR 0045, 0073, 0074): typed —
  * SPURT or WATT — or five quick taps on the rider for SPURT, and a
  * fanfare; then W/S or ↑/↓ for the speed, or on WATT for the watts, and
  * A/D or ←/→ to steer, held down, while the arrows leave the session
  * alone. The same code again, or five more taps, and it is off; the other
  * code goes over to it. JOHAN calls the challenger up at once, on a free
- * ride, and HYLDTOFT the sprinter (ADR 0050); in a session they do nothing.
+ * ride, and HYLDTOFT the sprinter (ADR 0075); in a session they do nothing.
  *
  * A letter that carries on a code being typed is the code's: the H in
  * JOHAN does not show the speed. This hook's keys are heard before the
@@ -50,7 +50,7 @@ type Controls = {
   /** A code typed: which is on now, if any. */
   toggleCheat: (mode: CheatMode) => CheatMode | null;
   steerCheat: (throttle: Push, steer: Push) => void;
-  /** The challenger or the sprinter, now (ADR 0049, 0050). */
+  /** The challenger or the sprinter, now (ADR 0074, 0075). */
   challenge: (who: Rival) => void;
 };
 

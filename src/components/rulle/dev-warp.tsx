@@ -11,7 +11,7 @@ import { WARPS } from "./ride/warp";
  * faster — two, four, eight or twenty times — or backwards, to look at a
  * route without riding it. "," and "." step the speed down and up, B
  * turns the way round, and G brings an offer of a race from the
- * challenger or the sprinter, as one comes of himself (ADR 0049, 0050).
+ * challenger or the sprinter, as one comes of himself (ADR 0074, 0075).
  * Never drawn in a build that is shipped; `hidden` with nothing but the
  * rider and the land on screen, its keys still at work.
  */
@@ -21,7 +21,7 @@ export function DevWarp({
   hidden = false,
 }: {
   onWarp: (factor: number) => void;
-  /** An offer of a race now, rather than ten kilometres on (ADR 0049, 0050). */
+  /** An offer of a race now, rather than ten kilometres on (ADR 0074, 0075). */
   onChallenge: () => void;
   hidden?: boolean;
 }) {

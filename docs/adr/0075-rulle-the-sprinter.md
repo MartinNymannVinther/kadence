@@ -1,10 +1,10 @@
-# ADR 0050: Rulle — the sprinter, called by HYLDTOFT
+# ADR 0075: Rulle — the sprinter, called by HYLDTOFT
 
-Status: accepted · Date: 2026-10-05 · Builds on 0013, 0045, 0049
+Status: accepted · Date: 2026-10-05 · Builds on 0013, 0045, 0074
 
 ## Context
 
-The challenger (ADR 0049) races on a plan of his own. The wish was a
+The challenger (ADR 0074) races on a plan of his own. The wish was a
 second rider, drawn from photos of a real young rider: a small one,
 called by his own cheat code, who does nothing but sit on your wheel
 until the sprint, and then wins it with a jump over the line — unless
@@ -17,7 +17,7 @@ was left to be worked out.
 - **Called by HYLDTOFT, on a free ride only**, as JOHAN calls the
   challenger: in a session it does nothing. Of himself he turns up where
   the challenger would, sharing his chance half and half, and offers a
-  race the rider can say yes or no to (ADR 0049). The race is the
+  race the rider can say yes or no to (ADR 0074). The race is the
   challenger's — ten seconds counted down
   beside the rider, then two kilometres — with a rival of his own in it
   (`ride/rivals.ts`): the challenger on his plan of watts, or the

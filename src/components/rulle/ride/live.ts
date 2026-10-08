@@ -23,7 +23,7 @@ export type Live = SensorsNow & {
   distance: number;
   /** The cheat code, and on WATT its watts and avatar; null while it is off. */
   cheat: CheatState;
-  /** The challenger's race (ADR 0049): on, or just over; null with none. */
+  /** The challenger's race (ADR 0074): on, or just over; null with none. */
   race: RaceLive;
   intensity: number;
   erg: boolean;

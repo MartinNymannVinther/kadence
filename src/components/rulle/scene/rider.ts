@@ -100,7 +100,7 @@ export class RiderFigure {
     knee: new THREE.IcosahedronGeometry(0.05, 0),
   };
 
-  /** In the rider's own kit, or another's: the challenger's (ADR 0049). */
+  /** In the rider's own kit, or another's: the challenger's (ADR 0074). */
   constructor(kit: Kit = RIDER_KIT) {
     this.materials = kitMaterials(kit);
     this.bike = new RoadBike(kit);

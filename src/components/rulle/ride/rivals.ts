@@ -14,7 +14,7 @@ import {
 
 /**
  * Who races the rider (`race.ts`): the challenger on his own plan of
- * watts (ADR 0049), or the sprinter on the rider's wheel (ADR 0050). Each
+ * watts (ADR 0074), or the sprinter on the rider's wheel (ADR 0075). Each
  * takes his step of the race from where both were before it, and says
  * how he rides for the landscape. No React and no browser in it.
  */

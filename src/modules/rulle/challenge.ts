@@ -2,7 +2,7 @@ import { hash } from "./hash";
 import { courseAt, type Course } from "./route/course";
 
 /**
- * The challenger (ADR 0049): a rider in red and white who now and then
+ * The challenger (ADR 0074): a rider in red and white who now and then
  * comes up beside the rider and races them for two kilometres. Every ten
  * kilometres or so there is a stretch he may turn up in: with a climb in
  * it, one time in five, at its foot, so the race goes up it; without, one
@@ -44,11 +44,11 @@ export const CHALLENGE = {
 /**
  * How he rides: as the road has him; in the drops, in the saddle; out of
  * it, sprinting in them; or throwing his bike at the line (the sprinter's,
- * ADR 0050).
+ * ADR 0075).
  */
 export type ChallengerEffort = "steady" | "drops" | "sprint" | "throw";
 
-/** Who races the rider: the challenger (ADR 0049), or the sprinter HYLDTOFT calls (ADR 0050). */
+/** Who races the rider: the challenger (ADR 0074), or the sprinter HYLDTOFT calls (ADR 0075). */
 export type Rival = "challenger" | "sprinter";
 
 /** Where he is for the landscape: on the road, how fast, and his legs; and the line. */
@@ -81,7 +81,7 @@ function climbBetween(course: Course, from: number, to: number): number | null {
 
 /**
  * The race in stretch `k` of a ride on `course`, or null where nobody
- * turns up: the challenger or the sprinter (ADR 0050), half the time each.
+ * turns up: the challenger or the sprinter (ADR 0075), half the time each.
  */
 export function challengeIn(course: Course, k: number): ChallengeStart | null {
   const seed = Math.round(course.length);

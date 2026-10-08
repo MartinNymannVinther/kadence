@@ -14,9 +14,9 @@ import { ALONGSIDE, Challenger, rivalOf, type Rival } from "./rivals";
 import { Warp } from "./warp";
 
 /**
- * The challenger's race (ADR 0049), where the rider is shown: when the
+ * The challenger's race (ADR 0074), where the rider is shown: when the
  * rider comes to a place one turns up (`challengeIn`) — the challenger or
- * the sprinter (ADR 0050), half the time each — he comes up beside them
+ * the sprinter (ADR 0075), half the time each — he comes up beside them
  * and offers a race. Said yes to, or called by his code, he rides at
  * their speed while ten seconds are counted down, and races them for two
  * kilometres: the challenger on his own plan of watts, whatever they do,

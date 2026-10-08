@@ -22,7 +22,7 @@ const SOFT = 0.7;
  * split down the middle of the chest and the back and across halfway up,
  * the body's upper left and lower right in the other colour — and a
  * crown (`Kit.crown`, `jersey-crown.ts`) in the middle of the chest and
- * of the back: the sprinter's (ADR 0050). The torso is a cylinder: round it is
+ * of the back: the sprinter's (ADR 0075). The torso is a cylinder: round it is
  * across the canvas, from the middle of the back by its right side; up it
  * is up the canvas, from the hips.
  */

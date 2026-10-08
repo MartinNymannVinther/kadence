@@ -6,7 +6,7 @@ import { WattDial, type WattUnit } from "./watt-dial";
  * The cheat code's bike (ADR 0045): typed SPURT, or the rider tapped five
  * times, and the keys hold the bike's speed and its line on the road — up
  * to 120 km/h, from kerb to kerb. Let go, and it keeps the speed it has.
- * Typed WATT (ADR 0048), the keys set the watts instead (`watt-dial.ts`),
+ * Typed WATT (ADR 0073), the keys set the watts instead (`watt-dial.ts`),
  * and the bike goes as fast as those watts take an avatar of the weight
  * chosen up the road and down it.
  * Only where the rider is shown moves, as with the developer's warp: the

@@ -6,7 +6,7 @@ import { useRef, useSyncExternalStore, type ReactNode } from "react";
 import type { CheatMode, CheatState, Push } from "./ride/cheat";
 
 /**
- * The cheat codes over the road (ADR 0045, 0048): as one comes on, a
+ * The cheat codes over the road (ADR 0045, 0073): as one comes on, a
  * banner in an old arcade machine's manner — what it is, the keys, and
  * that only the landscape is cheated; and on a touch screen four pads,
  * held down, for the speed or the watts and the steering. Its numbers and

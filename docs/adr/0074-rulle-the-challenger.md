@@ -1,6 +1,6 @@
-# ADR 0049: Rulle — the challenger, a race for two kilometres now and then
+# ADR 0074: Rulle — the challenger, a race for two kilometres now and then
 
-Status: accepted · Date: 2026-10-04 · Builds on 0034, 0045, 0048
+Status: accepted · Date: 2026-10-04 · Builds on 0034, 0045, 0073
 
 ## Context
 
@@ -17,7 +17,7 @@ slipstream that makes it easier behind him.
   (3.5 % over 200 m, as the cargo bike's), one time in five, 150 m before
   its foot, so the race goes up it; without, one time in ten, somewhere
   along it. Fixed by the route and the stretch: the same ride meets him
-  in the same places. He shares the chance with the sprinter (ADR 0050):
+  in the same places. He shares the chance with the sprinter (ADR 0075):
   which of the two turns up is fixed the same way, half the time each.
 - **An offer first**: turning up of himself, he comes up beside the
   rider and offers a race, with a yes and a no to click, and waits 15

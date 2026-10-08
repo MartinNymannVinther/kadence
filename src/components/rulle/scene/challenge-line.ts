@@ -9,7 +9,7 @@ import { bannerTexture, checkerTexture, disposeTextured } from "./text-plates";
 const HALF = 4.4;
 
 /**
- * The line at the end of the challenger's race (ADR 0049): an arch over
+ * The line at the end of the challenger's race (ADR 0074): an arch over
  * the road in his red and white, the word for the finish on its banner
  * both ways, and the checkered line across the asphalt — put where the
  * race ends once it starts, and taken away when it is over.

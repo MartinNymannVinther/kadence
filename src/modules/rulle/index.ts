@@ -10,8 +10,8 @@
  * - what a trainer, a power meter and a heart-rate strap say over
  *   Bluetooth, and what Rulle says back (`ble/`);
  * - the small things on the way and what they came to (ADR 0034);
- * - the challenger who now and then races the rider (ADR 0049), and the
- *   sprinter HYLDTOFT calls (ADR 0050).
+ * - the challenger who now and then races the rider (ADR 0074), and the
+ *   sprinter HYLDTOFT calls (ADR 0075).
  *
  * The browser's half — Bluetooth, the landscape, the screen — is in
  * src/components/rulle.

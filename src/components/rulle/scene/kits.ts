@@ -70,7 +70,7 @@ export const RIDER_KIT: Kit = {
 };
 
 /**
- * The challenger's (ADR 0049): a red jersey with a broad white band, a
+ * The challenger's (ADR 0074): a red jersey with a broad white band, a
  * thin white stripe either side of it, and white
  * bands round the sleeves, black shorts with red and white at the leg
  * ends, a smooth white aero helmet, white socks and shoes, on a black aero
@@ -103,7 +103,7 @@ export const CHALLENGER_KIT: Kit = {
 };
 
 /**
- * The sprinter's (ADR 0050): a jersey quartered in red and black, the
+ * The sprinter's (ADR 0075): a jersey quartered in red and black, the
  * black quarters diagonal, with a soft-edged white crown in the middle of
  * the chest and the back; red sleeves, black shorts, a white road helmet
  * with its vents and gold glasses, bare hands, white socks and shoes, on

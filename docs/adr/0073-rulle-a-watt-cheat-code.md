@@ -1,4 +1,4 @@
-# ADR 0048: Rulle — a WATT cheat code, with an avatar's weight
+# ADR 0073: Rulle — a WATT cheat code, with an avatar's weight
 
 Status: accepted · Date: 2026-10-02 · Builds on 0013, 0033, 0045
 

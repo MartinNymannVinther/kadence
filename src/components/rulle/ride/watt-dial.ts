@@ -1,7 +1,7 @@
 import { PHYSICS, resistance } from "@/modules/rulle/physics";
 
 /**
- * The WATT cheat code's dial (ADR 0048): the watts the avatar rides at,
+ * The WATT cheat code's dial (ADR 0073): the watts the avatar rides at,
  * set in watts or in watts per kilo of an avatar whose weight is chosen
  * on the screen — the avatar's, never the rider's, and kept nowhere but
  * here for as long as the ride lasts. A key or a button pressed is one
