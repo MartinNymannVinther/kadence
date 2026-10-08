@@ -1,14 +1,22 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { nothingSeen, type Course, type Seen, type SessionTimeline } from "@/modules/rulle";
+import {
+  nothingSeen,
+  type Course,
+  type Rival,
+  type Seen,
+  type SessionTimeline,
+} from "@/modules/rulle";
 import type { TrainerLink } from "../bluetooth/trainer-link";
 import type { Moment } from "../scene/world";
 import type { Beeps } from "./beeps";
-import type { Push } from "./cheat";
+import type { CheatMode, Push } from "./cheat";
+import type { WattTune } from "./watt-dial";
 import { RideEngine, type Live } from "./engine";
 import type { ShownAt } from "./shown";
 import { keepRide, type RideMeta } from "./ride-store";
+import { rivalOf } from "./rivals";
 import type { Sensors } from "./sensors";
 
 /** The engine is ticked this often: the physics' steps and a second's work on time. */
@@ -20,12 +28,13 @@ const DRAW_MS = 250;
 /** The ride is put aside in the browser this often. */
 const KEEP_MS = 10_000;
 
-/** Where the landscape shows the rider: the place, and the cheat's line and lean (ADR 0045). */
+/** Where the landscape shows the rider: the place, the cheat's line and lean (ADR 0045), the challenger. */
 const shown = (at: ShownAt) => ({
   distance: at.distance,
   line: at.line,
   lean: at.lean,
   cheat: at.cheat,
+  challenger: at.challenger,
 });
 
 export type RideOptions = {
@@ -161,23 +170,53 @@ export function useRide(options: RideOptions) {
     finish: () => act((ride, now) => ride.finish(now)),
     setIntensity: (value: number) => act((ride) => ride.setIntensity(value)),
     setErg: (on: boolean) => act((ride) => ride.setErg(on)),
+    /** The challenger now (ADR 0074), called by JOHAN — or the sprinter, by HYLDTOFT (ADR 0075): on a free ride only. */
+    challenge: (who: Rival = "challenger") => act((ride) => ride.shown.race.call(who)),
+    /** The rider's answer to an offer of a race: yes, and the count begins. */
+    answerRace: (yes: boolean) => act((ride) => ride.shown.race.answer(yes)),
+    /** Development only: an offer now, as one would come of itself — either of the two — session or not (G under `next dev`). */
+    summon: () =>
+      act((ride, now) => {
+        const rival = rivalOf(Math.random() < 0.5 ? "challenger" : "sprinter");
+        ride.shown.race.begin(
+          ride.positionAt(now).distance,
+          ride.live(now).speed,
+          false,
+          rival,
+          true,
+        );
+      }),
     /** Development only: times the rider's speed along the route, negative backwards. */
     setWarp: (factor: number) =>
       act((ride) => {
         ride.shown.warp.factor = factor;
       }),
-    /** The cheat code on or off (ADR 0045); the page hears whether it is on. */
-    toggleCheat: (): boolean => {
+    /** A cheat code typed (ADR 0045, 0073): on, off or over to the other; the page hears which is on. */
+    toggleCheat: (mode: CheatMode): CheatMode | null => {
       const ride = engine.current;
-      if (!ride) return false;
+      if (!ride) return null;
       const now = Date.now();
       const { speed, distance } = ride.live(now);
-      ride.shown.cheat.toggle(speed, distance);
+      ride.shown.cheat.toggle(speed, distance, mode, ride.positionAt(now).grade);
       draw();
-      return ride.shown.cheat.on;
+      return ride.shown.cheat.state()?.mode ?? null;
     },
-    /** What the cheat's keys hold now: faster or slower, left or right. */
+    /** What the cheat's keys hold now: faster or slower (more or fewer watts), left or right. */
     steerCheat: (throttle: Push, steer: Push) => engine.current?.shown.cheat.hold(throttle, steer),
+    /** The WATT dial's buttons: a step, watts or watts per kilo, the avatar heavier or lighter. */
+    tuneCheat: (change: WattTune) => {
+      const dial = engine.current?.shown.cheat.dial;
+      if (!dial) return;
+      if (change === "unit") dial.toggleUnit();
+      else if (change === "more" || change === "less") dial.step(change === "more" ? 1 : -1);
+      else dial.weigh(change === "heavier" ? 1 : -1);
+      draw();
+    },
+    /** A WATT button held up or down, or let go: it steps on as a held key does. */
+    pushCheat: (push: Push) => {
+      engine.current?.shown.cheat.dial.hold(push);
+      draw();
+    },
   };
 }
 

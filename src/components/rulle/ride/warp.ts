@@ -15,8 +15,11 @@ export class Warp {
   factor = 1;
   private shift = 0;
 
-  /** Metres a second the shown place runs away from the ridden one. */
-  private rate(speed: number): number {
+  /**
+   * Metres a second the shown place runs away from the ridden one, going
+   * `speed`: the rider's, and the challenger's by the same rule (`race.ts`).
+   */
+  rate(speed: number): number {
     return this.factor === 1 ? 0 : (this.factor - 1) * Math.max(speed, FROM);
   }
 

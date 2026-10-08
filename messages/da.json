@@ -797,7 +797,7 @@
       "rulle": {
         "title": "Rulle: passet på hometraineren",
         "body": "Kan du ikke komme ud, så kør dagens pas indendørs i Rulle: i menuen, eller \"Kør indendørs\" på passet. Forbind hometraineren med ét tryk. En smart trainer styrer selv watt i hver blok (ERG), så du bare skal træde; kan traineren kun måle, rammer du selv tallene. Et pulsbælte kan forbindes ved siden af. Skærmen viser watt mod mål, tiden tilbage af blokken og hele passet som en bjælke, du kører hen over, stort nok til at læse fra cyklen. Mellemrum holder pause, pil højre springer til næste blok, pil op og ned gør passet lettere eller hårdere. Holder du op med at træde, holder Rulle pause med dig. Når passet er slut, gemmes turen som en almindelig tur på passet, og du siger, hvor hårdt det var. Uden net venter turen i browseren. Rulle kræver Chrome eller Edge på en computer eller Android; på iPhone kan appen Bluefy. Har du ikke noget pas i dag, kan du vælge et af holdets egne eller DCU's standardpas. M slår lyden fra og til.",
-        "world": "Undervejs sker der små ting en gang imellem – en el-ladcykel, en bil med sprinklervæske, en hund – og holder du pause længe nok, sætter du dig på en café. De tælles med i dagens små ting, når du er færdig; tallene og bjælken får lov at være i fred. Under turen lyder vinden og dækkene efter farten, en fugl på landet, byens summen og publikum på løbsdagen, så et dyt aldrig kommer ud af stilheden. Der er gemt en snydekode i Rulle. Den snyder kun landskabet, aldrig turen, der gemmes. Du kan vælge mellem ruterne – blandt dem DM-omgangen fra B&U DM 2026 i Vejle med mål på toppen, Future Racing-omgangen gennem København og VM-rundstrækningen om Mont-Royal i Montréal. K viser og skjuler det lille kort over ruten. I skjuler alle tal, så du kun ser rytteren og landskabet; tryk på skærmen eller på I igen, så kommer de tilbage. H viser hastigheden – rutens fart for dine watt og en standardrytter, så den er et fingerpeg, ikke en måling – og på en stigning eller nedkørsel står procenten nede i hjørnet. Rytteren på skærmen rejser sig på de stejle stigninger og ligger lavt på de hurtige nedkørsler. Ruterne, der følger med, kører gennem det rigtige land fra OpenStreetMap – skovene, søerne, fjorden og byerne – og du møder andre ryttere på vejen, nogle med en hånd i vejret. Vejen krydser åerne på broer, og kører du under en jernbane eller en motorvej, kommer der ind imellem et tog over, og bilerne kører på broen. På byruterne er det løbsdag: publikum langs opløbet og op ad stigningerne, vagter med gule flag ved hellerne og i de skarpe sving, vagter på motorcykel, der dytter og kører et stykke foran dig, brosten, der ryster, fartbump, en langningszone og holdbusserne. København er en junimorgen i en storby – karreer i okker, gul og rød mursten, butikker i gadeplan, lamper hængt over gaden og en pølsevogn, Montréal en septembereftermiddag med røde ahorntræer, trapper uden på husene og korset på Mont-Royal. Byerne på landet, som Vejle, er bygget lavere i gule og røde mursten under røde og sorte tegl."
+        "world": "Undervejs sker der små ting en gang imellem – en el-ladcykel, en bil med sprinklervæske, en hund – og holder du pause længe nok, sætter du dig på en café. De tælles med i dagens små ting, når du er færdig; tallene og bjælken får lov at være i fred. Under turen lyder vinden og dækkene efter farten, en fugl på landet, byens summen og publikum på løbsdagen, så et dyt aldrig kommer ud af stilheden. Der er gemt snydekoder i Rulle. De snyder kun landskabet, aldrig turen, der gemmes. Du kan vælge mellem ruterne – blandt dem DM-omgangen fra B&U DM 2026 i Vejle med mål på toppen, Future Racing-omgangen gennem København og VM-rundstrækningen om Mont-Royal i Montréal. K viser og skjuler det lille kort over ruten. I skjuler alle tal, så du kun ser rytteren og landskabet; tryk på skærmen eller på I igen, så kommer de tilbage. H viser hastigheden – rutens fart for dine watt og en standardrytter, så den er et fingerpeg, ikke en måling – og på en stigning eller nedkørsel står procenten nede i hjørnet. Rytteren på skærmen rejser sig på de stejle stigninger og ligger lavt på de hurtige nedkørsler. Ruterne, der følger med, kører gennem det rigtige land fra OpenStreetMap – skovene, søerne, fjorden og byerne – og du møder andre ryttere på vejen, nogle med en hånd i vejret. Vejen krydser åerne på broer, og kører du under en jernbane eller en motorvej, kommer der ind imellem et tog over, og bilerne kører på broen. På byruterne er det løbsdag: publikum langs opløbet og op ad stigningerne, vagter med gule flag ved hellerne og i de skarpe sving, vagter på motorcykel, der dytter og kører et stykke foran dig, brosten, der ryster, fartbump, en langningszone og holdbusserne. København er en junimorgen i en storby – karreer i okker, gul og rød mursten, butikker i gadeplan, lamper hængt over gaden og en pølsevogn, Montréal en septembereftermiddag med røde ahorntræer, trapper uden på husene og korset på Mont-Royal. Byerne på landet, som Vejle, er bygget lavere i gule og røde mursten under røde og sorte tegl."
       },
       "keys": {
         "title": "Upload-nøgler",
@@ -3689,7 +3689,8 @@
       "title": "Spol",
       "back": "Baglæns",
       "times": "{factor}×",
-      "hint": "Kun under udvikling. Komma og punktum skifter farten, B vender retningen."
+      "hint": "Kun under udvikling. Komma og punktum skifter farten, B vender retningen, G kalder udfordreren frem.",
+      "challenge": "Kald udfordreren frem"
     },
     "cheat": {
       "title": "Snydekode",
@@ -3703,7 +3704,48 @@
       "faster": "Hurtigere",
       "slower": "Langsommere",
       "left": "Til venstre",
-      "right": "Til højre"
+      "right": "Til højre",
+      "onWatts": "Nu bestemmer du wattene",
+      "keysWatts": "W og S eller pil op og ned giver flere eller færre watt, A og D eller pilene til siden styrer. Avatarens vægt og W/kg vælger du foroven. Skriv WATT igen, så stopper den.",
+      "touchWatts": "Hold knapperne nede for watt og styring. Avatarens vægt og W/kg vælger du foroven. Prik fem gange på rytteren, så stopper den.",
+      "honestWatts": "Kun landskabet snydes. Avatarens vægt gemmes ikke, og turen gemmes, som du kørte den.",
+      "w": "W",
+      "wkg": "W/kg",
+      "showW": "Vis watt",
+      "showWkg": "Vis W/kg",
+      "weight": "Avatarens vægt",
+      "heavier": "Tungere avatar",
+      "lighter": "Lettere avatar",
+      "toWatts": "Watt",
+      "toSpeed": "Fart",
+      "more": "Flere watt",
+      "less": "Færre watt",
+      "kgUnit": "kg",
+      "speed": "Fart"
+    },
+    "challenge": {
+      "title": "Udfordring",
+      "offer": "En rytter i rødt og hvidt kører op på siden af dig og vil køre om kap de næste 2 km.",
+      "offerHill": "En rytter i rødt og hvidt kører op på siden af dig og vil køre om kap op ad bakken, 2 km.",
+      "sprinterOffer": "En lille rytter i rødt og sort kører op på siden af dig og vil køre om kap de næste 2 km.",
+      "yes": "Ja, kør",
+      "no": "Nej tak",
+      "waits": "Han venter {s} s på dit svar.",
+      "on": "En rytter i rødt og hvidt kører op på siden af dig. Om kap de næste 2 km, når der er talt ned.",
+      "onHill": "En rytter i rødt og hvidt kører op på siden af dig. Om kap op ad bakken, 2 km, når der er talt ned.",
+      "sprinter": "En lille rytter i rødt og sort kører op på siden af dig. Om kap de næste 2 km, når der er talt ned.",
+      "draft": "Sidder du på hans hjul, tager han vinden for dig. Han kører sine egne watt, hvad du end gør.",
+      "sprinterWheel": "Han sætter sig på dit hjul og venter på spurten, 200 m før stregen. Kør ham træt, før han når så langt.",
+      "honest": "Kun landskabet kører om kap. Turen gemmes, som du kørte den.",
+      "badge": "Om kap",
+      "left": "{km} km",
+      "ahead": "{m} m foran",
+      "behind": "{m} m bagud",
+      "level": "side om side",
+      "won": "Du vandt",
+      "lost": "Han vandt",
+      "margin": "med {m} m",
+      "go": "Kør"
     },
     "log": {
       "title": "Bluetooth-log",
@@ -3998,9 +4040,6 @@
       },
       "jerseyLabel": "Trøjen for {name}",
       "jerseyUnchecked": "farver ikke tjekket",
-      "photoAlt": "Foto af {name}",
-      "photoCredit": "Foto: {artist} · {licence} ·",
-      "photoUnknownArtist": "ukendt fotograf",
       "photoAlt": "Foto af {name}",
       "photoCredit": "Foto: {artist} · {licence} ·",
       "photoUnknownArtist": "ukendt fotograf",
@@ -4742,7 +4781,10 @@
       "examples": {
         "carbs": "ca. {g} g kulhydrat",
         "carbsProtein": "ca. {g} g kulhydrat · {p} g protein",
-        "riceHoney": { "name": "Ris med honning", "amount": "5 dl kogte ris og 2 spsk. honning" },
+        "riceHoney": {
+          "name": "Ris med honning",
+          "amount": "5 dl kogte ris og 2 spsk. honning"
+        },
         "breadHoney": {
           "name": "Franskbrød med honning og juice",
           "amount": "4 skiver franskbrød, 2 spsk. honning og et glas juice"
@@ -4755,7 +4797,10 @@
           "name": "Havregryn med mælk og banan",
           "amount": "2½ dl havregryn, 2½ dl mælk og en banan"
         },
-        "banana": { "name": "En banan", "amount": "En mellemstor banan" },
+        "banana": {
+          "name": "En banan",
+          "amount": "En mellemstor banan"
+        },
         "breadHoneySmall": {
           "name": "Franskbrød med honning",
           "amount": "2 skiver franskbrød og 1 spsk. honning"
@@ -4784,31 +4829,78 @@
           "name": "Franskbrød og juice",
           "amount": "2 skiver franskbrød og et glas juice"
         },
-        "bananaRaisins": { "name": "Banan og rosiner", "amount": "En banan og 1 dl rosiner" }
+        "bananaRaisins": {
+          "name": "Banan og rosiner",
+          "amount": "En banan og 1 dl rosiner"
+        }
       },
       "items": {
-        "water": { "name": "Vand" },
-        "saltWater": { "name": "Vand med salt" },
-        "drink": { "name": "Sportsdrik" },
-        "fuel": { "name": "Stærk sportsdrik (8 %)" },
-        "riceCake": { "name": "Riskage" },
-        "banana": { "name": "Banan" },
-        "gel": { "name": "Gel uden koffein" },
-        "oats": { "name": "Havregryn" },
-        "milk": { "name": "Mælk" },
-        "whiteBread": { "name": "Franskbrød" },
-        "ryeBread": { "name": "Rugbrød" },
-        "pasta": { "name": "Pasta" },
-        "rice": { "name": "Ris" },
-        "potatoes": { "name": "Kartofler" },
-        "raisins": { "name": "Rosiner" },
-        "juice": { "name": "Juice" },
-        "honey": { "name": "Honning" },
-        "skyr": { "name": "Skyr" },
-        "cocoaMilk": { "name": "Kakaomælk" },
-        "chicken": { "name": "Kylling" },
-        "egg": { "name": "Æg" },
-        "cheese": { "name": "Ost" }
+        "water": {
+          "name": "Vand"
+        },
+        "saltWater": {
+          "name": "Vand med salt"
+        },
+        "drink": {
+          "name": "Sportsdrik"
+        },
+        "fuel": {
+          "name": "Stærk sportsdrik (8 %)"
+        },
+        "riceCake": {
+          "name": "Riskage"
+        },
+        "banana": {
+          "name": "Banan"
+        },
+        "gel": {
+          "name": "Gel uden koffein"
+        },
+        "oats": {
+          "name": "Havregryn"
+        },
+        "milk": {
+          "name": "Mælk"
+        },
+        "whiteBread": {
+          "name": "Franskbrød"
+        },
+        "ryeBread": {
+          "name": "Rugbrød"
+        },
+        "pasta": {
+          "name": "Pasta"
+        },
+        "rice": {
+          "name": "Ris"
+        },
+        "potatoes": {
+          "name": "Kartofler"
+        },
+        "raisins": {
+          "name": "Rosiner"
+        },
+        "juice": {
+          "name": "Juice"
+        },
+        "honey": {
+          "name": "Honning"
+        },
+        "skyr": {
+          "name": "Skyr"
+        },
+        "cocoaMilk": {
+          "name": "Kakaomælk"
+        },
+        "chicken": {
+          "name": "Kylling"
+        },
+        "egg": {
+          "name": "Æg"
+        },
+        "cheese": {
+          "name": "Ost"
+        }
       },
       "warnings": {
         "heat": "Over 25 °C: drik mere, og tænk salt med. Over 30 °C tåler kroppen at miste mindre i sved.",
