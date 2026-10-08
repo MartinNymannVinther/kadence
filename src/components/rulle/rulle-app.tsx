@@ -19,7 +19,7 @@ import { SessionScreen } from "./session-screen";
 import { useCourse } from "./use-course";
 import { useDevices } from "./use-devices";
 
-type Phase = "ready" | "counting" | "riding" | "done";
+type Phase = "ready" | "loading" | "counting" | "riding" | "done";
 
 /**
  * Rulle, from the first screen to the last (ADR 0033): the session and
@@ -152,7 +152,7 @@ export function RulleApp({
           setPhase("riding");
         }}
       />
-    ) : (phase === "counting" || phase === "riding") && courseReady ? (
+    ) : (phase === "loading" || phase === "counting" || phase === "riding") && courseReady ? (
       <RideScreen
         title={meta.title}
         trial={trial}
@@ -162,6 +162,8 @@ export function RulleApp({
         ride={ride}
         devices={devices}
         beeps={beeps}
+        loading={phase === "loading"}
+        onLoaded={() => setPhase("counting")}
         counting={phase === "counting"}
         onGo={() => {
           ride.start();
@@ -189,7 +191,8 @@ export function RulleApp({
         onChoose={setChosenId}
         onStart={() => {
           beeps.unlock();
-          setPhase("counting");
+          // With the landscape, ten seconds of it and one of the two riders first (ADR 0076).
+          setPhase(world ? "loading" : "counting");
         }}
         onSaveKept={() => {
           if (!kept) return;
