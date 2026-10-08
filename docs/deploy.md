@@ -282,6 +282,27 @@ without an argument puts the file in `./data/map` and names the
 The map shows © OpenStreetMap contributors, as the data's licence (ODbL)
 asks.
 
+## 6c½. The teams page's cache
+
+The open page of Danish U19 and U23 teams (ADR 0072) reads the UCI and
+Cykling Danmark once a day and keeps what it read — a JSON file and a
+few photographs — in the `kadence-teams` volume at `/data/teams`. The
+image makes that directory owned by the app's user, so a volume made
+after 8 October 2026 is writable from the start.
+
+A volume made **before** that (the first deploy of the page) is owned by
+root, and the app cannot write into it. The page still works — it keeps
+what it read in memory and says so in the log (`teams: snapshot not
+written`) — but every restart reads the sources again. Fix it once,
+on the server, with the project's name as Coolify prefixes volumes:
+
+```
+docker run --rm -v <project>_kadence-teams:/data/teams alpine chown 1001:1001 /data/teams
+```
+
+`TEAMS_DCU=off` in the environment stops the page reading Cykling
+Danmark; `GUIDE_TEAMS=off` parks the page.
+
 ## 6d. Reminders by web push
 
 Reminders (ADR 0060) are off until the installation has a key pair. Make

@@ -23,6 +23,7 @@ eller mere. Rækkefølgen inden for en prioritet er den anbefalede.
 
 P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter #21 og #22). Hvert spor bygges i sit eget worktree med egen database og flettes ind på P1-grenen, når det er grønt. Statusloggen nyeste først:
 
+- **8. okt.** Produktionen svarede 500 på holdsiden: volumet `/data/teams` ejes af root, og appen kunne ikke skrive sit øjebliksbillede. Siden holder nu øjebliksbilledet i hukommelsen, når disken nægter, og svarer aldrig 500 for en cache; Dockerfilen gør mappen til appens egen, og deploy.md siger, hvordan et gammelt volume rettes én gang. Samtidig alle danske holds trøjefarver fra DCU's PDF med godkendte tøjdesign 2026, som Martin pegede på. Forbrug: ca. 80k tokens.
 - **8. okt.** Tre rettelser på Martins bud (Ø-10): AI'en viser nu, at den tænker — tre prikker og en gnist, stille ved nedsat bevægelse — i alle fem AI-paneler; print er lagt om til ren bloklayout med ét kort pr. række, så Safari også holder kortene hele; holdsiden har fået trøjefarver og mønstre for elleve hold, syv læst fra fotos på Wikimedia Commons, og selve fotografierne kopieret til installationen med kreditering. Forbrug: ca. 180k tokens.
 - **8. okt.** Ø-09 holdsiden er bygget: `/guides/teams` læser UCI's U23-verdensrangliste og Nations' Cup fra DataRide og Cykling Danmarks holdliste og pointlister én gang i døgnet til et øjebliksbillede på disk, tegner trøjer ud fra registret, og viser kontakt som DCU selv offentliggør den. Fundet undervejs: UCI har ingen individuel juniorrangliste på landevej, så juniorernes point er DCU's. Forbrug: ca. 420k tokens.
 - **8. okt.** Ø-08 "Byg med AI" for et program er færdig: en samtale i programbyggeren, hvor hvert svar lægges direkte i byggeren, med Fortryd. Prøvet mod en lokal Ollama-model (qwen2.5-coder:14b) i to ture plus fortryd. Plan B (holdsiden, Ø-09) er godkendt med DCU-læser bag flag og point for U19/U23. Forbrug: ca. 250k tokens.
@@ -1285,7 +1286,7 @@ der, **så** vejen videre er til at få øje på.
 
 **Tokens:** ca. 150–250k · **Model:** Opus 5.5 (`claude-opus-5-5`).
 
-**Status:** Færdig 8. oktober. `components/assist/thinking.tsx` i fem paneler; `program-print.tsx` og den hentede fils print-CSS i bloklayout; `teams/photos.ts`, ruten `/api/teams/photo/[id]`, mønstre i `jersey.tsx`, elleve hold med farver og syv med foto. Rester: farver for de resterende hold (juniorholdene har ingen fotos på Commons), Wikidata som daglig kilde til hjemmesider. Forbrug: ca. 180k tokens.
+**Status:** Færdig 8. oktober. `components/assist/thinking.tsx` i fem paneler; `program-print.tsx` og den hentede fils print-CSS i bloklayout; `teams/photos.ts`, ruten `/api/teams/photo/[id]`, mønstre i `jersey.tsx`, syv hold med foto. Samme dag fik alle 21 danske hold farver fra DCU's PDF med godkendte tøjdesign 2026. Rester: farver for fem udenlandske hold, Wikidata som daglig kilde til hjemmesider. Forbrug: ca. 180k + 80k tokens.
 
 ## A — afklaringer uden kode
 
