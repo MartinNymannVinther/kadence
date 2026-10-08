@@ -1,4 +1,4 @@
-import { Database, ShieldCheck, Sparkles } from "lucide-react";
+import { CalendarRange, Database, ShieldCheck } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { buttonVariants } from "@/components/ui/button";
 import { Wordmark } from "@/components/wordmark";
@@ -6,11 +6,11 @@ import { getSession } from "@/core/auth/session";
 import { buildInfo } from "@/core/version";
 import { signupAllowed } from "@/core/auth/signup";
 import { Link, redirect } from "@/i18n/navigation";
-import { demoEnabled, DEMO_TTL_HOURS } from "@/modules/demo/service";
+import { demoReady, DEMO_TTL_HOURS } from "@/modules/demo/service";
 import { cn } from "@/lib/utils";
 
 const VALUES = [
-  { icon: Sparkles, titleKey: "aiTitle", bodyKey: "aiBody" },
+  { icon: CalendarRange, titleKey: "dcuTitle", bodyKey: "dcuBody" },
   { icon: Database, titleKey: "dataTitle", bodyKey: "dataBody" },
   { icon: ShieldCheck, titleKey: "securityTitle", bodyKey: "securityBody" },
 ] as const;
@@ -26,18 +26,27 @@ export default async function HomePage() {
   // The same button leads to /register either way; what it promises should
   // match what is behind it: an account, or an application for one.
   const open = await signupAllowed();
-  const demo = demoEnabled();
+  const demo = await demoReady();
   if (session) {
     redirect({ href: "/today", locale });
     return null;
   }
   const t = await getTranslations("landing");
+  const openPages = await getTranslations("open");
 
   return (
     <div className="bg-background flex min-h-svh flex-col">
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-5">
         <Wordmark className="text-xl" />
         <nav className="flex items-center gap-2">
+          {/* On a phone the header has room for two buttons; the guides
+              stand under the hero's buttons there instead. */}
+          <Link
+            href="/guides"
+            className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "max-sm:hidden")}
+          >
+            {openPages("nav.hub")}
+          </Link>
           <Link href="/login" className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}>
             {t("nav.login")}
           </Link>
@@ -59,7 +68,7 @@ export default async function HomePage() {
           />
           <div className="mx-auto flex w-full max-w-3xl flex-col items-center px-6 pt-16 pb-12 text-center sm:pt-24">
             <p className="border-border/80 bg-card/60 text-muted-foreground mb-7 inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs shadow-xs">
-              <span className="bg-primary inline-block size-1.5 animate-pulse rounded-full" />
+              <span className="bg-primary inline-block size-1.5 animate-pulse rounded-full motion-reduce:!animate-none" />
               {/* Read from the build rather than written into the copy:
                   a version in a sentence is a version that goes stale. */}
               {t("status", { version: buildInfo.version })}
@@ -92,6 +101,12 @@ export default async function HomePage() {
                 {t("hero.ctaSecondary")}
               </Link>
             </div>
+            <Link
+              href="/guides"
+              className={cn(buttonVariants({ variant: "link", size: "sm" }), "mt-3 sm:hidden")}
+            >
+              {openPages("nav.hub")}
+            </Link>
             <p className="text-muted-foreground mt-6 text-xs">{t("hero.trust")}</p>
           </div>
 
@@ -132,7 +147,7 @@ export default async function HomePage() {
           {VALUES.map((value) => (
             <div
               key={value.titleKey}
-              className="bg-card ring-foreground/10 shadow-[var(--surface-shadow)] rounded-xl p-6 ring-1 transition-shadow hover:shadow-md"
+              className="bg-card ring-foreground/10 shadow-surface rounded-xl p-6 ring-1"
             >
               <div className="bg-accent text-accent-foreground mb-4 flex size-9 items-center justify-center rounded-lg">
                 <value.icon className="size-4.5" />
@@ -148,7 +163,7 @@ export default async function HomePage() {
             {t("family.body")}{" "}
             <a
               href={HAIJ_URL}
-              className="text-foreground font-medium underline-offset-4 hover:underline"
+              className="focus-ring text-foreground font-medium underline-offset-4 hover:underline"
             >
               {t("family.link")}
             </a>
@@ -163,13 +178,13 @@ export default async function HomePage() {
             <span>· {t("footer.license")}</span>
           </p>
           <div className="flex flex-wrap items-center gap-4">
-            <Link href="/terms" className="underline-offset-4 hover:underline">
+            <Link href="/terms" className="focus-ring underline-offset-4 hover:underline">
               {t("footer.terms")}
             </Link>
             <Link
               href="/"
               locale={locale === "da" ? "en" : "da"}
-              className="underline-offset-4 hover:underline"
+              className="focus-ring underline-offset-4 hover:underline"
             >
               {t("footer.language")}
             </Link>

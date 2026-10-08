@@ -26,6 +26,20 @@ It is a script and not a feature because setting someone else's password
 outside the login flow is exactly the capability an attacker wants. It
 belongs on the machine that already has database credentials.
 
+## delete-club.ts
+
+Deletes a club when its own owner cannot: the owner has left, and someone
+the club answers for has asked in writing (ADR 0048).
+
+```
+pnpm script scripts/delete-club.ts                                   # lists the clubs
+pnpm script scripts/delete-club.ts <org id> "<the club's name>" "<why>"
+```
+
+The name must be typed exactly. Everything the club owns goes, with the
+audit rows about it, as when its owner deletes it; one line stays in the
+log saying the installation did it, and why.
+
 ## grant-owner.ts
 
 Names the installation's owner: the one account that may admit new
@@ -53,6 +67,18 @@ for why it exists.
 Deletes demo workspaces that have expired. The application runs the same
 cleanup on every visit to `/demo`; the script is for a quiet installation
 or a scheduler that would rather not rely on visitors. Safe to run twice.
+
+## push-keys.ts
+
+Prints a fresh key pair for reminders by web push (docs/adr/0060) as
+`PUSH_PUBLIC_KEY`, `PUSH_PRIVATE_KEY` and a `PUSH_CONTACT` to fill in,
+ready for `.env` or Coolify. node:crypto makes the pair, so no web-push
+package is needed. Make one per installation and keep it; a new pair
+means every browser turns reminders on again.
+
+```
+pnpm script scripts/push-keys.ts
+```
 
 ## reread-activities.ts
 

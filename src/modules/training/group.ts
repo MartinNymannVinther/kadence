@@ -7,6 +7,7 @@ import { requireCoach } from "@/modules/team/access";
 import { readStructure, structureMinutes } from "@/modules/workouts/structure";
 import { MAX_SERIES_ROWS, repeatDates, repeatProblem, type Repeat } from "./recurrence";
 import { createSessionsIn } from "./sessions";
+import type { TimePlace } from "./time-place";
 import type { SessionInputT, Sport } from "./vocabulary";
 
 /**
@@ -36,30 +37,43 @@ export async function createGroupSessions(
   input: Omit<SessionInputT, "riderId">,
   repeat?: Repeat,
 ): Promise<{ groupKey: string; ids: string[] }> {
-  return withOrgContext(ctx, async (tx) => {
-    // A plan for several riders is a coach's; a session for one rider is
-    // anyone's who may write for that rider — a rider planning their own
-    // (createSessionsIn checks).
-    const unique = [...new Set(riderIds)];
-    if (unique.length > 1) await requireCoach(tx, ctx);
-    const days = daysOf(input.onDate, repeat, unique.length);
-    const seriesKey = repeat ? randomUUID() : null;
-    let firstGroup: string | null = null;
-    const rows = days.flatMap((onDate) => {
-      const groupKey = unique.length > 1 ? randomUUID() : null;
-      firstGroup ??= groupKey;
-      return unique.map((riderId) => ({
-        ...input,
-        onDate,
-        riderId,
-        groupKey,
-        seriesKey,
-        origin: groupKey ? ("group" as const) : undefined,
-      }));
-    });
-    const ids = await createSessionsIn(tx, ctx, rows);
-    return { groupKey: firstGroup ?? "", ids };
+  return withOrgContext(ctx, (tx) => createGroupSessionsIn(tx, ctx, riderIds, input, repeat));
+}
+
+/**
+ * The same inside a transaction the caller holds — for a service that
+ * checks something of its own first, as laying a programme in does
+ * (src/modules/exercises/schedule.ts).
+ */
+export async function createGroupSessionsIn(
+  tx: AppTransaction,
+  ctx: OrgContext,
+  riderIds: string[],
+  input: Omit<SessionInputT, "riderId">,
+  repeat?: Repeat,
+): Promise<{ groupKey: string; ids: string[] }> {
+  // A plan for several riders is a coach's; a session for one rider is
+  // anyone's who may write for that rider — a rider planning their own
+  // (createSessionsIn checks).
+  const unique = [...new Set(riderIds)];
+  if (unique.length > 1) await requireCoach(tx, ctx);
+  const days = daysOf(input.onDate, repeat, unique.length);
+  const seriesKey = repeat ? randomUUID() : null;
+  let firstGroup: string | null = null;
+  const rows = days.flatMap((onDate) => {
+    const groupKey = unique.length > 1 ? randomUUID() : null;
+    firstGroup ??= groupKey;
+    return unique.map((riderId) => ({
+      ...input,
+      onDate,
+      riderId,
+      groupKey,
+      seriesKey,
+      origin: groupKey ? ("group" as const) : undefined,
+    }));
   });
+  const ids = await createSessionsIn(tx, ctx, rows);
+  return { groupKey: firstGroup ?? "", ids };
 }
 
 /** How many sessions of a programme a rider already has: the next one is that plus one. */
@@ -76,6 +90,7 @@ async function nextProgrammeSession(tx: AppTransaction, riderId: string, templat
  * a repeat, on every day of it. A strength programme's session is
  * numbered per rider and counts on through the series, so each copy
  * carries the sets and reps of where that rider is in the programme.
+ * Every copy gets the same time and place, when there are any (ADR 0058).
  */
 export async function scheduleTemplate(
   ctx: OrgContext,
@@ -83,6 +98,7 @@ export async function scheduleTemplate(
   riderIds: string[],
   onDate: string,
   repeat?: Repeat,
+  at: Partial<TimePlace> = {},
 ): Promise<{ ids: string[] }> {
   return withOrgContext(ctx, async (tx) => {
     const [template] = await tx
@@ -93,6 +109,10 @@ export async function scheduleTemplate(
     const sport = template.sport as Sport;
     const structure = readStructure(template.structure, sport);
     const unique = [...new Set(riderIds)];
+    // A rider's own session goes into that rider's calendar only; for
+    // anyone else a coach takes it into the library first (ADR 0050).
+    if (template.riderId && unique.some((id) => id !== template.riderId))
+      throw new Refused("forbidden", "ownTemplate");
     if (unique.length > 1) await requireCoach(tx, ctx);
     const days = daysOf(onDate, repeat, unique.length);
     const seriesKey = repeat ? randomUUID() : null;
@@ -112,6 +132,8 @@ export async function scheduleTemplate(
         plannedMinutes: template.plannedMinutes || structureMinutes(structure),
         plannedKm: null,
         templateId,
+        startTime: at.startTime ?? null,
+        meetingPlace: at.meetingPlace ?? "",
         groupKey,
         seriesKey,
         origin: groupKey ? ("group" as const) : ("template" as const),

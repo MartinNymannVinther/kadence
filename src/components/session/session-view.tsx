@@ -1,4 +1,4 @@
-import { Bike } from "lucide-react";
+import { Bike, Clock, MapPin } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
@@ -16,11 +16,14 @@ import { StructureView } from "@/components/workouts/structure-view";
 import { todayInCopenhagen } from "@/core/dates";
 import type { OrgContext } from "@/core/db/tenant";
 import { listDeviceLinks } from "@/modules/devices/links";
+import { refsInStructure } from "@/modules/exercises/program-session";
+import { resolveExercises } from "@/modules/exercises/resolve";
 import type { Me } from "@/modules/team/access";
 import { getRider, getRiders } from "@/modules/team/riders";
 import { getActivity } from "@/modules/training/activities";
 import { listComments } from "@/modules/training/comments";
 import { getSession as getPlannedSession } from "@/modules/training/sessions";
+import { clockText } from "@/modules/training/time-place";
 import { readStructure } from "@/modules/workouts/structure";
 import { CommentThread } from "./comment-thread";
 import { CompleteForm } from "./complete-form";
@@ -56,6 +59,7 @@ export async function SessionView({
   const t = await getTranslations("session");
   const sports = await getTranslations("training.sport");
   const duration = await getTranslations("training.duration");
+  const when = await getTranslations("training.when");
   const locale = await getLocale();
   const session = await getPlannedSession(ctx, sessionId);
   if (!session) {
@@ -74,6 +78,12 @@ export async function SessionView({
   const sport = card.sport as "bike" | "strength" | "other";
   const structure = readStructure(session.structure, sport);
   const exportable = structure.kind === "bike" && structure.steps.length > 0;
+  // A programme's exercises carry their place in the library: the figure
+  // and how-to of those this reader may see (src/modules/exercises/resolve.ts).
+  const exercises =
+    structure.kind === "strength"
+      ? await resolveExercises(ctx, refsInStructure(structure), await getTranslations("exercises"))
+      : {};
   const pushTo =
     exportable && canWrite && !card.activity
       ? (await listDeviceLinks(ctx, session.riderId))
@@ -86,12 +96,12 @@ export async function SessionView({
   return (
     <article className="flex min-w-0 flex-col gap-6">
       <header className="flex flex-col gap-2">
-        <p className="text-chart-2 text-2sm font-medium first-letter:uppercase">
+        <p className="text-primary text-2sm font-medium first-letter:uppercase">
           {dayLong(card.onDate, locale)}
           {rider ? ` · ${rider.name}` : ""}
         </p>
         <div className="flex items-start justify-between gap-3">
-          <Heading className="text-[1.625rem] leading-tight font-semibold tracking-[-0.02em]">
+          <Heading className="text-title-section leading-tight font-semibold tracking-[-0.02em]">
             {card.title}
           </Heading>
           {canWrite && (
@@ -110,6 +120,19 @@ export async function SessionView({
           </span>
           {card.plannedMinutes > 0 && <span>{durationText(card.plannedMinutes, duration)}</span>}
           {card.plannedKm ? <span>{t("km", { km: card.plannedKm })}</span> : null}
+          {card.startTime && (
+            <span className="flex items-center gap-1.5">
+              <Clock aria-hidden className="size-4" />
+              {when("time", { time: clockText(card.startTime, locale) })}
+            </span>
+          )}
+          {card.meetingPlace && (
+            <span className="flex min-w-0 items-center gap-1.5">
+              <MapPin aria-hidden className="size-4 shrink-0" />
+              <span className="sr-only">{when("place")}: </span>
+              <span className="min-w-0 break-words">{card.meetingPlace}</span>
+            </span>
+          )}
           <ComplianceMark
             colour={colourOf(card, today)}
             done={card.activity !== null}
@@ -131,6 +154,7 @@ export async function SessionView({
           structure={structure}
           rider={rider ? { ftp: rider.ftpWatts, thresholdHr: rider.thresholdHr } : null}
           programmeSession={card.programmeSession}
+          exercises={exercises}
         />
         {exportable && (
           <div className="flex flex-col items-start gap-2">

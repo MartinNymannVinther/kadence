@@ -1,7 +1,15 @@
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { teamSettings, type TeamSettingsRow } from "@/core/db/schema";
-import { withOrgContext, type OrgContext } from "@/core/db/tenant";
+import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
+import {
+  DEFAULT_GUIDANCE,
+  GUIDANCE_IDS,
+  isGuidanceId,
+  paradigmFor,
+  type GuidanceId,
+  type Paradigm,
+} from "@/modules/paradigms";
 import { requireCoach } from "./access";
 
 /** The team's settings; absent until a coach changes a default. */
@@ -10,14 +18,25 @@ export const TeamSettingsInput = z.object({
   teamKind: z.enum(["U17", "U19", "U23", "mixed"]),
   aiOnRiderData: z.boolean(),
   allowYouthWeight: z.boolean(),
+  guidance: z.enum(GUIDANCE_IDS as [GuidanceId, ...GuidanceId[]]),
+  clubChampionship: z.boolean(),
+  lowIntensityFirst: z.boolean(),
 });
 
-export type TeamSettings = Pick<TeamSettingsRow, "teamKind" | "aiOnRiderData" | "allowYouthWeight">;
+export type TeamSettings = Pick<
+  TeamSettingsRow,
+  "teamKind" | "aiOnRiderData" | "allowYouthWeight" | "clubChampionship" | "lowIntensityFirst"
+> & {
+  guidance: GuidanceId;
+};
 
 export const DEFAULT_TEAM_SETTINGS: TeamSettings = {
   teamKind: "mixed",
   aiOnRiderData: false,
   allowYouthWeight: false,
+  guidance: DEFAULT_GUIDANCE,
+  clubChampionship: false,
+  lowIntensityFirst: false,
 };
 
 export async function getTeamSettings(ctx: OrgContext): Promise<TeamSettings> {
@@ -32,9 +51,38 @@ export async function getTeamSettings(ctx: OrgContext): Promise<TeamSettings> {
           teamKind: row.teamKind,
           aiOnRiderData: row.aiOnRiderData,
           allowYouthWeight: row.allowYouthWeight,
+          guidance: isGuidanceId(row.guidance) ? row.guidance : DEFAULT_GUIDANCE,
+          clubChampionship: row.clubChampionship,
+          lowIntensityFirst: row.lowIntensityFirst,
         }
       : DEFAULT_TEAM_SETTINGS;
   });
+}
+
+/**
+ * The paradigm the team plans by (docs/adr/0049), read inside a
+ * transaction a service already holds; null when the team plans without
+ * one. Everyone on the team reads the setting (drizzle/0003).
+ */
+export async function teamParadigm(tx: AppTransaction, orgId: string): Promise<Paradigm | null> {
+  return (await teamPlanning(tx, orgId)).paradigm;
+}
+
+/**
+ * The paradigm, and whether the team lays "Lav intensitet først" on top
+ * of it (docs/adr/0053), read the same way.
+ */
+export async function teamPlanning(
+  tx: AppTransaction,
+  orgId: string,
+): Promise<{ paradigm: Paradigm | null; lowIntensityFirst: boolean }> {
+  const [row] = await tx
+    .select({ guidance: teamSettings.guidance, lowIntensityFirst: teamSettings.lowIntensityFirst })
+    .from(teamSettings)
+    .where(eq(teamSettings.orgId, orgId))
+    .limit(1);
+  const guidance = row && isGuidanceId(row.guidance) ? row.guidance : DEFAULT_GUIDANCE;
+  return { paradigm: paradigmFor(guidance), lowIntensityFirst: row?.lowIntensityFirst ?? false };
 }
 
 export async function saveTeamSettings(

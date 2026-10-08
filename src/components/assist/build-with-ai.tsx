@@ -14,6 +14,7 @@ import type { AiFailure } from "@/modules/ai/wire";
 import type { BuiltWorkout } from "@/modules/assist/build-workout-answer";
 import { AiFailureText } from "./ai-failure";
 import { ProposalFrame } from "./proposal-frame";
+import { Thinking } from "./thinking";
 
 const CATEGORIES = ["U17", "U19", "U23"] as const;
 type Category = (typeof CATEGORIES)[number];
@@ -231,11 +232,7 @@ export function BuildWithAi({
             {t("close")}
           </Button>
         </div>
-        {busy && (
-          <p className="text-meta text-2sm" role="status">
-            {t("building")}
-          </p>
-        )}
+        {busy && <Thinking>{t("building")}</Thinking>}
       </div>
       {error && <AiFailureText error={error} />}
       {result && (

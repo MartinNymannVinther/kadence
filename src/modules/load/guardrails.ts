@@ -1,5 +1,6 @@
 import { diffDays } from "@/core/dates";
 import type { ComplianceColour } from "./compliance";
+import { midZoneFlag, type MidZoneInput } from "./intensity-flag";
 import type { WellbeingStatus } from "./wellbeing";
 
 /**
@@ -33,6 +34,7 @@ export const TRAINING_KINDS = [
   "longest_ride",
   "strength_spacing",
   "compliance",
+  "mid_zone",
 ] as const;
 /** Kinds computed from the check-ins: health data, read with the 'wellbeing' scope (drizzle/0013). */
 export const WELLBEING_KINDS = [
@@ -87,11 +89,18 @@ export interface GuardrailInput {
   sleepMinimum?: number | null;
   /** The colours of the week's planned sessions so far. */
   compliance?: readonly ComplianceColour[];
+  /** The last four weeks' sessions in three zones, when the team uses "Lav intensitet først". */
+  intensity?: MidZoneInput | null;
 }
 
 const round1 = (value: number) => Math.round(value * 10) / 10;
 
-/** A week with this many October-break days has no floor to fall below. */
+/**
+ * A week with this many October-break days has no corridor: DCU's October
+ * is "pause + frit", rest and then free riding with no hours, so there is
+ * neither a floor to fall below nor a ceiling of 0 hours to ride over. The
+ * ramp still notices a sudden jump.
+ */
 const BREAK_WEEK_DAYS = 4;
 
 /**
@@ -106,10 +115,10 @@ export function corridorFlag(
   corridor: Corridor | null | undefined,
 ): Flag | null {
   if (!corridor) return null;
+  if ((corridor.breakDays ?? 0) >= BREAK_WEEK_DAYS) return null;
   const values = { hours: round1(bikeHours), ...corridor };
   if (bikeHours > corridor.high) return { kind: "hours_above_corridor", severity: "warn", values };
-  if (bikeHours < corridor.low && (corridor.breakDays ?? 0) < BREAK_WEEK_DAYS)
-    return { kind: "hours_below_corridor", severity: "info", values };
+  if (bikeHours < corridor.low) return { kind: "hours_below_corridor", severity: "info", values };
   return null;
 }
 
@@ -273,6 +282,7 @@ export function guardrails(input: GuardrailInput): Flag[] {
     painFlag(input.latestPain),
     sleepFlag(input.sleepHours ?? [], input.sleepMinimum),
     complianceFlag(input.compliance ?? []),
+    midZoneFlag(input.intensity),
   ].filter((flag): flag is Flag => flag !== null);
   return flags.sort((a, b) => SEVERITY_ORDER[a.severity] - SEVERITY_ORDER[b.severity]);
 }

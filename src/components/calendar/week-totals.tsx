@@ -88,14 +88,16 @@ export function WeekTotals({
       )}
       {(strength.length > 0 || strengthDone > 0 || volume) && (
         <p className="text-meta text-xs">
-          {t("strength", {
-            done: strengthDone,
-            planned: strength.length,
-            dcu:
-              frequency.perWeekMin === frequency.perWeekMax
-                ? String(frequency.perWeekMin)
-                : `${frequency.perWeekMin}–${frequency.perWeekMax}`,
-          })}
+          {volume && !volume.guided
+            ? t("strengthOwn", { done: strengthDone, planned: strength.length })
+            : t("strength", {
+                done: strengthDone,
+                planned: strength.length,
+                dcu:
+                  frequency.perWeekMin === frequency.perWeekMax
+                    ? String(frequency.perWeekMin)
+                    : `${frequency.perWeekMin}–${frequency.perWeekMax}`,
+              })}
         </p>
       )}
     </div>

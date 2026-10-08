@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import type { BleLog } from "./bluetooth/ble-log";
 import {
   browserBluetooth,
   linkErrorOf,
@@ -17,7 +18,8 @@ import type { Sensors } from "./ride/sensors";
  * (the browser's chooser needs one), their readings handed to `sensors`,
  * their state — connected, finding their way back, lost — for the screen,
  * and let go when the page is left. Whether this browser has Bluetooth at
- * all is known only after the page has mounted.
+ * all is known only after the page has mounted. `log` is the diagnostics
+ * ring buffer (`?ble=log`); null costs nothing beyond this one check.
  */
 
 export type TrainerState = { link: TrainerLink; info: TrainerInfo; state: LinkState };
@@ -27,7 +29,7 @@ export type StrapState = { link: HeartRateLink; state: LinkState };
 const unchanging = () => () => {};
 const serverBluetooth = () => undefined;
 
-export function useDevices(sensors: Sensors) {
+export function useDevices(sensors: Sensors, log?: BleLog | null) {
   const bluetooth: BluetoothLike | null | undefined = useSyncExternalStore(
     unchanging,
     browserBluetooth,
@@ -41,6 +43,7 @@ export function useDevices(sensors: Sensors) {
     trainer: null,
     strap: null,
   });
+  const onLog = useMemo(() => (log ? (line: string) => log.add(line) : undefined), [log]);
 
   useEffect(() => {
     const current = links.current;
@@ -58,6 +61,7 @@ export function useDevices(sensors: Sensors) {
       const link = await TrainerLink.connect(bluetooth, {
         onReading: (reading, at) => sensors.fromTrainer(reading, at),
         onState: (state) => setTrainer((t) => (t && t.link === link ? { ...t, state } : t)),
+        onLog,
       });
       links.current.trainer?.close();
       links.current.trainer = link;
@@ -68,7 +72,7 @@ export function useDevices(sensors: Sensors) {
     } finally {
       setBusy(null);
     }
-  }, [bluetooth, busy, sensors]);
+  }, [bluetooth, busy, sensors, onLog]);
 
   const connectStrap = useCallback(async () => {
     if (!bluetooth || busy) return;
@@ -78,6 +82,7 @@ export function useDevices(sensors: Sensors) {
       const link = await HeartRateLink.connect(bluetooth, {
         onHeartRate: (bpm, at) => sensors.fromStrap(bpm, at),
         onState: (state) => setStrap((s) => (s && s.link === link ? { ...s, state } : s)),
+        onLog,
       });
       links.current.strap?.close();
       links.current.strap = link;
@@ -88,7 +93,7 @@ export function useDevices(sensors: Sensors) {
     } finally {
       setBusy(null);
     }
-  }, [bluetooth, busy, sensors]);
+  }, [bluetooth, busy, sensors, onLog]);
 
   return {
     /** Undefined until the page knows; null where the browser has none. */

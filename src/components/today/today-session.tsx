@@ -1,5 +1,5 @@
-import { Bike, MessageSquare } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { Bike, Clock, MessageSquare } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import { ComplianceMark, colourOf, COLOUR_STYLE } from "@/components/training/compliance-mark";
 import { durationText } from "@/components/training/duration";
 import { SportIcon } from "@/components/training/sport-icon";
@@ -10,12 +10,14 @@ import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { rideableStructure } from "@/modules/rulle/rideable";
 import { CompleteDialog } from "./complete-dialog";
+import { timePlaceText, type TimePlace } from "./time-place";
 
 /**
  * A session on today's page, large: what it is, how long, how it went —
  * and for the rider, until it is done, the big "Udført". A bike session
  * with steps can be ridden indoors in Rulle on the day (ADR 0033). The
- * title opens the whole session with its steps and comments.
+ * title opens the whole session with its steps and comments; when and
+ * where it starts stands under it, when the coach gave it (ADR 0058).
  */
 export function TodaySession({
   session,
@@ -23,7 +25,7 @@ export function TodaySession({
   href,
   canComplete,
 }: {
-  session: CalendarCard;
+  session: CalendarCard & TimePlace;
   today: string;
   href: string;
   canComplete: boolean;
@@ -31,13 +33,15 @@ export function TodaySession({
   const sports = useTranslations("training.sport");
   const duration = useTranslations("training.duration");
   const t = useTranslations("today.rider");
+  const locale = useLocale();
   const colour = colourOf(session, today);
   const done = session.activity !== null;
+  const when = timePlaceText(session, locale);
 
   return (
     <article
       className={cn(
-        "bg-card border-border flex flex-col gap-3 rounded-xl border border-l-4 p-4 shadow-[var(--surface-shadow)]",
+        "bg-card border-border flex flex-col gap-3 rounded-xl border border-l-4 p-4 shadow-surface",
         COLOUR_STYLE[colour].edge,
       )}
     >
@@ -56,6 +60,12 @@ export function TodaySession({
           </span>
           {session.plannedMinutes > 0 && (
             <span>{durationText(session.plannedMinutes, duration)}</span>
+          )}
+          {when && (
+            <span className="text-foreground flex items-center gap-1.5 font-medium">
+              <Clock aria-hidden className="size-3.5" />
+              {when}
+            </span>
           )}
           {session.commentCount > 0 && (
             <span className="flex items-center gap-1">

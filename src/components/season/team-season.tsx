@@ -28,7 +28,7 @@ export function TeamSeason({ rows, month }: { rows: TeamSeasonRow[]; month: numb
   if (rows.length === 0) return <EmptyState title={t("empty")} />;
 
   return (
-    <ul className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-[var(--surface-shadow)]">
+    <ul className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-surface">
       {rows.map((row) => {
         const so = row.toDate;
         return (

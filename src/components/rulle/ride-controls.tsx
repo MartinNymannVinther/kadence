@@ -27,7 +27,8 @@ import type { LinkState } from "./bluetooth/reconnect";
  * or higher, ERG on or off, the sound, the little map, the speed, nothing
  * but the rider and the land, full screen, and the end. Every control has
  * a key as well (`useRideKeys`), so a rider can reach a keyboard on the
- * handlebars rather than the screen.
+ * handlebars rather than the screen. The map, the speed and the land
+ * alone belong to Rulle's world, and are left out when it is (ADR 0057).
  */
 export function RideControls({
   title,
@@ -58,8 +59,8 @@ export function RideControls({
   canErg: boolean;
   connection: LinkState | null;
   muted: boolean;
-  mapShown: boolean;
-  speedShown: boolean;
+  mapShown?: boolean;
+  speedShown?: boolean;
   fullscreen: { on: boolean; available: boolean };
   onReconnect: () => void;
   onPause: () => void;
@@ -68,10 +69,10 @@ export function RideControls({
   onIntensity: (value: number) => void;
   onErg: (on: boolean) => void;
   onMute: () => void;
-  onMap: () => void;
-  onSpeed: () => void;
+  onMap?: () => void;
+  onSpeed?: () => void;
   /** Hides every number: nothing but the rider and the land. */
-  onBare: () => void;
+  onBare?: () => void;
   onFullscreen: () => void;
   onEnd: () => void;
 }) {
@@ -163,27 +164,33 @@ export function RideControls({
         >
           {muted ? <VolumeX /> : <Volume2 />}
         </Button>
-        <Button
-          size="icon-lg"
-          variant="outline"
-          aria-label={mapShown ? t("mapHide") : t("mapShow")}
-          aria-pressed={mapShown}
-          onClick={onMap}
-        >
-          <MapIcon />
-        </Button>
-        <Button
-          size="icon-lg"
-          variant="outline"
-          aria-label={speedShown ? t("speedHide") : t("speedShow")}
-          aria-pressed={speedShown}
-          onClick={onSpeed}
-        >
-          <Gauge />
-        </Button>
-        <Button size="icon-lg" variant="outline" aria-label={t("bare")} onClick={onBare}>
-          <EyeOff />
-        </Button>
+        {onMap && (
+          <Button
+            size="icon-lg"
+            variant="outline"
+            aria-label={mapShown ? t("mapHide") : t("mapShow")}
+            aria-pressed={Boolean(mapShown)}
+            onClick={onMap}
+          >
+            <MapIcon />
+          </Button>
+        )}
+        {onSpeed && (
+          <Button
+            size="icon-lg"
+            variant="outline"
+            aria-label={speedShown ? t("speedHide") : t("speedShow")}
+            aria-pressed={Boolean(speedShown)}
+            onClick={onSpeed}
+          >
+            <Gauge />
+          </Button>
+        )}
+        {onBare && (
+          <Button size="icon-lg" variant="outline" aria-label={t("bare")} onClick={onBare}>
+            <EyeOff />
+          </Button>
+        )}
         {fullscreen.available && (
           <Button
             size="icon-lg"

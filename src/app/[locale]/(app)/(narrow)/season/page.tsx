@@ -6,9 +6,11 @@ import { RiderSwitch } from "@/components/common/rider-switch";
 import { basisText } from "@/components/season/basis-text";
 import { CreatePlan } from "@/components/season/create-plan";
 import { DcuReference } from "@/components/season/dcu-reference";
+import { IntensityWeeks } from "@/components/season/intensity-weeks";
 import { ResetPlan } from "@/components/season/reset-plan";
 import { SeasonChart } from "@/components/season/season-chart";
 import { SeasonPlan } from "@/components/season/season-plan";
+import { TeamPlans } from "@/components/season/team-plans";
 import { TeamSeason } from "@/components/season/team-season";
 import { buttonVariants } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -19,10 +21,13 @@ import { todayInCopenhagen } from "@/core/dates";
 import { Link, redirect } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { monthHours, seasonStartYear, type ClassBasis } from "@/modules/dcu";
+import { intensityWeeks } from "@/modules/season/intensity";
 import { getSeasonPlan, riderClass } from "@/modules/season/plans";
+import { teamPlanGaps } from "@/modules/season/team-plans";
 import { seasonVolumes, teamSeasonVolumes } from "@/modules/season/volumes";
 import { whoAmI } from "@/modules/team/access";
 import { getRiders } from "@/modules/team/riders";
+import { getTeamSettings } from "@/modules/team/settings";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("season");
@@ -38,7 +43,9 @@ type Search = Promise<Record<string, string | string[] | undefined>>;
  * sees their own, a parent their child's without a pen; `?season=` moves a
  * season back or forward — the coming one is planned in September. A
  * coach's `?view=team` shows every rider's month and season so far in the
- * four numbers (ADR 0040).
+ * four numbers (ADR 0040), and one press makes a plan for every rider who
+ * has none this season. In this season, the weeks around today show
+ * how the bike sessions spread over three zones (ADR 0053).
  */
 export default async function SeasonPage({ searchParams }: { searchParams: Search }) {
   const ctx = await getOrgContext();
@@ -78,15 +85,20 @@ export default async function SeasonPage({ searchParams }: { searchParams: Searc
   }
 
   if (me.isCoach && param("view") === "team") {
-    const volumes = await teamSeasonVolumes(
-      ctx,
-      visible.map((r) => r.id),
-      today,
-    );
+    const [volumes, gaps, settings] = await Promise.all([
+      teamSeasonVolumes(
+        ctx,
+        visible.map((r) => r.id),
+        today,
+      ),
+      teamPlanGaps(ctx, current),
+      getTeamSettings(ctx),
+    ]);
     return (
       <div className="flex min-w-0 max-w-4xl flex-col gap-7">
         <PageHeader title={t("title")} subtitle={t("team.subtitle")} />
         <ViewSwitch team riderHref="/season" />
+        <TeamPlans gaps={gaps} seasonStartYear={current} guided={settings.guidance !== "none"} />
         <TeamSeason
           month={Number(today.slice(5, 7))}
           rows={visible.flatMap((r) => {
@@ -104,9 +116,11 @@ export default async function SeasonPage({ searchParams }: { searchParams: Searc
     visible.find((r) => r.id === param("rider")) ??
     visible.find((r) => r.id === me.rider?.id) ??
     visible[0]!;
-  const [plan, volumes] = await Promise.all([
+  const [plan, volumes, intensity] = await Promise.all([
     getSeasonPlan(ctx, rider.id, season),
     seasonVolumes(ctx, rider.id, season, today),
+    // The weeks around today belong to this season only (ADR 0053).
+    season === current ? intensityWeeks(ctx, rider.id, today) : null,
   ]);
   // The four numbers' two calendar sides, month by month (ADR 0040).
   const tenth = (v: number) => Math.round(v * 10) / 10;
@@ -118,7 +132,12 @@ export default async function SeasonPage({ searchParams }: { searchParams: Searc
       rider: visible.length > 1 ? (query.rider ?? rider.id) : null,
       season: (query.season ?? season) === current ? null : String(query.season ?? season),
     });
-  const dcu = plan ? plan.months.map((m) => monthHours(plan.basis as ClassBasis, m.month)) : [];
+  // DCU's number beside the plan, when the team plans by DCU (ADR 0049).
+  const dcu =
+    plan && plan.guided
+      ? plan.months.map((m) => monthHours(plan.basis as ClassBasis, m.month))
+      : null;
+  const guided = plan ? plan.guided : (await getTeamSettings(ctx)).guidance !== "none";
   const tBasis = (k: "basis", v: Record<string, string | number>) => t(k, v);
 
   return (
@@ -179,17 +198,17 @@ export default async function SeasonPage({ searchParams }: { searchParams: Searc
                   {t("chart.title")}
                 </h2>
                 <p className="text-meta text-2sm">
-                  {t("basisNow", { basis: basisText(plan.basis, tBasis) })}
+                  {t(guided ? "basisNow" : "basisOwn", { basis: basisText(plan.basis, tBasis) })}
                 </p>
               </div>
-              {canWrite && <ResetPlan planId={plan.id} basis={plan.basis} />}
+              {canWrite && guided && <ResetPlan planId={plan.id} basis={plan.basis} />}
             </div>
-            <div className="border-border bg-card rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5">
+            <div className="border-border bg-card rounded-xl border p-4 shadow-surface sm:p-5">
               <SeasonChart
                 months={plan.months.map((m, i) => ({
                   month: m.month,
                   planned: m.hours,
-                  dcu: dcu[i] ?? 0,
+                  dcu: dcu ? (dcu[i] ?? 0) : null,
                   scheduled: scheduled.find((r) => r.month === m.month)?.hours ?? 0,
                   ridden: ridden.find((r) => r.month === m.month)?.hours ?? 0,
                 }))}
@@ -215,23 +234,30 @@ export default async function SeasonPage({ searchParams }: { searchParams: Searc
           riderId={rider.id}
           seasonStartYear={season}
           riderBasis={riderClass(rider, season).basis}
+          guided={guided}
         />
       ) : (
         <EmptyState title={t("none.title")} hint={t("none.readOnly")} />
       )}
 
-      <section
-        aria-labelledby="season-reference"
-        className="border-border flex flex-col gap-4 border-t pt-6"
-      >
-        <div className="flex flex-col gap-1">
-          <h2 id="season-reference" className="text-lg font-semibold">
-            {t("reference.title")}
-          </h2>
-          <p className="text-meta text-2sm leading-relaxed">{t("reference.body")}</p>
-        </div>
-        <DcuReference />
-      </section>
+      {intensity && (
+        <IntensityWeeks data={intensity} today={today} guided={guided} isCoach={me.isCoach} />
+      )}
+
+      {guided && (
+        <section
+          aria-labelledby="season-reference"
+          className="border-border flex flex-col gap-4 border-t pt-6"
+        >
+          <div className="flex flex-col gap-1">
+            <h2 id="season-reference" className="text-lg font-semibold">
+              {t("reference.title")}
+            </h2>
+            <p className="text-meta text-2sm leading-relaxed">{t("reference.body")}</p>
+          </div>
+          <DcuReference />
+        </section>
+      )}
     </div>
   );
 }

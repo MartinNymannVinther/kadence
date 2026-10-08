@@ -18,6 +18,7 @@ import { askAi } from "@/modules/ai/read-client";
 import type { AiFailure } from "@/modules/ai/wire";
 import type { WeekDraft } from "@/modules/assist/week-draft";
 import { CLASS_BASES, DCU_TOTALS_2025, type ClassBasis } from "@/modules/dcu";
+import { Thinking } from "@/components/assist/thinking";
 import { newKey, type PlanItem } from "./types";
 
 /**
@@ -32,12 +33,15 @@ export function GroupWeekAi({
   bases,
   templates,
   onUse,
+  defaultOpen = false,
 }: {
   monday: string;
   /** The class-years of the riders the week is for. */
   bases: ClassBasis[];
   templates: TemplateOption[];
   onUse: (items: PlanItem[]) => void;
+  /** Open on arrival, when the planner was opened for the AI ("Foreslå ugen"). */
+  defaultOpen?: boolean;
 }) {
   const t = useTranslations("weekPlan.ai");
   const season = useTranslations("season");
@@ -47,7 +51,7 @@ export function GroupWeekAi({
   const lightest = [...bases].sort(
     (a, b) => DCU_TOTALS_2025[a].novSep - DCU_TOTALS_2025[b].novSep,
   )[0];
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const [basis, setBasis] = useState<ClassBasis>(lightest ?? "U17-1");
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
@@ -180,11 +184,7 @@ export function GroupWeekAi({
           {t("close")}
         </Button>
       </div>
-      {busy && (
-        <p className="text-meta text-2sm" role="status">
-          {t("thinking")}
-        </p>
-      )}
+      {busy && <Thinking>{t("thinking")}</Thinking>}
       {error && <AiFailureText error={error} />}
       {result && (
         <ProposalFrame

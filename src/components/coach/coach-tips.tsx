@@ -77,7 +77,7 @@ export function CoachTips({ tips }: { tips: CoachTip[] }) {
         {shown.map((tip) => (
           <li
             key={tip.key}
-            className="border-border bg-card flex items-start gap-3 rounded-xl border p-3.5 shadow-[var(--surface-shadow)]"
+            className="border-border bg-card flex items-start gap-3 rounded-xl border p-3.5 shadow-surface"
           >
             <Lightbulb aria-hidden className="text-chart-4 mt-0.5 size-4 shrink-0" />
             <div className="flex min-w-0 flex-1 flex-col gap-1">

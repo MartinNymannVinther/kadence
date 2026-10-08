@@ -36,7 +36,7 @@ export function CheatOverlay({
     <button
       type="button"
       aria-label={label}
-      className="bg-foreground/80 text-sticky grid size-16 touch-none place-items-center rounded-2xl shadow-[var(--surface-shadow)] select-none active:scale-95 [&_svg]:size-9"
+      className="bg-foreground/80 text-sticky grid size-16 touch-none place-items-center rounded-2xl shadow-surface select-none active:scale-95 [&_svg]:size-9"
       onPointerDown={(event) => {
         event.currentTarget.setPointerCapture(event.pointerId);
         hold(axis, value);

@@ -42,7 +42,7 @@ export function CoachToday({
             {t("summary", { done: doneCount, total: sessions.length })}
           </p>
         </div>
-        <ul className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-[var(--surface-shadow)]">
+        <ul className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-surface">
           {riders.map((rider) => {
             const mine = sessions.filter((s) => s.riderId === rider.id);
             return (

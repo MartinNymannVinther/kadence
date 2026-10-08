@@ -69,7 +69,7 @@ export function StepEditor({
       </div>
       <TargetField target={step.target} onChange={(target) => onChange({ ...step, target })} />
       <details className="group" open={hasCadence || Boolean(step.label)}>
-        <summary className="text-meta hover:text-foreground focus-visible:outline-ring flex min-h-11 cursor-pointer items-center rounded-sm text-xs outline-none select-none focus-visible:outline-2 sm:min-h-0">
+        <summary className="text-meta hover:text-foreground focus-visible:outline-ring flex min-h-11 cursor-pointer items-center rounded-sm text-xs outline-none select-none focus-visible:outline-2 focus-visible:outline-solid sm:min-h-0">
           {t("more")}
         </summary>
         <div className="mt-2 grid gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,2fr)]">

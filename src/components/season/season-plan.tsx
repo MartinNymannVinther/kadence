@@ -71,12 +71,18 @@ export function SeasonPlan({
     <form onSubmit={save} className="flex flex-col gap-3">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-2sm">
-          {t("totals", {
-            plan: total(shown.map((m) => m.hours)),
-            dcu: total(plan.dcu),
-            scheduled: total(scheduled.map((r) => r.hours)),
-            ridden: total(ridden.map((r) => r.hours)),
-          })}
+          {plan.dcu
+            ? t("totals", {
+                plan: total(shown.map((m) => m.hours)),
+                dcu: total(plan.dcu),
+                scheduled: total(scheduled.map((r) => r.hours)),
+                ridden: total(ridden.map((r) => r.hours)),
+              })
+            : t("totalsOwn", {
+                plan: total(shown.map((m) => m.hours)),
+                scheduled: total(scheduled.map((r) => r.hours)),
+                ridden: total(ridden.map((r) => r.hours)),
+              })}
         </p>
         {canWrite && !editing && (
           <Button type="button" variant="outline" className="max-sm:h-11" onClick={start}>
@@ -85,20 +91,20 @@ export function SeasonPlan({
           </Button>
         )}
       </div>
-      <ol className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-[var(--surface-shadow)]">
+      <ol className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-surface">
         {shown.map((month, i) =>
           editing ? (
             <MonthEditor
               key={month.month}
               month={month}
-              dcu={plan.dcu[i] ?? 0}
+              dcu={plan.dcu ? (plan.dcu[i] ?? 0) : null}
               onChange={(next) => setMonths((all) => all.map((m, j) => (j === i ? next : m)))}
             />
           ) : (
             <MonthRow
               key={month.month}
               month={month}
-              dcu={plan.dcu[i] ?? 0}
+              dcu={plan.dcu ? (plan.dcu[i] ?? 0) : null}
               ridden={riddenOf(month.month)}
               scheduled={scheduledOf(month.month)}
             />
@@ -120,7 +126,7 @@ export function SeasonPlan({
               onChange={(e) => setNote(e.target.value)}
             />
           </div>
-          <div className="bg-background/95 sticky bottom-0 flex flex-wrap gap-2 py-2 backdrop-blur">
+          <div className="bg-background/95 sticky bottom-[var(--bottom-bar,0px)] flex flex-wrap gap-2 py-2 backdrop-blur">
             <Button type="submit" disabled={pending} className="max-sm:h-11 max-sm:flex-1">
               {t("save")}
             </Button>

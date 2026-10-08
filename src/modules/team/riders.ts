@@ -4,6 +4,7 @@ import { Refused } from "@/core/action";
 import { riders, type RiderRow } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
 import { requireCoach, whoAmIIn } from "./access";
+import { BIRTH_YEAR_MIN, birthYearMax } from "./birth-year";
 
 /**
  * The riders on a team. A coach adds them, with or without an account yet;
@@ -16,11 +17,7 @@ const thisYear = () => new Date().getFullYear();
 
 export const RiderInput = z.object({
   name: z.string().trim().min(1).max(120),
-  birthYear: z.coerce
-    .number()
-    .int()
-    .min(1940)
-    .max(thisYear() - 8),
+  birthYear: z.coerce.number().int().min(BIRTH_YEAR_MIN).max(birthYearMax(thisYear())),
   sex: z.enum(["female", "male"]).nullable().default(null),
   categoryOverride: z
     .enum(["U17-1", "U17-2", "U19-1", "U19-2", "U23-1", "U23-2", "U23-3", "U23-4", "senior"])
@@ -67,14 +64,21 @@ export async function createRider(
   ctx: OrgContext,
   input: z.infer<typeof RiderInput> & { userId?: string | null },
 ): Promise<{ id: string }> {
-  return withOrgContext(ctx, async (tx) => {
-    await requireCoach(tx, ctx);
-    const [row] = await tx
-      .insert(riders)
-      .values({ orgId: ctx.orgId, ...input, userId: input.userId ?? null })
-      .returning({ id: riders.id });
-    return row!;
-  });
+  return withOrgContext(ctx, (tx) => createRiderIn(tx, ctx, input));
+}
+
+/** The same, inside a transaction a caller already holds — a whole team at once (bulk-invite.ts). */
+export async function createRiderIn(
+  tx: AppTransaction,
+  ctx: OrgContext,
+  input: z.infer<typeof RiderInput> & { userId?: string | null },
+): Promise<{ id: string }> {
+  await requireCoach(tx, ctx);
+  const [row] = await tx
+    .insert(riders)
+    .values({ orgId: ctx.orgId, ...input, userId: input.userId ?? null })
+    .returning({ id: riders.id });
+  return row!;
 }
 
 /** The coach's edit: name, birth year and class. */
@@ -147,10 +151,17 @@ export async function attachRiderInvitation(
   riderId: string,
   invitationId: string,
 ): Promise<void> {
-  await withOrgContext(ctx, async (tx) => {
-    await requireCoach(tx, ctx);
-    await tx.update(riders).set({ invitationId }).where(eq(riders.id, riderId));
-  });
+  await withOrgContext(ctx, (tx) => attachRiderInvitationIn(tx, ctx, riderId, invitationId));
+}
+
+export async function attachRiderInvitationIn(
+  tx: AppTransaction,
+  ctx: OrgContext,
+  riderId: string,
+  invitationId: string,
+): Promise<void> {
+  await requireCoach(tx, ctx);
+  await tx.update(riders).set({ invitationId }).where(eq(riders.id, riderId));
 }
 
 /**

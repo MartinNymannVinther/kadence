@@ -54,7 +54,7 @@ export function UploadKeysCard({
   return (
     <section
       aria-labelledby="upload-keys"
-      className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5"
+      className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-surface sm:p-5"
     >
       <div className="flex flex-col gap-1.5">
         <h3

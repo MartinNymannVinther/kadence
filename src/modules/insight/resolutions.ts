@@ -8,6 +8,8 @@ import { FLAG_KINDS } from "@/modules/load";
 import { requireCoach } from "@/modules/team/access";
 import { gather } from "./gather";
 import { riderInsight, SERIES_DAYS, WARMUP_DAYS } from "./rider";
+import { flagWindow, readIntensity } from "@/modules/season/intensity";
+import { teamPlanning } from "@/modules/team/settings";
 
 /**
  * A coach's "afklaret" on a guardrail flag (ADR 0026). The flag itself is
@@ -46,7 +48,20 @@ export async function resolveFlag(
     });
     const rider = data.riders[0];
     if (!rider) throw new Refused("notFound");
-    const insight = riderInsight(rider, data.activities, data.sessions, data.checkins, today, true);
+    const { paradigm, lowIntensityFirst } = await teamPlanning(tx, ctx.orgId);
+    const window = flagWindow(today);
+    const insight = riderInsight(
+      rider,
+      data.activities,
+      data.sessions,
+      data.checkins,
+      today,
+      true,
+      [],
+      [],
+      paradigm,
+      lowIntensityFirst ? await readIntensity(tx, [rider.id], window.from, window.to) : null,
+    );
     const firing = insight.flags.filter((f) => f.kind === input.kind);
     if (firing.length === 0) throw new Refused("notFound", "flagGone");
     const seenNow = {

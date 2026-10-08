@@ -10,8 +10,10 @@ import {
   pgTable,
   smallint,
   text,
+  time,
   timestamp,
   uniqueIndex,
+  type AnyPgColumn,
 } from "drizzle-orm/pg-core";
 import { domainId, invitations, users } from "./foundation";
 import { tenant, timestamps } from "./shared";
@@ -40,10 +42,25 @@ export const teamSettings = pgTable(
     aiOnRiderData: boolean("ai_on_rider_data").notNull().default(false),
     /** Whether weight may be recorded for riders under 19. Off by default (docs/adr/0013). */
     allowYouthWeight: boolean("allow_youth_weight").notNull().default(false),
+    /**
+     * The model the team plans by: DCU's 2025 recommendations, or none
+     * (docs/adr/0049). Coaches change it whenever they like.
+     */
+    guidance: text("guidance").notNull().default("dcu-2025"),
+    /** Whether the club keeps a club championship in Kadence (docs/adr/0051). Off by default. */
+    clubChampionship: boolean("club_championship").notNull().default(false),
+    /**
+     * Whether the team measures its sessions against the intensity profile
+     * "Lav intensitet først" on top of its hours (docs/adr/0053). Off by default.
+     */
+    lowIntensityFirst: boolean("low_intensity_first").notNull().default(false),
     updatedBy: text("updated_by").references(() => users.id, { onDelete: "set null" }),
     ...timestamps,
   },
-  (t) => [check("team_settings_kind", sql`${t.teamKind} in ('U17','U19','U23','mixed')`)],
+  (t) => [
+    check("team_settings_kind", sql`${t.teamKind} in ('U17','U19','U23','mixed')`),
+    check("team_settings_guidance", sql`${t.guidance} in ('dcu-2025','none')`),
+  ],
 );
 
 /**
@@ -247,7 +264,7 @@ export const flagResolutions = pgTable(
     index("flag_resolutions_org_week_idx").on(t.orgId, t.weekMonday),
     check(
       "flag_resolutions_kind",
-      sql`${t.kind} in ('hours_above_corridor','hours_below_corridor','ramp','longest_ride','strength_spacing','compliance','wellbeing_talk','wellbeing_help','pain','sleep_short','sleep_below_minimum')`,
+      sql`${t.kind} in ('hours_above_corridor','hours_below_corridor','ramp','longest_ride','strength_spacing','compliance','wellbeing_talk','wellbeing_help','pain','sleep_short','sleep_below_minimum','mid_zone')`,
     ),
     check("flag_resolutions_severity", sql`${t.severity} in ('info','warn','alert')`),
     check("flag_resolutions_monday", sql`extract(isodow from ${t.weekMonday}) = 1`),
@@ -305,10 +322,21 @@ export const workoutTemplates = pgTable(
     sourceKey: text("source_key"),
     archived: boolean("archived").notNull().default(false),
     createdBy: text("created_by").references(() => users.id, { onDelete: "set null" }),
+    /**
+     * A rider's own session (docs/adr/0050): null for the team's library.
+     * The rider writes it; the coaches and, when the rider shares training,
+     * the parents read it (drizzle/0021).
+     */
+    riderId: text("rider_id").references(() => riders.id, { onDelete: "cascade" }),
+    /** The rider's session a coach took into the team's library, when it is a copy of one. */
+    copiedFrom: text("copied_from").references((): AnyPgColumn => workoutTemplates.id, {
+      onDelete: "set null",
+    }),
     ...timestamps,
   },
   (t) => [
     index("workout_templates_org_idx").on(t.orgId, t.sport),
+    index("workout_templates_rider_idx").on(t.orgId, t.riderId),
     uniqueIndex("workout_templates_source_key_uq")
       .on(t.orgId, t.sourceKey)
       .where(sql`${t.sourceKey} is not null`),
@@ -341,7 +369,11 @@ export const trainingBlocks = pgTable(
   ],
 );
 
-/** One session of a block: a template on a day (0 is the first Monday). */
+/**
+ * One session of a block on a day (0 is the first Monday): a template from
+ * the library, or a session built in the week planner and kept in the block
+ * itself (docs/adr/0059), which carries its own sport, title and steps.
+ */
 export const trainingBlockItems = pgTable(
   "training_block_items",
   {
@@ -350,15 +382,28 @@ export const trainingBlockItems = pgTable(
     blockId: text("block_id")
       .notNull()
       .references(() => trainingBlocks.id, { onDelete: "cascade" }),
-    templateId: text("template_id")
-      .notNull()
-      .references(() => workoutTemplates.id, { onDelete: "cascade" }),
+    templateId: text("template_id").references(() => workoutTemplates.id, {
+      onDelete: "cascade",
+    }),
+    /** bike | strength | other, for a session kept in the block. */
+    sport: text("sport"),
+    title: text("title"),
+    description: text("description").notNull().default(""),
+    structure: jsonb("structure"),
+    plannedMinutes: smallint("planned_minutes"),
+    startTime: time("start_time"),
+    meetingPlace: text("meeting_place").notNull().default(""),
     day: smallint("day").notNull(),
     sort: smallint("sort").notNull().default(0),
   },
   (t) => [
     index("training_block_items_block_idx").on(t.orgId, t.blockId, t.day),
     check("training_block_items_day", sql`${t.day} between 0 and 83`),
+    check(
+      "training_block_items_session",
+      sql`${t.templateId} is not null or (${t.sport} is not null and ${t.title} is not null and ${t.structure} is not null)`,
+    ),
+    check("training_block_items_meeting_place", sql`char_length(${t.meetingPlace}) <= 120`),
   ],
 );
 

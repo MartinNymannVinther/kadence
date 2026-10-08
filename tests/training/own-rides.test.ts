@@ -1,0 +1,120 @@
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import type { Pool } from "pg";
+import { addDaysIso } from "@/core/dates";
+import { listOwnRides, RIDES_PAGE } from "@/modules/training/own-rides";
+import { adminPool } from "../helpers/db";
+import { insertSql, seedPerson } from "../helpers/rows";
+
+/**
+ * "Dine ture" (docs/backlog.md P2-02): a rider's own rides, the newest
+ * first, twenty at a time after a cursor of start and id. Always the
+ * caller's own — a teammate gets their own rides and nothing else, a
+ * cursor from someone else's list included — and a coach without a rider
+ * row gets a refusal, not the team's rides.
+ */
+
+const ORG = "org_own_rides";
+const COACH = { orgId: ORG, userId: "user_own_rides_coach" };
+const ANNA = { orgId: ORG, userId: "user_own_rides_anna" };
+const BO = { orgId: ORG, userId: "user_own_rides_bo" };
+const FIRST = "2026-09-01";
+const TODAY = "2026-10-07";
+
+let admin: Pool;
+
+async function insert(table: string, values: Record<string, unknown>) {
+  const q = insertSql(table, { org_id: ORG, ...values });
+  await admin.query(q.text, q.values);
+}
+
+const ride = (id: string, riderId: string, startedAt: string, values = {}) =>
+  insert("activities", {
+    id,
+    rider_id: riderId,
+    started_at: startedAt,
+    on_date: startedAt.slice(0, 10),
+    sport: "bike",
+    moving_seconds: 3600,
+    distance_m: 30000,
+    source: "fit",
+    ...values,
+  });
+
+beforeAll(async () => {
+  admin = adminPool();
+  await seedPerson(admin, ORG, COACH.userId, "owner");
+  for (const p of [ANNA, BO]) await seedPerson(admin, ORG, p.userId, "member");
+  await insert("riders", { id: "or_anna", user_id: ANNA.userId, name: "Anna", birth_year: 2010 });
+  await insert("riders", { id: "or_bo", user_id: BO.userId, name: "Bo", birth_year: 2010 });
+
+  // Twenty-three of Anna's rides on days in a row, one each morning.
+  for (let i = 0; i < 23; i++) {
+    const day = addDaysIso(FIRST, i);
+    await ride(`or_a${String(i).padStart(2, "0")}`, "or_anna", `${day}T08:00:00Z`);
+  }
+  // Two more one evening, within one millisecond — microseconds apart —
+  // where the first page ends: nineteen rides are newer.
+  await ride("or_late_x", "or_anna", "2026-09-05T17:00:00.123456Z");
+  await ride("or_late_y", "or_anna", "2026-09-05T17:00:00.123789Z");
+  // The evening ride of 1 October was planned as an hour and ridden as one.
+  await ride("or_planned", "or_anna", "2026-10-01T18:00:00Z", { title: "" });
+  await insert("planned_sessions", {
+    rider_id: "or_anna",
+    on_date: "2026-10-01",
+    sport: "bike",
+    title: "Intervaller",
+    planned_minutes: 60,
+    activity_id: "or_planned",
+  });
+  await ride("or_bo1", "or_bo", "2026-10-02T09:00:00Z");
+});
+
+afterAll(async () => {
+  await admin.end();
+});
+
+describe("Dine ture", () => {
+  it("lists the rider's twenty newest rides, then the rest after the cursor", async () => {
+    const first = await listOwnRides(ANNA, { today: TODAY });
+    expect(first.rides).toHaveLength(RIDES_PAGE);
+    expect(first.rides[0]!.id).toBe("or_planned");
+    expect(first.next).not.toBeNull();
+    const second = await listOwnRides(ANNA, { before: first.next!, today: TODAY });
+    expect(second.next).toBeNull();
+    const ids = [...first.rides, ...second.rides].map((r) => r.id);
+    expect(ids).toHaveLength(26);
+    expect(new Set(ids).size).toBe(26);
+    expect(ids.at(-1)).toBe("or_a00");
+    const dates = [...first.rides, ...second.rides].map((r) => r.onDate);
+    expect([...dates].sort().reverse()).toEqual(dates);
+  });
+
+  it("splits two rides a microsecond apart across the page break, skipping neither", async () => {
+    const first = await listOwnRides(ANNA, { today: TODAY });
+    expect(first.rides.at(-1)!.id).toBe("or_late_y");
+    const second = await listOwnRides(ANNA, { before: first.next!, today: TODAY });
+    expect(second.rides[0]!.id).toBe("or_late_x");
+  });
+
+  it("carries the title, the distance and how close the ride came to its session", async () => {
+    const { rides } = await listOwnRides(ANNA, { today: TODAY });
+    const planned = rides.find((r) => r.id === "or_planned")!;
+    expect(planned).toMatchObject({ title: "Intervaller", distanceM: 30000, colour: "green" });
+    expect(rides.find((r) => r.id === "or_late_y")!.colour).toBe("none");
+  });
+
+  it("gives a teammate their own rides and none of Anna's, even with Anna's cursor", async () => {
+    const own = await listOwnRides(BO, { today: TODAY });
+    expect(own.rides.map((r) => r.id)).toEqual(["or_bo1"]);
+    expect(own.next).toBeNull();
+    const first = await listOwnRides(ANNA, { today: TODAY });
+    const borrowed = await listOwnRides(BO, { before: first.next!, today: TODAY });
+    expect(borrowed.rides).toEqual([]);
+  });
+
+  it("refuses a coach who rides for nobody", async () => {
+    await expect(listOwnRides(COACH, { today: TODAY })).rejects.toMatchObject({
+      code: "forbidden",
+    });
+  });
+});

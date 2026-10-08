@@ -129,6 +129,12 @@ export const memberships = pgTable(
       .references(() => users.id, { onDelete: "cascade" }),
     role: text("role").notNull().default("member"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    /**
+     * When this person last made this workspace the active one, so a new
+     * login opens the club they used last (docs/adr/0048). Better Auth
+     * does not know the column; the hook in src/core/auth/auth.ts sets it.
+     */
+    lastActiveAt: timestamp("last_active_at", { withTimezone: true }),
   },
   (t) => [
     uniqueIndex("memberships_org_user_uq").on(t.organizationId, t.userId),

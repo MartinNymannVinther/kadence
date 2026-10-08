@@ -7,11 +7,11 @@ import { cn } from "@/lib/utils";
 import { dcuState, type Volume } from "@/modules/season/volume";
 
 /**
- * The four numbers on one bar (ADR 0040), drawn the same wherever they
- * stand — the calendar's week, the team's rows, the season's months. A
- * bullet bar: DCU's corridor as the band behind, the coach's goal as an
- * upright marker, the planned hours as an outline and the done hours
- * filling it. The bar is a picture of the numbers beside it, never the
+ * The four numbers on one bar (ADR 0040, named as in ADR 0062), drawn the
+ * same wherever they stand — the calendar's week, the team's rows, the
+ * season's months. A bullet bar: DCU's corridor as the band behind, the
+ * season plan as an upright marker, the hours put in the calendar as an
+ * outline and the hours ridden filling it. The bar is a picture of the numbers beside it, never the
  * only place they are: every value is also written out, with a key drawn
  * like its mark.
  */
@@ -107,7 +107,8 @@ export function VolumeBar({
         <p aria-hidden className="text-xs font-medium tabular-nums">
           {t("compact", { done: h(volume.done), planned: h(volume.planned) })}
         </p>
-        <p aria-hidden className="text-meta truncate text-2xs tabular-nums">
+        {/* Two short items that wrap onto two lines in a narrow column rather than cut off. */}
+        <p aria-hidden className="text-meta flex flex-wrap gap-x-2.5 text-2xs tabular-nums">
           {[
             volume.goal !== null ? t("goalShort", { hours: h(volume.goal) }) : null,
             dcu
@@ -117,7 +118,11 @@ export function VolumeBar({
                 : null,
           ]
             .filter(Boolean)
-            .join(" · ")}
+            .map((item) => (
+              <span key={item} className="whitespace-nowrap">
+                {item}
+              </span>
+            ))}
         </p>
         <span className="sr-only">{said}</span>
       </div>
@@ -134,10 +139,11 @@ export function VolumeBar({
         ? t("toGoal.on")
         : t(off > 0 ? "toGoal.over" : "toGoal.under", { hours: h(Math.abs(off)) }),
   ].filter(Boolean);
+  // In the order the season page says them: Sæsonplan · Lagt ind · Kørt · DCU.
   const items = [
-    { key: "done", value: t("hours", { hours: h(volume.done) }) },
-    { key: "planned", value: t("hours", { hours: h(volume.planned) }) },
     { key: "goal", value: goalText },
+    { key: "planned", value: t("hours", { hours: h(volume.planned) }) },
+    { key: "done", value: t("hours", { hours: h(volume.done) }) },
     { key: "dcu", value: dcuText },
   ] as const;
 

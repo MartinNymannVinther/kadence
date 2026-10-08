@@ -63,6 +63,17 @@ const TABLES: Array<{ table: string; row: (s: string) => Record<string, unknown>
     table: "training_block_items",
     row: (s) => ({ block_id: `blk_${s}`, template_id: `tpl_${s}`, day: 0 }),
   },
+  // The team's own exercises and programmes (drizzle/0032); tests/rls/team-exercises.
+  {
+    table: "team_exercises",
+    row: (s) => ({ name: `Øvelse ${s}`, group: "core", dose: {}, how: "x", pose: {} }),
+  },
+  { table: "team_programs", row: (s) => ({ name: `Program ${s}`, parts: [] }) },
+  // The week planner's shared draft, the coaches' (drizzle/0035); tests/rls/week-plan-drafts.
+  {
+    table: "week_plan_drafts",
+    row: () => ({ week_monday: DAY, payload: { riderIds: [], items: [] } }),
+  },
   {
     table: "activities",
     row: (s) => ({
@@ -151,6 +162,14 @@ const TABLES: Array<{ table: string; row: (s: string) => Record<string, unknown>
       user_id: `user_prod_${s === "x" ? "a" : s}`,
       created_by: `user_prod_${s === "x" ? "a" : s}`,
       expires_at: `${DAY}T09:00:00Z`,
+    }),
+  },
+  {
+    // A browser's reminders (ADR 0060); its owner's alone, tests/push/isolation.
+    table: "push_subscriptions",
+    row: (s) => ({
+      user_id: `user_prod_${s === "x" ? "a" : s}`,
+      endpoint: `https://fcm.googleapis.com/fcm/send/prod-${s}`,
     }),
   },
   { table: "ai_calls", row: () => ({ kind: "week_draft" }) },
@@ -262,6 +281,10 @@ describe("a row can only name rows of its own team (drizzle/0003)", () => {
       },
     ],
     ["a check-in for B's rider", { table: "checkins", rider_id: "rider_b", on_date: "2026-11-03" }],
+    [
+      "a week plan draft for B's rider",
+      { table: "week_plan_drafts", rider_id: "rider_b", week_monday: DAY, payload: {} },
+    ],
     [
       "an activity for B's rider",
       {

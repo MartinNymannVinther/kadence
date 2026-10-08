@@ -38,7 +38,7 @@ export function CheatPanel({
   return (
     <section
       aria-label={t("title")}
-      className="bg-foreground/90 text-background border-sticky/70 flex flex-wrap items-center gap-x-6 gap-y-2 rounded-xl border-2 px-4 py-3 shadow-[var(--surface-shadow)] sm:px-5 lg:px-6 lg:py-4"
+      className="bg-foreground/90 text-background border-sticky/70 flex flex-wrap items-center gap-x-6 gap-y-2 rounded-xl border-2 px-4 py-3 shadow-surface sm:px-5 lg:px-6 lg:py-4"
     >
       <span className="text-sticky text-sm font-black tracking-[0.25em] uppercase">
         {t("badge")}

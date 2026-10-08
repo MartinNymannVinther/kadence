@@ -8,6 +8,8 @@ import { withOrgContext } from "@/core/db/tenant";
 import { listPendingInvitations } from "@/core/team/service";
 import { redirect } from "@/i18n/navigation";
 import { currentRole, listMembers } from "@/modules/export/workspace";
+import { orgImageUrls } from "@/modules/team/images";
+import { ClubImages } from "@/components/team/club-images";
 import { DeleteWorkspaceCard } from "./delete-workspace-card";
 import { MembersAdmin } from "./members-admin";
 
@@ -45,8 +47,9 @@ export default async function WorkspaceSettingsPage() {
   });
   const members = await listMembers(context);
   const role = (await currentRole(context)) ?? "member";
-  const invitations =
-    role === "owner" || role === "admin" ? await listPendingInvitations(context.orgId) : [];
+  const isCoach = role === "owner" || role === "admin";
+  const invitations = isCoach ? await listPendingInvitations(context.orgId) : [];
+  const images = await orgImageUrls(context);
 
   return (
     <div className="flex max-w-3xl flex-col gap-5">
@@ -62,6 +65,8 @@ export default async function WorkspaceSettingsPage() {
             : t("subtitle")}
         </p>
       </div>
+
+      <ClubImages images={images} canEdit={isCoach} />
 
       <MembersAdmin
         members={members}

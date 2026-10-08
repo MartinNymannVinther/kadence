@@ -31,8 +31,13 @@ export const metadata: Metadata = {
   icons: { apple: "/apple-touch-icon.png" },
 };
 
-/** The browser's own chrome in 2a's paper, light and dark (src/app/theme.css). */
+/**
+ * The browser's own chrome in 2a's paper, light and dark (src/app/theme.css).
+ * `cover` lets the page reach under a phone's home indicator, so the bottom
+ * bar can stand on the safe area rather than beside it (ADR 0061).
+ */
 export const viewport: Viewport = {
+  viewportFit: "cover",
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#f7f5f1" },
     { media: "(prefers-color-scheme: dark)", color: "#141210" },

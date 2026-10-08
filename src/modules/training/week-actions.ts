@@ -3,7 +3,8 @@
 import { z } from "zod";
 import { runAction } from "@/core/action";
 import { copyWeek, CopyWeekInput, previewCopyWeek } from "./week-copy";
-import { applyWeekPlan, loadRiderWeek, previewWeekPlan, WeekPlanInput } from "./week-plan";
+import { applyWeekPlan, previewWeekPlan, WeekPlanInput } from "./week-plan";
+import { loadPreviousWeek } from "./week-plan-load";
 
 /** Planning a whole week at once: the calendar and today's page are refreshed after. */
 
@@ -25,11 +26,15 @@ export async function applyWeekPlanAction(raw: unknown) {
   return runAction(raw, WeekPlanInput, applyWeekPlan, PATHS);
 }
 
-export async function loadRiderWeekAction(raw: unknown) {
+/** "Start fra: Sidste uge" in the planner (ADR 0059): nothing is written. */
+export async function loadPreviousWeekAction(raw: unknown) {
   return runAction(
     raw,
-    z.object({ riderId: z.string().min(1).max(100), monday: z.iso.date() }),
-    loadRiderWeek,
+    z.object({
+      riderIds: z.array(z.string().min(1).max(100)).min(1).max(60),
+      monday: z.iso.date(),
+    }),
+    loadPreviousWeek,
     [],
   );
 }

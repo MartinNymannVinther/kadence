@@ -275,6 +275,18 @@ describe("rls coverage (guards future tables)", () => {
     "access_invitations",
     // Throwaway by definition, deleted whole when it expires.
     "demo_workspaces",
+    // Where a coach last read a thread in Trænerrummet (ADR 0052): their
+    // own marker, rewritten on every visit, not something anybody owns.
+    "community_reads",
+    // What the reminder run has told a browser (drizzle/0038, docs/adr/0060):
+    // technical timestamps the job writes on every reminder, how far the
+    // news it told reached and the day of the last check-in or week
+    // reminder. No personal data beyond whose subscription it is, which the
+    // audited push_subscriptions already says, and no person changes them;
+    // audited, they filled the trail with a row per reminder. Turning
+    // reminders on, changing them and turning them off stay audited, and
+    // tests/push/isolation.test.ts proves both.
+    "push_runs",
   ];
 
   it("every domain table has an audit trigger", async () => {
@@ -342,8 +354,20 @@ describe("rls coverage (guards future tables)", () => {
     // true or false about the caller in the active workspace, and only that.
     "app_can_read_rider",
     "app_can_write_rider",
+    // Whether the active workspace is a demo, for Trænerrummet's rooms
+    // (drizzle/0025, docs/adr/0054): the caller's own active workspace id
+    // when it is one, else null, read from installation state the
+    // application role cannot read itself.
+    "app_demo_room",
     "app_is_coach",
+    // Whether the caller coaches a team anywhere on the installation, for
+    // Trænerrummet (drizzle/0023, docs/adr/0052): true or false about the
+    // caller, read from their own memberships, and nothing else.
+    "app_is_coach_somewhere",
     "app_is_guardian_of",
+    // Whether the caller owns the installation, for Trænerrummet's
+    // moderation: true or false about the caller, and nothing else.
+    "app_is_platform_owner",
     "app_is_rider_self",
     // Links a new member to the rider or guardian row a coach prepared,
     // for an invitation the caller accepted to their own address.
@@ -367,6 +391,47 @@ describe("rls coverage (guards future tables)", () => {
     // append-only guard would otherwise keep forever. Checks itself that
     // the caller coaches the team, like delete_workspace.
     "erase_rider",
+    // Whom an invitation is for, for the join page before anybody is
+    // signed in (drizzle/0030, docs/adr/0065), and the only definer the
+    // auth role may call. For an invitation that is still pending and in
+    // date it answers 'rider', or 'guardian' with the rider's first name,
+    // from a row joining would link — no id, no team, no surname, nothing
+    // for a used, withdrawn or expired invitation — and it cannot
+    // enumerate without the invitation's id, which is the key in the link.
+    // tests/team/invitation-kind.test.ts proves it, and that the
+    // application role cannot call it.
+    "invitation_kind",
+    // Removes the deleted sessions past their seven days, for the reminder
+    // job that runs with nobody signed in (drizzle/0037, docs/adr/0060).
+    // It takes no arguments, removes only rows older than seven days, and
+    // answers how many; nothing is read out. tests/rls/session-deletions
+    // proves it keeps the rest.
+    "planned_session_deletions_sweep",
+    // The installation's overview for its owner (drizzle/0019, docs/adr/0048):
+    // one row per workspace with counts only — no name of a person, no
+    // training, no check-in. The pilot's three numbers (drizzle/0031,
+    // docs/adr/0066) are counts too, of the last full week's riders,
+    // check-ins, sessions and coaches' audit rows. It takes no arguments
+    // and refuses everyone whose app.user_id is not the installation's
+    // owner; tests/core/platform-overview.test.ts proves both and pins its
+    // columns.
+    "platform_overview",
+    // Which reminders exist, for the reminder job that runs with nobody
+    // signed in (drizzle/0028, docs/adr/0060): the subscription's id, team
+    // and owner, for owners still on the team, and nothing else — no push
+    // address, no kinds, nothing about what a reminder would say. The job
+    // reads all of that as the owner, under the ordinary policies, so what
+    // crosses the boundary is that a person has said yes to reminders.
+    "push_subscriptions_due",
+    // The addresses the caller may read (drizzle/0034, docs/adr/0070),
+    // now that the application role has no SELECT on users.email: the
+    // caller's own, the whole team's to a coach of the active team, and
+    // to a rider those of the people holding a guardian link to them —
+    // the rider confirms a person and sees who that is first (docs/adr/
+    // 0019). It takes no arguments and answers from the context alone;
+    // tests/rls/member-addresses.test.ts proves each answer and that no
+    // other way to the column is open.
+    "team_member_addresses",
     // Whose upload key a hash is, for a ride file that arrives with a key
     // and nobody signed in (drizzle/0014, docs/adr/0029). It is
     // device_link_owner's question asked of a key: the key's id, the team,

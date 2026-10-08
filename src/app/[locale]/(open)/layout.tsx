@@ -1,0 +1,67 @@
+import { ArrowLeft } from "lucide-react";
+import { getTranslations } from "next-intl/server";
+import { buttonVariants } from "@/components/ui/button";
+import { Wordmark } from "@/components/wordmark";
+import { getSession } from "@/core/auth/session";
+import { Link } from "@/i18n/navigation";
+import { cn } from "@/lib/utils";
+
+/**
+ * The open pages: guides and calculators anyone may read without an
+ * account (ADR 0047). They look the same signed in or not, but for a
+ * person who is signed in the corner says "Tilbage til Kadence" with an
+ * arrow, so knowledge reached from the menu (ADR 0068) does not feel like
+ * leaving the app; for everyone else it is the login. Nothing on these
+ * pages reads the database beyond the session cookie that decides that one
+ * link, and without the cookie not even that: Better Auth answers "no
+ * session" before it looks anything up.
+ */
+export default async function OpenLayout({ children }: { children: React.ReactNode }) {
+  const t = await getTranslations("open");
+  const session = await getSession();
+
+  return (
+    <div className="bg-background flex min-h-svh flex-col">
+      <header className="mx-auto flex w-full max-w-3xl items-center justify-between gap-4 px-6 py-5 print:px-0 print:pt-0 print:pb-3">
+        <Link href="/" className="focus-ring rounded-md">
+          <Wordmark className="text-xl" />
+        </Link>
+        <nav className="flex items-center gap-1 print:hidden">
+          <Link
+            href="/guides"
+            className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "max-sm:hidden")}
+          >
+            {t("nav.hub")}
+          </Link>
+          {session ? (
+            <Link
+              href="/today"
+              className={cn(buttonVariants({ variant: "outline", size: "sm" }), "max-sm:h-11")}
+            >
+              <ArrowLeft aria-hidden data-icon="inline-start" />
+              {t("nav.toApp")}
+            </Link>
+          ) : (
+            <Link href="/login" className={cn(buttonVariants({ variant: "outline", size: "sm" }))}>
+              {t("nav.login")}
+            </Link>
+          )}
+        </nav>
+      </header>
+
+      <main className="mx-auto w-full max-w-3xl flex-1 px-6 pb-20 print:px-0 print:pb-0">
+        {children}
+      </main>
+
+      <footer className="border-border mx-auto w-full max-w-3xl border-t px-6 py-6 print:hidden">
+        <p className="text-meta text-2sm leading-relaxed">{t("footer")}</p>
+        <Link
+          href="/terms"
+          className="focus-ring text-primary mt-2 inline-block text-2sm hover:underline"
+        >
+          {t("terms")}
+        </Link>
+      </footer>
+    </div>
+  );
+}

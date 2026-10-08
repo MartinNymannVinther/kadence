@@ -14,8 +14,10 @@ import {
 import { createEvent, deleteEvent, EventInput, updateEvent } from "./events";
 import { createGroupSessions, scheduleTemplate } from "./group";
 import { RepeatInput } from "./recurrence";
+import { TimePlaceFields } from "./time-place";
 import { deleteSession, moveSession, updateSession } from "./sessions";
 import {
+  adoptTemplate,
   archiveTemplate,
   createTemplate,
   duplicateTemplate,
@@ -88,9 +90,10 @@ export async function scheduleTemplateAction(raw: unknown) {
       riderIds: z.array(id).min(1).max(60),
       onDate: isoDate,
       repeat: RepeatInput.optional(),
+      ...TimePlaceFields,
     }),
-    (ctx, input) =>
-      scheduleTemplate(ctx, input.templateId, input.riderIds, input.onDate, input.repeat),
+    (ctx, { templateId, riderIds, onDate, repeat, ...at }) =>
+      scheduleTemplate(ctx, templateId, riderIds, onDate, repeat, at),
     PATHS,
   );
 }
@@ -206,6 +209,15 @@ export async function duplicateTemplateAction(raw: unknown) {
     raw,
     z.object({ templateId: id, name: z.string().trim().min(1).max(120) }),
     (ctx, input) => duplicateTemplate(ctx, input.templateId, input.name),
+    LIBRARY,
+  );
+}
+
+export async function adoptTemplateAction(raw: unknown) {
+  return runAction(
+    raw,
+    z.object({ templateId: z.string().min(1).max(100) }),
+    (ctx, input) => adoptTemplate(ctx, input.templateId),
     LIBRARY,
   );
 }

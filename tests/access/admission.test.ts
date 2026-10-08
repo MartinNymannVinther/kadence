@@ -81,6 +81,11 @@ describe("the installation's owner", () => {
     expect(platformRoleForNewUser(500)).toBeNull();
   });
 
+  it("is never a demo's account, even on an empty installation (backlog P1-09)", () => {
+    expect(platformRoleForNewUser(0, true)).toBeNull();
+    expect(platformRoleForNewUser(0, false)).toBe("owner");
+  });
+
   it("is read from the database, not from the request", async () => {
     expect(await isPlatformOwner(OWNER)).toBe(true);
     expect(await isPlatformOwner(MEMBER)).toBe(false);

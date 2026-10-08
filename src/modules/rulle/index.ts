@@ -32,6 +32,7 @@ export {
   type Course,
   type CoursePoint,
 } from "./route/course";
+export { FLAT_LAP_M, flatCourse } from "./route/flat";
 export {
   BANK,
   COVER_CELL,

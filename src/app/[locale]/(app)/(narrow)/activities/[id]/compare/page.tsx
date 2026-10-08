@@ -63,7 +63,7 @@ export default async function ComparePage({
         {t("back")}
       </Link>
       <header className="flex flex-col gap-1">
-        <h1 className="text-[1.625rem] leading-tight font-semibold tracking-[-0.02em]">
+        <h1 className="text-title-section leading-tight font-semibold tracking-[-0.02em]">
           {t("pageTitle")}
         </h1>
         {first && (

@@ -18,6 +18,9 @@ export type CalendarCard = {
   plannedLoad: number | null;
   plannedKm: number | null;
   templateId: string | null;
+  /** "17:30", when it starts; and where (ADR 0058). */
+  startTime: string | null;
+  meetingPlace: string;
   groupKey: string | null;
   /** The series a "Gentag" made it part of (ADR 0041). */
   seriesKey: string | null;
@@ -47,8 +50,14 @@ export type CalendarEventCard = {
   endsOn: string;
   priority: string | null;
   note: string;
+  /** "09:30", when it starts on the first day; where; and who drives (P2-03). */
+  startTime: string | null;
+  meetingPlace: string;
+  transportNote: string;
   /** "dcu" for a race Kadence read from Cykling Danmark (ADR 0039). */
   source: string | null;
+  /** One of the rider's parents put it in (ADR 0069). */
+  fromParent: boolean;
   /** The results on the race: given to a coach's calendar only. */
   results?: EventResult[];
 };

@@ -114,8 +114,10 @@ export function sanitizeStrength(data: unknown): StrengthStructure | null {
 export function workoutNotes(
   structure: BikeStructure | StrengthStructure,
   category: DcuCategory | null,
+  /** A team that plans without DCU (ADR 0049) gets no note about DCU's longest ride. */
+  guided = true,
 ): WorkoutNote[] {
-  if (!category || structure.kind !== "bike") return [];
+  if (!guided || !category || structure.kind !== "bike") return [];
   const limit = LONGEST_RIDE[category];
   if (!limit || structureMinutes(structure) <= limit.hours * 60) return [];
   return [{ kind: "longestRide", category, hours: limit.hours }];
@@ -126,6 +128,7 @@ export function sanitizeBuilt(
   sport: BuildSport,
   data: unknown,
   category: DcuCategory | null,
+  guided = true,
 ): BuiltWorkout | null {
   const structure = sport === "bike" ? sanitizeParsed(data) : sanitizeStrength(data);
   if (!structure) return null;
@@ -134,7 +137,7 @@ export function sanitizeBuilt(
     title: oneLine(r.title, 120),
     description: asString(r.description, "", 1000),
     structure,
-    notes: workoutNotes(structure, category),
+    notes: workoutNotes(structure, category, guided),
     via: "model",
   };
 }

@@ -109,6 +109,7 @@ export {
   SHORT_NIGHT_HOURS,
   WELLBEING_WINDOW_DAYS,
   checkinZone,
+  isRedCheckin,
   wellbeingStatus,
   type Checkin,
   type CheckinZone,
@@ -142,6 +143,28 @@ export {
   type RideLimit,
   type Severity,
 } from "./guardrails";
+export {
+  GOAL_SECONDS,
+  THREE_ZONES,
+  countIntensity,
+  counted,
+  intensityShares,
+  sessionGoal,
+  stepZone,
+  threeZoneOf,
+  weeklyIntensity,
+  type IntensityCount,
+  type IntensityRace,
+  type IntensitySession,
+  type ThreeZone,
+} from "./intensity";
+export {
+  MID_ZONE_GIVE,
+  MID_ZONE_MIN_SESSIONS,
+  MID_ZONE_WEEKS,
+  midZoneFlag,
+  type MidZoneInput,
+} from "./intensity-flag";
 export {
   MATERIAL_STEP,
   splitResolved,

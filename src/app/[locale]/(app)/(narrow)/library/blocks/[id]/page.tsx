@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { getOrgContext } from "@/core/auth/session";
 import { redirect } from "@/i18n/navigation";
 import { whoAmI } from "@/modules/team/access";
+import { blockItemInput } from "@/modules/training/block-items";
 import { getBlock } from "@/modules/training/blocks";
 import { listTemplates } from "@/modules/training/templates";
 
@@ -44,7 +45,7 @@ export default async function BlockPage({ params }: { params: Promise<{ id: stri
           name: block.name,
           description: block.description,
           weeks: block.weeks,
-          items: block.items.map((i) => ({ day: i.day, templateId: i.templateId })),
+          items: block.items.map(blockItemInput),
         }}
         templates={templates.map((tpl) => ({
           id: tpl.id,

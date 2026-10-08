@@ -3,21 +3,26 @@ import { ShieldCheck } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { buttonVariants } from "@/components/ui/button";
 import { guardianState } from "@/components/team/guardian-state";
+import { LeaveTeamButton } from "@/components/team/leave-team-button";
 import { MyChildren } from "@/components/team/my-children";
 import { MyGuardians } from "@/components/team/my-guardians";
+import { RemindersCard } from "@/components/push/reminders-card";
 import { OwnRacesCard } from "@/components/team/own-races-card";
 import { SharingForm } from "@/components/team/sharing-form";
 import { ThresholdsForm } from "@/components/team/thresholds-form";
 import { getOrgContext } from "@/core/auth/session";
 import { todayInCopenhagen } from "@/core/dates";
 import { env } from "@/core/env";
+import { remindersOn } from "@/core/features";
 import { Link, redirect } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+import { kindsForMe } from "@/modules/push/subscriptions";
 import { readsRacesFor } from "@/modules/results/switch";
 import { dcuProfileUrl, formatUciId } from "@/modules/results/uci-id";
 import { whoAmI } from "@/modules/team/access";
 import { listGuardians } from "@/modules/team/guardians";
 import { getRider } from "@/modules/team/riders";
+import { leavesFromMe } from "../settings-items";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("settings.me");
@@ -28,7 +33,8 @@ export async function generateMetadata(): Promise<Metadata> {
  * The person's own corner. A rider decides what their parents see,
  * confirms each parent, keeps their thresholds and may give their UCI ID;
  * a parent sees their links and may end one; everybody finds their
- * security settings here.
+ * security settings here, and whoever is not a coach the way off the team
+ * at the bottom (P1-07).
  */
 export default async function MePage() {
   const ctx = await getOrgContext();
@@ -86,6 +92,14 @@ export default async function MePage() {
 
       {me && me.children.length > 0 && <MyChildren links={me.children} />}
 
+      {me && remindersOn() && env.PUSH_PUBLIC_KEY && kindsForMe(me).length > 0 && (
+        <RemindersCard
+          publicKey={env.PUSH_PUBLIC_KEY}
+          offered={kindsForMe(me)}
+          coach={me.isCoach}
+        />
+      )}
+
       {nothing && (
         <p className="border-border bg-card text-meta rounded-xl border p-4 text-2sm leading-relaxed">
           {me?.isCoach ? t("coachNote") : t("memberNote")}
@@ -99,6 +113,12 @@ export default async function MePage() {
         <ShieldCheck data-icon="inline-start" />
         {t("security")}
       </Link>
+
+      {leavesFromMe(me) && (
+        <div className="border-hairline border-t pt-5">
+          <LeaveTeamButton place="me" />
+        </div>
+      )}
     </div>
   );
 }

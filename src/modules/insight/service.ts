@@ -5,6 +5,8 @@ import { FORECAST_MAX_DAYS, type FlagKind, type Severity } from "@/modules/load"
 import { gather } from "./gather";
 import { resolutionsFor } from "./resolutions";
 import { riderInsight, SERIES_DAYS, WARMUP_DAYS, type RiderInsight } from "./rider";
+import { flagWindow, forRider, readIntensity } from "@/modules/season/intensity";
+import { teamPlanning } from "@/modules/team/settings";
 
 /**
  * The insight for the pages: one rider's load and guardrails, or the whole
@@ -36,6 +38,16 @@ export async function getInsights(
       riderIds: options.riderIds,
       aheadTo: addDaysIso(today, FORECAST_MAX_DAYS),
     });
+    const { paradigm, lowIntensityFirst } = await teamPlanning(tx, ctx.orgId);
+    const window = flagWindow(today);
+    const intensity = lowIntensityFirst
+      ? await readIntensity(
+          tx,
+          data.riders.map((r) => r.id),
+          window.from,
+          window.to,
+        )
+      : null;
     const resolutions = await resolutionsFor(
       tx,
       data.riders.map((r) => r.id),
@@ -63,6 +75,8 @@ export async function getInsights(
             severity: r.severity as Severity,
             seen: r.seen,
           })),
+        paradigm,
+        intensity && forRider(intensity, rider.id),
       );
     });
     return insights.sort(

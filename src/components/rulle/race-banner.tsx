@@ -109,7 +109,7 @@ export function RaceBanner({
   return (
     <>
       {race.seconds < GO && <Call title={t("go")} />}
-      <div className="bg-foreground/85 pointer-events-none absolute top-3 left-3 flex w-max items-baseline gap-3 rounded-xl px-4 py-2 shadow-[var(--surface-shadow)] sm:left-4 lg:left-6">
+      <div className="bg-foreground/85 pointer-events-none absolute top-3 left-3 flex w-max items-baseline gap-3 rounded-xl px-4 py-2 shadow-surface sm:left-4 lg:left-6">
         <span className="text-sticky text-sm font-black tracking-[0.25em] uppercase">
           {t("badge")}
         </span>

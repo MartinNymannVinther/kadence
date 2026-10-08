@@ -108,7 +108,7 @@ export function LibraryList({
               {sports(sport)}
               <span className="text-meta text-2sm font-normal tabular-nums">{group.length}</span>
             </h2>
-            <ul className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-[var(--surface-shadow)]">
+            <ul className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-surface">
               {group.map((tpl) => (
                 <li key={tpl.id} className="flex flex-col gap-2 px-4 py-3">
                   <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">

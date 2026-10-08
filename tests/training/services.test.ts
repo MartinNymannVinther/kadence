@@ -187,8 +187,16 @@ describe("a strength programme", () => {
         plannedMinutes: 0,
       }),
     ).rejects.toMatchObject({ code: "forbidden" });
+    // A template of the team's that exists: a rider is refused, not told it is missing.
+    const { id } = await createTemplate(COACH, {
+      name: "Holdets",
+      sport: "bike",
+      description: "",
+      structure: bike,
+      plannedMinutes: 0,
+    });
     await expect(
-      updateTemplate(ANNA, "nope", {
+      updateTemplate(ANNA, id, {
         name: "x",
         sport: "bike",
         description: "",

@@ -70,6 +70,10 @@ CMD ["pnpm", "db:migrate"]
 FROM base AS runner
 ENV NODE_ENV=production HOSTNAME=0.0.0.0 PORT=3000
 RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
+# The teams page's cache (ADR 0072) lives in a volume at /data/teams; the
+# directory is made here, owned by the app's user, so a new volume takes
+# that ownership and the app can write into it.
+RUN mkdir -p /data/teams && chown nextjs:nodejs /data/teams
 COPY --from=build --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=build --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=build --chown=nextjs:nodejs /app/public ./public

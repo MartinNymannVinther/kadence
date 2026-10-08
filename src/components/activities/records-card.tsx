@@ -50,7 +50,7 @@ export function RecordsCard({ byPeriod }: { byPeriod: Record<Period, Records> })
   ].filter((row) => row.holder);
 
   return (
-    <div className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5">
+    <div className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-surface sm:p-5">
       <PeriodSelect value={period} onChange={setPeriod} label={t("periodLabel")} />
       {rows.length === 0 ? (
         <p className="text-meta text-2sm">{t("none")}</p>

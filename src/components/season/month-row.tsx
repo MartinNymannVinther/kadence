@@ -24,7 +24,8 @@ export function MonthRow({
   scheduled,
 }: {
   month: PlanMonth;
-  dcu: number;
+  /** Null when the team plans without DCU (ADR 0049). */
+  dcu: number | null;
   ridden: number | null;
   scheduled: number | null;
 }) {
@@ -58,21 +59,27 @@ export function MonthRow({
               <dd className="tabular-nums">{hours(ridden)}</dd>
             </div>
           )}
-          <div className="flex items-baseline gap-1.5">
-            <dt className="text-meta">{t("dcu")}</dt>
-            <dd className="tabular-nums">{hours(dcu)}</dd>
-          </div>
-          <div>
-            <dt className="sr-only">{t("deviationLabel")}</dt>
-            <dd>
-              <DeviationChip planned={month.hours} dcu={dcu} />
-            </dd>
-          </div>
+          {dcu !== null && (
+            <>
+              <div className="flex items-baseline gap-1.5">
+                <dt className="text-meta">{t("dcu")}</dt>
+                <dd className="tabular-nums">{hours(dcu)}</dd>
+              </div>
+              <div>
+                <dt className="sr-only">{t("deviationLabel")}</dt>
+                <dd>
+                  <DeviationChip planned={month.hours} dcu={dcu} />
+                </dd>
+              </div>
+            </>
+          )}
         </dl>
-        <p className="text-meta text-xs leading-relaxed">
-          <span className="font-medium">{t("dcuSays")}</span>{" "}
-          {t(`monthNote.${month.month}` as "monthNote.1")}
-        </p>
+        {dcu !== null && (
+          <p className="text-meta text-xs leading-relaxed">
+            <span className="font-medium">{t("dcuSays")}</span>{" "}
+            {t(`monthNote.${month.month}` as "monthNote.1")}
+          </p>
+        )}
         {note && (
           <p className="text-2sm leading-relaxed">
             <span className="text-meta font-medium">{t("ownNote")}:</span> {note}

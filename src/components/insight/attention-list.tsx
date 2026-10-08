@@ -6,16 +6,19 @@ import type { RiderInsight } from "@/modules/insight/rider";
 import { FlagList } from "./flag-item";
 import { ResolvedFlags } from "./resolved-flags";
 import { resolvedGroups } from "./resolved-groups";
+import { attentionAnchor, flagWeekHref } from "./signals";
 import { WellbeingAction } from "./wellbeing-action";
 
 /**
- * "Kræver opmærksomhed": the coach's riders with something worth a look
+ * "Mulige opmærksomhedspunkter": the coach's riders with something worth a look
  * this week, the most serious first (src/modules/insight/service.ts), and
  * the wellbeing actions at the top of each. The list is the guardrails'
  * own — no model involved — so it is there on every Monday, AI or not.
  * What the coach has marked afklaret this week sits under the list, with
  * a way back (ADR 0026); a rider whose flags are all afklaret leaves the
  * list, and the line under it is their trace, with their wellbeing chip.
+ * Each rider's entry is an anchor the team's week links its badges to,
+ * and each flag leads to the rider's calendar for its week (ADR 0062).
  */
 export function AttentionList({ insights }: { insights: RiderInsight[] }) {
   const t = useTranslations("insight");
@@ -30,9 +33,13 @@ export function AttentionList({ insights }: { insights: RiderInsight[] }) {
           {resolved.length > 0 ? t("allResolved") : t("allCalm")}
         </p>
       ) : (
-        <ul className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-[var(--surface-shadow)]">
+        <ul className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-surface">
           {flagged.map((insight) => (
-            <li key={insight.riderId} className="flex flex-col gap-2.5 px-4 py-3.5">
+            <li
+              key={insight.riderId}
+              id={attentionAnchor(insight.riderId)}
+              className="flex scroll-mt-20 flex-col gap-2.5 px-4 py-3.5"
+            >
               <Link
                 href={`/riders/${insight.riderId}`}
                 className="focus-ring hover:text-primary flex min-h-8 w-fit items-center gap-1 text-sm font-semibold"
@@ -45,6 +52,7 @@ export function AttentionList({ insights }: { insights: RiderInsight[] }) {
                 flags={insight.flags}
                 klass={basisText(insight.basis, (k, v) => t(k, v))}
                 resolve={{ riderId: insight.riderId }}
+                weekHref={flagWeekHref(insight)}
               />
             </li>
           ))}

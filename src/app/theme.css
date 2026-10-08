@@ -32,7 +32,10 @@
   --success-tint: oklch(0.925 0.017 150); /* #e4ebe4 */
   --warning: oklch(0.475 0.075 55); /* ink #8c5b3e */
   --warning-tint: oklch(0.938 0.018 55); /* #f6e8e0 */
-  /* The story map's backbone notes: a warm sticky yellow, ink as the page. */
+  /*
+   * A warm yellow with the page's ink: "worth a look" — a yellow session,
+   * a check-in to notice, a note in a guide — between moss and clay.
+   */
   --sticky: oklch(0.945 0.075 95); /* #f8eab0 */
   --sticky-ink: oklch(0.3 0.03 80); /* #3d3625 */
   /*
@@ -46,7 +49,13 @@
   --meta: oklch(0.5 0.008 82); /* #65635e meta text */
   --hairline: oklch(0.935 0.008 85); /* #f0ece5 table rules, skeletons */
   --border: oklch(0.918 0.008 85); /* #eae5dc */
-  --input: oklch(0.872 0.009 85); /* #ddd8cf */
+  /*
+   * Raised from the handoff's 0.872 (#ddd8cf): at that lightness an input's
+   * border reads 1.45:1 against the card, short of WCAG 1.4.11's 3:1 for a
+   * non-text boundary (tests/meta/contrast.test.ts). Same hue and chroma,
+   * darker: 3.3:1 at this lightness (#8f8c86).
+   */
+  --input: oklch(0.64 0.009 85); /* #8f8c86 */
   --ring: oklch(0.505 0.055 150);
   --chart-1: oklch(0.505 0.055 150); /* #4a6b53 */
   --chart-2: oklch(0.635 0.04 150); /* #7a9a80 */
@@ -86,10 +95,6 @@
   --dialog-shadow: 0 24px 60px -24px oklch(0.245 0.008 75 / 0.28);
   /* One dimming for every layer over the page: dialog and sheet alike. */
   --scrim: oklch(0.245 0.008 75 / 0.32);
-  /* The sticky notes' lift (ADR 0016), in ink that follows the palette. */
-  --note-shadow: 0 1px 2px oklch(0.245 0.008 75 / 0.1), 0 5px 12px -8px oklch(0.245 0.008 75 / 0.3);
-  --note-shadow-hover:
-    0 1px 2px oklch(0.245 0.008 75 / 0.12), 0 8px 18px -8px oklch(0.245 0.008 75 / 0.4);
   --sidebar: oklch(0.953 0.007 85); /* #f2efe9 */
   --sidebar-foreground: oklch(0.375 0.008 80);
   --sidebar-primary: oklch(0.505 0.055 150);
@@ -130,7 +135,8 @@
   --meta: oklch(0.7 0.008 82);
   --hairline: oklch(1 0 0 / 7%);
   --border: oklch(1 0 0 / 9%);
-  --input: oklch(1 0 0 / 14%);
+  /* Raised from 14% for the same reason as the light pair: 3.3:1 against the card at 36%. */
+  --input: oklch(1 0 0 / 36%);
   --ring: oklch(0.66 0.075 150);
   --chart-1: oklch(0.66 0.075 150);
   --chart-2: oklch(0.72 0.05 150);
@@ -153,8 +159,6 @@
   --surface-shadow: 0 1px 2px oklch(0 0 0 / 0.3);
   --dialog-shadow: 0 24px 60px -24px oklch(0 0 0 / 0.6);
   --scrim: oklch(0 0 0 / 0.5);
-  --note-shadow: 0 1px 2px oklch(0 0 0 / 0.35), 0 5px 12px -8px oklch(0 0 0 / 0.5);
-  --note-shadow-hover: 0 1px 2px oklch(0 0 0 / 0.4), 0 8px 18px -8px oklch(0 0 0 / 0.6);
   --sidebar: oklch(0.21 0.006 82);
   --sidebar-foreground: oklch(0.9 0.006 85);
   --sidebar-primary: oklch(0.66 0.075 150);

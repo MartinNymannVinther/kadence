@@ -1,0 +1,327 @@
+<html>
+  <body>
+    <form action="/points">
+      <select id="EventType" name="EventType" class="form-control">
+        <option selected="selected" value="Landevej">Landevej</option>
+        <option value="MTB">MTB</option>
+        <option value="Cross">Cross</option>
+        <option value="Bane">Bane</option>
+        <option value="Trial">Trial</option>
+        <option value="E-cykling">E-cykling</option>
+        <option value="Gravel">Gravel</option></select
+      ><select id="ClassId" name="ClassId" class="form-control">
+        <option value="952" data-eventtype="Landevej">A</option>
+        <option value="953" data-eventtype="Landevej">B</option>
+        <option value="972" data-eventtype="Landevej">C</option>
+        <option value="951" data-eventtype="Landevej">D</option>
+        <option value="970" data-eventtype="Landevej">DA</option>
+        <option value="971" data-eventtype="Landevej">DB</option>
+        <option value="967" data-eventtype="Landevej">H60</option>
+        <option value="969" data-eventtype="Landevej">H70</option>
+        <option value="948" data-eventtype="Landevej">Master Herre A</option>
+        <option value="950" data-eventtype="Landevej">Master Herre B</option>
+        <option value="949" data-eventtype="Landevej">Master Herre C</option>
+        <option value="954" data-eventtype="Landevej">U11</option>
+        <option value="955" data-eventtype="Landevej">U11P</option>
+        <option value="956" data-eventtype="Landevej">U13</option>
+        <option value="957" data-eventtype="Landevej">U13P</option>
+        <option value="958" data-eventtype="Landevej">U15</option>
+        <option value="973" data-eventtype="Landevej">U15P</option>
+        <option value="959" data-eventtype="Landevej">U17</option>
+        <option value="960" data-eventtype="Landevej">U17P</option>
+        <option selected="selected" value="961" data-eventtype="Landevej">U19</option>
+        <option value="962" data-eventtype="Landevej">U19P</option>
+        <option value="990" data-eventtype="MTB">A</option>
+        <option value="985" data-eventtype="MTB">B</option>
+        <option value="984" data-eventtype="MTB">D40</option>
+        <option value="986" data-eventtype="MTB">D50</option>
+        <option value="988" data-eventtype="MTB">DA</option>
+        <option value="989" data-eventtype="MTB">DB</option>
+        <option value="974" data-eventtype="MTB">H40</option>
+        <option value="994" data-eventtype="MTB">H50</option>
+        <option value="987" data-eventtype="MTB">H60</option>
+        <option value="975" data-eventtype="MTB">U11</option>
+        <option value="976" data-eventtype="MTB">U11P</option>
+        <option value="977" data-eventtype="MTB">U13</option>
+        <option value="978" data-eventtype="MTB">U13P</option>
+        <option value="979" data-eventtype="MTB">U15</option>
+        <option value="980" data-eventtype="MTB">U15P</option>
+        <option value="981" data-eventtype="MTB">U17</option>
+        <option value="992" data-eventtype="MTB">U17P</option>
+        <option value="982" data-eventtype="MTB">U19</option>
+        <option value="983" data-eventtype="MTB">U19P</option>
+        <option value="995" data-eventtype="MTB">U9</option>
+        <option value="993" data-eventtype="MTB">U9P</option>
+        <option value="1008" data-eventtype="Cross">A</option>
+        <option value="1014" data-eventtype="Cross">B</option>
+        <option value="1007" data-eventtype="Cross">D40</option>
+        <option value="1009" data-eventtype="Cross">D50</option>
+        <option value="1011" data-eventtype="Cross">DA</option>
+        <option value="1012" data-eventtype="Cross">DB</option>
+        <option value="1005" data-eventtype="Cross">H40</option>
+        <option value="1018" data-eventtype="Cross">H50</option>
+        <option value="1010" data-eventtype="Cross">H60</option>
+        <option value="1016" data-eventtype="Cross">H70</option>
+        <option value="1004" data-eventtype="Cross">U11</option>
+        <option value="1003" data-eventtype="Cross">U11P</option>
+        <option value="1002" data-eventtype="Cross">U13</option>
+        <option value="1000" data-eventtype="Cross">U13P</option>
+        <option value="1001" data-eventtype="Cross">U15</option>
+        <option value="1006" data-eventtype="Cross">U15P</option>
+        <option value="999" data-eventtype="Cross">U17</option>
+        <option value="998" data-eventtype="Cross">U17P</option>
+        <option value="997" data-eventtype="Cross">U19</option>
+        <option value="996" data-eventtype="Cross">U19P</option>
+        <option value="1015" data-eventtype="Cross">U23</option>
+        <option value="1013" data-eventtype="Cross">U23P</option>
+        <option value="1019" data-eventtype="Cross">U9</option>
+        <option value="1017" data-eventtype="Cross">U9P</option>
+        <option value="1037" data-eventtype="Bane">A</option>
+        <option value="1032" data-eventtype="Bane">B</option>
+        <option value="1038" data-eventtype="Bane">C</option>
+        <option value="1039" data-eventtype="Bane">D</option>
+        <option value="1020" data-eventtype="Bane">D40</option>
+        <option value="1031" data-eventtype="Bane">D50</option>
+        <option value="1033" data-eventtype="Bane">D60</option>
+        <option value="1035" data-eventtype="Bane">DA</option>
+        <option value="1036" data-eventtype="Bane">DB</option>
+        <option value="1021" data-eventtype="Bane">H40</option>
+        <option value="1029" data-eventtype="Bane">H50</option>
+        <option value="1041" data-eventtype="Bane">H60</option>
+        <option value="1034" data-eventtype="Bane">H70</option>
+        <option value="1042" data-eventtype="Bane">U11</option>
+        <option value="1040" data-eventtype="Bane">U11P</option>
+        <option value="1028" data-eventtype="Bane">U13</option>
+        <option value="1027" data-eventtype="Bane">U13P</option>
+        <option value="1026" data-eventtype="Bane">U15</option>
+        <option value="1024" data-eventtype="Bane">U15P</option>
+        <option value="1025" data-eventtype="Bane">U17</option>
+        <option value="1030" data-eventtype="Bane">U17P</option>
+        <option value="1023" data-eventtype="Bane">U19</option>
+        <option value="1022" data-eventtype="Bane">U19P</option>
+        <option value="1043" data-eventtype="Trial">Benjamins</option>
+        <option value="1045" data-eventtype="Trial">Cadets</option>
+        <option value="1047" data-eventtype="Trial">Girls</option>
+        <option value="1049" data-eventtype="Trial">Men Elite</option>
+        <option value="1050" data-eventtype="Trial">Men Juniors</option>
+        <option value="1044" data-eventtype="Trial">Minimes</option>
+        <option value="1051" data-eventtype="Trial">Poussins</option>
+        <option value="1048" data-eventtype="Trial">Women Elite</option>
+        <option value="1046" data-eventtype="Trial">Youth Girls</option>
+        <option value="1052" data-eventtype="E-cykling">A</option>
+        <option value="1053" data-eventtype="E-cykling">B</option>
+        <option value="1060" data-eventtype="E-cykling">Børn A</option>
+        <option value="1061" data-eventtype="E-cykling">Børn B</option>
+        <option value="1054" data-eventtype="E-cykling">C</option>
+        <option value="1055" data-eventtype="E-cykling">D</option>
+        <option value="1056" data-eventtype="E-cykling">DA</option>
+        <option value="1057" data-eventtype="E-cykling">DB</option>
+        <option value="1058" data-eventtype="E-cykling">DC</option>
+        <option value="1059" data-eventtype="E-cykling">DD</option>
+        <option value="1062" data-eventtype="E-cykling">Ungdom A</option>
+        <option value="1063" data-eventtype="E-cykling">Ungdom B</option>
+        <option value="1064" data-eventtype="E-cykling">Ungdom C</option>
+        <option value="1079" data-eventtype="Gravel">Age-group M/K</option>
+        <option value="1066" data-eventtype="Gravel">Elite Damer</option>
+        <option value="1065" data-eventtype="Gravel">Elite Herre</option>
+        <option value="1072" data-eventtype="Gravel">U11 Drenge</option>
+        <option value="1077" data-eventtype="Gravel">U11 Piger</option>
+        <option value="1071" data-eventtype="Gravel">U13 Drenge</option>
+        <option value="1076" data-eventtype="Gravel">U13 Piger</option>
+        <option value="1070" data-eventtype="Gravel">U15 Drenge</option>
+        <option value="1075" data-eventtype="Gravel">U15 Piger</option>
+        <option value="1069" data-eventtype="Gravel">U17 Drenge</option>
+        <option value="1074" data-eventtype="Gravel">U17 Piger</option>
+        <option value="1073" data-eventtype="Gravel">U19 Damer</option>
+        <option value="1068" data-eventtype="Gravel">U19 Herrer</option>
+        <option value="1078" data-eventtype="Gravel">U23 Damer</option>
+        <option value="1067" data-eventtype="Gravel">U23 Herrer</option></select
+      ><select id="SeasonId" name="SeasonId" class="form-control">
+        <option selected="selected" value="17">2026</option>
+        <option value="14">2025</option>
+        <option value="10">2024</option>
+        <option value="9">2023</option>
+        <option value="2">2022</option>
+        <option value="1">2021</option>
+        <option value="8">2020</option>
+        <option value="7">2019</option>
+        <option value="6">2018</option>
+        <option value="5">2017</option>
+        <option value="4">2016</option>
+        <option value="3">2015</option>
+      </select>
+    </form>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>&nbsp;</th>
+          <th class="d-none d-sm-table-cell">UCI ID</th>
+          <th>Navn</th>
+          <th class="d-none d-sm-table-cell">Klub</th>
+          <th class="text-center">&#xC5;rgang</th>
+          <th class="text-right">Point</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>#1</td>
+          <td class="d-none d-sm-table-cell">
+            <a href="/profile/10000000000"> Anna Andersen </a>
+          </td>
+          <td>
+            <img src="/assets/images/flags/dk.png" style="width: 20px" />
+            <a href="/profile/10000000000"> Anna Andersen </a>
+          </td>
+          <td class="d-none d-sm-table-cell">Team Uno-X - Carl Ras Roskilde Junior&nbsp;</td>
+          <td class="text-center">2009&nbsp;</td>
+          <td class="text-right">212</td>
+        </tr>
+        <tr>
+          <td>#2</td>
+          <td class="d-none d-sm-table-cell">
+            <a href="/profile/10000000001"> Bo Holm </a>
+          </td>
+          <td>
+            <img src="/assets/images/flags/dk.png" style="width: 20px" />
+            <a href="/profile/10000000001"> Bo Holm </a>
+          </td>
+          <td class="d-none d-sm-table-cell">
+            CeramicSpeed Aros Forsikring Herning CK Junio&nbsp;
+          </td>
+          <td class="text-center">2008&nbsp;</td>
+          <td class="text-right">189</td>
+        </tr>
+        <tr>
+          <td>#3</td>
+          <td class="d-none d-sm-table-cell">
+            <a href="/profile/10000000002"> Carl Olsen </a>
+          </td>
+          <td>
+            <img src="/assets/images/flags/dk.png" style="width: 20px" />
+            <a href="/profile/10000000002"> Carl Olsen </a>
+          </td>
+          <td class="d-none d-sm-table-cell">Tscherning Cycling Academy&nbsp;</td>
+          <td class="text-center">2008&nbsp;</td>
+          <td class="text-right">175</td>
+        </tr>
+        <tr>
+          <td>#4</td>
+          <td class="d-none d-sm-table-cell">
+            <a href="/profile/10000000003"> Dina Frandsen </a>
+          </td>
+          <td>
+            <img src="/assets/images/flags/dk.png" style="width: 20px" />
+            <a href="/profile/10000000003"> Dina Frandsen </a>
+          </td>
+          <td class="d-none d-sm-table-cell">Team Uno-X - Carl Ras Roskilde Junior&nbsp;</td>
+          <td class="text-center">2008&nbsp;</td>
+          <td class="text-right">161</td>
+        </tr>
+        <tr>
+          <td>#5</td>
+          <td class="d-none d-sm-table-cell">
+            <a href="/profile/10000000004"> Erik Madsen </a>
+          </td>
+          <td>
+            <img src="/assets/images/flags/dk.png" style="width: 20px" />
+            <a href="/profile/10000000004"> Erik Madsen </a>
+          </td>
+          <td class="d-none d-sm-table-cell">Team Uno-X - Carl Ras Roskilde Junior&nbsp;</td>
+          <td class="text-center">2008&nbsp;</td>
+          <td class="text-right">147</td>
+        </tr>
+        <tr>
+          <td>#6</td>
+          <td class="d-none d-sm-table-cell">
+            <a href="/profile/10000000005"> Freja Dahl </a>
+          </td>
+          <td>
+            <img src="/assets/images/flags/dk.png" style="width: 20px" />
+            <a href="/profile/10000000005"> Freja Dahl </a>
+          </td>
+          <td class="d-none d-sm-table-cell">Tscherning Cycling Academy&nbsp;</td>
+          <td class="text-center">2008&nbsp;</td>
+          <td class="text-right">121</td>
+        </tr>
+        <tr>
+          <td>#7</td>
+          <td class="d-none d-sm-table-cell">
+            <a href="/profile/10000000006"> Gustav Krog </a>
+          </td>
+          <td>
+            <img src="/assets/images/flags/dk.png" style="width: 20px" />
+            <a href="/profile/10000000006"> Gustav Krog </a>
+          </td>
+          <td class="d-none d-sm-table-cell">Team Kvickly Odder&nbsp;</td>
+          <td class="text-center">2009&nbsp;</td>
+          <td class="text-right">113</td>
+        </tr>
+        <tr>
+          <td>#8</td>
+          <td class="d-none d-sm-table-cell">
+            <a href="/profile/10000000007"> Hanne Bach </a>
+          </td>
+          <td>
+            <img src="/assets/images/flags/dk.png" style="width: 20px" />
+            <a href="/profile/10000000007"> Hanne Bach </a>
+          </td>
+          <td class="d-none d-sm-table-cell">Team Uno-X - Carl Ras Roskilde Junior&nbsp;</td>
+          <td class="text-center">2008&nbsp;</td>
+          <td class="text-right">112</td>
+        </tr>
+        <tr>
+          <td>#9</td>
+          <td class="d-none d-sm-table-cell">
+            <a href="/profile/10000000008"> Ivar Iversen </a>
+          </td>
+          <td>
+            <img src="/assets/images/flags/dk.png" style="width: 20px" />
+            <a href="/profile/10000000008"> Ivar Iversen </a>
+          </td>
+          <td class="d-none d-sm-table-cell">Tscherning Cycling Academy&nbsp;</td>
+          <td class="text-center">2008&nbsp;</td>
+          <td class="text-right">110</td>
+        </tr>
+        <tr>
+          <td>#10</td>
+          <td class="d-none d-sm-table-cell">
+            <a href="/profile/10000000009"> Jonas Poulsen </a>
+          </td>
+          <td>
+            <img src="/assets/images/flags/dk.png" style="width: 20px" />
+            <a href="/profile/10000000009"> Jonas Poulsen </a>
+          </td>
+          <td class="d-none d-sm-table-cell">AL&#xC8; JS Holstebro CC - Junior Team&nbsp;</td>
+          <td class="text-center">2008&nbsp;</td>
+          <td class="text-right">99</td>
+        </tr>
+        <tr>
+          <td>#11</td>
+          <td class="d-none d-sm-table-cell">
+            <a href="/profile/10000000010"> Klara Gram </a>
+          </td>
+          <td>
+            <img src="/assets/images/flags/dk.png" style="width: 20px" />
+            <a href="/profile/10000000010"> Klara Gram </a>
+          </td>
+          <td class="d-none d-sm-table-cell">Team Uno-X - Carl Ras Roskilde Junior&nbsp;</td>
+          <td class="text-center">2009&nbsp;</td>
+          <td class="text-right">98</td>
+        </tr>
+        <tr>
+          <td>#12</td>
+          <td class="d-none d-sm-table-cell">
+            <a href="/profile/10000000011"> Lars Nielsen </a>
+          </td>
+          <td>
+            <img src="/assets/images/flags/dk.png" style="width: 20px" />
+            <a href="/profile/10000000011"> Lars Nielsen </a>
+          </td>
+          <td class="d-none d-sm-table-cell">Team Kvickly Odder&nbsp;</td>
+          <td class="text-center">2008&nbsp;</td>
+          <td class="text-right">97</td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>

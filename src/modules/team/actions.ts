@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { z } from "zod";
 import { Refused, runAction } from "@/core/action";
 import { inviteMember, type IssuedTeamInvitation } from "@/core/team/service";
+import { bulkInvite, BulkInviteInput } from "./bulk-invite";
 import {
   addGuardian,
   attachGuardianInvitation,
@@ -11,6 +12,7 @@ import {
   GuardianInput,
   removeGuardian,
 } from "./guardians";
+import { linkMemberAsGuardian, MemberGuardianInput } from "./member-guardians";
 import {
   archiveRider,
   attachRiderInvitation,
@@ -78,6 +80,16 @@ export async function inviteRiderAction(raw: unknown) {
   );
 }
 
+/** "Inviter hele holdet": a pasted list, all or nothing (bulk-invite.ts, ADR 0064). */
+export async function bulkInviteAction(raw: unknown) {
+  return runAction(
+    raw,
+    BulkInviteInput,
+    async (ctx, input) => bulkInvite(ctx, await headers(), input),
+    PATHS,
+  );
+}
+
 export async function updateRiderAction(raw: unknown) {
   return runAction(
     raw,
@@ -122,6 +134,11 @@ export async function addGuardianAction(raw: unknown) {
     },
     PATHS,
   );
+}
+
+/** A member already on the team as one more child's parent (P2-16): no invitation, the rider still confirms. */
+export async function linkMemberAsGuardianAction(raw: unknown) {
+  return runAction(raw, MemberGuardianInput, linkMemberAsGuardian, PATHS);
 }
 
 export async function confirmGuardianAction(raw: unknown) {

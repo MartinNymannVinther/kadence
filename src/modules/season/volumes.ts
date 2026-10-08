@@ -13,6 +13,8 @@ import {
   type VolumeRange,
   type VolumeSession,
 } from "./volume";
+import type { Paradigm } from "@/modules/paradigms";
+import { teamParadigm } from "@/modules/team/settings";
 
 /**
  * The four numbers (ADR 0040) read from the database: each rider's
@@ -26,6 +28,8 @@ export type RiderData = {
   frameOf: (season: number) => SeasonFrame;
   sessions: VolumeSession[];
   activities: VolumeActivity[];
+  /** The team's paradigm (ADR 0049), the same for every rider of the team. */
+  paradigm: Paradigm | null;
 };
 
 /** Every rider's plans, sessions and activities for a range, as `volumeOf` wants them. */
@@ -80,6 +84,7 @@ export async function readFor(
       ),
     );
   const out = new Map<string, RiderData>();
+  const paradigm = riderRows[0] ? await teamParadigm(tx, riderRows[0].orgId) : null;
   for (const rider of riderRows) {
     const frames = new Map<number, SeasonFrame>();
     const frameOf = (season: number): SeasonFrame => {
@@ -103,6 +108,7 @@ export async function readFor(
         .filter((s) => s.riderId === rider.id)
         .map((s) => ({ ...s, done: s.activityId !== null })),
       activities: activityRows.filter((a) => a.riderId === rider.id),
+      paradigm,
     });
   }
   return out;

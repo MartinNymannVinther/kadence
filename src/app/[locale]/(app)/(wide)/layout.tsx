@@ -1,8 +1,9 @@
 /**
- * Full frame, no margins: the conversation fills what the sidebar leaves
- * and lays out its own list and writing field inside that. The ordinary
- * page width lives in the (narrow) group beside this one; both sit inside
- * the app layout's sidebar shell.
+ * Full frame, no margins: for a page that lays out its own panes and
+ * fills what the sidebar leaves. No page of Kadence's uses it yet; the
+ * group came with the foundation (ADR 0001), and the ordinary page width
+ * lives in the (narrow) group beside it. Both sit inside the app layout's
+ * sidebar shell.
  */
 export default function WideLayout({ children }: { children: React.ReactNode }) {
   return (

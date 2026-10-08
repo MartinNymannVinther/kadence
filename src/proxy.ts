@@ -1,6 +1,7 @@
 import { getSessionCookie } from "better-auth/cookies";
 import createIntlMiddleware from "next-intl/middleware";
 import { NextResponse, type NextRequest } from "next/server";
+import { features, parkedPath } from "./core/features";
 import { routing } from "./i18n/routing";
 
 const intlMiddleware = createIntlMiddleware(routing);
@@ -13,10 +14,13 @@ const PROTECTED_PREFIXES = [
   "/season",
   "/activities",
   "/parents",
+  "/me",
   "/settings",
   "/help",
   "/onboarding",
   "/rulle",
+  "/club",
+  "/coaches",
 ];
 
 /** Pathname with any locale prefix removed, e.g. /en/login → /login. */
@@ -38,6 +42,33 @@ function localizedPath(pathname: string, target: string): string {
   return target;
 }
 
+/** The locale a pathname is prefixed with, or the default when it has none. */
+function localeOf(pathname: string): string {
+  for (const locale of routing.locales) {
+    if (pathname === `/${locale}` || pathname.startsWith(`/${locale}/`)) return locale;
+  }
+  return routing.defaultLocale;
+}
+
+/**
+ * A parked page answers 404 before anything renders (docs/adr/0057,
+ * backlog P2-09). The page calls notFound() itself too, but under
+ * (app)/(narrow) a loading boundary has started streaming by then, and
+ * a response that has started streaming is a 200 whatever is thrown
+ * afterwards (node_modules/next/dist/docs, loading.md, "Status codes").
+ * So the request is rewritten here, before any rendering, to a path no
+ * page matches: the catch-all in [locale]/[...rest] turns it into the
+ * localized not-found page with a real 404. Same page, right status, and
+ * no session read for a page that is not there.
+ */
+function parkedResponse(request: NextRequest): NextResponse {
+  const original = request.nextUrl.pathname;
+  const url = request.nextUrl.clone();
+  url.pathname = `/${localeOf(original)}/parked${stripLocale(original)}`;
+  url.search = "";
+  return NextResponse.rewrite(url);
+}
+
 /**
  * Optimistic auth redirect based on the presence of the session cookie.
  * This is UX only — the (app) layout verifies the session for real, and RLS
@@ -51,6 +82,8 @@ function localizedPath(pathname: string, target: string): string {
  */
 export default function proxy(request: NextRequest) {
   const pathname = stripLocale(request.nextUrl.pathname);
+  if (parkedPath(pathname, features())) return parkedResponse(request);
+
   const hasSessionCookie = Boolean(getSessionCookie(request));
 
   if (!hasSessionCookie && PROTECTED_PREFIXES.some((p) => pathname.startsWith(p))) {

@@ -134,6 +134,160 @@
       "when": 1790880529687,
       "tag": "0018_rider_sets_uci_id",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1791017614725,
+      "tag": "0019_clubs",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1791018896429,
+      "tag": "0020_guidance",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1791019854729,
+      "tag": "0021_rider_workouts",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1791020528760,
+      "tag": "0022_club_championship",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1791021444996,
+      "tag": "0023_coaches_room",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1791022914266,
+      "tag": "0024_low_intensity_first",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1791104184698,
+      "tag": "0025_demo_rooms",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1791262148252,
+      "tag": "0026_session_time_place",
+      "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1791262173226,
+      "tag": "0027_block_inline_sessions",
+      "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1791262206206,
+      "tag": "0028_push_subscriptions",
+      "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1791279167119,
+      "tag": "0029_push_wellbeing",
+      "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1791279168334,
+      "tag": "0030_invitation_kind",
+      "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1791279169540,
+      "tag": "0031_pilot_numbers",
+      "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1791317875004,
+      "tag": "0032_team_exercises",
+      "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1791369512974,
+      "tag": "0033_equipment_strength_room",
+      "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1791368727170,
+      "tag": "0034_users_addresses",
+      "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "7",
+      "when": 1791368681990,
+      "tag": "0035_week_plan_drafts",
+      "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1791368808987,
+      "tag": "0036_checkin_red_since",
+      "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "7",
+      "when": 1791369880323,
+      "tag": "0037_plan_change_sender",
+      "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "7",
+      "when": 1791370839348,
+      "tag": "0038_push_runs",
+      "breakpoints": true
+    },
+    {
+      "idx": 39,
+      "version": "7",
+      "when": 1791368883370,
+      "tag": "0039_event_time_place",
+      "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "7",
+      "when": 1791369559488,
+      "tag": "0040_family_events",
+      "breakpoints": true
     }
   ]
 }

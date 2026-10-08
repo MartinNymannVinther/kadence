@@ -26,6 +26,7 @@ export function ConfirmButton({
   variant = "destructive",
   size = "sm",
   disabled,
+  className,
 }: {
   title: string;
   body: string;
@@ -35,6 +36,7 @@ export function ConfirmButton({
   variant?: React.ComponentProps<typeof Button>["variant"];
   size?: React.ComponentProps<typeof Button>["size"];
   disabled?: boolean;
+  className?: string;
 }) {
   const t = useTranslations("common");
   const [open, setOpen] = useState(false);
@@ -57,6 +59,7 @@ export function ConfirmButton({
         variant={variant}
         size={size}
         disabled={disabled}
+        className={className}
         onClick={() => setOpen(true)}
       >
         {children}

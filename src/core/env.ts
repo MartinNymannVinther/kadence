@@ -79,7 +79,9 @@ export const EnvSchema = z
     // rightmost entries are the ones your own infrastructure wrote and are
     // therefore the only ones worth trusting; everything to the left of
     // them was supplied by the caller. Coolify/Traefik is one hop, which
-    // is the default. See src/core/rate-limit.ts.
+    // is the default. At 0 no forwarded header is read at all, and every
+    // caller shares one bucket, because Next does not hand a route the
+    // connection's own address. See src/core/rate-limit.ts.
     TRUSTED_PROXY_HOPS: z.coerce.number().int().min(0).max(8).default(1),
     // Wahoo, Garmin and Polar (src/modules/devices). External services —
     // Wahoo and Garmin US companies, Polar a Finnish one: a rider chooses
@@ -122,6 +124,47 @@ export const EnvSchema = z
       .transform((v) => v.replace(/\s/g, ""))
       .pipe(z.union([z.enum(["off", "on"]), z.string().regex(/^[0-9]{11}(,[0-9]{11})*$/)]))
       .default("off"),
+    // Parts of Kadence an installation may park until a real winter with a
+    // real team has used the rest (docs/adr/0057, src/core/features.ts).
+    // Each is "on" by default (Martin's choice, 6 October 2026) and "off"
+    // parks it whole: the menu, the pages, the actions and the demo.
+    // Nothing is removed by turning one off; the data stays.
+    // Rulle's land, towns, people and sound behind the session; without it
+    // Rulle is the session alone: the bar, the numbers and the trainer.
+    RULLE_WORLD: z.enum(["off", "on"]).default("on"),
+    // Trænerrummet, the coaches' room across the installation's teams (ADR 0052).
+    COACHES_ROOM: z.enum(["off", "on"]).default("on"),
+    // The club championship (ADR 0051); a team still turns it on for itself.
+    CLUB_CHAMPIONSHIP: z.enum(["off", "on"]).default("on"),
+    // The energy calculator among the open guides (ADR 0047).
+    CALC_ENERGY: z.enum(["off", "on"]).default("on"),
+    // The food guide, health advice about minors. Its section on low energy
+    // availability has not yet been read by a sports dietitian (ADR 0047);
+    // "off" holds it back until one has.
+    GUIDE_FOOD: z.enum(["off", "on"]).default("on"),
+    // The open page of Danish U19 and U23 teams (ADR 0072), read from the
+    // UCI and from Cykling Danmark once a day into TEAMS_DIR.
+    GUIDE_TEAMS: z.enum(["off", "on"]).default("on"),
+    // Whether that page reads Cykling Danmark's team list and points lists
+    // (src/modules/teams/dcu). An external service that has not yet said
+    // yes to being read: "off" leaves the page with the UCI's part alone.
+    TEAMS_DCU: z.enum(["off", "on"]).default("on"),
+    // Where the teams page keeps what it last read; ./data/teams unless set.
+    TEAMS_DIR: z.string().min(1).optional(),
+    // Reminders by web push (docs/adr/0060). The push carries no content;
+    // Apple's, Google's or Mozilla's push service, whichever the person's
+    // browser uses, sees that a reminder went out and when, never what it
+    // says (docs/subprocessors.md). Without the key pair nothing is sent
+    // and everything else works. `npx web-push generate-vapid-keys` is not
+    // needed: `pnpm script scripts/push-keys.ts` prints a pair.
+    // Secret: the private key lives only in .env locally and in Coolify.
+    PUSH_PUBLIC_KEY: z.string().min(80).optional(),
+    PUSH_PRIVATE_KEY: z.string().min(40).optional(),
+    // Who the push services may contact about this installation's pushes.
+    PUSH_CONTACT: z
+      .string()
+      .regex(/^(mailto:|https:\/\/)/)
+      .optional(),
   })
   .superRefine((value, ctx) => {
     // `next build` runs with NODE_ENV=production and placeholder values
@@ -196,6 +239,14 @@ export const EnvSchema = z
         code: "custom",
         message: "WAHOO_WEBHOOK_TOKEN does nothing without WAHOO_CLIENT_ID and WAHOO_CLIENT_SECRET",
         path: ["WAHOO_WEBHOOK_TOKEN"],
+      });
+    }
+    if (Boolean(value.PUSH_PUBLIC_KEY) !== Boolean(value.PUSH_PRIVATE_KEY)) {
+      ctx.addIssue({
+        code: "custom",
+        message:
+          "PUSH_PUBLIC_KEY and PUSH_PRIVATE_KEY go together: set both to send reminders, or neither",
+        path: [value.PUSH_PUBLIC_KEY ? "PUSH_PRIVATE_KEY" : "PUSH_PUBLIC_KEY"],
       });
     }
     if (value.POLAR_WEBHOOK_SECRET && !value.POLAR_CLIENT_ID) {

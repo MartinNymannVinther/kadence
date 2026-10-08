@@ -45,7 +45,25 @@ export const EXPORT_TABLES: ExportTable[] = [
   { table: "workout_templates", sheet: "Skabeloner", orderBy: "sport, name" },
   { table: "training_blocks", sheet: "Blokke", orderBy: "name" },
   { table: "training_block_items", sheet: "Blokkens pas", orderBy: "block_id, day, sort" },
+  // The week planner's drafts the coaches share (ADR 0043, amended
+  // 2026-10-07): weeks being planned and not yet laid in, as JSON in a cell.
+  { table: "week_plan_drafts", sheet: "Ugekladder", orderBy: "week_monday, rider_id" },
+  // The team's own exercises and programmes (drizzle/0032), archived ones
+  // included. A pose, a dose and a programme's parts are JSON in a cell;
+  // the JSON export keeps them as they are, references and all.
+  { table: "team_exercises", sheet: "Øvelser", orderBy: "name, created_at" },
+  { table: "team_programs", sheet: "Øvelsesprogrammer", orderBy: "name, created_at" },
   { table: "team_settings", sheet: "Indstillinger" },
+  // The club championship (ADR 0051): the club's own seasons, rounds,
+  // results and roll of honour.
+  { table: "club_championships", sheet: "Klubmesterskaber", orderBy: "season" },
+  { table: "club_championship_rounds", sheet: "Afdelinger", orderBy: "held_on" },
+  { table: "club_championship_entries", sheet: "Resultater", orderBy: "round_id, class" },
+  { table: "club_champions", sheet: "Klubmestre", orderBy: "year, class" },
+  // The club's logo and picture (ADR 0048): which, what type, how big,
+  // who and when. The image itself does not fit a spreadsheet cell; it is
+  // one click away under Settings → Workspace, and the club has the file.
+  { table: "org_images", sheet: "Logo og billede", orderBy: "kind", redact: ["bytes"] },
   { table: "audit_log", sheet: "Revisionsspor", orderBy: "created_at" },
 ];
 
@@ -63,6 +81,15 @@ export const EXPORT_TABLES: ExportTable[] = [
  * - `password_resets`: the record that a coach made a link for a new
  *   password (ADR 0032). It is about accounts, not training, and the audit
  *   trail, which is exported, holds every one of them.
+ * - `push_subscriptions`: a browser's push address for reminders (ADR
+ *   0060) — a capability that could wake that browser, owned by the person
+ *   rather than the team, and nothing about training. That reminders were
+ *   turned on and off is in the audit trail, without the address. Nor
+ *   `push_runs`, the run's marks beside it: when a reminder went out.
+ * - `planned_session_deletions`: a deleted session's day and title, kept
+ *   for seven days so a rider's reminder can say the plan changed (ADR
+ *   0060, drizzle/0037). The deletion itself, and this record of it, are
+ *   in the audit trail, which is exported.
  * - `ai_calls`: a counter for rate limiting, not something a workspace owns.
  * - `workspace_llm_settings`: the model choice, which holds an encrypted
  *   key; a workspace that leaves gets its data, not its secrets.
@@ -72,5 +99,8 @@ export const EXPORT_TABLES: ExportTable[] = [
  * - `access_requests` and `access_invitations`: they belong to the
  *   installation, not to any workspace, and describe people who are not
  *   users of it. The application role cannot read them anyway.
+ * - Trænerrummet's threads, replies, reports and read markers (ADR 0052):
+ *   they belong to the installation's room, not to a workspace, and a
+ *   club's export would otherwise carry other clubs' coaches' words.
  */
 export const MEMBERS_SHEET = "Brugere";

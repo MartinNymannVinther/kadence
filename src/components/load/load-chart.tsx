@@ -118,7 +118,7 @@ export function LoadChart({
                 })
               : t("empty")
           }
-          className="focus-visible:outline-ring block touch-pan-y rounded-md outline-none focus-visible:outline-2"
+          className="focus-visible:outline-ring block touch-pan-y rounded-md outline-none focus-visible:outline-2 focus-visible:outline-solid"
           {...hover.handlers}
         >
           <defs>
@@ -206,9 +206,9 @@ export function LoadChart({
                     strokeWidth={1.5}
                   />
                   <text
-                    x={x(raceIndex) - 4}
+                    x={x(raceIndex) + (x(raceIndex) + 140 < width - RIGHT ? 4 : -4)}
                     y={28}
-                    textAnchor="end"
+                    textAnchor={x(raceIndex) + 140 < width - RIGHT ? "start" : "end"}
                     className="fill-foreground text-2xs font-medium"
                   >
                     {race!.priority}: {race!.title.slice(0, 24)}
@@ -284,9 +284,13 @@ export function LoadChart({
           <text x={LEFT - 6} y={formTop + FORM - 2} textAnchor="end" className="fill-meta text-2xs">
             −
           </text>
-          <text x={width - RIGHT} y={formTop - 8} textAnchor="end" className="fill-meta text-2xs">
-            {t("formScale")}
-          </text>
+          {/* On a phone the scale's words crowd the race line; the explainer
+              under the chart says the same. */}
+          {width >= 420 && (
+            <text x={width - RIGHT} y={formTop - 8} textAnchor="end" className="fill-meta text-2xs">
+              {t("formScale")}
+            </text>
+          )}
 
           {months.map(({ i, date }) => (
             <text

@@ -17,21 +17,26 @@ export function CreatePlan({
   riderId,
   seasonStartYear,
   riderBasis,
+  guided = true,
 }: {
   riderId: string;
   seasonStartYear: number;
   /** The rider's own class this season, or null outside U17–U23. */
   riderBasis: string | null;
+  /** Whether the team plans by DCU (ADR 0049); without, the months start empty. */
+  guided?: boolean;
 }) {
   const t = useTranslations("season");
   const { run, pending } = useRun();
   const id = useId();
   const [basis, setBasis] = useState(riderBasis ?? "");
   return (
-    <div className="border-border bg-card flex flex-col gap-4 rounded-xl border p-5 shadow-[var(--surface-shadow)]">
+    <div className="border-border bg-card flex flex-col gap-4 rounded-xl border p-5 shadow-surface">
       <div className="flex flex-col gap-1">
         <h2 className="text-base font-semibold">{t("none.title")}</h2>
-        <p className="text-meta text-2sm leading-relaxed">{t("none.body")}</p>
+        <p className="text-meta text-2sm leading-relaxed">
+          {t(guided ? "none.body" : "none.bodyOwn")}
+        </p>
       </div>
       <div className="flex flex-col gap-1.5">
         <label htmlFor={id} className="text-sm font-medium">
@@ -53,7 +58,7 @@ export function CreatePlan({
         }
       >
         <Sparkle data-icon="inline-start" />
-        {t("create")}
+        {t(guided ? "create" : "createOwn")}
       </Button>
     </div>
   );
