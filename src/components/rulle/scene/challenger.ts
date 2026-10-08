@@ -14,7 +14,7 @@ import { castShadows } from "./props";
 import { RiderFigure } from "./rider";
 
 /** Each rival's kit, and how big he is beside the rider. */
-const LOOK: Record<Rival, { kit: typeof CHALLENGER_KIT; scale: number }> = {
+export const LOOK: Record<Rival, { kit: typeof CHALLENGER_KIT; scale: number }> = {
   challenger: { kit: CHALLENGER_KIT, scale: 1 },
   sprinter: { kit: SPRINTER_KIT, scale: SPRINTER.scale },
 };

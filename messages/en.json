@@ -3585,6 +3585,7 @@
       "end": "End",
       "elapsed": "{time} ridden",
       "left": "{time} left",
+      "loading": "Getting the route ready …",
       "countdown": "Get ready",
       "profile": "The whole session: {duration}. {elapsed} ridden.",
       "routeProfile": "The route: {km} km. Lap {lap}, {along} km in.",

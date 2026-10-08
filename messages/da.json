@@ -3585,6 +3585,7 @@
       "end": "Afslut",
       "elapsed": "{time} kørt",
       "left": "{time} tilbage",
+      "loading": "Ruten gøres klar …",
       "countdown": "Gør klar",
       "profile": "Hele passet: {duration}. {elapsed} kørt.",
       "routeProfile": "Ruten: {km} km. Omgang {lap}, {along} km inde.",

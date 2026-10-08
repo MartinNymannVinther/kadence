@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { clockText } from "@/components/training/duration";
 import type { Thresholds } from "@/modules/load";
-import type { City, Course, Land, SessionTimeline } from "@/modules/rulle";
+import type { City, Course, Land, Rival, SessionTimeline } from "@/modules/rulle";
 import { CheatOverlay } from "./cheat-overlay";
 import { EndDialog } from "./end-dialog";
 import { IntervalBar } from "./interval-bar";
@@ -22,6 +22,7 @@ import { useMapShown, useSpeedShown } from "./ride/use-map-shown";
 import { useRideKeys } from "./ride/use-ride-keys";
 import { DevWarp } from "./dev-warp";
 import { RoadCard } from "./road-card";
+import { StartCurtain } from "./start-curtain";
 import type { Ride } from "./ride/use-ride";
 import { useFullscreen, useWakeLock } from "./ride/use-screen";
 import { Sky } from "./scene/sky";
@@ -39,8 +40,9 @@ const RideScene = dynamic(() => import("./scene/ride-scene"), {
  * The ride, on a screen two metres from the saddle (ADR 0033): the
  * landscape behind everything, the strip of controls on top, and across
  * the bottom the three numbers and the session's bar — the part a rider
- * reads, and so the part that is large. A countdown before the first
- * pedal stroke; a question before the end; the screen kept awake. On
+ * reads, and so the part that is large. Before the first pedal stroke the
+ * route and one of the two riders turning for ten seconds, then a
+ * countdown (`StartCurtain`); a question before the end; the screen kept awake. On
  * request nothing but the rider and the land (ADR 0045): every number
  * gone, the little map only if it is shown; a tap or I brings them back,
  * and so does a trainer that drops out. And the cheat code (`useCheat`),
@@ -55,6 +57,8 @@ export function RideScreen({
   ride,
   devices,
   beeps,
+  loading,
+  onLoaded,
   counting,
   onGo,
   moment,
@@ -71,6 +75,9 @@ export function RideScreen({
   ride: Ride;
   devices: Devices;
   beeps: Beeps;
+  /** Rulle gets ready, ten seconds before the countdown (ADR 0076); then `onLoaded`. */
+  loading: boolean;
+  onLoaded: () => void;
   /** The countdown runs, and then `onGo` starts the ride. */
   counting: boolean;
   onGo: () => void;
@@ -92,6 +99,8 @@ export function RideScreen({
   // Nothing but the rider and the land: never remembered, a ride starts with its numbers.
   const [bare, setBare] = useState(false);
   const count = useCountdown(counting, beeps, onGo);
+  // Which of the two riders turns at the start while Rulle gets ready: either, by chance.
+  const [showcase] = useState<Rival>(() => (Math.random() < 0.5 ? "challenger" : "sprinter"));
   const fullscreen = useFullscreen();
   const [mapShown, toggleMap] = useMapShown();
   const [speedShown, toggleSpeed] = useSpeedShown();
@@ -159,7 +168,7 @@ export function RideScreen({
       <div className="absolute inset-0">
         <RideScene
           course={course}
-          moment={moment}
+          moment={loading ? (now) => ({ ...moment(now), showcase }) : moment}
           top={bare ? 0 : cover.top}
           bottom={bare ? 0 : cover.bottom}
           words={words}
@@ -277,17 +286,7 @@ export function RideScreen({
         )}
       </div>
 
-      {count > 0 && (
-        <div
-          role="status"
-          className="absolute inset-0 z-20 grid place-items-center bg-[var(--scrim)]"
-        >
-          <div className="bg-card flex flex-col items-center gap-2 rounded-2xl px-16 py-10 shadow-[var(--dialog-shadow)]">
-            <p className="text-ride-label font-medium">{t("countdown")}</p>
-            <p className="text-ride-hero leading-none font-semibold tabular-nums">{count}</p>
-          </div>
-        </div>
-      )}
+      <StartCurtain loading={loading} count={count} route={course.name} onLoaded={onLoaded} />
 
       <EndDialog open={ending} trial={trial} onOpenChange={setEnding} onEnd={ride.finish} />
     </div>
