@@ -8,10 +8,10 @@
     "aliases": ["BHS - PL Beton Bornholm", "BHS-PL BETON BORNHOLM"],
     "checkedOn": "2026-10-08",
     "colours": {
-      "body": "#161616",
-      "sleeves": "#2a7fd5",
+      "body": "#2a7fd5",
+      "sleeves": "#141414",
       "band": "#ffffff",
-      "pattern": "chest"
+      "pattern": "band"
     },
     "photo": "File:2026 NXT Classic men - start BHS-PL Beton Bornholm.jpg"
   },
@@ -25,8 +25,8 @@
     "aliases": ["Airtox - Carl Ras", "AIRTOX - CARL RAS"],
     "checkedOn": "2026-10-08",
     "colours": {
-      "body": "#1b4fae",
-      "sleeves": "#2f7be0"
+      "body": "#1b3f8a",
+      "sleeves": "#1b3f8a"
     },
     "photo": "File:PostNord Danmark Rundt 2024 - Airtox-Carl Ras.jpg"
   },
@@ -40,10 +40,10 @@
     "aliases": ["Team coloQuick", "TEAM COLOQUICK"],
     "checkedOn": "2026-10-08",
     "colours": {
-      "body": "#161616",
-      "sleeves": "#2f9e5b",
+      "body": "#141414",
+      "sleeves": "#141414",
       "band": "#ffffff",
-      "pattern": "stripes"
+      "pattern": "zebra"
     },
     "photo": "File:ColoQuick Cycling - Fyen Rundt 2023.jpg"
   },
@@ -56,8 +56,10 @@
     "aliases": ["Team Give Steele"],
     "checkedOn": "2026-10-08",
     "colours": {
-      "body": "#9fb8d3",
-      "sleeves": "#c8102e"
+      "body": "#2a1626",
+      "sleeves": "#2a1626",
+      "band": "#ffffff",
+      "pattern": "band"
     },
     "photo": "File:PostNord Danmark Rundt 2025 - Team Give Steel 01.jpg"
   },
@@ -68,7 +70,13 @@
     "country": "DK",
     "home": "Herning",
     "aliases": [],
-    "checkedOn": "2026-10-08"
+    "checkedOn": "2026-10-08",
+    "colours": {
+      "body": "#ffffff",
+      "sleeves": "#1c2f5a",
+      "band": "#1c2f5a",
+      "pattern": "chest"
+    }
   },
   {
     "id": "team-hac-elite",
@@ -77,7 +85,13 @@
     "country": "DK",
     "home": "Horsens",
     "aliases": [],
-    "checkedOn": "2026-10-08"
+    "checkedOn": "2026-10-08",
+    "colours": {
+      "body": "#ffffff",
+      "sleeves": "#ffffff",
+      "band": "#2b6fd0",
+      "pattern": "band"
+    }
   },
   {
     "id": "team-aalborg",
@@ -86,7 +100,11 @@
     "country": "DK",
     "home": "Aalborg",
     "aliases": [],
-    "checkedOn": "2026-10-08"
+    "checkedOn": "2026-10-08",
+    "colours": {
+      "body": "#d9232e",
+      "sleeves": "#d9232e"
+    }
   },
   {
     "id": "team-cranks",
@@ -95,7 +113,13 @@
     "country": "DK",
     "home": "Klampenborg",
     "aliases": [],
-    "checkedOn": "2026-10-08"
+    "checkedOn": "2026-10-08",
+    "colours": {
+      "body": "#5a4632",
+      "sleeves": "#e8e6e0",
+      "band": "#e8e6e0",
+      "pattern": "chest"
+    }
   },
   {
     "id": "reffen-coplay-giant-store",
@@ -106,10 +130,10 @@
     "aliases": [],
     "checkedOn": "2026-10-08",
     "colours": {
-      "body": "#ffffff",
-      "sleeves": "#1f5f3a",
-      "band": "#d7262e",
-      "pattern": "stripes"
+      "body": "#1f5f3a",
+      "sleeves": "#e8731a",
+      "band": "#ffffff",
+      "pattern": "chest"
     },
     "photo": "File:Reffen CO PLAY Giant Store - Fyen Rundt 2026.jpg"
   },
@@ -120,7 +144,11 @@
     "country": "DK",
     "home": "Aalborg",
     "aliases": [],
-    "checkedOn": "2026-10-08"
+    "checkedOn": "2026-10-08",
+    "colours": {
+      "body": "#d9232e",
+      "sleeves": "#d9232e"
+    }
   },
   {
     "id": "team-friis",
@@ -129,7 +157,11 @@
     "country": "DK",
     "home": "København",
     "aliases": [],
-    "checkedOn": "2026-10-08"
+    "checkedOn": "2026-10-08",
+    "colours": {
+      "body": "#2a6fc9",
+      "sleeves": "#6fb0e8"
+    }
   },
   {
     "id": "al-sydbank-quooker-njord-law",
@@ -138,7 +170,11 @@
     "country": "DK",
     "home": "Ordrup",
     "aliases": [],
-    "checkedOn": "2026-10-08"
+    "checkedOn": "2026-10-08",
+    "colours": {
+      "body": "#e58fc0",
+      "sleeves": "#f3bfdb"
+    }
   },
   {
     "id": "team-strada-elite-women",
@@ -146,7 +182,11 @@
     "level": "dcuEliteWomen",
     "country": "DK",
     "aliases": [],
-    "checkedOn": "2026-10-08"
+    "checkedOn": "2026-10-08",
+    "colours": {
+      "body": "#141414",
+      "sleeves": "#e07a1f"
+    }
   },
   {
     "id": "team-kvickly-odder",
@@ -155,7 +195,13 @@
     "country": "DK",
     "home": "Odder",
     "aliases": [],
-    "checkedOn": "2026-10-08"
+    "checkedOn": "2026-10-08",
+    "colours": {
+      "body": "#141414",
+      "sleeves": "#141414",
+      "band": "#d7262e",
+      "pattern": "band"
+    }
   },
   {
     "id": "team-improv-giant-store-cec-junior",
@@ -164,7 +210,13 @@
     "country": "DK",
     "home": "København",
     "aliases": ["Team IMPROV - Giant Store - CEC Junior"],
-    "checkedOn": "2026-10-08"
+    "checkedOn": "2026-10-08",
+    "colours": {
+      "body": "#141414",
+      "sleeves": "#e8ec2e",
+      "band": "#e8ec2e",
+      "pattern": "chest"
+    }
   },
   {
     "id": "ale-js-holstebro-junior",
@@ -173,7 +225,13 @@
     "country": "DK",
     "home": "Holstebro",
     "aliases": ["Alé JS Holstebro CC - Junior Team", "ALÈ JS Holstebro CC - Junior Team"],
-    "checkedOn": "2026-10-08"
+    "checkedOn": "2026-10-08",
+    "colours": {
+      "body": "#141414",
+      "sleeves": "#f28c28",
+      "band": "#f28c28",
+      "pattern": "chest"
+    }
   },
   {
     "id": "ceramicspeed-aros-herning-junior",
@@ -185,7 +243,13 @@
       "CeramicSpeed Aros forsikring Herning CK Junior",
       "CeramicSpeed Aros Forsikring Herning CK Junio"
     ],
-    "checkedOn": "2026-10-08"
+    "checkedOn": "2026-10-08",
+    "colours": {
+      "body": "#ffffff",
+      "sleeves": "#c8102e",
+      "band": "#4a9bd8",
+      "pattern": "chest"
+    }
   },
   {
     "id": "tscherning-cycling-academy",
@@ -194,7 +258,13 @@
     "country": "DK",
     "home": "Ordrup og Greve",
     "aliases": [],
-    "checkedOn": "2026-10-08"
+    "checkedOn": "2026-10-08",
+    "colours": {
+      "body": "#a8d59a",
+      "sleeves": "#ffffff",
+      "band": "#2b7a3f",
+      "pattern": "band"
+    }
   },
   {
     "id": "team-uno-x-carl-ras-roskilde-junior",
@@ -203,8 +273,8 @@
     "country": "DK",
     "home": "Roskilde",
     "colours": {
-      "body": "#f5d20a",
-      "sleeves": "#e3001b"
+      "body": "#1f5fd0",
+      "sleeves": "#1f5fd0"
     },
     "aliases": ["Team Uno-X - Carl Ras Roskilde Junior"],
     "checkedOn": "2026-10-08"
@@ -216,7 +286,13 @@
     "country": "DK",
     "home": "Rødovre",
     "aliases": [],
-    "checkedOn": "2026-10-08"
+    "checkedOn": "2026-10-08",
+    "colours": {
+      "body": "#141414",
+      "sleeves": "#141414",
+      "band": "#d7262e",
+      "pattern": "band"
+    }
   },
   {
     "id": "airtox-carl-ras-junior-women",
@@ -225,7 +301,13 @@
     "country": "DK",
     "home": "Odder",
     "aliases": ["Airtox  Carl Ras Junior Women"],
-    "checkedOn": "2026-10-08"
+    "checkedOn": "2026-10-08",
+    "colours": {
+      "body": "#ffffff",
+      "sleeves": "#2b7fd6",
+      "band": "#f2c200",
+      "pattern": "halves"
+    }
   },
   {
     "id": "lidl-trek-future-racing",

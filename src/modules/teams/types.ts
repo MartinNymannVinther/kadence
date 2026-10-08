@@ -23,8 +23,8 @@ export type TeamLevel = (typeof TEAM_LEVELS)[number];
 
 const hex = z.string().regex(/^#[0-9a-f]{6}$/i, "a hex colour");
 
-/** How the jersey's third colour is laid on: a chest band, stripes, the upper body, or one half. */
-export const JERSEY_PATTERNS = ["band", "stripes", "chest", "halves"] as const;
+/** How the jersey's third colour is laid on: a chest band, stripes across or down, the upper body, or one half. */
+export const JERSEY_PATTERNS = ["band", "stripes", "zebra", "chest", "halves"] as const;
 export type JerseyPattern = (typeof JERSEY_PATTERNS)[number];
 
 export const jerseyColoursSchema = z.object({

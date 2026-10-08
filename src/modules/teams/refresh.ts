@@ -1,7 +1,7 @@
 import { env } from "@/core/env";
 import { fetchDcu } from "./dcu/fetch";
 import { refreshPhotos } from "./photos";
-import { readSnapshot, writeSnapshot } from "./snapshot";
+import { readSnapshot, teamsDir, writeSnapshot } from "./snapshot";
 import { SourceError } from "./http";
 import type { SourceRead, TeamsSnapshot } from "./types";
 import { fetchUci } from "./uci/fetch";
@@ -19,6 +19,11 @@ import { fetchUci } from "./uci/fetch";
  * A source that fails keeps its last good answer and the word for why
  * (`error`), both shown on the page as "sidst hentet" and "kunne ikke
  * hentes". The DCU is read only when `TEAMS_DCU` is on.
+ *
+ * The disk may refuse: a volume the app's user cannot write to, a full
+ * disk. Then the snapshot lives in this process alone (`latest`), the
+ * page is served from it, and the log says why — the page never answers
+ * 500 for a cache it could not keep.
  */
 
 export const STALE_AFTER_MS = 24 * 60 * 60 * 1000;
@@ -26,6 +31,8 @@ export const STALE_AFTER_MS = 24 * 60 * 60 * 1000;
 export const RETRY_AFTER_MS = 60 * 60 * 1000;
 
 let running: Promise<TeamsSnapshot> | null = null;
+/** What this process last read, for when the disk would not keep it. */
+let latest: TeamsSnapshot | null = null;
 
 /** Whether `read` wants reading again at `now`. Pure. */
 export function wantsRefresh(read: SourceRead<unknown>, now: number): boolean {
@@ -62,7 +69,8 @@ export function refreshTeams(
 ): Promise<TeamsSnapshot> {
   if (running) return running;
   running = (async () => {
-    const previous = await readSnapshot();
+    const onDisk = await readSnapshot();
+    const previous = onDisk.uci.fetchedAt || onDisk.dcu.fetchedAt ? onDisk : (latest ?? onDisk);
     const today = now.toISOString().slice(0, 10);
     const uci = wantsRefresh(previous.uci, now.getTime())
       ? await readSource(previous.uci, () => fetchUci(fetchFn, today), now)
@@ -77,8 +85,14 @@ export function refreshTeams(
         ? await refreshPhotos(fetchFn, previous.photos ?? {}, now)
         : previous.photos;
     const next: TeamsSnapshot = { version: 1, uci, dcu, photos };
-    if (uci !== previous.uci || dcu !== previous.dcu || photos !== previous.photos)
-      await writeSnapshot(next);
+    latest = next;
+    if (uci !== previous.uci || dcu !== previous.dcu || photos !== previous.photos) {
+      try {
+        await writeSnapshot(next);
+      } catch (error) {
+        console.warn(`teams: snapshot not written to ${teamsDir()}: ${describe(error)}`);
+      }
+    }
     return next;
   })().finally(() => {
     running = null;
@@ -93,7 +107,9 @@ export function refreshTeams(
 export async function teamsSnapshot(
   now = new Date(),
 ): Promise<{ snapshot: TeamsSnapshot; refresh: Promise<TeamsSnapshot> | null; wait: boolean }> {
-  const snapshot = await readSnapshot();
+  const onDisk = await readSnapshot();
+  // The disk's copy when it has one; else what this process last read.
+  const snapshot = onDisk.uci.fetchedAt || onDisk.dcu.fetchedAt ? onDisk : (latest ?? onDisk);
   const dcuOn = env.TEAMS_DCU === "on";
   const stale =
     wantsRefresh(snapshot.uci, now.getTime()) ||

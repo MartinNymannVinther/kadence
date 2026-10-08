@@ -67,18 +67,20 @@ on, and Martin meets DCU in the week of 12 October 2026.
 ## What no source lists
 
 - **Jerseys.** No source has a team's colours in a form a machine can
-  read. Kadence draws one jersey from colours and a pattern noted in
-  `src/modules/teams/registry/teams.json` and says plainly which teams'
-  colours have not been checked. On 8 October 2026 the colours of seven
-  teams were read from photographs on Wikimedia Commons (below) —
-  ColoQuick's black with white stripes and green sleeves, Airtox–Carl
-  Ras's blue, BHS–PL Beton Bornholm's white chest over black with blue
-  sleeves, Give Steel's steel blue with red, Reffen CO:PLAY's white
-  with green and red, Lidl-Trek Future Racing's blue with the yellow
-  band, General Store–Essegibi's lime with dark green — and four from
-  their sponsors' well-known kits (Uno-X, EF, Red Bull–Bora, Decathlon
-  AG2R). The rest wait for someone who knows; the junior teams have no
-  photographs on Commons.
+  read, but Cykling Danmark publishes the **approved kit designs of
+  every registered Danish team** as one PDF a season
+  (`cyklingdanmark.dk/fileadmin/files/PDFer/Godkendt_Toejdesign/Danske_Teams_godkendte_toej_design_2026.pdf`,
+  17 pages, front, back and side of each jersey; Martin pointed to it
+  on 8 October 2026). Kadence draws one jersey from colours and a
+  pattern noted in `src/modules/teams/registry/teams.json`, and on 8
+  October 2026 every Danish team's colours were read from that PDF —
+  Airtox–Carl Ras navy, ColoQuick black with white vertical stripes,
+  Give Steel aubergine with a white band, Aalborg red, Kvickly Odder
+  black with a red band, Uno-X Roskilde blue, and so on — with the
+  foreign teams' from Commons photographs (below) or their sponsors'
+  well-known kits. The designs themselves are the teams' and DCU's; the
+  page draws from their colours and shows none of them. Five foreign
+  teams still wear neutral jerseys.
 - **Photographs.** Wikimedia Commons has team photographs under
   licences that allow a copy with credit — CC BY-SA 4.0 and CC0, most by
   Danish photographers at Fyen Rundt and Danmark Rundt, some from 2026

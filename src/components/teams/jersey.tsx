@@ -87,6 +87,15 @@ function Pattern({ pattern }: { pattern: NonNullable<JerseyColours["pattern"]> }
           <rect x="20" y="78" width="80" height="6" />
         </>
       );
+    case "zebra":
+      return (
+        <>
+          <rect x="36" y="50" width="7" height="60" />
+          <rect x="50" y="50" width="7" height="60" />
+          <rect x="64" y="50" width="7" height="60" />
+          <rect x="78" y="50" width="7" height="60" />
+        </>
+      );
     case "chest":
       return <rect x="20" y="0" width="80" height="52" />;
     case "halves":

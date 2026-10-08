@@ -31,7 +31,9 @@ export default async function TeamsGuidePage() {
   const { snapshot, refresh, wait } = await teamsSnapshot();
   let shown = snapshot;
   if (refresh) {
-    if (wait) shown = await refresh;
+    // Anything unforeseen in a read is the log's, not the reader's: the
+    // page shows what there is and says what was not read.
+    if (wait) shown = await refresh.catch(() => snapshot);
     else after(() => refresh.catch(() => undefined));
   }
   const view = buildTeamsView(shown, dcuOn);

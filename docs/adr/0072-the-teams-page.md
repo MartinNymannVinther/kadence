@@ -105,11 +105,17 @@ an API or terms for reuse; DCU has not yet said yes to being read (ADR
   the page with its last snapshot and the word that the latest read
   failed, until the reader is fixed. The fixtures in `tests/teams` are
   the shapes as they were on 8 October 2026.
-- **Colours are a person's work.** Eleven teams have colours — seven
-  read from Commons photographs, four from their sponsors' well-known
-  kits; the rest, the junior teams above all, wear neutral jerseys until
+- **Colours are a person's work.** Every Danish team has colours, read
+  from Cykling Danmark's PDF of approved kit designs for the season;
+  five foreign teams have theirs from Commons photographs or their
+  sponsors' well-known kits, and the rest wear neutral jerseys until
   someone who knows fills the registry in. The page says which is which
-  rather than guessing.
+  rather than guessing. A new season means reading the new PDF once.
+- **The cache may not be writable.** A named volume made before the
+  image owned `/data/teams` is root's, and the app cannot write into it.
+  The page then keeps its snapshot in memory, logs why, and reads the
+  sources again after a restart; docs/deploy.md says how to fix the
+  volume once. The page never answers 500 for a cache it could not keep.
 - **A photograph is a person in a jersey.** The photographs are of
   teams at public races, published by their photographers under licences
   made for reuse, and show the team as a team; still, a rider who wants
