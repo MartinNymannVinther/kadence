@@ -88,6 +88,11 @@ services:
       CLUB_CHAMPIONSHIP: ${CLUB_CHAMPIONSHIP:-}
       CALC_ENERGY: ${CALC_ENERGY:-}
       GUIDE_FOOD: ${GUIDE_FOOD:-}
+      GUIDE_TEAMS: ${GUIDE_TEAMS:-}
+      # The teams page (ADR 0072): whether Cykling Danmark is read. What
+      # was read is kept in the kadence-teams volume below.
+      TEAMS_DCU: ${TEAMS_DCU:-}
+      TEAMS_DIR: /data/teams
       # Reminders by web push (docs/adr/0060); nothing is sent without the
       # key pair. The private key is a secret: Coolify only.
       PUSH_PUBLIC_KEY: ${PUSH_PUBLIC_KEY:-}
@@ -115,6 +120,7 @@ services:
       MAP_FILE: /data/map/denmark.pmtiles
     volumes:
       - kadence-map:/data/map:ro
+      - kadence-teams:/data/teams
     # No published port. Coolify's proxy reaches the app over the compose
     # network and terminates TLS in front of it; binding 0.0.0.0:3000 as
     # well would put the same app on the VPS's public address in cleartext,
@@ -147,3 +153,4 @@ services:
 volumes:
   kadence-pgdata:
   kadence-map:
+  kadence-teams:

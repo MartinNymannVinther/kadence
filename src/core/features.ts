@@ -15,13 +15,19 @@ export const FEATURES = [
   "clubChampionship",
   "energyCalculator",
   "foodGuide",
+  "teamsGuide",
 ] as const;
 export type Feature = (typeof FEATURES)[number];
 export type Features = Record<Feature, boolean>;
 
 type FeatureEnv = Pick<
   typeof env,
-  "RULLE_WORLD" | "COACHES_ROOM" | "CLUB_CHAMPIONSHIP" | "CALC_ENERGY" | "GUIDE_FOOD"
+  | "RULLE_WORLD"
+  | "COACHES_ROOM"
+  | "CLUB_CHAMPIONSHIP"
+  | "CALC_ENERGY"
+  | "GUIDE_FOOD"
+  | "GUIDE_TEAMS"
 >;
 
 /** The installation's features from its environment. Pure, for the tests. */
@@ -32,6 +38,7 @@ export function featuresFrom(source: FeatureEnv): Features {
     clubChampionship: source.CLUB_CHAMPIONSHIP === "on",
     energyCalculator: source.CALC_ENERGY === "on",
     foodGuide: source.GUIDE_FOOD === "on",
+    teamsGuide: source.GUIDE_TEAMS === "on",
   };
 }
 
@@ -55,6 +62,7 @@ export const PARKED_PATHS: ReadonlyArray<{ path: string; feature: Feature }> = [
   { path: "/club", feature: "clubChampionship" },
   { path: "/calculators/energy", feature: "energyCalculator" },
   { path: "/guides/food", feature: "foodGuide" },
+  { path: "/guides/teams", feature: "teamsGuide" },
 ];
 
 /**

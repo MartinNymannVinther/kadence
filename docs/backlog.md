@@ -23,6 +23,7 @@ eller mere. Rækkefølgen inden for en prioritet er den anbefalede.
 
 P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter #21 og #22). Hvert spor bygges i sit eget worktree med egen database og flettes ind på P1-grenen, når det er grønt. Statusloggen nyeste først:
 
+- **8. okt.** Ø-09 holdsiden er bygget: `/guides/teams` læser UCI's U23-verdensrangliste og Nations' Cup fra DataRide og Cykling Danmarks holdliste og pointlister én gang i døgnet til et øjebliksbillede på disk, tegner trøjer ud fra registret, og viser kontakt som DCU selv offentliggør den. Fundet undervejs: UCI har ingen individuel juniorrangliste på landevej, så juniorernes point er DCU's. Forbrug: ca. 420k tokens.
 - **8. okt.** Ø-08 "Byg med AI" for et program er færdig: en samtale i programbyggeren, hvor hvert svar lægges direkte i byggeren, med Fortryd. Prøvet mod en lokal Ollama-model (qwen2.5-coder:14b) i to ture plus fortryd. Plan B (holdsiden, Ø-09) er godkendt med DCU-læser bag flag og point for U19/U23. Forbrug: ca. 250k tokens.
 - **8. okt.** Tre rettelser til øvelser og programmer på Martins bud (Ø-07): stangen tegnes set fra siden på figurer i profil (en skive med stangens stump i), programmet "Styrke i rummet" hedder nu "Træning med udstyr", og print til PDF giver sammenhængende sider på den åbne side, i appen og i den hentede fil — et kort deles aldrig, en dels navn står ved sine kort, og der er ikke længere tvungne sideskift mellem delene. Desuden en lille tegning af hver øvelse i "sammensæt dit eget". Forbrug: ca. 160k tokens.
 - **8. okt.** P2 er færdig (alle 16 stories undtagen P2-01, som venter) sammen med Ø-06: alt er flettet ind på `feat/p2-vinteren`, hele suiten er grøn (2.695 tests, 1.417 enhedstests), build kompilerer, og PR'en er klar til Martin. Samlet forbrug for sporene: ca. 2,4M tokens mod et skøn på 2,5–4,3M for de samme stories. Rester er skrevet ind som P2-18.
@@ -157,7 +158,7 @@ Rammen er:
 | Ø-06  | Øvelser og programmer med udstyr                                             | Ø    | M    | 400–600k     | Opus 5.5  |                   | Færdig       |
 | Ø-07  | Stangen fra siden, nyt programnavn og pæne sideskift ved print               | Ø    | S    | 100–200k     | Opus 5.5  | Ø-06              | Færdig       |
 | Ø-08  | Byg et program med AI, i samtale                                             | Ø    | M    | 400–600k     | Opus 5.5  | Ø-04              | Færdig       |
-| Ø-09  | Holdsiden: Junior- og U23-hold i Danmark, med trøjer, kontakt og point       | Ø    | L    | 500–800k     | Opus 5.5  |                   | Godkendt     |
+| Ø-09  | Holdsiden: Junior- og U23-hold i Danmark, med trøjer, kontakt og point       | Ø    | L    | 500–800k     | Opus 5.5  |                   | Færdig       |
 | N-01  | Navigation efter opgaver                                                     | N    | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
 
 ---
@@ -1260,7 +1261,7 @@ der, **så** vejen videre er til at få øje på.
 
 **Tokens:** ca. 500–800k · **Model:** Opus 5.5 (`claude-opus-5-5`), kildearbejdet skal være rigtigt.
 
-**Status:** Godkendt 8. oktober, i gang efter Ø-08.
+**Status:** Færdig 8. oktober. `src/modules/teams/` med UCI-læser (`uci/`), DCU-læser (`dcu/`, bag `TEAMS_DCU`), registret `registry/teams.json`, øjebliksbillede i `TEAMS_DIR`, opfriskning efter alder med lås, og visningen `view.ts`; siden `/guides/teams` med tegnet trøje, kort pr. hold og kildenote. 25 tests mod anonymiserede fixtures fra 8. oktober. Fundet: UCI har ingen individuel juniorrangliste på landevej — juniorernes point er DCU's; udenlandske hold findes i data (UCI's U23-liste og DCU's holdkolonne), ikke i hukommelsen. Rester til en Ø-10: trøjefarver for de øvrige hold (fem er sat efter sponsorernes kendte dragter), Wikidata som daglig kilde til hjemmesider, og Commons-fotos kopieret til installationen med kreditering. Forbrug: ca. 420k tokens.
 
 ## A — afklaringer uden kode
 
