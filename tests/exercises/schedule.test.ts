@@ -17,9 +17,10 @@ import { PLANK, seedTeam, type Team } from "./team-fixtures";
  * "Læg i kalenderen": a coach lays a programme — Kadence's own or the
  * team's — into the calendars of the riders they choose, as a strength
  * session whose exercises carry their references, with minutes estimated
- * from the doses, through the calendar's own scheduler. A rider and a
- * parent cannot, and no team can lay another team's programme or reach
- * another team's riders.
+ * from the doses, through the calendar's own scheduler. A rider lays one
+ * into their own calendar and nobody else's (docs/adr/0078), a parent
+ * cannot, and no team can lay another team's programme or reach another
+ * team's riders.
  */
 
 let admin: Pool;
@@ -197,12 +198,32 @@ describe("a coach lays the team's own programme", () => {
   });
 });
 
-describe("who may not", () => {
-  it("is a rider, even for their own calendar, and a parent", async () => {
+describe("a rider lays a programme", () => {
+  it("into their own calendar, as one strength session of their own", async () => {
     const before = await count(RIDER);
-    for (const who of [a.rider, a.parent]) {
-      await expect(lay(who)).rejects.toMatchObject({ code: "forbidden" });
-    }
+    const { ids } = await lay(a.rider, { onDate: "2026-11-05" });
+    expect(ids).toHaveLength(1);
+    const [row] = await sessions(ids);
+    expect(row).toMatchObject({ rider_id: RIDER, on_date: "2026-11-05", sport: "strength" });
+    expect(await count(RIDER)).toBe(before + 1);
+  });
+
+  it("but not into anyone else's, nor for themselves and another at once", async () => {
+    const before = await count(SECOND);
+    await expect(lay(a.rider, { riderIds: [SECOND] })).rejects.toMatchObject({
+      code: "forbidden",
+    });
+    await expect(lay(a.rider, { riderIds: [RIDER, SECOND] })).rejects.toMatchObject({
+      code: "forbidden",
+    });
+    expect(await count(SECOND)).toBe(before);
+  });
+});
+
+describe("who may not", () => {
+  it("is a parent, even for their own child", async () => {
+    const before = await count(RIDER);
+    await expect(lay(a.parent)).rejects.toMatchObject({ code: "forbidden" });
     expect(await count(RIDER)).toBe(before);
   });
 

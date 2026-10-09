@@ -1,7 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Archive, ArchiveRestore, CalendarPlus, Copy, Download, Pencil } from "lucide-react";
+import {
+  Archive,
+  ArchiveRestore,
+  CalendarPlus,
+  Copy,
+  Download,
+  Pencil,
+  Share2,
+} from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRun } from "@/components/common/use-run";
 import type { RiderOption } from "@/components/calendar/types";
@@ -15,9 +23,11 @@ import { PrintButton } from "./print-button";
 import { ProgramScheduleDialog } from "./program-schedule-dialog";
 
 /**
- * What can be done with a programme: lay it into riders' calendars (a
- * coach), take it along as a file or on paper (everyone), and for a coach
- * change the team's own, copy any to adapt, and put the team's away.
+ * What can be done with a programme: lay it into riders' calendars — a
+ * coach for any of them, a rider for themselves (docs/adr/0078) — take it
+ * along as a file or on paper (everyone), share one of Kadence's own as
+ * an open page, and for a coach change the team's own, copy any to adapt,
+ * and put the team's away.
  */
 export function ProgramActions({
   program,
@@ -47,7 +57,7 @@ export function ProgramActions({
 
   return (
     <div className="flex flex-wrap gap-1.5 print:hidden">
-      {isCoach && !program.archived && (
+      {riders.length > 0 && !program.archived && (
         <Button size="sm" className={small} onClick={() => setScheduling(true)}>
           <CalendarPlus data-icon="inline-start" />
           {schedule("button")}
@@ -62,6 +72,16 @@ export function ProgramActions({
         {t("download")}
       </a>
       <PrintButton title={program.name} label={t("print")} />
+      {!program.team && (
+        // Kadence's own may be shared with anyone; a team's own stays in the team (ADR 0067).
+        <Link
+          href={{ pathname: "/guides/programs", query: { program: program.ref } }}
+          className={cn(buttonVariants({ variant: "outline", size: "sm" }), small)}
+        >
+          <Share2 data-icon="inline-start" />
+          {t("share")}
+        </Link>
+      )}
       {isCoach && program.team && (
         <Link
           href={`${programHref(program.ref)}/edit`}

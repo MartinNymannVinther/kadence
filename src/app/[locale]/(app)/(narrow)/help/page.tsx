@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { BookOpen, HeartHandshake } from "lucide-react";
+import { BookOpen, BookText, HeartHandshake } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { GuideDoor } from "@/components/guides/guide-door";
 import { TopicCards } from "@/components/guides/topic-cards";
@@ -12,9 +12,14 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("title") };
 }
 
+/** The manual lives under public/, as a document anyone may keep (docs/adr/0079). */
+const MANUAL_PDF = "/brugervejledning/kadence-brugervejledning.pdf";
+const MANUAL_PAGE = "/brugervejledning/index.html";
+
 const HOW_TO = [
   "roles",
   "password",
+  "words",
   "overview",
   "calendar",
   "search",
@@ -40,9 +45,11 @@ const HOW_TO = [
 ] as const;
 
 /**
- * "Viden og hjælp": knowledge behind one door. First the two guides — the
- * coach guide for everyone but a parent who is nothing else, and the
- * parents' guide for everyone — then "Viden om sporten", the open guides
+ * "Viden og hjælp": knowledge behind one door. First the manual — the
+ * whole of Kadence for every role, as a PDF to keep or a page to read
+ * (docs/adr/0079) — and the two guides: the coach guide for everyone but
+ * a parent who is nothing else, and the parents' guide for everyone. Then
+ * "Viden om sporten", the open guides
  * and calculators this installation shows (ADR 0047, 0057), which anyone
  * can read without signing in. Then how the tool works, in the rhythm a
  * season lives in: who may do what, the coach's Overblik, the calendar,
@@ -67,7 +74,24 @@ export default async function HelpPage() {
       <h1 className="text-2xl font-semibold">{t("title")}</h1>
       <p className="text-meta mt-1 text-sm">{t("intro")}</p>
 
-      <div className="mt-6 grid gap-3 sm:grid-cols-2">
+      <div className="mt-6 flex flex-col gap-1.5">
+        <GuideDoor
+          href={MANUAL_PDF}
+          icon={BookText}
+          title={t("manual.title")}
+          body={t("manual.body")}
+          open={t("manual.open")}
+          file
+        />
+        <a
+          href={MANUAL_PAGE}
+          className="focus-ring text-meta hover:text-foreground flex min-h-10 w-fit items-center px-1 text-2sm underline-offset-4 hover:underline"
+        >
+          {t("manual.read")}
+        </a>
+      </div>
+
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {!parentOnly && (
           <GuideDoor
             href="/help/coach"

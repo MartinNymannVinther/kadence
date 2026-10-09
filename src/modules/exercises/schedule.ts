@@ -1,6 +1,6 @@
 import { Refused } from "@/core/action";
-import { withOrgContext, type OrgContext } from "@/core/db/tenant";
-import { requireCoach } from "@/modules/team/access";
+import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
+import { whoAmIIn } from "@/modules/team/access";
 import { createGroupSessionsIn } from "@/modules/training/group";
 import type { Repeat } from "@/modules/training/recurrence";
 import { MAX_TITLE } from "@/modules/training/vocabulary";
@@ -21,8 +21,10 @@ import type { ProgramView } from "./types";
  * calendar's own scheduler (`createGroupSessionsIn`) — the same group
  * keys, series, limits and checks as every other session.
  *
- * A coach's, for one rider as for many: a rider plans their own sessions
- * from the library, and a programme is the team's to hand out.
+ * A coach's for one rider as for many; a rider's for themselves alone
+ * (docs/adr/0078), as a rider plans their own sessions (ADR 0050). The
+ * programme laid is still the team's or Kadence's: what a rider cannot
+ * do is hand it to anyone else.
  */
 
 export type ScheduleProgramInput = {
@@ -61,6 +63,19 @@ async function programToLay(
   });
 }
 
+/**
+ * Who may lay a programme into whose calendar: a coach into any rider's
+ * on the team, a rider into their own and nobody else's, a parent into
+ * none. The scheduler under it checks each rider again (`createSessionsIn`).
+ */
+async function requireLayFor(tx: AppTransaction, ctx: OrgContext, riderIds: string[]) {
+  const me = await whoAmIIn(tx, ctx);
+  if (!me) throw new Refused("forbidden");
+  if (me.isCoach) return;
+  const own = me.rider?.id;
+  if (!own || riderIds.length !== 1 || riderIds[0] !== own) throw new Refused("forbidden");
+}
+
 export async function scheduleProgram(
   ctx: OrgContext,
   input: ScheduleProgramInput,
@@ -72,7 +87,7 @@ export async function scheduleProgram(
   const count = structure.exercises.length;
   if (count === 0 || count > MAX_SESSION_EXERCISES) throw new Refused("invalid");
   return withOrgContext(ctx, async (tx) => {
-    await requireCoach(tx, ctx);
+    await requireLayFor(tx, ctx, input.riderIds);
     const { ids } = await createGroupSessionsIn(
       tx,
       ctx,

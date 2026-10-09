@@ -73,6 +73,15 @@ export default async function ProgramsPage({
             {tl("programs")}
           </h2>
           <p className="text-meta text-2sm">{tl("programsHint")}</p>
+          <p className="text-meta text-2sm">
+            {tl("openPageLine")}{" "}
+            <Link
+              href="/guides/programs"
+              className="focus-ring text-primary font-medium underline-offset-4 hover:underline"
+            >
+              {tl("openPageLink")}
+            </Link>
+          </p>
         </div>
         <ProgramList programs={catalogue.programs} />
       </section>

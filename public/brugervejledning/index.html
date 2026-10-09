@@ -1,0 +1,1215 @@
+<!doctype html>
+<html lang="da">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kadence · Brugervejledning</title>
+    <meta
+      name="description"
+      content="Brugervejledning til Kadence: træningsplanlægning for unge landevejsryttere, deres trænere og forældre."
+    />
+    <style>
+      /* The manual as a document (docs/adr/0079): Kadence's own paper, moss and
+         Archivo, laid out for A4 as much as for a screen. The fonts are the
+         app's own files, so the page needs nothing from outside. */
+      @font-face {
+        font-family: "Archivo";
+        font-style: normal;
+        font-weight: 400 700;
+        font-display: swap;
+        src: url("../fonts/archivo-latin.woff2") format("woff2");
+      }
+      :root {
+        --paper: #f7f5f1;
+        --card: #fffdfa;
+        --ink: #24221e;
+        --moss: #4a6b53;
+        --moss-dark: #31513c;
+        --moss-tint: #e4ebe4;
+        --sand: #c9c2b6;
+        --meta: #65635e;
+        --label: #6e6b67;
+        --hairline: #eae5dc;
+        --sticky: #f8eab0;
+        --sticky-ink: #3d3625;
+        --clay: #8c5b3e;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family:
+          "Archivo",
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+        font-size: 15px;
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+      }
+      a {
+        color: var(--moss-dark);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      p {
+        margin: 0 0 0.85em;
+      }
+      h1,
+      h2,
+      h3,
+      h4 {
+        margin: 0;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        line-height: 1.15;
+      }
+      ul,
+      ol {
+        margin: 0 0 1em;
+        padding-left: 1.3em;
+      }
+      li {
+        margin: 0.25em 0;
+      }
+      strong {
+        font-weight: 600;
+      }
+      code {
+        font-family: "Geist Mono", ui-monospace, Menlo, monospace;
+        font-size: 0.9em;
+        background: var(--hairline);
+        padding: 0.05em 0.35em;
+        border-radius: 4px;
+      }
+      kbd {
+        font: inherit;
+        font-size: 0.85em;
+        border: 1px solid var(--sand);
+        border-radius: 5px;
+        padding: 0 0.4em;
+        background: var(--card);
+      }
+
+      /* ---------- The screen ---------- */
+      .bar {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 10px 20px;
+        background: rgba(247, 245, 241, 0.92);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--hairline);
+      }
+      .bar .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        font-weight: 600;
+        letter-spacing: -0.03em;
+        font-size: 17px;
+        color: var(--ink);
+      }
+      .bar .brand svg {
+        height: 18px;
+        width: auto;
+      }
+      .bar .brand span.muted {
+        color: var(--meta);
+        font-weight: 400;
+        letter-spacing: 0;
+        font-size: 14px;
+      }
+      .bar .actions {
+        display: flex;
+        gap: 8px;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        height: 36px;
+        padding: 0 14px;
+        border-radius: 10px;
+        border: 1px solid transparent;
+        background: var(--moss);
+        color: var(--paper);
+        font: inherit;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .btn:hover {
+        background: var(--moss-dark);
+        text-decoration: none;
+      }
+      .btn.outline {
+        background: var(--card);
+        color: var(--ink);
+        border-color: #8f8c86;
+      }
+      .btn.outline:hover {
+        background: #f2efe9;
+      }
+      .doc {
+        max-width: 780px;
+        margin: 0 auto;
+        padding: 28px 24px 96px;
+      }
+
+      /* ---------- The cover ---------- */
+      .cover {
+        padding: 56px 0 40px;
+        border-bottom: 1px solid var(--hairline);
+        margin-bottom: 36px;
+      }
+      .cover .mark svg {
+        height: 44px;
+        width: auto;
+      }
+      .cover .product {
+        margin-top: 22px;
+        font-size: 44px;
+        font-weight: 600;
+        letter-spacing: -0.04em;
+        line-height: 1;
+      }
+      .cover h1 {
+        margin-top: 12px;
+        font-size: 30px;
+        color: var(--moss-dark);
+      }
+      .cover .lede {
+        margin-top: 18px;
+        max-width: 560px;
+        font-size: 17px;
+        color: var(--meta);
+      }
+      .cover .meta {
+        margin-top: 28px;
+        font-size: 13px;
+        color: var(--label);
+      }
+      .cover .meta span + span::before {
+        content: " · ";
+      }
+
+      /* ---------- Contents ---------- */
+      .toc {
+        margin-bottom: 44px;
+      }
+      .toc h2 {
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--label);
+        margin-bottom: 10px;
+      }
+      .toc ol {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        counter-reset: chapter;
+        columns: 2;
+        column-gap: 32px;
+      }
+      .toc li {
+        counter-increment: chapter;
+        break-inside: avoid;
+        margin: 0;
+        padding: 6px 0;
+        border-top: 1px solid var(--hairline);
+        font-size: 14.5px;
+      }
+      .toc li::before {
+        content: counter(chapter) ". ";
+        color: var(--label);
+        font-variant-numeric: tabular-nums;
+      }
+      .toc li a {
+        color: var(--ink);
+      }
+
+      /* ---------- Chapters ---------- */
+      .chapter {
+        margin-bottom: 52px;
+      }
+      .chapter > h2 {
+        font-size: 28px;
+        margin-bottom: 6px;
+      }
+      .chapter > .kicker {
+        color: var(--moss-dark);
+        font-size: 13px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 8px;
+      }
+      .chapter > .intro {
+        color: var(--meta);
+        font-size: 16px;
+        margin-bottom: 20px;
+      }
+      .chapter h3 {
+        font-size: 19px;
+        margin: 28px 0 8px;
+      }
+      .chapter h4 {
+        font-size: 15px;
+        margin: 18px 0 6px;
+      }
+      figure {
+        margin: 18px 0 22px;
+        break-inside: avoid;
+      }
+      figure img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border: 1px solid var(--hairline);
+        border-radius: 12px;
+        background: var(--card);
+      }
+      figure.phone {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 14px;
+        align-items: start;
+      }
+      figure.phone img {
+        border-radius: 22px;
+      }
+      figure.phone figcaption {
+        grid-column: 1 / -1;
+      }
+      figcaption {
+        margin-top: 8px;
+        font-size: 13px;
+        color: var(--meta);
+        line-height: 1.45;
+      }
+      .note {
+        background: var(--moss-tint);
+        border: 1px solid rgba(74, 107, 83, 0.25);
+        border-radius: 12px;
+        padding: 12px 16px;
+        margin: 14px 0 18px;
+        font-size: 14px;
+        break-inside: avoid;
+      }
+      .note.tip {
+        background: var(--sticky);
+        color: var(--sticky-ink);
+        border-color: rgba(61, 54, 37, 0.15);
+      }
+      .note strong {
+        display: block;
+        margin-bottom: 2px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        margin: 10px 0 20px;
+        background: var(--card);
+        border: 1px solid var(--hairline);
+        border-radius: 10px;
+        overflow: hidden;
+        break-inside: avoid;
+      }
+      th,
+      td {
+        text-align: left;
+        vertical-align: top;
+        padding: 8px 12px;
+        border-top: 1px solid var(--hairline);
+      }
+      th {
+        background: #f2efe9;
+        color: var(--label);
+        font-weight: 600;
+        font-size: 12.5px;
+        border-top: 0;
+      }
+      td:first-child {
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      dl {
+        margin: 0 0 1em;
+      }
+      dt {
+        font-weight: 600;
+        margin-top: 10px;
+      }
+      dd {
+        margin: 2px 0 0;
+        color: var(--ink);
+      }
+      .roles {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+        margin: 16px 0 22px;
+      }
+      .role {
+        background: var(--card);
+        border: 1px solid var(--hairline);
+        border-radius: 12px;
+        padding: 14px 16px;
+        break-inside: avoid;
+      }
+      .role b {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 4px;
+        color: var(--moss-dark);
+      }
+      .role span {
+        font-size: 14px;
+        color: var(--meta);
+      }
+      .foot {
+        margin-top: 48px;
+        padding-top: 18px;
+        border-top: 1px solid var(--hairline);
+        color: var(--meta);
+        font-size: 13px;
+      }
+
+      /* ---------- Paper ---------- */
+      @page {
+        size: A4;
+        margin: 18mm 17mm 20mm;
+        @bottom-left {
+          content: "Kadence · Brugervejledning";
+          font-family: "Archivo", sans-serif;
+          font-size: 9pt;
+          color: #65635e;
+        }
+        @bottom-right {
+          content: counter(page);
+          font-family: "Archivo", sans-serif;
+          font-size: 9pt;
+          color: #65635e;
+        }
+      }
+      @page :first {
+        @bottom-left {
+          content: "";
+        }
+        @bottom-right {
+          content: "";
+        }
+      }
+      @media print {
+        body {
+          background: #fff;
+          font-size: 11pt;
+          line-height: 1.45;
+        }
+        .bar {
+          display: none;
+        }
+        .doc {
+          max-width: none;
+          padding: 0;
+        }
+        .cover {
+          min-height: 230mm;
+          border-bottom: 0;
+          margin-bottom: 0;
+          padding-top: 60mm;
+          break-after: page;
+        }
+        .cover .product {
+          font-size: 48pt;
+        }
+        .cover h1 {
+          font-size: 24pt;
+        }
+        .cover .lede {
+          font-size: 13pt;
+        }
+        .toc {
+          margin-bottom: 14mm;
+        }
+        .chapter {
+          break-before: page;
+          margin-bottom: 0;
+        }
+        /* The first chapter follows the contents on the same page. */
+        .chapter#hvad {
+          break-before: auto;
+        }
+        .chapter > h2 {
+          font-size: 22pt;
+        }
+        .chapter h3 {
+          font-size: 14pt;
+          break-after: avoid;
+        }
+        .chapter h4 {
+          break-after: avoid;
+        }
+        figure img {
+          border-radius: 6px;
+        }
+        figure.phone img {
+          border-radius: 12px;
+        }
+        a {
+          color: inherit;
+        }
+        .note,
+        table,
+        .role,
+        figure {
+          break-inside: avoid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bar">
+      <a class="brand" href="#top">
+        <svg viewBox="0 0 38 34" aria-hidden="true">
+          <rect x="0" y="0" width="38" height="8" rx="2.5" fill="#4a6b53" />
+          <rect x="0" y="13" width="25" height="8" rx="2.5" fill="#7a9a80" />
+          <rect x="0" y="26" width="31" height="8" rx="2.5" fill="#c9c2b6" />
+        </svg>
+        Kadence <span class="muted">Brugervejledning</span>
+      </a>
+      <div class="actions">
+        <a class="btn outline" href="kadence-brugervejledning.pdf" download>Hent som PDF</a>
+        <button class="btn" type="button" onclick="window.print()">Udskriv</button>
+      </div>
+    </div>
+
+    <main class="doc" id="top">
+      <header class="cover">
+        <div class="mark">
+          <svg viewBox="0 0 38 34" aria-hidden="true">
+            <rect x="0" y="0" width="38" height="8" rx="2.5" fill="#4a6b53" />
+            <rect x="0" y="13" width="25" height="8" rx="2.5" fill="#7a9a80" />
+            <rect x="0" y="26" width="31" height="8" rx="2.5" fill="#c9c2b6" />
+          </svg>
+        </div>
+        <div class="product">Kadence</div>
+        <h1>Brugervejledning</h1>
+        <p class="lede">
+          Træningsplanlægning for unge landevejsryttere i U17, U19 og U23, deres trænere og deres
+          forældre. Sådan bruger du Kadence, rolle for rolle.
+        </p>
+        <p class="meta">
+          <span>Version 0.9</span><span>Oktober 2026</span><span>kadence.haij.dk</span
+          ><span>Et værktøj i Haij-familien</span>
+        </p>
+      </header>
+
+      <nav class="toc" aria-label="Indhold">
+        <h2>Indhold</h2>
+        <ol>
+          <li><a href="#hvad">Hvad Kadence er</a></li>
+          <li><a href="#kom-i-gang">Kom i gang</a></li>
+          <li><a href="#traener">For træneren</a></li>
+          <li><a href="#rytter">For rytteren</a></li>
+          <li><a href="#foraelder">For forælderen</a></li>
+          <li><a href="#ordene">Ordene</a></li>
+          <li><a href="#sikkerhed">Sikkerhed og dine data</a></li>
+          <li><a href="#hjaelp">Hjælp</a></li>
+        </ol>
+      </nav>
+
+      <!-- 1 -->
+      <section class="chapter" id="hvad">
+        <p class="kicker">Kapitel 1</p>
+        <h2>Hvad Kadence er</h2>
+        <p class="intro">
+          En kalender med pas på cyklen og i styrkerummet, det der faktisk blev kørt, en daglig
+          check-in og en sæsonplan, der starter fra Cykling Danmarks anbefalinger.
+        </p>
+        <p>
+          Træneren lægger pas i rytternes kalender, én rytter ad gangen eller hele holdet på én
+          gang. Rytteren kører passet, og turen kommer tilbage fra en fil eller en cykelcomputer og
+          lander på det pas, den hørte til. Hver morgen svarer rytteren på tre korte spørgsmål, så
+          træneren kan se, om træningen passer til resten af livet. Sæsonplanen går fra oktober til
+          september og starter fra DCU's timer for rytterens årgang. Træneren kan ændre alt, og
+          DCU's tal står altid ved siden af.
+        </p>
+        <div class="roles">
+          <div class="role">
+            <b>Træneren</b>
+            <span
+              >Planlægger for hele holdet, ser hvem der er værd at se på, og holder biblioteket af
+              pas, forløb og programmer.</span
+            >
+          </div>
+          <div class="role">
+            <b>Rytteren</b>
+            <span
+              >Ser sin egen uge, checker ind, trykker Udført og lægger egne pas ind. Ingen andre
+              ryttere ser rytterens tal.</span
+            >
+          </div>
+          <div class="role">
+            <b>Forælderen</b>
+            <span
+              >Følger sit eget barn: ugen med tid og sted, de næste 30 dage, og hvordan det går,
+              hvis barnet deler det.</span
+            >
+          </div>
+        </div>
+        <p>
+          Rytterens data er rytterens. Adskillelsen mellem hold og mellem ryttere ligger i
+          databasen, ikke kun i skærmbillederne. Kadence er open source, kører på en server i EU
+          eller på klubbens egen, og alt kan hentes ud som regneark og JSON og slettes helt igen.
+          AI'en, hvor den er sat op, foreslår. Mennesket bestemmer.
+        </p>
+      </section>
+
+      <!-- 2 -->
+      <section class="chapter" id="kom-i-gang">
+        <p class="kicker">Kapitel 2</p>
+        <h2>Kom i gang</h2>
+        <p class="intro">Et link, en adgangskode, og Kadence på hjemmeskærmen. Så er du i gang.</p>
+
+        <h3>Log ind første gang</h3>
+        <p>
+          Du får et link fra din træner, på sms eller i klubbens chat. Linket siger, hvad du er
+          inviteret som: rytter, forælder til et bestemt barn, eller træner. Du vælger en
+          adgangskode, og så er du inde på holdet. Linket virker i en uge og kun for din
+          e-mailadresse.
+        </p>
+        <p>
+          Kadence sender ingen mails. Har du glemt din adgangskode, laver din træner et nyt link til
+          dig under <strong>Indstillinger → Arbejdsrum</strong> og sender det selv. Linket virker én
+          gang og kun den næste time.
+        </p>
+        <div class="note">
+          <strong>Passkeys og totrinsbekræftelse</strong>
+          Under Indstillinger → Sikkerhed kan du logge ind med Face ID, fingeraftryk eller en
+          sikkerhedsnøgle i stedet for en adgangskode, og slå totrinsbekræftelse til med en app.
+          Begge dele er der fra første dag.
+        </div>
+
+        <h3>Læg Kadence på hjemmeskærmen</h3>
+        <p>
+          Kadence er lavet til telefonen og kører i browseren uden app-butik. Lagt på hjemmeskærmen
+          åbner den som en app, og påmindelser kan komme igennem.
+        </p>
+        <ul>
+          <li>
+            <strong>iPhone:</strong> åbn Kadence i Safari, tryk på Del-knappen, og vælg
+            <em>Føj til hjemmeskærm</em>.
+          </li>
+          <li>
+            <strong>Android:</strong> åbn menuen i Chrome, og vælg <em>Installer app</em> eller
+            <em>Føj til startskærm</em>.
+          </li>
+        </ul>
+
+        <h3>Rundt i Kadence</h3>
+        <p>
+          Menuen har højst fire steder, de samme på computeren og i bundbjælken på telefonen, i
+          samme rækkefølge. Resten ligger under <strong>Mere</strong>, med Indstillinger sidst.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Rolle</th>
+              <th>De fire steder</th>
+              <th>Under Mere</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Træner</td>
+              <td>Overblik · Kalender · Ryttere · Bibliotek</td>
+              <td>Sæson, Rulle, Klubmester, Trænerrummet, Viden og hjælp, Indstillinger</td>
+            </tr>
+            <tr>
+              <td>Rytter</td>
+              <td>I dag · Kalender · Mig · Bibliotek</td>
+              <td>Sæson, Rulle, Klubmester, Viden og hjælp, Indstillinger</td>
+            </tr>
+            <tr>
+              <td>Forælder</td>
+              <td>Barnets navn · Kalender · Viden og hjælp</td>
+              <td>Klubmester, Indstillinger</td>
+            </tr>
+          </tbody>
+        </table>
+        <figure class="phone">
+          <img
+            src="img/17-mere.png"
+            alt="Menuen Mere på telefonen med de fire steder øverst og resten under"
+          />
+          <img src="img/12-i-dag.png" alt="Rytterens I dag på telefonen med bundbjælken nederst" />
+          <figcaption>
+            Bundbjælken på telefonen holder de fire steder. Mere åbner hele menuen, holdet og dig
+            selv.
+          </figcaption>
+        </figure>
+
+        <h3>Søg</h3>
+        <p>
+          Ét felt finder en rytter, et pas fra biblioteket, en side eller et afsnit i hjælpen. På
+          computeren trykker du <kbd>⌘K</kbd> på en Mac eller <kbd>Ctrl K</kbd> på en pc, eller på
+          søgefeltet øverst i menuen. På telefonen er det luppen i toppen. Skriv et par bogstaver,
+          gå op og ned med piletasterne, og tryk Enter. Du kan skrive o for ø og a for å. Søg viser
+          kun det, du i forvejen må se.
+        </p>
+        <figure>
+          <img
+            src="img/09-soeg.png"
+            alt="Søg åben med bogstaverne em og Emma Holm som første svar"
+          />
+          <figcaption>
+            Søg på en computer. Ryttere, pas, sider og hjælp i hver sin gruppe.
+          </figcaption>
+        </figure>
+
+        <h3>Udseende</h3>
+        <p>
+          Under <strong>Indstillinger → Profil</strong> vælger du lys eller mørk, og om menuen skal
+          stå i mørk mos eller på papir som resten af siden. Valget gælder på den enhed, du sidder
+          ved.
+        </p>
+        <figure>
+          <img src="img/11-profil.png" alt="Indstillinger → Profil med kortet Udseende" />
+          <figcaption>
+            Udseende på Profil: lys eller mørk, og sidebjælken i mørk mos eller papir.
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- 3 -->
+      <section class="chapter" id="traener">
+        <p class="kicker">Kapitel 3</p>
+        <h2>For træneren</h2>
+        <p class="intro">
+          Målet er, at du kan lægge holdets uge på fem minutter på telefonen, og se med det samme,
+          hvem der har brug for en snak.
+        </p>
+
+        <h3>Overblik</h3>
+        <p>
+          Overblik er din forside. Øverst står, om næste uge er planlagt, og hvad der er i den, som
+          ferie, eksamen, lejr og løb, med en knap til planlæggeren for den uge. Derefter de tre
+          ryttere, der er mest værd at se på i ugen, der er i gang.
+          <strong>Nyt fra rytterne</strong>
+          samler rytternes egne kommentarer på pas og ture og deres noter fra check-in de seneste 14
+          dage. Du svarer i passets egen tråd. Nederst står holdets pas i dag og holdets
+          begivenheder i ugen.
+        </p>
+        <figure>
+          <img
+            src="img/01-overblik.png"
+            alt="Overblik for træneren med næste uge, Værd at se på og Nyt fra rytterne"
+          />
+          <figcaption>
+            Overblik: uge 42 er planlagt, to ryttere er værd at se på, og rytternes seneste noter.
+          </figcaption>
+        </figure>
+
+        <h3>Kalenderen og holdets uge</h3>
+        <p>
+          Kalenderen viser en uge ad gangen. <strong>Hele holdet</strong> er en række pr. rytter og
+          en kolonne pr. dag, på telefonen et kort pr. rytter. Hvert pas er en chip i sin farve:
+          grøn er som planlagt, gul er lidt ved siden af, rød er ikke udført eller langt fra planen,
+          og grå er ikke kørt endnu. Der står altid et ord ved farven. Et mærke ved rytterens navn,
+          som "Smerte" eller "Kort søvn", siger, at der er noget værd at se på, og under ugen står
+          hele listen med forklaringer. Når I har talt om et punkt, markerer du det
+          <strong>Afklaret</strong>.
+        </p>
+        <figure>
+          <img
+            src="img/02-holdets-uge.png"
+            alt="Holdets uge med en række pr. rytter og chips i farver"
+          />
+          <figcaption>Holdets uge. Timerne på cyklen står til højre, mod sæsonplanen.</figcaption>
+        </figure>
+        <p>
+          Fra kalenderen kan du <strong>tilføje et pas</strong> til én eller flere ryttere, tilføje
+          en begivenhed som et løb eller en lejr, <strong>kopiere ugen før</strong> og
+          <strong>dele ugen</strong>: en tekst med ugens pas, tider og steder til holdets chat, uden
+          et ord om, hvordan nogen har det. Et pas kan have et tidspunkt og et mødested, fx "17.30
+          fra klubhuset". Træk et pas til en anden dag på computeren, eller brug "Flyt" på
+          telefonen.
+        </p>
+
+        <h3>Planlæg ugen</h3>
+        <p>
+          Al planlægning af en hel uge sker ét sted. Vælg hvem ugen er for: hele holdet, en årgang
+          eller enkelte ryttere. Vælg, hvor du starter fra: en tom uge, sidste uge, et forløb fra
+          biblioteket eller et forslag fra AI'en. Læg pas på dagene, og se, hvad ugen giver mod
+          sæsonplanen, før du lægger den ind. Intet rammer kalenderen, før du trykker. Ugen kan
+          gentages i flere uger, og en god uge kan gemmes som forløb til senere. Kladden gemmes
+          undervejs, så holdets andre trænere kan se og rette den.
+        </p>
+        <figure>
+          <img
+            src="img/03-planlaeg-ugen.png"
+            alt="Planlæg ugen: hvem ugen er for, og start fra tom uge, sidste uge, et forløb eller AI"
+          />
+          <figcaption>
+            Planlæg ugen: hele holdet er valgt, og ugen starter fra sidste uge.
+          </figcaption>
+        </figure>
+
+        <h3>Biblioteket</h3>
+        <p>
+          Biblioteket har to dele. <strong>Pas og forløb</strong> er holdets skabeloner: et pas, du
+          kan bruge igen og igen, til én rytter eller hele holdet. <strong>Nyt pas</strong> giver
+          tre veje: et cykelpas bygget i trin med opvarmning, arbejde, pause og nedkørsel; et
+          styrkepas med øvelser; eller <strong>Byg med AI</strong>, hvor du skriver passet med dine
+          egne ord, fx "5x4 min VO2max". Forslaget vises først, og intet gemmes, før du gemmer. Bag
+          de tre prikker henter du <strong>DCU's styrkeprogrammer</strong>: 30 pas med progression
+          for U17, U19 og U23, så pas syv siger 3 × 12. Et <strong>forløb</strong> er flere ugers
+          pas, lagt ind fra en mandag hos en eller flere ryttere.
+        </p>
+        <figure>
+          <img src="img/04-bibliotek.png" alt="Biblioteket med knappen Nyt pas og holdets pas" />
+          <figcaption>Biblioteket. Planlæg på et pas lægger det i kalenderen.</figcaption>
+        </figure>
+        <p>
+          <strong>Øvelser og programmer</strong> er bibliotekets anden del: øvelser med tegninger,
+          en dosis og et kort hvordan og hvorfor, samlet i programmer. Et program er en opskrift på
+          ét styrkepas. <strong>Læg i kalenderen</strong> gør det til et pas, hvor hver øvelse viser
+          sin tegning. Du kan tegne holdets egne øvelser med tegneværktøjet og sætte dem sammen til
+          programmer ved siden af Kadences egne. Vil du dele et program med nogen uden login, ligger
+          Kadences egne programmer også på en åben side, hvor de kan hentes som én fil eller
+          printes.
+        </p>
+        <figure>
+          <img src="img/05-programmer.png" alt="Øvelser og programmer i biblioteket" />
+          <figcaption>Øvelser og programmer. Holdets egne står ved siden af Kadences.</figcaption>
+        </figure>
+
+        <h3>Ryttere</h3>
+        <p>
+          Her står holdet: navn, årgang, om rytteren har en konto, og hvor mange forældre der er
+          koblet på. <strong>Tilføj rytter</strong> opretter én ad gangen, navn og fødselsår er nok.
+          <strong>Inviter hele holdet</strong> tager en liste med én rytter pr. linje: navn,
+          fødselsår og e-mail, og forældre efter et semikolon. Du får et link pr. person at dele på
+          sms eller i chatten, og de links, der ikke er brugt endnu, venter øverst på siden. Søg
+          efter en rytter ved navn, eller vis én årgang ad gangen.
+        </p>
+        <figure>
+          <img src="img/06-ryttere.png" alt="Ryttere: listen med årgang, konto og ugens mærker" />
+          <figcaption>
+            Ryttere. Et mærke på rækken siger, at der er noget værd at se på i ugen.
+          </figcaption>
+        </figure>
+        <p>
+          Rytterens egen side samler ugen og trivslen, formen og timerne, profilen med tærsklerne
+          (FTP og tærskelpuls, som zonerne regnes ud fra), procesmål, rekorder, forældre og konto.
+          Herfra kan du uploade en tur på rytterens vegne, sende et link til rytteren igen, og
+          arkivere en rytter, der har forladt holdet. Rytteren beholder sin historik, men forsvinder
+          fra listerne.
+        </p>
+        <figure>
+          <img src="img/07-rytter.png" alt="En rytters side for træneren med ugen og trivslen" />
+          <figcaption>Rytterens side. Rækken under titlen springer til sidens dele.</figcaption>
+        </figure>
+
+        <h3>Sæson og DCU</h3>
+        <p>
+          Sæsonen går fra oktober til september. Under <strong>Sæson → Hele holdet</strong> ser du
+          hver rytters timer i måneden og i sæsonen indtil nu, mod sæsonplanen og DCU, og knappen
+          <strong>Opret sæsonplaner for alle uden en plan</strong> laver en plan pr. rytter ud fra
+          DCU's timer og faser for deres årgang. Alt kan rettes bagefter, for hele holdet og for den
+          enkelte. Oktober er DCU's pause- og frimåned uden ramme for timer; rammen begynder i
+          november.
+        </p>
+        <figure>
+          <img
+            src="img/08-saeson.png"
+            alt="Sæson for hele holdet med oktobers timer mod sæsonplanen"
+          />
+          <figcaption>Sæson: hver rytters måned og sæson i de fire tal.</figcaption>
+        </figure>
+        <p>
+          De fire tal går igen overalt, hvor der planlægges: <strong>Sæsonplan</strong> er det,
+          planen siger, <strong>Lagt ind</strong> er det, der ligger i kalenderen,
+          <strong>Kørt</strong> er det, der faktisk blev kørt, og <strong>DCU</strong> er rammen for
+          rytterens årgang.
+        </p>
+
+        <h3>Trivsel og opmærksomhedspunkter</h3>
+        <p>
+          Rytterne checker ind hver morgen: søvn, energi og smerter efter Team Danmarks
+          smertetrappe, og flere spørgsmål bag "Mere". Svarene giver en zone efter Kolding Talents
+          trivselsmodel: grøn, gul eller rød. Gul i en periode betyder en snak mellem rytter,
+          forældre og træner inden for 14 dage; rød betyder, at der skal hjælp fra fagfolk ind over.
+          Kadence stiller aldrig en diagnose.
+        </p>
+        <p>
+          Opmærksomhedspunkterne kommer fra reglerne, uden en model: timer på cyklen over eller
+          under DCU's ramme, mere end 15 % flere timer end de seneste uger, en tur længere end DCU's
+          grænse, styrkepas med under 48 timer imellem, pas langt fra planen, meget tid i
+          mellemzonen når holdet bruger "Lav intensitet først", for lidt søvn, smerter og check-ins
+          i gul eller rød zone. Hvert punkt har et ord for, hvor meget det betyder: "Vigtigt nu",
+          "Værd at se på" eller "Godt at vide". Vist, aldrig håndhævet. Du bestemmer.
+        </p>
+        <div class="note tip">
+          <strong>Påmindelser</strong>
+          Under Indstillinger → Profil → Påmindelser slår du påmindelser til på den telefon, du vil
+          have dem på. Som træner kan du vælge "Trivsel": én push samme dag, en rytter checker ind i
+          rød zone, uden navn, med link til opmærksomhedspunkterne. Om natten venter påmindelserne
+          til morgenen.
+        </div>
+
+        <h3>AI'en</h3>
+        <p>
+          AI'en foreslår, og du bestemmer. Den kan bygge et pas ud fra dine egne ord, foreslå en uge
+          ud fra holdets bibliotek og sæsonplanen, sammensætte et program i samtale, og skrive et
+          par sætninger på toppen af opmærksomhedspunkterne, hvis holdet har sagt, at den må læse
+          rytternes data. Alt vises først, og intet gemmes, før du trykker. Modellen kører hos en
+          europæisk udbyder eller på klubbens egen maskine. Er der ingen model sat op, virker alt
+          andet, og knapperne siger det.
+        </p>
+
+        <h3>Holdets indstillinger</h3>
+        <ul>
+          <li>
+            <strong>Holdet:</strong> træningsgrundlaget, DCU's timer eller holdets egne, "Lav
+            intensitet først", og holdets tre tal for piloten.
+          </li>
+          <li>
+            <strong>Arbejdsrum:</strong> medlemmerne, link til ny adgangskode for en person, holdets
+            logo og billede.
+          </li>
+          <li>
+            <strong>AI:</strong> om AI'en må læse rytternes data, og hvilken model holdet bruger.
+          </li>
+          <li>
+            <strong>Data:</strong> alt hentes ud som regneark og JSON, og arbejdsrummet kan slettes
+            helt igen.
+          </li>
+        </ul>
+      </section>
+
+      <!-- 4 -->
+      <section class="chapter" id="rytter">
+        <p class="kicker">Kapitel 4</p>
+        <h2>For rytteren</h2>
+        <p class="intro">
+          Tyve sekunder om dagen: tre svar om morgenen, ét tryk på Udført efter træning.
+        </p>
+
+        <h3>I dag</h3>
+        <p>
+          Første gang hjælper <strong>Kom i gang</strong> dig: hvad du kører med, dine tærskler, et
+          ja til din forælder, og Kadence på hjemmeskærmen. Derefter åbner I dag med
+          <strong>check-in</strong>: hvor mange timer du sov, din energi fra 1 til 5, og om noget
+          gør ondt. Tryk Gem. Flere spørgsmål og en note ligger bag "Mere". Din træner kan læse det;
+          dine forældre kun, hvis du deler det.
+        </p>
+        <p>
+          <strong>Dit pas i dag</strong> viser, hvad der er planlagt, med tid og sted, hvis træneren
+          har sat det. Når du har trænet, trykker du <strong>Udført</strong>, retter minutterne,
+          hvis det blev anderledes, og siger, hvor hårdt det var fra 1 til 10. Det giver passet sin
+          belastning, også uden wattmåler. <strong>Kør indendørs</strong> åbner passet i Rulle.
+          <strong>Se hele passet</strong> viser trinene og samtalen om passet, hvor du og træneren
+          skriver sammen.
+        </p>
+        <figure class="phone">
+          <img src="img/13-check-in.png" alt="Check-in på telefonen: søvn, energi og smerter" />
+          <img
+            src="img/12-i-dag.png"
+            alt="I dag med dagens check-in gemt og dagens pas med Udført"
+          />
+          <figcaption>
+            I dag på telefonen. Til venstre check-in'ens tre spørgsmål, til højre dagen efter
+            check-in med passet og Udført.
+          </figcaption>
+        </figure>
+
+        <h3>Kalender</h3>
+        <p>
+          Din uge, en dag ad gangen på telefonen og side om side på computeren. Farverne siger,
+          hvordan det gik. Øverst står timerne på cyklen mod sæsonplanen. Du kan selv
+          <strong>lægge et pas ind</strong> fra biblioteket eller bygge dit eget, logge en træning,
+          der ikke var planlagt, og uploade en tur. Egne pas er dine; træneren ser dem, men de
+          bliver ikke holdets, før træneren tager dem ind i biblioteket.
+        </p>
+
+        <h3>Mig</h3>
+        <p>
+          Mig samler resten: din uge, dine seneste ture med watt, puls, zoner og ruten, din
+          <strong>form</strong> i Kadences egne ord, kondition, træthed og friskhed, dine check-ins
+          de seneste 14 dage, dine procesmål som DCU's 30 styrkepas om vinteren, dine rekorder,
+          altid mod dig selv og aldrig mod andre, og upload af en tur.
+        </p>
+        <figure class="phone">
+          <img
+            src="img/14-kalender-telefon.png"
+            alt="Rytterens kalender på telefonen, en dag ad gangen"
+          />
+          <img src="img/15-mig.png" alt="Mig på telefonen med ugen og rækken med sidens dele" />
+          <figcaption>
+            Kalenderen og Mig på telefonen. Rækken under titlen springer til delene.
+          </figcaption>
+        </figure>
+
+        <h3>Enheder og ture</h3>
+        <p>
+          En tur kommer ind på fire måder, og alle lander på det pas, den hører til. Forbind din
+          Garmin, Wahoo eller Polar under <strong>Indstillinger → Enheder</strong>, hvor
+          installationen har nøgler til dem; så kommer turene af sig selv. Læg en FIT-fil ind selv;
+          det virker altid. Sæt din Garmin i computeren eller telefonen med et kabel, så henter
+          Kadence de nye ture fra den. Hent dit Strava-arkiv én gang, så har Kadence dine gamle
+          ture. Et cykelpas kan sendes den anden vej, til din cykelcomputer, fra passet i
+          kalenderen.
+        </p>
+
+        <h3>Rulle</h3>
+        <p>
+          Når du ikke kan komme ud, kører du dagens pas på hometraineren i Rulle. Åbn Kadence i
+          Chrome eller Edge på en computer eller en Android-telefon, forbind hometraineren og
+          pulsbæltet over Bluetooth, og tryk Start. En smart hometrainer holder hver bloks watt
+          selv. Turen gemmes som en almindelig tur på passet, også hvis nettet forsvinder undervejs.
+          Safari og Firefox kan ikke tale med hometraineren og siger det.
+        </p>
+
+        <h3>Profil</h3>
+        <p>
+          Under <strong>Indstillinger → Profil</strong> bestemmer du, hvad dine forældre kan se: din
+          træning, og om de kan se, hvordan du har det. Det er dit valg, og du kan ændre det når som
+          helst. Her bekræfter du en forælder, din træner har koblet på, retter dine tærskler,
+          skriver dit UCI-ID, så dine løb kan læses fra Cykling Danmark, slår påmindelser til, og
+          kan forlade holdet igen. Fra det år, du fylder 18, bekræfter du dine forældre igen som
+          voksen.
+        </p>
+      </section>
+
+      <!-- 5 -->
+      <section class="chapter" id="foraelder">
+        <p class="kicker">Kapitel 5</p>
+        <h2>For forælderen</h2>
+        <p class="intro">Én side om dit barn, og den viden du skal bruge for at bakke op.</p>
+
+        <h3>Barnets side</h3>
+        <p>
+          Du lander på siden med dit barns navn. Øverst dagens pas med tid, sted og hvem der kører.
+          Så ugen, de næste 30 dage med løb, lejre og familiens egne dage, og hvordan det går, hvis
+          dit barn deler det: check-ins som farver og formen i ord. Du kan læse samtalerne om
+          træningen mellem dit barn og træneren, men ikke skrive i dem. Der findes ingen private
+          beskeder mellem en voksen og en ung rytter i Kadence.
+        </p>
+        <figure class="phone">
+          <img
+            src="img/16-barnet.png"
+            alt="Barnets side på telefonen med ugen og familiens kalender"
+          />
+          <figcaption>
+            Barnets side på telefonen. Bundbjælken: barnet, kalenderen og viden.
+          </figcaption>
+        </figure>
+        <p>
+          Det ene sted, du selv skriver, er <strong>familiens kalender</strong>: ferie, eksamen og
+          andre dage, træneren skal kende til. De står i dit barns kalender, så ugen kan planlægges
+          uden om dem.
+        </p>
+
+        <h3>Hvad du kan se, og hvorfor</h3>
+        <p>
+          Træneren kobler dig på dit barn og sender et link. Du ser først noget, når dit barn selv
+          har sagt ja til forbindelsen under sin profil. Dit barn bestemmer også, om du kan se
+          træningen, og om du kan se, hvordan det går. Det er rytterens valg, og det er helt i
+          orden. Tal sammen om det.
+        </p>
+
+        <h3>Forældreguiden</h3>
+        <p>
+          Under <strong>Viden og hjælp</strong> ligger Forældreguiden: Team Danmarks og Kolding
+          Talents ti temaer og ni råd til sportsforældre, skrevet kort med Kadences egne ord og med
+          links til originalerne, og tre afsnit om søvn, skole ved siden af sporten, og hvad du kan
+          se her. Der ligger også åbne sider om mad og drikke, energi til løb, gearing, udstyr og
+          klasserne, som alle kan læse uden login.
+        </p>
+      </section>
+
+      <!-- 6 -->
+      <section class="chapter" id="ordene">
+        <p class="kicker">Kapitel 6</p>
+        <h2>Ordene</h2>
+        <p class="intro">Kadence bruger få ord og de samme overalt. Her er de.</p>
+        <dl>
+          <dt>Pas</dt>
+          <dd>
+            Én træning i kalenderen, på cyklen, i styrkerummet eller noget tredje. Rytterens uge
+            består af pas.
+          </dd>
+          <dt>Tur</dt>
+          <dd>
+            Det, der faktisk blev kørt: en fil fra cykelcomputeren, uret eller hometraineren, der
+            lander på sit pas.
+          </dd>
+          <dt>Skabelon</dt>
+          <dd>Et pas i biblioteket, der kan lægges i kalenderen igen og igen.</dd>
+          <dt>Forløb</dt>
+          <dd>
+            Flere ugers pas fra biblioteket, lagt ind fra en mandag hos en eller flere ryttere.
+          </dd>
+          <dt>Program</dt>
+          <dd>
+            En opskrift på ét styrkepas: øvelser med tegninger og doser. Bliver til et pas, når det
+            lægges i kalenderen.
+          </dd>
+          <dt>DCU's styrkeprogrammer</dt>
+          <dd>
+            En serie pas med progression for U17, U19 og U23, hentet ind i biblioteket fra Cykling
+            Danmarks materiale.
+          </dd>
+          <dt>Sæsonplan</dt>
+          <dd>Timerne måned for måned fra oktober til september, med DCU's tal ved siden af.</dd>
+          <dt>Planlæg ugen</dt>
+          <dd>
+            Det sted, træneren lægger en hel uge på én gang, for holdet, en årgang eller enkelte
+            ryttere.
+          </dd>
+          <dt>Check-in</dt>
+          <dd>
+            Rytterens tre svar om morgenen: søvn, energi og smerter. Giver en zone: grøn, gul eller
+            rød.
+          </dd>
+          <dt>Opmærksomhedspunkt</dt>
+          <dd>
+            Noget værd at se på i ugen, der er i gang, fundet af reglerne. Vist, aldrig håndhævet.
+            Kan markeres afklaret.
+          </dd>
+          <dt>Kondition, træthed og friskhed</dt>
+          <dd>
+            Kadences egne ord for formen. En times træning i tærskeltempo tæller 100; pas uden
+            wattmåler tæller ud fra puls eller hvor hårdt det føltes.
+          </dd>
+          <dt>RPE</dt>
+          <dd>
+            Hvor hårdt passet var fra 1 til 10. 1 er meget, meget let, 5 er hårdt, og 10 er det
+            hårdeste, man kan.
+          </dd>
+          <dt>Zoner</dt>
+          <dd>
+            Kadences syv træningszoner fra let til alt ud, regnet ud fra rytterens FTP og
+            tærskelpuls.
+          </dd>
+          <dt>Hold og arbejdsrum</dt>
+          <dd>
+            Holdet er dem, du træner med. Indstillingerne kalder det arbejdsrum, fordi det også er
+            stedet, dataene bor.
+          </dd>
+          <dt>Rulle</dt>
+          <dd>Dagens pas på hometraineren, i browseren, over Bluetooth.</dd>
+        </dl>
+      </section>
+
+      <!-- 7 -->
+      <section class="chapter" id="sikkerhed">
+        <p class="kicker">Kapitel 7</p>
+        <h2>Sikkerhed og dine data</h2>
+        <p class="intro">Adskillelsen ligger i databasen, og der er altid en vej ud.</p>
+
+        <h3>Hvem ser hvad</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Hvem</th>
+              <th>Ser</th>
+              <th>Skriver</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Træneren</td>
+              <td>Alle holdets ryttere: pas, ture, check-ins og samtaler</td>
+              <td>Pas, forløb, programmer, sæsonplaner, kommentarer</td>
+            </tr>
+            <tr>
+              <td>Rytteren</td>
+              <td>Kun sig selv. En holdkammerat ser aldrig dine tal</td>
+              <td>Check-in, Udført, egne pas, kommentarer, hvad forældrene ser</td>
+            </tr>
+            <tr>
+              <td>Forælderen</td>
+              <td>
+                Sit eget barns træning, når barnet har sagt ja, og trivsel kun hvis barnet deler
+              </td>
+              <td>Familiens dage i barnets kalender</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          Reglerne håndhæves i databasen, ikke kun i skærmbillederne, og der er tests, der beviser
+          det. Alle ændringer registreres i et revisionsspor, der ikke kan redigeres.
+        </p>
+
+        <h3>Log ind sikkert</h3>
+        <p>
+          Passkeys og totrinsbekræftelse er der fra første dag under Indstillinger → Sikkerhed. Vi
+          anbefaler en passkey på telefonen: den kan ikke gættes og ikke fiskes. Glemmer du din
+          adgangskode, går vejen gennem din træner, der laver et nyt link til dig.
+        </p>
+
+        <h3>Dine data, altid</h3>
+        <p>
+          Alt, holdet ejer, kan hentes ud under Indstillinger → Data som regneark og JSON uden at
+          spørge nogen, og arbejdsrummet kan slettes helt igen, revisionsspor inklusive. En rytter,
+          der forlader holdet, tager ikke sin historik med, men kan hente en kopi først. Kadence
+          ligger hos europæiske leverandører på EU-jord, sprogmodellen inklusive, eller på klubbens
+          egen server. Listen over, hvem der kan se hvad, er offentlig.
+        </p>
+      </section>
+
+      <!-- 8 -->
+      <section class="chapter" id="hjaelp">
+        <p class="kicker">Kapitel 8</p>
+        <h2>Hjælp</h2>
+        <p class="intro">Når noget driller, eller du vil vide mere.</p>
+        <p>
+          <strong>Viden og hjælp</strong> i menuen samler Trænerguiden, Forældreguiden, de åbne
+          sider om sporten og en forklaring på hver del af Kadence, i den rytme en sæson lever i.
+          Søg finder et afsnit, når du skriver et par ord. De åbne sider og beregnerne for gearing
+          og energi kan alle læse uden login, også dem der ikke er på holdet.
+        </p>
+        <figure>
+          <img
+            src="img/10-viden-og-hjaelp.png"
+            alt="Viden og hjælp med guiderne og de åbne sider"
+          />
+          <figcaption>
+            Viden og hjælp: guiderne øverst, så viden om sporten, så hvordan Kadence virker.
+          </figcaption>
+        </figure>
+        <p>
+          Mangler der noget? Skriv til os, eller ret siden selv: koden er åben og ligger på
+          <a href="https://github.com/MartinNymannVinther/kadence"
+            >github.com/MartinNymannVinther/kadence</a
+          >. Kadence er ét værktøj i Haij-familien, <a href="https://haij.dk">haij.dk</a>.
+        </p>
+        <p class="foot">
+          Kadence · Brugervejledning · version 0.9 · oktober 2026. Tal og navne i billederne er
+          opdigtede. Fitness, fatigue og form hedder kondition, træthed og friskhed i Kadence; andre
+          værktøjers navne for dem bruges ikke.
+        </p>
+      </section>
+    </main>
+  </body>
+</html>

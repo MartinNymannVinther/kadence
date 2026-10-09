@@ -43,8 +43,8 @@ export const EXPORT_TABLES: ExportTable[] = [
   { table: "comments", sheet: "Kommentarer", orderBy: "rider_id, created_at" },
   { table: "season_plans", sheet: "Sæsonplaner", orderBy: "rider_id, season_start_year" },
   { table: "workout_templates", sheet: "Skabeloner", orderBy: "sport, name" },
-  { table: "training_blocks", sheet: "Blokke", orderBy: "name" },
-  { table: "training_block_items", sheet: "Blokkens pas", orderBy: "block_id, day, sort" },
+  { table: "training_blocks", sheet: "Forløb", orderBy: "name" },
+  { table: "training_block_items", sheet: "Forløbets pas", orderBy: "block_id, day, sort" },
   // The week planner's drafts the coaches share (ADR 0043, amended
   // 2026-10-07): weeks being planned and not yet laid in, as JSON in a cell.
   { table: "week_plan_drafts", sheet: "Ugekladder", orderBy: "week_monday, rider_id" },

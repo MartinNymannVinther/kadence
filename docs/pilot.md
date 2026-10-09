@@ -84,7 +84,7 @@ med tegninger fra **Bibliotek → Øvelser og programmer** og lægge det i
 kalenderen som et pas.
 
 Brug også dagen til at slå dine egne påmindelser til. Under
-**Indstillinger → Mig → Påmindelser** trykker du "Slå påmindelser til på
+**Indstillinger → Profil → Påmindelser** trykker du "Slå påmindelser til på
 denne enhed". Som træner kan du vælge **"Trivsel"**: én push samme dag
 en rytter checker ind i rød zone, uden navn, med link til
 opmærksomhedspunkterne. Når påmindelser er slået til, kan du trykke
@@ -95,7 +95,7 @@ først, når Kadence er lagt på hjemmeskærmen (det siger siden også).
 Fortæl gerne ryttere og forældre, at de kan gøre det samme på deres
 egne telefoner.
 
-![Indstillinger → Mig → Påmindelser: slå til på denne enhed](pilot/05-paamindelser.png)
+![Indstillinger → Profil → Påmindelser: slå til på denne enhed](pilot/05-paamindelser.png)
 
 ## Hver uge: Holdets uge og pilotens tre tal
 
@@ -116,7 +116,7 @@ Det er netop det, der tælles op under **Indstillinger → Holdet →
 "Holdets tre tal"**: hvor stor en andel af ryttere, der har checket ind
 mindst fire dage om ugen, hvor stor en andel af passene der har fået en
 kvittering, og et groft skøn over, hvor mange minutter du har brugt på
-at planlægge, regnet ud fra, hvornår du har gemt pas, blokke og
+at planlægge, regnet ud fra, hvornår du har gemt pas, forløb og
 sæsonplaner. De sidste otte uger står samlet, med ugen i gang først.
 
 ![Indstillinger → Holdet: Holdets tre tal, de seneste uger](pilot/07-holdets-tre-tal.png)

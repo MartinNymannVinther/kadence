@@ -11,9 +11,11 @@ import { inviteMember } from "@/core/team/service";
 import { claimPendingLinks } from "@/modules/team/claim";
 import { addGuardian, attachGuardianInvitation, confirmGuardian } from "@/modules/team/guardians";
 import { attachRiderInvitation, getRiders, setSharing } from "@/modules/team/riders";
+import { scheduleProgram } from "@/modules/exercises/schedule";
 import { addComment } from "@/modules/training/comments";
 import { addFamilyEvent } from "@/modules/training/family-events";
 import { listSessions } from "@/modules/training/sessions";
+import { translatorFor } from "./exercises";
 import { FAMILY_HOLIDAY, pick, RIDER_COMMENT, type L } from "./seed-data";
 
 /**
@@ -25,7 +27,8 @@ import { FAMILY_HOLIDAY, pick, RIDER_COMMENT, type L } from "./seed-data";
  * the parent — and the visitor can switch between them from the demo
  * stripe. The rider has said a word about a ride she has done, so the
  * coach's "Nyt fra rytterne" holds a comment beside the check-in notes,
- * and the parent has put a holiday into the rider's calendar. Every
+ * and has laid one of Kadence's programmes into her own calendar (ADR
+ * 0078); the parent has put a holiday into the rider's calendar. Every
  * account is thrown away with the demo.
  */
 
@@ -119,6 +122,12 @@ export async function createDemoRoles(input: {
   const ridden = rides.findLast((s) => s.activity !== null) ?? rides.at(-1);
   if (ridden)
     await addComment(riderCtx, { plannedSessionId: ridden.id }, pick(RIDER_COMMENT, locale));
+  // Her own choice for the day after tomorrow: a rider lays a programme into her own week.
+  await scheduleProgram(
+    riderCtx,
+    { program: "builtin:mobilityDay", riderIds: [rider.id], onDate: addDaysIso(today, 2) },
+    translatorFor(locale),
+  );
   accounts.push({
     role: "rider",
     userId: riderCtx.userId,

@@ -63,6 +63,8 @@ most four primary places per role, the same in the sidebar and in the
 phone's bar, and the rest under Mere; a coach's front page is Overblik —
 next week, who is worth a look, what the riders wrote — and a search
 finds a rider, a session or a page from anywhere.
+A user manual in Danish, with pictures of every role's screens, lives
+under `public/brugervejledning` as a page and a PDF (ADR 0079).
 
 Much of the code is written together with Claude Code, under the rules
 in [CLAUDE.md](CLAUDE.md). Every change is reviewed, tested and deployed

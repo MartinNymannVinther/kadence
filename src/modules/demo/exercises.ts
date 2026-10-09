@@ -19,7 +19,7 @@ import { pick, type L, type Text } from "./seed-data";
  */
 
 /** Danish or English words for the `exercises` namespace, as a page would hand them over. */
-function translatorFor(l: L): Translate {
+export function translatorFor(l: L): Translate {
   const messages = l === "en" ? en : da;
   return createTranslator({ locale: l, messages, namespace: "exercises" }) as unknown as Translate;
 }
