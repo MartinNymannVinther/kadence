@@ -731,6 +731,12 @@
   "help": {
     "title": "Viden og hjælp",
     "intro": "Sådan virker Kadence, og det, der er godt at vide om sporten.",
+    "manual": {
+      "title": "Brugervejledning",
+      "body": "Hele Kadence i én guide til træner, rytter og forælder, med billeder. Hent den som PDF, eller læs den på skærmen.",
+      "open": "Hent som PDF",
+      "read": "Læs brugervejledningen på skærmen"
+    },
     "knowledge": {
       "title": "Viden om sporten",
       "hint": "Åbne sider til ryttere, forældre og trænere. Alle kan læse dem, også uden at logge ind.",

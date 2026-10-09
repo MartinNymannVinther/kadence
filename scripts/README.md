@@ -156,3 +156,20 @@ its file changes, check the file in, and credit the sources on the route
 touches no database and is never run at build or ride time: Rulle reads
 the file, and without it draws the land it makes up. `rulle-land/` holds
 its PNG reader for the tiles and its geometry.
+
+## manual-pdf.ts
+
+Renders the user manual, `public/brugervejledning/index.html`, to the
+PDF beside it (docs/adr/0079).
+
+```
+pnpm dev                                              # or any running Kadence
+pnpm script scripts/manual-pdf.ts http://localhost:3000
+```
+
+Uses a Chrome of this machine's — `CHROME=/path/to/chrome`, else Google
+Chrome or Playwright's cached Chromium on a Mac — over the DevTools
+protocol, so nothing is added to the app. Run it, and commit the PDF,
+whenever the manual's text or pictures change; the pictures are taken by
+hand from a team with sessions in it (the seed in `seed-test-teams.ts`
+gives one).

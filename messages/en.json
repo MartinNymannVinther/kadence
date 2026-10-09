@@ -731,6 +731,12 @@
   "help": {
     "title": "Knowledge and help",
     "intro": "How Kadence works, and what is good to know about the sport.",
+    "manual": {
+      "title": "User manual",
+      "body": "All of Kadence in one guide for coaches, riders and parents, with pictures, in Danish. Download it as a PDF, or read it on screen.",
+      "open": "Download as PDF",
+      "read": "Read the manual on screen"
+    },
     "knowledge": {
       "title": "About the sport",
       "hint": "Open pages for riders, parents and coaches. Anyone can read them, also without signing in.",
