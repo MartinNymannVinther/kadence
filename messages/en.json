@@ -396,7 +396,7 @@
       },
       "images": {
         "title": "Logo and picture",
-        "body": "The club's logo sits by its name in the menu, and the picture sits at the top of the Today page for everyone in the club on a day without sessions. The picture is made smaller in your browser before it is sent, and details such as a GPS position are removed.",
+        "body": "The club's logo sits by its name in the menu, and the picture sits at the top of the front page for everyone in the club on a day without sessions. The picture is made smaller in your browser before it is sent, and details such as a GPS position are removed.",
         "logo": "Logo",
         "cover": "Club picture",
         "logoHint": "Square works best. PNG, JPEG or WebP.",

@@ -396,7 +396,7 @@
       },
       "images": {
         "title": "Logo og billede",
-        "body": "Klubbens logo står ved navnet i menuen, og billedet står øverst på I dag-siden for alle i klubben på en dag uden pas. Billedet bliver gjort mindre i din browser, før det sendes, og oplysninger som GPS-position bliver fjernet.",
+        "body": "Klubbens logo står ved navnet i menuen, og billedet står øverst på forsiden for alle i klubben på en dag uden pas. Billedet bliver gjort mindre i din browser, før det sendes, og oplysninger som GPS-position bliver fjernet.",
         "logo": "Logo",
         "cover": "Stemningsbillede",
         "logoHint": "Kvadratisk virker bedst. PNG, JPEG eller WebP.",
