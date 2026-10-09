@@ -11,8 +11,10 @@ import { inviteMember } from "@/core/team/service";
 import { claimPendingLinks } from "@/modules/team/claim";
 import { addGuardian, attachGuardianInvitation, confirmGuardian } from "@/modules/team/guardians";
 import { attachRiderInvitation, getRiders, setSharing } from "@/modules/team/riders";
+import { addComment } from "@/modules/training/comments";
 import { addFamilyEvent } from "@/modules/training/family-events";
-import { FAMILY_HOLIDAY, pick, type L } from "./seed-data";
+import { listSessions } from "@/modules/training/sessions";
+import { FAMILY_HOLIDAY, pick, RIDER_COMMENT, type L } from "./seed-data";
 
 /**
  * The demo's three people. Kadence is three roles (ADR 0010), and a demo
@@ -21,7 +23,9 @@ import { FAMILY_HOLIDAY, pick, type L } from "./seed-data";
  * rider shares. So a demo has a rider and the rider's parent too, created
  * the way real people join — the coach's invitation, the rider's yes to
  * the parent — and the visitor can switch between them from the demo
- * stripe. The parent has put a holiday into the rider's calendar. Every
+ * stripe. The rider has said a word about a ride she has done, so the
+ * coach's "Nyt fra rytterne" holds a comment beside the check-in notes,
+ * and the parent has put a holiday into the rider's calendar. Every
  * account is thrown away with the demo.
  */
 
@@ -103,6 +107,18 @@ export async function createDemoRoles(input: {
   // In the demo the rider shares everything, so the parent's view is full;
   // the visitor can switch to Emma and turn it off to see what changes.
   await setSharing(riderCtx, { shareTraining: true, shareWellbeing: true });
+  // Written as Emma on her latest ride of the last days, so it is a rider's own words.
+  const today = todayInCopenhagen();
+  const rides = (
+    await listSessions(riderCtx, {
+      from: addDaysIso(today, -6),
+      to: addDaysIso(today, -1),
+      riderIds: [rider.id],
+    })
+  ).filter((s) => s.sport === "bike");
+  const ridden = rides.findLast((s) => s.activity !== null) ?? rides.at(-1);
+  if (ridden)
+    await addComment(riderCtx, { plannedSessionId: ridden.id }, pick(RIDER_COMMENT, locale));
   accounts.push({
     role: "rider",
     userId: riderCtx.userId,
@@ -121,7 +137,7 @@ export async function createDemoRoles(input: {
   const parentCtx = await register(parentPerson);
   await confirmGuardian(riderCtx, guardian.id);
   // The parent's own line in Emma's calendar, three weeks on (ADR 0069).
-  const holiday = addDaysIso(todayInCopenhagen(), 21);
+  const holiday = addDaysIso(today, 21);
   await addFamilyEvent(parentCtx, {
     riderId: rider.id,
     kind: "holiday",

@@ -20,6 +20,7 @@ import { getWeekPlanDraft } from "@/modules/training/week-plan-draft";
 import { whoAmI } from "@/modules/team/access";
 import { listLinkableMembers } from "@/modules/team/member-guardians";
 import { getPilotWeeks } from "@/modules/insight/pilot-service";
+import { listRiderNews } from "@/modules/team/news";
 import { adminPool } from "../helpers/db";
 
 /**
@@ -256,6 +257,20 @@ describe("a demo workspace", () => {
     expect(switched?.getSetCookie().join(";")).toMatch(/better-auth/);
     expect(await switchDemoRole({ userId: "someone-else", orgId }, "rider")).toBeNull();
     expect(await switchDemoRole({ userId, orgId: "another-org" }, "rider")).toBeNull();
+  });
+
+  it("shows the coach a rider's own comment and the check-in notes under Nyt fra rytterne", async () => {
+    const news = await listRiderNews({ orgId, userId }, { today: todayInCopenhagen() });
+    expect(news.filter((n) => n.kind === "comment")).toMatchObject([
+      {
+        riderName: "Emma Holm",
+        on: "session",
+        text: "Benene var tunge i starten, men det løsnede op efter en halv time.",
+      },
+    ]);
+    expect(news.filter((n) => n.kind === "checkin").map((n) => n.text)).toEqual(
+      expect.arrayContaining(["Tunge ben efter weekenden", "Knæet driller lidt"]),
+    );
   });
 
   it("is deleted whole when its time is up, every account it made included", async () => {
