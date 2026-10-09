@@ -189,17 +189,10 @@
       "rulle": "Rulle",
       "me": "Mig",
       "child": "Barnet",
-      "guides": "Viden og beregnere",
-      "guidesShort": "Viden",
-      "coachGuide": "Trænerguide",
-      "parentsGuide": "Forældreguide",
-      "groups": {
-        "planning": "Planlægning",
-        "training": "Træning",
-        "team": "Holdet",
-        "tools": "Værktøjer",
-        "knowledge": "Viden"
-      },
+      "children": "Børnene",
+      "overview": "Overblik",
+      "knowledge": "Viden og hjælp",
+      "knowledgeShort": "Viden",
       "more": "Mere",
       "moreNews": "Mere, der er noget nyt",
       "barLabel": "Hovedmenu"
@@ -306,6 +299,18 @@
     "subtitleCoach": "Dig selv, holdet og arbejdsrummet.",
     "subtitleRider": "Dig selv, dine enheder og din sikkerhed.",
     "subtitleOther": "Dig selv og din sikkerhed.",
+    "appearance": {
+      "title": "Udseende",
+      "body": "Gælder på denne enhed. Lys eller mørk følger ellers systemet.",
+      "theme": "Lys eller mørk",
+      "light": "Lys",
+      "dark": "Mørk",
+      "system": "Følg systemet",
+      "sidebar": "Sidebjælken",
+      "sidebarHint": "Menuen i mørk mos eller på papir som resten af siden.",
+      "moss": "Mørk mos",
+      "paper": "Papir"
+    },
     "nav": {
       "label": "Indstillingsmenu",
       "security": "Sikkerhed",
@@ -316,7 +321,7 @@
       "ai": "AI",
       "data": "Data",
       "team": "Holdet",
-      "me": "Mig",
+      "me": "Profil",
       "devices": "Enheder",
       "groups": {
         "you": "Dig",
@@ -542,7 +547,7 @@
       }
     },
     "me": {
-      "title": "Mig",
+      "title": "Profil",
       "subtitle": "Dine egne valg: hvad dine forældre kan se, dine tærskler og din sikkerhed.",
       "security": "Sikkerhed: passkeys og totrinsbekræftelse",
       "coachNote": "Du er træner på holdet. Holdets egne valg finder du under Holdet.",
@@ -764,7 +769,7 @@
       },
       "parents": {
         "title": "Forældre",
-        "body": "Træneren tilføjer en forælder og sender et link. Forælderen ser først noget, når rytteren selv har bekræftet forbindelsen under Indstillinger → Mig. Rytteren bestemmer også, om forældrene kan se træningen, og om de kan se, hvordan rytteren har det. Fra det år, rytteren fylder 18, skal rytteren bekræfte igen som voksen."
+        "body": "Træneren tilføjer en forælder og sender et link. Forælderen ser først noget, når rytteren selv har bekræftet forbindelsen under Indstillinger → Profil. Rytteren bestemmer også, om forældrene kan se træningen, og om de kan se, hvordan rytteren har det. Fra det år, rytteren fylder 18, skal rytteren bekræfte igen som voksen."
       },
       "season": {
         "title": "Sæsonplanen og DCU",
@@ -784,7 +789,7 @@
       },
       "reminders": {
         "title": "Påmindelser",
-        "body": "Kadence kan minde dig om dagens check-in om aftenen, sige til, når der er en ny kommentar, eller planen for de næste dage er ændret, og give forældre ugens overblik søndag aften. Slå det til under Indstillinger → Mig på den telefon eller computer, du vil have dem på, og vælg hvilke. På en iPhone virker det, når Kadence er lagt på hjemmeskærmen. Selve beskeden fra Apple, Google eller Mozilla er tom; telefonen spørger Kadence, hvad der er nyt, når den kommer. Mellem 21.30 og 7.00 venter påmindelserne til morgenen. De findes, når installationen har sat dem op."
+        "body": "Kadence kan minde dig om dagens check-in om aftenen, sige til, når der er en ny kommentar, eller planen for de næste dage er ændret, og give forældre ugens overblik søndag aften. Slå det til under Indstillinger → Profil på den telefon eller computer, du vil have dem på, og vælg hvilke. På en iPhone virker det, når Kadence er lagt på hjemmeskærmen. Selve beskeden fra Apple, Google eller Mozilla er tom; telefonen spørger Kadence, hvad der er nyt, når den kommer. Mellem 21.30 og 7.00 venter påmindelserne til morgenen. De findes, når installationen har sat dem op."
       },
       "devices": {
         "title": "Upload og enheder",
@@ -924,7 +929,7 @@
         "body": "Din forælder ser først din træning, når du har sagt ja. Du bestemmer selv, hvad de ser.",
         "confirm": "{adult, select, yes {Sig ja igen til {name}} other {Sig ja til {name}}}",
         "confirmed": "{name} kan nu se det, du deler.",
-        "where": "Du kan ændre det når som helst under Indstillinger → Mig."
+        "where": "Du kan ændre det når som helst under Indstillinger → Profil."
       },
       "homeScreen": {
         "title": "Læg Kadence på hjemmeskærmen",
@@ -1013,7 +1018,7 @@
       "coachBody": "Kalenderen fyldes, når holdet har ryttere. Tilføj den første, så kan du lægge pas i ugen.",
       "coachAction": "Tilføj ryttere",
       "waitingTitle": "Venter på dit barns bekræftelse",
-      "waitingBody": "Du kan se dit barns træning, når rytteren har bekræftet forbindelsen til dig under Indstillinger → Mig.",
+      "waitingBody": "Du kan se dit barns træning, når rytteren har bekræftet forbindelsen til dig under Indstillinger → Profil.",
       "noneTitle": "Her er ingen kalender til dig endnu",
       "noneBody": "Kalenderen viser en rytters træning. Er du rytter eller forælder, så bed træneren om en invitation til netop det."
     },
@@ -1425,7 +1430,7 @@
     "emptyTitle": "Ingen ryttere endnu",
     "emptyBody": "Tilføj holdets ryttere. Du kan lægge pas til dem med det samme, og invitere dem, når de er klar.",
     "coachOnlyTitle": "Kun for trænere",
-    "coachOnlyBody": "Holdets liste over ryttere er trænernes. Din egen profil finder du under Indstillinger → Mig.",
+    "coachOnlyBody": "Holdets liste over ryttere er trænernes. Din egen profil finder du under Indstillinger → Profil.",
     "showArchived": "Vis også arkiverede ryttere",
     "hideArchived": "Skjul arkiverede ryttere",
     "archiveNote": "Har rytteren forladt holdet? Arkivér, så beholder rytteren sin historik, men forsvinder fra listerne.",
@@ -1595,7 +1600,7 @@
       "submit": "Tilføj",
       "added": "Forælderen er tilføjet.",
       "issuedTitle": "Forælderen er tilføjet",
-      "issuedBody": "Send linket til forælderen. Bagefter skal {rider} bekræfte forbindelsen under Indstillinger → Mig.",
+      "issuedBody": "Send linket til forælderen. Bagefter skal {rider} bekræfte forbindelsen under Indstillinger → Profil.",
       "done": "Færdig",
       "who": "Hvem er forælderen?",
       "modeNew": "En ny forælder",
@@ -2994,7 +2999,7 @@
     "subtitle": "Til forældre til unge ryttere: dit barns uge, og hvordan du bedst bakker op.",
     "sessionPanel": "Pas",
     "waitingTitle": "Venter på dit barns bekræftelse",
-    "waitingBody": "Du kan se dit barns uge her, når dit barn har bekræftet forbindelsen til dig. Det gør rytteren selv under Indstillinger → Mig.",
+    "waitingBody": "Du kan se dit barns uge her, når dit barn har bekræftet forbindelsen til dig. Det gør rytteren selv under Indstillinger → Profil.",
     "basicsTitle": "Godt at vide",
     "child": {
       "title": "{name}s uge",

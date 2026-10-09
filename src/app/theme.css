@@ -169,3 +169,63 @@
   --sidebar-border: oklch(1 0 0 / 9%);
   --sidebar-ring: oklch(0.66 0.075 150);
 }
+
+/*
+ * The rail in dark moss (docs/adr/0073): the sidebar and the phone's
+ * "Mere" sheet in the family's moss, so the menu stands apart from the
+ * paper it serves. The class sits on the rail itself and re-points only
+ * the tokens the rail reads; the page beside it keeps the palette above.
+ * Chosen per device under Indstillinger → Profil; "paper" is no class at
+ * all. The pairs below are held to WCAG AA in tests/meta/contrast.test.ts.
+ */
+.sidebar-moss {
+  --sidebar: oklch(0.3 0.045 150);
+  --sidebar-foreground: oklch(0.94 0.012 150);
+  --sidebar-accent: oklch(0.405 0.05 150);
+  --sidebar-accent-foreground: oklch(0.985 0.01 150);
+  --sidebar-hover: oklch(0.35 0.045 150);
+  --sidebar-border: oklch(1 0 0 / 12%);
+  --sidebar-ring: oklch(0.85 0.06 150);
+  --foreground: oklch(0.94 0.012 150);
+  --accent: oklch(0.405 0.05 150);
+  --accent-foreground: oklch(0.985 0.01 150);
+  --secondary: oklch(0.35 0.045 150);
+  --secondary-foreground: oklch(0.94 0.012 150);
+  --muted: oklch(0.35 0.045 150);
+  --muted-foreground: oklch(0.8 0.03 150);
+  --meta: oklch(0.8 0.03 150);
+  --label: oklch(0.76 0.03 150);
+  --primary: oklch(0.985 0.01 150);
+  --primary-foreground: oklch(0.3 0.045 150);
+  --primary-hover: oklch(0.93 0.02 150);
+  --card: oklch(0.35 0.045 150);
+  --border: oklch(1 0 0 / 14%);
+  --input: oklch(1 0 0 / 32%);
+  --ring: oklch(0.85 0.06 150);
+}
+
+.dark .sidebar-moss {
+  --sidebar: oklch(0.235 0.035 150);
+  --sidebar-foreground: oklch(0.93 0.01 150);
+  --sidebar-accent: oklch(0.33 0.045 150);
+  --sidebar-accent-foreground: oklch(0.97 0.01 150);
+  --sidebar-hover: oklch(0.28 0.035 150);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.8 0.08 150);
+  --foreground: oklch(0.93 0.01 150);
+  --accent: oklch(0.33 0.045 150);
+  --accent-foreground: oklch(0.97 0.01 150);
+  --secondary: oklch(0.28 0.035 150);
+  --secondary-foreground: oklch(0.93 0.01 150);
+  --muted: oklch(0.28 0.035 150);
+  --muted-foreground: oklch(0.78 0.03 150);
+  --meta: oklch(0.78 0.03 150);
+  --label: oklch(0.74 0.03 150);
+  --primary: oklch(0.8 0.08 150);
+  --primary-foreground: oklch(0.2 0.03 150);
+  --primary-hover: oklch(0.85 0.08 150);
+  --card: oklch(0.28 0.035 150);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 30%);
+  --ring: oklch(0.8 0.08 150);
+}

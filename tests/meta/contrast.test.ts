@@ -151,3 +151,35 @@ describe("token contrast (WCAG 1.4.3, 1.4.11)", () => {
     },
   );
 });
+
+const RAILS = [
+  ["light moss", "\\.sidebar-moss"],
+  ["dark moss", "\\.dark \\.sidebar-moss"],
+] as const;
+
+/** The rail in moss (docs/adr/0073) re-points the tokens it reads; every pair it shows is text on a ground. */
+describe("the moss rail's contrast (WCAG 1.4.3)", () => {
+  const PAIRS = [
+    ["--sidebar-foreground", "--sidebar"],
+    ["--meta", "--sidebar"],
+    ["--label", "--sidebar"],
+    ["--sidebar-accent-foreground", "--sidebar-accent"],
+    ["--sidebar-foreground", "--sidebar-hover"],
+    ["--accent-foreground", "--accent"],
+    ["--secondary-foreground", "--sidebar-hover"],
+    ["--muted-foreground", "--muted"],
+    ["--primary-foreground", "--primary"],
+    ["--meta", "--card"],
+  ] as const;
+
+  it.each(RAILS)("%s: every text token reaches 4.5:1 on its ground", async (_label, selector) => {
+    const block = extractBlock(await read(), selector);
+    for (const [text, ground] of PAIRS) {
+      const onto = colourOf(block, ground);
+      expect(
+        contrast(colourOf(block, text, onto), onto),
+        `${text} on ${ground}`,
+      ).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+});

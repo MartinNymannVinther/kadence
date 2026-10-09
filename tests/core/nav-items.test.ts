@@ -7,20 +7,21 @@ import {
   barLabelKey,
   homeHref,
   isActive,
-  menuGroups,
+  labelKey,
+  menuFor,
   menuItems,
+  nameChild,
   navFlags,
   navRole,
   type NavFlags,
-  type NavGroupKey,
   type NavRole,
 } from "@/app/[locale]/(app)/nav-items";
 
 /**
- * One structure for every role, grouped by task (docs/adr/0061, amended
- * by 0068): the lists are the decision, so the tests hold each role to its
- * own groups, in order, with the installation's and the club's switches on
- * and off, and the bar to its places.
+ * Two tiers for every role (docs/adr/0073): the primary places, the same
+ * in the sidebar and the phone's bar, and "Mere". The lists are the
+ * decision, so the tests hold each role to its tiers, in order, with the
+ * installation's and the club's switches on and off.
  */
 
 const OFF: NavFlags = { club: false, coachesRoom: false, rides: false, parent: false };
@@ -28,9 +29,11 @@ const ON: NavFlags = { club: true, coachesRoom: true, rides: false, parent: fals
 const ROLES: NavRole[] = ["coach", "rider", "parent", "member"];
 const EVERY_FLAGS: NavFlags[] = [OFF, ON, { ...ON, rides: true, parent: true }];
 
-/** Each group as its header and its keys, the way a reader meets them. */
-const shape = (role: NavRole, flags: NavFlags = OFF) =>
-  menuGroups(role, flags).map((g) => [g.key, g.items.map((i) => i.key)]);
+/** The two tiers as their keys, the way a reader meets them. */
+const tiers = (role: NavRole, flags: NavFlags = OFF) => {
+  const menu = menuFor(role, flags);
+  return [menu.primary.map((i) => i.key), menu.more.map((i) => i.key)];
+};
 const keysOf = (role: NavRole, flags: NavFlags = OFF) => menuItems(role, flags).map((i) => i.key);
 const barOf = (role: NavRole) => barItems(role).map((i) => i.key);
 
@@ -63,117 +66,94 @@ describe("the role behind the menu", () => {
 });
 
 describe("the coach's menu", () => {
-  it("is the day, planning, the team, the tools and knowledge, without the parked parts", () => {
-    expect(shape("coach")).toEqual([
-      [null, ["today"]],
-      ["planning", ["calendar", "season", "library"]],
-      ["team", ["riders"]],
-      ["tools", ["rulle"]],
-      ["knowledge", ["guides", "coachGuide", "parentsGuide", "help"]],
+  it("is Overblik, the calendar, the riders and the library; then the season, Rulle and knowledge", () => {
+    expect(tiers("coach")).toEqual([
+      ["today", "calendar", "riders", "library"],
+      ["season", "rulle", "knowledge"],
     ]);
+    expect(labelKey(menuFor("coach", OFF).primary[0]!)).toBe("overview");
+    expect(menuFor("coach", OFF).primary[0]!.href).toBe("/today");
   });
 
-  it("gains Klubmester and Trænerrummet in the team's group when they are on", () => {
-    expect(shape("coach", ON)[2]).toEqual(["team", ["riders", "club", "coaches"]]);
+  it("gains Klubmester and Trænerrummet under Mere when they are on, after Rulle", () => {
+    expect(tiers("coach", ON)[1]).toEqual(["season", "rulle", "club", "coaches", "knowledge"]);
     expect(keysOf("coach", { ...OFF, coachesRoom: true })).toContain("coaches");
     expect(keysOf("coach", { ...OFF, coachesRoom: true })).not.toContain("club");
     expect(keysOf("coach", { ...OFF, club: true })).not.toContain("coaches");
   });
 
-  it("puts the open guides, both guides and Help under knowledge, where they lead", () => {
-    const knowledge = menuGroups("coach", OFF).at(-1)!;
-    expect(knowledge.items).toEqual([
-      { key: "guides", href: "/guides" },
-      { key: "coachGuide", href: "/help/coach" },
-      { key: "parentsGuide", href: "/parents" },
-      { key: "help", href: "/help" },
+  it("puts a coach's own page and their child first under Mere, never in the bar", () => {
+    expect(tiers("coach", { ...OFF, rides: true })[1]).toEqual([
+      "me",
+      "season",
+      "rulle",
+      "knowledge",
+    ]);
+    expect(tiers("coach", { ...OFF, parent: true })[1]).toEqual([
+      "child",
+      "season",
+      "rulle",
+      "knowledge",
+    ]);
+    expect(tiers("coach", { ...ON, rides: true, parent: true })).toEqual([
+      ["today", "calendar", "riders", "library"],
+      ["me", "child", "season", "rulle", "club", "coaches", "knowledge"],
     ]);
   });
 
-  it("gives a coach who also rides their own page after today", () => {
-    expect(shape("coach", { ...OFF, rides: true })[0]).toEqual([null, ["today", "me"]]);
+  it("leads knowledge to one door, /help", () => {
+    expect(menuFor("coach", OFF).more.at(-1)).toEqual({ key: "knowledge", href: "/help" });
   });
 
-  it("keeps the child's page after today for a coach who is also a parent", () => {
-    expect(shape("coach", { ...OFF, parent: true })[0]).toEqual([null, ["today", "child"]]);
-    expect(shape("coach", { ...OFF, rides: true, parent: true })[0]).toEqual([
-      null,
-      ["today", "me", "child"],
-    ]);
-  });
-
-  it("then sends the parents' guide to its place on the child's page, so one page is not lit twice", () => {
-    const items = menuItems("coach", { ...OFF, parent: true });
-    expect(items.find((i) => i.key === "child")?.href).toBe("/parents");
-    expect(items.find((i) => i.key === "parentsGuide")?.href).toBe("/parents#parent-guide");
-    expect(
-      activeHref(
-        "/parents",
-        items.map((i) => i.href),
-      ),
-    ).toBe("/parents");
-  });
-
-  it("puts four places and Mere in the bar", () => {
+  it("puts the same four places in the bar, Overblik first", () => {
     expect(barOf("coach")).toEqual(["today", "calendar", "riders", "library"]);
+    expect(barLabelKey(barItems("coach")[0]!)).toBe("overview");
   });
 });
 
 describe("the rider's menu", () => {
-  it("is the day, training, and knowledge", () => {
-    expect(shape("rider")).toEqual([
-      [null, ["today", "calendar", "me"]],
-      ["training", ["library", "season", "rulle"]],
-      ["knowledge", ["guides", "help"]],
+  it("is today, the calendar, their own page and the library; then the season, Rulle and knowledge", () => {
+    expect(tiers("rider")).toEqual([
+      ["today", "calendar", "me", "library"],
+      ["season", "rulle", "knowledge"],
+    ]);
+    expect(labelKey(menuFor("rider", OFF).primary[0]!)).toBe("today");
+  });
+
+  it("shows Klubmester under Mere when the club keeps one, the one place riders see placings", () => {
+    expect(tiers("rider", ON)[1]).toEqual(["season", "rulle", "club", "knowledge"]);
+  });
+
+  it("keeps the child's page under Mere for a rider who is also a parent", () => {
+    expect(tiers("rider", { ...OFF, parent: true })[1]).toEqual([
+      "child",
+      "season",
+      "rulle",
+      "knowledge",
     ]);
   });
 
-  it("shows Klubmester in a team group when the club keeps one, the one place riders see placings", () => {
-    expect(shape("rider", ON)).toEqual([
-      [null, ["today", "calendar", "me"]],
-      ["training", ["library", "season", "rulle"]],
-      ["team", ["club"]],
-      ["knowledge", ["guides", "help"]],
-    ]);
-  });
-
-  it("keeps the child's page for a rider who is also a parent", () => {
-    expect(shape("rider", { ...OFF, parent: true })[0]).toEqual([
-      null,
-      ["today", "calendar", "me", "child"],
-    ]);
-  });
-
-  it("never holds the coaches' places or their guides", () => {
+  it("never holds the coaches' places", () => {
     for (const flags of EVERY_FLAGS) {
       const keys = keysOf("rider", flags);
-      for (const key of ["riders", "coaches", "coachGuide", "parentsGuide"] as const) {
-        expect(keys).not.toContain(key);
-      }
+      for (const key of ["riders", "coaches"] as const) expect(keys).not.toContain(key);
     }
   });
 
-  it("puts the library before their own page in the bar", () => {
-    expect(barOf("rider")).toEqual(["today", "calendar", "library", "me"]);
+  it("puts their own page before the library in the bar, as the sidebar does", () => {
+    expect(barOf("rider")).toEqual(["today", "calendar", "me", "library"]);
   });
 });
 
 describe("the parent's menu", () => {
-  it("is the page about the child, the calendar, and knowledge", () => {
-    expect(shape("parent")).toEqual([
-      [null, ["child", "calendar"]],
-      ["knowledge", ["guides", "help"]],
-    ]);
+  it("is the child, the calendar and knowledge, with nothing behind Mere", () => {
+    expect(tiers("parent")).toEqual([["child", "calendar", "knowledge"], []]);
     expect(menuItems("parent", OFF)[0]).toEqual({ key: "child", href: "/parents" });
     expect(homeHref("parent")).toBe("/parents");
   });
 
-  it("keeps Klubmester when the club keeps one", () => {
-    expect(shape("parent", ON)).toEqual([
-      [null, ["child", "calendar"]],
-      ["team", ["club"]],
-      ["knowledge", ["guides", "help"]],
-    ]);
+  it("keeps Klubmester under Mere when the club keeps one", () => {
+    expect(tiers("parent", ON)).toEqual([["child", "calendar", "knowledge"], ["club"]]);
   });
 
   it("holds neither the library, the season nor Rulle", () => {
@@ -185,69 +165,85 @@ describe("the parent's menu", () => {
     }
   });
 
-  it("has the child, the calendar and Viden in the bar", () => {
-    expect(barOf("parent")).toEqual(["child", "calendar", "guides"]);
-    expect(barItems("parent")[2]!.href).toBe("/guides");
+  it("names knowledge by a word that fits a fifth of a phone", () => {
+    expect(barOf("parent")).toEqual(["child", "calendar", "knowledge"]);
+    expect(barLabelKey(barItems("parent")[2]!)).toBe("knowledgeShort");
+    expect(da.app.nav.knowledgeShort).toBe("Viden");
+  });
+});
+
+describe("the child's name", () => {
+  const menu = menuFor("parent", OFF);
+
+  it("is the child's first name, where the parent may see it", () => {
+    const named = nameChild(menu, [{ name: "Emma Holm", confirmed: true }]);
+    expect(named.primary[0]).toEqual({ key: "child", href: "/parents", text: "Emma" });
+    expect(named.primary.slice(1)).toEqual(menu.primary.slice(1));
+  });
+
+  it("stays Barnet while the link waits for the child's yes, or the child does not share", () => {
+    expect(nameChild(menu, [{ name: "Emma Holm", confirmed: false }]).primary[0]).toEqual(
+      menu.primary[0],
+    );
+    expect(nameChild(menu, [{ name: null, confirmed: true }]).primary[0]).toEqual(menu.primary[0]);
+    expect(nameChild(menu, []).primary[0]).toEqual(menu.primary[0]);
+  });
+
+  it("is Børnene with more than one child", () => {
+    const two = nameChild(menu, [
+      { name: "Emma Holm", confirmed: true },
+      { name: "Ida Holm", confirmed: true },
+    ]);
+    expect(two.primary[0]).toEqual({ key: "child", href: "/parents", label: "children" });
+    expect(labelKey(two.primary[0]!)).toBe("children");
+  });
+
+  it("names the child under Mere too, for a coach or a rider who is also a parent", () => {
+    const coachMenu = nameChild(menuFor("coach", { ...OFF, parent: true }), [
+      { name: "Noah Friis", confirmed: true },
+    ]);
+    expect(coachMenu.more[0]).toEqual({ key: "child", href: "/parents", text: "Noah" });
+    expect(coachMenu.primary).toEqual(menuFor("coach", OFF).primary);
   });
 });
 
 describe("the member's menu", () => {
-  it("is today, the calendar, and knowledge", () => {
+  it("is today and the calendar, with knowledge behind Mere", () => {
     for (const flags of [OFF, ON]) {
-      expect(shape("member", flags)).toEqual([
-        [null, ["today", "calendar"]],
-        ["knowledge", ["guides", "help"]],
-      ]);
+      expect(tiers("member", flags)).toEqual([["today", "calendar"], ["knowledge"]]);
     }
     expect(barOf("member")).toEqual(["today", "calendar"]);
   });
 });
 
 describe("every menu", () => {
-  it("starts with the day without a header, and never leaves an empty group", () => {
+  it("has at most four primary places, the same whatever is turned on, and they are the bar", () => {
     for (const role of ROLES) {
       for (const flags of EVERY_FLAGS) {
-        const groups = menuGroups(role, flags);
-        expect(groups[0]!.key).toBeNull();
-        expect(groups.slice(1).every((g) => g.key !== null)).toBe(true);
-        expect(groups.every((g) => g.items.length > 0)).toBe(true);
+        const { primary } = menuFor(role, flags);
+        expect(primary.length).toBeGreaterThanOrEqual(2);
+        expect(primary.length).toBeLessThanOrEqual(4);
+        expect(primary).toEqual(barItems(role));
       }
     }
   });
 
-  it("closes with knowledge: the open guides and calculators, then Help last", () => {
-    for (const role of ROLES) {
-      for (const flags of EVERY_FLAGS) {
-        const last = menuGroups(role, flags).at(-1)!;
-        expect(last.key).toBe("knowledge");
-        expect(last.items[0]).toEqual({ key: "guides", href: "/guides" });
-        expect(last.items.at(-1)?.key).toBe("help");
-      }
-    }
-  });
-
-  it("holds each place once, and its groups in the one order", () => {
-    const order: NavGroupKey[] = ["planning", "training", "team", "tools", "knowledge"];
+  it("holds each place once", () => {
     for (const role of ROLES) {
       for (const flags of EVERY_FLAGS) {
         const keys = keysOf(role, flags);
         expect(new Set(keys).size).toBe(keys.length);
-        const headers = menuGroups(role, flags)
-          .map((g) => g.key)
-          .filter((k): k is NavGroupKey => k !== null);
-        expect(headers).toEqual([...headers].sort((a, b) => order.indexOf(a) - order.indexOf(b)));
       }
     }
   });
 
-  it("has a bar of two to four places, each also in the menu", () => {
+  it("holds knowledge once for everyone: last under Mere, or in a parent's bar", () => {
     for (const role of ROLES) {
-      const bar = barItems(role);
-      expect(bar.length).toBeGreaterThanOrEqual(2);
-      expect(bar.length).toBeLessThanOrEqual(4);
       for (const flags of EVERY_FLAGS) {
-        const menu = menuItems(role, flags).map((i) => i.href);
-        for (const item of bar) expect(menu).toContain(item.href);
+        const menu = menuFor(role, flags);
+        if (role === "parent") expect(menu.primary.at(-1)?.key).toBe("knowledge");
+        else expect(menu.more.at(-1)?.key).toBe("knowledge");
+        expect(keysOf(role, flags).filter((k) => k === "knowledge")).toHaveLength(1);
       }
     }
   });
@@ -260,25 +256,20 @@ describe("every menu", () => {
 
   it("has every word it shows, in both languages", () => {
     for (const messages of [da, en]) {
-      const nav = messages.app.nav as Record<string, unknown> & { groups: Record<string, string> };
+      const nav = messages.app.nav as Record<string, unknown>;
       for (const role of ROLES) {
         for (const flags of EVERY_FLAGS) {
-          for (const group of menuGroups(role, flags)) {
-            if (group.key) expect(nav.groups[group.key]).toEqual(expect.any(String));
-            for (const item of group.items) expect(nav[item.key]).toEqual(expect.any(String));
+          for (const item of menuItems(role, flags)) {
+            expect(nav[labelKey(item)]).toEqual(expect.any(String));
           }
         }
-        for (const item of barItems(role)) {
-          expect(nav[barLabelKey(item.key)]).toEqual(expect.any(String));
-        }
+        for (const item of barItems(role))
+          expect(nav[barLabelKey(item)]).toEqual(expect.any(String));
+      }
+      for (const word of ["children", "more", "settings", "menuTitle", "barLabel"]) {
+        expect(nav[word]).toEqual(expect.any(String));
       }
     }
-  });
-
-  it("names the open guides in the bar by a word that fits", () => {
-    expect(barLabelKey("guides")).toBe("guidesShort");
-    expect(barLabelKey("today")).toBe("today");
-    expect(da.app.nav.guidesShort).toBe("Viden");
   });
 });
 
@@ -290,9 +281,9 @@ describe("the active place", () => {
     expect(isActive("/library-old", "/library")).toBe(false);
   });
 
-  it("is the closest match, so the coach guide is lit and Help is not", () => {
+  it("is the closest match: a guide under /help lights knowledge, and settings light nothing in the lists", () => {
     const hrefs = menuItems("coach", ON).map((i) => i.href);
-    expect(activeHref("/help/coach", hrefs)).toBe("/help/coach");
+    expect(activeHref("/help/coach", hrefs)).toBe("/help");
     expect(activeHref("/help", hrefs)).toBe("/help");
     expect(activeHref("/calendar/session/abc", hrefs)).toBe("/calendar");
     expect(activeHref("/settings/me", hrefs)).toBeNull();

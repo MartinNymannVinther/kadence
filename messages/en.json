@@ -189,17 +189,10 @@
       "rulle": "Rulle",
       "me": "Me",
       "child": "Your child",
-      "guides": "Guides and calculators",
-      "guidesShort": "Guides",
-      "coachGuide": "Coach guide",
-      "parentsGuide": "Parents' guide",
-      "groups": {
-        "planning": "Planning",
-        "training": "Training",
-        "team": "Team",
-        "tools": "Tools",
-        "knowledge": "Knowledge"
-      },
+      "children": "Your children",
+      "overview": "Overview",
+      "knowledge": "Knowledge and help",
+      "knowledgeShort": "Knowledge",
       "more": "More",
       "moreNews": "More, something new",
       "barLabel": "Main menu"
@@ -306,6 +299,18 @@
     "subtitleCoach": "You, the team and the workspace.",
     "subtitleRider": "You, your devices and your security.",
     "subtitleOther": "You and your security.",
+    "appearance": {
+      "title": "Appearance",
+      "body": "Applies on this device. Light or dark otherwise follows the system.",
+      "theme": "Light or dark",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "Follow the system",
+      "sidebar": "The sidebar",
+      "sidebarHint": "The menu in dark moss, or on paper like the rest of the page.",
+      "moss": "Dark moss",
+      "paper": "Paper"
+    },
     "nav": {
       "label": "Settings menu",
       "security": "Security",
@@ -316,7 +321,7 @@
       "ai": "AI",
       "data": "Data",
       "team": "Team",
-      "me": "Me",
+      "me": "Profile",
       "devices": "Devices",
       "groups": {
         "you": "You",
@@ -542,7 +547,7 @@
       }
     },
     "me": {
-      "title": "Me",
+      "title": "Profile",
       "subtitle": "Your own choices: what your parents can see, your thresholds and your security.",
       "security": "Security: passkeys and two-step verification",
       "coachNote": "You are a coach on the team. The team's own choices are under Team.",
@@ -764,7 +769,7 @@
       },
       "parents": {
         "title": "Parents",
-        "body": "The coach adds a parent and sends a link. The parent sees nothing until the rider has confirmed the link under Settings → Me. The rider also decides whether the parents can see the training, and whether they can see how the rider is doing. From the year the rider turns 18, the rider confirms again as an adult."
+        "body": "The coach adds a parent and sends a link. The parent sees nothing until the rider has confirmed the link under Settings → Profile. The rider also decides whether the parents can see the training, and whether they can see how the rider is doing. From the year the rider turns 18, the rider confirms again as an adult."
       },
       "season": {
         "title": "The season plan and DCU",
@@ -784,7 +789,7 @@
       },
       "reminders": {
         "title": "Reminders",
-        "body": "Kadence can remind you of the day's check-in in the evening, tell you when there is a new comment or the plan for the next days has changed, and give parents the week's overview on Sunday evening. Turn it on under Settings → Me on the phone or computer you want them on, and choose which. On an iPhone it works once Kadence is on the home screen. The message itself from Apple, Google or Mozilla is empty; the phone asks Kadence what is new when it arrives. Between 21:30 and 7:00 reminders wait until morning. They are there when the installation has set them up."
+        "body": "Kadence can remind you of the day's check-in in the evening, tell you when there is a new comment or the plan for the next days has changed, and give parents the week's overview on Sunday evening. Turn it on under Settings → Profile on the phone or computer you want them on, and choose which. On an iPhone it works once Kadence is on the home screen. The message itself from Apple, Google or Mozilla is empty; the phone asks Kadence what is new when it arrives. Between 21:30 and 7:00 reminders wait until morning. They are there when the installation has set them up."
       },
       "devices": {
         "title": "Uploads and devices",
@@ -924,7 +929,7 @@
         "body": "Your parent sees your training only once you have said yes. You decide what they see.",
         "confirm": "{adult, select, yes {Say yes again to {name}} other {Say yes to {name}}}",
         "confirmed": "{name} can now see what you share.",
-        "where": "You can change it any time under Settings → Me."
+        "where": "You can change it any time under Settings → Profile."
       },
       "homeScreen": {
         "title": "Put Kadence on your home screen",
@@ -1013,7 +1018,7 @@
       "coachBody": "The calendar fills up once the team has riders. Add the first one and you can plan the week.",
       "coachAction": "Add riders",
       "waitingTitle": "Waiting for your child's confirmation",
-      "waitingBody": "You can see your child's training once the rider has confirmed the link to you under Settings → Me.",
+      "waitingBody": "You can see your child's training once the rider has confirmed the link to you under Settings → Profile.",
       "noneTitle": "There is no calendar for you here yet",
       "noneBody": "The calendar shows a rider's training. If you are a rider or a parent, ask the coach for an invitation as exactly that."
     },
@@ -1425,7 +1430,7 @@
     "emptyTitle": "No riders yet",
     "emptyBody": "Add the team's riders. You can plan sessions for them right away and invite them when they are ready.",
     "coachOnlyTitle": "For coaches only",
-    "coachOnlyBody": "The team's list of riders is the coaches'. Your own profile is under Settings → Me.",
+    "coachOnlyBody": "The team's list of riders is the coaches'. Your own profile is under Settings → Profile.",
     "showArchived": "Show archived riders too",
     "hideArchived": "Hide archived riders",
     "archiveNote": "Has the rider left the team? Archive them: they keep their history but disappear from the lists.",
@@ -1595,7 +1600,7 @@
       "submit": "Add",
       "added": "The parent was added.",
       "issuedTitle": "The parent was added",
-      "issuedBody": "Send the link to the parent. Afterwards {rider} must confirm the link under Settings → Me.",
+      "issuedBody": "Send the link to the parent. Afterwards {rider} must confirm the link under Settings → Profile.",
       "done": "Done",
       "who": "Who is the parent?",
       "modeNew": "A new parent",
@@ -2994,7 +2999,7 @@
     "subtitle": "For parents of young riders: your child's week, and how best to back them.",
     "sessionPanel": "Session",
     "waitingTitle": "Waiting for your child to confirm",
-    "waitingBody": "You can see your child's week here once your child has confirmed the link to you. The rider does that under Settings → Me.",
+    "waitingBody": "You can see your child's week here once your child has confirmed the link to you. The rider does that under Settings → Profile.",
     "basicsTitle": "Good to know",
     "child": {
       "title": "{name}'s week",
