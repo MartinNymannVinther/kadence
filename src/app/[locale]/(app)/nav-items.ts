@@ -1,6 +1,6 @@
 /**
  * What the menu holds, for whom (docs/adr/0061 and 0068, amended by
- * 0073). Pure: the layout asks the database who the person is and which
+ * 0077). Pure: the layout asks the database who the person is and which
  * parts the installation and the team have on, and these functions turn
  * that into the two lists the sidebar, the phone's bar and its "Mere"
  * sheet draw. No database, no React, so the tests can hold every role to
@@ -84,7 +84,7 @@ const ITEM: Record<NavKey, NavItem> = {
   knowledge: { key: "knowledge", href: "/help" },
 };
 
-/** A coach's front page is the week's picture, not the day's (ADR 0073). */
+/** A coach's front page is the week's picture, not the day's (ADR 0077). */
 const OVERVIEW: NavItem = { ...ITEM.today, label: "overview" };
 
 /**

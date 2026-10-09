@@ -9,7 +9,7 @@ import {
 } from "@/components/common/sidebar-tone";
 
 /**
- * The rail's tone (docs/adr/0073): dark moss unless the person chose
+ * The rail's tone (docs/adr/0077): dark moss unless the person chose
  * paper, read from a cookie the server paints the first pass from.
  */
 describe("the rail's tone", () => {

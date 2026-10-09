@@ -1,5 +1,5 @@
 /**
- * The parts of a long page as a row of links under its title (docs/adr/0073):
+ * The parts of a long page as a row of links under its title (docs/adr/0077):
  * Mig's week, rides, form and the rest, a rider's page for the coach. Plain
  * anchors to the sections' own ids, so the row needs no script and the
  * address of a part can be shared. On a phone the row scrolls sideways

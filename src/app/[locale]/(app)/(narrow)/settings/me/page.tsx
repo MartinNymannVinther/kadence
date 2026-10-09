@@ -38,7 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * a parent sees their links and may end one; everybody finds their
  * security settings here, and whoever is not a coach the way off the team
  * at the bottom (P1-07). "Udseende" — light or dark, and the rail in moss
- * or on paper — is this device's choice (docs/adr/0073).
+ * or on paper — is this device's choice (docs/adr/0077).
  */
 export default async function MePage() {
   const ctx = await getOrgContext();

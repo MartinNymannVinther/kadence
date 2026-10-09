@@ -18,7 +18,7 @@ import {
 } from "@/app/[locale]/(app)/nav-items";
 
 /**
- * Two tiers for every role (docs/adr/0073): the primary places, the same
+ * Two tiers for every role (docs/adr/0077): the primary places, the same
  * in the sidebar and the phone's bar, and "Mere". The lists are the
  * decision, so the tests hold each role to its tiers, in order, with the
  * installation's and the club's switches on and off.

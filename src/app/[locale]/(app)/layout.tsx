@@ -67,7 +67,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   // background after the page, and only what is more than three hours old.
   if (context && me?.isCoach) after(() => refreshStaleRaces(context));
   else if (context && me?.rider) after(() => refreshOwnRacesLater(context));
-  // One menu per role, in two tiers (ADR 0061, 0068, 0073). The club
+  // One menu per role, in two tiers (ADR 0061, 0068, 0077). The club
   // championship is in it once the installation has it (ADR 0057) and the
   // club has turned it on (ADR 0051); Trænerrummet once the installation
   // has it (ADR 0052). A parent's child is named by their first name.
@@ -84,7 +84,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   // Read on the server so the first paint is already the layout this
   // person left behind, rather than a rail that appears and vanishes, or
-  // changes colour (docs/adr/0073).
+  // changes colour (docs/adr/0077).
   const jar = await cookies();
   const sidebarHidden = jar.get("kadence-sidebar")?.value === "hidden";
   const tone = sidebarToneFrom(jar.get(SIDEBAR_TONE_COOKIE)?.value);

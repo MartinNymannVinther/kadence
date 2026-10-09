@@ -1,5 +1,5 @@
 /**
- * The rail's colour (docs/adr/0073): the sidebar and the phone's "Mere"
+ * The rail's colour (docs/adr/0077): the sidebar and the phone's "Mere"
  * sheet in the family's dark moss, or on the paper the rest of the page
  * is on. Dark moss is the default; the choice is made under Indstillinger
  * → Profil and kept in a cookie, like the hidden sidebar (./sidebar-shell.tsx),

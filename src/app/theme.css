@@ -171,7 +171,7 @@
 }
 
 /*
- * The rail in dark moss (docs/adr/0073): the sidebar and the phone's
+ * The rail in dark moss (docs/adr/0077): the sidebar and the phone's
  * "Mere" sheet in the family's moss, so the menu stands apart from the
  * paper it serves. The class sits on the rail itself and re-points only
  * the tokens the rail reads; the page beside it keeps the palette above.

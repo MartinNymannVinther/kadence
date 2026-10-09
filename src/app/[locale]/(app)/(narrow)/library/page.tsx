@@ -62,7 +62,7 @@ export default async function LibraryPage({
         title={t("title")}
         subtitle={t("subtitle")}
         actions={
-          // The coach's corner of the library (docs/adr/0073): "Nyt pas"
+          // The coach's corner of the library (docs/adr/0077): "Nyt pas"
           // with the three ways to a new session, and the rest behind
           // three dots.
           isCoach ? <LibraryActions /> : undefined

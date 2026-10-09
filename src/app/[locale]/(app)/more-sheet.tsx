@@ -18,12 +18,12 @@ export type MoreSheetProps = TeamLockupProps & {
   attention?: number;
   userName: string;
   userEmail: string;
-  /** Dark moss or paper, the same as the sidebar's (docs/adr/0073). */
+  /** Dark moss or paper, the same as the sidebar's (docs/adr/0077). */
   tone: SidebarTone;
 };
 
 /**
- * "Mere" on a phone (ADR 0061, 0068, 0073): the sidebar's whole content in
+ * "Mere" on a phone (ADR 0061, 0068, 0077): the sidebar's whole content in
  * a sheet — the lockup with the team's name (the switcher, when there is
  * a choice), the two tiers of places with Indstillinger last, and the
  * person — so the bottom bar can stay at the primary places and nothing

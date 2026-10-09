@@ -16,7 +16,7 @@ import { installDcuProgrammesAction } from "@/modules/training/dcu-actions";
 
 /**
  * The coach's corner of the library in two controls instead of four
- * buttons (docs/adr/0073): "Nyt pas" opens the three ways to a new
+ * buttons (docs/adr/0077): "Nyt pas" opens the three ways to a new
  * session — on the bike, in the gym, or written for the AI (ADR 0038) —
  * and the three dots hold what is done a few times a season, fetching
  * DCU's strength programmes (ADR 0014). The same addresses as before;

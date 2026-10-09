@@ -15,7 +15,7 @@ const THEMES = ["light", "dark", "system"] as const;
 type Theme = (typeof THEMES)[number];
 
 /**
- * "Udseende" under Indstillinger → Profil (docs/adr/0073): light or dark,
+ * "Udseende" under Indstillinger → Profil (docs/adr/0077): light or dark,
  * and the rail in dark moss or on paper. Both are this device's, not the
  * account's — the theme is kept by the browser as it always was, the
  * rail's tone in a cookie the server reads — and the card says so.

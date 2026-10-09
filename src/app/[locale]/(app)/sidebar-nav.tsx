@@ -10,7 +10,7 @@ import { NAV_ICONS } from "./nav-icons";
 import { activeHref, labelKey, type NavItem, type NavMenu } from "./nav-items";
 
 /**
- * The app navigation in two tiers (docs/adr/0073; the lists in
+ * The app navigation in two tiers (docs/adr/0077; the lists in
  * ./nav-items.ts): the role's primary places large, with their icons, and
  * "Mere" under them, smaller, closed by Indstillinger. Rendered in the
  * desktop sidebar and inside the phone's "Mere" sheet, where `onNavigate`

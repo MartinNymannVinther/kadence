@@ -9,7 +9,7 @@ import { RiderList, type RiderRowView } from "./rider-list";
 
 /**
  * The team's riders found by typing part of a name and narrowed to one
- * class with a tap (docs/adr/0073): a coach with a full team should not
+ * class with a tap (docs/adr/0077): a coach with a full team should not
  * read twenty rows to find one. The classes offered are the ones the team
  * holds; a team of one class gets no filter at all. The list itself is the
  * same list, so a row reads the same whether it was found or scrolled to.

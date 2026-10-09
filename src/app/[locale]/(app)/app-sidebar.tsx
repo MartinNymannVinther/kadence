@@ -12,7 +12,7 @@ import { VersionLink } from "./version-link";
  * its own - the content area carries the dividing line. The lockup with the
  * team's name (the switcher, when there is a choice) on top, the two tiers
  * of places in the middle, and the user card at the foot. In dark moss
- * (docs/adr/0073) the rail re-points the tokens it reads on itself, so the
+ * (docs/adr/0077) the rail re-points the tokens it reads on itself, so the
  * page beside it keeps its paper.
  */
 export function AppSidebar({

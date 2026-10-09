@@ -11,7 +11,7 @@ import { NAV_ICONS } from "./nav-icons";
 import { activeHref, barLabelKey } from "./nav-items";
 
 /**
- * The phone's navigation (ADR 0061, 0068, 0073): a bar at the foot of the
+ * The phone's navigation (ADR 0061, 0068, 0077): a bar at the foot of the
  * screen with the role's primary places — the same four the sidebar puts
  * first — and "Mere" for the rest, within reach of a thumb. Below lg, so
  * an iPad held upright gets it too; the sidebar takes over from lg. Fixed

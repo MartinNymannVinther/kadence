@@ -157,7 +157,7 @@ const RAILS = [
   ["dark moss", "\\.dark \\.sidebar-moss"],
 ] as const;
 
-/** The rail in moss (docs/adr/0073) re-points the tokens it reads; every pair it shows is text on a ground. */
+/** The rail in moss (docs/adr/0077) re-points the tokens it reads; every pair it shows is text on a ground. */
 describe("the moss rail's contrast (WCAG 1.4.3)", () => {
   const PAIRS = [
     ["--sidebar-foreground", "--sidebar"],
