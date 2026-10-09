@@ -2307,6 +2307,7 @@
     "title": "How are you?",
     "body": "Three quick questions in the morning. Your answers help you and your coach see whether training fits the rest of life.",
     "sleep": "How many hours did you sleep last night?",
+    "sleepShort": "Sleep last night",
     "hours": "hours",
     "less": "Less sleep",
     "more": "More sleep",

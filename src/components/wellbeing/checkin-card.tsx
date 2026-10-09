@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { checkinZone } from "@/modules/load/wellbeing";
 import { lowBehindMore, type CheckinAnswers, type CheckinStart } from "@/modules/wellbeing/prefill";
 import { saveCheckinAction } from "@/modules/wellbeing/actions";
-import { CheckinMore } from "./checkin-more";
+import { CheckinMore, useMoreOpen } from "./checkin-more";
 import { CheckinResult } from "./checkin-result";
 import { PainChoice } from "./pain-choice";
 import { ScaleChoice } from "./scale-choice";
@@ -26,6 +26,13 @@ export type CheckinValues = CheckinAnswers;
  * coach's warnings use (src/modules/load/wellbeing.ts). Once saved it
  * shows the day's zone and, for yellow and red, what happens next — a
  * conversation, never an alarm.
+ *
+ * Compact on a phone, so the three answers and "Gem" stand on one screen
+ * (the check-in on Today approved with docs/mockups/navigation): the
+ * sleep on one line, the pain steps two by two. "Gem" comes straight
+ * after the three while "Mere" is closed, with "Mere" under it; while
+ * "Mere" is open, "Gem" comes after the answers inside, so they are seen
+ * before they are saved.
  */
 export function CheckinCard({
   riderId,
@@ -46,6 +53,7 @@ export function CheckinCard({
   const [editing, setEditing] = useState(initial === null);
   const [value, setValue] = useState<CheckinValues>(initial ?? start.answers);
   const [look] = useState(() => lowBehindMore(initial ?? start.answers));
+  const [moreOpen, toggleMore] = useMoreOpen(riderId, look);
   const ids = { where: useId() };
   const set = <K extends keyof CheckinValues>(key: K, v: CheckinValues[K]) =>
     setValue((current) => ({ ...current, [key]: v }));
@@ -75,10 +83,29 @@ export function CheckinCard({
     );
   }
 
+  const actions = (
+    <div className="flex flex-wrap gap-2">
+      <Button type="submit" size="lg" disabled={pending} className="w-full sm:w-auto">
+        {t("save")}
+      </Button>
+      {saved && (
+        <Button
+          type="button"
+          variant="ghost"
+          size="lg"
+          className="w-full sm:w-auto"
+          onClick={() => setEditing(false)}
+        >
+          {t("cancel")}
+        </Button>
+      )}
+    </div>
+  );
+
   return (
     <form
       onSubmit={save}
-      className="border-border bg-card flex flex-col gap-5 rounded-xl border p-4 shadow-surface sm:p-5"
+      className="border-border bg-card flex flex-col gap-4 rounded-xl border p-4 shadow-surface sm:p-5"
     >
       <div className="flex flex-col gap-1">
         <h3 className="text-base font-semibold">{t("title")}</h3>
@@ -112,30 +139,19 @@ export function CheckinCard({
         </div>
       )}
 
+      {/* "Gem" stands before a closed "Mere" and after an open one's
+          answers. "Mere" itself never moves in the page's order, so it
+          keeps focus when it is pressed. */}
+      {!moreOpen && actions}
       <CheckinMore
-        riderId={riderId}
+        open={moreOpen}
+        onToggle={toggleMore}
         value={value}
         onChange={set}
         from={saved ? "today" : start.from}
         look={look}
       />
-
-      <div className="flex flex-wrap gap-2">
-        <Button type="submit" size="lg" disabled={pending} className="w-full sm:w-auto">
-          {t("save")}
-        </Button>
-        {saved && (
-          <Button
-            type="button"
-            variant="ghost"
-            size="lg"
-            className="w-full sm:w-auto"
-            onClick={() => setEditing(false)}
-          >
-            {t("cancel")}
-          </Button>
-        )}
-      </div>
+      {moreOpen && actions}
     </form>
   );
 }

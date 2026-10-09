@@ -2307,6 +2307,7 @@
     "title": "Hvordan har du det?",
     "body": "Tre hurtige spørgsmål om morgenen. Svarene hjælper dig og din træner med at se, om træningen passer til resten af livet.",
     "sleep": "Hvor mange timer sov du i nat?",
+    "sleepShort": "Søvn i nat",
     "hours": "timer",
     "less": "Mindre søvn",
     "more": "Mere søvn",
