@@ -5,6 +5,7 @@ import { OwnRidesList } from "@/components/activities/own-rides-list";
 import { GoalsCard, type GoalView } from "@/components/activities/goals-card";
 import { RecordsCard } from "@/components/activities/records-card";
 import { withQuery } from "@/components/calendar/href";
+import { SectionNav } from "@/components/common/section-nav";
 import { LoadPanel } from "@/components/load/load-panel";
 import { SendToDeviceButton } from "@/components/session/send-to-device-button";
 import { SessionSheet } from "@/components/session/session-sheet";
@@ -76,6 +77,7 @@ export default async function MePage({
     return null;
   }
   const t = await getTranslations("me");
+  const common = await getTranslations("common");
   const search = await searchParams;
   const openSession = typeof search.session === "string" ? search.session : undefined;
   const today = todayInCopenhagen();
@@ -85,6 +87,18 @@ export default async function MePage({
   return (
     <div className="flex max-w-3xl flex-col gap-8">
       <PageHeader title={t("title")} subtitle={data.name || undefined} />
+      <SectionNav
+        label={common("sectionNav")}
+        items={[
+          { id: "week", label: t("nav.week") },
+          { id: "rides", label: t("nav.rides") },
+          ...(data.insight ? [{ id: "form", label: t("nav.form") }] : []),
+          { id: "checkins", label: t("nav.checkins") },
+          { id: "goals", label: t("nav.goals") },
+          { id: "records", label: t("nav.records") },
+          { id: "upload", label: t("nav.upload") },
+        ]}
+      />
 
       <Section id="week" title={t("week")}>
         <WeekGlance

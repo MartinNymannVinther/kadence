@@ -11,6 +11,7 @@
     "delete": "Slet",
     "add": "Tilføj",
     "back": "Tilbage",
+    "sectionNav": "Dele af siden",
     "optional": "valgfrit",
     "none": "Ingen",
     "invitation": {
@@ -956,6 +957,15 @@
   "me": {
     "title": "Mig",
     "sessionPanel": "Pas",
+    "nav": {
+      "week": "Uge",
+      "rides": "Ture",
+      "form": "Form",
+      "checkins": "Check-ins",
+      "goals": "Mål",
+      "records": "Rekorder",
+      "upload": "Upload"
+    },
     "week": "Din uge",
     "form": "Form",
     "formBody": "Sådan ser din træning ud de seneste 90 dage.",
@@ -1344,6 +1354,8 @@
     "newBike": "Nyt cykelpas",
     "newStrength": "Nyt styrkepas",
     "newWithAi": "Byg med AI",
+    "newSession": "Nyt pas",
+    "moreActions": "Flere handlinger",
     "newTitle": "Ny skabelon",
     "newTitleBike": "Nyt cykelpas",
     "newTitleStrength": "Nyt styrkepas",
@@ -1425,6 +1437,12 @@
   "riders": {
     "title": "Ryttere",
     "subtitle": "Holdets ryttere, deres klasse, konto og forældre.",
+    "filter": {
+      "search": "Søg rytter",
+      "label": "Vis årgang",
+      "all": "Alle",
+      "none": "Ingen ryttere passer til søgningen."
+    },
     "back": "Tilbage til rytterne",
     "calendar": "Se kalenderen",
     "emptyTitle": "Ingen ryttere endnu",

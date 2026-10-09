@@ -12,6 +12,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { calendarHref } from "@/components/calendar/href";
+import { SectionNav } from "@/components/common/section-nav";
 import { accountState } from "@/components/team/account-badge";
 import { ArchiveRider } from "@/components/team/archive-rider";
 import { classText } from "@/components/team/class-text";
@@ -76,6 +77,7 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
   }
   const t = await getTranslations("riders");
   const classes = await getTranslations("riders.class");
+  const common = await getTranslations("common");
   const me = await whoAmI(ctx.orgId, ctx.userId);
   if (!me?.isCoach) {
     return <EmptyState title={t("coachOnlyTitle")} hint={t("coachOnlyBody")} />;
@@ -158,6 +160,17 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
           </>
         }
       />
+      <SectionNav
+        label={common("sectionNav")}
+        items={[
+          { id: "rider-week", label: t("sections.week") },
+          ...(insight ? [{ id: "rider-form", label: t("sections.form") }] : []),
+          { id: "rider-goals", label: t("sections.goals") },
+          { id: "rider-records", label: t("sections.records") },
+          { id: "rider-upload", label: t("sections.upload") },
+          { id: "rider-profile", label: t("sections.profile") },
+        ]}
+      />
       <div className="grid max-w-3xl gap-8 [&>*]:min-w-0">
         <section aria-labelledby="rider-week" className="flex flex-col gap-3">
           <h2 id="rider-week" className="text-lg font-semibold">
@@ -219,7 +232,9 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
           />
         )}
       </div>
-      <h2 className="mt-3 text-lg font-semibold">{t("sections.profile")}</h2>
+      <h2 id="rider-profile" className="mt-3 scroll-mt-6 text-lg font-semibold">
+        {t("sections.profile")}
+      </h2>
       <div className="grid max-w-3xl gap-5">
         <RiderProfileForm
           rider={{

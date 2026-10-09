@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { Bike, Dumbbell, Plus, Sparkles } from "lucide-react";
+import { Bike, Dumbbell, Plus } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { buttonVariants } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
 import { LibraryTabs } from "@/components/exercises/library/library-tabs";
 import { InstallDcuButton } from "@/components/library/install-dcu-button";
+import { LibraryActions } from "@/components/library/library-actions";
 import { BlockList } from "@/components/library/block-list";
 import { LibraryList } from "@/components/library/library-list";
 import { getOrgContext } from "@/core/auth/session";
@@ -61,35 +62,19 @@ export default async function LibraryPage({
         title={t("title")}
         subtitle={t("subtitle")}
         actions={
-          isCoach ? (
-            // The coach's corner of the library: a new session of either
-            // kind, one built with AI (ADR 0038), and DCU's strength
-            // programmes fetched into it (ADR 0014).
-            <>
-              <Link href="/library/new?sport=bike" className={cn(buttonVariants(), "max-sm:h-11")}>
-                <Bike data-icon="inline-start" />
-                {t("newBike")}
-              </Link>
-              <Link
-                href="/library/new?sport=strength"
-                className={cn(buttonVariants({ variant: "outline" }), "max-sm:h-11")}
-              >
-                <Dumbbell data-icon="inline-start" />
-                {t("newStrength")}
-              </Link>
-              <Link
-                href="/library/new?ai=1"
-                className={cn(buttonVariants({ variant: "outline" }), "max-sm:h-11")}
-              >
-                <Sparkles data-icon="inline-start" />
-                {t("newWithAi")}
-              </Link>
-              <InstallDcuButton />
-            </>
-          ) : undefined
+          // The coach's corner of the library (docs/adr/0073): "Nyt pas"
+          // with the three ways to a new session, and the rest behind
+          // three dots.
+          isCoach ? <LibraryActions /> : undefined
         }
       />
       <LibraryTabs />
+      {isCoach && templates.length === 0 && (
+        // An empty library is where DCU's programmes are most wanted.
+        <div>
+          <InstallDcuButton />
+        </div>
+      )}
       <LibraryList
         templates={templates.map((tpl) => ({
           id: tpl.id,

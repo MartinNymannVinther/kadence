@@ -11,6 +11,7 @@
     "delete": "Delete",
     "add": "Add",
     "back": "Back",
+    "sectionNav": "Parts of the page",
     "optional": "optional",
     "none": "None",
     "invitation": {
@@ -956,6 +957,15 @@
   "me": {
     "title": "Me",
     "sessionPanel": "Session",
+    "nav": {
+      "week": "Week",
+      "rides": "Rides",
+      "form": "Form",
+      "checkins": "Check-ins",
+      "goals": "Goals",
+      "records": "Records",
+      "upload": "Upload"
+    },
     "week": "Your week",
     "form": "Form",
     "formBody": "What your training looks like over the last 90 days.",
@@ -1344,6 +1354,8 @@
     "newBike": "New bike session",
     "newStrength": "New strength session",
     "newWithAi": "Build with AI",
+    "newSession": "New session",
+    "moreActions": "More actions",
     "newTitle": "New template",
     "newTitleBike": "New bike session",
     "newTitleStrength": "New strength session",
@@ -1425,6 +1437,12 @@
   "riders": {
     "title": "Riders",
     "subtitle": "The team's riders, their class, account and parents.",
+    "filter": {
+      "search": "Find a rider",
+      "label": "Show class",
+      "all": "All",
+      "none": "No riders match the search."
+    },
     "back": "Back to the riders",
     "calendar": "See the calendar",
     "emptyTitle": "No riders yet",

@@ -19,3 +19,17 @@ export function classText(
   if (c.category === "senior") return t("senior");
   return t("withYear", { category: c.category, year: c.yearInClass ?? 1 });
 }
+
+/** The class alone — "U17", "Senior" — the word a filter groups riders by. */
+export function classKey(
+  rider: { birthYear: number; categoryOverride: string | null },
+  today: string,
+  t: Translate,
+): string {
+  if (rider.categoryOverride === "senior") return t("senior");
+  const override = isClassBasis(rider.categoryOverride) ? rider.categoryOverride : null;
+  const c = classFor(rider.birthYear, seasonStartYear(today), override);
+  if (c.category === "youth") return t("youth");
+  if (c.category === "senior") return t("senior");
+  return c.category;
+}
