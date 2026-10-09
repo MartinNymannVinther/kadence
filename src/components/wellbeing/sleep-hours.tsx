@@ -9,7 +9,9 @@ import { Input } from "@/components/ui/input";
 /**
  * "Hvor mange timer sov du i nat?": the hours typed, or stepped half an
  * hour at a time with two thumb-sized buttons. One decimal, as the
- * database keeps it; a first press starts from 8 hours.
+ * database keeps it; a first press starts from 8 hours. One line, the
+ * question beside its answer; on a phone the question is asked short
+ * ("Søvn i nat"), so the line fits.
  */
 export function SleepHours({
   value,
@@ -24,9 +26,10 @@ export function SleepHours({
     onChange(Math.round(Math.min(16, Math.max(0, (value ?? 8 - by) + by)) * 10) / 10);
 
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
       <label htmlFor={id} className="text-sm font-medium">
-        {t("sleep")}
+        <span className="sm:hidden">{t("sleepShort")}</span>
+        <span className="max-sm:hidden">{t("sleep")}</span>
       </label>
       <div className="flex items-center gap-2">
         <Button
@@ -47,7 +50,7 @@ export function SleepHours({
           step={0.1}
           value={value ?? ""}
           placeholder="–"
-          className="h-11 w-20 text-center text-base tabular-nums"
+          className="h-11 w-16 text-center text-base tabular-nums"
           onChange={(e) => onChange(e.target.value === "" ? null : Number(e.target.value))}
         />
         <Button

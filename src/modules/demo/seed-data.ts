@@ -138,6 +138,12 @@ export const COMMENTS: Array<{ coach: Text }> = [
   },
 ];
 
+/** Emma's own words on a ride she has done, written as the demo's rider (roles.ts). */
+export const RIDER_COMMENT: Text = {
+  da: "Benene var tunge i starten, men det løsnede op efter en halv time.",
+  en: "My legs were heavy at the start, but they loosened up after half an hour.",
+};
+
 export const NOTES = {
   soreLegs: { da: "Tunge ben efter weekenden", en: "Heavy legs after the weekend" },
   knee: { da: "Knæet driller lidt", en: "My knee is bothering me a bit" },

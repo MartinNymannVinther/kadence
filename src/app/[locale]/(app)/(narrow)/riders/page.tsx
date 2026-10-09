@@ -5,14 +5,17 @@ import { PageHeader } from "@/components/ui/page-header";
 import { accountState } from "@/components/team/account-badge";
 import { AddRiderDialog } from "@/components/team/add-rider-dialog";
 import { BulkInviteDialog } from "@/components/team/bulk-invite-dialog";
-import { classText } from "@/components/team/class-text";
+import { classKey, classText } from "@/components/team/class-text";
 import { waitingRecipients } from "@/components/team/invitation-recipients";
-import { RiderList } from "@/components/team/rider-list";
+import { RiderListFilter } from "@/components/team/rider-list-filter";
 import { WaitingInvitations } from "@/components/team/waiting-invitations";
+import { calendarHref } from "@/components/calendar/href";
+import { teamSignals } from "@/components/insight/signals";
 import { getOrgContext } from "@/core/auth/session";
 import { todayInCopenhagen } from "@/core/dates";
 import { listPendingInvitations } from "@/core/team/service";
 import { Link, redirect } from "@/i18n/navigation";
+import { getInsights } from "@/modules/insight/service";
 import { whoAmI } from "@/modules/team/access";
 import { listTeamGuardians } from "@/modules/team/guardians";
 import { getTeamName } from "@/modules/team/name";
@@ -28,7 +31,9 @@ export async function generateMetadata(): Promise<Metadata> {
  * they have an account, and how many parents are linked. `?archived=1`
  * shows the riders who have left as well. A rider is added one at a time
  * or the whole team at once (ADR 0064), and the links not used yet wait
- * above the list.
+ * above the list. Each row carries the rider's open flags for the week in
+ * progress (ADR 0062), so a coach looking for someone sees at once who
+ * needs a word; the list is found by name and narrowed by class.
  */
 export default async function RidersPage({
   searchParams,
@@ -54,14 +59,18 @@ export default async function RidersPage({
   }
 
   const showArchived = (await searchParams).archived === "1";
-  const [riders, guardians, invitations, team] = await Promise.all([
+  const today = todayInCopenhagen();
+  const [riders, guardians, invitations, team, insights] = await Promise.all([
     getRiders(ctx, showArchived),
     listTeamGuardians(ctx),
     listPendingInvitations(ctx.orgId),
     getTeamName(ctx),
+    getInsights(ctx, { today }),
   ]);
   const pending = new Set(invitations.map((i) => i.id));
-  const today = todayInCopenhagen();
+  // The badges lead to the rider's entry in the attention list under the team's week.
+  const signals = teamSignals(insights);
+  const teamWeek = calendarHref({ view: "team" });
 
   return (
     <div className="flex min-w-0 flex-col gap-6">
@@ -82,15 +91,19 @@ export default async function RidersPage({
       {riders.length === 0 ? (
         <EmptyState title={t("emptyTitle")} hint={t("emptyBody")} />
       ) : (
-        <RiderList
+        <RiderListFilter
           riders={riders.map((r) => ({
             id: r.id,
             name: r.name,
             birthYear: r.birthYear,
             classLabel: classText(r, today, classes),
+            classKey: classKey(r, today, classes),
             account: accountState(r, pending),
             parents: guardians.filter((g) => g.riderId === r.id).length,
             archived: r.archived,
+            signals: signals[r.id]
+              ? { ...signals[r.id]!, anchor: `${teamWeek}${signals[r.id]!.anchor}` }
+              : null,
           }))}
         />
       )}

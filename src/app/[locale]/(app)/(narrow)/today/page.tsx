@@ -1,49 +1,54 @@
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
+import { buttonVariants } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
-import { withQuery } from "@/components/calendar/href";
+import { calendarHref, withQuery } from "@/components/calendar/href";
 import { toCard, toEventCard } from "@/components/calendar/to-card";
 import { SessionSheet } from "@/components/session/session-sheet";
 import { SessionView } from "@/components/session/session-view";
-import { AttentionCount } from "@/components/today/attention-count";
+import { AttentionTop } from "@/components/today/attention-top";
 import { CoachToday } from "@/components/today/coach-today";
 import { GettingStarted } from "@/components/today/getting-started";
+import { NextWeekCard } from "@/components/today/next-week-card";
+import { RiderNews } from "@/components/today/rider-news";
 import { SharedNotice } from "@/components/today/shared-notice";
 import { coverShown, todayElsewhere } from "@/components/today/where";
 import { dayLong } from "@/components/training/day-label";
 import { getOrgContext } from "@/core/auth/session";
-import { todayInCopenhagen } from "@/core/dates";
+import { todayInCopenhagen, weekNumber } from "@/core/dates";
 import { Link, redirect } from "@/i18n/navigation";
-import { getInsights } from "@/modules/insight/service";
+import { cn } from "@/lib/utils";
 import { whoAmI } from "@/modules/team/access";
 import { orgImageUrls } from "@/modules/team/images";
 import { getRiders } from "@/modules/team/riders";
-import { listEvents } from "@/modules/training/events";
-import { listSessions } from "@/modules/training/sessions";
-import { weekDates, weekFrom } from "@/modules/training/week";
+import { coachOverview } from "./coach-data";
 import { riderDay } from "./rider-data";
 import { RiderToday } from "./rider-today";
 
+/** A coach's front page is Overblik, as the menu calls it (nav-items.ts); everyone else's is I dag. */
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("today");
-  return { title: t("title") };
+  const ctx = await getOrgContext();
+  const me = ctx ? await whoAmI(ctx.orgId, ctx.userId) : null;
+  return { title: me?.isCoach ? t("overview.title") : t("title") };
 }
 
 const hrefFor = (sessionId: string) => withQuery("/today", { session: sessionId });
 
 /**
- * The front page, by who is looking, and about today (docs/adr/0063). A
- * rider sees the first steps while they are not done, today's session
- * with a big "Udført", "how hard" about the last ride, the check-in and
- * tomorrow; the rest of their picture is on Mig. A coach sees how many
- * riders have something worth a look — the list itself is in the team's
- * week — and the team's day, or, on an empty team, the three steps to
- * start. A parent who is nothing else has one page, the child's
- * (/parents). One person can be more than one of these, and sees each
- * part. The club's picture shows on an empty day only. A ride shared to
- * Kadence from the phone lands here with what became of it (`?shared=`,
- * ADR 0029).
+ * The front page, by who is looking (docs/adr/0063). A rider's is I dag:
+ * the first steps while they are not done, today's session with a big
+ * "Udført", "how hard" about the last ride, the check-in and tomorrow;
+ * the rest of their picture is on Mig. A coach's is Overblik, because a
+ * coach's unit is the week: whether next week is planned and what is in
+ * it, the three riders most worth a look this week — the whole list is in
+ * the team's week — what the riders have written lately, then the team's
+ * day and the week's events; on an empty team, the three steps to start.
+ * A parent who is nothing else has one page, the child's (/parents). One
+ * person can be more than one of these, and sees each part. The club's
+ * picture shows on an empty day only. A ride shared to Kadence from the
+ * phone lands here with what became of it (`?shared=`, ADR 0029).
  */
 export default async function TodayPage({
   searchParams,
@@ -67,8 +72,6 @@ export default async function TodayPage({
   }
   const word = (key: string) => (typeof search[key] === "string" ? search[key] : undefined);
   const today = todayInCopenhagen();
-  const monday = weekFrom(undefined, today);
-  const sunday = weekDates(monday)[6] ?? today;
 
   const riders = me?.isCoach ? await getRiders(ctx) : [];
   const soloRider = me?.rider && riders.length === 1 && riders[0]?.id === me.rider.id;
@@ -80,15 +83,9 @@ export default async function TodayPage({
       })
     : null;
   const team =
-    me?.isCoach && riders.length > 0 && !soloRider
-      ? await Promise.all([
-          listSessions(ctx, { from: today, to: today, riderIds: riders.map((r) => r.id) }),
-          listEvents(ctx, { from: monday, to: sunday }),
-          getInsights(ctx, { today }),
-        ])
-      : null;
+    me?.isCoach && riders.length > 0 && !soloRider ? await coachOverview(ctx, riders, today) : null;
   const nothing = !me || (!me.isCoach && !me.rider && me.children.length === 0);
-  const sessionsToday = (mine?.today.length ?? 0) + (team?.[0].length ?? 0);
+  const sessionsToday = (mine?.today.length ?? 0) + (team?.sessionsToday.length ?? 0);
   const cover = coverShown({ sessionsToday, waiting: Boolean(mine?.toRate) })
     ? (await orgImageUrls(ctx)).cover
     : null;
@@ -105,8 +102,30 @@ export default async function TodayPage({
         />
       )}
       <PageHeader
-        title={t("title")}
-        subtitle={<span className="first-letter:uppercase">{dayLong(today, locale)}</span>}
+        title={me?.isCoach ? t("overview.title") : t("title")}
+        subtitle={
+          // Inline-block, so the weekday's first letter can be a capital.
+          <span className="inline-block first-letter:uppercase">
+            {me?.isCoach
+              ? t("overview.subtitle", { day: dayLong(today, locale), week: weekNumber(today) })
+              : dayLong(today, locale)}
+          </span>
+        }
+        actions={
+          team && (
+            <>
+              <Link
+                href={calendarHref({ view: "team" })}
+                className={cn(buttonVariants({ variant: "outline" }), "max-sm:h-11")}
+              >
+                {t("overview.teamWeek")}
+              </Link>
+              <Link href="/calendar/week-plan" className={cn(buttonVariants(), "max-sm:h-11")}>
+                {t("overview.plan")}
+              </Link>
+            </>
+          )
+        }
       />
 
       <SharedNotice shared={word("shared")} count={word("count")} reason={word("reason")} />
@@ -120,11 +139,13 @@ export default async function TodayPage({
       {me?.isCoach && riders.length === 0 && <GettingStarted />}
       {team && (
         <>
-          <AttentionCount count={team[2].filter((i) => i.flags.length > 0).length} />
+          <NextWeekCard summary={team.nextWeek} />
+          <AttentionTop insights={team.insights} />
+          <RiderNews items={team.news} today={today} />
           <CoachToday
             riders={riders.map((r) => ({ id: r.id, name: r.name }))}
-            sessions={team[0].map(toCard)}
-            teamEvents={team[1].filter((e) => e.riderId === null).map(toEventCard)}
+            sessions={team.sessionsToday.map(toCard)}
+            teamEvents={team.teamEvents.map(toEventCard)}
             today={today}
             hrefFor={hrefFor}
           />

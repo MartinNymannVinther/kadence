@@ -11,6 +11,7 @@
     "delete": "Slet",
     "add": "Tilføj",
     "back": "Tilbage",
+    "sectionNav": "Dele af siden",
     "optional": "valgfrit",
     "none": "Ingen",
     "invitation": {
@@ -189,17 +190,10 @@
       "rulle": "Rulle",
       "me": "Mig",
       "child": "Barnet",
-      "guides": "Viden og beregnere",
-      "guidesShort": "Viden",
-      "coachGuide": "Trænerguide",
-      "parentsGuide": "Forældreguide",
-      "groups": {
-        "planning": "Planlægning",
-        "training": "Træning",
-        "team": "Holdet",
-        "tools": "Værktøjer",
-        "knowledge": "Viden"
-      },
+      "children": "Børnene",
+      "overview": "Overblik",
+      "knowledge": "Viden og hjælp",
+      "knowledgeShort": "Viden",
       "more": "Mere",
       "moreNews": "Mere, der er noget nyt",
       "barLabel": "Hovedmenu"
@@ -306,6 +300,18 @@
     "subtitleCoach": "Dig selv, holdet og arbejdsrummet.",
     "subtitleRider": "Dig selv, dine enheder og din sikkerhed.",
     "subtitleOther": "Dig selv og din sikkerhed.",
+    "appearance": {
+      "title": "Udseende",
+      "body": "Gælder på denne enhed. Lys eller mørk følger ellers systemet.",
+      "theme": "Lys eller mørk",
+      "light": "Lys",
+      "dark": "Mørk",
+      "system": "Følg systemet",
+      "sidebar": "Sidebjælken",
+      "sidebarHint": "Menuen i mørk mos eller på papir som resten af siden.",
+      "moss": "Mørk mos",
+      "paper": "Papir"
+    },
     "nav": {
       "label": "Indstillingsmenu",
       "security": "Sikkerhed",
@@ -316,7 +322,7 @@
       "ai": "AI",
       "data": "Data",
       "team": "Holdet",
-      "me": "Mig",
+      "me": "Profil",
       "devices": "Enheder",
       "groups": {
         "you": "Dig",
@@ -390,7 +396,7 @@
       },
       "images": {
         "title": "Logo og billede",
-        "body": "Klubbens logo står ved navnet i menuen, og billedet står øverst på I dag-siden for alle i klubben på en dag uden pas. Billedet bliver gjort mindre i din browser, før det sendes, og oplysninger som GPS-position bliver fjernet.",
+        "body": "Klubbens logo står ved navnet i menuen, og billedet står øverst på forsiden for alle i klubben på en dag uden pas. Billedet bliver gjort mindre i din browser, før det sendes, og oplysninger som GPS-position bliver fjernet.",
         "logo": "Logo",
         "cover": "Stemningsbillede",
         "logoHint": "Kvadratisk virker bedst. PNG, JPEG eller WebP.",
@@ -542,7 +548,7 @@
       }
     },
     "me": {
-      "title": "Mig",
+      "title": "Profil",
       "subtitle": "Dine egne valg: hvad dine forældre kan se, dine tærskler og din sikkerhed.",
       "security": "Sikkerhed: passkeys og totrinsbekræftelse",
       "coachNote": "Du er træner på holdet. Holdets egne valg finder du under Holdet.",
@@ -723,11 +729,15 @@
     "errorGeneric": "Det gik galt. Prøv igen."
   },
   "help": {
-    "title": "Hjælp",
-    "intro": "Sådan virker Kadence, i den rytme en sæson lever i.",
-    "guidesLine": "Guides og beregnere ligger åbent for alle, også uden login:",
-    "guidesLink": "Viden og beregnere",
-    "howToTitle": "Sådan bruger du værktøjet",
+    "title": "Viden og hjælp",
+    "intro": "Sådan virker Kadence, og det, der er godt at vide om sporten.",
+    "knowledge": {
+      "title": "Viden om sporten",
+      "hint": "Åbne sider til ryttere, forældre og trænere. Alle kan læse dem, også uden at logge ind.",
+      "openPage": "Åben side"
+    },
+    "howToTitle": "Sådan bruger du Kadence",
+    "howToHint": "I den rytme en sæson lever i. Hvert afsnit er kort og siger, hvad der sker, og hvorfor.",
     "closing": "Mangler der noget her? Skriv til os, eller ret siden selv: koden er åben.",
     "howTo": {
       "roles": {
@@ -738,6 +748,10 @@
         "title": "Glemt adgangskode",
         "body": "Kadence sender ingen mails, så vejen tilbage går gennem en træner. En træner åbner Indstillinger → Arbejdsrum, trykker Link til ny adgangskode ved personen og sender linket selv, fx på SMS. Linket virker én gang og kun den næste time; den, der bruger det, vælger en ny adgangskode og bliver logget ud alle andre steder. Personen kan altid se på sin sikkerhedsside, at et link er lavet, og af hvem. En træner kan lave links til ryttere, forældre og andre trænere på holdet, men ikke til holdets ejer; en ejer, der har glemt sin adgangskode, logger ind med sin passkey eller får hjælp af den, der driver Kadence. Har du slået totrinsbekræftelse til, skal du stadig bruge koden fra din app."
       },
+      "overview": {
+        "title": "Overblik: trænerens forside",
+        "body": "Som træner lander du på Overblik. Øverst står, om næste uge er planlagt, og hvad der er i den, som ferie, eksamen, lejr og løb, med en knap til planlæggeren for den uge. Derefter de tre ryttere, der er mest værd at se på i ugen, der er i gang; hele listen står under holdets uge i kalenderen. Nyt fra rytterne samler rytternes egne kommentarer på pas og ture og deres noter fra check-in de seneste 14 dage, nyeste først. Du kan svare i passets egen tråd. Til sidst holdets pas i dag og holdets begivenheder i ugen. En rytters forside hedder I dag."
+      },
       "data": {
         "title": "Jeres data",
         "body": "Alt kan hentes ud som regneark og JSON under Indstillinger → Data. Arbejdsrummet kan slettes helt igen, revisionsspor inklusive."
@@ -745,6 +759,10 @@
       "calendar": {
         "title": "Kalenderen",
         "body": "Kalenderen viser en uge ad gangen. På en computer står dagene side om side, på telefonen under hinanden, og holdets uge er et kort pr. rytter. Træneren kan trække et pas til en anden dag; på telefonen bruger du \"Flyt\" i passets menu. Løb, eksamen, skole, lejr, ferie og sygdom står som små mærker. Farverne viser, hvordan det gik: grøn er som planlagt, gul er lidt ved siden af, rød er ikke udført eller langt fra planen, og grå er ikke kørt endnu. Der står altid et ord ved farven. Et pas kan have et tidspunkt og et mødested, fx \"17.30 fra klubhuset\". En hel uge lægges ind under \"Planlæg ugen\": vælg ryttere, eventuelt en hel årgang med ét tryk, og start fra en tom uge, sidste uge, et forløb eller et forslag fra AI'en. Du ser, hvad ugen giver mod sæsonplanen, før du lægger den ind, og du kan gentage den i flere uger eller gemme den som forløb. Skal ét pas gå igen, fx styrke hver tirsdag og torsdag, slår du \"Gentag på faste ugedage\" til, når du lægger det ind; \"Ret\" og \"Slet\" kan også tage resten af serien. \"Kopiér ugen før\" lægger hver rytters egne pas fra en anden uge ind på de samme ugedage. \"Del ugen\" laver en tekst med ugens pas, tider og steder til holdets chat, uden noget om rytternes trivsel."
+      },
+      "search": {
+        "title": "Søg",
+        "body": "Søg finder en rytter, et pas fra biblioteket, en side eller et afsnit her i hjælpen. Tryk ⌘K på en Mac eller Ctrl+K på en pc, eller tryk på søgefeltet øverst i menuen. På telefonen er det luppen øverst på skærmen. Skriv et par bogstaver, gå op og ned med piletasterne, og tryk Enter for at åbne. Du kan skrive o for ø og a for å. Søg viser kun det, du i forvejen må se: en træner finder holdets ryttere, en forælder sit eget barn."
       },
       "sessions": {
         "title": "Pas og skabeloner",
@@ -764,7 +782,7 @@
       },
       "parents": {
         "title": "Forældre",
-        "body": "Træneren tilføjer en forælder og sender et link. Forælderen ser først noget, når rytteren selv har bekræftet forbindelsen under Indstillinger → Mig. Rytteren bestemmer også, om forældrene kan se træningen, og om de kan se, hvordan rytteren har det. Fra det år, rytteren fylder 18, skal rytteren bekræfte igen som voksen."
+        "body": "Træneren tilføjer en forælder og sender et link. Forælderen ser først noget, når rytteren selv har bekræftet forbindelsen under Indstillinger → Profil. Rytteren bestemmer også, om forældrene kan se træningen, og om de kan se, hvordan rytteren har det. Fra det år, rytteren fylder 18, skal rytteren bekræfte igen som voksen."
       },
       "season": {
         "title": "Sæsonplanen og DCU",
@@ -776,7 +794,7 @@
       },
       "warnings": {
         "title": "Opmærksomhedspunkter",
-        "body": "Kadence viser træneren, når en uge går ud over rammerne, og træneren beslutter, hvad der skal ske. Opmærksomhedspunkterne står under Kalender → Hele holdet: som mærker ved hver rytter og som en liste under ugen, hvor \"Se ugen\" åbner rytterens uge. På I dag står, hvor mange ryttere der har noget, der er værd at se på. Punkterne er: timer på cyklen over eller under DCU's ramme for ugen (oktober er DCU's pause og har ingen ramme), mere end 15 % flere timer end de seneste uger, en tur længere end DCU's grænse (U17 højst 4 timer eller 120 km, U19 højst 5 timer eller 150 km), styrkepas med under 48 timer imellem, pas langt fra planen, meget tid i mellemzonen når holdet bruger \"Lav intensitet først\", for lidt søvn, smerter efter ATK's smertetrappe og check-ins i gul eller rød zone. Hvert punkt har et ord for, hvor meget det betyder: \"Vigtigt nu\", \"Værd at se på\" eller \"Godt at vide\". Når I har talt om et punkt, kan du markere det som afklaret."
+        "body": "Kadence viser træneren, når en uge går ud over rammerne, og træneren beslutter, hvad der skal ske. Opmærksomhedspunkterne står under Kalender → Hele holdet: som mærker ved hver rytter og som en liste under ugen, hvor \"Se ugen\" åbner rytterens uge. På Overblik står de tre ryttere, der er mest værd at se på, med vejen til hele listen. Punkterne er: timer på cyklen over eller under DCU's ramme for ugen (oktober er DCU's pause og har ingen ramme), mere end 15 % flere timer end de seneste uger, en tur længere end DCU's grænse (U17 højst 4 timer eller 120 km, U19 højst 5 timer eller 150 km), styrkepas med under 48 timer imellem, pas langt fra planen, meget tid i mellemzonen når holdet bruger \"Lav intensitet først\", for lidt søvn, smerter efter ATK's smertetrappe og check-ins i gul eller rød zone. Hvert punkt har et ord for, hvor meget det betyder: \"Vigtigt nu\", \"Værd at se på\" eller \"Godt at vide\". Når I har talt om et punkt, kan du markere det som afklaret."
       },
       "checkin": {
         "title": "Check-in og trivselszoner",
@@ -784,7 +802,7 @@
       },
       "reminders": {
         "title": "Påmindelser",
-        "body": "Kadence kan minde dig om dagens check-in om aftenen, sige til, når der er en ny kommentar, eller planen for de næste dage er ændret, og give forældre ugens overblik søndag aften. Slå det til under Indstillinger → Mig på den telefon eller computer, du vil have dem på, og vælg hvilke. På en iPhone virker det, når Kadence er lagt på hjemmeskærmen. Selve beskeden fra Apple, Google eller Mozilla er tom; telefonen spørger Kadence, hvad der er nyt, når den kommer. Mellem 21.30 og 7.00 venter påmindelserne til morgenen. De findes, når installationen har sat dem op."
+        "body": "Kadence kan minde dig om dagens check-in om aftenen, sige til, når der er en ny kommentar, eller planen for de næste dage er ændret, og give forældre ugens overblik søndag aften. Slå det til under Indstillinger → Profil på den telefon eller computer, du vil have dem på, og vælg hvilke. På en iPhone virker det, når Kadence er lagt på hjemmeskærmen. Selve beskeden fra Apple, Google eller Mozilla er tom; telefonen spørger Kadence, hvad der er nyt, når den kommer. Mellem 21.30 og 7.00 venter påmindelserne til morgenen. De findes, når installationen har sat dem op."
       },
       "devices": {
         "title": "Upload og enheder",
@@ -808,8 +826,8 @@
         "body": "Kadence kan ikke kobles til Strava: Stravas regler for apps siger, at en app kun må vise dine Strava-ture til dig selv, ikke til din træner. Men du kan tage dine ture med. Hele din historik: log ind på strava.com på en computer (det kan ikke gøres i appen), vælg Indstillinger → Min konto (Settings → My Account), tryk Kom godt i gang (Get Started) under Download din konto (Download your account) og derefter Anmod om download (Request download), og vent på mailen fra Strava; det kan tage nogle timer. Læg zip-filen i upload-feltet under Mig, som den er. Kadence viser, hvad arkivet indeholder, og henter så cykelturene, eller alle aktiviteter, hvis du vælger det: med de navne, du gav dem på Strava, nyeste først, og uden de ture, der allerede er her. Op til 500 ture om dagen; er der flere, fortsætter det, hvor det slap, når du lægger arkivet ind igen næste dag. Har du pakket arkivet ud, kan du i stedet vælge mappen med “Hent fra enheden”. En træner kan gøre det samme på rytterens side. En enkelt tur: åbn den på strava.com, vælg ••• → Eksporter original (Export Original), og upload filen. Nye ture kommer lettest direkte fra cykelcomputeren; se Upload og enheder."
       },
       "parentsPage": {
-        "title": "Forældresiden",
-        "body": "Under Forældre ser en forælder sit barns uge, formen med ord, det næste løb eller eksamen og, hvis barnet deler det, hvordan det går. Siden har også Forældreguiden: Team Danmarks og Kolding Talents ti temaer og ni råd, skrevet kort med Kadences egne ord og med links til originalerne."
+        "title": "Barnets side",
+        "body": "En forælder lander på sit barns side, som menuen kalder ved barnets fornavn, eller Børnene ved flere børn. Her står barnets uge med tid og sted, de næste 30 dage med familiens egne dage, formen med ord og, hvis barnet deler det, hvordan det går. Forældreguiden ligger under Viden og hjælp: Team Danmarks og Kolding Talents ti temaer og ni råd, skrevet kort med Kadences egne ord og med links til originalerne."
       },
       "ai": {
         "title": "AI'en",
@@ -852,6 +870,46 @@
     "attention": {
       "count": "{count, plural, =0 {Ingen ryttere har noget, der er værd at se på lige nu} one {# rytter har noget, der er værd at se på} other {# ryttere har noget, der er værd at se på}}",
       "where": "Se holdets uge i kalenderen"
+    },
+    "overview": {
+      "title": "Overblik",
+      "subtitle": "{day} · uge {week}",
+      "plan": "Planlæg ugen",
+      "teamWeek": "Holdets uge"
+    },
+    "nextWeek": {
+      "none": "Uge {week} er ikke planlagt endnu",
+      "some": "Uge {week} har pas til {planned} af {riders, plural, one {# rytter} other {# ryttere}}",
+      "all": "Uge {week} er planlagt: {sessions, plural, one {# pas} other {# pas}} til {riders, plural, one {# rytter} other {# ryttere}}",
+      "start": "Du kan starte fra uge {week}, et forløb eller en tom uge.",
+      "quiet": "Ingen ferie, eksamen, lejr eller løb i ugen.",
+      "riders": "{count, plural, one {# rytter} other {# ryttere}} {kind, select, holiday {har ferie} exam {har eksamen} school {har noget i skolen} ill {{count, plural, one {er syg} other {er syge}}} camp {er på lejr} race {kører løb} other {har noget}}",
+      "team": "{kind, select, holiday {holdet har ferie} exam {der er eksamen} school {der er noget i skolen} ill {der er sygdom} camp {der er lejr} race {der er løb} other {der sker noget}} {days}",
+      "day": "{day}",
+      "span": "{from} til {to}",
+      "and": "og",
+      "plan": "Planlæg uge {week}",
+      "see": "Se uge {week}",
+      "edit": "Ret ugen"
+    },
+    "attentionTop": {
+      "title": "Værd at se på",
+      "hint": "Ugen, der er i gang, ud fra timerne, passene og check-ins. Vist, aldrig håndhævet.",
+      "more": "{count, plural, one {# punkt mere} other {# punkter mere}}",
+      "others": "{count, plural, one {# rytter mere har noget, der er værd at se på.} other {# ryttere mere har noget, der er værd at se på.}}",
+      "all": "Alle opmærksomhedspunkter i holdets uge"
+    },
+    "news": {
+      "title": "Nyt fra rytterne",
+      "hint": "Kommentarer på pas og noter fra check-in, nyeste først. Svar skrives i passets egen tråd.",
+      "empty": "Ingen kommentarer eller noter de seneste 14 dage.",
+      "comment": "Kommentar til {about}",
+      "commentRide": "Kommentar til en tur",
+      "checkin": "Check-in",
+      "quote": "“{text}”",
+      "when": "{day} {clock}",
+      "today": "i dag",
+      "yesterday": "i går"
     },
     "parent": {
       "link": "{count, plural, one {Se dit barns uge} other {Se dine børns uger}}"
@@ -924,7 +982,7 @@
         "body": "Din forælder ser først din træning, når du har sagt ja. Du bestemmer selv, hvad de ser.",
         "confirm": "{adult, select, yes {Sig ja igen til {name}} other {Sig ja til {name}}}",
         "confirmed": "{name} kan nu se det, du deler.",
-        "where": "Du kan ændre det når som helst under Indstillinger → Mig."
+        "where": "Du kan ændre det når som helst under Indstillinger → Profil."
       },
       "homeScreen": {
         "title": "Læg Kadence på hjemmeskærmen",
@@ -951,6 +1009,15 @@
   "me": {
     "title": "Mig",
     "sessionPanel": "Pas",
+    "nav": {
+      "week": "Uge",
+      "rides": "Ture",
+      "form": "Form",
+      "checkins": "Check-ins",
+      "goals": "Mål",
+      "records": "Rekorder",
+      "upload": "Upload"
+    },
     "week": "Din uge",
     "form": "Form",
     "formBody": "Sådan ser din træning ud de seneste 90 dage.",
@@ -1013,7 +1080,7 @@
       "coachBody": "Kalenderen fyldes, når holdet har ryttere. Tilføj den første, så kan du lægge pas i ugen.",
       "coachAction": "Tilføj ryttere",
       "waitingTitle": "Venter på dit barns bekræftelse",
-      "waitingBody": "Du kan se dit barns træning, når rytteren har bekræftet forbindelsen til dig under Indstillinger → Mig.",
+      "waitingBody": "Du kan se dit barns træning, når rytteren har bekræftet forbindelsen til dig under Indstillinger → Profil.",
       "noneTitle": "Her er ingen kalender til dig endnu",
       "noneBody": "Kalenderen viser en rytters træning. Er du rytter eller forælder, så bed træneren om en invitation til netop det."
     },
@@ -1339,6 +1406,8 @@
     "newBike": "Nyt cykelpas",
     "newStrength": "Nyt styrkepas",
     "newWithAi": "Byg med AI",
+    "newSession": "Nyt pas",
+    "moreActions": "Flere handlinger",
     "newTitle": "Ny skabelon",
     "newTitleBike": "Nyt cykelpas",
     "newTitleStrength": "Nyt styrkepas",
@@ -1420,12 +1489,18 @@
   "riders": {
     "title": "Ryttere",
     "subtitle": "Holdets ryttere, deres klasse, konto og forældre.",
+    "filter": {
+      "search": "Søg rytter",
+      "label": "Vis årgang",
+      "all": "Alle",
+      "none": "Ingen ryttere passer til søgningen."
+    },
     "back": "Tilbage til rytterne",
     "calendar": "Se kalenderen",
     "emptyTitle": "Ingen ryttere endnu",
     "emptyBody": "Tilføj holdets ryttere. Du kan lægge pas til dem med det samme, og invitere dem, når de er klar.",
     "coachOnlyTitle": "Kun for trænere",
-    "coachOnlyBody": "Holdets liste over ryttere er trænernes. Din egen profil finder du under Indstillinger → Mig.",
+    "coachOnlyBody": "Holdets liste over ryttere er trænernes. Din egen profil finder du under Indstillinger → Profil.",
     "showArchived": "Vis også arkiverede ryttere",
     "hideArchived": "Skjul arkiverede ryttere",
     "archiveNote": "Har rytteren forladt holdet? Arkivér, så beholder rytteren sin historik, men forsvinder fra listerne.",
@@ -1595,7 +1670,7 @@
       "submit": "Tilføj",
       "added": "Forælderen er tilføjet.",
       "issuedTitle": "Forælderen er tilføjet",
-      "issuedBody": "Send linket til forælderen. Bagefter skal {rider} bekræfte forbindelsen under Indstillinger → Mig.",
+      "issuedBody": "Send linket til forælderen. Bagefter skal {rider} bekræfte forbindelsen under Indstillinger → Profil.",
       "done": "Færdig",
       "who": "Hvem er forælderen?",
       "modeNew": "En ny forælder",
@@ -2211,10 +2286,28 @@
     "hidden": "Rytteren deler ikke, hvordan det går, med forældrene.",
     "none": "Ingen check-ins de seneste 14 dage."
   },
+  "search": {
+    "label": "Søg",
+    "placeholder": "Hvad leder du efter?",
+    "open": "Søg rytter eller pas",
+    "openOther": "Søg i Kadence",
+    "shortcut": "Genvej: {keys}",
+    "groups": {
+      "riders": "Ryttere",
+      "templates": "Pas",
+      "places": "Sider",
+      "help": "Hjælp"
+    },
+    "empty": "Intet fundet",
+    "loading": "Henter …",
+    "failed": "Ryttere og pas kunne ikke hentes lige nu. Sider og hjælp kan du stadig finde.",
+    "hint": "↑↓ vælg · ↵ åbn · esc luk"
+  },
   "checkin": {
     "title": "Hvordan har du det?",
     "body": "Tre hurtige spørgsmål om morgenen. Svarene hjælper dig og din træner med at se, om træningen passer til resten af livet.",
     "sleep": "Hvor mange timer sov du i nat?",
+    "sleepShort": "Søvn i nat",
     "hours": "timer",
     "less": "Mindre søvn",
     "more": "Mere søvn",
@@ -2991,10 +3084,12 @@
   },
   "parents": {
     "title": "Forældre",
-    "subtitle": "Til forældre til unge ryttere: dit barns uge, og hvordan du bedst bakker op.",
+    "childTitle": "Barnet",
+    "childrenTitle": "Børnene",
+    "subtitle": "Træningen i denne uge, de næste 30 dage, og hvordan det går.",
     "sessionPanel": "Pas",
     "waitingTitle": "Venter på dit barns bekræftelse",
-    "waitingBody": "Du kan se dit barns uge her, når dit barn har bekræftet forbindelsen til dig. Det gør rytteren selv under Indstillinger → Mig.",
+    "waitingBody": "Du kan se dit barns uge her, når dit barn har bekræftet forbindelsen til dig. Det gør rytteren selv under Indstillinger → Profil.",
     "basicsTitle": "Godt at vide",
     "child": {
       "title": "{name}s uge",
@@ -3035,6 +3130,9 @@
     "guide": {
       "title": "Forældreguiden",
       "body": "Ti temaer og ni råd om at støtte et barn, der dyrker meget sport, skrevet kort med Kadences egne ord. Læs originalerne hos Team Danmark.",
+      "fromHelp": "Ti temaer og ni råd om at støtte et barn, der dyrker meget sport, søvn og skole ved siden af, og hvad en forælder kan se her, og hvorfor.",
+      "card": "Ti temaer og ni råd om at støtte dit barn, søvn og skole ved siden af sporten, og hvad du kan se her, og hvorfor.",
+      "open": "Åbn forældreguiden",
       "credit": "Bygger på Team Danmarks og Kolding Talents forældreguide.",
       "guideLink": "Forældreguiden hos Team Danmark",
       "opensElsewhere": "(åbner hos Team Danmark)",
@@ -3150,7 +3248,7 @@
     "hiddenBody": "Forbindelsen er bekræftet, men dit barn har valgt ikke at dele sin træning. Det er dit barns valg; tal sammen om det derhjemme."
   },
   "coachGuide": {
-    "title": "Trænerguide",
+    "title": "Trænerguiden",
     "intro": "Gode råd til trænere for U17-, U19- og U23-ryttere, samlet fra DCU, Team Danmark, DIF, Anti Doping Danmark og loven. Skrevet med Kadences egne ord, med links til originalerne.",
     "note": "Guiden er vejledning til dig. Det er dig, rytteren og forældrene, der beslutter, og ved skader og sygdom er det lægen.",
     "contents": "Indhold",
@@ -3300,7 +3398,7 @@
         "intro": "Forældrene er rytterens vigtigste støtte, og Kadence giver dem et vindue ind, som rytteren styrer.",
         "points": {
           "1": "Forældre ser deres barns træning, når rytteren har bekræftet koblingen, og check-ins kun, hvis rytteren deler dem.",
-          "2": "Forældreguiden fra Team Danmark og Kolding Talent ligger på forældresiden i Kadence. Henvis gerne dertil.",
+          "2": "Forældreguiden fra Team Danmark og Kolding Talent ligger under Viden og hjælp i Kadence. Henvis gerne dertil.",
           "3": "Der er én åben samtale: kommentarer på pas og ture læses af træner, rytter og forældre.",
           "4": "For ryttere under 18 år anbefaler DIF at tænke forældrene ind i planen."
         }

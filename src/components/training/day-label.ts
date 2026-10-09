@@ -1,7 +1,7 @@
 /**
- * A calendar day in the reader's language: "man." / "Mon", "28. sep." /
- * "28 Sep", "mandag 28. september". Plan dates carry no clock, so they are
- * formatted in UTC and never move a day.
+ * A calendar day in the reader's language: "man." / "Mon", "lørdag" /
+ * "Saturday", "28. sep." / "28 Sep", "mandag 28. september". Plan dates
+ * carry no clock, so they are formatted in UTC and never move a day.
  */
 
 function intlLocale(locale: string): string {
@@ -14,6 +14,13 @@ function at(iso: string): Date {
 
 export function weekdayShort(iso: string, locale: string): string {
   return new Intl.DateTimeFormat(intlLocale(locale), { weekday: "short", timeZone: "UTC" }).format(
+    at(iso),
+  );
+}
+
+/** "lørdag" / "Saturday": the day of the week alone, for a sentence about a week. */
+export function weekdayLong(iso: string, locale: string): string {
+  return new Intl.DateTimeFormat(intlLocale(locale), { weekday: "long", timeZone: "UTC" }).format(
     at(iso),
   );
 }

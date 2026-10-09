@@ -22,6 +22,7 @@ import { guardianState } from "@/components/team/guardian-state";
 import { RiderAccount } from "@/components/team/rider-account";
 import { RiderInsightCard } from "@/components/team/rider-insight-card";
 import { RiderProfileForm } from "@/components/team/rider-profile-form";
+import { RiderSectionNav } from "@/components/team/rider-section-nav";
 import { ThresholdsForm } from "@/components/team/thresholds-form";
 import { MeasurementsCard, type MeasurementRow } from "@/components/wellbeing/measurements-card";
 import { zoneDays } from "@/components/wellbeing/zone-days";
@@ -158,6 +159,7 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
           </>
         }
       />
+      <RiderSectionNav hasForm={insight !== null} />
       <div className="grid max-w-3xl gap-8 [&>*]:min-w-0">
         <section aria-labelledby="rider-week" className="flex flex-col gap-3">
           <h2 id="rider-week" className="text-lg font-semibold">
@@ -219,7 +221,9 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
           />
         )}
       </div>
-      <h2 className="mt-3 text-lg font-semibold">{t("sections.profile")}</h2>
+      <h2 id="rider-profile" className="mt-3 scroll-mt-6 text-lg font-semibold">
+        {t("sections.profile")}
+      </h2>
       <div className="grid max-w-3xl gap-5">
         <RiderProfileForm
           rider={{

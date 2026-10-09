@@ -11,6 +11,7 @@
     "delete": "Delete",
     "add": "Add",
     "back": "Back",
+    "sectionNav": "Parts of the page",
     "optional": "optional",
     "none": "None",
     "invitation": {
@@ -189,17 +190,10 @@
       "rulle": "Rulle",
       "me": "Me",
       "child": "Your child",
-      "guides": "Guides and calculators",
-      "guidesShort": "Guides",
-      "coachGuide": "Coach guide",
-      "parentsGuide": "Parents' guide",
-      "groups": {
-        "planning": "Planning",
-        "training": "Training",
-        "team": "Team",
-        "tools": "Tools",
-        "knowledge": "Knowledge"
-      },
+      "children": "Your children",
+      "overview": "Overview",
+      "knowledge": "Knowledge and help",
+      "knowledgeShort": "Knowledge",
       "more": "More",
       "moreNews": "More, something new",
       "barLabel": "Main menu"
@@ -306,6 +300,18 @@
     "subtitleCoach": "You, the team and the workspace.",
     "subtitleRider": "You, your devices and your security.",
     "subtitleOther": "You and your security.",
+    "appearance": {
+      "title": "Appearance",
+      "body": "Applies on this device. Light or dark otherwise follows the system.",
+      "theme": "Light or dark",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "Follow the system",
+      "sidebar": "The sidebar",
+      "sidebarHint": "The menu in dark moss, or on paper like the rest of the page.",
+      "moss": "Dark moss",
+      "paper": "Paper"
+    },
     "nav": {
       "label": "Settings menu",
       "security": "Security",
@@ -316,7 +322,7 @@
       "ai": "AI",
       "data": "Data",
       "team": "Team",
-      "me": "Me",
+      "me": "Profile",
       "devices": "Devices",
       "groups": {
         "you": "You",
@@ -390,7 +396,7 @@
       },
       "images": {
         "title": "Logo and picture",
-        "body": "The club's logo sits by its name in the menu, and the picture sits at the top of the Today page for everyone in the club on a day without sessions. The picture is made smaller in your browser before it is sent, and details such as a GPS position are removed.",
+        "body": "The club's logo sits by its name in the menu, and the picture sits at the top of the front page for everyone in the club on a day without sessions. The picture is made smaller in your browser before it is sent, and details such as a GPS position are removed.",
         "logo": "Logo",
         "cover": "Club picture",
         "logoHint": "Square works best. PNG, JPEG or WebP.",
@@ -542,7 +548,7 @@
       }
     },
     "me": {
-      "title": "Me",
+      "title": "Profile",
       "subtitle": "Your own choices: what your parents can see, your thresholds and your security.",
       "security": "Security: passkeys and two-step verification",
       "coachNote": "You are a coach on the team. The team's own choices are under Team.",
@@ -723,11 +729,15 @@
     "errorGeneric": "That went wrong. Try again."
   },
   "help": {
-    "title": "Help",
-    "intro": "How Kadence works, in the rhythm a season lives in.",
-    "guidesLine": "Guides and calculators are open to everyone, no login needed:",
-    "guidesLink": "Guides and calculators",
-    "howToTitle": "How to use the tool",
+    "title": "Knowledge and help",
+    "intro": "How Kadence works, and what is good to know about the sport.",
+    "knowledge": {
+      "title": "About the sport",
+      "hint": "Open pages for riders, parents and coaches. Anyone can read them, also without signing in.",
+      "openPage": "Open page"
+    },
+    "howToTitle": "How to use Kadence",
+    "howToHint": "In the rhythm a season lives in. Each section is short and says what happens, and why.",
     "closing": "Something missing here? Write to us, or fix the page yourself: the code is open.",
     "howTo": {
       "roles": {
@@ -738,6 +748,10 @@
         "title": "Forgotten password",
         "body": "Kadence sends no e-mail, so the way back in goes through a coach. A coach opens Settings → Workspace, presses Link for a new password by the person, and sends the link on themselves, by text message for instance. The link works once and only for the next hour; whoever uses it chooses a new password and is signed out everywhere else. The person can always see on their security page that a link was made, and by whom. A coach can make links for riders, parents and other coaches on the team, but not for the team's owner; an owner who forgot the password signs in with their passkey or gets help from whoever runs Kadence. If you have turned on two-step verification, you still need the code from your app."
       },
+      "overview": {
+        "title": "Overview: the coach's front page",
+        "body": "As a coach you land on Overview. At the top it says whether next week is planned and what is in it, such as holidays, exams, camps and races, with a button to the planner for that week. Then the three riders most worth a look in the week in progress; the whole list is under the team's week in the calendar. News from the riders gathers the riders' own comments on sessions and rides and their notes from check-ins over the last 14 days, newest first. You can answer in the session's own thread. Last come the team's sessions today and the team's events this week. A rider's front page is called Today."
+      },
       "data": {
         "title": "Your data",
         "body": "Everything can be downloaded as a spreadsheet and JSON under Settings → Data. The workspace can be deleted completely, audit trail included."
@@ -745,6 +759,10 @@
       "calendar": {
         "title": "The calendar",
         "body": "The calendar shows one week at a time. On a computer the days stand side by side, on a phone one below the other, and the team's week is one card per rider. The coach can drag a session to another day; on a phone you use \"Move\" in the session's menu. Races, exams, school, camps, holidays and illness sit in the calendar as small labels. The colours show how it went: green is as planned, yellow is a little off, red is not done or far from the plan, and grey is not ridden yet. There is always a word beside the colour. A session can have a time and a meeting place, say \"17:30 from the clubhouse\". A whole week is laid in under \"Plan the week\": choose riders, a whole class with one tap if you like, and start from an empty week, last week, a block or a proposal from the AI. You see what the week gives against the season plan before you lay it in, and you can repeat it over several weeks or save it as a block. If one session should come back, say strength every Tuesday and Thursday, turn on \"Repeat on set weekdays\" when you add it; \"Edit\" and \"Delete\" can also take the rest of the series. \"Copy the week before\" lays each rider's own sessions from another week on the same weekdays. \"Share the week\" makes a text with the week's sessions, times and places for the team's chat, with nothing about the riders' wellbeing."
+      },
+      "search": {
+        "title": "Search",
+        "body": "Search finds a rider, a session from the library, a page or a section of this help. Press ⌘K on a Mac or Ctrl+K on a PC, or tap the search field at the top of the menu. On a phone it is the magnifier at the top of the screen. Type a few letters, move up and down with the arrow keys, and press Enter to open. You can type o for ø and a for å. Search only shows what you may already see: a coach finds the team's riders, a parent their own child."
       },
       "sessions": {
         "title": "Sessions and templates",
@@ -764,7 +782,7 @@
       },
       "parents": {
         "title": "Parents",
-        "body": "The coach adds a parent and sends a link. The parent sees nothing until the rider has confirmed the link under Settings → Me. The rider also decides whether the parents can see the training, and whether they can see how the rider is doing. From the year the rider turns 18, the rider confirms again as an adult."
+        "body": "The coach adds a parent and sends a link. The parent sees nothing until the rider has confirmed the link under Settings → Profile. The rider also decides whether the parents can see the training, and whether they can see how the rider is doing. From the year the rider turns 18, the rider confirms again as an adult."
       },
       "season": {
         "title": "The season plan and DCU",
@@ -776,7 +794,7 @@
       },
       "warnings": {
         "title": "Points of attention",
-        "body": "Kadence shows the coach when a week goes past the limits, and the coach decides what happens. The points of attention are under Calendar → The whole team: as badges beside each rider and as a list under the week, where \"See the week\" opens the rider's week. Today says how many riders have something worth a look. The points are: hours on the bike above or below DCU's range for the week (October is DCU's break and has no range), more than 15 % more hours than the last weeks, a ride longer than DCU's limit (U17 at most 4 hours or 120 km, U19 at most 5 hours or 150 km), strength sessions less than 48 hours apart, sessions far from the plan, much time in the middle zone when the team uses \"Low intensity first\", too little sleep, pain on ATK's pain ladder, and check-ins in the yellow or red zone. Each point has a word for how much it matters: \"Important now\", \"Worth a look\" or \"Good to know\". Once you have talked a point through, you can mark it resolved."
+        "body": "Kadence shows the coach when a week goes past the limits, and the coach decides what happens. The points of attention are under Calendar → The whole team: as badges beside each rider and as a list under the week, where \"See the week\" opens the rider's week. Overview shows the three riders most worth a look, with the way to the whole list. The points are: hours on the bike above or below DCU's range for the week (October is DCU's break and has no range), more than 15 % more hours than the last weeks, a ride longer than DCU's limit (U17 at most 4 hours or 120 km, U19 at most 5 hours or 150 km), strength sessions less than 48 hours apart, sessions far from the plan, much time in the middle zone when the team uses \"Low intensity first\", too little sleep, pain on ATK's pain ladder, and check-ins in the yellow or red zone. Each point has a word for how much it matters: \"Important now\", \"Worth a look\" or \"Good to know\". Once you have talked a point through, you can mark it resolved."
       },
       "checkin": {
         "title": "Check-in and wellbeing zones",
@@ -784,7 +802,7 @@
       },
       "reminders": {
         "title": "Reminders",
-        "body": "Kadence can remind you of the day's check-in in the evening, tell you when there is a new comment or the plan for the next days has changed, and give parents the week's overview on Sunday evening. Turn it on under Settings → Me on the phone or computer you want them on, and choose which. On an iPhone it works once Kadence is on the home screen. The message itself from Apple, Google or Mozilla is empty; the phone asks Kadence what is new when it arrives. Between 21:30 and 7:00 reminders wait until morning. They are there when the installation has set them up."
+        "body": "Kadence can remind you of the day's check-in in the evening, tell you when there is a new comment or the plan for the next days has changed, and give parents the week's overview on Sunday evening. Turn it on under Settings → Profile on the phone or computer you want them on, and choose which. On an iPhone it works once Kadence is on the home screen. The message itself from Apple, Google or Mozilla is empty; the phone asks Kadence what is new when it arrives. Between 21:30 and 7:00 reminders wait until morning. They are there when the installation has set them up."
       },
       "devices": {
         "title": "Uploads and devices",
@@ -808,8 +826,8 @@
         "body": "Kadence cannot be connected to Strava: Strava's rules for apps say an app may show your Strava rides to you alone, not to your coach. But you can bring your rides along. Your whole history: sign in on strava.com on a computer (the app cannot do it), choose Settings → My Account, press Get Started under Download your account and then Request download, and wait for Strava's e-mail; it can take a few hours. Put the zip file in the upload field under Me, as it is. Kadence shows what the archive holds, and then fetches the rides, or every activity if you choose so: with the names you gave them on Strava, newest first, and without the rides that are here already. Up to 500 rides a day; if there are more, it goes on where it stopped when you add the archive again the next day. If you have unpacked the archive, you can pick the folder with “Fetch from the device” instead. A coach can do the same on the rider's page. A single ride: open it on strava.com, choose ••• → Export Original, and upload the file. New rides come most easily straight from the bike computer; see Uploads and devices."
       },
       "parentsPage": {
-        "title": "The parents' page",
-        "body": "Under Parents a parent sees their child's week, the form in words, the next race or exam and, if the child shares it, how things are going. The page also has the parents' guide: Team Danmark's and Kolding Talent's ten themes and nine pieces of advice, written briefly in Kadence's own words with links to the originals."
+        "title": "The child's page",
+        "body": "A parent lands on their child's page, which the menu calls by the child's first name, or Your children with more than one. It shows the child's week with times and places, the next 30 days with the family's own days, the form in words and, if the child shares it, how things are going. The parents' guide is under Knowledge and help: Team Danmark's and Kolding Talent's ten themes and nine pieces of advice, written briefly in Kadence's own words with links to the originals."
       },
       "ai": {
         "title": "The AI",
@@ -852,6 +870,46 @@
     "attention": {
       "count": "{count, plural, =0 {No riders have anything worth a look right now} one {# rider has something worth a look} other {# riders have something worth a look}}",
       "where": "See the team's week in the calendar"
+    },
+    "overview": {
+      "title": "Overview",
+      "subtitle": "{day} · week {week}",
+      "plan": "Plan the week",
+      "teamWeek": "The team's week"
+    },
+    "nextWeek": {
+      "none": "Week {week} is not planned yet",
+      "some": "Week {week} has sessions for {planned} of {riders, plural, one {# rider} other {# riders}}",
+      "all": "Week {week} is planned: {sessions, plural, one {# session} other {# sessions}} for {riders, plural, one {# rider} other {# riders}}",
+      "start": "You can start from week {week}, a block or an empty week.",
+      "quiet": "No holidays, exams, camps or races in the week.",
+      "riders": "{count, plural, one {# rider} other {# riders}} {kind, select, holiday {{count, plural, one {is on holiday} other {are on holiday}}} exam {{count, plural, one {has an exam} other {have exams}}} school {{count, plural, one {has something at school} other {have something at school}}} ill {{count, plural, one {is ill} other {are ill}}} camp {{count, plural, one {is at a camp} other {are at a camp}}} race {{count, plural, one {has a race} other {have a race}}} other {{count, plural, one {has something on} other {have something on}}}}",
+      "team": "{kind, select, holiday {the team is on holiday} exam {there is an exam} school {there is something at school} ill {there is illness} camp {there is a camp} race {there is a race} other {something is on}} {days}",
+      "day": "on {day}",
+      "span": "from {from} to {to}",
+      "and": "and",
+      "plan": "Plan week {week}",
+      "see": "See week {week}",
+      "edit": "Change the week"
+    },
+    "attentionTop": {
+      "title": "Worth a look",
+      "hint": "The week in progress, from the hours, the sessions and the check-ins. Shown, never enforced.",
+      "more": "{count, plural, one {# more point} other {# more points}}",
+      "others": "{count, plural, one {# more rider has something worth a look.} other {# more riders have something worth a look.}}",
+      "all": "All points of attention in the team's week"
+    },
+    "news": {
+      "title": "News from the riders",
+      "hint": "Comments on sessions and notes from check-ins, newest first. Replies go in the session's own thread.",
+      "empty": "No comments or notes in the last 14 days.",
+      "comment": "Comment on {about}",
+      "commentRide": "Comment on a ride",
+      "checkin": "Check-in",
+      "quote": "“{text}”",
+      "when": "{day} {clock}",
+      "today": "today",
+      "yesterday": "yesterday"
     },
     "parent": {
       "link": "{count, plural, one {See your child's week} other {See your children's weeks}}"
@@ -924,7 +982,7 @@
         "body": "Your parent sees your training only once you have said yes. You decide what they see.",
         "confirm": "{adult, select, yes {Say yes again to {name}} other {Say yes to {name}}}",
         "confirmed": "{name} can now see what you share.",
-        "where": "You can change it any time under Settings → Me."
+        "where": "You can change it any time under Settings → Profile."
       },
       "homeScreen": {
         "title": "Put Kadence on your home screen",
@@ -951,6 +1009,15 @@
   "me": {
     "title": "Me",
     "sessionPanel": "Session",
+    "nav": {
+      "week": "Week",
+      "rides": "Rides",
+      "form": "Form",
+      "checkins": "Check-ins",
+      "goals": "Goals",
+      "records": "Records",
+      "upload": "Upload"
+    },
     "week": "Your week",
     "form": "Form",
     "formBody": "What your training looks like over the last 90 days.",
@@ -1013,7 +1080,7 @@
       "coachBody": "The calendar fills up once the team has riders. Add the first one and you can plan the week.",
       "coachAction": "Add riders",
       "waitingTitle": "Waiting for your child's confirmation",
-      "waitingBody": "You can see your child's training once the rider has confirmed the link to you under Settings → Me.",
+      "waitingBody": "You can see your child's training once the rider has confirmed the link to you under Settings → Profile.",
       "noneTitle": "There is no calendar for you here yet",
       "noneBody": "The calendar shows a rider's training. If you are a rider or a parent, ask the coach for an invitation as exactly that."
     },
@@ -1339,6 +1406,8 @@
     "newBike": "New bike session",
     "newStrength": "New strength session",
     "newWithAi": "Build with AI",
+    "newSession": "New session",
+    "moreActions": "More actions",
     "newTitle": "New template",
     "newTitleBike": "New bike session",
     "newTitleStrength": "New strength session",
@@ -1420,12 +1489,18 @@
   "riders": {
     "title": "Riders",
     "subtitle": "The team's riders, their class, account and parents.",
+    "filter": {
+      "search": "Find a rider",
+      "label": "Show class",
+      "all": "All",
+      "none": "No riders match the search."
+    },
     "back": "Back to the riders",
     "calendar": "See the calendar",
     "emptyTitle": "No riders yet",
     "emptyBody": "Add the team's riders. You can plan sessions for them right away and invite them when they are ready.",
     "coachOnlyTitle": "For coaches only",
-    "coachOnlyBody": "The team's list of riders is the coaches'. Your own profile is under Settings → Me.",
+    "coachOnlyBody": "The team's list of riders is the coaches'. Your own profile is under Settings → Profile.",
     "showArchived": "Show archived riders too",
     "hideArchived": "Hide archived riders",
     "archiveNote": "Has the rider left the team? Archive them: they keep their history but disappear from the lists.",
@@ -1595,7 +1670,7 @@
       "submit": "Add",
       "added": "The parent was added.",
       "issuedTitle": "The parent was added",
-      "issuedBody": "Send the link to the parent. Afterwards {rider} must confirm the link under Settings → Me.",
+      "issuedBody": "Send the link to the parent. Afterwards {rider} must confirm the link under Settings → Profile.",
       "done": "Done",
       "who": "Who is the parent?",
       "modeNew": "A new parent",
@@ -2211,10 +2286,28 @@
     "hidden": "The rider does not share how they are doing with their parents.",
     "none": "No check-ins in the last 14 days."
   },
+  "search": {
+    "label": "Search",
+    "placeholder": "What are you looking for?",
+    "open": "Search rider or session",
+    "openOther": "Search Kadence",
+    "shortcut": "Shortcut: {keys}",
+    "groups": {
+      "riders": "Riders",
+      "templates": "Sessions",
+      "places": "Pages",
+      "help": "Help"
+    },
+    "empty": "Nothing found",
+    "loading": "Loading …",
+    "failed": "Riders and sessions could not be loaded just now. You can still find pages and help.",
+    "hint": "↑↓ choose · ↵ open · esc close"
+  },
   "checkin": {
     "title": "How are you?",
     "body": "Three quick questions in the morning. Your answers help you and your coach see whether training fits the rest of life.",
     "sleep": "How many hours did you sleep last night?",
+    "sleepShort": "Sleep last night",
     "hours": "hours",
     "less": "Less sleep",
     "more": "More sleep",
@@ -2991,10 +3084,12 @@
   },
   "parents": {
     "title": "Parents",
-    "subtitle": "For parents of young riders: your child's week, and how best to back them.",
+    "childTitle": "Your child",
+    "childrenTitle": "Your children",
+    "subtitle": "This week's training, the next 30 days, and how things are going.",
     "sessionPanel": "Session",
     "waitingTitle": "Waiting for your child to confirm",
-    "waitingBody": "You can see your child's week here once your child has confirmed the link to you. The rider does that under Settings → Me.",
+    "waitingBody": "You can see your child's week here once your child has confirmed the link to you. The rider does that under Settings → Profile.",
     "basicsTitle": "Good to know",
     "child": {
       "title": "{name}'s week",
@@ -3035,6 +3130,9 @@
     "guide": {
       "title": "The parents' guide",
       "body": "Ten themes and nine pieces of advice on supporting a child who does a lot of sport, written briefly in Kadence's own words. Read the originals at Team Danmark.",
+      "fromHelp": "Ten themes and nine pieces of advice on supporting a child who does a lot of sport, sleep and school beside it, and what a parent can see here, and why.",
+      "card": "Ten themes and nine pieces of advice on supporting your child, sleep and school beside the sport, and what you can see here, and why.",
+      "open": "Open the parents' guide",
       "credit": "Builds on Team Danmark's and Kolding Talent's guide for parents.",
       "guideLink": "The parents' guide at Team Danmark",
       "opensElsewhere": "(opens at Team Danmark)",
@@ -3150,7 +3248,7 @@
     "hiddenBody": "The link is confirmed, but your child has chosen not to share their training. It is their choice; talk about it at home."
   },
   "coachGuide": {
-    "title": "Coach guide",
+    "title": "The coach guide",
     "intro": "Advice for coaches of U17, U19 and U23 riders, gathered from DCU, Team Danmark, DIF, Anti Doping Danmark and the law. In Kadence's own words, with links to the originals.",
     "note": "The guide is guidance for you. You, the rider and the parents decide, and with injury and illness, the doctor does.",
     "contents": "Contents",
@@ -3300,7 +3398,7 @@
         "intro": "Parents are the rider's most important support, and Kadence gives them a window in that the rider controls.",
         "points": {
           "1": "Parents see their child's training once the rider has confirmed the link, and check-ins only if the rider shares them.",
-          "2": "The parents' guide from Team Danmark and Kolding Talent is on Kadence's parents' page. Point parents there.",
+          "2": "The parents' guide from Team Danmark and Kolding Talent is under Knowledge and help in Kadence. Point parents there.",
           "3": "There is one open conversation: comments on sessions and rides are read by coach, rider and parents.",
           "4": "For riders under 18, DIF recommends thinking the parents into the plan."
         }

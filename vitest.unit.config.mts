@@ -40,6 +40,8 @@ export default defineConfig({
       "tests/training/week-draft-merge.test.ts",
       // The shorter check-in's starting answers (backlog P2-11; docs/adr/0021, amended 2026-10-07).
       "tests/wellbeing/checkin-prefill.test.ts",
+      // Søg's matching, its groups and the words its static places need; the index needs the database.
+      "tests/search/{match,groups,places}.test.ts",
     ],
   },
 });

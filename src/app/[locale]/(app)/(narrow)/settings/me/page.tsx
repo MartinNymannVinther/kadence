@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { ShieldCheck } from "lucide-react";
+import { cookies } from "next/headers";
 import { getLocale, getTranslations } from "next-intl/server";
+import { SIDEBAR_TONE_COOKIE, sidebarToneFrom } from "@/components/common/sidebar-tone";
+import { AppearanceCard } from "@/components/settings/appearance-card";
 import { buttonVariants } from "@/components/ui/button";
 import { guardianState } from "@/components/team/guardian-state";
 import { LeaveTeamButton } from "@/components/team/leave-team-button";
@@ -34,7 +37,8 @@ export async function generateMetadata(): Promise<Metadata> {
  * confirms each parent, keeps their thresholds and may give their UCI ID;
  * a parent sees their links and may end one; everybody finds their
  * security settings here, and whoever is not a coach the way off the team
- * at the bottom (P1-07).
+ * at the bottom (P1-07). "Udseende" — light or dark, and the rail in moss
+ * or on paper — is this device's choice (docs/adr/0077).
  */
 export default async function MePage() {
   const ctx = await getOrgContext();
@@ -48,6 +52,7 @@ export default async function MePage() {
   const rider = me?.rider ? await getRider(ctx, me.rider.id) : null;
   const guardians = rider ? await listGuardians(ctx, rider.id) : [];
   const nothing = !rider && (me?.children.length ?? 0) === 0;
+  const tone = sidebarToneFrom((await cookies()).get(SIDEBAR_TONE_COOKIE)?.value);
 
   return (
     <div className="flex max-w-2xl flex-col gap-5">
@@ -55,6 +60,8 @@ export default async function MePage() {
         <h2 className="text-base font-semibold">{t("title")}</h2>
         <p className="text-meta text-2sm leading-relaxed">{t("subtitle")}</p>
       </div>
+
+      <AppearanceCard tone={tone} />
 
       {rider && (
         <>

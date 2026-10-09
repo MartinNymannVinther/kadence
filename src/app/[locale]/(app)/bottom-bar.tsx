@@ -8,31 +8,32 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { MoreSheetContent, type MoreSheetProps } from "./more-sheet";
 import { NAV_ICONS } from "./nav-icons";
-import { activeHref, barLabelKey, type NavItem } from "./nav-items";
+import { activeHref, barLabelKey } from "./nav-items";
 
 /**
- * The phone's navigation (ADR 0061, 0068): a bar at the foot of the screen with
- * the few places a role goes every day and "Mere" for the rest, within
- * reach of a thumb. Below lg, so an iPad held upright gets it too; the
- * sidebar takes over from lg. Fixed over the home indicator with the safe
- * area beneath it, out of print, and never on Rulle, whose screen stands
- * in front of the bike (it has its own frame, and this is a second guard).
+ * The phone's navigation (ADR 0061, 0068, 0077): a bar at the foot of the
+ * screen with the role's primary places — the same four the sidebar puts
+ * first — and "Mere" for the rest, within reach of a thumb. Below lg, so
+ * an iPad held upright gets it too; the sidebar takes over from lg. Fixed
+ * over the home indicator with the safe area beneath it, out of print,
+ * and never on Rulle, whose screen stands in front of the bike (it has
+ * its own frame, and this is a second guard).
  *
  * The bar is exactly `--bottom-bar` tall, which the content column (see
  * ./sidebar-shell.tsx) keeps free below the page, so nothing hides behind
  * it; a sticky footer inside a page sits on `bottom-[var(--bottom-bar,0px)]` for
  * the same reason.
  */
-export function BottomBar({ bar, ...sheet }: MoreSheetProps & { bar: NavItem[] }) {
+export function BottomBar(sheet: MoreSheetProps) {
   const t = useTranslations("app.nav");
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   if (pathname === "/rulle" || pathname.startsWith("/rulle/")) return null;
 
-  const menu = sheet.groups.flatMap((group) => group.items);
-  // The bar's place is lit only when it is the menu's closest match: on
-  // the coach guide (/help/coach) neither a bar place nor Help is, and
-  // "Mere" is.
+  const bar = sheet.menu.primary;
+  const menu = [...sheet.menu.primary, ...sheet.menu.more];
+  // The bar's place is lit only when it is the menu's closest match: under
+  // /settings neither a bar place nor anything in "Mere" is, and "Mere" is.
   const lit = activeHref(
     pathname,
     menu.map((item) => item.href),
@@ -41,8 +42,7 @@ export function BottomBar({ bar, ...sheet }: MoreSheetProps & { bar: NavItem[] }
   const counts = sheet.counts ?? {};
   // Something new waits behind "Mere": unread threads, or people at the door.
   const news =
-    (sheet.attention ?? 0) > 0 ||
-    menu.some((item) => !bar.some((b) => b.key === item.key) && (counts[item.key] ?? 0) > 0);
+    (sheet.attention ?? 0) > 0 || sheet.menu.more.some((item) => (counts[item.key] ?? 0) > 0);
 
   return (
     <nav
@@ -61,7 +61,7 @@ export function BottomBar({ bar, ...sheet }: MoreSheetProps & { bar: NavItem[] }
                 className={barItemClass}
               >
                 <BarMark Icon={Icon} active={active} />
-                <BarLabel active={active}>{t(barLabelKey(item.key))}</BarLabel>
+                <BarLabel active={active}>{item.text ?? t(barLabelKey(item))}</BarLabel>
               </Link>
             </li>
           );

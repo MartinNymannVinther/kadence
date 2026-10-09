@@ -14,11 +14,14 @@ export function SignalBadges({
   name,
   signals,
   row = false,
+  asLink = true,
   className,
 }: {
   name: string;
   signals: RiderSignals;
   row?: boolean;
+  /** Plain marks inside a row that is itself a link: nested links are not allowed. */
+  asLink?: boolean;
   className?: string;
 }) {
   const t = useTranslations("insight.badge");
@@ -26,12 +29,14 @@ export function SignalBadges({
   const said = signals.badges.map((b) => `${severities(b.severity)}: ${t(b.kind)}`);
   if (signals.more > 0) said.push(t("more", { count: signals.more }));
 
+  const Wrap = asLink ? "a" : "span";
   return (
-    <a
-      href={signals.anchor}
+    <Wrap
+      href={asLink ? signals.anchor : undefined}
       aria-label={t("label", { name, flags: said.join(", ") })}
       className={cn(
-        "focus-ring group flex w-fit max-w-full gap-1 rounded-md",
+        "group flex w-fit max-w-full gap-1 rounded-md",
+        asLink && "focus-ring",
         row ? "min-h-10 flex-wrap items-center" : "flex-col items-start",
         className,
       )}
@@ -45,7 +50,8 @@ export function SignalBadges({
             aria-hidden
             title={`${severities(badge.severity)}: ${t(badge.kind)}`}
             className={cn(
-              "inline-flex h-5 max-w-full min-w-0 items-center gap-1 rounded-full px-1.5 text-2xs font-medium group-hover:underline",
+              "inline-flex h-5 max-w-full min-w-0 items-center gap-1 rounded-full px-1.5 text-2xs font-medium",
+              asLink && "group-hover:underline",
               style.chip,
             )}
           >
@@ -59,6 +65,6 @@ export function SignalBadges({
           {t("more", { count: signals.more })}
         </span>
       )}
-    </a>
+    </Wrap>
   );
 }

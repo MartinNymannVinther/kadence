@@ -9,7 +9,9 @@ import { featureOn } from "@/core/features";
 import { organizations } from "@/core/db/schema";
 import { withOrgContext } from "@/core/db/tenant";
 import { redirect } from "@/i18n/navigation";
+import { SIDEBAR_TONE_COOKIE, sidebarToneFrom } from "@/components/common/sidebar-tone";
 import { DemoBanner } from "@/components/demo-banner";
+import { SearchProvider } from "@/components/search/search-provider";
 import { isDemoWorkspace } from "@/modules/demo/service";
 import { orgImageUrls } from "@/modules/team/images";
 import { refreshOwnRacesLater } from "@/modules/results/own";
@@ -18,7 +20,8 @@ import { whoAmI } from "@/modules/team/access";
 import { AppSidebar } from "./app-sidebar";
 import { BottomBar } from "./bottom-bar";
 import { MobileHeader } from "./mobile-header";
-import { barItems, homeHref, menuGroups, navFlags, navRole } from "./nav-items";
+import { settingsItems } from "./(narrow)/settings/settings-items";
+import { homeHref, menuFor, nameChild, navFlags, navRole } from "./nav-items";
 import { SidebarShell, SidebarToggle } from "./sidebar-shell";
 import { getTeamSettings } from "@/modules/team/settings";
 import { unreadThreadCount } from "@/modules/community/service";
@@ -66,28 +69,39 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   // background after the page, and only what is more than three hours old.
   if (context && me?.isCoach) after(() => refreshStaleRaces(context));
   else if (context && me?.rider) after(() => refreshOwnRacesLater(context));
-  // One menu per role, grouped by task (ADR 0061, 0068). The club
+  // One menu per role, in two tiers (ADR 0061, 0068, 0077). The club
   // championship is in it once the installation has it (ADR 0057) and the
   // club has turned it on (ADR 0051); Trænerrummet once the installation
-  // has it (ADR 0052).
+  // has it (ADR 0052). A parent's child is named by their first name.
   const clubOn = featureOn("clubChampionship");
   const club = context && clubOn ? (await getTeamSettings(context)).clubChampionship : false;
   const coachesRoom = featureOn("coachesRoom");
   const role = navRole(me);
   const flags = navFlags(me, { club, coachesRoom });
-  const groups = menuGroups(role, flags);
-  const bar = barItems(role);
+  const menu = nameChild(menuFor(role, flags), me?.children ?? []);
   const home = homeHref(role);
   // Threads with something new in Trænerrummet, for a coach (ADR 0052).
   const counts =
     context && isCoach && coachesRoom ? { coaches: await unreadThreadCount(context) } : {};
 
   // Read on the server so the first paint is already the layout this
-  // person left behind, rather than a rail that appears and vanishes.
-  const sidebarHidden = (await cookies()).get("kadence-sidebar")?.value === "hidden";
+  // person left behind, rather than a rail that appears and vanishes, or
+  // changes colour (docs/adr/0077).
+  const jar = await cookies();
+  const sidebarHidden = jar.get("kadence-sidebar")?.value === "hidden";
+  const tone = sidebarToneFrom(jar.get(SIDEBAR_TONE_COOKIE)?.value);
   const team = { organization: organization?.name ?? "", logo, switchable, canCreate };
+  // Søg finds the places the menu has, and the settings tabs this person
+  // has, from anywhere: ⌘K or the field in the sidebar, the magnifier on a
+  // phone. The riders and the library it reads itself, when first opened.
+  const search = {
+    scope: context?.orgId ?? "",
+    menu,
+    settings: settingsItems({ owner: canCreate, isCoach, isRider: Boolean(me?.rider) }),
+    who: { coach: isCoach, riderId: me?.rider?.id ?? null },
+  };
 
-  return (
+  const shell = (
     <div className="flex min-h-svh">
       {/* Tabbing into a page should not mean tabbing through the whole
           sidebar first, every time. */}
@@ -105,9 +119,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             userEmail={session.user.email}
             {...team}
             attention={attention}
-            groups={groups}
+            menu={menu}
             home={home}
             counts={counts}
+            tone={tone}
             toggle={<SidebarToggle placement="sidebar" />}
           />
         }
@@ -116,8 +131,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         <MobileHeader userName={session.user.name} userEmail={session.user.email} home={home} />
         {children}
         <BottomBar
-          bar={bar}
-          groups={groups}
+          menu={menu}
+          tone={tone}
           counts={counts}
           attention={attention}
           {...team}
@@ -127,4 +142,5 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       </SidebarShell>
     </div>
   );
+  return <SearchProvider {...search}>{shell}</SearchProvider>;
 }

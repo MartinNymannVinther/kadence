@@ -146,8 +146,9 @@ Alt det, der ikke er i dag — formen som en kurve med ord, de seneste 14
 dages check-ins, mål og rekorder, og upload — ligger samlet på
 **Mig**. En forælder lander på én side om deres barn: ugen, formen, og
 hvis rytteren deler det, hvordan det går. De ser intet, før rytteren har
-sagt ja til dem; siden har også Forældreguiden, Team Danmarks og Kolding
-Talents råd i kort form.
+sagt ja til dem. Forældreguiden, Team Danmarks og Kolding Talents råd i
+kort form, ligger under Viden og hjælp, og et kort på barnets side fører
+derhen.
 
 ## Hvem du kan spørge
 
@@ -155,7 +156,7 @@ Har du spørgsmål undervejs, kan du altid spørge Martin:
 `[Martins telefonnummer eller e-mail — indsættes af Martin]`.
 
 Går noget i stykker, eller virker noget ikke, som det skal: siden
-**Hjælp** i Kadence beskriver, hvordan tingene er tænkt, og du finder
-den i menuen under "Mere". Skriv ellers til Martin og fortæl, hvad der
+**Viden og hjælp** i Kadence beskriver, hvordan tingene er tænkt, og du
+finder den i menuen under "Mere". Skriv ellers til Martin og fortæl, hvad der
 skete — intet går tabt undervejs, jeres data og plan står, som de stod,
 mens det bliver rettet.

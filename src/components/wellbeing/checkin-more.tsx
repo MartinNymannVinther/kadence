@@ -10,21 +10,40 @@ import { MORE_SCALES, type CheckinAnswers } from "@/modules/wellbeing/prefill";
 import { ScaleChoice } from "./scale-choice";
 
 /**
+ * Whether "Mere" is open. Open or closed, it stays that way for this rider
+ * on this device. It opens by itself when an answer inside starts low or
+ * says ill (`look`), so nothing that colours the zone is saved unseen.
+ * Held by the card, which puts "Gem" after the answers inside while they
+ * are shown and before the closed "Mere" otherwise.
+ */
+export function useMoreOpen(riderId: string, look: boolean): [boolean, () => void] {
+  const [stored, setStored] = useStored(`kadence.checkin.more.${riderId}`);
+  const [shown, setShown] = useState(look);
+  const open = shown || stored === "open";
+  const toggle = () => {
+    setShown(false);
+    setStored(open ? "closed" : "open");
+  };
+  return [open, toggle];
+}
+
+/**
  * "Mere" in the check-in (backlog P2-11; ADR 0021, amended 2026-10-07):
  * how well the rider slept, mood, legs, calm, ill or not, and a note —
- * behind the three questions asked first. Open or closed, it stays that
- * way for this rider on this device. It opens by itself when an answer
- * inside starts low or says ill, so nothing that colours the zone is saved
- * unseen. Every answer inside counts in the zone, open or not.
+ * behind the three questions asked first. Every answer inside counts in
+ * the zone, open or not.
  */
 export function CheckinMore({
-  riderId,
+  open,
+  onToggle,
   value,
   onChange,
   from,
   look,
 }: {
-  riderId: string;
+  /** From `useMoreOpen`. */
+  open: boolean;
+  onToggle: () => void;
   value: CheckinAnswers;
   onChange: <K extends keyof CheckinAnswers>(key: K, next: CheckinAnswers[K]) => void;
   /** What the answers inside start from: today's own, the last check-in's, or the middle. */
@@ -35,9 +54,6 @@ export function CheckinMore({
   const t = useTranslations("checkin");
   const panel = useId();
   const ids = { ill: useId(), note: useId() };
-  const [stored, setStored] = useStored(`kadence.checkin.more.${riderId}`);
-  const [shown, setShown] = useState(look);
-  const open = shown || stored === "open";
   const about =
     from === "today"
       ? t("moreQuestions.today")
@@ -46,15 +62,12 @@ export function CheckinMore({
         : t("moreQuestions.neutral");
 
   return (
-    <div className="flex min-w-0 flex-col gap-5">
+    <div className="flex min-w-0 flex-col gap-4">
       <button
         type="button"
         aria-expanded={open}
         aria-controls={panel}
-        onClick={() => {
-          setShown(false);
-          setStored(open ? "closed" : "open");
-        }}
+        onClick={onToggle}
         className="focus-ring border-border bg-card hover:bg-secondary/60 flex min-h-11 w-full items-center justify-between gap-3 rounded-lg border px-3 py-2.5 text-left transition-colors duration-[120ms]"
       >
         <span className="flex min-w-0 flex-col">
@@ -67,7 +80,7 @@ export function CheckinMore({
         />
       </button>
 
-      <div id={panel} hidden={!open} className="flex flex-col gap-5">
+      <div id={panel} hidden={!open} className="flex flex-col gap-4">
         {look && from === "last" && (
           <p className="text-2sm leading-relaxed font-medium">{t("moreQuestions.look")}</p>
         )}
