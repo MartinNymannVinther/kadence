@@ -86,10 +86,11 @@ under Mere.
   library, a parent their children, a coach the team; pages and help
   topics come with the menu. Matching ignores case and diacritics and
   ranks a hit at the start of a word first.
-- **The rider's I dag** keeps the check-in inline — three questions and
-  "Gem" first, the rest behind "Mere" (backlog P2-11) — tightened so the
-  three questions and the button fit a phone's first screen once the
-  first steps are put away.
+- **The rider's I dag** opens on the check-in — three questions and "Gem"
+  on one phone screen, the rest behind "Mere" (backlog P2-11), and once
+  it is given a short card — then today's session with "Udført". In the
+  morning the check-in is the task; in the evening its card is small and
+  "Udført" is near the top.
 - **Smaller doors on the way:** the library's four buttons are "Nyt pas"
   with its three ways and a menu for DCU's programmes; the riders are
   found by name and narrowed by class, and each row carries the week's
@@ -121,7 +122,13 @@ under Mere.
 - **The search index is fetched when the palette first opens** and kept
   for the page's life: a rider added a minute ago appears after a
   reload. Keeping it fresh on every keystroke would be a request per
-  letter for nothing.
+  letter for nothing. A parent's search holds no session templates, as
+  their menu holds no library (ADR 0061); a rider's holds no other
+  riders, only Mig among the places.
+- **The check-in before today's session** puts "Udført" further down a
+  phone in the morning, against ADR 0063's wish to see it first. The
+  mock-up Martin approved had this order, and a rider's morning is the
+  check-in; by the time "Udført" is wanted, the check-in is a short card.
 - **The parent's bar still leaves the app's frame** for the open pages
   from Viden og hjælp (ADR 0068); the open header's "Tilbage til Kadence"
   is the way back.

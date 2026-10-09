@@ -10,6 +10,7 @@
 export const HELP_TOPICS = [
   "roles",
   "password",
+  "overview",
   "calendar",
   "search",
   "sessions",

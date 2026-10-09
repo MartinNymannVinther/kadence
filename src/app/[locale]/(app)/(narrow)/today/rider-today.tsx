@@ -6,10 +6,12 @@ import { TodaySession } from "@/components/today/today-session";
 import type { RiderDay } from "./rider-data";
 
 /**
- * A rider's Today, and nothing else (docs/adr/0063): the first steps while
- * they are not done, today's session with the big "Udført" and "Kør
- * indendørs", "how hard" about the last ride, today's check-in, and
- * tomorrow. The week, the form, goals, records and the upload are on Mig.
+ * A rider's Today, and nothing else (docs/adr/0063, amended by 0077): the
+ * first steps while they are not done, today's check-in first — three
+ * answers on the way out of the door, and once they are given a short
+ * card — then today's session with the big "Udført" and "Kør indendørs",
+ * "how hard" about the last ride, and tomorrow. The week, the form, goals,
+ * records and the upload are on Mig.
  */
 export function RiderToday({
   riderId,
@@ -50,14 +52,14 @@ export function RiderToday({
   return (
     <>
       <RiderChecklist facts={day.checklist} />
-      {list("today")}
-      {day.toRate && <RpePrompt ride={day.toRate} />}
       <CheckinSection
         riderId={riderId}
         today={today}
         initial={day.checkin}
         start={day.checkinStart}
       />
+      {list("today")}
+      {day.toRate && <RpePrompt ride={day.toRate} />}
       {list("tomorrow")}
     </>
   );
