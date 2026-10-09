@@ -760,6 +760,10 @@
         "title": "The calendar",
         "body": "The calendar shows one week at a time. On a computer the days stand side by side, on a phone one below the other, and the team's week is one card per rider. The coach can drag a session to another day; on a phone you use \"Move\" in the session's menu. Races, exams, school, camps, holidays and illness sit in the calendar as small labels. The colours show how it went: green is as planned, yellow is a little off, red is not done or far from the plan, and grey is not ridden yet. There is always a word beside the colour. A session can have a time and a meeting place, say \"17:30 from the clubhouse\". A whole week is laid in under \"Plan the week\": choose riders, a whole class with one tap if you like, and start from an empty week, last week, a block or a proposal from the AI. You see what the week gives against the season plan before you lay it in, and you can repeat it over several weeks or save it as a block. If one session should come back, say strength every Tuesday and Thursday, turn on \"Repeat on set weekdays\" when you add it; \"Edit\" and \"Delete\" can also take the rest of the series. \"Copy the week before\" lays each rider's own sessions from another week on the same weekdays. \"Share the week\" makes a text with the week's sessions, times and places for the team's chat, with nothing about the riders' wellbeing."
       },
+      "search": {
+        "title": "Search",
+        "body": "Search finds a rider, a session from the library, a page or a section of this help. Press ⌘K on a Mac or Ctrl+K on a PC, or tap the search field at the top of the menu. On a phone it is the magnifier at the top of the screen. Type a few letters, move up and down with the arrow keys, and press Enter to open. You can type o for ø and a for å. Search only shows what you may already see: a coach finds the team's riders, a parent their own child."
+      },
       "sessions": {
         "title": "Sessions and templates",
         "body": "A session is built in steps: warm-up, work, rest and cool-down, each with a length and a target in zones, percent of FTP or threshold heart rate, or by feel. Repeats gather steps that are ridden several times. Once the rider's thresholds are set, the targets read in watts and pulse. Strength sessions have exercises, and a programme has a progression, so sets and reps follow along from session to session. A coach can also press \"Build with AI\" and write the session in their own words, e.g. \"5x4 min VO2max\" or \"strength 45 min, legs and core\", or what to change in the session as it stands. The proposal is shown first, and nothing is saved until the coach saves the session. Bike sessions can be built from building blocks with one tap, say a warm-up, threshold intervals or sprints, and strength exercises are suggested as you type the name, DCU's exercises and ones without machines. Save a session as a template in the library and it can be given to one rider or the whole team at once. Several weeks of sessions can be gathered in a block and laid in from a Monday."
@@ -2281,6 +2285,23 @@
     "stripSummary": "Green: {green} · Yellow: {yellow} · Red: {red}",
     "hidden": "The rider does not share how they are doing with their parents.",
     "none": "No check-ins in the last 14 days."
+  },
+  "search": {
+    "label": "Search",
+    "placeholder": "What are you looking for?",
+    "open": "Search rider or session",
+    "openOther": "Search Kadence",
+    "shortcut": "Shortcut: {keys}",
+    "groups": {
+      "riders": "Riders",
+      "templates": "Sessions",
+      "places": "Pages",
+      "help": "Help"
+    },
+    "empty": "Nothing found",
+    "loading": "Loading …",
+    "failed": "Riders and sessions could not be loaded just now. You can still find pages and help.",
+    "hint": "↑↓ choose · ↵ open · esc close"
   },
   "checkin": {
     "title": "How are you?",

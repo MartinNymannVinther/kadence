@@ -1,13 +1,14 @@
 "use client";
 
+import { SearchIconButton } from "@/components/search/search-button";
 import { Wordmark } from "@/components/wordmark";
 import { Link } from "@/i18n/navigation";
 import { UserMenu } from "./user-menu";
 
 /**
- * Slim top bar for small screens: the brand and the person. The places
- * themselves are in the bottom bar and its "Mere" sheet (ADR 0061), where
- * a thumb reaches them.
+ * Slim top bar for small screens: the brand, the magnifier that opens Søg,
+ * and the person. The places themselves are in the bottom bar and its
+ * "Mere" sheet (ADR 0061), where a thumb reaches them.
  */
 export function MobileHeader({
   userName,
@@ -25,7 +26,10 @@ export function MobileHeader({
         <Link href={home} aria-label="Kadence" className="focus-ring flex min-h-11 items-center">
           <Wordmark className="text-lg" />
         </Link>
-        <UserMenu name={userName} email={userEmail} />
+        <div className="flex items-center gap-1">
+          <SearchIconButton />
+          <UserMenu name={userName} email={userEmail} />
+        </div>
       </div>
     </header>
   );

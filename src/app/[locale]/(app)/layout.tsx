@@ -11,6 +11,7 @@ import { withOrgContext } from "@/core/db/tenant";
 import { redirect } from "@/i18n/navigation";
 import { SIDEBAR_TONE_COOKIE, sidebarToneFrom } from "@/components/common/sidebar-tone";
 import { DemoBanner } from "@/components/demo-banner";
+import { SearchProvider } from "@/components/search/search-provider";
 import { isDemoWorkspace } from "@/modules/demo/service";
 import { orgImageUrls } from "@/modules/team/images";
 import { refreshOwnRacesLater } from "@/modules/results/own";
@@ -19,6 +20,7 @@ import { whoAmI } from "@/modules/team/access";
 import { AppSidebar } from "./app-sidebar";
 import { BottomBar } from "./bottom-bar";
 import { MobileHeader } from "./mobile-header";
+import { settingsItems } from "./(narrow)/settings/settings-items";
 import { homeHref, menuFor, nameChild, navFlags, navRole } from "./nav-items";
 import { SidebarShell, SidebarToggle } from "./sidebar-shell";
 import { getTeamSettings } from "@/modules/team/settings";
@@ -89,8 +91,17 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const sidebarHidden = jar.get("kadence-sidebar")?.value === "hidden";
   const tone = sidebarToneFrom(jar.get(SIDEBAR_TONE_COOKIE)?.value);
   const team = { organization: organization?.name ?? "", logo, switchable, canCreate };
+  // Søg finds the places the menu has, and the settings tabs this person
+  // has, from anywhere: ⌘K or the field in the sidebar, the magnifier on a
+  // phone. The riders and the library it reads itself, when first opened.
+  const search = {
+    scope: context?.orgId ?? "",
+    menu,
+    settings: settingsItems({ owner: canCreate, isCoach, isRider: Boolean(me?.rider) }),
+    who: { coach: isCoach, riderId: me?.rider?.id ?? null },
+  };
 
-  return (
+  const shell = (
     <div className="flex min-h-svh">
       {/* Tabbing into a page should not mean tabbing through the whole
           sidebar first, every time. */}
@@ -131,4 +142,5 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       </SidebarShell>
     </div>
   );
+  return <SearchProvider {...search}>{shell}</SearchProvider>;
 }

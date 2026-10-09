@@ -1,4 +1,5 @@
 import { sidebarToneClass, type SidebarTone } from "@/components/common/sidebar-tone";
+import { SearchButton } from "@/components/search/search-button";
 import { cn } from "@/lib/utils";
 import type { NavMenu } from "./nav-items";
 import { SidebarNav } from "./sidebar-nav";
@@ -10,9 +11,10 @@ import { VersionLink } from "./version-link";
 /**
  * The navigation rail: 236 px on the sidebar ground with no outer edge of
  * its own - the content area carries the dividing line. The lockup with the
- * team's name (the switcher, when there is a choice) on top, the two tiers
- * of places in the middle, and the user card at the foot. In dark moss
- * (docs/adr/0077) the rail re-points the tokens it reads on itself, so the
+ * team's name (the switcher, when there is a choice) on top, the search
+ * field under it, the two tiers of places in the middle, and the user card
+ * at the foot. In dark moss (docs/adr/0077) the rail re-points the tokens
+ * it reads on itself, so the
  * page beside it keeps its paper.
  */
 export function AppSidebar({
@@ -52,6 +54,9 @@ export function AppSidebar({
       <div className="flex items-start justify-between gap-2 px-4 pt-5 pb-3">
         <TeamLockup home={home} {...team} />
         {toggle}
+      </div>
+      <div className="px-3 pb-2">
+        <SearchButton />
       </div>
       <SidebarNav menu={menu} attention={attention} counts={counts} />
       <div className="flex flex-col gap-1.5 px-3 pt-1 pb-3">

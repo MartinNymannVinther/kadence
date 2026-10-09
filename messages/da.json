@@ -760,6 +760,10 @@
         "title": "Kalenderen",
         "body": "Kalenderen viser en uge ad gangen. På en computer står dagene side om side, på telefonen under hinanden, og holdets uge er et kort pr. rytter. Træneren kan trække et pas til en anden dag; på telefonen bruger du \"Flyt\" i passets menu. Løb, eksamen, skole, lejr, ferie og sygdom står som små mærker. Farverne viser, hvordan det gik: grøn er som planlagt, gul er lidt ved siden af, rød er ikke udført eller langt fra planen, og grå er ikke kørt endnu. Der står altid et ord ved farven. Et pas kan have et tidspunkt og et mødested, fx \"17.30 fra klubhuset\". En hel uge lægges ind under \"Planlæg ugen\": vælg ryttere, eventuelt en hel årgang med ét tryk, og start fra en tom uge, sidste uge, et forløb eller et forslag fra AI'en. Du ser, hvad ugen giver mod sæsonplanen, før du lægger den ind, og du kan gentage den i flere uger eller gemme den som forløb. Skal ét pas gå igen, fx styrke hver tirsdag og torsdag, slår du \"Gentag på faste ugedage\" til, når du lægger det ind; \"Ret\" og \"Slet\" kan også tage resten af serien. \"Kopiér ugen før\" lægger hver rytters egne pas fra en anden uge ind på de samme ugedage. \"Del ugen\" laver en tekst med ugens pas, tider og steder til holdets chat, uden noget om rytternes trivsel."
       },
+      "search": {
+        "title": "Søg",
+        "body": "Søg finder en rytter, et pas fra biblioteket, en side eller et afsnit her i hjælpen. Tryk ⌘K på en Mac eller Ctrl+K på en pc, eller tryk på søgefeltet øverst i menuen. På telefonen er det luppen øverst på skærmen. Skriv et par bogstaver, gå op og ned med piletasterne, og tryk Enter for at åbne. Du kan skrive o for ø og a for å. Søg viser kun det, du i forvejen må se: en træner finder holdets ryttere, en forælder sit eget barn."
+      },
       "sessions": {
         "title": "Pas og skabeloner",
         "body": "Et pas bygges i trin: opvarmning, arbejde, pause og nedkørsel, med en længde og et mål i zoner, procent af FTP eller tærskelpuls, eller efter følelse. Gentagelser samler trin, der køres flere gange. Når rytterens tærskler er sat, står målene i watt og puls. Styrkepas har øvelser, og et program har en progression, så sæt og gentagelser følger med fra pas til pas. Træneren kan også trykke \"Byg med AI\" og skrive passet med sine egne ord, fx \"5x4 min VO2max\" eller \"styrke 45 min, ben og core\", eller hvad der skal ændres i det pas, der står. Forslaget vises først, og intet gemmes, før træneren gemmer passet. Cykelpas kan bygges med byggeklodser med ét tryk, fx opvarmning, tærskelintervaller eller sprint, og styrkeøvelser foreslås, mens du skriver navnet, med DCU's øvelser og øvelser uden maskiner. Gem et pas som skabelon i biblioteket, så kan det lægges til én rytter eller hele holdet på én gang. Flere ugers pas kan samles i et forløb og lægges ind fra en mandag."
@@ -2281,6 +2285,23 @@
     "stripSummary": "Grøn: {green} · Gul: {yellow} · Rød: {red}",
     "hidden": "Rytteren deler ikke, hvordan det går, med forældrene.",
     "none": "Ingen check-ins de seneste 14 dage."
+  },
+  "search": {
+    "label": "Søg",
+    "placeholder": "Hvad leder du efter?",
+    "open": "Søg rytter eller pas",
+    "openOther": "Søg i Kadence",
+    "shortcut": "Genvej: {keys}",
+    "groups": {
+      "riders": "Ryttere",
+      "templates": "Pas",
+      "places": "Sider",
+      "help": "Hjælp"
+    },
+    "empty": "Intet fundet",
+    "loading": "Henter …",
+    "failed": "Ryttere og pas kunne ikke hentes lige nu. Sider og hjælp kan du stadig finde.",
+    "hint": "↑↓ vælg · ↵ åbn · esc luk"
   },
   "checkin": {
     "title": "Hvordan har du det?",
