@@ -28,8 +28,11 @@ const ICON: Record<HubKey, LucideIcon> = {
  * "Viden om sporten" under Viden og hjælp: a card for each open guide and
  * calculator this installation shows (ADR 0047), in the hub's order —
  * calculators, then guides — and none that is parked (ADR 0057). Each
- * leads to its open page, which anyone can read without signing in.
- * Rendered on the server only: it reads the installation's features.
+ * leads to its open page, which anyone can read without signing in. The
+ * programmes' card says where the same programmes live inside the app,
+ * so a coach is not sent out of the frame for what the library holds
+ * with more (docs/adr/0078). Rendered on the server only: it reads the
+ * installation's features.
  */
 export function TopicCards() {
   const t = useTranslations("guides.hub");
@@ -53,6 +56,9 @@ export function TopicCards() {
               <span className="text-meta text-2sm leading-relaxed">
                 {t(`items.${item.key}.body`)}
               </span>
+              {item.key === "programs" && (
+                <span className="text-2sm leading-relaxed">{help("programsInApp")}</span>
+              )}
               <span className="text-meta mt-auto flex items-center gap-0.5 pt-1 text-xs">
                 {help("openPage")}
                 <ChevronRight aria-hidden className="size-3.5" />

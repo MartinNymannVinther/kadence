@@ -27,9 +27,10 @@ export async function generateMetadata({
 
 /**
  * One programme, Kadence's or the team's: its exercises in the viewer,
- * part by part, with the way to take it along as a file or on paper —
- * and for a coach, to lay it into riders' calendars, change, copy or put
- * it away. On paper every part is printed, one after the other.
+ * part by part, with the way to take it along as a file or on paper — and
+ * to lay it into a calendar: a coach into any rider's, a rider into their
+ * own (docs/adr/0078); for a coach also to change, copy or put it away.
+ * On paper every part is printed, one after the other.
  */
 export default async function ProgramPage({ params }: { params: Promise<{ id: string }> }) {
   const ctx = await getOrgContext();
@@ -43,7 +44,7 @@ export default async function ProgramPage({ params }: { params: Promise<{ id: st
   const program = await loadProgram(ctx, (await params).id, t);
   if (!program) notFound();
   const isCoach = Boolean(me?.isCoach);
-  const riders = isCoach ? await ridersToPlanFor(ctx, me) : [];
+  const riders = await ridersToPlanFor(ctx, me);
   const { view } = program;
   const needs = program.equipment.map((item) => t(`equipment.${item}`)).join(", ");
 

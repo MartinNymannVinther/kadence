@@ -15,6 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
 const HOW_TO = [
   "roles",
   "password",
+  "words",
   "overview",
   "calendar",
   "search",

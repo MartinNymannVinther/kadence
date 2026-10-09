@@ -165,6 +165,17 @@ describe("a demo workspace", () => {
     expect(own.rows[0].meeting_place.length).toBeGreaterThan(0);
   });
 
+  it("has a programme Emma laid into her own calendar herself (ADR 0078)", async () => {
+    const { orgId, userId } = await newestDemo(admin);
+    const emma = (await getRiders({ orgId, userId })).find((r) => r.name === "Emma Holm")!;
+    const session = await admin.query(
+      `select sport, title from planned_sessions
+        where org_id = $1 and rider_id = $2 and on_date = $3 and sport = 'strength'`,
+      [orgId, emma.id, addDaysIso(todayInCopenhagen(), 2)],
+    );
+    expect(session.rows.map((r) => r.title)).toContain("Bevægelighed hele dagen");
+  });
+
   it("has the team's own drawn exercise, mixed into a programme laid into today's calendar (ADR 0067)", async () => {
     const exercises = await admin.query(`select name, pose from team_exercises where org_id = $1`, [
       orgId,

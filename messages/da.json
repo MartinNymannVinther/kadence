@@ -734,7 +734,8 @@
     "knowledge": {
       "title": "Viden om sporten",
       "hint": "Åbne sider til ryttere, forældre og trænere. Alle kan læse dem, også uden at logge ind.",
-      "openPage": "Åben side"
+      "openPage": "Åben side",
+      "programsInApp": "I appen ligger de samme programmer i Biblioteket, hvor de lægges i kalenderen. Den åbne side er til at dele og udskrive uden login."
     },
     "howToTitle": "Sådan bruger du Kadence",
     "howToHint": "I den rytme en sæson lever i. Hvert afsnit er kort og siger, hvad der sker, og hvorfor.",
@@ -747,6 +748,10 @@
       "password": {
         "title": "Glemt adgangskode",
         "body": "Kadence sender ingen mails, så vejen tilbage går gennem en træner. En træner åbner Indstillinger → Arbejdsrum, trykker Link til ny adgangskode ved personen og sender linket selv, fx på SMS. Linket virker én gang og kun den næste time; den, der bruger det, vælger en ny adgangskode og bliver logget ud alle andre steder. Personen kan altid se på sin sikkerhedsside, at et link er lavet, og af hvem. En træner kan lave links til ryttere, forældre og andre trænere på holdet, men ikke til holdets ejer; en ejer, der har glemt sin adgangskode, logger ind med sin passkey eller får hjælp af den, der driver Kadence. Har du slået totrinsbekræftelse til, skal du stadig bruge koden fra din app."
+      },
+      "words": {
+        "title": "Pas, forløb, program og sæsonplan",
+        "body": "Et pas er én træning i kalenderen, på cyklen eller i styrkerummet. Rytterens uge består af pas. Et forløb er flere ugers pas fra biblioteket, lagt ind fra en mandag hos en eller flere ryttere. Et program er en opskrift på ét styrkepas: øvelser med tegninger og doser, som bliver til et pas, når det lægges i kalenderen. DCU's styrkeprogrammer er noget tredje: en serie pas med progression, hentet ind i biblioteket. Sæsonplanen er timerne måned for måned fra oktober til september, med DCU's tal ved siden af. Planlæg ugen er det sted, træneren lægger en hel uge på én gang."
       },
       "overview": {
         "title": "Overblik: trænerens forside",
@@ -770,7 +775,7 @@
       },
       "exercises": {
         "title": "Øvelser og programmer",
-        "body": "Øvelser og programmer med tegninger ligger under Bibliotek → Øvelser og programmer, og \"Øvelser og programmer\" er også en af de åbne guider, som alle kan åbne uden at logge ind. Du vælger et af Kadences egne programmer, eller sammensætter dit eget ud fra øvelserne i biblioteket. Hent det som én fil, der virker på telefonen uden internet, eller udskriv det som PDF fra browseren. Som træner tegner du holdets egne øvelser med et tegneværktøj og sætter dem sammen til programmer, der står ved siden af Kadences egne. \"Læg i kalenderen\" lægger programmet ind som et pas, hvor hver øvelse viser sin tegning."
+        "body": "Øvelser og programmer med tegninger ligger under Bibliotek → Øvelser og programmer, og \"Øvelser og programmer\" er også en af de åbne guider, som alle kan åbne uden at logge ind. Du vælger et af Kadences egne programmer, eller sammensætter dit eget ud fra øvelserne i biblioteket. Hent det som én fil, der virker på telefonen uden internet, eller udskriv det som PDF fra browseren. Som træner tegner du holdets egne øvelser med et tegneværktøj og sætter dem sammen til programmer, der står ved siden af Kadences egne. \"Læg i kalenderen\" lægger programmet ind som et pas, hvor hver øvelse viser sin tegning. Som rytter kan du lægge et program i din egen kalender, som træneren kan for hele holdet."
       },
       "done": {
         "title": "Udført og RPE",
@@ -1454,13 +1459,13 @@
       "done": "DCU's programmer er i biblioteket: {installed} nye, {updated} opdateret."
     },
     "blocks": {
-      "title": "Blokke",
+      "title": "Forløb",
       "subtitle": "Flere ugers pas fra biblioteket, lagt ind fra en mandag hos en eller flere ryttere.",
-      "new": "Ny blok",
-      "newBody": "Læg pas fra biblioteket på dagene, uge for uge. Blokken kommer først i kalenderen, når den lægges ind.",
-      "editBody": "Ret blokken. Det, der allerede ligger i kalenderen, ændres ikke.",
-      "coachOnly": "Kun trænere kan lave blokke.",
-      "empty": "Ingen blokke endnu.",
+      "new": "Nyt forløb",
+      "newBody": "Læg pas fra biblioteket på dagene, uge for uge. Forløbet kommer først i kalenderen, når det lægges ind.",
+      "editBody": "Ret forløbet. Det, der allerede ligger i kalenderen, ændres ikke.",
+      "coachOnly": "Kun trænere kan lave forløb.",
+      "empty": "Ingen forløb endnu.",
       "meta": "{weeks, plural, one {# uge} other {# uger}} · {sessions, plural, one {# pas} other {# pas}} · ca. {hours} t på cyklen",
       "edit": "Ret",
       "apply": "Læg ind",
@@ -1473,16 +1478,16 @@
       "add": "+ Tilføj pas",
       "addTo": "Tilføj pas {day} i uge {week}",
       "remove": "Fjern {name}",
-      "applyTitle": "Læg blokken ind",
-      "applyBody": "{name}, {weeks, plural, one {# uge} other {# uger}}: vælg ryttere og den mandag, blokken starter.",
+      "applyTitle": "Læg forløbet ind",
+      "applyBody": "{name}, {weeks, plural, one {# uge} other {# uger}}: vælg ryttere og den mandag, forløbet starter.",
       "startMonday": "Starter mandag",
-      "snapped": "Blokken starter mandag {date}.",
+      "snapped": "Forløbet starter mandag {date}.",
       "preview": "Se, hvad det giver",
       "confirm": "Læg ind i kalenderen",
-      "applied": "{count, plural, one {Blokken ligger nu hos # rytter} other {Blokken ligger nu hos # ryttere}}.",
+      "applied": "{count, plural, one {Forløbet ligger nu hos # rytter} other {Forløbet ligger nu hos # ryttere}}.",
       "weekLine": "Uge {n} ({date}): {hours} t på cyklen, {strength, plural, =0 {ingen styrkepas} one {# styrkepas} other {# styrkepas}}",
       "corridor": "DCU {low}–{high} t",
-      "previewNote": "Opmærksomhedspunkterne er en hjælp, og du bestemmer. Du kan lægge blokken ind og rette bagefter i kalenderen.",
+      "previewNote": "Opmærksomhedspunkterne er en hjælp, og du bestemmer. Du kan lægge forløbet ind og rette bagefter i kalenderen.",
       "ownSession": "Bygget i planlæggeren. Passet findes kun i forløbet."
     }
   },
@@ -2267,7 +2272,7 @@
       "explainCheckins": "Check-in: ryttere med et check-in på mindst fire af ugens dage.",
       "explainReceipts": "Kvittering: pas til og med i går, der er markeret udført, har fået en RPE eller har fået en tur.",
       "explainRiders": "En rytter tæller med fra sin første hele uge på holdet. Arkiverede ryttere tæller ikke med.",
-      "explainMinutes": "Planlægning er et groft skøn i minutter ud fra, hvornår trænerne har gemt pas, blokke og sæsonplaner. Ændringer med under ti minutters mellemrum regnes som én omgang, og hver omgang tæller mindst to minutter. Tid til at tænke og læse planen er ikke med. Tallet skal hjælpe med at se, om Kadence sparer tid. Det er ikke en vurdering af nogen.",
+      "explainMinutes": "Planlægning er et groft skøn i minutter ud fra, hvornår trænerne har gemt pas, forløb og sæsonplaner. Ændringer med under ti minutters mellemrum regnes som én omgang, og hver omgang tæller mindst to minutter. Tid til at tænke og læse planen er ikke med. Tallet skal hjælpe med at se, om Kadence sparer tid. Det er ikke en vurdering af nogen.",
       "clubsTitle": "Tre tal pr. klub, uge {week}",
       "clubsBody": "Sidste hele uge, mandag til søndag. Kun tal, aldrig en rytter, et navn eller et check-in.",
       "club": "Klub"
@@ -5260,6 +5265,9 @@
       "newExercise": "Ny øvelse",
       "programs": "Programmer",
       "programsHint": "Åbn et program for at se øvelserne, hente det som fil eller lægge det i kalenderen.",
+      "openPageLine": "Vil du dele et program med nogen uden login? Kadences egne programmer ligger også på en åben side.",
+      "openPageLink": "Åbn den åbne side",
+      "share": "Del som åben side",
       "exercises": "Øvelser",
       "exercisesHint": "Hver øvelse har en tegning, en dosis og en kort forklaring.",
       "team": "Holdets",

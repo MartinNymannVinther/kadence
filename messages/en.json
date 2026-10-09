@@ -734,7 +734,8 @@
     "knowledge": {
       "title": "About the sport",
       "hint": "Open pages for riders, parents and coaches. Anyone can read them, also without signing in.",
-      "openPage": "Open page"
+      "openPage": "Open page",
+      "programsInApp": "In the app the same programmes are in the Library, where they are put in the calendar. The open page is for sharing and printing without logging in."
     },
     "howToTitle": "How to use Kadence",
     "howToHint": "In the rhythm a season lives in. Each section is short and says what happens, and why.",
@@ -747,6 +748,10 @@
       "password": {
         "title": "Forgotten password",
         "body": "Kadence sends no e-mail, so the way back in goes through a coach. A coach opens Settings → Workspace, presses Link for a new password by the person, and sends the link on themselves, by text message for instance. The link works once and only for the next hour; whoever uses it chooses a new password and is signed out everywhere else. The person can always see on their security page that a link was made, and by whom. A coach can make links for riders, parents and other coaches on the team, but not for the team's owner; an owner who forgot the password signs in with their passkey or gets help from whoever runs Kadence. If you have turned on two-step verification, you still need the code from your app."
+      },
+      "words": {
+        "title": "Session, block, programme and season plan",
+        "body": "A session is one training in the calendar, on the bike or in the gym. A rider's week is made of sessions. A block is several weeks of sessions from the library, applied from a Monday for one or more riders. A programme is a recipe for one strength session: exercises with drawings and doses, which becomes a session when it is put in the calendar. DCU's strength programmes are a third thing: a series of sessions with a progression, fetched into the library. The season plan is the hours month by month from October to September, with DCU's numbers beside them. Plan the week is where the coach lays a whole week at once."
       },
       "overview": {
         "title": "Overview: the coach's front page",
@@ -770,7 +775,7 @@
       },
       "exercises": {
         "title": "Exercises and programmes",
-        "body": "Exercises and programmes with drawings live under Library → Exercises and programmes, and \"Exercises and programmes\" is also one of the open guides anyone can open without signing in. You choose one of Kadence's own programmes, or put together your own from the library's exercises. Download it as one file that works on a phone without the internet, or print it as a PDF from the browser. As a coach, you draw the team's own exercises with a drawing tool and build them into programmes that sit beside Kadence's own. \"Put in the calendar\" lays the programme in as a session, where each exercise shows its drawing."
+        "body": "Exercises and programmes with drawings live under Library → Exercises and programmes, and \"Exercises and programmes\" is also one of the open guides anyone can open without signing in. You choose one of Kadence's own programmes, or put together your own from the library's exercises. Download it as one file that works on a phone without the internet, or print it as a PDF from the browser. As a coach, you draw the team's own exercises with a drawing tool and build them into programmes that sit beside Kadence's own. \"Put in the calendar\" lays the programme in as a session, where each exercise shows its drawing. As a rider you can put a programme in your own calendar, as the coach can for the whole team."
       },
       "done": {
         "title": "Done and RPE",
@@ -5260,6 +5265,9 @@
       "newExercise": "New exercise",
       "programs": "Programmes",
       "programsHint": "Open a programme to see its exercises, download it as a file or put it in the calendar.",
+      "openPageLine": "Want to share a programme with somebody without a login? Kadence's own programmes are on an open page too.",
+      "openPageLink": "Open the open page",
+      "share": "Share as an open page",
       "exercises": "Exercises",
       "exercisesHint": "Each exercise has a drawing, a dose and a short explanation.",
       "team": "Team's",
