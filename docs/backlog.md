@@ -23,6 +23,7 @@ eller mere. Rækkefølgen inden for en prioritet er den anbefalede.
 
 P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter #21 og #22). Hvert spor bygges i sit eget worktree med egen database og flettes ind på P1-grenen, når det er grønt. Statusloggen nyeste først:
 
+- **9. okt.** N-02, navigation i to niveauer, er bygget på `feat/ny-navigation` og klar som PR til Martin (ADR 0077). Martin godkendte HTML-mock-up'en (docs/mockups/navigation) og svarede på dens seks spørgsmål: Overblik som trænerens forside, Nyt fra rytterne med, Søg nu, mørk mos som standard med valg under Indstillinger, check-in på forsiden, og Trænerrummet og Klubmester under Mere. Fire spor: skal og menu (hovedsessionen), Overblik og Viden og hjælp (agent), Søg og check-in (agent), og småting i bibliotek, rytterliste og sidens dele (hovedsessionen). Hele suiten er grøn (295 filer, 2.842 tests), build kompilerer. Forbrug: ca. 0,5M tokens pr. agentspor og ca. 1M i hovedsessionen inklusive mock-up'en.
 - **8. okt.** Produktionen svarede 500 på holdsiden: volumet `/data/teams` ejes af root, og appen kunne ikke skrive sit øjebliksbillede. Siden holder nu øjebliksbilledet i hukommelsen, når disken nægter, og svarer aldrig 500 for en cache; Dockerfilen gør mappen til appens egen, og deploy.md siger, hvordan et gammelt volume rettes én gang. Samtidig alle danske holds trøjefarver fra DCU's PDF med godkendte tøjdesign 2026, som Martin pegede på. Forbrug: ca. 80k tokens.
 - **8. okt.** Tre rettelser på Martins bud (Ø-10): AI'en viser nu, at den tænker — tre prikker og en gnist, stille ved nedsat bevægelse — i alle fem AI-paneler; print er lagt om til ren bloklayout med ét kort pr. række, så Safari også holder kortene hele; holdsiden har fået trøjefarver og mønstre for elleve hold, syv læst fra fotos på Wikimedia Commons, og selve fotografierne kopieret til installationen med kreditering. Forbrug: ca. 180k tokens.
 - **8. okt.** Ø-09 holdsiden er bygget: `/guides/teams` læser UCI's U23-verdensrangliste og Nations' Cup fra DataRide og Cykling Danmarks holdliste og pointlister én gang i døgnet til et øjebliksbillede på disk, tegner trøjer ud fra registret, og viser kontakt som DCU selv offentliggør den. Fundet undervejs: UCI har ingen individuel juniorrangliste på landevej, så juniorernes point er DCU's. Forbrug: ca. 420k tokens.
@@ -163,6 +164,7 @@ Rammen er:
 | Ø-09  | Holdsiden: Junior- og U23-hold i Danmark, med trøjer, kontakt og point       | Ø    | L    | 500–800k     | Opus 5.5  |                   | Færdig       |
 | Ø-10  | AI'en viser at den tænker, print der holder i Safari, trøjer og fotos        | Ø    | S    | 150–250k     | Opus 5.5  | Ø-07, Ø-09        | Færdig       |
 | N-01  | Navigation efter opgaver                                                     | N    | M    | 300–450k     | Opus 5.5  |                   | Færdig       |
+| N-02  | Navigation i to niveauer: Overblik, Viden og hjælp, Søg og mørk mos          | N    | L    | 1,5–2,5M     | Fable 5.1 | N-01              | Færdig       |
 
 ---
 
@@ -1157,6 +1159,30 @@ uden at lede i en lang flad liste, **så** Kadence føles enkel fra første dag.
 **Tokens:** ca. 300–450k · **Model:** Opus 5.5 (`claude-opus-5-5`), struktur og design på tværs af alle roller.
 
 **Status:** Færdig 7. oktober (ADR 0068). Menuen er grupperet med ikoner for alle roller, Viden og beregnere, Trænerguide, Forældreguide og Hjælp står under Viden, bundbjælken følger rollen, holdnavnet er holdskifteren (kun som knap ved flere hold eller for ejeren), indstillinger står i Dig, Holdet og Installationen, og de åbne sider har "Tilbage til Kadence". Valgt undervejs: menupunktet hedder "Barnet" som før; forældre beholder Klubmester, når den er slået til; punkterne i sidemenuen er 34 px høje på computer, så trænerens længste liste står uden at rulle, og mindst 44 px på telefonen. Faktisk forbrug: 306k tokens på 30 min (skøn 300–450k).
+
+### N-02 Navigation i to niveauer: Overblik, Viden og hjælp, Søg og mørk mos
+
+**Som** træner, rytter eller forælder **vil jeg** have de fire steder, jeg
+bruger hver dag, lige ved hånden og resten ét tryk væk, **så** jeg finder
+rundt uden at lede, og træneren ser med det samme, hvad der skal ske nu.
+
+- Højst fire primære steder pr. rolle, de samme i sidebjælken og i
+  telefonens bundbjælke; resten under Mere med Indstillinger sidst.
+- Trænerens forside hedder Overblik: næste uge-kortet, de tre vigtigste
+  opmærksomhedspunkter, Nyt fra rytterne, holdet i dag og ugens begivenheder.
+- Viden og hjælp er én dør: begge guider, de åbne sider og hjælpen;
+  Forældreguiden ligger under /help/parents, barnets side er barnets.
+- Søg med ⌘K, feltet i sidebjælken og luppen på telefonen: ryttere, pas,
+  sider og hjælp, læst under RLS.
+- Sidebjælken i mørk mos som standard, papir som valg under Indstillinger →
+  Profil; fanen Mig hedder Profil.
+- Rytterens I dag åbner med check-in, tre svar og Gem på én telefonskærm.
+- Biblioteket med én knap "Nyt pas", rytterlisten med søgning, årgang og
+  ugens mærker, og en række med sidens dele på Mig og rytterens side.
+
+**Tokens:** ca. 1,5–2,5M · **Model:** Fable 5.1 (`claude-fable-5-1`) i hovedsessionen, Opus 5.5 i de to agentspor.
+
+**Status:** Færdig 9. oktober (ADR 0077), PR til Martin. Valgt undervejs: en træner, der også kører eller er forælder, får Mig og barnet under Mere; Sæson og Rulle ligger under Mere og nås fra kalenderens timetal og fra passet; en forælders søgning har ingen pas; indekset hentes, første gang paletten åbner, og holder siden ud; check-in'en står før dagens pas som i mock-up'en. Ikke længere i brug: `src/components/today/attention-count.tsx` og `today.attention.*` (R-01).
 
 ### Ø-06 Øvelser og programmer med udstyr
 
