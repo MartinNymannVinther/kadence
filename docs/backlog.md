@@ -23,6 +23,7 @@ eller mere. Rækkefølgen inden for en prioritet er den anbefalede.
 
 P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter #21 og #22). Hvert spor bygges i sit eget worktree med egen database og flettes ind på P1-grenen, når det er grønt. Statusloggen nyeste først:
 
+- **10. okt.** Ture ind: en samlet undersøgelse af, om rytterne har de bedste muligheder for let upload og synkronisering fra deres enheder, kørt som én workflow med 67 agenter (seks spor, to uafhængige efterprøvere pr. påstand, tre dommere, en kritiker og en anden runde). Resultatet ligger i docs/research/rides-in-options.md: de nøglefri veje er de bedste en webapp kan have, men intet er automatisk endnu, intet er prøvet på en rigtig enhed, og flertallet (Edge + iPhone) har en omvej på otte tryk, som appen ikke forklarer. Tredict er stadig den eneste automatiske vej for mindreårige, nu i to varianter (eget token eller OAuth-klient) med fire skriftlige svar udestående; ugens visninger behøver kun turens tal, så et indtag af tal uden fil er det billigste automatiske skridt. A-07 er skrevet om til tre akser. Ingen kode. Forbrug: ca. 0,7M tokens i den sidste kørsel af workflowet; to tidligere kørsler stoppede på sessionens grænse og blev genoptaget fra cachen.
 - **9. okt.** Efter N-02 fire små rettelser og en brugervejledning, på Martins ja: bibliotekets "Blokke" hedder forløb som i planlæggeren (også i eksportens ark); kortet for Øvelser og programmer under Viden og hjælp siger, at de samme programmer ligger i biblioteket, og biblioteket fører til den åbne side med "Del som åben side"; en rytter kan lægge et program i sin egen kalender (ADR 0078); Hjælp åbner med ordene pas, forløb, program og sæsonplan. Brugervejledningen ligger som én side med billeder under public/brugervejledning og som PDF gengivet med scripts/manual-pdf.ts, med et kort øverst på Viden og hjælp (ADR 0079). Forbrug: ca. 0,6M tokens i hovedsessionen.
 - **9. okt.** N-02, navigation i to niveauer, er bygget på `feat/ny-navigation` og klar som PR til Martin (ADR 0077). Martin godkendte HTML-mock-up'en (docs/mockups/navigation) og svarede på dens seks spørgsmål: Overblik som trænerens forside, Nyt fra rytterne med, Søg nu, mørk mos som standard med valg under Indstillinger, check-in på forsiden, og Trænerrummet og Klubmester under Mere. Fire spor: skal og menu (hovedsessionen), Overblik og Viden og hjælp (agent), Søg og check-in (agent), og småting i bibliotek, rytterliste og sidens dele (hovedsessionen). Hele suiten er grøn (295 filer, 2.842 tests), build kompilerer. Forbrug: ca. 0,5M tokens pr. agentspor og ca. 1M i hovedsessionen inklusive mock-up'en.
 - **8. okt.** Produktionen svarede 500 på holdsiden: volumet `/data/teams` ejes af root, og appen kunne ikke skrive sit øjebliksbillede. Siden holder nu øjebliksbilledet i hukommelsen, når disken nægter, og svarer aldrig 500 for en cache; Dockerfilen gør mappen til appens egen, og deploy.md siger, hvordan et gammelt volume rettes én gang. Samtidig alle danske holds trøjefarver fra DCU's PDF med godkendte tøjdesign 2026, som Martin pegede på. Forbrug: ca. 80k tokens.
@@ -1406,12 +1407,19 @@ Gmail; aldrig send.
 **Tokens:** ca. 60–120k · **Model:** Opus 5.5 (`claude-opus-5-5`), en afvejning af pris, risiko og vilkår, hvor anbefalingen betyder noget.
 
 ```text
-Læs memory om Garmin-research og
-docs/research/garmin-without-partner-access.md. Skriv på én side, hvad
-Martin skal tage stilling til: Tredict med rytterens eget token (pris,
-hvem betaler fuld adgang, hvad der sker med et sovende token) og
-Connect IQ-appen (developer-konto i hans navn, SDK, en Edge 530 eller
-nyere, licens). Anbefal én vej til vinteren. Ingen kode.
+Læs memory om Garmin-research, docs/research/garmin-without-partner-access.md
+og docs/research/rides-in-options.md (§1.2, §4 punkt 6 og 9). Skriv på én
+side, hvad Martin skal tage stilling til, på tre akser: (a) tal først
+(gratis og automatisk fra Tredicts liste, filen betalt eller med kabel)
+eller fil først, med kodens liste over hvad tursiden mister uden fil;
+(b) rytterens eget token (ingen nøgler, sover efter 14 dage, filen
+kræver fuld adgang, Tredicts egen anbefaling) eller en OAuth-klient pr.
+installation (ingen søvn på papiret, ikke tildelt, filens krav
+ubekræftet); (c) hvad Tredict dækker indendørs (Zwift og Rouvy, ikke
+MyWhoosh og TPV). Dertil Connect IQ-appen (developer-konto i hans navn,
+SDK, en Edge 530 eller nyere, licens). Anbefal én vej til vinteren.
+Ingen kode. P2-01's prompt forudsætter et ja her; ret den, hvis svaret
+bliver nej eller en anden variant.
 ```
 
 ---
