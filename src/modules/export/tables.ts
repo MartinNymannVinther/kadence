@@ -58,7 +58,7 @@ export const EXPORT_TABLES: ExportTable[] = [
   },
   {
     // The thinned samples behind the charts are not read: they are large,
-    // and the original file is in "Hent dine filer" (ADR 0088).
+    // and the original file is in "Hent dine filer" (ADR 0084).
     table: "activities",
     sheet: "Aktiviteter",
     orderBy: "rider_id, started_at",
@@ -233,7 +233,7 @@ export function columnNames(columns: string): string[] {
  *
  * - `activity_files`: the original FIT files. They are binary and do not
  *   belong in a spreadsheet; they come out as their own download, a ZIP
- *   with a folder per rider ("Hent dine filer", files.ts, ADR 0088).
+ *   with a folder per rider ("Hent dine filer", files.ts, ADR 0084).
  *   `streams`, the samples thinned from them, is left out for the same
  *   reason.
  * - `device_links`: sealed tokens for Wahoo and Garmin — credentials, not

@@ -5,7 +5,7 @@ import { adminPool, appClient } from "../helpers/db";
 import { insertSql, seedPerson } from "../helpers/rows";
 
 /**
- * The trail keeps who changed what, never the file (ADR 0088). A ride's
+ * The trail keeps who changed what, never the file (ADR 0084). A ride's
  * FIT file, a club's picture and an activity's thinned samples are
  * written to the audit log without their heavy column, and without the
  * trigger first turning megabytes of bytea into hex only to throw it

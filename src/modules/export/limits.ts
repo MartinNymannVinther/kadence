@@ -1,7 +1,7 @@
 import { rateLimit, type RateLimit } from "@/core/rate-limit";
 
 /**
- * How often a workspace may take its data out (ADR 0088). Generous for a
+ * How often a workspace may take its data out (ADR 0084). Generous for a
  * person, and a ceiling for a script or a stuck button: every export
  * reads the whole workspace, and the files can be gigabytes. Counted per
  * workspace, not per person, because the work is the workspace's.

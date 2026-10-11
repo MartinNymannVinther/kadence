@@ -1,4 +1,4 @@
--- The trail without files (docs/adr/0088, docs/backlog.md S-04).
+-- The trail without files (docs/adr/0084, docs/backlog.md S-04).
 --
 -- 1. audit_row_change() no longer turns a file into hex before it throws
 --    it away. to_jsonb(NEW) on an activity_files row read the whole FIT
@@ -262,6 +262,6 @@ CREATE INDEX IF NOT EXISTS audit_log_after_rider_idx ON audit_log ((after_data -
   WHERE (after_data ->> 'rider_id') IS NOT NULL;
 --> statement-breakpoint
 -- The export reads a workspace's trail in pages by id (src/modules/export,
--- ADR 0088): this keeps each page an index range instead of a walk
+-- ADR 0084): this keeps each page an index range instead of a walk
 -- through every other workspace's rows.
 CREATE INDEX IF NOT EXISTS audit_log_org_id_idx ON audit_log (org_id, id);

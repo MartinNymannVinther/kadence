@@ -27,7 +27,7 @@ import {
  * that a row means the same thing outside Kadence as it did inside. They
  * are named one by one in tables.ts, so a heavy column is never read.
  *
- * The audit trail is read on its own, in pages (ADR 0088): it is the one
+ * The audit trail is read on its own, in pages (ADR 0084): it is the one
  * table that grows with every change, and a request should hold one page
  * of it at a time, not all of it.
  */

@@ -303,7 +303,7 @@ anyone (tests/team/erase.test.ts).
 
 ### The trail copied every file, and a demo's trail stayed
 
-Paid with backlog S-04 (drizzle/0042, ADR 0088): the audit trigger
+Paid with backlog S-04 (drizzle/0042, ADR 0084): the audit trigger
 empties `bytes` and `streams` before it builds the row image, a deleted
 workspace is one event instead of a row per row it held, an expired
 demo goes with every audit row about it, and the export names its

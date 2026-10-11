@@ -4,7 +4,7 @@ import { cleanupExpiredDemos, createDemoWorkspace } from "@/modules/demo/service
 import { adminPool, appClient, authClient } from "../helpers/db";
 
 /**
- * The demo's clean-up runs in the database (drizzle/0042, ADR 0088):
+ * The demo's clean-up runs in the database (drizzle/0042, ADR 0084):
  * `delete_expired_demo()` deletes a demo whose time is up with its
  * accounts and every audit row about them. The auth role may call it,
  * and it can reach nothing else: a real club and a demo still being shown

@@ -8,7 +8,7 @@ import { insertSql, seedPerson } from "../helpers/rows";
 /**
  * Deleting a workspace takes everything it holds by cascade, and the
  * trail gets one event instead of a row for every row that went
- * (drizzle/0042, ADR 0088). A row deleted while its workspace stands is
+ * (drizzle/0042, ADR 0084). A row deleted while its workspace stands is
  * still recorded before and after, as every change is.
  */
 

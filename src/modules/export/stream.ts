@@ -4,7 +4,7 @@ import { AUDIT_SHEET } from "./tables";
 
 /**
  * The JSON export as a stream: the tables first, then the whole audit
- * trail a page at a time (ADR 0088). The response holds one page of the
+ * trail a page at a time (ADR 0084). The response holds one page of the
  * trail in memory, however long the trail has grown, and the next page is
  * read only when the reader has taken the last one.
  *

@@ -5,7 +5,7 @@ import { ZipWriter } from "@/core/zip";
 
 /**
  * "Hent dine filer": every ride's original file, as one ZIP with a folder
- * per rider (ADR 0088). Dogma three says everything can be taken out, and
+ * per rider (ADR 0084). Dogma three says everything can be taken out, and
  * the files are the one thing the spreadsheet cannot hold.
  *
  * Read as the application role under the same RLS as everything else

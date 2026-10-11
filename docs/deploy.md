@@ -251,7 +251,7 @@ owner has left and the club asks you in writing, delete it from a
 checkout with `pnpm script scripts/delete-club.ts <org id> "<name>"
 "<why>"`; the reason stays in the log, with how many rows each table
 held. Either way the club's rows and its audit trail go; the trail keeps
-one line that it happened (ADR 0088).
+one line that it happened (ADR 0084).
 
 Each club takes its own data out under Indstillinger → Data: a
 spreadsheet or JSON three times an hour, and its ride files as a ZIP
@@ -287,7 +287,7 @@ curl -X POST https://kadence.haij.dk/api/demo/cleanup   # on the server
 
 The endpoint needs no secret because it can only delete demos that have
 already expired. A demo goes with its throwaway accounts and every audit
-row about them (`delete_expired_demo()`, ADR 0088), so `DEMO=on` does not
+row about them (`delete_expired_demo()`, ADR 0084), so `DEMO=on` does not
 make the audit trail grow.
 
 Turn it on only where you mean it. A demo instance is not the same

@@ -1,4 +1,4 @@
-# ADR 0088: The trail without files, and an export with them
+# ADR 0084: The trail without files, and an export with them
 
 Status: accepted · Date: 2026-10-11 · Amends ADR 0003, ADR 0005 and ADR 0048 · Backlog S-04 (trin 0)
 

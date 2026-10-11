@@ -6,7 +6,7 @@ import { adminPool } from "../helpers/db";
 import { insertSql, seedPerson } from "../helpers/rows";
 
 /**
- * The export names its columns (ADR 0088). Every column of every exported
+ * The export names its columns (ADR 0084). Every column of every exported
  * table is either written out or left out by name, so a column added
  * later is a decision, not an accident — and the heavy ones, an
  * activity's samples and a club's picture, are never even read.

@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 /**
  * "Hent dine filer": every ride's original file the caller may read, as a
- * ZIP with a folder per rider, streamed a few files at a time (ADR 0088).
+ * ZIP with a folder per rider, streamed a few files at a time (ADR 0084).
  * Two a workspace an hour.
  */
 export async function GET(request: NextRequest) {

@@ -10,7 +10,7 @@ import { drain } from "../helpers/export";
 import { seedPerson } from "../helpers/rows";
 
 /**
- * The audit trail leaves in pages (ADR 0088). The JSON export holds every
+ * The audit trail leaves in pages (ADR 0084). The JSON export holds every
  * row and is written a page of AUDIT_PAGE rows at a time; the spreadsheet
  * holds the newest AUDIT_SHEET_ROWS. The export route answers three times
  * a workspace an hour, and then sends the person back to the data page.

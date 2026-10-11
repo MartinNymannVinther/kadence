@@ -11,7 +11,7 @@ import { Pool } from "pg";
  * exactly as when the club's owner deletes it from Settings → Workspace
  * (delete_workspace, drizzle/0003 and 0045). One line stays in the log:
  * that the installation deleted it, why, and how many rows each table
- * held. The cascade itself writes nothing to the trail (ADR 0088).
+ * held. The cascade itself writes nothing to the trail (ADR 0084).
  *
  *     pnpm script scripts/delete-club.ts                               # lists the clubs
  *     pnpm script scripts/delete-club.ts <org id> "<the club's name>" "<why>"

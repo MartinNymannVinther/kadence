@@ -302,7 +302,7 @@ describe("a demo workspace", () => {
       people,
     ]);
     expect(left.rows[0].n).toBe(0);
-    // No trail either (ADR 0088): with DEMO=on it used to grow by a
+    // No trail either (ADR 0084): with DEMO=on it used to grow by a
     // demo's worth of rows for every visitor, forever.
     const trail = await admin.query(
       `select count(*)::int as n from audit_log

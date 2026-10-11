@@ -23,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * day you want to leave. The page says plainly that neither is a backup,
  * because the failure mode of believing otherwise is losing everything
  * while feeling covered. The ride files are a third download beside them
- * (ADR 0088). Each is limited per workspace and hour; a download past the
+ * (ADR 0084). Each is limited per workspace and hour; a download past the
  * limit comes back here with `?limited=`, and the page says when it lifts.
  */
 export default async function DataExportPage({

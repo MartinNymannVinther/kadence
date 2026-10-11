@@ -15,7 +15,7 @@ export const dynamic = "force-dynamic";
  * Behind the ordinary session guard and the ordinary org context, so it can
  * only ever hand out the data of the organization the caller is signed in
  * to. The response is marked no-store: a full export is the last thing that
- * should sit in a shared cache. Three a workspace an hour (ADR 0088).
+ * should sit in a shared cache. Three a workspace an hour (ADR 0084).
  *
  * The spreadsheet is built whole and holds the newest AUDIT_SHEET_ROWS of
  * the audit trail; the JSON is streamed and holds all of it, read a page

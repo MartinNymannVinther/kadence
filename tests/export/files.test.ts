@@ -19,7 +19,7 @@ import { drain } from "../helpers/export";
 import { insertSql, seedPerson } from "../helpers/rows";
 
 /**
- * "Hent dine filer" (ADR 0088): every ride's original file, as a ZIP
+ * "Hent dine filer" (ADR 0084): every ride's original file, as a ZIP
  * with a folder per rider, under the same RLS as everything else. A coach
  * gets the team's files, a rider their own, and nobody another team's.
  * The archive is read back by Python's zipfile, which checks every CRC.

@@ -7,7 +7,7 @@ import { crc32 } from "@/core/crc32";
 import { ZipWriter, type ZipFile } from "@/core/zip";
 
 /**
- * The files archive (ADR 0088) is written by hand, so it is read back by
+ * The files archive (ADR 0084) is written by hand, so it is read back by
  * a reader that did not write it: Python's zipfile checks the central
  * directory, every local header and every CRC, and hands each file back
  * byte for byte.

@@ -120,7 +120,7 @@ function withNewCookies(request: Headers, response: Headers): Headers {
  * throwaway users — the visitor, the demo's rider and parent — because a
  * demo that leaves accounts behind is a demo that leaks addresses nobody
  * gave; and every audit row about either, because a stranger's sandbox
- * is not the installation's history (ADR 0088). It refuses anything that
+ * is not the installation's history (ADR 0084). It refuses anything that
  * is not a demo past its time, so the auth role cannot point it at a club.
  */
 export async function cleanupExpiredDemos(): Promise<number> {
