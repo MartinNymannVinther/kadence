@@ -575,3 +575,32 @@ database, som rammen i `docs/backlog.md` §0 siger.
    arbejdsrum, hængt på kvoterne), eller venter det helt?
 8. **Rækkefølge:** S-01 først, så Martin har sin egen konto at teste
    med, og trin 0 parallelt? Eller trin 0 først?
+
+---
+
+## 10. Martins svar, 11. oktober 2026
+
+1. **Ja** til afsnit 2: personligt arbejdsrum, rytterens menu med
+   planlægning, under 13 via forælderen, historikken flyttes.
+2. **Mail: ja**, Claude vælger udbyder. Valget er **Scaleway
+   Transactional Email** (Scaleway SAS, Paris; SMTP, EU-datacentre, kun
+   transaktionsmail, ingen marketingdel). Brevo er reserven. Rækken i
+   `docs/subprocessors.md` skrives, når S-07 bygges.
+3. **Ja**: egen jobtabel uden afhængighed, ikke pg-boss.
+4. **Ja**: egen S3-signering, og Hetzner Object Storage er i orden.
+5. **Kvoter** som foreslået: 20 GB pr. klub, 2 GB pr. person, 600
+   AI-kald pr. arbejdsrum pr. dag.
+6. **Revisionssporet:** 24 måneder for rækker om ryttere, for evigt for
+   adgang og sletninger.
+7. **Betaling: ja**, et enkelt gebyr for at drive og vedligeholde
+   løsningen. Planen tager højde for det sådan: kvoterne pr. arbejdsrum
+   (S-09) og en kolonne `organizations.plan` ('free' | 'paid'), sat af
+   ejeren under Installation, er det, gebyret hænger på; selve
+   opkrævningen (faktura eller kortbetaling gennem en EU-udbyder) er en
+   egen story, S-12, der skrives, når de første klubber er på og tallene
+   siger, hvad det koster. Dogme ét: samme kode, intet kun for betalende.
+8. **Rækkefølge:** S-01 først, trin 0 parallelt.
+
+Byggeriet starter samme dag: S-01 på `feat/alene`, og S-03, S-04 og S-05
+hver på sin gren, hver i eget worktree med egen database. S-02 følger
+efter S-01.
