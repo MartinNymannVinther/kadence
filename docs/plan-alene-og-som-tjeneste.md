@@ -631,4 +631,10 @@ efter S-01.
   arbejdsrum over, og regnearkets revisionsspor er begrænset til 10.000
   rækker, mens JSON har alt.
 - **A-08** i `docs/jura/`, PR #43. Alderen er 15, ikke 13.
-- **S-02** bygges oven på S-01 og får migrering 0046 og ADR 0081.
+- **S-02** på `feat/historik-foelger-rytteren`, PR #46 med trin 0 som base
+  (ADR 0081, migrering 0046). Planens nonce-header til det ene personlige
+  rum kunne ikke bruges i Better Auth 1.7.1; i stedet Better Auths
+  server-only vej med `userId` og en before-hook, der afviser den fra et
+  request.
+- **Trin 1** er i gang oven på trin 0: S-06 (worker), S-07 (mail, bygget)
+  og S-10 (pgbackrest og AI med pris); de samles på `feat/trin-1`.

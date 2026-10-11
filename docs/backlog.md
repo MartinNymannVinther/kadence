@@ -23,6 +23,7 @@ eller mere. Rækkefølgen inden for en prioritet er den anbefalede.
 
 P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter #21 og #22). Hvert spor bygges i sit eget worktree med egen database og flettes ind på P1-grenen, når det er grønt. Statusloggen nyeste først:
 
+- **12. okt., nat.** S-02 er bygget og flettet med trin 0 (PR #46 med trin 0 som base, ADR 0081, migrering 0046): én definer-funktion flytter rytterens historik, spørgsmålet stilles ved ind- og udtræden, ét personligt rum pr. person ad serverens egen vej (Better Auth 1.7.1 tillod ikke planens nonce-header; afvigelsen står i ADR'en). S-07 (mail via Scaleway TEM, nodemailer 10.1.0, MIT-0) er bygget på `feat/mail` og venter på at blive samlet med S-06 og S-10 i trin 1-bølgen. Forbrug: ca. 0,37M tokens pr. spor.
 - **11. okt., nat.** S-01 er bygget (PR #44, ADR 0080, migrering 0041): personligt arbejdsrum, ansøgning som mig selv eller mit barn, 15 år, menuer, Slet min konto, demo alene. S-03, S-04 og S-05 er bygget hver i sit spor og samlet på `feat/trin-0` (PR #45 med S-01 som base, ADR 0083 og 0084, migreringer 0042–0045); hele suiten grøn (315 filer, 2.947 tests), build kompilerer. S-02 er i gang oven på S-01. Forbrug: ca. 0,4M tokens pr. spor og ca. 0,3M i hovedsessionen til fletning og gennemgang.
 - **11. okt., aften.** A-08 er skrevet som udkast i docs/jura (gren docs/jura): databehandleraftale med bilag, vilkår og privatlivspolitik på dansk og engelsk, DPIA (påkrævet, ikke forudgående høring) og fortegnelse. Fundet undervejs: aldersgrænsen for et barns eget samtykke er 15, ikke 13, siden 1. januar 2024; planen, S-01 og S-08 er rettet. Ni steder hvor koden ikke holder vilkårene; de tre med kode er S-13. Forbrug: ca. 240k tokens.
 - **11. okt., senere.** Martin svarede ja på alle otte spørgsmål i planens afsnit 9 (mail: Claude vælger udbyder, valget er Scaleway Transactional Email; egen jobtabel; egen S3-signering og Hetzner Object Storage; kvoter og 24 måneders opbevaring som foreslået; et enkelt gebyr for drift og vedligehold, S-12 skrives senere; S-01 først og trin 0 parallelt). S-01, S-03, S-04 og S-05 er sat i gang, hver i eget worktree med egen database.
@@ -172,15 +173,15 @@ Rammen er:
 | N-01  | Navigation efter opgaver                                                       | N    | M    | 300–450k     | Opus 5.5  |                      | Færdig       |
 | N-02  | Navigation i to niveauer: Overblik, Viden og hjælp, Søg og mørk mos            | N    | L    | 1,5–2,5M     | Fable 5.1 | N-01                 | Færdig       |
 | S-01  | Personligt arbejdsrum: mig selv eller mit barn, rytterens menu med planlægning | S    | L    | 600k–1M      | Opus 5.5  | Martins ja (plan §2) | Færdig       |
-| S-02  | Historikken følger rytteren ind på og ud af et hold                            | S    | M    | 400–700k     | Fable 5.1 | S-01                 | I gang       |
+| S-02  | Historikken følger rytteren ind på og ud af et hold                            | S    | M    | 400–700k     | Fable 5.1 | S-01                 | Færdig       |
 | S-03  | Trin 0: tællere i databasen, timeouts, Postgres-indstillinger, indekser        | S    | M    | 400–700k     | Opus 5.5  |                      | Færdig       |
 | S-04  | Trin 0: revisionssporet uden filer, demoens rækker, eksport med filer          | S    | M    | 300–500k     | Opus 5.5  |                      | Færdig       |
 | S-05  | Trin 0: logs, health live/ready, overvågning, vilkår og subprocessors rettet   | S    | S    | 150–250k     | Sonnet 5  |                      | Færdig       |
-| S-06  | Trin 1: jobtabel og worker af samme image                                      | S    | L    | 600k–1M      | Opus 5.5  | S-03, Martins valg   | Ikke startet |
-| S-07  | Trin 1: mail gennem en EU-udbyder (P3-05 rykket frem)                          | S    | L    | 500–800k     | Opus 5.5  | Martins ja           | Ikke startet |
+| S-06  | Trin 1: jobtabel og worker af samme image                                      | S    | L    | 600k–1M      | Opus 5.5  | S-03, Martins valg   | I gang       |
+| S-07  | Trin 1: mail gennem en EU-udbyder (P3-05 rykket frem)                          | S    | L    | 500–800k     | Opus 5.5  | Martins ja           | Færdig       |
 | S-08  | Dør 2: selvoprettelse for den enkelte med bekræftet adresse                    | S    | M    | 300–500k     | Opus 5.5  | S-01, S-07, A-08     | Ikke startet |
 | S-09  | Trin 1: filer i databasen eller i et EU-objektlager, med kvoter                | S    | L    | 600k–1M      | Fable 5.1 | S-06, Martins valg   | Ikke startet |
-| S-10  | Trin 1: pgbackrest, restore-skript, AI med tokens og pris                      | S    | M    | 300–500k     | Opus 5.5  |                      | Ikke startet |
+| S-10  | Trin 1: pgbackrest, restore-skript, AI med tokens og pris                      | S    | M    | 300–500k     | Opus 5.5  |                      | I gang       |
 | S-11  | Trin 2: pgbouncer, flere instanser, partitioneret revisionsspor                | S    | L    | 800k–1,2M    | Fable 5.1 | S-06, planens tal    | Ikke startet |
 | A-08  | Databehandleraftale, privatlivspolitik, DPIA og fortegnelse som udkast         | A    | S    | 150–250k     | Opus 5.5  |                      | Ikke startet |
 
