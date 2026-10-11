@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
+  bigint,
   boolean,
   check,
   date,
@@ -54,12 +55,19 @@ export const teamSettings = pgTable(
      * "Lav intensitet først" on top of its hours (docs/adr/0053). Off by default.
      */
     lowIntensityFirst: boolean("low_intensity_first").notNull().default(false),
+    /**
+     * The workspace's monthly AI budget in micro-euro, set by the
+     * installation's owner only (docs/adr/0089, drizzle/0049); null is the
+     * installation's default, AI_MONTHLY_BUDGET_MICRO.
+     */
+    aiBudgetMicro: bigint("ai_budget_micro", { mode: "number" }),
     updatedBy: text("updated_by").references(() => users.id, { onDelete: "set null" }),
     ...timestamps,
   },
   (t) => [
     check("team_settings_kind", sql`${t.teamKind} in ('U17','U19','U23','mixed')`),
     check("team_settings_guidance", sql`${t.guidance} in ('dcu-2025','none')`),
+    check("team_settings_ai_budget", sql`${t.aiBudgetMicro} >= 0`),
   ],
 );
 

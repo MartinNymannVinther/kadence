@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
+import { AiMonth } from "@/components/insight/ai-month";
 import { PilotClubs } from "@/components/insight/pilot-clubs";
 import { personsSummary, platformOverview } from "@/core/admin/overview";
 import { getSession } from "@/core/auth/session";
 import { formatDay } from "@/core/dates";
 import { Link } from "@/i18n/navigation";
+import { DEFAULT_MONTHLY_BUDGET_MICRO } from "@/modules/ai/limits";
+import { formatEuro } from "@/modules/ai/prices";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("settings.installation");
@@ -19,8 +22,9 @@ export async function generateMetadata(): Promise<Metadata> {
  * three numbers for the last full week (ADR 0066). Counts only; the
  * database hands nothing else over. People who use Kadence alone are one
  * line, "Enkeltpersoner", with how many, how many were in this week,
- * their files and AI calls (ADR 0080). Anyone else gets a 404, as for
- * admission.
+ * their files and AI calls (ADR 0080). This month's AI cost per club
+ * against its budget, which the owner can change here, and one total
+ * line (ADR 0089). Anyone else gets a 404, as for admission.
  */
 export default async function InstallationPage() {
   const session = await getSession();
@@ -103,9 +107,19 @@ export default async function InstallationPage() {
               ai: persons.aiCallsDay,
             })}
           </p>
+          <p className="tabular-nums">
+            {t("persons.aiMonth", { cost: formatEuro(persons.aiCostMonthMicro, locale) })}
+          </p>
           <p className="text-meta text-xs">{t("persons.privacy")}</p>
         </div>
       )}
+
+      <AiMonth
+        clubs={clubs}
+        persons={persons}
+        defaultBudgetMicro={DEFAULT_MONTHLY_BUDGET_MICRO}
+        locale={locale}
+      />
 
       {clubs.length > 0 && <PilotClubs clubs={clubs} />}
 

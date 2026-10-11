@@ -61,16 +61,17 @@ backup (section 7). Nothing needs doing about it.
    repository, branch `main`. Coolify picks up `docker-compose.yml`.
 2. Set the environment variables (Coolify → Environment Variables):
 
-   | Variable                | Value                                                                |
-   | ----------------------- | -------------------------------------------------------------------- |
-   | `POSTGRES_PASSWORD`     | `openssl rand -hex 24`                                               |
-   | `KADENCE_APP_PASSWORD`  | `openssl rand -hex 24`                                               |
-   | `KADENCE_AUTH_PASSWORD` | `openssl rand -hex 24`                                               |
-   | `BETTER_AUTH_SECRET`    | `openssl rand -base64 32`                                            |
-   | `BETTER_AUTH_URL`       | `https://kadence.haij.dk` (public URL; passkeys bind to this origin) |
-   | `LLM_PROVIDER`          | `mistral` hosted, `ollama` self-hosted, or leave unset for `none`    |
-   | `MISTRAL_API_KEY`       | only with `LLM_PROVIDER=mistral`                                     |
-   | `AI_DAILY_CALL_CAP`     | model calls per day across the whole installation; `0` for no roof   |
+   | Variable                  | Value                                                                                  |
+   | ------------------------- | -------------------------------------------------------------------------------------- |
+   | `POSTGRES_PASSWORD`       | `openssl rand -hex 24`                                                                 |
+   | `KADENCE_APP_PASSWORD`    | `openssl rand -hex 24`                                                                 |
+   | `KADENCE_AUTH_PASSWORD`   | `openssl rand -hex 24`                                                                 |
+   | `BETTER_AUTH_SECRET`      | `openssl rand -base64 32`                                                              |
+   | `BETTER_AUTH_URL`         | `https://kadence.haij.dk` (public URL; passkeys bind to this origin)                   |
+   | `LLM_PROVIDER`            | `mistral` hosted, `ollama` self-hosted, or leave unset for `none`                      |
+   | `MISTRAL_API_KEY`         | only with `LLM_PROVIDER=mistral`                                                       |
+   | `AI_MONTHLY_BUDGET_MICRO` | each workspace's AI budget per month in micro-euro (default 5 €); `0` for none         |
+   | `AI_DAILY_CALL_CAP`       | optional emergency roof on model calls per day across the installation; off by default |
 
    Hex, not base64, for the three database passwords, and that is not a
    style preference. `docker-compose.yml` builds the connection strings by

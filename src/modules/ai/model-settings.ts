@@ -73,22 +73,47 @@ function defaultModelFor(provider: LlmProviderId): string {
  * installation instead of failing every AI call with a decryption error.
  */
 export async function resolveLlmConfig(ctx: OrgContext): Promise<LlmConfig> {
+  return (await resolveWithPayer(ctx)).config;
+}
+
+/**
+ * Who pays for a call (docs/adr/0089): the workspace when its own Mistral
+ * key is in force, else the installation — whose monthly budget per
+ * workspace is what the call is counted against.
+ */
+export type BilledTo = "installation" | "workspace";
+
+async function resolveWithPayer(
+  ctx: OrgContext,
+): Promise<{ config: LlmConfig; billedTo: BilledTo }> {
   const installation = installationLlmConfig();
   const row = await readRow(ctx);
-  if (!row) return installation;
+  if (!row) return { config: installation, billedTo: "installation" };
 
   const provider = row.provider as LlmProviderId;
   const ownKey = openSecret(row.apiKeyCipher, ctx.orgId);
   return {
-    provider,
-    model: row.model ?? (provider === installation.provider ? installation.model : null),
-    apiKey: ownKey ?? installation.apiKey,
+    config: {
+      provider,
+      model: row.model ?? (provider === installation.provider ? installation.model : null),
+      apiKey: ownKey ?? installation.apiKey,
+    },
+    billedTo: provider === "mistral" && ownKey ? "workspace" : "installation",
   };
 }
 
 /** The provider this workspace should use, or null when nothing can answer. */
 export async function workspaceLlmProvider(ctx: OrgContext): Promise<LlmProvider | null> {
   return llmProviderFrom(await resolveLlmConfig(ctx));
+}
+
+/** The same provider, and whose key pays for what it is asked. */
+export async function workspaceLlm(
+  ctx: OrgContext,
+): Promise<{ provider: LlmProvider; billedTo: BilledTo } | null> {
+  const { config, billedTo } = await resolveWithPayer(ctx);
+  const provider = llmProviderFrom(config);
+  return provider ? { provider, billedTo } : null;
 }
 
 export async function getModelSettings(ctx: OrgContext): Promise<ModelSettingsView> {

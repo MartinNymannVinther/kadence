@@ -472,9 +472,27 @@
       "newClub": "En ny klub kommer ind gennem en ansøgning, som du godkender.",
       "toAccess": "Gå til Adgang",
       "help": "Vil en klub have hjælp, kan den invitere dig som træner for en tid. Det står i dens medlemsliste og i loggen, og klubben fjerner dig igen bagefter.",
+      "aiMonth": {
+        "title": "AI denne måned",
+        "body": "Det, installationens nøgle har brugt for hver klub siden den 1., og klubbens budget. Når budgettet er brugt, holder AI'en pause for klubben til næste måned, og alt andet virker. Et tomt felt er standarden på {budget}.",
+        "total": "I alt {total}: klubberne {clubs}, enkeltpersonerne {persons}.",
+        "unknownTotal": "{count, plural, one {# kald} other {# kald}} har en pris, Kadence ikke kender, og er ikke talt med.",
+        "unknown": "pris ukendt for {count, plural, one {# kald} other {# kald}}",
+        "club": "Klub",
+        "spent": "Brugt",
+        "budget": "Budget",
+        "spentOf": "{spent} af {budget}",
+        "noBudget": "intet loft",
+        "budgetLabel": "Månedligt AI-budget i euro for {club}",
+        "save": "Gem",
+        "saved": "Gemt.",
+        "invalid": "Skriv et beløb i euro, fx 7,50, eller lad feltet stå tomt.",
+        "failed": "Budgettet blev ikke gemt. Prøv igen."
+      },
       "persons": {
         "title": "Enkeltpersoner",
         "counts": "{count, plural, one {# personligt arbejdsrum} other {# personlige arbejdsrum}}, {seen, plural, one {# brugt} other {# brugt}} den seneste uge · {mb, number} MB filer · {ai, plural, one {# AI-kald} other {# AI-kald}} det seneste døgn",
+        "aiMonth": "{cost} til AI denne måned",
         "privacy": "Folk, der bruger Kadence alene. Du ser kun tallene samlet, aldrig navne."
       }
     },
@@ -526,6 +544,10 @@
       "limitsHint": "Et modelkald koster penge på en hostet installation og minutter på en lokal. Tallene er rundhåndede for et menneske og nærige for et script.",
       "perUser": "Kald pr. bruger i timen",
       "perWorkspace": "Kald pr. arbejdsrum i døgnet",
+      "perMonth": "AI-budget denne måned",
+      "perMonthValue": "{spent} af {budget}",
+      "perMonthNone": "{spent}, intet loft",
+      "perMonthOwnKey": "Arbejdsrummet bruger sin egen nøgle og betaler selv, så budgettet gælder ikke.",
       "messageLength": "Tegn i en besked, højst",
       "principlesTitle": "Sådan bruger Kadence AI",
       "principleDecides": "AI'en svarer, mennesket beslutter. Modellen skriver et svar; den sender aldrig noget ud af huset, sletter aldrig noget og ændrer intet uden at du gør det.",
@@ -551,6 +573,7 @@
       "setupLocalComment": "eller lokalt (Ollama)",
       "setupKeyPlaceholder": "din-nøgle-her",
       "perInstallation": "Kald i hele installationen i døgnet",
+      "failBudget": "Arbejdsrummets AI-budget for måneden er brugt, så AI'en holder pause til næste måned. Ejeren af installationen kan give mere.",
       "failCeiling": "Kadences eget loft over AI-kald blev nået, ikke udbyderens. Loftet står under “Loft over AI-kald” herunder; installationens samlede loft sættes med AI_DAILY_CALL_CAP. Prøv igen om lidt."
     },
     "members": {
@@ -2978,6 +3001,7 @@
       "notAllowed": "Holdet har ikke givet AI'en lov til at læse rytternes data. Det er slået fra som standard, fordi det er helbredsdata om unge.",
       "notAllowedLink": "Indstillinger → Holdet",
       "rateLimited": "Der er brugt mange AI-kald lige nu. Prøv igen om lidt.",
+      "budget": "AI'en holder pause til næste måned. Alt andet virker.",
       "unreachable": "Sprogmodellen svarer ikke. Prøv igen om lidt.",
       "badAnswer": "Sprogmodellen svarede med noget, der ikke kunne bruges. Prøv igen.",
       "notFound": "Det findes ikke længere. Genindlæs siden.",

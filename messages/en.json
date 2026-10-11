@@ -472,9 +472,27 @@
       "newClub": "A new club comes in through an application you approve.",
       "toAccess": "Go to Access",
       "help": "If a club wants help, it can invite you as a coach for a while. It shows in its member list and in the log, and the club removes you again afterwards.",
+      "aiMonth": {
+        "title": "AI this month",
+        "body": "What the installation's key has spent for each club since the 1st, and the club's budget. When the budget is spent, the AI rests for that club until next month, and everything else works. An empty field is the default of {budget}.",
+        "total": "In total {total}: the clubs {clubs}, individuals {persons}.",
+        "unknownTotal": "{count, plural, one {# call has} other {# calls have}} a price Kadence does not know and {count, plural, one {is} other {are}} not counted.",
+        "unknown": "price unknown for {count, plural, one {# call} other {# calls}}",
+        "club": "Club",
+        "spent": "Spent",
+        "budget": "Budget",
+        "spentOf": "{spent} of {budget}",
+        "noBudget": "no limit",
+        "budgetLabel": "Monthly AI budget in euro for {club}",
+        "save": "Save",
+        "saved": "Saved.",
+        "invalid": "Write an amount in euro, e.g. 7.50, or leave the field empty.",
+        "failed": "The budget was not saved. Try again."
+      },
       "persons": {
         "title": "Individuals",
         "counts": "{count, plural, one {# personal workspace} other {# personal workspaces}}, {seen, plural, one {# used} other {# used}} in the last week · {mb, number} MB of files · {ai, plural, one {# AI call} other {# AI calls}} in the last day",
+        "aiMonth": "{cost} on AI this month",
         "privacy": "People who use Kadence on their own. You see only the totals, never names."
       }
     },
@@ -526,6 +544,10 @@
       "limitsHint": "A model call costs money on a hosted installation and minutes on a local one. The numbers are generous for a person and mean for a script.",
       "perUser": "Calls per user per hour",
       "perWorkspace": "Calls per workspace per day",
+      "perMonth": "AI budget this month",
+      "perMonthValue": "{spent} of {budget}",
+      "perMonthNone": "{spent}, no limit",
+      "perMonthOwnKey": "This workspace uses its own key and pays for itself, so the budget does not apply.",
       "messageLength": "Characters in a message, at most",
       "principlesTitle": "How Kadence uses AI",
       "principleDecides": "The AI answers, the person decides. The model writes an answer; it never sends anything out of the house, never deletes anything and changes nothing unless you do.",
@@ -551,6 +573,7 @@
       "setupLocalComment": "or locally (Ollama)",
       "setupKeyPlaceholder": "your-key-here",
       "perInstallation": "Calls across the installation per day",
+      "failBudget": "The workspace's AI budget for the month is spent, so the AI rests until next month. The installation's owner can give it more.",
       "failCeiling": "Kadence's own ceiling on AI calls was reached, not the provider's. The ceilings are under “Ceiling on AI calls” below; the installation's own is set with AI_DAILY_CALL_CAP. Try again shortly."
     },
     "members": {
@@ -2978,6 +3001,7 @@
       "notAllowed": "The team has not let the AI read the riders' data. It is off by default, because it is health data about young people.",
       "notAllowedLink": "Settings → Team",
       "rateLimited": "Many AI calls have been made just now. Try again in a moment.",
+      "budget": "The AI is resting until next month. Everything else works.",
       "unreachable": "The language model is not answering. Try again in a moment.",
       "badAnswer": "The language model answered with something that could not be used. Try again.",
       "notFound": "It no longer exists. Reload the page.",

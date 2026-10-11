@@ -1,0 +1,19 @@
+{
+  "id": "cmpl-e5cc70bb28c444948073e77776eb30ef",
+  "object": "chat.completion",
+  "created": 1760195100,
+  "model": "mistral-small-latest",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"title\":\"Rolig grundtur\",\"blocks\":[{\"minutes\":90,\"zone\":2}]}",
+        "tool_calls": null,
+        "prefix": false
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": { "prompt_tokens": 1843, "total_tokens": 1874, "completion_tokens": 31 }
+}

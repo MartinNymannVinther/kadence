@@ -14,8 +14,9 @@ import { adminPool, appClient, asApp } from "../helpers/db";
 import { seedMember, seedWorkspace } from "../helpers/workspace";
 
 /**
- * The three ceilings on the AI surface (docs/adr/0035), proven against a
- * real database because the middle of the argument is an RLS policy.
+ * The call ceilings on the AI surface (ADR 0009, docs/adr/0089), proven
+ * against a real database because the middle of the argument is an RLS
+ * policy. The monthly budget has its own file, tests/ai/budget.test.ts.
  *
  * Two of them are counted inside a tenant context and answer for one
  * workspace. The third is the installation's own roof: it has to see a
@@ -32,6 +33,8 @@ const spy = vi.hoisted(() => ({
 vi.mock("@/modules/ai/model-settings", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/modules/ai/model-settings")>()),
   workspaceLlmProvider: async () => spy.provider,
+  workspaceLlm: async () =>
+    spy.provider ? { provider: spy.provider, billedTo: "installation" as const } : null,
 }));
 
 let admin: Pool;
@@ -81,7 +84,7 @@ async function record(
   );
 }
 
-function reserve(ctx: { orgId: string; userId: string }): Promise<void> {
+function reserve(ctx: { orgId: string; userId: string }): Promise<string> {
   return withOrgContext(ctx, (tx) => reserveAiCall(tx, ctx, "test", "test"));
 }
 
@@ -97,12 +100,12 @@ describe("the ceilings a workspace sets for itself", () => {
     await expect(reserve(A)).rejects.toBeInstanceOf(RateLimited);
     // The colleague sits in the same workspace and is untouched: the hour
     // belongs to a person, not to the team.
-    await expect(reserve(colleague)).resolves.toBeUndefined();
+    await expect(reserve(colleague)).resolves.toEqual(expect.any(String));
   });
 
   it("forgets calls older than the hour", async () => {
     await record(A.orgId, A.userId, MAX_CALLS_PER_USER_PER_HOUR, "61 minutes");
-    await expect(reserve(A)).resolves.toBeUndefined();
+    await expect(reserve(A)).resolves.toEqual(expect.any(String));
   });
 
   it("refuses a workspace that has had its day, and only that workspace", async () => {
@@ -112,7 +115,7 @@ describe("the ceilings a workspace sets for itself", () => {
 
     await expect(reserve(A)).rejects.toBeInstanceOf(RateLimited);
     await expect(reserve(colleague)).rejects.toBeInstanceOf(RateLimited);
-    await expect(reserve(B)).resolves.toBeUndefined();
+    await expect(reserve(B)).resolves.toEqual(expect.any(String));
   });
 
   it("still stands underneath the installation's roof", async () => {
@@ -142,7 +145,7 @@ describe("the installation's roof", () => {
   it("lets the call one below the roof through, and the next one not", async () => {
     await record(A.orgId, null, MAX_CALLS_PER_INSTALLATION_PER_DAY - 1);
 
-    await expect(reserve(B)).resolves.toBeUndefined();
+    await expect(reserve(B)).resolves.toEqual(expect.any(String));
     expect(await counted()).toBe(MAX_CALLS_PER_INSTALLATION_PER_DAY);
     await expect(reserve(B)).rejects.toBeInstanceOf(RateLimited);
     expect(await counted()).toBe(MAX_CALLS_PER_INSTALLATION_PER_DAY);
@@ -150,7 +153,7 @@ describe("the installation's roof", () => {
 
   it("reads the last day, not the whole log", async () => {
     await record(A.orgId, null, MAX_CALLS_PER_INSTALLATION_PER_DAY, "25 hours");
-    await expect(reserve(B)).resolves.toBeUndefined();
+    await expect(reserve(B)).resolves.toEqual(expect.any(String));
   });
 
   /**
@@ -234,11 +237,19 @@ describe("what the installation chooses", () => {
     BETTER_AUTH_SECRET: "not-a-real-secret-for-tests-only",
   };
 
-  it("ships a roof a real team does not meet", () => {
-    expect(EnvSchema.parse(REQUIRED).AI_DAILY_CALL_CAP).toBe(2000);
+  /**
+   * docs/adr/0089: a shared roof let one busy club close the AI for
+   * everybody, so it ships off and each workspace has a month's budget
+   * instead. The suite turns the roof on (vitest.config.mts) to prove it
+   * still works when an operator wants the brake.
+   */
+  it("ships no shared roof, and a budget per workspace instead", () => {
+    const parsed = EnvSchema.parse(REQUIRED);
+    expect(parsed.AI_DAILY_CALL_CAP).toBe(0);
+    expect(parsed.AI_MONTHLY_BUDGET_MICRO).toBe(5_000_000);
     expect(MAX_CALLS_PER_INSTALLATION_PER_DAY).toBe(2000);
-    // Several full workspaces' worth, so the ceiling a team can feel is
-    // still its own and the roof is the installation's backstop.
+    // When it is set, several full workspaces' worth, so the ceiling a
+    // team can feel is still its own and the roof is the backstop.
     expect(MAX_CALLS_PER_INSTALLATION_PER_DAY).toBeGreaterThan(3 * MAX_CALLS_PER_WORKSPACE_PER_DAY);
   });
 
@@ -269,7 +280,7 @@ describe("what the installation chooses", () => {
       await record(A.orgId, null, MAX_CALLS_PER_INSTALLATION_PER_DAY * 2);
       await expect(
         tenant.withOrgContext(B, (tx) => limits.reserveAiCall(tx, B, "test", "test")),
-      ).resolves.toBeUndefined();
+      ).resolves.toEqual(expect.any(String));
 
       // The workspace's own day still bites underneath.
       await record(B.orgId, null, MAX_CALLS_PER_WORKSPACE_PER_DAY);
