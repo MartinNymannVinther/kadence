@@ -131,6 +131,8 @@ export async function cancelInvitation(headers: Headers, invitationId: string): 
 
 export type InvitationView = {
   id: string;
+  /** The workspace the invitation is to; for the server's own use, never shown. */
+  organizationId: string;
   email: string;
   role: string;
   workspaceName: string;
@@ -149,6 +151,7 @@ export async function findTeamInvitation(invitationId: string): Promise<Invitati
   const [row] = await authDb
     .select({
       id: invitations.id,
+      organizationId: invitations.organizationId,
       email: invitations.email,
       role: invitations.role,
       status: invitations.status,
@@ -166,6 +169,7 @@ export async function findTeamInvitation(invitationId: string): Promise<Invitati
     row.status === "pending" && row.expiresAt.getTime() <= Date.now() ? "expired" : row.status;
   return {
     id: row.id,
+    organizationId: row.organizationId,
     email: row.email,
     role: row.role ?? "member",
     workspaceName: row.workspaceName,

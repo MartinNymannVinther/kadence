@@ -592,7 +592,17 @@
         "action": "Leave the team",
         "title": "Leave the team?",
         "body": "You lose access to the team straight away. What you have entered stays with the team. If you want a copy, download it under Data first. A coach can invite you again.",
-        "confirm": "Leave the team"
+        "bodyWithChoice": "You lose access to the team straight away. A coach can invite you again.",
+        "confirm": "Leave the team",
+        "history": {
+          "legend": "Take your training with you?",
+          "yes": "Yes, to a workspace of my own",
+          "no": "No, leave it with the team",
+          "body": "Your sessions, rides, check-ins, goals and season plan move to a workspace that is yours alone. The team keeps no copy, only a line in its log that the training left. Your parents are confirmed again there.",
+          "staysBody": "What you have entered stays with the team. If you want a copy, download it under Data first.",
+          "hasHistory": "You already have a workspace of your own with training in it, so the training cannot be moved there. Leave the team without it, or download a copy under Data first.",
+          "failed": "The training could not be moved, so you are still on the team. Try again in a moment."
+        }
       },
       "sharing": {
         "title": "What your parents can see",
@@ -765,7 +775,17 @@
     "loginLink": "Sign in",
     "errorEmailExists": "An account with that address already exists. Sign in and open the link again.",
     "errorInvalid": "Something you wrote could not be used. Check the fields.",
-    "errorGeneric": "That went wrong. Try again."
+    "errorGeneric": "That went wrong. Try again.",
+    "history": {
+      "legend": "Take your training with you onto the team?",
+      "yes": "Yes, take it along",
+      "no": "No, leave it",
+      "body": "Your sessions, rides, check-ins, goals and season plan move from {workspace} onto the team, and {workspace} is closed afterwards. Your parents are confirmed again on the team.",
+      "staysBody": "Your training stays in {workspace}, and you have two workspaces to switch between. It cannot be moved later.",
+      "stayed": "You are on the team. Your training was not moved and is still in your own workspace.",
+      "stayedTargetHasHistory": "You are on the team. The coach has already planned sessions for you here, so your training was not moved. It is still in your own workspace.",
+      "continue": "Go to Today"
+    }
   },
   "help": {
     "title": "Knowledge and help",

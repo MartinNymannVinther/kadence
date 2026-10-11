@@ -1,6 +1,6 @@
-import { asc, count, eq, sql } from "drizzle-orm";
+import { and, asc, count, eq, sql } from "drizzle-orm";
 import { authDb } from "@/core/db/client";
-import { memberships } from "@/core/db/schema";
+import { memberships, organizations } from "@/core/db/schema";
 import { isPlatformOwner } from "./service";
 
 /**
@@ -19,6 +19,41 @@ export async function canCreateWorkspace(userId: string): Promise<boolean> {
     .from(memberships)
     .where(eq(memberships.userId, userId));
   return (row?.n ?? 0) === 0;
+}
+
+export type PersonalWorkspace = { orgId: string; name: string };
+
+/**
+ * The personal workspace this person owns (docs/adr/0080), or null. One
+ * person owns at most one: the rule below, and the hook in
+ * src/core/auth/auth.ts that enforces it, keep it so.
+ */
+export async function personalWorkspaceOf(userId: string): Promise<PersonalWorkspace | null> {
+  const [row] = await authDb
+    .select({ orgId: organizations.id, name: organizations.name })
+    .from(memberships)
+    .innerJoin(organizations, eq(organizations.id, memberships.organizationId))
+    .where(
+      and(
+        eq(memberships.userId, userId),
+        eq(memberships.role, "owner"),
+        eq(organizations.kind, "personal"),
+      ),
+    )
+    .orderBy(asc(memberships.createdAt))
+    .limit(1);
+  return row ?? null;
+}
+
+/**
+ * The one case ADR 0048's rule does not cover (docs/adr/0081): a rider
+ * leaving a team takes their training into a personal workspace of their
+ * own, which our server code creates for them — never a request, which
+ * `canCreateWorkspace` still refuses while they belong to a team. One
+ * such workspace per person: a second is refused.
+ */
+export async function canCreatePersonalWorkspace(userId: string): Promise<boolean> {
+  return (await personalWorkspaceOf(userId)) === null;
 }
 
 /**

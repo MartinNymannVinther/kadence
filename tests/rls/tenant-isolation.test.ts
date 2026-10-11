@@ -401,6 +401,15 @@ describe("rls coverage (guards future tables)", () => {
     // tests/team/invitation-kind.test.ts proves it, and that the
     // application role cannot call it.
     "invitation_kind",
+    // Moves one rider's history from their rider row in one workspace onto
+    // their rider row in another (drizzle/0042, docs/adr/0081): the first
+    // function that writes across two workspaces. It moves only when the
+    // caller's account is on both rows and a member of both workspaces,
+    // and only onto a row with no history yet; it answers table names and
+    // counts, writes one counted line per table in both trails and never a
+    // row, and tests/rls/history-move.test.ts proves each refusal and that
+    // it is all or nothing.
+    "move_rider_history",
     // Removes the deleted sessions past their seven days, for the reminder
     // job that runs with nobody signed in (drizzle/0037, docs/adr/0060).
     // It takes no arguments, removes only rows older than seven days, and

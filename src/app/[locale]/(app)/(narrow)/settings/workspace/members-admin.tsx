@@ -42,6 +42,7 @@ export function MembersAdmin({
   invitations,
   currentUserId,
   role,
+  rider = false,
 }: {
   members: Member[];
   /** Membership row id per user, which is what the role and remove calls take. */
@@ -49,6 +50,8 @@ export function MembersAdmin({
   invitations: PendingInvitation[];
   currentUserId: string;
   role: string;
+  /** Whether the caller also rides on this team, so leaving can take their training (ADR 0081). */
+  rider?: boolean;
 }) {
   const t = useTranslations("settings.members");
   const roles = useTranslations("settings.workspace.roles");
@@ -170,7 +173,7 @@ export function MembersAdmin({
           </Table>
           {role !== "owner" && (
             <div className="border-hairline mt-4 border-t pt-4">
-              <LeaveTeamButton place="workspace" />
+              <LeaveTeamButton place="workspace" history={rider} />
             </div>
           )}
         </CardContent>

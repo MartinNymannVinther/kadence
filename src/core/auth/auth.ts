@@ -6,6 +6,7 @@ import { nextCookies } from "better-auth/next-js";
 import { organization, twoFactor } from "better-auth/plugins";
 import { platformRoleForNewUser } from "@/core/access/service";
 import {
+  canCreatePersonalWorkspace,
   canCreateWorkspace,
   defaultWorkspaceId,
   markWorkspaceUsed,
@@ -162,6 +163,24 @@ export const auth = betterAuth({
           code: "WORKSPACE_KIND_NOT_SETTABLE",
           message: "A workspace's kind is not set from a request",
         });
+      }
+      // A workspace made on a person's behalf, with no session: Better
+      // Auth's server-only path, which skips allowUserToCreateOrganization
+      // and which a request can never take (a request without a session is
+      // refused by the endpoint itself). Our server code takes it for one
+      // thing, the personal workspace a rider leaving a team moves their
+      // training into (docs/adr/0081), and a person gets one of those.
+      if (ctx.path === "/organization/create") {
+        const body = (ctx.body ?? {}) as { userId?: unknown };
+        if (typeof body.userId === "string") {
+          const session = ctx.context.session ?? (await getSessionFromCtx(ctx));
+          if (!session && !(await canCreatePersonalWorkspace(body.userId))) {
+            throw new APIError("FORBIDDEN", {
+              code: "PERSONAL_WORKSPACE_EXISTS",
+              message: "A person has one personal workspace",
+            });
+          }
+        }
       }
       if (ctx.path === "/sign-up/email") {
         const body = (ctx.body ?? {}) as { email?: unknown };
