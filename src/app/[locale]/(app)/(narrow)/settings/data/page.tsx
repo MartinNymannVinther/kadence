@@ -3,7 +3,11 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { getOrgContext } from "@/core/auth/session";
 import { EXPORT_TABLES } from "@/modules/export/tables";
+import { currentRole, workspaceName } from "@/modules/export/workspace";
+import { workspaceKind } from "@/modules/team/workspace-kind";
+import { DeleteWorkspaceCard } from "../workspace/delete-workspace-card";
 import { cn } from "@/lib/utils";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -23,6 +27,12 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function DataExportPage() {
   const t = await getTranslations("app.dataExport");
   const sheets = EXPORT_TABLES.map((table) => table.sheet).join(", ");
+  // In one person's own workspace the way out lives here, under Dig, since
+  // there is no workspace tab (ADR 0080): "Slet min konto og alt om mig".
+  const ctx = await getOrgContext();
+  const personal = ctx ? (await workspaceKind(ctx.orgId, ctx.userId)) === "personal" : false;
+  const owner = personal && ctx ? (await currentRole(ctx)) === "owner" : false;
+  const name = owner && ctx ? await workspaceName(ctx) : null;
 
   return (
     <div className="flex max-w-2xl flex-col gap-5">
@@ -71,6 +81,8 @@ export default async function DataExportPage() {
       </div>
 
       <p className="text-meta text-2sm leading-relaxed">{t("privacy")}</p>
+
+      {name !== null && <DeleteWorkspaceCard workspaceName={name} personal />}
     </div>
   );
 }

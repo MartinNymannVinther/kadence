@@ -13,7 +13,7 @@ import {
  * installation's owner, and Om last on its own.
  */
 
-type Who = { owner: boolean; isCoach: boolean; isRider: boolean };
+type Who = { owner: boolean; isCoach: boolean; isRider: boolean; personal?: boolean };
 
 const shape = (who: Who) => settingsGroups(who).map((g) => [g.key, g.items.map((i) => i.key)]);
 
@@ -27,6 +27,9 @@ const EVERYONE: Who[] = [
   { owner: false, isCoach: true, isRider: true },
   { owner: true, isCoach: true, isRider: false },
   { owner: true, isCoach: false, isRider: true },
+  { owner: false, isCoach: true, isRider: true, personal: true },
+  { owner: false, isCoach: true, isRider: false, personal: true },
+  { owner: true, isCoach: true, isRider: true, personal: true },
 ];
 
 describe("the settings groups", () => {
@@ -67,6 +70,21 @@ describe("the settings groups", () => {
     }
   });
 
+  it("give a person alone everything under Dig: training, AI and data, no workspace tab (ADR 0080)", () => {
+    const self = { owner: false, isCoach: true, isRider: true, personal: true };
+    expect(shape(self)).toEqual([
+      ["you", ["me", "devices", "security", "team", "ai", "data"]],
+      [null, ["about"]],
+    ]);
+    expect(settingsItems(self).find((i) => i.key === "team")?.label).toBe("training");
+    expect(shape({ ...self, isRider: false })[0]).toEqual([
+      "you",
+      ["me", "security", "team", "ai", "data"],
+    ]);
+    // A child invited into a parent's own workspace is a rider there, as on a team.
+    expect(shape({ ...RIDER, personal: true })).toEqual(shape(RIDER));
+  });
+
   it("keep Data for everyone, once, and every tab at its own address", () => {
     for (const who of EVERYONE) {
       const items = settingsItems(who);
@@ -84,7 +102,8 @@ describe("the settings groups", () => {
       for (const who of EVERYONE) {
         for (const group of settingsGroups(who)) {
           if (group.key) expect(nav.groups[group.key]).toEqual(expect.any(String));
-          for (const item of group.items) expect(nav[item.key]).toEqual(expect.any(String));
+          for (const item of group.items)
+            expect(nav[item.label ?? item.key]).toEqual(expect.any(String));
         }
       }
     }
@@ -101,5 +120,8 @@ describe("the settings subtitle", () => {
     expect(settingsSubtitle({ isCoach: true, isRider: true })).toBe("subtitleCoach");
     expect(settingsSubtitle({ isCoach: false, isRider: true })).toBe("subtitleRider");
     expect(settingsSubtitle({ isCoach: false, isRider: false })).toBe("subtitleOther");
+    expect(settingsSubtitle({ isCoach: true, isRider: true, personal: true })).toBe(
+      "subtitlePersonal",
+    );
   });
 });

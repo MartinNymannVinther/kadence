@@ -9,7 +9,9 @@ import { appDb } from "@/core/db/client";
  * not the owner; this asks it as the owner, with nothing set but who is
  * asking. There is no org context, so no domain table is readable here.
  * The pilot's three numbers (drizzle/0031, docs/adr/0066) come as counts
- * for the last full week, the same for every club.
+ * for the last full week, the same for every club. A personal workspace
+ * (drizzle/0041, docs/adr/0080) comes without its name, which is a
+ * person's; the page shows persons as one line (`personsSummary`).
  */
 export type PilotCounts = {
   /** The Monday of the last full week, a Copenhagen day. */
@@ -23,7 +25,9 @@ export type PilotCounts = {
 
 export type ClubOverview = {
   orgId: string;
+  /** Empty for a personal workspace: the database never hands its name over. */
   name: string;
+  kind: "club" | "personal";
   createdAt: Date;
   coaches: number;
   riders: number;
@@ -39,7 +43,8 @@ type Count = string | number;
 
 type Row = {
   org_id: string;
-  name: string;
+  name: string | null;
+  kind: string;
   created_at: Date | string;
   coaches: Count;
   riders: Count;
@@ -71,7 +76,8 @@ export async function platformOverview(userId: string): Promise<ClubOverview[] |
   });
   return rows.map((r) => ({
     orgId: r.org_id,
-    name: r.name,
+    name: r.kind === "personal" ? "" : (r.name ?? ""),
+    kind: r.kind === "personal" ? "personal" : "club",
     createdAt: date(r.created_at),
     coaches: Number(r.coaches),
     riders: Number(r.riders),
@@ -89,4 +95,27 @@ export async function platformOverview(userId: string): Promise<ClubOverview[] |
       minutes: Number(r.pilot_minutes),
     },
   }));
+}
+
+/** The persons on the installation as one line: how many, not who (docs/adr/0080). */
+export type PersonsSummary = {
+  count: number;
+  /** Personal workspaces someone was in during the last seven days. */
+  seenWeek: number;
+  fileBytes: number;
+  aiCallsDay: number;
+};
+
+const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+
+/** Adds up the personal workspaces in the overview. Pure. */
+export function personsSummary(rows: ClubOverview[], now = new Date()): PersonsSummary {
+  const persons = rows.filter((r) => r.kind === "personal");
+  return {
+    count: persons.length,
+    seenWeek: persons.filter((r) => r.lastSeen && now.getTime() - r.lastSeen.getTime() < WEEK_MS)
+      .length,
+    fileBytes: persons.reduce((n, r) => n + r.fileBytes, 0),
+    aiCallsDay: persons.reduce((n, r) => n + r.aiCallsDay, 0),
+  };
 }

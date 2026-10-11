@@ -16,8 +16,9 @@ import { PageHeader } from "@/components/ui/page-header";
 import { ZoneStrip } from "@/components/wellbeing/zone-strip";
 import { getOrgContext } from "@/core/auth/session";
 import { todayInCopenhagen } from "@/core/dates";
-import { redirect } from "@/i18n/navigation";
+import { Link, redirect } from "@/i18n/navigation";
 import { whoAmI } from "@/modules/team/access";
+import { workspaceKind } from "@/modules/team/workspace-kind";
 import { meData } from "./me-data";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -83,6 +84,7 @@ export default async function MePage({
   const today = todayInCopenhagen();
   const riderId = me.rider.id;
   const data = await meData(ctx, riderId, today);
+  const personal = me.isCoach && (await workspaceKind(ctx.orgId, ctx.userId)) === "personal";
 
   return (
     <div className="flex max-w-3xl flex-col gap-8">
@@ -142,6 +144,17 @@ export default async function MePage({
         <FitUpload riderId={riderId} compact />
         <SendToDeviceButton sessions={data.toDevice} week />
       </Section>
+
+      {personal && (
+        // In one's own workspace the person is also the coach (ADR 0080):
+        // the coach's page about them holds the parents and the account.
+        <p className="text-meta text-2sm leading-relaxed">
+          {t("personal.body")}{" "}
+          <Link href={`/riders/${riderId}`} className="focus-ring text-primary hover:underline">
+            {t("personal.link")}
+          </Link>
+        </p>
+      )}
 
       {openSession && (
         <SessionSheet key={openSession} closeHref="/me" title={t("sessionPanel")}>

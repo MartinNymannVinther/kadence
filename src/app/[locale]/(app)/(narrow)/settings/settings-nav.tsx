@@ -5,7 +5,7 @@ import { useId } from "react";
 import { CountPill } from "@/components/ui/count-pill";
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
-import type { SettingsGroup } from "./settings-items";
+import { settingsLabelKey, type SettingsGroup } from "./settings-items";
 
 /**
  * Sub-navigation for settings, mirroring the main nav: a column of tabs in
@@ -66,7 +66,7 @@ export function SettingsNav({
                           : "text-secondary-foreground hover:bg-muted",
                       )}
                     >
-                      {t(item.key)}
+                      {t(settingsLabelKey(item))}
                       {item.key === "access" && access ? (
                         <CountPill count={access.pending} />
                       ) : null}

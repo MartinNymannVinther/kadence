@@ -7,6 +7,7 @@
  * Auth, the audit log and admission; see docs/adr/0001 to 0004.
  */
 export * from "./foundation";
+export * from "./admission";
 export * from "./team";
 export * from "./training";
 export * from "./wellbeing";

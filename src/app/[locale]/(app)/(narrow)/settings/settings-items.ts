@@ -11,6 +11,13 @@
  *   the team: admission and the installation (ADR 0048);
  * - "Om", what is running, last and on its own.
  *
+ * In a personal workspace (ADR 0080) the person is their own coach, and
+ * there is no team to set up: everything is "Dig" — the training's
+ * settings (the team tab, called "Træning" there), the AI and the data,
+ * where the way out reads "Slet min konto og alt om mig". The workspace
+ * tab, with members and invitations, is not listed; a parent invites the
+ * child from the rider's page, as a coach does.
+ *
  * A tab that is not listed is only a tab: every page under /settings
  * still decides on the server what the caller may see and do there.
  */
@@ -27,7 +34,10 @@ export type SettingsKey =
   | "data"
   | "about";
 
-export type SettingsItem = { key: SettingsKey; href: string };
+/** The words in settings.nav a tab can be called by: the key's, or "training" for a person's team tab. */
+export type SettingsLabelKey = SettingsKey | "training";
+
+export type SettingsItem = { key: SettingsKey; href: string; label?: SettingsLabelKey };
 
 /** A group's header; "Om" stands alone without one. */
 export type SettingsGroupKey = "you" | "team" | "installation";
@@ -39,12 +49,22 @@ type Who = {
   owner: boolean;
   isCoach: boolean;
   isRider: boolean;
+  /** The workspace is one person's own training (ADR 0080). */
+  personal?: boolean;
 };
 
-export function settingsGroups({ owner, isCoach, isRider }: Who): SettingsGroup[] {
+export function settingsGroups({ owner, isCoach, isRider, personal }: Who): SettingsGroup[] {
+  const yours: Array<SettingsKey | false> = personal
+    ? ["me", isRider && "devices", "security", isCoach && "team", isCoach && "ai", "data"]
+    : ["me", isRider && "devices", "security", !isCoach && "data"];
   const groups: Array<[SettingsGroupKey | null, Array<SettingsKey | false>]> = [
-    ["you", ["me", isRider && "devices", "security", !isCoach && "data"]],
-    ["team", [isCoach && "team", isCoach && "workspace", isCoach && "ai", isCoach && "data"]],
+    ["you", yours],
+    [
+      "team",
+      personal
+        ? []
+        : [isCoach && "team", isCoach && "workspace", isCoach && "ai", isCoach && "data"],
+    ],
     ["installation", [owner && "access", owner && "installation"]],
     [null, ["about"]],
   ];
@@ -53,9 +73,18 @@ export function settingsGroups({ owner, isCoach, isRider }: Who): SettingsGroup[
       key,
       items: keys
         .filter((item): item is SettingsKey => item !== false)
-        .map((item) => ({ key: item, href: `/settings/${item}` })),
+        .map((item): SettingsItem => ({
+          key: item,
+          href: `/settings/${item}`,
+          ...(personal && item === "team" ? { label: "training" as const } : {}),
+        })),
     }))
     .filter((group) => group.items.length > 0);
+}
+
+/** The word in settings.nav for a tab. */
+export function settingsLabelKey(item: SettingsItem): SettingsLabelKey {
+  return item.label ?? item.key;
 }
 
 /** The same tabs without their groups, in order. */
@@ -77,10 +106,13 @@ export function leavesFromMe(me: { isCoach: boolean } | null): boolean {
 export function settingsSubtitle({
   isCoach,
   isRider,
+  personal,
 }: {
   isCoach: boolean;
   isRider: boolean;
-}): "subtitleCoach" | "subtitleRider" | "subtitleOther" {
+  personal?: boolean;
+}): "subtitleCoach" | "subtitleRider" | "subtitleOther" | "subtitlePersonal" {
+  if (isCoach && personal) return "subtitlePersonal";
   if (isCoach) return "subtitleCoach";
   if (isRider) return "subtitleRider";
   return "subtitleOther";

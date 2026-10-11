@@ -14,6 +14,7 @@ import { DemoBanner } from "@/components/demo-banner";
 import { SearchProvider } from "@/components/search/search-provider";
 import { isDemoWorkspace } from "@/modules/demo/service";
 import { orgImageUrls } from "@/modules/team/images";
+import { getRiders } from "@/modules/team/riders";
 import { refreshOwnRacesLater } from "@/modules/results/own";
 import { refreshStaleRaces } from "@/modules/results/refresh";
 import { whoAmI } from "@/modules/team/access";
@@ -21,7 +22,7 @@ import { AppSidebar } from "./app-sidebar";
 import { BottomBar } from "./bottom-bar";
 import { MobileHeader } from "./mobile-header";
 import { settingsItems } from "./(narrow)/settings/settings-items";
-import { homeHref, menuFor, nameChild, navFlags, navRole } from "./nav-items";
+import { homeHref, menuFor, nameChild, nameWard, navFlags, navRole } from "./nav-items";
 import { SidebarShell, SidebarToggle } from "./sidebar-shell";
 import { getTeamSettings } from "@/modules/team/settings";
 import { unreadThreadCount } from "@/modules/community/service";
@@ -43,7 +44,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const [organization] = context
     ? await withOrgContext(context, (tx) =>
         tx
-          .select({ name: organizations.name })
+          .select({ name: organizations.name, kind: organizations.kind })
           .from(organizations)
           .where(eq(organizations.id, context.orgId))
           .limit(1),
@@ -76,13 +77,19 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const clubOn = featureOn("clubChampionship");
   const club = context && clubOn ? (await getTeamSettings(context)).clubChampionship : false;
   const coachesRoom = featureOn("coachesRoom");
-  const role = navRole(me);
-  const flags = navFlags(me, { club, coachesRoom });
-  const menu = nameChild(menuFor(role, flags), me?.children ?? []);
-  const home = homeHref(role);
+  // A personal workspace is one person's training (ADR 0080): the owner
+  // who rides gets the rider's places with planning, a parent who owns
+  // their child's gets the child's page; nothing about a team.
+  const personal = organization?.kind === "personal";
+  const role = navRole(me, personal ? "personal" : "club");
+  const flags = navFlags(me, { club: club && !personal, coachesRoom: coachesRoom && !personal });
+  const wards = context && role === "family" ? await getRiders(context) : [];
+  const menu = nameWard(nameChild(menuFor(role, flags), me?.children ?? []), wards);
+  // The first place in the role's day; for a parent's own workspace, the child's page.
+  const home = menu.primary[0]?.href ?? homeHref(role);
   // Threads with something new in Trænerrummet, for a coach (ADR 0052).
   const counts =
-    context && isCoach && coachesRoom ? { coaches: await unreadThreadCount(context) } : {};
+    context && isCoach && flags.coachesRoom ? { coaches: await unreadThreadCount(context) } : {};
 
   // Read on the server so the first paint is already the layout this
   // person left behind, rather than a rail that appears and vanishes, or
@@ -97,7 +104,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const search = {
     scope: context?.orgId ?? "",
     menu,
-    settings: settingsItems({ owner: canCreate, isCoach, isRider: Boolean(me?.rider) }),
+    settings: settingsItems({ owner: canCreate, isCoach, isRider: Boolean(me?.rider), personal }),
     who: { coach: isCoach, riderId: me?.rider?.id ?? null },
   };
 

@@ -60,7 +60,8 @@
       "title": "Try it without creating anything",
       "body": "You get your own U19 team in full swing: riders, a season plan after DCU, weeks of sessions, activities and check-ins. You start as the coach and can switch to the rider Emma and her mother to see Kadence through their eyes. It is all deleted after {hours, plural, one {# hour} other {# hours}}. No email, no sign-up.",
       "privacy": "Do not put real personal data in the demo. It passes through a database and possibly a language model on the way.",
-      "cta": "Open a demo"
+      "cta": "Open a demo",
+      "ctaAlone": "Try it as a rider on your own"
     },
     "featuresLabel": "What you get",
     "features": {
@@ -129,7 +130,10 @@
       "errorInvitationInvalid": "The invitation has expired or has already been used. Ask for a new link.",
       "invitationInvalidTitle": "This link no longer works",
       "invitationInvalidBody": "The invitation has expired, been used, or been replaced by a newer one. Ask the person who invited you for a new link, or apply for access again.",
-      "applyLink": "Apply for access"
+      "applyLink": "Apply for access",
+      "errorTooYoung": "You must be at least 15 to create an account yourself. A parent can create it and invite you.",
+      "personalMe": "You get your own workspace, {workspace}. Here you are both your own coach and rider: you plan your sessions, ride them and follow your form.",
+      "personalChild": "You get a workspace, {workspace}, where you plan the training for {child}. Once the account exists, you can invite {child} from the rider's page."
     },
     "twoFactor": {
       "title": "Two-factor authentication",
@@ -157,9 +161,24 @@
       "sentBody": "You will hear from the owner of this installation at {email}. The reply comes from a person, so allow a day or two.",
       "errorInvalid": "Check the fields and try again.",
       "errorTooMany": "Many applications have been sent from here in a short time. Try again in an hour.",
-      "privacy": "We store your name, email and organisation to handle the application, and nothing else. If it is declined, the details remain only as a note of the decision.",
+      "privacy": "We store your name, email and organisation to handle the application, and nothing else. If it is for one person, we also store the birth year and, for a child, the child's name and email if given. If it is declined, the details remain only as a note of the decision.",
       "haveAccount": "Already have an account?",
-      "loginLink": "Log in"
+      "loginLink": "Log in",
+      "kindLegend": "Who is Kadence for?",
+      "kindClub": "A club or a team",
+      "kindPersonal": "Myself",
+      "forWhomLegend": "Who will train?",
+      "forMe": "It is for me",
+      "forChild": "It is for my child",
+      "birthYear": "Your birth year",
+      "birthYearHint": "The year decides the class, for example U17 or U19. We do not ask for a date.",
+      "childName": "Your child's name",
+      "childBirthYear": "Your child's birth year",
+      "childEmail": "Your child's email",
+      "childEmailHint": "Optional. With an email you get a link your child can create their own account with. You can also do it later.",
+      "tooYoung": "If you are under 15, you cannot create an account yourself. Ask a parent to apply and choose \"It is for my child\". They can invite you afterwards.",
+      "workspaceName": "{name}'s training",
+      "workspaceNameSibilant": "{name}'s training"
     }
   },
   "app": {
@@ -300,6 +319,7 @@
     "subtitleCoach": "You, the team and the workspace.",
     "subtitleRider": "You, your devices and your security.",
     "subtitleOther": "You and your security.",
+    "subtitlePersonal": "Yourself, your training, your AI and your data.",
     "appearance": {
       "title": "Appearance",
       "body": "Applies on this device. Light or dark otherwise follows the system.",
@@ -324,6 +344,7 @@
       "team": "Team",
       "me": "Profile",
       "devices": "Devices",
+      "training": "Training",
       "groups": {
         "you": "You",
         "team": "Team",
@@ -360,7 +381,10 @@
       "stateUsed": "Used",
       "stateExpired": "Expired",
       "stateRevoked": "Replaced",
-      "errorInvalid": "Check the email and the workspace name."
+      "errorInvalid": "Check the email and the workspace name.",
+      "inviteName": "The person's name",
+      "personalMe": "Personal workspace · for themselves · born {year}",
+      "personalChild": "Personal workspace · for their child, {child} · born {year}"
     },
     "workspace": {
       "resetLink": {
@@ -392,7 +416,13 @@
         "deleting": "Deleting …",
         "failed": "The workspace was not deleted. Try again.",
         "notOwner": "Only the workspace owner can delete it.",
-        "nameMismatch": "That name does not match. Type the workspace's name exactly."
+        "nameMismatch": "That name does not match. Type the workspace's name exactly.",
+        "personal": {
+          "title": "Delete my account and everything about me",
+          "body": "Everything about your training goes: sessions, rides, check-ins, the season plan, the files and the audit trail about them. If you are not on a team in Kadence, your account is deleted too. It cannot be undone.",
+          "exportFirst": "Download an export first if you want to keep anything. It is just above.",
+          "action": "Delete my account and everything about me"
+        }
       },
       "images": {
         "title": "Logo and picture",
@@ -435,7 +465,12 @@
       "privacy": "You see figures and the clubs' names, which is all the database hands over here.",
       "newClub": "A new club comes in through an application you approve.",
       "toAccess": "Go to Access",
-      "help": "If a club wants help, it can invite you as a coach for a while. It shows in its member list and in the log, and the club removes you again afterwards."
+      "help": "If a club wants help, it can invite you as a coach for a while. It shows in its member list and in the log, and the club removes you again afterwards.",
+      "persons": {
+        "title": "Individuals",
+        "counts": "{count, plural, one {# personal workspace} other {# personal workspaces}}, {seen, plural, one {# used} other {# used}} in the last week · {mb, number} MB of files · {ai, plural, one {# AI call} other {# AI calls}} in the last day",
+        "privacy": "People who use Kadence on their own. You see only the totals, never names."
+      }
     },
     "ai": {
       "title": "AI",
@@ -631,7 +666,11 @@
       "ai": "May the AI read the riders' data",
       "aiHint": "Off by default. The riders' training and check-ins are health data about young people. If you turn it on, the AI may read them when a coach asks for a week proposal or a summary of the week's points of attention. It never writes anything itself.",
       "on": "On",
-      "off": "Off"
+      "off": "Off",
+      "personalTitle": "Your training",
+      "personalBody": "How you plan your season, and what the AI may read.",
+      "aiPersonal": "May the AI read your data",
+      "aiPersonalHint": "Off by default. Your training and your check-ins are health data. If you turn it on, the AI may read them when you ask for a week proposal or a summary of the week. It never writes anything itself."
     }
   },
   "demo": {
@@ -1044,6 +1083,10 @@
       "empty": "You have no rides yet. Upload a file below and it will show up here.",
       "km": "{km} km",
       "more": "Show more"
+    },
+    "personal": {
+      "body": "You are also your own coach. Your thresholds and a parent who can follow along are on your rider page.",
+      "link": "Open your rider page"
     }
   },
   "errors": {
@@ -2760,7 +2803,7 @@
     "basisLabel": "Plan from",
     "pickBasis": "Choose a class",
     "basisHint": "The rider's class is chosen. Pick another if the rider should plan from another year, for example because they started late.",
-    "noClass": "The rider is not in one of DCU's classes (U17 to U23) this season. Choose the class the plan should build on.",
+    "noClass": "DCU has no hours for the rider's class this season, only for U17 to U23. Choose a class the plan can start from. Afterwards you change the hours to your own, month by month.",
     "basis": "{category} year {year}",
     "basisNow": "The plan builds on DCU's hours for {basis}.",
     "basisOwn": "The team plans with its own hours. The rider is {basis}.",

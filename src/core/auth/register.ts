@@ -1,8 +1,11 @@
 import { APIError } from "better-auth";
 import { z } from "zod";
+import { personalProblem, type PersonalSpec } from "@/core/access/personal";
 import { consumeInvitation, findValidInvitation } from "@/core/access/service";
+import { todayInCopenhagen } from "@/core/dates";
 import { organizationSlug } from "@/lib/slug";
 import { auth } from "./auth";
+import { setUpPersonalWorkspace } from "./register-personal";
 import { DEMO_HEADER, INVITATION_HEADER, signupAllowed, TEAM_INVITATION_HEADER } from "./signup";
 
 export const RegisterSchema = z.object({
@@ -18,7 +21,10 @@ export type RegisterInput = z.infer<typeof RegisterSchema>;
 
 export type RegisterResult =
   | { ok: true }
-  | { ok: false; error: "invalid" | "emailExists" | "closed" | "invitationInvalid" | "generic" };
+  | {
+      ok: false;
+      error: "invalid" | "emailExists" | "closed" | "invitationInvalid" | "tooYoung" | "generic";
+    };
 
 /** Turns the set-cookie headers of an API response into a cookie header. */
 function cookieHeaderFrom(responseHeaders: Headers): Headers {
@@ -46,6 +52,9 @@ export async function registerUserWithOrganization(
   }
   const { name, password, invitationToken } = parsed.data;
   let { email, organizationName } = parsed.data;
+  // A personal workspace comes only through an invitation that says so
+  // (docs/adr/0080); the form cannot ask for one.
+  let personal: PersonalSpec | null = null;
 
   // An invited registration is for the address and the organization the
   // owner approved, whatever the form says: the invitation is the source,
@@ -57,6 +66,14 @@ export async function registerUserWithOrganization(
     if (!invitation) return { ok: false, error: "invitationInvalid" };
     email = invitation.email;
     organizationName = invitation.organizationName;
+    personal = invitation.personal;
+  }
+
+  // Asked again here, before an account exists: the rule may have been
+  // met when the link was made and must still hold when it is used.
+  if (personal) {
+    const problem = personalProblem(personal, Number(todayInCopenhagen().slice(0, 4)));
+    if (problem) return { ok: false, error: problem === "tooYoung" ? "tooYoung" : "invalid" };
   }
 
   // Checked here as well as in the Better Auth hook, so the form can say
@@ -108,6 +125,15 @@ export async function registerUserWithOrganization(
         body: { organizationId: organization.id },
         headers: sessionHeaders,
       });
+      if (personal && userId) {
+        await setUpPersonalWorkspace({
+          orgId: organization.id,
+          userId,
+          userName: name,
+          sessionHeaders,
+          spec: personal,
+        });
+      }
     }
   } catch (error) {
     // The user exists and is signed in; the app falls back to

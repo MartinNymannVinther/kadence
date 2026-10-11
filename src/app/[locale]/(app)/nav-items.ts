@@ -20,9 +20,21 @@
  *
  * Knowledge is one place, "Viden og hjælp" (/help): how Kadence works,
  * both guides and the open pages (ADR 0047) behind one door.
+ *
+ * A personal workspace (ADR 0080) is one person's training, and its owner
+ * is its coach. Its menus leave out what is about a team — Overblik,
+ * Ryttere, the team's week, Trænerrummet, Klubmester:
+ *
+ * - "self", the owner who rides: the rider's places with the coach's
+ *   planning on their own calendar (the library keeps "Byg med AI");
+ * - "family", a parent who owns their child's workspace and does not
+ *   ride: the child's page, the calendar, the library and the season.
  */
 
-export type NavRole = "coach" | "rider" | "parent" | "member";
+export type NavRole = "coach" | "rider" | "parent" | "member" | "self" | "family";
+
+/** What the workspace is (src/core/access/personal.ts); a club unless it says otherwise. */
+export type NavWorkspaceKind = "club" | "personal";
 
 export type NavKey =
   | "today"
@@ -88,12 +100,19 @@ const ITEM: Record<NavKey, NavItem> = {
 const OVERVIEW: NavItem = { ...ITEM.today, label: "overview" };
 
 /**
+ * The one rider of a parent's personal workspace: the coach's page about
+ * the rider, called by the child's name (`nameWard`), "Barnet" until then.
+ */
+const WARD: NavItem = { key: "child", href: "/riders" };
+
+/**
  * The role that decides the menu. A person can be more than one (ADR
  * 0010); the menu follows the one with the most to do: coach, then rider,
  * then parent. A member who is none of them yet gets the plainest list.
  */
-export function navRole(person: NavPerson | null): NavRole {
+export function navRole(person: NavPerson | null, kind: NavWorkspaceKind = "club"): NavRole {
   if (!person) return "member";
+  if (person.isCoach && kind === "personal") return person.rider ? "self" : "family";
   if (person.isCoach) return "coach";
   if (person.rider) return "rider";
   if (person.children.length > 0) return "parent";
@@ -127,6 +146,8 @@ const PRIMARY: Record<NavRole, NavItem[]> = {
   rider: [ITEM.today, ITEM.calendar, ITEM.me, ITEM.library],
   parent: [ITEM.child, ITEM.calendar, ITEM.knowledge],
   member: [ITEM.today, ITEM.calendar],
+  self: [ITEM.today, ITEM.calendar, ITEM.me, ITEM.library],
+  family: [WARD, ITEM.calendar, ITEM.library, ITEM.season],
 };
 
 /** The whole menu: the sidebar on a computer, the bar and its "Mere" sheet on a phone. */
@@ -161,6 +182,13 @@ export function menuFor(role: NavRole, flags: NavFlags): NavMenu {
       return { primary, more: list([flags.club && ITEM.club]) };
     case "member":
       return { primary, more: [ITEM.knowledge] };
+    case "self":
+      return {
+        primary,
+        more: list([flags.parent && ITEM.child, ITEM.season, ITEM.rulle, ITEM.knowledge]),
+      };
+    case "family":
+      return { primary, more: [ITEM.knowledge] };
   }
 }
 
@@ -189,6 +217,27 @@ export function nameChild(
       ?.name?.trim()
       .split(/\s+/)[0];
     return first ? { ...item, text: first } : item;
+  };
+  return { primary: menu.primary.map(name), more: menu.more.map(name) };
+}
+
+/**
+ * A parent's own workspace has a rider, the child (ADR 0080): the child's
+ * place leads to that rider's page and carries the first name. With more
+ * than one child it is "Børnene" and leads to the list; without a rider
+ * yet it stays "Barnet".
+ */
+export function nameWard(
+  menu: NavMenu,
+  riders: ReadonlyArray<{ id: string; name: string }>,
+): NavMenu {
+  const name = (item: NavItem): NavItem => {
+    if (item.key !== WARD.key || item.href !== WARD.href) return item;
+    if (riders.length > 1) return { ...item, label: "children" };
+    const ward = riders[0];
+    if (!ward) return item;
+    const first = ward.name.trim().split(/\s+/)[0];
+    return { ...item, href: `/riders/${ward.id}`, ...(first ? { text: first } : {}) };
   };
   return { primary: menu.primary.map(name), more: menu.more.map(name) };
 }

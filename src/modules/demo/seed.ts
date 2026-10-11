@@ -1,26 +1,16 @@
-import { addDaysIso, diffDays, mondayOf, todayInCopenhagen } from "@/core/dates";
+import { addDaysIso, todayInCopenhagen } from "@/core/dates";
 import type { OrgContext } from "@/core/db/tenant";
 import { featureOn } from "@/core/features";
 import { raceYearOf, seasonStartYear } from "@/modules/dcu";
-import { createSeasonPlan } from "@/modules/season/plans";
-import { createRider, setThresholds } from "@/modules/team/riders";
 import { saveTeamSettings } from "@/modules/team/settings";
-import { importFit } from "@/modules/devices/import";
 import { addComment } from "@/modules/training/comments";
-import { completeSession } from "@/modules/training/complete";
-import { installDcuProgrammes } from "@/modules/training/dcu-library";
-import { addDcuWinterGoal } from "@/modules/training/goals";
 import { createEvent } from "@/modules/training/events";
-import { listSessions } from "@/modules/training/sessions";
-import { createTemplate, listTemplates } from "@/modules/training/templates";
-import { saveCheckin } from "@/modules/wellbeing/checkins";
-import { parseWorkoutText } from "@/modules/workouts/parse-text";
-import { kindOf, rideFit, routeFor } from "./rides";
 import type { DemoRider } from "./club";
 import { seedShowcase } from "./showcase";
-import { sampleRideFit } from "./sample-ride";
+import { random, seedEvents, seedLibrary, seedRider } from "./seed-parts";
+import { ridePast, seedCheckins } from "./seed-ridden";
 import { scheduleWeeks } from "./seed-weeks";
-import { COMMENTS, EVENTS, EXAM, NOTES, pick, RIDERS, TEMPLATES, type L } from "./seed-data";
+import { COMMENTS, EXAM, pick, RIDERS, type L } from "./seed-data";
 
 export type { L };
 
@@ -44,20 +34,6 @@ export type { L };
  * rows.
  */
 
-/** The weeks whose rides are real files; earlier ones are ticked off by hand. */
-const RIDE_WEEKS = 3;
-/** Check-ins run six weeks back, so the pilot's three numbers (ADR 0066) have more than a fortnight to show. */
-const CHECKIN_DAYS = 42;
-
-/** A small deterministic generator, so every demo tells the same story. */
-function random(seed: number) {
-  let x = seed;
-  return () => {
-    x = (x * 1103515245 + 12345) % 2147483648;
-    return x / 2147483648;
-  };
-}
-
 export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Promise<void> {
   const today = todayInCopenhagen(now);
   const season = seasonStartYear(today);
@@ -74,148 +50,19 @@ export async function seedDemoTeam(ctx: OrgContext, l: L, now = new Date()): Pro
     clubChampionship: featureOn("clubChampionship"),
     lowIntensityFirst: true,
   });
-  await installDcuProgrammes(ctx, l);
+  const { templates, strength } = await seedLibrary(ctx, l);
 
-  const templates: Record<string, string> = {};
-  for (const t of TEMPLATES) {
-    const structure = parseWorkoutText(t.text)!;
-    const { id } = await createTemplate(ctx, {
-      name: pick(t.name, l),
-      sport: "bike",
-      description: t.text,
-      structure,
-      plannedMinutes: 0,
-    });
-    templates[t.text] = id;
-  }
-  const strength = (await listTemplates(ctx)).find((t) => t.sourceKey === "dcu-strength-u19-2016");
-
-  const riderIds: string[] = [];
   const riders: DemoRider[] = [];
-  for (const r of RIDERS) {
-    const birthYear = raceYear - (16 + r.u19Year);
-    const { id } = await createRider(ctx, {
-      name: r.name,
-      birthYear,
-      sex: r.sex,
-      categoryOverride: null,
-    });
-    await setThresholds(ctx, id, {
-      ftpWatts: r.ftp,
-      thresholdHr: r.thr,
-      maxHr: r.thr + 18,
-      restingHr: 48,
-      thresholdsOn: addDaysIso(today, -40),
-    });
-    await createSeasonPlan(ctx, id, season).catch(() => undefined);
-    await addDcuWinterGoal(
-      ctx,
-      id,
-      pick({ da: "DCU: 30 styrkepas i vinter", en: "DCU: 30 strength sessions this winter" }, l),
-    );
-    riderIds.push(id);
-    riders.push({ id, name: r.name, birthYear });
-  }
+  for (const r of RIDERS) riders.push(await seedRider(ctx, l, r, { today, season, raceYear }));
+  const riderIds = riders.map((r) => r.id);
 
   const { firstMonday } = await scheduleWeeks(ctx, l, { templates, strength, riderIds, today });
 
-  // What was ridden: most sessions, a little shorter or longer, a few missed.
-  const past = await listSessions(ctx, { from: firstMonday, to: addDaysIso(today, -1) });
-  const longRide = past.findLast(
-    (s) => s.riderId === riderIds[0] && s.sport === "bike" && s.plannedMinutes >= 90,
-  );
-  const thresholds = new Map(riderIds.map((id, i) => [id, RIDERS[i]!]));
-  const ridesFrom = addDaysIso(mondayOf(today), -7 * (RIDE_WEEKS - 1));
-  let rideNo = 0;
-  for (const s of past) {
-    if (s === longRide) continue;
-    if (rnd() < 0.1) continue;
-    const factor = 0.85 + rnd() * 0.25;
-    const rider = thresholds.get(s.riderId);
-    if (s.sport === "bike" && s.onDate >= ridesFrom && rider) {
-      rideNo++;
-      const route = routeFor(diffDays(firstMonday, s.onDate), s.plannedMinutes);
-      const weekend = [0, 6].includes(new Date(`${s.onDate}T12:00:00Z`).getUTCDay());
-      await importFit(
-        ctx,
-        s.riderId,
-        `${pick(route.name, l)}.fit`,
-        rideFit(
-          {
-            route,
-            kind: kindOf(s.title),
-            minutes: s.plannedMinutes,
-            ftp: rider.ftp,
-            thresholdHr: rider.thr,
-            factor,
-            seed: 100 + rideNo,
-            stopSeconds: s.plannedMinutes >= 120 && rnd() < 0.5 ? 12 * 60 : undefined,
-          },
-          Date.parse(`${s.onDate}T${weekend ? "07" : "14"}:30:00Z`),
-        ),
-      );
-      continue;
-    }
-    const base =
-      s.sport === "strength" ? 6 : s.title.includes("VO2") ? 8 : s.title.includes("AT") ? 7 : 3;
-    await completeSession(ctx, s.id, {
-      minutes: Math.max(20, Math.round(s.plannedMinutes * factor)),
-      distanceKm:
-        s.sport === "bike" ? Math.round((s.plannedMinutes / 60) * (28 + rnd() * 6)) : null,
-      rpe: Math.min(10, Math.max(1, base + (rnd() < 0.3 ? 1 : 0))),
-      feel: 3 + (rnd() < 0.5 ? 1 : 0),
-      note: "",
-    });
-  }
+  const past = await ridePast(ctx, l, { riderIds, firstMonday, today, rnd });
 
-  if (longRide)
-    await importFit(
-      ctx,
-      longRide.riderId,
-      `${pick({ da: "Lang tur med bakker", en: "Long ride with hills" }, l)}.fit`,
-      sampleRideFit(Date.parse(`${longRide.onDate}T08:00:00Z`)),
-    );
+  await seedCheckins(ctx, l, riderIds, today, rnd);
 
-  for (const [i, riderId] of riderIds.entries()) {
-    for (let d = CHECKIN_DAYS - 1; d >= 0; d--) {
-      const tired = i === 1 && d < 6;
-      const knee = i === 3 && d < 3;
-      await saveCheckin(ctx, {
-        riderId,
-        onDate: addDaysIso(today, -d),
-        sleepHours: tired ? 6.5 : 8 + Math.round(rnd() * 10) / 10,
-        sleepQuality: tired ? 2 : 4,
-        energy: tired ? 2 : 3 + (rnd() < 0.5 ? 1 : 0),
-        mood: tired ? 3 : 4,
-        soreness: tired ? 2 : 4,
-        stress: i === 2 && d < 4 ? 2 : 4,
-        pain: knee ? 2 : 0,
-        painWhere: knee ? pick({ da: "Højre knæ", en: "Right knee" }, l) : "",
-        ill: 0,
-        note:
-          tired && d === 0 ? pick(NOTES.soreLegs, l) : knee && d === 0 ? pick(NOTES.knee, l) : "",
-      });
-    }
-  }
-
-  const month = Number(today.slice(5, 7));
-  const racing = month >= 4 && month <= 9;
-  for (const e of EVENTS) {
-    const startsOn =
-      racing || e.seasonDay === null
-        ? addDaysIso(today, e.inDays)
-        : addDaysIso(`${raceYear}-04-01`, e.seasonDay);
-    await createEvent(ctx, {
-      riderId: null,
-      kind: e.kind,
-      title: pick(e.title, l),
-      startsOn,
-      endsOn: addDaysIso(startsOn, e.days - 1),
-      priority: e.priority,
-      note: "",
-      ...e.where?.[l],
-    });
-  }
+  await seedEvents(ctx, l, today, raceYear);
   await createEvent(ctx, {
     riderId: riderIds[2]!,
     kind: "exam",

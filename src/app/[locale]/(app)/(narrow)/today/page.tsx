@@ -22,16 +22,26 @@ import { cn } from "@/lib/utils";
 import { whoAmI } from "@/modules/team/access";
 import { orgImageUrls } from "@/modules/team/images";
 import { getRiders } from "@/modules/team/riders";
+import { workspaceKind } from "@/modules/team/workspace-kind";
 import { coachOverview } from "./coach-data";
 import { riderDay } from "./rider-data";
 import { RiderToday } from "./rider-today";
 
-/** A coach's front page is Overblik, as the menu calls it (nav-items.ts); everyone else's is I dag. */
+/**
+ * A coach's front page is Overblik, as the menu calls it (nav-items.ts);
+ * everyone else's is I dag, and so is the person's in a personal
+ * workspace, who is their own coach (ADR 0080).
+ */
+async function coachFront(ctx: { orgId: string; userId: string }, isCoach: boolean) {
+  return isCoach && (await workspaceKind(ctx.orgId, ctx.userId)) !== "personal";
+}
+
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("today");
   const ctx = await getOrgContext();
   const me = ctx ? await whoAmI(ctx.orgId, ctx.userId) : null;
-  return { title: me?.isCoach ? t("overview.title") : t("title") };
+  const overview = ctx && me ? await coachFront(ctx, me.isCoach) : false;
+  return { title: overview ? t("overview.title") : t("title") };
 }
 
 const hrefFor = (sessionId: string) => withQuery("/today", { session: sessionId });
@@ -74,6 +84,13 @@ export default async function TodayPage({
   const today = todayInCopenhagen();
 
   const riders = me?.isCoach ? await getRiders(ctx) : [];
+  const overview = me ? await coachFront(ctx, me.isCoach) : false;
+  // A parent who owns their child's workspace and does not ride lands on
+  // the child's page, which is their menu's first place (ADR 0080).
+  if (me?.isCoach && !overview && !me.rider && riders.length === 1) {
+    redirect({ href: `/riders/${riders[0]!.id}`, locale });
+    return null;
+  }
   const soloRider = me?.rider && riders.length === 1 && riders[0]?.id === me.rider.id;
   const mine = me?.rider
     ? await riderDay(ctx, me.rider.id, today, {
@@ -83,7 +100,7 @@ export default async function TodayPage({
       })
     : null;
   const team =
-    me?.isCoach && riders.length > 0 && !soloRider ? await coachOverview(ctx, riders, today) : null;
+    overview && riders.length > 0 && !soloRider ? await coachOverview(ctx, riders, today) : null;
   const nothing = !me || (!me.isCoach && !me.rider && me.children.length === 0);
   const sessionsToday = (mine?.today.length ?? 0) + (team?.sessionsToday.length ?? 0);
   const cover = coverShown({ sessionsToday, waiting: Boolean(mine?.toRate) })
@@ -102,11 +119,11 @@ export default async function TodayPage({
         />
       )}
       <PageHeader
-        title={me?.isCoach ? t("overview.title") : t("title")}
+        title={overview ? t("overview.title") : t("title")}
         subtitle={
           // Inline-block, so the weekday's first letter can be a capital.
           <span className="inline-block first-letter:uppercase">
-            {me?.isCoach
+            {overview
               ? t("overview.subtitle", { day: dayLong(today, locale), week: weekNumber(today) })
               : dayLong(today, locale)}
           </span>
