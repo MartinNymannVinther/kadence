@@ -416,6 +416,13 @@ describe("rls coverage (guards future tables)", () => {
     // tests/team/invitation-kind.test.ts proves it, and that the
     // application role cannot call it.
     "invitation_kind",
+    // Who has chosen the parents' week by mail, for the weekly run that
+    // starts with nobody signed in (drizzle/0048, docs/adr/0086): the team
+    // and the person, for people still on the team, and nothing else — no
+    // address, no language, nothing about a child. The run reads all of
+    // that as the person, as push_subscriptions_due's job does.
+    // tests/mail/week.test.ts proves it.
+    "mail_week_due",
     // Moves one rider's history from their rider row in one workspace onto
     // their rider row in another (drizzle/0042, docs/adr/0081): the first
     // function that writes across two workspaces. It moves only when the
@@ -425,13 +432,6 @@ describe("rls coverage (guards future tables)", () => {
     // row, and tests/rls/history-move.test.ts proves each refusal and that
     // it is all or nothing.
     "move_rider_history",
-    // Who has chosen the parents' week by mail, for the weekly run that
-    // starts with nobody signed in (drizzle/0048, docs/adr/0086): the team
-    // and the person, for people still on the team, and nothing else — no
-    // address, no language, nothing about a child. The run reads all of
-    // that as the person, as push_subscriptions_due's job does.
-    // tests/mail/week.test.ts proves it.
-    "mail_week_due",
     // Removes the deleted sessions past their seven days, for the reminder
     // job that runs with nobody signed in (drizzle/0037, docs/adr/0060).
     // It takes no arguments, removes only rows older than seven days, and
