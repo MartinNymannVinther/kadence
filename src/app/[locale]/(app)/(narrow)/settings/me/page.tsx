@@ -123,7 +123,7 @@ export default async function MePage() {
 
       {leavesFromMe(me) && (
         <div className="border-hairline border-t pt-5">
-          <LeaveTeamButton place="me" />
+          <LeaveTeamButton place="me" history={Boolean(rider)} />
         </div>
       )}
     </div>

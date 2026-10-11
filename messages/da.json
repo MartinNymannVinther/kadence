@@ -598,7 +598,17 @@
         "action": "Forlad holdet",
         "title": "Forlad holdet?",
         "body": "Du mister adgangen til holdet med det samme. Det, du har lagt ind, bliver hos holdet. Vil du have en kopi, så hent den under Data først. En træner kan invitere dig igen.",
-        "confirm": "Forlad holdet"
+        "bodyWithChoice": "Du mister adgangen til holdet med det samme. En træner kan invitere dig igen.",
+        "confirm": "Forlad holdet",
+        "history": {
+          "legend": "Tag din træning med?",
+          "yes": "Ja, til et arbejdsrum der kun er mit",
+          "no": "Nej, lad den blive hos holdet",
+          "body": "Dine pas, ture, check-ins, mål og sæsonplan flytter med til et arbejdsrum, der kun er dit. Holdet beholder ingen kopi, kun en linje i loggen om at træningen forlod holdet. Dine forældre skal bekræftes igen der.",
+          "staysBody": "Det, du har lagt ind, bliver hos holdet. Vil du have en kopi, så hent den under Data først.",
+          "hasHistory": "Du har allerede et eget arbejdsrum med træning i, så træningen kan ikke flyttes derhen. Forlad holdet uden at tage den med, eller hent en kopi under Data først.",
+          "failed": "Træningen kunne ikke flyttes, så du er stadig på holdet. Prøv igen om lidt."
+        }
       },
       "sharing": {
         "title": "Hvad dine forældre kan se",
@@ -771,7 +781,17 @@
     "loginLink": "Log ind",
     "errorEmailExists": "Der findes allerede en konto med den adresse. Log ind, og åbn linket igen.",
     "errorInvalid": "Noget i det du skrev kunne ikke bruges. Se felterne igennem.",
-    "errorGeneric": "Det gik galt. Prøv igen."
+    "errorGeneric": "Det gik galt. Prøv igen.",
+    "history": {
+      "legend": "Tag din træning med over på holdet?",
+      "yes": "Ja, tag den med",
+      "no": "Nej, lad den blive",
+      "body": "Dine pas, ture, check-ins, mål og sæsonplan flytter fra {workspace} over på holdet, og {workspace} lukkes bagefter. Dine forældre skal bekræftes igen på holdet.",
+      "staysBody": "Din træning bliver i {workspace}, og du har to arbejdsrum at skifte imellem. Du kan ikke flytte den senere.",
+      "stayed": "Du er med på holdet. Din træning blev ikke flyttet og ligger stadig i dit eget arbejdsrum.",
+      "stayedTargetHasHistory": "Du er med på holdet. Træneren har allerede lagt pas til dig her, så din træning blev ikke flyttet. Den ligger stadig i dit eget arbejdsrum.",
+      "continue": "Gå til I dag"
+    }
   },
   "help": {
     "title": "Viden og hjælp",
