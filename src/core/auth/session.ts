@@ -5,6 +5,7 @@ import { authDb } from "@/core/db/client";
 import { memberships } from "@/core/db/schema";
 import type { OrgContext } from "@/core/db/tenant";
 import { auth } from "./auth";
+import { mustVerifyFirst } from "./verify-first";
 
 /**
  * The session as the database has it, past the cookie cache. Cached per
@@ -56,12 +57,17 @@ const stillAMember = cache(async (userId: string, orgId: string): Promise<boolea
 
 /**
  * Tenant context for the current request, used with withOrgContext().
- * Returns null when there is no session, no active organization, or the
- * user is no longer a member of it.
+ * Returns null when there is no session, no active organization, the
+ * user is no longer a member of it, or they must confirm their address
+ * first (door 2, verify-first.ts).
  */
 export async function getOrgContext(): Promise<OrgContext | null> {
   const session = await getSession();
   if (!session) return null;
+  // A person who created their own workspace and has not confirmed their
+  // address yet has no team to act in (docs/adr/0088), whatever page,
+  // action or route asks: /verify is all they get.
+  if (await mustVerifyFirst(session.user)) return null;
   const orgId = session.session.activeOrganizationId;
   if (!orgId) return null;
   if (await stillAMember(session.user.id, orgId)) return { orgId, userId: session.user.id };

@@ -6,8 +6,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { getOrgContext } from "@/core/auth/session";
 import { AUDIT_SHEET, AUDIT_SHEET_ROWS, EXPORT_TABLES } from "@/modules/export/tables";
 import { currentRole, workspaceName } from "@/modules/export/workspace";
+import { myHealthConsent } from "@/modules/consent/service";
+import { whoAmI } from "@/modules/team/access";
 import { workspaceKind } from "@/modules/team/workspace-kind";
 import { DeleteWorkspaceCard } from "../workspace/delete-workspace-card";
+import { HealthConsentCard } from "@/components/consent/health-consent-card";
 import { cn } from "@/lib/utils";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -40,6 +43,18 @@ export default async function DataExportPage({
   const personal = ctx ? (await workspaceKind(ctx.orgId, ctx.userId)) === "personal" : false;
   const owner = personal && ctx ? (await currentRole(ctx)) === "owner" : false;
   const name = owner && ctx ? await workspaceName(ctx) : null;
+  // The consent to health data the owner gave at sign-up (ADR 0088), and
+  // the way to withdraw it or give it again. A workspace from before door
+  // 2 has none, and shows nothing.
+  const consent = owner && ctx ? await myHealthConsent(ctx) : null;
+  const forWhom = owner && ctx && (await whoAmI(ctx.orgId, ctx.userId))?.rider ? "me" : "child";
+  const consentDate =
+    consent && consent.state !== "none"
+      ? new Intl.DateTimeFormat(locale === "en" ? "en-GB" : "da-DK", {
+          dateStyle: "long",
+          timeZone: "Europe/Copenhagen",
+        }).format(consent.state === "given" ? consent.givenAt : consent.withdrawnAt)
+      : "";
   // The routes send a person back to the page in the language they use.
   const href = (path: string, query: string[] = []) => {
     const all = locale === "en" ? [...query, "locale=en"] : query;
@@ -129,6 +144,10 @@ export default async function DataExportPage({
       </div>
 
       <p className="text-meta text-2sm leading-relaxed">{t("privacy")}</p>
+
+      {consent && consent.state !== "none" && (
+        <HealthConsentCard consent={consent} date={consentDate} forWhom={forWhom} />
+      )}
 
       {name !== null && <DeleteWorkspaceCard workspaceName={name} personal />}
     </div>

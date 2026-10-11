@@ -18,13 +18,11 @@ import { env } from "@/core/env";
 import { coachesTeam, COACH_ONLY_PATHS, trimForMember } from "./coach-only";
 import { resetByMail, verificationByMail } from "./mail-hooks";
 import {
+  attemptFromRequest,
   countUsers,
-  DEMO_HEADER,
-  INVITATION_HEADER,
   isDemoEmail,
-  isDemoSignup,
+  isSelfSignupRequest,
   signupAllowed,
-  TEAM_INVITATION_HEADER,
 } from "./signup";
 
 const baseUrl = new URL(env.BETTER_AUTH_URL);
@@ -74,6 +72,10 @@ export const auth = betterAuth({
       // Role on the installation (see src/core/access). `input: false`
       // keeps it out of every request body: nobody registers as owner.
       platformRole: { type: "string", required: false, input: false },
+      // Came in through door 2 (docs/adr/0088): confirms the address
+      // before anything else, and goes after seven days unconfirmed. Set
+      // at creation from door 2's key, never from a request body.
+      selfSignup: { type: "boolean", required: false, input: false, defaultValue: false },
     },
   },
   session: {
@@ -96,8 +98,9 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     // OWASP ASVS: minimum 12 characters. A confirmed address is not
-    // required to sign in (docs/adr/0086); S-08 asks for one first from a
-    // person who signs up alone.
+    // required to sign in (docs/adr/0086); a person who signs up alone
+    // through door 2 is held at /verify until theirs is (verify-first.ts,
+    // docs/adr/0088), signed in, so they can ask for the mail again.
     minPasswordLength: 12,
     requireEmailVerification: false,
     // A link a coach made (ADR 0032) is the way back in on every
@@ -141,10 +144,11 @@ export const auth = betterAuth({
         // The first account on an empty installation owns it. Decided
         // here, at the moment of creation, so it holds for every path
         // that can create a user and not only for the registration form.
-        before: async (user) => ({
+        before: async (user, context) => ({
           data: {
             ...user,
             platformRole: platformRoleForNewUser(await countUsers(), isDemoEmail(user.email)),
+            selfSignup: isSelfSignupRequest(context?.headers, user.email),
           },
         }),
       },
@@ -205,14 +209,7 @@ export const auth = betterAuth({
         }
       }
       if (ctx.path === "/sign-up/email") {
-        const body = (ctx.body ?? {}) as { email?: unknown };
-        const attempt = {
-          email: typeof body.email === "string" ? body.email : null,
-          invitationToken: ctx.headers?.get(INVITATION_HEADER) ?? null,
-          teamInvitationId: ctx.headers?.get(TEAM_INVITATION_HEADER) ?? null,
-          demo: isDemoSignup(ctx.headers?.get(DEMO_HEADER)),
-        };
-        if (!(await signupAllowed(attempt))) {
+        if (!(await signupAllowed(attemptFromRequest(ctx.headers, ctx.body)))) {
           throw new APIError("FORBIDDEN", { code: "SIGNUP_CLOSED", message: "Sign-up is closed" });
         }
       }

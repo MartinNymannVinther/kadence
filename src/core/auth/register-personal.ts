@@ -34,6 +34,7 @@ export async function markWorkspacePersonal(orgId: string): Promise<void> {
  *    address the parent invites the child from the rider's page later.
  *
  * The class follows the birth year (`category_override` stays empty).
+ * Answers the rider row's id.
  */
 export async function setUpPersonalWorkspace(input: {
   orgId: string;
@@ -43,7 +44,7 @@ export async function setUpPersonalWorkspace(input: {
   /** The new owner's session, which is what may make a team invitation. */
   sessionHeaders: Headers;
   spec: PersonalSpec;
-}): Promise<void> {
+}): Promise<string> {
   const { orgId, userId, userName, sessionHeaders, spec } = input;
   await markWorkspacePersonal(orgId);
 
@@ -56,7 +57,7 @@ export async function setUpPersonalWorkspace(input: {
     categoryOverride: null,
     userId: own ? userId : null,
   });
-  if (own || !spec.childEmail) return;
+  if (own || !spec.childEmail) return rider.id;
 
   const invited = await inviteMember(
     sessionHeaders,
@@ -67,7 +68,8 @@ export async function setUpPersonalWorkspace(input: {
     // The workspace and the child's row stand; the rider's page makes
     // the link again. Said in the log, as nobody waits for it here.
     console.error("register: the child's invitation failed", invited.error);
-    return;
+    return rider.id;
   }
   await attachRiderInvitation(ctx, rider.id, invited.invitation.id);
+  return rider.id;
 }

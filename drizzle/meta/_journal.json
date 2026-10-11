@@ -351,6 +351,13 @@
       "when": 1791750200000,
       "tag": "0049_ai_cost",
       "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "7",
+      "when": 1791750300000,
+      "tag": "0050_consents",
+      "breakpoints": true
     }
   ]
 }

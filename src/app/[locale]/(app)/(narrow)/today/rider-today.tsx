@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import { ConsentOffCard } from "@/components/consent/consent-off-card";
 import { CheckinSection } from "@/components/today/checkin-section";
 import { RiderChecklist } from "@/components/today/rider-checklist";
 import { RpePrompt } from "@/components/today/rpe-prompt";
@@ -52,12 +53,16 @@ export function RiderToday({
   return (
     <>
       <RiderChecklist facts={day.checklist} />
-      <CheckinSection
-        riderId={riderId}
-        today={today}
-        initial={day.checkin}
-        start={day.checkinStart}
-      />
+      {day.consent.off ? (
+        <ConsentOffCard canGive={day.consent.canGive} />
+      ) : (
+        <CheckinSection
+          riderId={riderId}
+          today={today}
+          initial={day.checkin}
+          start={day.checkinStart}
+        />
+      )}
       {list("today")}
       {day.toRate && <RpePrompt ride={day.toRate} />}
       {list("tomorrow")}

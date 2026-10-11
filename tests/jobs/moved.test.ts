@@ -68,6 +68,7 @@ describe("the schedule", () => {
       "demo.cleanup",
       "installation.sweep",
       "push.reminders",
+      "signup.sweep",
       "teams.refresh",
     ]);
     const { rows } = await admin.query(

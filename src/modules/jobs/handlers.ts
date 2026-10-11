@@ -4,6 +4,7 @@ import { demoCleanupHandler } from "@/modules/demo/job";
 import { deviceFetchHandler } from "@/modules/devices/webhooks";
 import { remindersHandler } from "@/modules/push/jobs";
 import { dcuRacesHandler, dcuReadHandler } from "@/modules/results/jobs";
+import { signupSweepHandler } from "@/modules/signup/job";
 import { teamsRefreshHandler } from "@/modules/teams/refresh";
 
 /**
@@ -20,6 +21,7 @@ export const HANDLERS: readonly Handler[] = [
   dcuRacesHandler,
   teamsRefreshHandler,
   demoCleanupHandler,
+  signupSweepHandler,
 ];
 
 export function jobHandlers(): Map<string, Handler> {

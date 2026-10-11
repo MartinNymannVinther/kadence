@@ -2,6 +2,7 @@ import { and, asc, desc, eq, gte, inArray, lt, lte, sql } from "drizzle-orm";
 import { z } from "zod";
 import { checkins, type CheckinRow } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
+import { requireHealthConsent } from "@/modules/consent/service";
 import { isRedCheckin } from "@/modules/load/wellbeing";
 import { requireWriteFor } from "@/modules/team/access";
 
@@ -11,7 +12,9 @@ import { requireWriteFor } from "@/modules/team/access";
  * anything hurts (ATK's four steps). Short enough to do on the way out of
  * the door; one per day, written again if the rider changes their mind.
  * The rider writes it (a coach may, after a conversation); parents read
- * it only when the rider shares wellbeing (ADR 0011).
+ * it only when the rider shares wellbeing (ADR 0011). In a personal
+ * workspace whose consent to health data is withdrawn, nobody writes it
+ * (docs/adr/0088).
  */
 
 const scale = z.coerce.number().int().min(1).max(5).nullable().default(null);
@@ -42,6 +45,8 @@ export type CheckinInputT = z.infer<typeof CheckinInput>;
 export async function saveCheckin(ctx: OrgContext, input: CheckinInputT): Promise<void> {
   await withOrgContext(ctx, async (tx) => {
     await requireWriteFor(tx, ctx, input.riderId);
+    // Off once the person withdrew their consent to health data (ADR 0088).
+    await requireHealthConsent(tx);
     const { riderId, onDate, ...values } = input;
     const red = isRedCheckin(values);
     await tx

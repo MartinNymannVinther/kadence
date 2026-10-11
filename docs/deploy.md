@@ -206,6 +206,22 @@ users came with the data.
 Setting `SIGNUP=open` re-opens registration for anyone who finds the
 address. That is for a demo instance, not for an organisation's own Kadence.
 
+Setting `SIGNUP=individuals` opens one more door (ADR 0088): a person may
+create their own workspace at `/register` without applying — for
+themselves from the age of 15, or as a parent for their child — and a club
+still applies there, one link away, and waits for you. It needs mail
+(6b): the app refuses to start with `SIGNUP=individuals` and no SMTP
+settings, and says why. The person ticks two boxes, the terms and their
+explicit consent to health data, which are stored with the version of
+their words; then they see one page, "Bekræft din e-mail", until they have
+opened the link in the mail, and nothing else of Kadence. An account that
+is not confirmed within seven days is deleted by the `signup.sweep` job
+(6e) with its workspace, leaving one line in the audit trail with the
+account's id and no name or address. Five accounts an hour per network
+address, as for applications. Before you open this door on an installation
+you run for others, have the privacy policy, the DPIA and the consent texts
+read by your adviser (`docs/jura/`).
+
 ### Letting people in one at a time
 
 A closed installation still has a front door. `/register` shows a short
@@ -496,7 +512,8 @@ nothing more that day.
 Some of Kadence's work happens with nobody waiting for it: the reminder
 run every ten minutes, a ride Wahoo, Garmin or Polar says was saved,
 races from Cykling Danmark, the teams page once a day, the demos past
-their 24 hours, and the tidying of the counters. Each is a row in the
+their 24 hours, the accounts made through door 2 and never confirmed
+(section 5, once a day), and the tidying of the counters. Each is a row in the
 `jobs` table (ADR 0085), written before anybody is told it will be done,
 and the **worker** takes them one at a time. A deploy or a crash in the
 middle of a job loses nothing: the job's five-minute lease runs out and

@@ -10,8 +10,9 @@ import { rateLimit } from "@/core/rate-limit";
 /**
  * "Bekræft din adresse" under Settings → Sikkerhed (docs/adr/0086): a
  * link by e-mail to Better Auth's own confirmation, which marks the
- * address as the person's. Nothing requires it yet; S-08 asks for it first
- * from a person who signs up alone. Three asks an hour, per person.
+ * address as the person's. Required first only of a person who created
+ * their own workspace through door 2 (docs/adr/0088), whose /verify page
+ * asks through here too. Three asks an hour, per person.
  */
 
 const HOUR = 60 * 60 * 1000;
@@ -38,13 +39,15 @@ export async function askForVerification(
   headers: Headers,
   user: { id: string; email: string },
   locale: MailLocale,
+  /** Where the link lands; the security page unless door 2's /verify asks (ADR 0088). */
+  callbackURL: string = verifyCallback(locale),
 ): Promise<VerifyAsk> {
   if (!mailConfigured()) return "off";
   if (await addressVerified(user.id)) return "verified";
   if (!(await rateLimit(`verify-ask:${user.id}`, PER_HOUR, HOUR)).allowed) return "rateLimited";
   try {
     await auth.api.sendVerificationEmail({
-      body: { email: user.email, callbackURL: verifyCallback(locale) },
+      body: { email: user.email, callbackURL },
       headers,
     });
     return "sent";

@@ -2,6 +2,7 @@ import { todayInCopenhagen } from "@/core/dates";
 import type { OrgContext } from "@/core/db/tenant";
 import { raceYearOf, seasonStartYear } from "@/modules/dcu";
 import { saveTeamSettings } from "@/modules/team/settings";
+import { recordSignupConsents } from "@/modules/consent/service";
 import { random, seedEvents, seedLibrary, seedRider } from "./seed-parts";
 import { ridePast, seedCheckins } from "./seed-ridden";
 import { scheduleWeeks } from "./seed-weeks";
@@ -47,5 +48,9 @@ export async function seedDemoAlone(ctx: OrgContext, l: L, now = new Date()): Pr
   await ridePast(ctx, l, { riderIds, firstMonday, today, rnd });
   await seedCheckins(ctx, l, riderIds, today, rnd);
   await seedEvents(ctx, l, today, raceYear, rider.id);
+  // The two yeses a person gives when they create their own workspace
+  // (ADR 0088), so the visitor finds the consent under Indstillinger → Data
+  // and can try withdrawing it and giving it again.
+  await recordSignupConsents(ctx, { riderId: rider.id, locale: l });
   return rider.id;
 }

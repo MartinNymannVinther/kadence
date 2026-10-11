@@ -199,6 +199,15 @@ export const EXPORT_TABLES: ExportTable[] = [
     orderBy: "year, class",
     columns: "id, org_id, year, class, title, rider_id, name, note, created_at, updated_at",
   },
+  // What a person agreed to when they created their own workspace, and
+  // when they withdrew it (ADR 0088). The policy shows each person their
+  // own rows only, so a club's export has none and a person's has theirs.
+  {
+    table: "consents",
+    sheet: "Samtykker",
+    orderBy: "given_at",
+    columns: "id, org_id, user_id, rider_id, kind, given_at, withdrawn_at, version, locale",
+  },
   // The club's logo and picture (ADR 0048): which, what type, how big,
   // who and when. The image itself does not fit a spreadsheet cell; it is
   // one click away under Settings → Workspace, and the club has the file.

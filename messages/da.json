@@ -192,6 +192,33 @@
       "tooYoung": "Er du under 15 år, kan du ikke oprette en konto selv. Bed en forælder om at ansøge og vælge \"Det er til mit barn\". Så kan de invitere dig bagefter.",
       "workspaceName": "{name}s træning",
       "workspaceNameSibilant": "{name}' træning"
+    },
+    "self": {
+      "title": "Opret dit eget arbejdsrum",
+      "subtitle": "Til din egen træning eller til dit barns. Du bekræfter din e-mail, før du går i gang.",
+      "name": "Dit navn",
+      "email": "Din e-mail",
+      "consentLegend": "Det skal du sige ja til",
+      "terms": "Jeg har læst <link>vilkårene og privatlivspolitikken</link>",
+      "healthMe": "Jeg giver mit udtrykkelige samtykke til, at Kadence gemmer helbredsoplysninger om mig: mine check-ins med søvn, smerte og sygdom, mine målinger og pulsen fra mine ture. Jeg kan trække samtykket tilbage under Indstillinger → Data. Så slår Kadence check-in og målinger fra, og resten virker som før: kalenderen, turene, sæsonplanen og Rulle.",
+      "healthChild": "Jeg er forælder og giver udtrykkeligt samtykke på mit barns vegne til, at Kadence gemmer helbredsoplysninger om barnet: check-ins med søvn, smerte og sygdom, målinger og pulsen fra turene. Jeg kan trække samtykket tilbage under Indstillinger → Data. Så slår Kadence check-in og målinger fra, og resten virker som før: kalenderen, turene, sæsonplanen og Rulle.",
+      "verifyNote": "Vi sender et link til din e-mail. Du åbner det, før du kan bruge Kadence. Bekræfter du ikke adressen inden for 7 dage, sletter vi kontoen igen.",
+      "submit": "Opret arbejdsrum",
+      "clubLink": "En klub eller et hold? Ansøg her",
+      "errorConsent": "Sæt kryds i begge felter for at oprette arbejdsrummet.",
+      "errorTooMany": "Der er oprettet mange konti herfra på kort tid. Prøv igen om en time.",
+      "errorClosed": "Du kan ikke oprette en konto selv her lige nu. Du kan stadig ansøge om adgang."
+    },
+    "verify": {
+      "title": "Bekræft din e-mail",
+      "body": "Vi har sendt en mail til {email} med et link. Åbn linket for at gå i gang. Indtil da kan du ikke bruge resten af Kadence.",
+      "spam": "Kan du ikke finde mailen, så kig i spam. Linket virker i en time. Du kan få en ny mail tre gange i timen.",
+      "resend": "Send mailen igen",
+      "sent": "Vi har sendt en ny mail.",
+      "rateLimited": "Du har fået tre mails den sidste time. Prøv igen lidt senere.",
+      "failed": "Mailen kunne ikke sendes lige nu. Prøv igen om lidt.",
+      "signOut": "Log ud",
+      "expiry": "Bekræfter du ikke adressen inden for {days, plural, one {# dag} other {# dage}}, sletter vi kontoen og alt i den."
     }
   },
   "app": {
@@ -772,6 +799,26 @@
       "coach": "Træner",
       "rider": "Rytter",
       "parent": "Forælder"
+    }
+  },
+  "consent": {
+    "offTitle": "Check-in er slået fra",
+    "offBody": "Samtykket til helbredsoplysninger er trukket tilbage, så Kadence gemmer ingen nye check-ins og målinger. Resten virker som før.",
+    "giveAgain": "Giv samtykke igen",
+    "given": "Samtykket er givet igen. Check-in og målinger er slået til.",
+    "failed": "Det lykkedes ikke. Prøv igen.",
+    "card": {
+      "title": "Samtykke til helbredsoplysninger",
+      "givenBody": "Du gav samtykke den {date} til, at Kadence gemmer check-ins og målinger.",
+      "withdrawnBody": "Du trak samtykket tilbage den {date}. Check-in og målinger er slået fra.",
+      "withdrawAction": "Træk samtykket til helbredsoplysninger tilbage",
+      "withdrawEffect": "Trækker du det tilbage, slår Kadence check-in og målinger fra. Resten virker som før: kalenderen, turene, sæsonplanen og Rulle.",
+      "keepNote": "De check-ins og målinger, der allerede er gemt, bliver liggende. Du kan hente dem med eksporten ovenfor og slette dem med \"Slet min konto og alt om mig\" nedenfor.",
+      "confirmTitle": "Træk samtykket tilbage?",
+      "confirmBody": "Check-in og målinger slås fra med det samme. Du kan give samtykket igen her eller på I dag.",
+      "confirmAction": "Træk tilbage",
+      "withdrawn": "Samtykket er trukket tilbage. Check-in og målinger er slået fra.",
+      "failed": "Det lykkedes ikke. Prøv igen."
     }
   },
   "terms": {

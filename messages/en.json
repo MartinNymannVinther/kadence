@@ -192,6 +192,33 @@
       "tooYoung": "If you are under 15, you cannot create an account yourself. Ask a parent to apply and choose \"It is for my child\". They can invite you afterwards.",
       "workspaceName": "{name}'s training",
       "workspaceNameSibilant": "{name}'s training"
+    },
+    "self": {
+      "title": "Create your own workspace",
+      "subtitle": "For your own training or your child's. You confirm your e-mail before you start.",
+      "name": "Your name",
+      "email": "Your e-mail",
+      "consentLegend": "What you say yes to",
+      "terms": "I have read <link>the terms and the privacy policy</link>",
+      "healthMe": "I give my explicit consent for Kadence to store health data about me: my check-ins with sleep, pain and illness, my measurements and the heart rate from my rides. I can withdraw the consent under Settings → Data. Kadence then turns check-in and measurements off, and the rest works as before: the calendar, the rides, the season plan and Rulle.",
+      "healthChild": "I am the parent and give explicit consent on my child's behalf for Kadence to store health data about the child: check-ins with sleep, pain and illness, measurements and the heart rate from the rides. I can withdraw the consent under Settings → Data. Kadence then turns check-in and measurements off, and the rest works as before: the calendar, the rides, the season plan and Rulle.",
+      "verifyNote": "We send a link to your e-mail. You open it before you can use Kadence. If you do not confirm the address within 7 days, we delete the account again.",
+      "submit": "Create workspace",
+      "clubLink": "A club or a team? Apply here",
+      "errorConsent": "Tick both boxes to create the workspace.",
+      "errorTooMany": "Many accounts have been created from here in a short time. Try again in an hour.",
+      "errorClosed": "You cannot create an account yourself here right now. You can still apply for access."
+    },
+    "verify": {
+      "title": "Confirm your e-mail",
+      "body": "We have sent a mail to {email} with a link. Open the link to get started. Until then you cannot use the rest of Kadence.",
+      "spam": "If you cannot find the mail, look in spam. The link works for an hour. You can get a new mail three times an hour.",
+      "resend": "Send the mail again",
+      "sent": "We have sent a new mail.",
+      "rateLimited": "You have had three mails in the last hour. Try again a little later.",
+      "failed": "The mail could not be sent right now. Try again in a moment.",
+      "signOut": "Sign out",
+      "expiry": "If you do not confirm the address within {days, plural, one {# day} other {# days}}, we delete the account and everything in it."
     }
   },
   "app": {
@@ -772,6 +799,26 @@
       "coach": "Coach",
       "rider": "Rider",
       "parent": "Parent"
+    }
+  },
+  "consent": {
+    "offTitle": "Check-in is off",
+    "offBody": "The consent to health data has been withdrawn, so Kadence stores no new check-ins or measurements. The rest works as before.",
+    "giveAgain": "Give consent again",
+    "given": "The consent is given again. Check-in and measurements are on.",
+    "failed": "That did not work. Try again.",
+    "card": {
+      "title": "Consent to health data",
+      "givenBody": "You gave your consent on {date} for Kadence to store check-ins and measurements.",
+      "withdrawnBody": "You withdrew the consent on {date}. Check-in and measurements are off.",
+      "withdrawAction": "Withdraw the consent to health data",
+      "withdrawEffect": "If you withdraw it, Kadence turns check-in and measurements off. The rest works as before: the calendar, the rides, the season plan and Rulle.",
+      "keepNote": "The check-ins and measurements already stored stay. You can download them with the export above and delete them with \"Delete my account and everything about me\" below.",
+      "confirmTitle": "Withdraw the consent?",
+      "confirmBody": "Check-in and measurements are turned off at once. You can give the consent again here or on Today.",
+      "confirmAction": "Withdraw",
+      "withdrawn": "The consent is withdrawn. Check-in and measurements are off.",
+      "failed": "That did not work. Try again."
     }
   },
   "terms": {

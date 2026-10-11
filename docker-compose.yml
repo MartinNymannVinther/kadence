@@ -125,6 +125,10 @@ services:
       MISTRAL_BASE_URL: ${MISTRAL_BASE_URL:-}
       LLM_MODEL: ${LLM_MODEL:-}
       OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-}
+      # closed (default), open (a demo instance) or individuals: a person
+      # creates their own workspace with an address they confirm, clubs
+      # still apply (docs/adr/0088). individuals refuses to start without
+      # the five SMTP variables below.
       SIGNUP: ${SIGNUP:-}
       DEMO: ${DEMO:-}
       # Races from Cykling Danmark (ADR 0039), off unless set.

@@ -374,6 +374,13 @@ describe("rls coverage (guards future tables)", () => {
     // when it is one, else null, read from installation state the
     // application role cannot read itself.
     "app_demo_room",
+    // Whether the active workspace's consent to health data is withdrawn,
+    // for the wellbeing services (drizzle/0050, docs/adr/0088): true or
+    // false about the caller's own active workspace, for a member of it,
+    // and nothing else — no row, no date, nobody's name. A child riding in
+    // a parent's workspace is answered too, without reading the parent's
+    // row. tests/access/consents.test.ts proves it.
+    "app_health_consent_withdrawn",
     "app_is_coach",
     // Whether the caller coaches a team anywhere on the installation, for
     // Trænerrummet (drizzle/0023, docs/adr/0052): true or false about the
@@ -399,6 +406,13 @@ describe("rls coverage (guards future tables)", () => {
     // (drizzle/0042, docs/adr/0084). Refuses, by doing nothing, anything
     // that is not a demo past its time, so no real club can be reached.
     "delete_expired_demo",
+    // Deletes an account door 2 made and nobody confirmed in seven days,
+    // its own workspace and every audit row about either, for the daily
+    // sweep on the auth role (drizzle/0050, docs/adr/0088), leaving one
+    // line with the account's id. Refuses, by doing nothing, anything else:
+    // a confirmed account, the owner, a younger one, one on a team.
+    // tests/access/signup-sweep.test.ts proves each refusal.
+    "delete_unverified_signup",
     // Deletes a workspace the caller owns, audit rows included, which is
     // dogma 3 and which RLS and the append-only guard would otherwise
     // forbid (docs/adr/0003). Checks the caller's role itself.
