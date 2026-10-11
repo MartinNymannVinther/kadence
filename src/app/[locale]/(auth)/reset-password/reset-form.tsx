@@ -14,11 +14,12 @@ import { cn } from "@/lib/utils";
 const MIN_LENGTH = 12;
 
 /**
- * A new password from a coach's one-time link (ADR 0032). The rules are
+ * A new password from a coach's one-time link (ADR 0032) or one asked for
+ * by e-mail (docs/adr/0086). The rules are
  * the sign-up's: at least twelve characters. What went wrong is said in
  * the reader's words; a link that is used or old says to ask for another.
  */
-export function ResetForm({ token }: { token: string }) {
+export function ResetForm({ token, viaMail = false }: { token: string; viaMail?: boolean }) {
   const t = useTranslations("auth.reset");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,7 +36,13 @@ export function ResetForm({ token }: { token: string }) {
     const result = await authClient.resetPassword({ newPassword: password, token });
     setPending(false);
     if (result.error) {
-      setError(result.error.code === "INVALID_TOKEN" ? t("invalid") : t("failed"));
+      setError(
+        result.error.code === "INVALID_TOKEN"
+          ? viaMail
+            ? t("invalidMail")
+            : t("invalid")
+          : t("failed"),
+      );
       return;
     }
     setDone(true);
@@ -46,7 +53,7 @@ export function ResetForm({ token }: { token: string }) {
       <Card>
         <CardHeader>
           <CardTitle>{t("title")}</CardTitle>
-          <CardDescription>{t("missing")}</CardDescription>
+          <CardDescription>{viaMail ? t("invalidMail") : t("missing")}</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -55,7 +62,7 @@ export function ResetForm({ token }: { token: string }) {
     <Card>
       <CardHeader>
         <CardTitle>{t("title")}</CardTitle>
-        <CardDescription>{done ? t("done") : t("body")}</CardDescription>
+        <CardDescription>{done ? t("done") : viaMail ? t("bodyMail") : t("body")}</CardDescription>
       </CardHeader>
       <CardContent>
         {done ? (

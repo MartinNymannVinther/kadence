@@ -7,11 +7,13 @@ export type SemanticAuditEvent = {
     | "auth.login"
     | "auth.logout"
     | "auth.password_reset"
+    | "auth.email_verified"
     | "access.requested"
     | "access.approved"
     | "access.declined"
     | "invitation.created"
     | "invitation.used"
+    | "invitation.mailed"
     | "account.deleted";
   orgId?: string | null;
   actorUserId?: string | null;

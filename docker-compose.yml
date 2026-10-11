@@ -146,6 +146,13 @@ services:
       PUSH_PUBLIC_KEY: ${PUSH_PUBLIC_KEY:-}
       PUSH_PRIVATE_KEY: ${PUSH_PRIVATE_KEY:-}
       PUSH_CONTACT: ${PUSH_CONTACT:-}
+      # Mail through an EU provider (docs/adr/0086): all five or none, and
+      # without them nothing is sent. The password is a secret: Coolify only.
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      MAIL_FROM: ${MAIL_FROM:-}
       # The installation's own roof over model calls (docs/adr/0035). An
       # unset variable is the empty string here and absent to env.ts, so
       # it falls back to the default rather than being read as `0` — and

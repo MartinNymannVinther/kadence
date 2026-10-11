@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { isPlatformOwner, listAccessRequests, listInvitations } from "@/core/access/service";
 import { getSession } from "@/core/auth/session";
+import { mailConfigured } from "@/core/mail/mailer";
 import { AccessAdmin } from "./access-admin";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -29,6 +30,7 @@ export default async function AccessPage() {
         <p className="text-meta text-2sm leading-relaxed">{t("subtitle")}</p>
       </div>
       <AccessAdmin
+        mailOn={mailConfigured()}
         requests={requests.map((r) => ({
           id: r.id,
           name: r.name,

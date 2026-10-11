@@ -212,7 +212,8 @@ application (name, e-mail, organisation, a line about the team) instead
 of a closed sign; nothing is created until you decide. The installation's
 owner sees applications under Indstillinger → Adgang with a count in the
 navigation, approves or declines, and gets a registration link to send
-(Kadence sends no mail yet, so you send it yourself). The link is a
+(you send it yourself, or press "Send linket" when the installation sends
+mail, 6b). The link is a
 single-use key bound to that e-mail address, valid for seven days; the
 same page can mint a new one, which retires the old, and can invite
 someone directly without an application. ADR 0004 has the reasoning.
@@ -300,13 +301,70 @@ The terms page at `/terms` tells visitors what a demo is and asks them not
 to put real personal data in one; if you host a demo, read that page and
 make sure it says what you actually do.
 
-## 6b. Mail: there is none
+## 6b. Mail, if you want it
 
-Kadence sends no mail. Admission links and workspace invitation links
-(Settings → Workspace, ADR 0008) are shown to the person who made them,
-who sends them the way they talk to their colleague anyway. There is no
-SMTP setting; reminders, when you turn them on, go by web push (6d), and
-an installation needs nothing beyond what section 2 lists.
+Mail is optional (ADR 0086). Without it Kadence sends nothing: the owner
+copies an approved application's link, a coach shares each invitation
+with "Del", and a person who forgot the password asks a coach for a
+link (ADR 0032). Everything works that way, and an installation without
+mail has no mail provider on its subprocessor list.
+
+With mail, Kadence sends four things and nothing else, each a short
+plain-text mail with one link to the installation's own address and never
+a word about training or health:
+
+- a link to confirm an address (Indstillinger → Sikkerhed);
+- a link for a new password, at "Glemt adgangskode?" on the login page;
+- an invitation: "Send på mail" beside "Del" on the riders page, and "Send
+  linket" on the owner's Adgang;
+- for a parent who chose it under Indstillinger → Profil, "Der er nyt om
+  ugen i Kadence" on Sunday evening, beside the push (6d).
+
+kadence.haij.dk uses **Scaleway Transactional Email** (TEM), which is on
+`docs/subprocessors.md`. Any SMTP server works for a self-hosted
+installation; put it on your own list.
+
+### Setting up Scaleway Transactional Email
+
+1. In the Scaleway console, open **Transactional Email**, choose the
+   region **Paris (fr-par)**, and add the domain the mail is sent from
+   (for kadence.haij.dk: `haij.dk`).
+2. Add the DNS records the console shows at the domain's registrar: the
+   **SPF** record (a TXT on the domain), the **DKIM** key (a TXT under
+   `._domainkey`), the **MX** record if the console asks for one, and a
+   **DMARC** policy (a TXT on `_dmarc`, for example
+   `v=DMARC1; p=quarantine; rua=mailto:postmaster@haij.dk`). Wait until
+   the console says the domain is verified. Without SPF and DKIM the mails
+   land in spam, or nowhere.
+3. Make the SMTP credentials: in **IAM**, an application with a policy
+   that lets it send mail in the project that holds the domain (the
+   Transactional Email permission set; check in the console which one is
+   send-only), and an **API key** for that application. Keep the secret
+   key: it is shown once.
+4. Put the five variables into Coolify and redeploy:
+
+   ```
+   SMTP_HOST=smtp.tem.scaleway.com
+   SMTP_PORT=587
+   SMTP_USER=<the project's id>
+   SMTP_PASSWORD=<the API key's secret key>
+   MAIL_FROM=Kadence <kadence@haij.dk>
+   ```
+
+   Port 587 upgrades with STARTTLS and Kadence refuses to send without
+   it; 465 is TLS from the first byte (Scaleway also answers on 2587 and
+   2465). `MAIL_FROM` must be on the verified domain. All five or none:
+   the app refuses to start with some of them, and names what is missing.
+   `SMTP_PASSWORD` is a secret: Coolify only, never in the repository.
+
+5. Check it: sign in, open Indstillinger → Sikkerhed and press "Send en
+   mail til bekræftelse". The mail should arrive within a minute, and the
+   link should give the address its check mark. If it does not, the app's
+   log says `mail: not sent` with the error's name (never the address).
+
+The console shows what was sent and what bounced. To leave Scaleway, set the five
+variables to another EU provider (Brevo is the reserve, ADR 0086), add its
+row to `docs/subprocessors.md` first, and redeploy.
 
 ## 6c. The map behind routes
 

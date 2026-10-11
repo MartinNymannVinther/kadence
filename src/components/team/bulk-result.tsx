@@ -17,10 +17,12 @@ import { RecipientList } from "./recipient-list";
 export function BulkResult({
   lines,
   team,
+  mailOn,
   onDone,
 }: {
   lines: CreatedLine[];
   team: string;
+  mailOn: boolean;
   onDone: () => void;
 }) {
   const t = useTranslations("riders.bulk");
@@ -39,7 +41,7 @@ export function BulkResult({
         <DialogTitle>{t("doneTitle")}</DialogTitle>
         <DialogDescription>{t("doneBody")}</DialogDescription>
       </DialogHeader>
-      {withLink.length > 0 && <RecipientList recipients={withLink} team={team} />}
+      {withLink.length > 0 && <RecipientList recipients={withLink} team={team} mailOn={mailOn} />}
       {linked.length > 0 && (
         <div className="bg-muted/60 flex flex-col gap-1.5 rounded-lg p-3">
           <p className="text-sm font-medium">{t("linkedTitle")}</p>

@@ -1,7 +1,10 @@
 "use server";
 
+import { getLocale } from "next-intl/server";
 import { z } from "zod";
 import { runAction } from "@/core/action";
+import { mailLocale } from "@/core/mail/words";
+import { setWeekMail, WeekMailInput } from "./mail-choice";
 import { Endpoint, Kinds, reminderState, setKinds, subscribe, unsubscribe } from "./subscriptions";
 import { sendTestReminder } from "./test-push";
 import { pushConfig } from "./timer";
@@ -37,4 +40,10 @@ export async function unsubscribeRemindersAction(raw: unknown) {
 /** "Send en prøve": one empty push to each of the person's own browsers here, three an hour. */
 export async function sendTestReminderAction(raw: unknown) {
   return runAction(raw, Nothing, (ctx) => sendTestReminder(ctx, pushConfig()));
+}
+
+/** The parents' week "også på mail" (docs/adr/0086), in the language of the page it is chosen on. */
+export async function setWeekMailAction(raw: unknown) {
+  const locale = mailLocale(await getLocale());
+  return runAction(raw, WeekMailInput, (ctx, input) => setWeekMail(ctx, input.on, locale));
 }

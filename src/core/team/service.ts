@@ -18,9 +18,10 @@ import { errorName, log, requestIdFrom } from "@/core/log";
  * pending invitation per address, an expiry, the recipient's address has
  * to match, only owners and admins may invite.
  *
- * No mail is sent. The person who invites copies the link and sends it
- * the way they talk to their colleague anyway; a mail provider is a
- * dependency the tool does not need to have.
+ * The person who invites copies the link and sends it the way they talk
+ * to their colleague anyway. Where the installation sends mail, a coach
+ * can also send a rider's or a parent's link to its address from the
+ * riders page (src/modules/team/mail-invitation.ts, docs/adr/0086).
  */
 
 export const TEAM_ROLES = ["member", "admin"] as const;
