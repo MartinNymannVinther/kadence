@@ -34,7 +34,7 @@ function translatorFor(locale: Locale): Translate {
  * the contract is the query string above, not the markup.
  */
 export async function GET(request: NextRequest) {
-  if (!rateLimit(callerKey(request.headers, "programs-download"), 120, HOUR).allowed)
+  if (!(await rateLimit(callerKey(request.headers, "programs-download"), 120, HOUR)).allowed)
     return new Response("Too many requests", { status: 429 });
 
   const params = request.nextUrl.searchParams;

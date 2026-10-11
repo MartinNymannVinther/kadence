@@ -1,3 +1,5 @@
+import { errorName, log } from "@/core/log";
+
 /**
  * The line the readings from Cykling Danmark wait in (ADR 0039). Opening
  * Kadence puts a whole team's riders in it at once; it reads them one at a
@@ -28,11 +30,7 @@ async function drain() {
     try {
       fetched = await job.run();
     } catch (error) {
-      // A name, never a message: a database error's message carries its parameters.
-      console.warn(
-        "dcu results: queued read failed",
-        error instanceof Error ? error.name : "unknown",
-      );
+      await log.warn("dcu results: queued read failed", { error: errorName(error) });
     } finally {
       waiting.delete(job.key);
     }

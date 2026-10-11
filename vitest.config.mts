@@ -59,6 +59,8 @@ export default defineConfig({
     environment: "node",
     include: ["tests/**/*.test.ts"],
     globalSetup: ["tests/global-setup.ts"],
+    // The counters live in the database; each file starts with none.
+    setupFiles: ["tests/setup-counters.ts"],
     // The suites share one database; run files sequentially.
     fileParallelism: false,
     testTimeout: 30_000,

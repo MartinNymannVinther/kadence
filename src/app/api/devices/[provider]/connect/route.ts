@@ -25,7 +25,7 @@ export async function GET(
 
   const ctx = await requireOrgContext();
   if (!ctx) return back(settingsUrl({ error: "unauthorized" }));
-  if (!rateLimit(`device-connect:${ctx.userId}`, 10, 10 * 60_000).allowed)
+  if (!(await rateLimit(`device-connect:${ctx.userId}`, 10, 10 * 60_000)).allowed)
     return back(settingsUrl({ error: "rate_limited" }));
 
   const started = await startConnect(ctx, provider);

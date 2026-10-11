@@ -1,6 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { pushSubscriptions } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
+import { errorName, log } from "@/core/log";
 
 /**
  * A person's reminders on a team go with them when they leave (docs/adr/
@@ -17,6 +18,9 @@ export async function forgetReminders(ctx: OrgContext): Promise<void> {
         ),
     );
   } catch (error) {
-    console.error("team: forgetting reminders after leaving failed", error);
+    await log.error("team: forgetting reminders after leaving failed", {
+      orgId: ctx.orgId,
+      error: errorName(error),
+    });
   }
 }

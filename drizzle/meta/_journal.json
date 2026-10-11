@@ -299,8 +299,36 @@
     {
       "idx": 42,
       "version": "7",
+      "when": 1791732549045,
+      "tag": "0042_audit_without_files",
+      "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "7",
+      "when": 1791732584318,
+      "tag": "0043_counters_and_timeouts",
+      "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "7",
+      "when": 1791732585801,
+      "tag": "0044_indexes",
+      "breakpoints": true
+    },
+    {
+      "idx": 45,
+      "version": "7",
+      "when": 1791732587072,
+      "tag": "0045_policies_once_per_query",
+      "breakpoints": true
+    },
+    {
+      "idx": 46,
+      "version": "7",
       "when": 1791750000000,
-      "tag": "0042_move_rider_history",
+      "tag": "0046_move_rider_history",
       "breakpoints": true
     }
   ]

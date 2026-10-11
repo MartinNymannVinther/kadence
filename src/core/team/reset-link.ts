@@ -56,8 +56,8 @@ export async function createResetLink(
   const allowed = await mayMake(ctx, userId);
   if (allowed !== "ok") return allowed;
   if (
-    !rateLimit(`reset-link:${ctx.userId}`, PER_COACH, HOUR).allowed ||
-    !rateLimit(`reset-link-for:${userId}`, PER_PERSON, HOUR).allowed
+    !(await rateLimit(`reset-link:${ctx.userId}`, PER_COACH, HOUR)).allowed ||
+    !(await rateLimit(`reset-link-for:${userId}`, PER_PERSON, HOUR)).allowed
   )
     return "rateLimited";
 

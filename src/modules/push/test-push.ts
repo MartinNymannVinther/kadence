@@ -1,5 +1,6 @@
 import { and, eq } from "drizzle-orm";
 import { Refused } from "@/core/action";
+import { forget, recall, remember } from "@/core/counters";
 import { pushSubscriptions } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { rateLimit } from "@/core/rate-limit";
@@ -14,28 +15,27 @@ import { PUSH_TTL_SECONDS, sendPush, type PushConfig } from "./send";
  * an hour.
  *
  * The push carries nothing, so the service worker asks `latest` what it
- * was about. A test changes nothing in the database; the server keeps the
- * moment it was sent in memory instead, for as long as a push can wait at
- * the push service, and `latest` answers "Sådan ser en påmindelse fra
- * Kadence ud" until a real reminder goes out after it. One process is the
- * whole installation (src/core/rate-limit.ts says the same); after a
- * restart the test shows the plain words, which is still a test that
- * arrived.
+ * was about. A test changes nothing the team owns; the moment it was sent
+ * is kept with the counters (src/core/counters.ts, ADR 0083) for as long
+ * as a push can wait at the push service, so whichever instance the
+ * worker's question reaches knows it, and `latest` answers "Sådan ser en
+ * påmindelse fra Kadence ud" until a real reminder goes out after it.
  */
 
 export const TESTS_PER_HOUR = 3;
 const HOUR_MS = 60 * 60 * 1000;
 const REMEMBERED_MS = PUSH_TTL_SECONDS * 1000;
 
-const state = globalThis as unknown as { kadenceTestPushes?: Map<string, number> };
-const sentAt = () => (state.kadenceTestPushes ??= new Map<string, number>());
+/** Kept until the push can no longer arrive: the moment it went is that, less how long it waits. */
+const sentKey = (userId: string) => `push-test-sent:${userId}`;
 
 /** When a test push last went to this person, while it can still arrive. */
-export function testSentAt(userId: string, now: Date = new Date()): Date | null {
-  const at = sentAt().get(userId);
-  if (at === undefined) return null;
+export async function testSentAt(userId: string, now: Date = new Date()): Promise<Date | null> {
+  const until = await recall(sentKey(userId));
+  if (until === null) return null;
+  const at = until.getTime() - REMEMBERED_MS;
   if (now.getTime() - at > REMEMBERED_MS) {
-    sentAt().delete(userId);
+    await forget(sentKey(userId));
     return null;
   }
   return new Date(at);
@@ -61,11 +61,11 @@ export async function sendTestReminder(
       .where(and(eq(pushSubscriptions.orgId, ctx.orgId), eq(pushSubscriptions.userId, ctx.userId)));
   });
   if (rows.length === 0) throw new Refused("notFound");
-  if (!rateLimit(`push-test:${ctx.userId}`, TESTS_PER_HOUR, HOUR_MS).allowed)
+  if (!(await rateLimit(`push-test:${ctx.userId}`, TESTS_PER_HOUR, HOUR_MS)).allowed)
     throw new Refused("conflict", "too_many_test_reminders");
 
   // Before the push: the worker may ask what it was before the post returns.
-  sentAt().set(ctx.userId, now.getTime());
+  await remember(sentKey(ctx.userId), new Date(now.getTime() + REMEMBERED_MS));
   const report: TestReport = { sent: 0, gone: 0, failed: 0 };
   for (const row of rows) {
     const result = await sendPush(row.endpoint, config, now);

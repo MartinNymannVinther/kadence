@@ -81,13 +81,23 @@ with `generateStaticParams` and `setRequestLocale`.
 That is a real trade with a real cost. It deserves its own change, with a
 test, not a line in a hardening pass.
 
-### Rate limiting is per process
+### What is still per process
 
-`src/core/rate-limit.ts` counts in memory, which is correct for one
-container behind one proxy and says so. An installation scaled to several
-instances gets a limit per instance rather than a limit. The file is
-written so that it is the only one to replace; the call sites do not
-change.
+Paid in October 2026 (docs/adr/0083): the rate limits, the places held
+while a ride is read, Cykling Danmark's six readings a minute and one per
+rider, a rider's own last reading, the test push's moment and the demo's
+nonce are kept in the database or derived from the secret, so they hold
+across a restart and across instances.
+
+What remains is the line the DCU readings wait in
+(`src/modules/results/queue.ts`): its order is this instance's list of
+work, and a restart loses it until the next visit fills it again. Two
+instances may each queue the same rider; the shared per-rider place and
+`races_checked_at` keep the page from being read twice. It moves to the
+job table when one exists (plan step 1, backlog S-06). The reminder
+timer (`src/modules/push/timer.ts`) also runs in every instance; its
+marks are in the database, so a second instance repeats the work but
+not the reminders.
 
 ### The workspace model key is bound to its workspace, but old ciphertexts are not
 
@@ -110,6 +120,23 @@ costs nothing while it waits.
 `app_is_guardian_of` ends a parent's access on 1 January of the year the
 rider turns 18, because Kadence only stores the birth year (DCU's classes
 go by year). Up to a year early, never late (ADR 0011).
+
+### No error reporting service
+
+A failure that is not a service's deliberate refusal is logged
+(`src/core/log.ts`) and answered to the person with a generic word
+("generic", "noModel") — nobody is paged, and nothing keeps the stack
+trace once the log line rotates away (`docker-compose.yml`'s
+`logging:`). Reading `docker logs` or Coolify's log viewer after someone
+reports a problem is what there is today (docs/deploy.md,
+"Monitoring"). A hosted error-reporting SaaS (Sentry and the like) would
+fix that, at the cost of a new subprocessor seeing every stack trace and
+whatever local variables were in scope when it was thrown — for a tool
+that holds health data about minors, that is not a trade to make by
+installing the first SDK with a free tier. Dogma four means the real
+candidate is a self-hosted, EU-run one on this same server, such as
+GlitchTip; it is left for a later story once a real winter has shown
+whether the log lines above are enough.
 
 ## Waiting for real use
 
@@ -273,6 +300,16 @@ Paid in wave 4: `erase_rider` (drizzle/0006) deletes one rider and the
 audit rows about them, checked by the function itself like
 `delete_workspace`, and records that an erasure happened without naming
 anyone (tests/team/erase.test.ts).
+
+### The trail copied every file, and a demo's trail stayed
+
+Paid with backlog S-04 (drizzle/0042, ADR 0084): the audit trigger
+empties `bytes` and `streams` before it builds the row image, a deleted
+workspace is one event instead of a row per row it held, an expired
+demo goes with every audit row about it, and the export names its
+columns, reads the trail in pages, is limited per workspace and has the
+ride files beside it as a ZIP. The spreadsheet's trail is capped at the
+newest 10,000 rows; the JSON has all of it.
 
 ### Members can read each other's addresses in the database
 

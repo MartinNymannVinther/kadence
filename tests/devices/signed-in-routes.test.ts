@@ -86,8 +86,8 @@ beforeAll(async () => {
   await admin.query(g.text, g.values);
 });
 
-beforeEach(() => {
-  resetRateLimits();
+beforeEach(async () => {
+  await resetRateLimits();
   auth.session = null;
 });
 
@@ -296,9 +296,9 @@ describe("the upload's bodies", () => {
     const day = (n: number) => encodeRide(steadyHour().map((s) => ({ ...s, s: s.s + n * 86_400 })));
     const first = held(day(30));
     const second = held(day(31));
-    for (let i = 0; i < 600 && signedInReads.count(IDA.userId) < 2; i++)
+    for (let i = 0; i < 600 && (await signedInReads.count(IDA.userId)) < 2; i++)
       await new Promise((resolve) => setTimeout(resolve, 5));
-    expect(signedInReads.count(IDA.userId)).toBe(2);
+    expect(await signedInReads.count(IDA.userId)).toBe(2);
 
     const third = await upload(
       post("/api/activities/upload", form([["c.fit", day(32)]], { riderId: "rt_ida" })),
@@ -311,6 +311,6 @@ describe("the upload's bodies", () => {
     second.release();
     expect((await first.response).status).toBe(200);
     expect((await second.response).status).toBe(200);
-    expect(signedInReads.count(IDA.userId)).toBe(0);
+    expect(await signedInReads.count(IDA.userId)).toBe(0);
   });
 });

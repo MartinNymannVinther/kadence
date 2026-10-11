@@ -25,7 +25,7 @@ written across two `org_id`s.
   every table for ever. A move is one function, one test, and a rider
   understands it: my training is with my team, or it is my own.
 - **One SECURITY DEFINER function,** `move_rider_history(from, to)`
-  (drizzle/0042), the first that writes in two workspaces. It refuses,
+  (drizzle/0046), the first that writes in two workspaces. It refuses,
   with ERRCODE 42501 and a plain word in DETAIL, unless the caller's
   account is `riders.user_id` on **both** rows (`not_own_rider` — also
   for a row that does not exist, so it cannot be used to find out whether

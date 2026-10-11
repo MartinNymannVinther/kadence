@@ -3,6 +3,7 @@ import { z } from "zod";
 import { Refused } from "@/core/action";
 import { teamExercises, type TeamExerciseRow } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
+import { log } from "@/core/log";
 import { requireCoach } from "@/modules/team/access";
 import { parseOrRefuse, teamRef } from "./refs";
 import {
@@ -54,7 +55,7 @@ const storedSchema = z.object({
 export function teamExerciseView(row: TeamExerciseRow): ExerciseView | null {
   const parsed = storedSchema.safeParse(row);
   if (!parsed.success) {
-    console.error("exercises: a stored team exercise does not fit the contract", row.id);
+    void log.error("exercises: a stored team exercise does not fit the contract", { id: row.id });
     return null;
   }
   return {

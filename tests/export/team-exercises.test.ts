@@ -3,9 +3,10 @@ import type { Pool } from "pg";
 import { BUILTIN_EXERCISES } from "@/modules/exercises/builtin";
 import { archiveTeamExercise, createTeamExercise } from "@/modules/exercises/team-exercises";
 import { createTeamProgram } from "@/modules/exercises/team-programs";
-import { exportToJson, exportToXlsx } from "@/modules/export/format";
-import { buildOrgExport } from "@/modules/export/service";
+import { exportToXlsx } from "@/modules/export/format";
+import { buildOrgExport, readNewestAudit } from "@/modules/export/service";
 import { adminPool } from "../helpers/db";
+import { jsonExport } from "../helpers/export";
 import { PLANK, POSE, seedTeam, type Team } from "../exercises/team-fixtures";
 
 /**
@@ -71,11 +72,16 @@ describe("the team's own exercises in its export", () => {
 
   it("keep their pose and their references in the JSON, and fit the workbook", async () => {
     const data = await buildOrgExport(a.coach);
-    const json = JSON.parse(exportToJson(data));
-    const planke = json.tables[EXERCISES].find((row: { name: string }) => row.name === "Planke");
+    const json = await jsonExport(a.coach, data);
+    const planke = json.tables[EXERCISES]!.find((row) => row.name === "Planke") as {
+      pose: typeof POSE;
+      equipment: string[];
+    };
     expect(planke.pose.joints.head).toEqual(POSE.joints.head);
     expect(planke.equipment).toEqual(["mat"]);
-    expect(json.tables[PROGRAMS][0].parts[0].items[0].exercise).toBe(plank.ref);
-    expect(exportToXlsx(data).subarray(0, 2).toString()).toBe("PK");
+    const parts = json.tables[PROGRAMS]![0]!.parts as Array<{ items: Array<{ exercise: string }> }>;
+    expect(parts[0]!.items[0]!.exercise).toBe(plank.ref);
+    const audit = await readNewestAudit(a.coach, data.auditUpTo, 100);
+    expect(exportToXlsx(data, audit).subarray(0, 2).toString()).toBe("PK");
   });
 });

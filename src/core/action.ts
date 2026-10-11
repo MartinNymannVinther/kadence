@@ -2,6 +2,7 @@ import { revalidatePath } from "next/cache";
 import type { z } from "zod";
 import { requireOrgContext } from "@/core/auth/guard";
 import type { OrgContext } from "@/core/db/tenant";
+import { errorName, log } from "@/core/log";
 import { fail, ok, type ActionError, type Result } from "@/core/result";
 
 /**
@@ -42,7 +43,7 @@ export async function runAction<S extends z.ZodType, T>(
     return ok(data);
   } catch (error) {
     if (error instanceof Refused) return fail(error.code, error.detail);
-    console.error("action failed", error);
+    await log.error("action: failed", { orgId: ctx.orgId, error: errorName(error) });
     return fail("generic");
   }
 }

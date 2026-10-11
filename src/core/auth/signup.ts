@@ -1,4 +1,4 @@
-import { randomBytes, timingSafeEqual } from "node:crypto";
+import { createHmac, timingSafeEqual } from "node:crypto";
 import { count, notLike } from "drizzle-orm";
 import { invitationAdmits } from "@/core/access/service";
 import { teamInvitationAdmits } from "@/core/team/service";
@@ -39,23 +39,40 @@ export const DEMO_HEADER = "x-kadence-demo";
  * created permanent accounts that the demo cleanup never touches, because
  * they were never registered as demos.
  *
- * So the header carries a secret instead of a flag: a value drawn once at
- * boot, held only in this process, never written down and never sent to a
- * browser. The demo service knows it because it runs in the same process;
- * nobody outside can guess it. Compared in constant time out of habit
- * rather than need.
+ * So the header carries a secret instead of a flag: an HMAC-SHA256 under
+ * BETTER_AUTH_SECRET over the day (UTC), never written down and never sent
+ * to a browser. The demo service computes it; nobody without the secret
+ * can. It used to be drawn at random when the process started, which only
+ * the process that drew it knew: a second instance, or the same one after
+ * a restart in the middle of a sign-up, would have refused its own demo
+ * (docs/adr/0083). Today's and yesterday's are both accepted, so a demo
+ * started a moment before midnight still signs up after it. Compared in
+ * constant time out of habit rather than need.
  */
-const DEMO_NONCE = randomBytes(32).toString("base64url");
+const DAY_MS = 24 * 60 * 60 * 1000;
 
-export function demoSignupHeaderValue(): string {
-  return DEMO_NONCE;
+/** The header value for the UTC day `at` falls on. */
+function demoNonceFor(at: Date): string {
+  return createHmac("sha256", env.BETTER_AUTH_SECRET)
+    .update(`kadence-demo-signup:${at.toISOString().slice(0, 10)}`)
+    .digest("base64url");
 }
 
-export function isDemoSignup(value: string | null | undefined): boolean {
+function sameNonce(given: Buffer, expected: string): boolean {
+  const wanted = Buffer.from(expected);
+  return given.length === wanted.length && timingSafeEqual(given, wanted);
+}
+
+export function demoSignupHeaderValue(now: Date = new Date()): string {
+  return demoNonceFor(now);
+}
+
+export function isDemoSignup(value: string | null | undefined, now: Date = new Date()): boolean {
   if (!value) return false;
   const given = Buffer.from(value);
-  const expected = Buffer.from(DEMO_NONCE);
-  return given.length === expected.length && timingSafeEqual(given, expected);
+  const today = sameNonce(given, demoNonceFor(now));
+  const yesterday = sameNonce(given, demoNonceFor(new Date(now.getTime() - DAY_MS)));
+  return today || yesterday;
 }
 
 export function signupAllowedFor(mode: SignupMode, existingUsers: number): boolean {

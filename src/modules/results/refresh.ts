@@ -1,6 +1,7 @@
 import { and, eq, gte, inArray, isNull, lte, or, sql } from "drizzle-orm";
 import { Refused } from "@/core/action";
 import { env } from "@/core/env";
+import { rateLimit } from "@/core/rate-limit";
 import { calendarEvents, raceResults, riders } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { todayInCopenhagen } from "@/core/dates";
@@ -196,4 +197,21 @@ export async function refreshStaleRaces(ctx: OrgContext, riderIds?: string[]) {
       return outcome.state === "read" || outcome.state === "failed";
     });
   }
+}
+
+const HOUR = 60 * 60 * 1000;
+
+/**
+ * A coach's visit, from the layout: the team's riders go in the line at
+ * most once an hour per team, however many pages the coaches open
+ * (docs/adr/0083). Before, every navigation read the team's riders to
+ * find the stale ones; a reading stays fresh for three hours, so an hour
+ * between looks misses nothing. The hour is counted with the rate
+ * limits, so it holds across instances. The calendar and a rider's page
+ * still ask for their own riders as they open.
+ */
+export async function refreshStaleRacesOnVisit(ctx: OrgContext) {
+  if (env.DCU_RESULTS === "off") return;
+  if (!(await rateLimit(`dcu-visit:${ctx.orgId}`, 1, HOUR)).allowed) return;
+  await refreshStaleRaces(ctx);
 }

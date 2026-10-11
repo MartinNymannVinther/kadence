@@ -5,7 +5,7 @@ import { insertSql, seedPerson } from "../helpers/rows";
 
 /**
  * The history follows the rider (docs/adr/0081): `move_rider_history`
- * (drizzle/0042) moves every row carrying one rider's id from their rider
+ * (drizzle/0046) moves every row carrying one rider's id from their rider
  * row in one workspace onto their rider row in another. It is the first
  * function that writes across two workspaces, so it is tried here as the
  * application role with raw SQL — what any bug in a service could do —

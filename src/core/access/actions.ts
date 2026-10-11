@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { z } from "zod";
 import { getSession } from "@/core/auth/session";
+import { errorName, log } from "@/core/log";
 import { clientAddress } from "@/core/rate-limit";
 import { firstName, PersonalFields, riderNameFor, workspaceNameKey } from "./personal";
 import {
@@ -82,7 +83,7 @@ export async function approveAccessRequestAction(
   try {
     return { ok: true, data: issued(await approveAccessRequest(actor, String(requestId))) };
   } catch (error) {
-    console.error("access: approve failed", error);
+    await log.error("access: approve failed", { actor, error: errorName(error) });
     return { ok: false, error: "generic" };
   }
 }
@@ -94,7 +95,7 @@ export async function declineAccessRequestAction(requestId: string): Promise<Own
     await declineAccessRequest(actor, String(requestId));
     return { ok: true, data: undefined };
   } catch (error) {
-    console.error("access: decline failed", error);
+    await log.error("access: decline failed", { actor, error: errorName(error) });
     return { ok: false, error: "generic" };
   }
 }
@@ -140,7 +141,7 @@ export async function createInvitationAction(
     });
     return { ok: true, data: issued(invitation) };
   } catch (error) {
-    console.error("access: invite failed", error);
+    await log.error("access: invite failed", { actor, error: errorName(error) });
     return { ok: false, error: "generic" };
   }
 }

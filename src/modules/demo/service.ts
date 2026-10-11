@@ -7,9 +7,10 @@ import { demoWorkspaces } from "@/core/db/schema";
 import { markWorkspacePersonal } from "@/core/auth/register-personal";
 import { DEMO_HEADER, demoSignupHeaderValue } from "@/core/auth/signup";
 import { env } from "@/core/env";
+import { errorName, log } from "@/core/log";
 import { organizationSlug } from "@/lib/slug";
 import { arrivalOrigin } from "./origin";
-import { createDemoRoles, readAccounts } from "./roles";
+import { createDemoRoles } from "./roles";
 import { seedDemoTeam } from "./seed";
 import { ALONE_RIDER, seedDemoAlone } from "./seed-alone";
 import { ALONE_NAME, TEAM_NAME } from "./seed-data";
@@ -95,36 +96,56 @@ function cookieHeaderFrom(responseHeaders: Headers): Headers {
   return new Headers({ cookie });
 }
 
+/** The cookies in `request`, with those `response` set in place of the old. */
+function withNewCookies(request: Headers, response: Headers): Headers {
+  const jar = new Map<string, string>();
+  const pairs = [
+    ...(request.get("cookie")?.split("; ") ?? []),
+    ...response.getSetCookie().map((c) => c.split(";")[0]!),
+  ];
+  for (const pair of pairs) {
+    const at = pair.indexOf("=");
+    if (at > 0) jar.set(pair.slice(0, at), pair.slice(at + 1));
+  }
+  return new Headers({ cookie: [...jar].map(([name, value]) => `${name}=${value}`).join("; ") });
+}
+
 /**
  * Deletes every demo whose time is up. Called on each visit, so an
  * installation that gets visitors needs no scheduler; `scripts/cleanup-demos.ts`
  * and the endpoint exist for one that does not.
  *
- * The organization's cascades take the workspace's rows with it. The
- * throwaway users — the visitor, the demo's rider and parent — are removed too, because a demo that leaves accounts
- * behind is a demo that leaks addresses nobody gave.
+ * `delete_expired_demo()` (drizzle/0042) does each one in the database:
+ * the organization, whose cascades take the workspace's rows with it; the
+ * throwaway users — the visitor, the demo's rider and parent — because a
+ * demo that leaves accounts behind is a demo that leaks addresses nobody
+ * gave; and every audit row about either, because a stranger's sandbox
+ * is not the installation's history (ADR 0084). It refuses anything that
+ * is not a demo past its time, so the auth role cannot point it at a club.
  */
-export async function cleanupExpiredDemos(now = new Date()): Promise<number> {
+export async function cleanupExpiredDemos(): Promise<number> {
   const expired = await authDb
-    .delete(demoWorkspaces)
-    .where(lt(demoWorkspaces.expiresAt, now))
-    .returning({
-      organizationId: demoWorkspaces.organizationId,
-      userId: demoWorkspaces.userId,
-      accounts: demoWorkspaces.accounts,
-    });
+    .select({ organizationId: demoWorkspaces.organizationId })
+    .from(demoWorkspaces)
+    // The database's clock, the one delete_expired_demo() checks again.
+    .where(lt(demoWorkspaces.expiresAt, sql`now()`));
+  let deleted = 0;
   for (const row of expired) {
     try {
-      await authDb.execute(sql`delete from organizations where id = ${row.organizationId}`);
-      // The visitor and the demo's rider and parent: every account it made.
-      const people = new Set([row.userId, ...readAccounts(row.accounts).map((a) => a.userId)]);
-      for (const id of people) await authDb.execute(sql`delete from users where id = ${id}`);
+      const result = await authDb.execute<{ deleted: boolean }>(
+        sql`select delete_expired_demo(${row.organizationId}) as deleted`,
+      );
+      // False when another clean-up got there first: nothing was touched.
+      if (result.rows[0]?.deleted) deleted += 1;
     } catch (error) {
       // One stuck demo must not stop the others being cleaned up.
-      console.error("demo: cleanup failed for", row.organizationId, error);
+      await log.error("demo: cleanup failed", {
+        orgId: row.organizationId,
+        error: errorName(error),
+      });
     }
   }
-  return expired.length;
+  return deleted;
 }
 
 async function liveDemoCount(): Promise<number> {
@@ -167,7 +188,7 @@ export async function createDemoWorkspace(
     sessionHeaders = cookieHeaderFrom(responseHeaders);
     userId = response.user!.id;
   } catch (error) {
-    console.error("demo: could not create the visitor's account", error);
+    await log.error("demo: could not create the visitor's account", { error: errorName(error) });
     return null;
   }
 
@@ -176,10 +197,15 @@ export async function createDemoWorkspace(
     headers: sessionHeaders,
   });
   if (!organization) return null;
-  await auth.api.setActiveOrganization({
+  const { headers: activeHeaders } = await auth.api.setActiveOrganization({
     body: { organizationId: organization.id },
     headers: sessionHeaders,
+    returnHeaders: true,
   });
+  // The session's cookie cache now names the team (docs/adr/0083). The
+  // sign-up's named none; the roles' invitations and the visitor's browser
+  // get this one.
+  sessionHeaders = withNewCookies(sessionHeaders, activeHeaders);
 
   await authDb.insert(demoWorkspaces).values({
     organizationId: organization.id,
@@ -211,7 +237,10 @@ export async function createDemoWorkspace(
     });
   } catch (error) {
     // An empty demo, or one with only the coach, is still a demo.
-    console.error("demo: could not seed the team", error);
+    await log.error("demo: could not seed the team", {
+      orgId: organization.id,
+      error: errorName(error),
+    });
   }
 
   return { headers: sessionHeaders };

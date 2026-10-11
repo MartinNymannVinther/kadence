@@ -5,7 +5,7 @@ import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 
 /**
  * The history follows the rider (docs/adr/0081). `move_rider_history`
- * (drizzle/0042) moves every row carrying one rider's id from one rider
+ * (drizzle/0046) moves every row carrying one rider's id from one rider
  * row to another in a different workspace, all or nothing, and it decides
  * for itself who may: the caller's account must be on both rider rows, a
  * member of both workspaces, and the target row must have no history yet.
