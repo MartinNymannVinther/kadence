@@ -1,4 +1,4 @@
-import { CalendarRange, Database, ShieldCheck } from "lucide-react";
+import { CalendarRange, Database, ShieldCheck, User, Users } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { buttonVariants } from "@/components/ui/button";
 import { Wordmark } from "@/components/wordmark";
@@ -15,7 +15,7 @@ const VALUES = [
   { icon: ShieldCheck, titleKey: "securityTitle", bodyKey: "securityBody" },
 ] as const;
 
-const FEATURE_KEYS = ["calendar", "dcu", "load", "devices", "parents", "model"] as const;
+const FEATURE_KEYS = ["calendar", "dcu", "load", "devices", "parents", "model", "alone"] as const;
 
 /** The family's front door; the wider story lives there, not here. */
 const HAIJ_URL = "https://haij.dk";
@@ -151,6 +151,45 @@ export default async function HomePage() {
             </div>
           </section>
         )}
+
+        {/* Two ways in: a club's team, or one person alone (docs/adr/0080,
+            0081). The headline stays the young riders'; this says the door
+            is open to the one who trains alone too, young or adult. */}
+        <section className="mx-auto w-full max-w-6xl px-6 pb-16">
+          <p className="text-muted-foreground mb-3 text-center text-xs font-medium tracking-wide uppercase">
+            {t("ways.label")}
+          </p>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="bg-card ring-foreground/10 shadow-surface rounded-xl p-6 ring-1">
+              <div className="bg-accent text-accent-foreground mb-4 flex size-9 items-center justify-center rounded-lg">
+                <Users className="size-4.5" />
+              </div>
+              <h2 className="font-medium">{t("ways.teamTitle")}</h2>
+              <p className="text-muted-foreground mt-1.5 text-sm">{t("ways.teamBody")}</p>
+            </div>
+            <div className="bg-card ring-foreground/10 shadow-surface rounded-xl p-6 ring-1">
+              <div className="bg-accent text-accent-foreground mb-4 flex size-9 items-center justify-center rounded-lg">
+                <User className="size-4.5" />
+              </div>
+              <h2 className="font-medium">{t("ways.aloneTitle")}</h2>
+              <p className="text-muted-foreground mt-1.5 text-sm">{t("ways.aloneBody")}</p>
+              <p className="text-muted-foreground mt-1.5 text-sm">{t("ways.aloneAge")}</p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Link href="/register" className={buttonVariants({ size: "sm" })}>
+                  {t("ways.aloneCta")}
+                </Link>
+                {demo && (
+                  <a
+                    href={`${locale === "da" ? "" : `/${locale}`}/demo?alene=1`}
+                    className={buttonVariants({ size: "sm", variant: "outline" })}
+                  >
+                    {t("ways.aloneDemo")}
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
 
         <section className="mx-auto grid w-full max-w-6xl gap-4 px-6 pb-16 sm:grid-cols-3">
           {VALUES.map((value) => (

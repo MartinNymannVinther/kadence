@@ -31,7 +31,7 @@
     },
     "hero": {
       "title": "Unge ryttere i den rigtige kadence.",
-      "subtitle": "Træningsplanlægning for U17-, U19- og U23-ryttere, deres trænere og forældre, med DCU's anbefalinger som standard. Open source og i EU.",
+      "subtitle": "Træningsplanlægning for U17-, U19- og U23-ryttere, deres trænere og forældre, med DCU's anbefalinger som standard. Også for dig, der træner alene, ung eller voksen. Open source og i EU.",
       "ctaPrimary": "Opret konto",
       "ctaSecondary": "Log ind",
       "trust": "AGPL-3.0 · Passkeys og totrinslogin · Jeres data kan hentes ud med ét klik",
@@ -70,7 +70,18 @@
       "load": "Belastning, form og friskhed, også uden wattmåler",
       "devices": "FIT-filer, Wahoo, Garmin og Polar",
       "parents": "Forældreside og trivsels-check-in",
-      "model": "AI hos Mistral i EU eller Ollama på egen maskine"
+      "model": "AI hos Mistral i EU eller Ollama på egen maskine",
+      "alone": "Alene eller på et hold, ung eller voksen"
+    },
+    "ways": {
+      "label": "To måder at bruge Kadence",
+      "teamTitle": "På et hold",
+      "teamBody": "Træneren lægger pas i rytternes kalender, ser holdets uge og hvem der er værd at tale med. Rytterne kører, forældrene følger med på det, rytteren deler. Klubben ansøger, og vi sætter holdet op.",
+      "aloneTitle": "Alene",
+      "aloneBody": "Du planlægger din egen uge og sæson, lægger dine ture ind og tager check-in, uden at være på et hold. Er du U17, U19 eller U23, står DCU's tal ved siden af dine; er du voksen, sætter du dine egne timer. Kommer du på et hold senere, følger din træning med.",
+      "aloneAge": "Fra 15 år opretter du selv. Er rytteren yngre, opretter en forælder og følger barnets træning.",
+      "aloneCta": "Ansøg som dig selv",
+      "aloneDemo": "Prøv som rytter alene"
     }
   },
   "notFound": {
