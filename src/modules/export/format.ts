@@ -1,20 +1,29 @@
 import { todayInCopenhagen } from "@/core/dates";
 import { buildWorkbook, type CellValue, type Sheet } from "@/core/xlsx";
-import type { OrgExport } from "./service";
+import type { ExportSection, OrgExport } from "./service";
 
 /**
  * The same export in two shapes, built from the same rows.
  *
  * The spreadsheet is for people: one tab per kind of thing, filterable,
  * openable by a board member who has never heard of Kadence. The JSON is
- * for machines: it keeps every id, so the relationships between a project,
- * its milestones and its tasks survive the trip. Neither is a backup — a
- * backup is a database dump you can restore, and that is a different thing
- * from a copy you can read.
+ * for machines: it keeps every id, so the relationships between a
+ * session, its ride and the comments on it survive the trip, and it holds
+ * the whole audit trail, written a page at a time (stream.ts). Neither is
+ * a backup — a backup is a database dump you can restore, and that is a
+ * different thing from a copy you can read.
  */
 
-/** A file name that sorts by date and says where it came from. */
-export function exportFileName(orgName: string, exportedAt: Date, extension: string): string {
+/**
+ * A file name that sorts by date and says where it came from, and what it
+ * holds when it is not the export itself (`kadence-team-filer-<date>.zip`).
+ */
+export function exportFileName(
+  orgName: string,
+  exportedAt: Date,
+  extension: string,
+  part?: string,
+): string {
   const slug =
     orgName
       .toLowerCase()
@@ -27,7 +36,7 @@ export function exportFileName(orgName: string, exportedAt: Date, extension: str
   // The day the file is named for is the day here, not in UTC: an export
   // taken at half past midnight in Copenhagen is not yesterday's.
   const date = todayInCopenhagen(exportedAt);
-  return `kadence-${slug}-${date}.${extension}`;
+  return `kadence-${slug}${part ? `-${part}` : ""}-${date}.${extension}`;
 }
 
 /**
@@ -45,11 +54,16 @@ function cell(value: unknown): CellValue {
   return JSON.stringify(value);
 }
 
-export function exportToXlsx(data: OrgExport): Buffer {
-  const sheets: Sheet[] = data.sections.map((section) => ({
+/**
+ * The workbook: the members, every table, and the newest part of the
+ * audit trail (`audit`, read by readNewestAudit). The trail is the only
+ * sheet with a cap; the JSON export holds all of it (stream.ts).
+ */
+export function exportToXlsx(data: OrgExport, audit: ExportSection): Buffer {
+  const sheets: Sheet[] = [...data.sections, audit].map((section) => ({
     name: section.sheet,
-    // An empty table still gets its tab, so the file shows what Kadence holds
-    // rather than only what happens to be filled in.
+    // An empty table still gets its tab and its headings, so the file
+    // shows what Kadence holds rather than only what happens to be filled in.
     columns:
       section.columns.length > 0
         ? section.columns.map((header) => ({ header }))
@@ -58,23 +72,4 @@ export function exportToXlsx(data: OrgExport): Buffer {
   }));
 
   return buildWorkbook(sheets);
-}
-
-export function exportToJson(data: OrgExport): string {
-  const tables: Record<string, Array<Record<string, unknown>>> = {};
-  for (const section of data.sections) {
-    tables[section.sheet] = section.rows.map((row) =>
-      Object.fromEntries(section.columns.map((column, index) => [column, row[index] ?? null])),
-    );
-  }
-
-  return JSON.stringify(
-    {
-      kadence: { format: 1, exportedAt: data.exportedAt.toISOString() },
-      organization: data.organization,
-      tables,
-    },
-    null,
-    2,
-  );
 }

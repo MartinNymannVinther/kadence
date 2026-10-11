@@ -100,3 +100,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0078](0078-programmes-and-the-week.md)                                    | Programmes and the week: one word for a forløb, the open page to share, a rider lays one into their week      | → 0025, 0050, 0067             |
 | [0079](0079-a-user-manual.md)                                              | A user manual as a document: one page under public/, and a PDF rendered by hand                               | → 0047                         |
 | [0080](0080-a-person-alone.md)                                             | A person alone: a personal workspace, the owner who is also the rider, under 15 through a parent              | → 0004, 0010, 0048, 0061, 0077 |
+| [0088](0088-the-trail-without-files-and-an-export-with-them.md)            | The trail without files, a deleted workspace as one event, demos leave no trail, the export has the files     | → 0003, 0005, 0048, 0054       |

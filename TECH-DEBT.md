@@ -87,7 +87,7 @@ test, not a line in a hardening pass.
 container behind one proxy and says so. An installation scaled to several
 instances gets a limit per instance rather than a limit. The file is
 written so that it is the only one to replace; the call sites do not
-change.
+change. The export's limits per workspace (ADR 0088) are among them.
 
 ### The workspace model key is bound to its workspace, but old ciphertexts are not
 
@@ -290,6 +290,16 @@ Paid in wave 4: `erase_rider` (drizzle/0006) deletes one rider and the
 audit rows about them, checked by the function itself like
 `delete_workspace`, and records that an erasure happened without naming
 anyone (tests/team/erase.test.ts).
+
+### The trail copied every file, and a demo's trail stayed
+
+Paid with backlog S-04 (drizzle/0042, ADR 0088): the audit trigger
+empties `bytes` and `streams` before it builds the row image, a deleted
+workspace is one event instead of a row per row it held, an expired
+demo goes with every audit row about it, and the export names its
+columns, reads the trail in pages, is limited per workspace and has the
+ride files beside it as a ZIP. The spreadsheet's trail is capped at the
+newest 10,000 rows; the JSON has all of it.
 
 ### Members can read each other's addresses in the database
 

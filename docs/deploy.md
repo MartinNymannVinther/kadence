@@ -210,7 +210,15 @@ for a while, which shows in its member list and in the log.
 A club's own owner deletes it from Indstillinger → Arbejdsrum. If that
 owner has left and the club asks you in writing, delete it from a
 checkout with `pnpm script scripts/delete-club.ts <org id> "<name>"
-"<why>"`; the reason stays in the log.
+"<why>"`; the reason stays in the log, with how many rows each table
+held. Either way the club's rows and its audit trail go; the trail keeps
+one line that it happened (ADR 0088).
+
+Each club takes its own data out under Indstillinger → Data: a
+spreadsheet or JSON three times an hour, and its ride files as a ZIP
+("Hent dine filer") twice an hour. Both are streamed and read a page or
+a few files at a time, so a large club's download does not hold the
+server's memory; a large club's ZIP can still take a while.
 
 When you host for clubs, the club is the data controller and you are its
 processor: have a data processing agreement in place before the first
@@ -239,7 +247,9 @@ curl -X POST https://kadence.haij.dk/api/demo/cleanup   # on the server
 ```
 
 The endpoint needs no secret because it can only delete demos that have
-already expired.
+already expired. A demo goes with its throwaway accounts and every audit
+row about them (`delete_expired_demo()`, ADR 0088), so `DEMO=on` does not
+make the audit trail grow.
 
 Turn it on only where you mean it. A demo instance is not the same
 installation as an organisation's own Kadence: `DEMO=on` hands out accounts,
@@ -511,6 +521,13 @@ Push to `main` → Coolify redeploys. The `migrate` service runs before the
 new app container starts, so migrations are always applied first. Keep
 migrations backwards compatible with the previous app version (expand →
 migrate → contract) once real users are on the installation.
+
+A migration that builds an index on `audit_log` (drizzle/0042 builds
+three) holds writes to it while it builds, and every write in Kadence
+writes to it. At a pilot's size that is seconds. On a trail of many
+millions of rows, build the indexes by hand first with
+`CREATE INDEX CONCURRENTLY` and the same names; the migration's
+`IF NOT EXISTS` then skips them.
 
 After each deploy, the About page is the check: if the commit shown is not
 the one you pushed, the deploy did not do what you think it did.
