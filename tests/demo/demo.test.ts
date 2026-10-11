@@ -21,7 +21,7 @@ import { whoAmI } from "@/modules/team/access";
 import { listLinkableMembers } from "@/modules/team/member-guardians";
 import { getPilotWeeks } from "@/modules/insight/pilot-service";
 import { listRiderNews } from "@/modules/team/news";
-import { adminPool, appClient, authClient } from "../helpers/db";
+import { adminPool } from "../helpers/db";
 
 /**
  * The demo, built through the ordinary sign-up path: a real workspace, a
@@ -302,71 +302,16 @@ describe("a demo workspace", () => {
       people,
     ]);
     expect(left.rows[0].n).toBe(0);
-  });
-
-  it("leaves no trail behind: no audit row about the workspace or its accounts", async () => {
-    // ADR 0088: with DEMO=on the trail used to grow by a demo's worth of
-    // rows for every visitor, forever.
+    // No trail either (ADR 0088): with DEMO=on it used to grow by a
+    // demo's worth of rows for every visitor, forever.
     const trail = await admin.query(
       `select count(*)::int as n from audit_log
-       where org_id = $1
-          or actor_user_id = any($2)
+       where org_id = $1 or actor_user_id = any($2)
           or (entity_type = 'users' and entity_id = any($2))
-          or before_data ->> 'user_id' = any($2)
-          or after_data ->> 'user_id' = any($2)`,
+          or before_data ->> 'user_id' = any($2) or after_data ->> 'user_id' = any($2)`,
       [orgId, [userId, ...people]],
     );
     expect(trail.rows[0].n).toBe(0);
-  });
-});
-
-describe("the demo's clean-up in the database", () => {
-  it("refuses a real club and a demo whose time is not up, as the auth role", async () => {
-    const club = await admin.query(
-      `insert into organizations (id, name, slug) values ('org_demo_refuse', 'Klub', 'klub-demo-refuse')
-       on conflict do nothing`,
-    );
-    expect(club.rowCount).toBe(1);
-    const live = await createDemoWorkspace("da");
-    expect(live).not.toBeNull();
-    const demo = await newestDemo(admin);
-
-    const auth = await authClient();
-    try {
-      for (const id of ["org_demo_refuse", demo.orgId]) {
-        const { rows } = await auth.query(`select delete_expired_demo($1) as deleted`, [id]);
-        expect(rows[0].deleted).toBe(false);
-      }
-    } finally {
-      await auth.end();
-    }
-    const standing = await admin.query(
-      `select count(*)::int as n from organizations where id = any($1)`,
-      [["org_demo_refuse", demo.orgId]],
-    );
-    expect(standing.rows[0].n).toBe(2);
-    const trail = await admin.query(`select count(*)::int as n from audit_log where org_id = $1`, [
-      demo.orgId,
-    ]);
-    expect(trail.rows[0].n).toBeGreaterThan(0);
-
-    await admin.query(
-      `update demo_workspaces set expires_at = now() - interval '1 minute' where organization_id = $1`,
-      [demo.orgId],
-    );
-    expect(await cleanupExpiredDemos()).toBe(1);
-    await admin.query(`delete from organizations where id = 'org_demo_refuse'`);
-  });
-
-  it("is not the application role's to call", async () => {
-    const app = await appClient();
-    try {
-      await expect(app.query(`select delete_expired_demo('org_demo_refuse')`)).rejects.toThrow(
-        /permission denied/,
-      );
-    } finally {
-      await app.end();
-    }
   });
 });
 

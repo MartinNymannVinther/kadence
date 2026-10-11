@@ -1,9 +1,9 @@
-import { FileJson, FileSpreadsheet } from "lucide-react";
+import { FileArchive, FileJson, FileSpreadsheet, Info } from "lucide-react";
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { EXPORT_TABLES } from "@/modules/export/tables";
+import { AUDIT_SHEET, AUDIT_SHEET_ROWS, EXPORT_TABLES } from "@/modules/export/tables";
 import { cn } from "@/lib/utils";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -18,11 +18,31 @@ export async function generateMetadata(): Promise<Metadata> {
  * what you send an accountant, the JSON is what you hand another system the
  * day you want to leave. The page says plainly that neither is a backup,
  * because the failure mode of believing otherwise is losing everything
- * while feeling covered.
+ * while feeling covered. The ride files are a third download beside them
+ * (ADR 0088). Each is limited per workspace and hour; a download past the
+ * limit comes back here with `?limited=`, and the page says when it lifts.
  */
-export default async function DataExportPage() {
+export default async function DataExportPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const t = await getTranslations("app.dataExport");
-  const sheets = EXPORT_TABLES.map((table) => table.sheet).join(", ");
+  const locale = await getLocale();
+  const sheets = [...EXPORT_TABLES.map((table) => table.sheet), AUDIT_SHEET].join(", ");
+  // The routes send a person back to the page in the language they use.
+  const href = (path: string, query: string[] = []) => {
+    const all = locale === "en" ? [...query, "locale=en"] : query;
+    return all.length > 0 ? `${path}?${all.join("&")}` : path;
+  };
+  const search = await searchParams;
+  const minutes = Math.max(1, Math.min(60, Number(search.minutes) || 60));
+  const limited =
+    search.limited === "export"
+      ? t("limitedExport", { minutes })
+      : search.limited === "files"
+        ? t("limitedFiles", { minutes })
+        : null;
 
   return (
     <div className="flex max-w-2xl flex-col gap-5">
@@ -31,18 +51,31 @@ export default async function DataExportPage() {
         <p className="text-meta text-2sm leading-relaxed">{t("subtitle")}</p>
       </div>
 
+      {limited && (
+        <p
+          role="status"
+          className="bg-warning-tint flex items-start gap-2 rounded-lg px-3 py-2.5 text-2sm"
+        >
+          <Info aria-hidden className="mt-0.5 size-4 shrink-0" />
+          {limited}
+        </p>
+      )}
+
       <Card>
         <CardHeader>
           <CardTitle>{t("xlsxTitle")}</CardTitle>
           <CardDescription>{t("xlsxBody")}</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          <a href="/api/export" className={cn(buttonVariants({ size: "sm" }), "w-fit")} download>
+          <a href={href("/api/export")} className={cn(buttonVariants({ size: "sm" }), "w-fit")}>
             <FileSpreadsheet data-slot="icon" />
             {t("xlsxAction")}
           </a>
           <p className="text-meta text-2sm leading-relaxed">
             {t("sheetsLabel")} {t("membersSheet")}, {sheets}.
+          </p>
+          <p className="text-meta text-2sm leading-relaxed">
+            {t("auditNote", { rows: AUDIT_SHEET_ROWS })}
           </p>
         </CardContent>
       </Card>
@@ -54,12 +87,27 @@ export default async function DataExportPage() {
         </CardHeader>
         <CardContent>
           <a
-            href="/api/export?format=json"
+            href={href("/api/export", ["format=json"])}
             className={cn(buttonVariants({ size: "sm", variant: "outline" }), "w-fit")}
-            download
           >
             <FileJson data-slot="icon" />
             {t("jsonAction")}
+          </a>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("filesTitle")}</CardTitle>
+          <CardDescription>{t("filesBody")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <a
+            href={href("/api/export/files")}
+            className={cn(buttonVariants({ size: "sm", variant: "outline" }), "w-fit")}
+          >
+            <FileArchive data-slot="icon" />
+            {t("filesAction")}
           </a>
         </CardContent>
       </Card>

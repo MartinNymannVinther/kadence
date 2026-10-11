@@ -4,11 +4,12 @@ import type { Pool } from "pg";
 import { auth } from "@/core/auth/auth";
 import { riders } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
-import { exportFileName, exportToJson, exportToXlsx } from "@/modules/export/format";
-import { buildOrgExport } from "@/modules/export/service";
+import { exportFileName, exportToXlsx } from "@/modules/export/format";
+import { buildOrgExport, readNewestAudit } from "@/modules/export/service";
 import { EXPORT_TABLES, MEMBERS_SHEET } from "@/modules/export/tables";
 import { deleteWorkspace, sqlStateOf } from "@/modules/export/workspace";
 import { adminPool } from "../helpers/db";
+import { jsonExport } from "../helpers/export";
 import { seedMember, seedWorkspace } from "../helpers/workspace";
 
 /**
@@ -65,12 +66,11 @@ describe("the workspace export", () => {
 
   it("writes the same rows as JSON and as a workbook", async () => {
     const data = await buildOrgExport(b);
-    const json = JSON.parse(exportToJson(data));
+    const json = await jsonExport(b, data);
     expect(json.kadence.format).toBe(1);
-    expect(json.tables.Ryttere.map((row: { name: string }) => row.name)).toEqual([
-      `Rytter i ${b.orgId}`,
-    ]);
-    const workbook = exportToXlsx(data);
+    expect(json.tables.Ryttere!.map((row) => row.name)).toEqual([`Rytter i ${b.orgId}`]);
+    expect(json.tables.Revisionsspor!.length).toBeGreaterThan(0);
+    const workbook = exportToXlsx(data, await readNewestAudit(b, data.auditUpTo, 100));
     expect(workbook.subarray(0, 2).toString()).toBe("PK");
     expect(exportFileName("Team Æble", new Date("2026-09-11T10:00:00Z"), "xlsx")).toBe(
       "kadence-team-aeble-2026-09-11.xlsx",
