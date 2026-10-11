@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
   const ctx = await requireOrgContext();
   if (!ctx) return new Response("Unauthorized", { status: 401 });
 
-  const limit = exportRateLimit("files", ctx.orgId);
+  const limit = await exportRateLimit("files", ctx.orgId);
   if (!limit.allowed) {
     return limitedResponse("files", limit, request.nextUrl.searchParams.get("locale"));
   }

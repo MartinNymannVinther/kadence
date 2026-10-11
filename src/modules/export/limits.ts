@@ -18,7 +18,7 @@ export const EXPORT_LIMITS = {
 
 export type ExportKind = keyof typeof EXPORT_LIMITS;
 
-export function exportRateLimit(kind: ExportKind, orgId: string): RateLimit {
+export function exportRateLimit(kind: ExportKind, orgId: string): Promise<RateLimit> {
   const key = kind === "export" ? `export:${orgId}` : `export-files:${orgId}`;
   return rateLimit(key, EXPORT_LIMITS[kind], HOUR);
 }

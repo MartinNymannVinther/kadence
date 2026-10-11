@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
   if (!ctx) return new Response("Unauthorized", { status: 401 });
 
   const params = request.nextUrl.searchParams;
-  const limit = exportRateLimit("export", ctx.orgId);
+  const limit = await exportRateLimit("export", ctx.orgId);
   if (!limit.allowed) return limitedResponse("export", limit, params.get("locale"));
 
   const wantsJson = params.get("format") === "json";
