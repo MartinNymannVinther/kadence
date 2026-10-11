@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { appPool } from "@/core/db/client";
+import { jobsHealth, type JobsHealth } from "@/core/jobs/status";
 import { log, requestIdFrom } from "@/core/log";
 
 export const dynamic = "force-dynamic";
@@ -20,6 +21,12 @@ export const dynamic = "force-dynamic";
  * - `GET /api/health?live=1` is liveness: the process can answer HTTP at
  *   all, nothing more. A database outage must not restart a container
  *   that would otherwise come back the moment the database does.
+ *
+ * - When the database answers, the queue of background jobs is reported
+ *   beside it (docs/adr/0085): how many are due and waiting, how many
+ *   gave up, and how long the oldest has waited. Counts only — no kind,
+ *   no team — and never a reason for 503: a queue that has fallen behind
+ *   is for the person reading the numbers, not for Docker to restart.
  *
  * The log line says what failed, because somebody has to fix it; the
  * response does not, because it is public. Code and message only, never
@@ -52,7 +59,6 @@ export async function GET(request: NextRequest) {
 
   try {
     await withTimeout(appPool.query("select 1"), READY_TIMEOUT_MS);
-    return NextResponse.json({ status: "ok", checks: { db: "ok" } });
   } catch (error) {
     const { code, message } = (error ?? {}) as { code?: string; message?: string };
     await log.error("health: database check failed", {
@@ -62,4 +68,15 @@ export async function GET(request: NextRequest) {
     });
     return NextResponse.json({ status: "degraded" }, { status: 503 });
   }
+
+  let jobs: JobsHealth | null = null;
+  try {
+    jobs = await withTimeout(jobsHealth(), READY_TIMEOUT_MS);
+  } catch (error) {
+    await log.warn("health: jobs not counted", {
+      requestId: requestIdFrom(request.headers),
+      code: (error as { code?: string } | null)?.code,
+    });
+  }
+  return NextResponse.json({ status: "ok", checks: { db: "ok" }, ...(jobs ? { jobs } : {}) });
 }

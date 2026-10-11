@@ -2,10 +2,13 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { AiMonth } from "@/components/insight/ai-month";
+import { InstallationJobs } from "@/components/insight/installation-jobs";
 import { PilotClubs } from "@/components/insight/pilot-clubs";
 import { personsSummary, platformOverview } from "@/core/admin/overview";
 import { getSession } from "@/core/auth/session";
 import { formatDay } from "@/core/dates";
+import { env } from "@/core/env";
+import { jobsOverview } from "@/core/jobs/status";
 import { Link } from "@/i18n/navigation";
 import { DEFAULT_MONTHLY_BUDGET_MICRO } from "@/modules/ai/limits";
 import { formatEuro } from "@/modules/ai/prices";
@@ -24,7 +27,9 @@ export async function generateMetadata(): Promise<Metadata> {
  * line, "Enkeltpersoner", with how many, how many were in this week,
  * their files and AI calls (ADR 0080). This month's AI cost per club
  * against its budget, which the owner can change here, and one total
- * line (ADR 0089). Anyone else gets a 404, as for admission.
+ * line (ADR 0089). Below them, the background work (ADR 0085): jobs
+ * waiting and given up, and when a worker last took one. Anyone else
+ * gets a 404, as for admission.
  */
 export default async function InstallationPage() {
   const session = await getSession();
@@ -33,6 +38,7 @@ export default async function InstallationPage() {
   // Clubs one by one; persons alone as one line of counts, never names (ADR 0080).
   const clubs = overview.filter((c) => c.kind === "club");
   const persons = personsSummary(overview);
+  const jobs = await jobsOverview();
 
   const t = await getTranslations("settings.installation");
   const locale = await getLocale();
@@ -122,6 +128,8 @@ export default async function InstallationPage() {
       />
 
       {clubs.length > 0 && <PilotClubs clubs={clubs} />}
+
+      <InstallationJobs jobs={jobs} worker={env.WORKER === "on"} />
 
       <div className="border-border bg-card flex flex-col gap-1.5 rounded-xl border p-4 text-2sm leading-relaxed">
         <p>{t("privacy")}</p>

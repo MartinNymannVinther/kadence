@@ -275,6 +275,11 @@ describe("rls coverage (guards future tables)", () => {
     // written on every limited request. The same kind of row as
     // Better Auth's rate_limits beside it, and as little anybody's.
     "app_rate_limits",
+    // The background jobs (drizzle/0047, docs/adr/0085): machinery the
+    // worker writes on every run, holding ids, days, counts and short words
+    // only (src/core/jobs/payload.ts, tests/jobs/payload.test.ts). What a
+    // job does to a team's rows is audited where it lands.
+    "jobs",
     // Admission, which happens before a workspace exists to own it.
     "access_requests",
     "access_invitations",
@@ -382,6 +387,13 @@ describe("rls coverage (guards future tables)", () => {
     // Links a new member to the rider or guardian row a coach prepared,
     // for an invitation the caller accepted to their own address.
     "claim_invitation_links",
+    // Which teams have riders with a UCI ID, and one coach of each, for the
+    // hourly job that reads races from Cykling Danmark with nobody signed in
+    // (drizzle/0047, docs/adr/0085). The team's id and the coach's user id,
+    // and nothing else — no rider, no UCI ID, no name. Everything after it
+    // runs as that coach, under the ordinary policies, as the coach's own
+    // visit does; tests/jobs/dcu-teams-due.test.ts proves what it answers.
+    "dcu_teams_due",
     // Deletes a demo whose time is up, its throwaway accounts and every
     // audit row about either, for the clean-up on the auth role
     // (drizzle/0042, docs/adr/0084). Refuses, by doing nothing, anything

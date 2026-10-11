@@ -3,7 +3,8 @@
 Status: accepted · Date: 2026-10-06 · Amended 2026-10-06: a coach's
 wellbeing reminder (P1-02) and a test push (P1-05) · Amended 2026-10-07:
 a check-in that turns red later (P2-17), plan changes that know their
-sender (P2-12) and reminders that leave the audit trail alone (P2-13)
+sender (P2-12) and reminders that leave the audit trail alone (P2-13) ·
+Amended by ADR 0085: the run is a recurring job, not a timer
 
 ## Context
 

@@ -126,7 +126,10 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
       ? await listOwnTemplates(ctx, { riderId: rider.id })
       : [];
   const events = withResults(eventRows.map(toEventCard), results);
-  // Kadence has no scheduled job: a coach's visit is when the races are read again.
+  // A coach's visit puts the stale riders' races in the queue (ADR 0039,
+  // 0085). after() only for the putting in, which is a query or two the
+  // page need not wait for; the reading is a job. Lost in a deploy, it
+  // loses nothing: the hourly dcu.races job finds the same riders.
   if (me.isCoach) after(() => refreshStaleRaces(ctx, riderIds));
   const templateOptions = [...ownTemplates, ...templates].map((tpl) => ({
     id: tpl.id,

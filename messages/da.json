@@ -525,6 +525,16 @@
         "counts": "{count, plural, one {# personligt arbejdsrum} other {# personlige arbejdsrum}}, {seen, plural, one {# brugt} other {# brugt}} den seneste uge · {mb, number} MB filer · {ai, plural, one {# AI-kald} other {# AI-kald}} det seneste døgn",
         "aiMonth": "{cost} til AI denne måned",
         "privacy": "Folk, der bruger Kadence alene. Du ser kun tallene samlet, aldrig navne."
+      },
+      "jobs": {
+        "title": "Baggrundsarbejde",
+        "counts": "{pending, plural, =0 {Intet venter} one {# job venter} other {# job venter}}, og {failed, plural, =0 {intet er opgivet} one {# er opgivet} other {# er opgivet}}.",
+        "oldest": "Det ældste har ventet {minutes, plural, one {# minut} other {# minutter}}.",
+        "last": "Sidst taget: {when}.",
+        "never": "Intet job er taget endnu.",
+        "inWorker": "En worker-container kører jobbene.",
+        "inApp": "Appen kører jobbene selv, fordi der ikke er sat en worker op.",
+        "failedHelp": "Et opgivet job er prøvet fem gange. Vejledningen til drift (docs/deploy.md) fortæller, hvordan du ser det og prøver det igen."
       }
     },
     "ai": {

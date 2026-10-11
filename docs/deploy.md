@@ -278,12 +278,11 @@ sees is the product rather than a mock of it. Three things keep it
 bounded: five demos an hour per address, two hundred live demos at once,
 and an expiry on every one of them.
 
-Cleanup runs on each visit, so an installation that gets visitors needs no
-scheduler. If yours is quiet, or you would rather not rely on that, use
-either:
+Cleanup runs every hour as a job (section 6e, ADR 0085), and before each
+new demo, so there is nothing to schedule. To run it now:
 
 ```bash
-pnpm script scripts/cleanup-demos.ts   # on a checkout; the images carry no scripts
+pnpm script scripts/cleanup-demos.ts   # on a checkout; the app's image carries no scripts
 curl -X POST https://kadence.haij.dk/api/demo/cleanup   # on the server
 ```
 
@@ -396,7 +395,8 @@ The open page of Danish U19 and U23 teams (ADR 0072) reads the UCI and
 Cykling Danmark once a day and keeps what it read — a JSON file and a
 few photographs — in the `kadence-teams` volume at `/data/teams`. The
 image makes that directory owned by the app's user, so a volume made
-after 8 October 2026 is writable from the start.
+after 8 October 2026 is writable from the start. The worker (section 6e)
+does the daily refresh and shares the volume, as the same user.
 
 A volume made **before** that (the first deploy of the page) is owned by
 root, and the app cannot write into it. The page still works — it keeps
@@ -424,8 +424,8 @@ pnpm script scripts/push-keys.ts
 Put the three lines it prints into Coolify: `PUSH_PUBLIC_KEY`,
 `PUSH_PRIVATE_KEY` (a secret) and `PUSH_CONTACT` (a `mailto:` the push
 services may write to). Redeploy, and Settings → Mig offers each person
-"Påmindelser" on their own browser. The app runs the reminders itself
-every ten minutes; there is nothing to schedule. If you would rather
+"Påmindelser" on their own browser. The worker runs the reminders every
+ten minutes (section 6e); there is nothing to schedule. If you would rather
 drive them from cron, `curl -X POST https://kadence.haij.dk/api/push/tick`
 does one run and is safe to call as often as you like.
 
@@ -490,6 +490,65 @@ under træning"), or as ill. Within ten minutes, at any hour, the coach's
 phone says "En rytter har brug for en snak", and tapping it opens the
 points of attention under Kalender. Saving the same check-in again sends
 nothing more that day.
+
+## 6e. The worker
+
+Some of Kadence's work happens with nobody waiting for it: the reminder
+run every ten minutes, a ride Wahoo, Garmin or Polar says was saved,
+races from Cykling Danmark, the teams page once a day, the demos past
+their 24 hours, and the tidying of the counters. Each is a row in the
+`jobs` table (ADR 0085), written before anybody is told it will be done,
+and the **worker** takes them one at a time. A deploy or a crash in the
+middle of a job loses nothing: the job's five-minute lease runs out and
+it is taken again. A job may therefore run twice, and every kind is
+written so that a second run changes nothing.
+
+**What runs where.** `docker-compose.yml` has a `worker` service beside
+`app`: the same Dockerfile (its `worker` stage), the same source, the
+same production dependencies and the same environment, run with
+`node_modules/.bin/tsx scripts/worker.ts` instead of Next. It answers no
+HTTP and publishes no port, shares the `kadence-teams` volume with the
+app, and restarts by itself. `WORKER` is `on` for both, which tells the
+app to only put jobs in the queue. Coolify builds and starts it with the
+rest; there is nothing to set.
+
+An installation that wants one container leaves the worker out
+(`docker compose up -d --scale worker=0`) and sets `WORKER=off`: the app
+then runs the jobs itself, the way it ran the reminder timer before.
+Never leave the worker out with `WORKER` on, or nothing runs the jobs —
+the health check and the Installation page both show it within minutes.
+
+**Seeing that it works.** `GET /api/health` reports, beside the
+database, `jobs: { pending, failed, oldestPendingSeconds }`: jobs due
+and not yet run, jobs that gave up, and how long the oldest due job has
+waited. A worker that keeps up keeps `oldestPendingSeconds` under a
+minute; a number that only grows means the worker is down or stuck
+(`docker logs` on the worker container, or Coolify's log viewer).
+Settings → Installation shows the same, and when a worker last took a
+job — at least every fifteen minutes while one runs, because the sweep
+is a job too. Uptime Kuma (section 7b) can watch `oldestPendingSeconds`
+with a keyword or JSON-query monitor.
+
+**When a job gives up.** A failed job is tried again after 1, 5, 15, 60
+and 240 minutes; after the fifth try it stays in the table with its last
+error (a short word: `DeviceHttpError:status`, `timeout`, …, never a
+message) and is logged as `jobs: gave up`. A provider down for a few
+minutes is what the tries are for; a job that gave up waits for a person.
+See them, and try them again once the cause is mended, with:
+
+```bash
+docker compose exec worker node_modules/.bin/tsx scripts/retry-jobs.ts          # lists them
+docker compose exec worker node_modules/.bin/tsx scripts/retry-jobs.ts <job id> # that one, now
+docker compose exec worker node_modules/.bin/tsx scripts/retry-jobs.ts --all    # every one, now
+```
+
+(In Coolify, the worker's terminal runs the same command without
+`docker compose exec worker`.) Jobs that are done are deleted after a
+day and jobs that gave up after thirty, by the sweep.
+
+**Locally**, `pnpm dev` runs the jobs itself unless `.env` says
+`WORKER=on`; then `pnpm script scripts/worker.ts` in a second terminal is
+the worker.
 
 ## 7. Backups: to the minute, and a second copy
 
@@ -733,7 +792,7 @@ runs on, besides the alert it sends you.
    which would need a row here first if it is not EU-hosted.
 
 **Docker's own logs** are capped, not silenced: the `logging:` block on
-`db`, `migrate` and `app` in `docker-compose.yml` keeps at most 100 MB
+`db`, `migrate`, `app` and `worker` in `docker-compose.yml` keeps at most 100 MB
 per service (five files of 20 MB, rotated) instead of growing without a
 limit until the disk under the database is the thing that runs out.
 Read them with `docker logs <container>` on the VPS, or in Coolify's own

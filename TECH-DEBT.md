@@ -52,9 +52,11 @@ The adapters (src/modules/devices) are built from the public docs; the
 endpoints those do not pin down are marked "verify against the partner
 docs on approval" in the code. Garmin does not sign its pings (what a
 forged one can do is written at `verifyWebhook`), a ride whose download
-fails is not retried by the provider (the rider sees it in the link's
-last error and can upload the file), and two refreshes of one link at
-once are not serialised. All of it waits for developer access. Garmin
+fails because the provider is down is tried again by Kadence's own
+worker for about five hours (ADR 0085) and then waits for
+`scripts/retry-jobs.ts` (the rider sees it in the link's last error and
+can upload the file), and two refreshes of one link at once are not
+serialised. All of it waits for developer access. Garmin
 has taken no new partners since March 2026
 (docs/research/garmin-without-partner-access.md), and a coach reported
 in June 2026 that Wahoo no longer passes on heart rate for riders under
@@ -81,23 +83,21 @@ with `generateStaticParams` and `setRequestLocale`.
 That is a real trade with a real cost. It deserves its own change, with a
 test, not a line in a hardening pass.
 
-### What is still per process
+### The worker runs one job at a time
 
-Paid in October 2026 (docs/adr/0083): the rate limits, the places held
-while a ride is read, Cykling Danmark's six readings a minute and one per
-rider, a rider's own last reading, the test push's moment and the demo's
-nonce are kept in the database or derived from the secret, so they hold
-across a restart and across instances.
+One worker container takes the background jobs one after the other
+(ADR 0085). A slow page at Cykling Danmark or a long reminder run holds
+up a ride's import by as long as it takes, bounded by the kind's
+timeout. Two workers would be safe (SKIP LOCKED) and are one line in
+`docker-compose.yml`; they wait until `oldestPendingSeconds` in
+`/api/health` says they are needed (plan §5.5). With `WORKER=on` and no
+worker running, nothing runs the jobs; the health check and the
+Installation page show it, and nothing pages anybody yet.
 
-What remains is the line the DCU readings wait in
-(`src/modules/results/queue.ts`): its order is this instance's list of
-work, and a restart loses it until the next visit fills it again. Two
-instances may each queue the same rider; the shared per-rider place and
-`races_checked_at` keep the page from being read twice. It moves to the
-job table when one exists (plan step 1, backlog S-06). The reminder
-timer (`src/modules/push/timer.ts`) also runs in every instance; its
-marks are in the database, so a second instance repeats the work but
-not the reminders.
+What still lives in one process is the teams page's fallback when its
+volume will not take a write (`latest` in `src/modules/teams/refresh.ts`,
+ADR 0072): the process that read the sources keeps them in memory, and
+the log says why.
 
 ### The workspace model key is bound to its workspace, but old ciphertexts are not
 
@@ -293,6 +293,15 @@ hides most of it from the course; whether it should be seen more is a
 question of taste, not of the map.
 
 ## Paid
+
+### What was still per process
+
+Paid with backlog S-06 (drizzle/0047, ADR 0085): the line the readings
+from Cykling Danmark waited in is jobs in the database, the reminder
+timer is a recurring job taken by one worker however many app instances
+run, a ride a provider told Kadence about is a job written before the
+provider's 200 and tried again when the provider was down, and the teams
+page's one-refresh-at-a-time is a place in the counters.
 
 ### A rider cannot yet have their own trail erased
 

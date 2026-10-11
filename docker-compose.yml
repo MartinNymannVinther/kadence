@@ -102,7 +102,7 @@ services:
         KADENCE_COMMIT: ${KADENCE_COMMIT:-}
         KADENCE_BUILT_AT: ${KADENCE_BUILT_AT:-}
     restart: unless-stopped
-    environment:
+    environment: &app-environment
       APP_DATABASE_URL: postgres://kadence_app:${KADENCE_APP_PASSWORD:?}@db:5432/kadence
       AUTH_DATABASE_URL: postgres://kadence_auth:${KADENCE_AUTH_PASSWORD:?}@db:5432/kadence
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?set BETTER_AUTH_SECRET (openssl rand -base64 32)}
@@ -153,6 +153,14 @@ services:
       SMTP_USER: ${SMTP_USER:-}
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
       MAIL_FROM: ${MAIL_FROM:-}
+      # Who runs the background jobs (docs/adr/0085): "on" here, because
+      # the worker service below runs them and the app only puts them in
+      # the queue. To run everything in the one app container instead, set
+      # WORKER=off and leave the worker out (`docker compose up -d --scale
+      # worker=0`); the app then runs the jobs itself, as it ran the
+      # reminder timer before. The worker container runs them whatever
+      # this says.
+      WORKER: ${WORKER:-on}
       # Each workspace's AI budget for the month in micro-euro, 5 € unless
       # set, and the optional emergency roof over model calls across the
       # installation, off unless set (docs/adr/0089, 0009). An unset
@@ -187,6 +195,37 @@ services:
     # a proxy should bind loopback explicitly and put one in front.
     expose:
       - "3000"
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+  # The background jobs (docs/adr/0085): reminders, rides from Wahoo,
+  # Garmin and Polar, races from Cykling Danmark, the teams page and the
+  # demos' clean-up, taken from the jobs table one at a time. The same
+  # Dockerfile, source and production dependencies as the app, run without
+  # Next (the Dockerfile's worker stage says why it is not the runner's
+  # standalone build). One replica: two would be safe, since each job is
+  # taken by one worker with FOR UPDATE SKIP LOCKED, but not faster, and
+  # nothing here needs it yet. It answers no HTTP and publishes no port; it
+  # shares the app's environment and the teams page's volume, since the
+  # daily refresh writes there.
+  worker:
+    build:
+      context: .
+      target: worker
+      args:
+        KADENCE_COMMIT: ${KADENCE_COMMIT:-}
+        KADENCE_BUILT_AT: ${KADENCE_BUILT_AT:-}
+    restart: unless-stopped
+    environment: *app-environment
+    volumes:
+      - kadence-teams:/data/teams
+    logging: *default-logging
+    # Docker's grace before SIGKILL; the worker gives back what it has not
+    # started and waits eight seconds for the job it is running.
+    stop_grace_period: 10s
     depends_on:
       db:
         condition: service_healthy

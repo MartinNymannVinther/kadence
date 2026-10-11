@@ -189,3 +189,31 @@ protocol, so nothing is added to the app. Run it, and commit the PDF,
 whenever the manual's text or pictures change; the pictures are taken by
 hand from a team with sessions in it (the seed in `seed-test-teams.ts`
 gives one).
+
+## worker.ts
+
+The worker that runs the background jobs (ADR 0085): reminders, rides
+from Wahoo, Garmin and Polar, races from Cykling Danmark, the teams page
+and the demos' clean-up.
+
+```
+pnpm script scripts/worker.ts
+```
+
+In production it is the `worker` service in `docker-compose.yml`, and
+the app only puts work in the queue (`WORKER=on`). Locally, `pnpm dev`
+runs the jobs itself unless `.env` says `WORKER=on`; then run this
+beside it. docs/deploy.md, section 6e, has the rest.
+
+## retry-jobs.ts
+
+The jobs that gave up after their last try, and new tries for them once
+the cause is mended.
+
+```
+pnpm script scripts/retry-jobs.ts               # lists them
+pnpm script scripts/retry-jobs.ts <job id>      # tries that one again, now
+pnpm script scripts/retry-jobs.ts --all [kind]  # every one, or every one of a kind
+```
+
+In the container: `docker compose exec worker node_modules/.bin/tsx scripts/retry-jobs.ts`.
