@@ -636,5 +636,12 @@ efter S-01.
   rum kunne ikke bruges i Better Auth 1.7.1; i stedet Better Auths
   server-only vej med `userId` og en before-hook, der afviser den fra et
   request.
-- **Trin 1** er i gang oven på trin 0: S-06 (worker), S-07 (mail, bygget)
-  og S-10 (pgbackrest og AI med pris); de samles på `feat/trin-1`.
+- **Trin 1** på `feat/trin-1`, PR #47 med S-02 som base: S-06 (ADR 0085,
+  migrering 0047), S-07 (ADR 0086, 0048) og S-10 (ADR 0089, 0049).
+  pgBackRest ligger i db-billedet selv oven på `postgres:16`, fordi
+  `archive_command` alligevel kører der; retention er 29 dage, så
+  vilkårenes 30 holder. Ikke prøvet mod Hetzners S3.
+- **S-08 og S-09** er i gang oven på trin 1 (migreringer 0050 og 0051,
+  ADR 0088 og 0087).
+
+Rækkefølgen af PR'er til merge: #44, #45, #46, #47, og derefter S-08/S-09.
