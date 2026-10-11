@@ -1,7 +1,8 @@
 import { and, eq, sql } from "drizzle-orm";
 import { auth } from "@/core/auth/auth";
-import { memberships, users } from "@/core/db/schema";
+import { memberships, organizations, users } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
+import { errorName, log } from "@/core/log";
 import { memberAddress, memberAddresses } from "@/modules/team/addresses";
 
 /**
@@ -62,6 +63,18 @@ export async function currentRole(ctx: OrgContext): Promise<string | null> {
   });
 }
 
+/** The active workspace's name, as its members see it. */
+export async function workspaceName(ctx: OrgContext): Promise<string | null> {
+  return withOrgContext(ctx, async (tx) => {
+    const [row] = await tx
+      .select({ name: organizations.name })
+      .from(organizations)
+      .where(eq(organizations.id, ctx.orgId))
+      .limit(1);
+    return row?.name ?? null;
+  });
+}
+
 export type DeleteResult = "deleted" | "notOwner" | "nameMismatch" | "failed";
 
 /** Postgres' `insufficient_privilege`, which is how a refusal says so. */
@@ -118,7 +131,7 @@ export async function deleteWorkspace(
     // docker-compose.yml starts the app only on the migration step's
     // `service_completed_successfully`.
     if (sqlStateOf(error) === INSUFFICIENT_PRIVILEGE) return "notOwner";
-    console.error("workspace: delete failed", error);
+    await log.error("workspace: delete failed", { orgId: ctx.orgId, error: errorName(error) });
     return "failed";
   }
   return "deleted";

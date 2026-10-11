@@ -10,6 +10,7 @@ import { LeaveTeamButton } from "@/components/team/leave-team-button";
 import { MyChildren } from "@/components/team/my-children";
 import { MyGuardians } from "@/components/team/my-guardians";
 import { RemindersCard } from "@/components/push/reminders-card";
+import { WeekMailCard } from "@/components/push/week-mail-card";
 import { OwnRacesCard } from "@/components/team/own-races-card";
 import { SharingForm } from "@/components/team/sharing-form";
 import { ThresholdsForm } from "@/components/team/thresholds-form";
@@ -17,8 +18,10 @@ import { getOrgContext } from "@/core/auth/session";
 import { todayInCopenhagen } from "@/core/dates";
 import { env } from "@/core/env";
 import { remindersOn } from "@/core/features";
+import { mailConfigured } from "@/core/mail/mailer";
 import { Link, redirect } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+import { weekMailOffered, weekMailState } from "@/modules/push/mail-choice";
 import { kindsForMe } from "@/modules/push/subscriptions";
 import { readsRacesFor } from "@/modules/results/switch";
 import { dcuProfileUrl, formatUciId } from "@/modules/results/uci-id";
@@ -53,6 +56,8 @@ export default async function MePage() {
   const guardians = rider ? await listGuardians(ctx, rider.id) : [];
   const nothing = !rider && (me?.children.length ?? 0) === 0;
   const tone = sidebarToneFrom((await cookies()).get(SIDEBAR_TONE_COOKIE)?.value);
+  // The parents' week by mail too, where the installation sends mail (docs/adr/0086).
+  const weekMail = mailConfigured() && weekMailOffered(me) ? await weekMailState(ctx) : null;
 
   return (
     <div className="flex max-w-2xl flex-col gap-5">
@@ -107,6 +112,8 @@ export default async function MePage() {
         />
       )}
 
+      {weekMail && <WeekMailCard initial={weekMail.on} email={weekMail.email} />}
+
       {nothing && (
         <p className="border-border bg-card text-meta rounded-xl border p-4 text-2sm leading-relaxed">
           {me?.isCoach ? t("coachNote") : t("memberNote")}
@@ -123,7 +130,7 @@ export default async function MePage() {
 
       {leavesFromMe(me) && (
         <div className="border-hairline border-t pt-5">
-          <LeaveTeamButton place="me" />
+          <LeaveTeamButton place="me" history={Boolean(rider)} />
         </div>
       )}
     </div>

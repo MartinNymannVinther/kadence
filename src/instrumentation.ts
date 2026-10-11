@@ -8,8 +8,8 @@
  * `@/core/env`, and every request after it. The container reports "Up",
  * the health check reports 500, and the cause is nowhere near either of
  * those words. That is exactly how the family's first deployment went.
- * The second is to start the reminder timer (docs/adr/0060), when the
- * installation has the keys for it.
+ * The second is to start the app's own worker for background jobs
+ * (docs/adr/0085), unless a worker container runs them (`WORKER=on`).
  *
  * Node runtime only: the edge runtime cannot import pg, and there is no
  * edge runtime in this app anyway. The work sits in instrumentation-node
@@ -18,6 +18,6 @@
  */
 export async function register(): Promise<void> {
   if (process.env.NEXT_RUNTIME !== "nodejs") return;
-  const { validateEnvironmentOrExit, startReminders } = await import("./instrumentation-node");
-  if (await validateEnvironmentOrExit()) await startReminders();
+  const { validateEnvironmentOrExit, startJobs } = await import("./instrumentation-node");
+  if (await validateEnvironmentOrExit()) await startJobs();
 }

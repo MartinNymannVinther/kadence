@@ -95,7 +95,12 @@ looked up at runtime is a version that can lie.
    is shown or laid out.
 4. The AI writes nothing but its own line in the conversation. It never
    deletes, never sends, never changes the library.
-5. Prompt length and call frequency have a ceiling (`src/modules/ai/limits.ts`).
+5. Prompt length and call frequency have a ceiling, and each workspace a
+   monthly budget in micro-euro (`src/modules/ai/limits.ts`, ADR 0089).
+   A call through `askForJson()` or `streamAnswer()` has its tokens and
+   cost written onto its row afterwards (`src/modules/ai/usage.ts`); a
+   door that calls a provider directly records them with
+   `recordAiUsage` too.
 6. `docs/subprocessors.md` says what the prompt contains. A feature that
    sends something new updates that page in the same PR.
 

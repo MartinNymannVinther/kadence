@@ -8,6 +8,7 @@ import { redirect } from "@/i18n/navigation";
 import { getPilotWeeks } from "@/modules/insight/pilot-service";
 import { whoAmI } from "@/modules/team/access";
 import { getTeamSettings } from "@/modules/team/settings";
+import { workspaceKind } from "@/modules/team/workspace-kind";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("settings.team");
@@ -28,19 +29,24 @@ export default async function TeamSettingsPage() {
     redirect({ href: "/login", locale });
     return null;
   }
-  const [me, settings, weeks] = await Promise.all([
+  const [me, settings, weeks, kind] = await Promise.all([
     whoAmI(ctx.orgId, ctx.userId),
     getTeamSettings(ctx),
     getPilotWeeks(ctx),
+    workspaceKind(ctx.orgId, ctx.userId),
   ]);
+  // One person's own training (ADR 0080): "Træning", without the team's
+  // kind, championship or the pilot's numbers, which are about a team.
+  const personal = kind === "personal";
   return (
     <div className="flex flex-col gap-5">
       <TeamSettingsForm
         settings={settings}
         canManage={Boolean(me?.isCoach)}
         clubChampionship={featureOn("clubChampionship")}
+        personal={personal}
       />
-      {weeks && <PilotCard weeks={weeks} />}
+      {weeks && !personal && <PilotCard weeks={weeks} />}
     </div>
   );
 }

@@ -40,7 +40,7 @@ export async function GET(
   // Not before somebody owns the installation (backlog P1-09).
   if (!(await demoReady())) return refusal("Not found", 404);
 
-  const limit = rateLimit(callerKey(request.headers, "demo"), 5, 60 * 60 * 1000);
+  const limit = await rateLimit(callerKey(request.headers, "demo"), 5, 60 * 60 * 1000);
   if (!limit.allowed)
     return refusal("Too many demo workspaces from this address. Try again later.", 429, {
       "Retry-After": String(limit.retryAfterSeconds),
@@ -48,7 +48,9 @@ export async function GET(
 
   const { locale } = await params;
   const language = locale === "en" ? "en" : "da";
-  const demo = await createDemoWorkspace(language);
+  // "Prøv alene": one rider in a workspace of their own (ADR 0080).
+  const variant = request.nextUrl.searchParams.get("alene") === "1" ? "alone" : "team";
+  const demo = await createDemoWorkspace(language, variant);
   if (!demo) return refusal("The demo is not available right now.", 503);
 
   // Both the destination and the cookie's Secure flag come from the public

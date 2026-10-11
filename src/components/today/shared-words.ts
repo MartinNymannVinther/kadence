@@ -18,12 +18,15 @@ const KINDS = [
 ] as const;
 type Kind = (typeof KINDS)[number];
 
+/** The one refusal that is not the decoder's: the workspace's room for files is used up (docs/adr/0087). */
+type Reason = FitErrorCode | "quota";
+
 /**
- * Why the decoder refuses a file, each with words of its own in
+ * Why a file is refused, each with words of its own in
  * `activities.upload.error`. Every code is here: a new one does not
  * compile until it is.
  */
-const REASONS: Record<FitErrorCode, true> = {
+const REASONS: Record<Reason, true> = {
   not_fit: true,
   truncated: true,
   bad_crc: true,
@@ -33,6 +36,7 @@ const REASONS: Record<FitErrorCode, true> = {
   empty: true,
   unknown_format: true,
   no_activity: true,
+  quota: true,
 };
 
 /** The most rides one share brings in (MAX_SHARED_FILES). */
@@ -40,7 +44,7 @@ const MAX_COUNT = 3;
 
 export type SharedWords =
   | { kind: "imported"; count: number }
-  | { kind: "refused"; reason: FitErrorCode | "generic" }
+  | { kind: "refused"; reason: Reason | "generic" }
   | { kind: Exclude<Kind, "imported" | "refused"> };
 
 export function sharedWords(
@@ -57,7 +61,7 @@ export function sharedWords(
   if (kind === "refused")
     return {
       kind,
-      reason: reason && Object.hasOwn(REASONS, reason) ? (reason as FitErrorCode) : "generic",
+      reason: reason && Object.hasOwn(REASONS, reason) ? (reason as Reason) : "generic",
     };
   return { kind };
 }

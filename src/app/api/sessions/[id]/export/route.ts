@@ -47,7 +47,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   const ctx = await requireOrgContext();
   if (!ctx) return new Response("Unauthorized", { status: 401 });
   // A week is seven files; a person asking for hundreds an hour is not sending a week.
-  if (!rateLimit(`session-export:${ctx.userId}`, 300, HOUR).allowed)
+  if (!(await rateLimit(`session-export:${ctx.userId}`, 300, HOUR)).allowed)
     return new Response("Too many requests", { status: 429 });
   const { id } = await params;
   const asked = request.nextUrl.searchParams.get("format") ?? "fit";

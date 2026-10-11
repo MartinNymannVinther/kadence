@@ -1,8 +1,10 @@
 "use server";
 
 import { headers } from "next/headers";
+import { getLocale } from "next-intl/server";
 import { z } from "zod";
 import { Refused, runAction } from "@/core/action";
+import { mailLocale } from "@/core/mail/words";
 import { inviteMember, type IssuedTeamInvitation } from "@/core/team/service";
 import { bulkInvite, BulkInviteInput } from "./bulk-invite";
 import {
@@ -12,6 +14,7 @@ import {
   GuardianInput,
   removeGuardian,
 } from "./guardians";
+import { mailInvitation, MailInvitationInput } from "./mail-invitation";
 import { linkMemberAsGuardian, MemberGuardianInput } from "./member-guardians";
 import {
   archiveRider,
@@ -34,8 +37,8 @@ import { saveTeamSettings, TeamSettingsInput } from "./settings";
  * the team are refreshed after.
  *
  * An invitation is Better Auth's (src/core/team): only coaches may send
- * one, it binds one address, and no mail is sent — the coach copies the
- * link. The rider or parent row it was sent for is linked when the person
+ * one, and it binds one address. The coach shares the link, or, where the
+ * installation sends mail, sends it to that address (docs/adr/0086). The rider or parent row it was sent for is linked when the person
  * joins (src/modules/team/claim.ts).
  */
 
@@ -169,5 +172,13 @@ export async function eraseRiderAction(raw: unknown) {
     z.object({ riderId: id, confirm: z.literal(true) }),
     (ctx, input) => eraseRider(ctx, input.riderId),
     PATHS,
+  );
+}
+
+/** "Send på mail": an open invitation's link to its own address, in the coach's language. */
+export async function mailInvitationAction(raw: unknown) {
+  const locale = mailLocale(await getLocale());
+  return runAction(raw, MailInvitationInput, (ctx, input) =>
+    mailInvitation(ctx, input.invitationId, locale),
   );
 }

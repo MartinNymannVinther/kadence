@@ -36,6 +36,7 @@ export function AiFailureText({ error }: { error: Failure | string }) {
     );
   const known = [
     "rateLimited",
+    "budget",
     "unreachable",
     "badAnswer",
     "notFound",

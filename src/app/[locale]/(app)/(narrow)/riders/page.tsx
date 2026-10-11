@@ -13,10 +13,12 @@ import { calendarHref } from "@/components/calendar/href";
 import { teamSignals } from "@/components/insight/signals";
 import { getOrgContext } from "@/core/auth/session";
 import { todayInCopenhagen } from "@/core/dates";
+import { mailConfigured } from "@/core/mail/mailer";
 import { listPendingInvitations } from "@/core/team/service";
 import { Link, redirect } from "@/i18n/navigation";
 import { getInsights } from "@/modules/insight/service";
 import { whoAmI } from "@/modules/team/access";
+import { workspaceKind } from "@/modules/team/workspace-kind";
 import { listTeamGuardians } from "@/modules/team/guardians";
 import { getTeamName } from "@/modules/team/name";
 import { getRiders } from "@/modules/team/riders";
@@ -60,17 +62,20 @@ export default async function RidersPage({
 
   const showArchived = (await searchParams).archived === "1";
   const today = todayInCopenhagen();
-  const [riders, guardians, invitations, team, insights] = await Promise.all([
+  const [riders, guardians, invitations, team, insights, kind] = await Promise.all([
     getRiders(ctx, showArchived),
     listTeamGuardians(ctx),
     listPendingInvitations(ctx.orgId),
     getTeamName(ctx),
     getInsights(ctx, { today }),
+    workspaceKind(ctx.orgId, ctx.userId),
   ]);
   const pending = new Set(invitations.map((i) => i.id));
   // The badges lead to the rider's entry in the attention list under the team's week.
   const signals = teamSignals(insights);
   const teamWeek = calendarHref({ view: "team" });
+  // "Send på mail" beside "Del", where the installation sends mail (docs/adr/0086).
+  const mailOn = mailConfigured();
 
   return (
     <div className="flex min-w-0 flex-col gap-6">
@@ -79,13 +84,16 @@ export default async function RidersPage({
         subtitle={t("subtitle")}
         actions={
           <>
-            <BulkInviteDialog team={team} today={today} />
+            {/* A whole team at once is a club's (ADR 0064); one person's own
+                workspace adds a rider at a time (ADR 0080). */}
+            {kind !== "personal" && <BulkInviteDialog team={team} today={today} mailOn={mailOn} />}
             <AddRiderDialog />
           </>
         }
       />
       <WaitingInvitations
         team={team}
+        mailOn={mailOn}
         recipients={waitingRecipients({ riders, guardians, pending: invitations })}
       />
       {riders.length === 0 ? (

@@ -1,4 +1,15 @@
-import { index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+import {
+  bigint,
+  check,
+  date,
+  index,
+  integer,
+  pgTable,
+  primaryKey,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
 import { domainId, organizations, users } from "./foundation";
 
 const tenant = () =>
@@ -8,7 +19,14 @@ const tenant = () =>
 
 /**
  * One row per model call, so calls per person and per workspace can be
- * counted and capped. Kept short: no content, only who, what kind, when.
+ * counted and capped, and what they cost added up (docs/adr/0089). Kept
+ * short: no content, only who, what kind, when, and what it spent.
+ *
+ * The row is written before the model is asked, and the tokens and the
+ * cost after it answered; a call that failed keeps nulls. `cost_micro` is
+ * micro-euro, null when the provider gave no token count or the model has
+ * no known price. `billed_to` says whose key paid: the installation's,
+ * which the monthly budget counts, or the workspace's own (ADR 0006).
  */
 export const aiCalls = pgTable(
   "ai_calls",
@@ -18,9 +36,38 @@ export const aiCalls = pgTable(
     userId: text("user_id").references(() => users.id, { onDelete: "set null" }),
     kind: text("kind").notNull(), // draft | split | summary | test
     engine: text("engine").notNull().default(""),
+    provider: text("provider"),
+    model: text("model"),
+    tokensIn: integer("tokens_in"),
+    tokensOut: integer("tokens_out"),
+    costMicro: bigint("cost_micro", { mode: "number" }),
+    billedTo: text("billed_to").notNull().default("installation"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [index("ai_calls_user_created_idx").on(t.userId, t.createdAt)],
+  (t) => [
+    index("ai_calls_user_created_idx").on(t.userId, t.createdAt),
+    check("ai_calls_billed_to", sql`${t.billedTo} in ('installation', 'workspace')`),
+  ],
+);
+
+/**
+ * The installation's price list for model calls (docs/adr/0089), seeded
+ * by drizzle/0049 from src/modules/ai/prices.ts. Not a team's: every
+ * workspace reads it, nobody but a migration writes it. Prices are
+ * micro-euro per million tokens; null is a model whose price is not known.
+ */
+export const aiPrices = pgTable(
+  "ai_prices",
+  {
+    provider: text("provider").notNull(),
+    /** An API model id, or "*" for every model of the provider. */
+    model: text("model").notNull(),
+    inputMicroPerMtok: bigint("input_micro_per_mtok", { mode: "number" }),
+    outputMicroPerMtok: bigint("output_micro_per_mtok", { mode: "number" }),
+    validFrom: date("valid_from").notNull(),
+    source: text("source").notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.provider, t.model, t.validFrom] })],
 );
 
 /**

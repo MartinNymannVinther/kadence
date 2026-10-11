@@ -6,15 +6,17 @@ import { RecipientList } from "./recipient-list";
 /**
  * "Links, der venter" on the coach's list of riders: every rider and
  * parent who has been invited and not joined yet, with "Del" to send the
- * link again — the overview after "Inviter hele holdet" (ADR 0064), and
+ * link again (and "Send på mail" where there is mail, docs/adr/0086) — the overview after "Inviter hele holdet" (ADR 0064), and
  * for links made one at a time too. Shown only while there is one.
  */
 export function WaitingInvitations({
   recipients,
   team,
+  mailOn,
 }: {
   recipients: Recipient[];
   team: string;
+  mailOn: boolean;
 }) {
   const t = useTranslations("riders.waiting");
   if (recipients.length === 0) return null;
@@ -27,7 +29,7 @@ export function WaitingInvitations({
         <CardDescription>{t("body")}</CardDescription>
       </CardHeader>
       <CardContent>
-        <RecipientList recipients={recipients} team={team} />
+        <RecipientList recipients={recipients} team={team} mailOn={mailOn} />
       </CardContent>
     </Card>
   );

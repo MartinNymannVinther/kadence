@@ -4,8 +4,9 @@ Per the Haij dogmas, every subprocessor must be EU-owned and EU-hosted,
 and must be listed here **before** it is taken into use. This is the
 public list of who can see what for the installation at kadence.haij.dk. A
 self-hosted Kadence with `LLM_PROVIDER=ollama` or `none`, without Wahoo,
-Garmin or Polar keys and without the push keys for reminders has no
-subprocessor at all beyond the machine it runs on, and talks to nobody else.
+Garmin or Polar keys, without the push keys for reminders and without the
+SMTP settings for mail has no subprocessor at all beyond the machine it
+runs on, and talks to nobody else.
 
 Wahoo, Garmin and Polar are not on the table below, because they are not
 Kadence's to choose: they are services a rider may choose to connect
@@ -13,23 +14,70 @@ their own account to — Wahoo and Garmin in the US, Polar in Finland. They have
 [Services a rider chooses to connect](#services-a-rider-chooses-to-connect),
 which says what goes where and when.
 
-| Subprocessor        | Purpose                                                                                                                                | Data                                                                                                                                                                      | Location                                      | Added      |
-| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- | ---------- |
-| Hetzner Online GmbH | Hosting: the VPS running Docker and the database                                                                                       | Everything the installation holds                                                                                                                                         | Nuremberg, DE                                 | 2026-09-18 |
-| Mistral AI          | LLM adapter: the proposals a person asks for — a sharper description of an initiative, and deliverables for an initiative in a quarter | What a prompt contains: the initiative's text, the quarter's objective for it, the names of its existing deliverables, and the workspace's team names. Written out below. | EU/EFTA data centres, via `api.eu.mistral.ai` | 2026-09-24 |
+| Subprocessor                                                                         | Purpose                                                                                                                                                                                                                                     | Data                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | Location                                          | Added      |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ---------- |
+| Hetzner Online GmbH                                                                  | Hosting: the VPS running Docker and the database                                                                                                                                                                                            | Everything the installation holds                                                                                                                                                                                                                                                                                                                                                                                                                                    | Nuremberg, DE                                     | 2026-09-18 |
+| Hetzner Object Storage                                                               | The nightly encrypted database dump, and pgBackRest's repository — the nightly full backup and the WAL, at least once a minute — both kept off the VPS (docs/deploy.md §7); and, with `FILES_STORAGE=s3`, the riders' ride files (ADR 0087) | The dump, already encrypted with `age` before it leaves the server. The private key that can open it lives in Martin's password manager and is never on the server or uploaded anywhere — Hetzner holds ciphertext it cannot read. The ride files (FIT, TCX, GPX as they came in: time, GPS track, power, heart rate, cadence) under keys of ids only, in a private bucket of their own that only the application reads, written with the store's encryption at rest | Falkenstein / Nuremberg, DE (Hetzner Online GmbH) | 2026-10-11 |
+| Mistral AI                                                                           | LLM adapter: the proposals a coach asks for — a bike or strength session, a week for a group or for one rider, a programme, and Monday's overview of the team                                                                               | What a prompt contains: the coach's own words, the session or week being built, DCU's numbers for the rider's class, the team's planned sessions, calendar and library, and recent weeks' training load. Only where the team has turned on "Må AI'en læse rytternes data": a rider's first name and the guardrail flags raised for them. Written out below.                                                                                                          | EU/EFTA data centres, via `api.eu.mistral.ai`     | 2026-09-24 |
+| Scaleway SAS (Scaleway Transactional Email), 8 rue de la Ville l'Evêque, 75008 Paris | Mail: a link to confirm an address, a link for a new password, an invitation, and the parents' "der er nyt om ugen" for those who chose it (ADR 0086). SMTP to `smtp.tem.scaleway.com`, port 587 (STARTTLS) or 465 (TLS)                    | The recipient's address, the subject and the mail's text: a link to Kadence and the words around it; for an invitation the inviter's name, the team's name and, for a parent, the child's first name. No training or health content is ever in a mail                                                                                                                                                                                                                | Scaleway's EU region (fr-par, Paris)              | 2026-10-11 |
 
-Kadence sends no mail, so there is no mail provider on this list and there
-will not be one without a row here first. Reminders go by web push, through
-the push service of the person's own browser, and carry no content; they
-have [a section of their own](#the-browsers-push-service-for-reminders).
+Mail goes through Scaleway Transactional Email, and only where the
+installation has the five SMTP settings (ADR 0086): without them Kadence
+sends no mail at all, and every link is shared by hand as before. No
+training or health content is ever in a mail. A mail carries a link to
+Kadence and the few words around it, because e-mail is not a secure
+channel and an inbox keeps what it is sent; what the link opens stays
+behind the login. Reminders go by web push, through the push service of
+the person's own browser, and carry no content; they have
+[a section of their own](#the-browsers-push-service-for-reminders).
 
 ## What each one does and does not see
+
+**Scaleway** delivers four mails and nothing else (ADR 0086): a link to
+confirm an address, asked for under Indstillinger → Sikkerhed; a link to
+choose a new password, asked for at "Glemt adgangskode?"; an invitation a
+coach or the installation's owner sends to the address it is bound to,
+naming who invited the person to which team, as a rider or a parent, and,
+for a parent, the child's first name only; and, for a parent who chose
+it, "Der er nyt om ugen i Kadence" on Sunday evening, which names nobody.
+Scaleway sees the recipient's address, the subject, that text and when it
+was sent. The mails are plain text, with no tracking pixel and no link to
+anywhere but the installation's own address. Brevo (Paris) is the reserve
+if Scaleway has to be replaced; it would get its own row here before the
+first mail.
 
 **Hetzner** hosts the machine, so it holds everything by definition: the
 database, the backups on their way out, the logs. That is unavoidable for
 any hosted deployment and is why the choice of provider matters and why
 the exit plan in `docs/deploy.md` is a design requirement rather than a
-nicety.
+nicety. The nightly dump leaves the VPS for **Hetzner Object Storage**
+too (`docs/deploy.md` §7), but encrypted first with an `age` key pair
+whose private half is generated on Martin's own machine and kept in his
+password manager — never on the server, never uploaded. Hetzner Object
+Storage holds ciphertext it has no way to open. pgBackRest, the backup
+that restores to the minute (`docker-compose.backup.yml`, ADR 0089),
+keeps its repository in a bucket of its own there: the nightly full
+backup and every WAL segment, encrypted on the server with a passphrase
+before they leave it. That passphrase has to be on the server, because
+the server encrypts as it goes; a person with the server has the
+database anyway. Hetzner sees ciphertext either way. A self-hosted
+Kadence without the overlay sends nothing here.
+
+With `FILES_STORAGE=s3` (ADR 0087) the riders' ride files live in a
+third bucket there too, one of their own: the original FIT, TCX or GPX
+of every ride, as the rider's device recorded it, with a time, a GPS
+track, power, heart rate and cadence. Each object is named by three ids
+(`<workspace>/<rider row>/<sha256>.fit`), never by a name, and the
+bucket is private: nothing but the application, with the installation's
+own keys, ever reads or writes it, and no address to an object is ever
+handed to a browser. The files are not encrypted by Kadence before they
+leave; they are written with the store's encryption at rest
+(`x-amz-server-side-encryption: AES256`), so Hetzner holds what the
+device recorded, readable with the installation's keys, which is the
+same position as the database on the VPS. A deleted ride, rider or
+workspace has its objects deleted within the hour. With
+`FILES_STORAGE=db`, the default and what a self-hosted Kadence runs,
+the files stay in the database and nothing goes here.
 
 **Mistral** is a French company, and that is not by itself the answer to
 where the data goes. Mistral runs three endpoints: `api.mistral.ai`,
@@ -40,22 +88,48 @@ decides it, so it is an installation's choice and not a workspace's. The
 regional endpoints cost 1.1x list price; that is what this row costs.
 
 Mistral receives what a prompt contains and nothing else, and only when
-a person presses a button that asks for a proposal (docs/adr/0015):
+a coach presses a button that asks for a proposal (docs/adr/0015,
+`src/modules/ai`, `src/modules/assist`). Every prompt is built in code a
+reader can check: the coach's own typed words go in fenced as data
+(`src/modules/ai/prompting.ts`), never as instructions, and the model's
+answer is read back through a sanitizer
+(`src/modules/ai/sanitize-helpers.ts`) before anything built from it
+reaches a page — the AI proposes, a coach decides, and nothing it writes
+is saved or sent on its own (dogma five).
 
-- **Sharpen the description**: the initiative's title, kind and the
-  description fields as they stand in the form — summary, problem,
-  benefit, success criteria, hypothesis and risks.
-- **Propose deliverables**: the initiative's title, kind, summary,
-  benefit and success criteria, the quarter's objective for it, the
-  titles of the deliverables it already has, and the workspace's team
-  names with their ids, so the proposal can name a team.
+- **"Byg med AI" for a bike or strength session**
+  (`src/modules/assist/build-workout-prompt.ts`): the coach's own
+  words, the session already in the builder, and DCU's numbers for the
+  class the coach chose, from Kadence's own copy. No rider's data.
+- **"Foreslå ugen" for a group of riders of the same class**
+  (`src/modules/assist/group-week.ts`): the coach's wishes for the
+  week, DCU's hour corridor and phase for the class, the team's own
+  calendar events (not a rider's own) and its library of sessions. No
+  rider's data.
+- **"Foreslå ugen" for one rider** (`src/modules/assist/week-draft.ts`):
+  the same as above for that rider's class, plus — only because the
+  team has turned on "Må AI'en læse rytternes data" (`team_settings`, ADR 0017) — that rider's bike hours for the last few weeks and the _kind_
+  of any open guardrail flag (a word such as "fatigue" or "pain", never
+  the check-in's own text, never a weight or a body measurement).
+- **"Mandagsoverblikket", the coach's Monday brief**
+  (`src/modules/assist/coach-brief.ts`): only where the same switch is
+  on, each flagged rider's first name and the kind and severity of
+  their guardrail flags — nothing a rider wrote themselves.
+- **"Byg med AI" for a programme** (`src/modules/exercises/ai`): the
+  coach's own words, the programme already in the builder, the turns
+  of the conversation so far, and the team's library of exercises. The
+  class is the coach's own choice in the panel, not read from any
+  rider, so no rider's data goes in either.
 - **The connection test** under Settings → AI carries nothing from the
   workspace: one fixed sentence — "Svar med præcis ét ord: OK" — so that
   "configured" and "working" can be told apart.
 
-No prompt carries a person's account name or e-mail. The owner's name on
-an initiative, status notes, decisions and capacity numbers are never
-sent. Nothing is sent in the background: without a press, no call.
+No prompt carries a person's account name or e-mail, a password, a
+token or anything from the audit trail. A rider's weight, body or food
+is never mentioned — the prompts say so explicitly, because Team
+Danmark advises against it and comments on weight are a known trigger
+of eating disorders in young athletes. Nothing is sent in the
+background: without a press, no call.
 
 ## A workspace can choose a different one
 
@@ -158,14 +232,19 @@ Not subprocessors: they process nothing on Kadence's behalf. Kadence
 asks them for something public and takes the answer home. What goes out
 is the question.
 
-| Source                                                                                                              | Turned on by                                                                                       | From Kadence to the source                                                                                                                                                                        | From the source to Kadence                                                                                                                                                                                                                       | Location               | Added      |
-| ------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------- | ---------- |
-| Cykling Danmark's member portal (`dcumedlem.sportstiming.dk`, run by Sportstiming ApS, Viby J, for Cykling Danmark) | The installation (`DCU_RESULTS`), then a coach or the rider entering the rider's UCI ID (ADR 0039) | A request for one public page, the rider's: the UCI ID in its address, and a user agent naming Kadence and the installation's address. Nothing else: no name, no team, no other data about anyone | The rider's public page: name, birth year, UCI ID and every result filed under the licence. Kadence keeps the races from the season before on, with class, date, place and the link to the result list; it keeps neither the name nor the points | Denmark (Sportstiming) | 2026-10-01 |
+| Source                                                                                                              | Turned on by                                                                                                         | From Kadence to the source                                                                                                                                                                                                                                        | From the source to Kadence                                                                                                                                                                                                                       | Location                 | Added      |
+| ------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------ | ---------- |
+| Cykling Danmark's member portal (`dcumedlem.sportstiming.dk`, run by Sportstiming ApS, Viby J, for Cykling Danmark) | The installation (`DCU_RESULTS`), then a coach or the rider entering the rider's UCI ID (ADR 0039)                   | A request for one public page, the rider's: the UCI ID in its address, and a user agent naming Kadence and the installation's address. Nothing else: no name, no team, no other data about anyone                                                                 | The rider's public page: name, birth year, UCI ID and every result filed under the licence. Kadence keeps the races from the season before on, with class, date, place and the link to the result list; it keeps neither the name nor the points | Denmark (Sportstiming)   | 2026-10-01 |
+| UCI DataRide (`dataride.uci.org`, the International Cycling Union's own ranking tool)                               | The installation (`TEAMS_DCU` has no bearing here; this one has no switch of its own), for the teams page (ADR 0072) | Requests for public reference lists and ranking grids — the season, the discipline, Denmark's country id, the U23 and junior categories — with a user agent naming Kadence and the installation's address. No rider's name, no team, nothing about any one person | The UCI World Ranking (U23) filtered to Denmark: each Danish rider's rank, name, team and points, and Denmark's place in the Nations' Cup for junior men and women. Kept as the teams page's snapshot, refreshed once a day                      | Aigle, Switzerland (UCI) | 2026-10-11 |
 
 The installation reads nothing until `DCU_RESULTS` is `on` or names the
 rider's UCI ID, and nothing for a rider without one. The link to a
 result list at `www.sportstiming.dk` is only shown: a coach opens it in
-their own browser, and Kadence never fetches it.
+their own browser, and Kadence never fetches it. The UCI's rankings are
+read whenever the teams page is on (`GUIDE_TEAMS`); there is no separate
+switch for the UCI the way `TEAMS_DCU` gates Cykling Danmark, because the
+UCI's rankings are read by everyone building the page, not entered per
+rider.
 
 ## Not subprocessors, but worth naming
 

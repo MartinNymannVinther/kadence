@@ -56,6 +56,22 @@ is right for a fresh install and wrong for a development database full of
 test users, which is what this script is for. ADR 0004 explains why it is
 a script and not a setting.
 
+## migrate-files.ts
+
+Moves the ride files already in the database out to the object store,
+after `FILES_STORAGE` was switched to `s3` (ADR 0087, docs/deploy.md
+"File storage").
+
+```
+pnpm script scripts/migrate-files.ts            # puts the job files.migrate in the queue
+pnpm script scripts/migrate-files.ts --status   # how many files still sit in rows
+```
+
+It only puts a job in; the worker moves fifty files at a time, verifies
+each object's sha256 and then empties the row. Run it again at any time.
+It refuses to put the job in where `FILES_STORAGE` is not `s3`, since the
+job would only give up.
+
 ## ensure-roles.ts
 
 Gives the two runtime database roles their login rights and passwords.
@@ -114,7 +130,23 @@ KADENCE_URL=https://kadence.example sh scripts/send-rides.sh /Volumes/GARMIN
 ## backup-kadence.sh
 
 Nightly encrypted dump of the database to EU object storage. Runs on the
-VPS from cron, not in a container; docs/deploy.md section 7 has the setup.
+VPS from cron, not in a container; docs/deploy.md section 7.3 has the
+setup. It is the independent second copy beside pgBackRest.
+
+## restore-drill.sh
+
+The quarterly restore drill for pgBackRest (docker-compose.backup.yml,
+docs/adr/0089). On the VPS, beside the running stack:
+
+```
+scripts/restore-drill.sh                                  # the newest point
+scripts/restore-drill.sh --target "2026-10-11 14:05:00+02"   # a point in time
+```
+
+Restores into a throwaway container from the sidecar's image, counts
+users and Kadence's other tables, prints the recovery point and removes
+the container; the running database and the bucket are not touched.
+docs/deploy.md section 7.4 has the rest.
 
 ## icons.ts
 
@@ -173,3 +205,31 @@ protocol, so nothing is added to the app. Run it, and commit the PDF,
 whenever the manual's text or pictures change; the pictures are taken by
 hand from a team with sessions in it (the seed in `seed-test-teams.ts`
 gives one).
+
+## worker.ts
+
+The worker that runs the background jobs (ADR 0085): reminders, rides
+from Wahoo, Garmin and Polar, races from Cykling Danmark, the teams page
+and the demos' clean-up.
+
+```
+pnpm script scripts/worker.ts
+```
+
+In production it is the `worker` service in `docker-compose.yml`, and
+the app only puts work in the queue (`WORKER=on`). Locally, `pnpm dev`
+runs the jobs itself unless `.env` says `WORKER=on`; then run this
+beside it. docs/deploy.md, section 6e, has the rest.
+
+## retry-jobs.ts
+
+The jobs that gave up after their last try, and new tries for them once
+the cause is mended.
+
+```
+pnpm script scripts/retry-jobs.ts               # lists them
+pnpm script scripts/retry-jobs.ts <job id>      # tries that one again, now
+pnpm script scripts/retry-jobs.ts --all [kind]  # every one, or every one of a kind
+```
+
+In the container: `docker compose exec worker node_modules/.bin/tsx scripts/retry-jobs.ts`.

@@ -1,13 +1,21 @@
 "use server";
 
 import { headers } from "next/headers";
+import { getLocale, getTranslations } from "next-intl/server";
+import { z } from "zod";
 import { getSession } from "@/core/auth/session";
+import { errorName, log } from "@/core/log";
+import { mailLocale } from "@/core/mail/words";
 import { clientAddress } from "@/core/rate-limit";
+import { mailAccessInvitation } from "./mail";
+import { firstName, PersonalFields, riderNameFor, workspaceNameKey } from "./personal";
 import {
   approveAccessRequest,
   createInvitation,
   declineAccessRequest,
   isPlatformOwner,
+  personalFrom,
+  renewInvitation,
   submitAccessRequest,
   type AccessRequestResult,
   type IssuedInvitation,
@@ -15,10 +23,33 @@ import {
 
 export type { AccessRequestResult };
 
+/**
+ * A personal workspace is called by its rider's first name — "Emmas
+ * træning" — in the language of whoever made the request (docs/adr/0080).
+ * The form has no field for it.
+ */
+async function personalWorkspaceName(name: string): Promise<string> {
+  const t = await getTranslations("auth.apply");
+  const first = firstName(name);
+  return t(workspaceNameKey(first), { name: first }).slice(0, 200);
+}
+
+const personalInput = z.object({
+  name: z.string().max(200).optional(),
+  kind: z.enum(["club", "personal"]).optional(),
+  personal: PersonalFields.optional(),
+});
+
 /** Public: anyone may ask for access. */
 export async function requestAccessAction(input: unknown): Promise<AccessRequestResult> {
   const h = await headers();
-  return submitAccessRequest(input, {
+  const parsed = personalInput.safeParse(input);
+  let named = input;
+  if (parsed.success && parsed.data.kind === "personal" && parsed.data.personal) {
+    const rider = riderNameFor(parsed.data.personal, parsed.data.name ?? "");
+    named = { ...(input as object), organizationName: await personalWorkspaceName(rider) };
+  }
+  return submitAccessRequest(named, {
     ipAddress: clientAddress(h),
     userAgent: h.get("user-agent"),
   });
@@ -54,7 +85,7 @@ export async function approveAccessRequestAction(
   try {
     return { ok: true, data: issued(await approveAccessRequest(actor, String(requestId))) };
   } catch (error) {
-    console.error("access: approve failed", error);
+    await log.error("access: approve failed", { actor, error: errorName(error) });
     return { ok: false, error: "generic" };
   }
 }
@@ -66,26 +97,91 @@ export async function declineAccessRequestAction(requestId: string): Promise<Own
     await declineAccessRequest(actor, String(requestId));
     return { ok: true, data: undefined };
   } catch (error) {
-    console.error("access: decline failed", error);
+    await log.error("access: decline failed", { actor, error: errorName(error) });
     return { ok: false, error: "generic" };
   }
 }
 
-export async function createInvitationAction(input: {
-  email: string;
-  organizationName: string;
-}): Promise<OwnerActionResult<IssuedLink>> {
+const InviteInput = z.discriminatedUnion("kind", [
+  z.object({
+    kind: z.literal("club"),
+    email: z.email().max(320),
+    organizationName: z.string().trim().min(1).max(200),
+  }),
+  z.object({
+    kind: z.literal("personal"),
+    email: z.email().max(320),
+    /** The rider's name for "me", the parent's for "child"; it only names the workspace. */
+    name: z.string().trim().min(1).max(200),
+    personal: PersonalFields,
+  }),
+]);
+
+/**
+ * The owner invites an address directly: a club with the name they type,
+ * or a personal workspace (docs/adr/0080) named after its rider.
+ */
+export async function createInvitationAction(
+  input: unknown,
+): Promise<OwnerActionResult<IssuedLink>> {
   const actor = await ownerUserId();
   if (!actor) return { ok: false, error: "unauthorized" };
-  const email = String(input?.email ?? "").trim();
-  const organizationName = String(input?.organizationName ?? "").trim();
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !organizationName) {
-    return { ok: false, error: "invalid" };
-  }
+  const parsed = InviteInput.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "invalid" };
+  const data = parsed.data;
+  const personal = data.kind === "personal" ? personalFrom("personal", data.personal) : null;
+  if (personal && !personal.ok) return { ok: false, error: "invalid" };
   try {
-    return { ok: true, data: issued(await createInvitation(actor, { email, organizationName })) };
+    const organizationName =
+      data.kind === "club"
+        ? data.organizationName
+        : await personalWorkspaceName(riderNameFor(data.personal, data.name));
+    const invitation = await createInvitation(actor, {
+      email: data.email,
+      organizationName,
+      personal: personal?.ok ? personal.spec : null,
+    });
+    return { ok: true, data: issued(invitation) };
   } catch (error) {
-    console.error("access: invite failed", error);
+    await log.error("access: invite failed", { actor, error: errorName(error) });
+    return { ok: false, error: "generic" };
+  }
+}
+
+/** "Nyt link" for an invitation already made, carrying all it held. */
+export async function renewInvitationAction(
+  invitationId: string,
+): Promise<OwnerActionResult<IssuedLink>> {
+  const actor = await ownerUserId();
+  if (!actor) return { ok: false, error: "unauthorized" };
+  try {
+    return { ok: true, data: issued(await renewInvitation(actor, String(invitationId))) };
+  } catch (error) {
+    console.error("access: renew failed", error);
+    return { ok: false, error: "generic" };
+  }
+}
+
+/**
+ * "Send linket": the link just shown, sent to the address it admits
+ * (docs/adr/0086). The browser hands back the key it was shown; the
+ * server sends it only if it names an open invitation, and only there.
+ */
+export async function mailAccessInvitationAction(
+  token: string,
+): Promise<OwnerActionResult<{ email: string }> | { ok: false; error: "rateLimited" }> {
+  const actor = await ownerUserId();
+  if (!actor) return { ok: false, error: "unauthorized" };
+  if (typeof token !== "string" || token.length < 1 || token.length > 200)
+    return { ok: false, error: "invalid" };
+  try {
+    const sent = await mailAccessInvitation(actor, token, mailLocale(await getLocale()));
+    if (sent === "rateLimited") return { ok: false, error: "rateLimited" };
+    if (typeof sent === "string")
+      return { ok: false, error: sent === "notFound" ? "invalid" : "generic" };
+    return { ok: true, data: sent };
+  } catch (error) {
+    await log.error("access: mailing the link failed", { actor, error: errorName(error) });
     return { ok: false, error: "generic" };
   }
 }

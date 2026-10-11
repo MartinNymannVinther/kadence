@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { isPlatformOwner, listAccessRequests, listInvitations } from "@/core/access/service";
 import { getSession } from "@/core/auth/session";
+import { mailConfigured } from "@/core/mail/mailer";
 import { AccessAdmin } from "./access-admin";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -29,12 +30,17 @@ export default async function AccessPage() {
         <p className="text-meta text-2sm leading-relaxed">{t("subtitle")}</p>
       </div>
       <AccessAdmin
+        mailOn={mailConfigured()}
         requests={requests.map((r) => ({
           id: r.id,
           name: r.name,
           email: r.email,
           organizationName: r.organizationName,
           message: r.message,
+          kind: r.kind,
+          birthYear: r.birthYear,
+          forWhom: r.forWhom,
+          childName: r.childName,
           status: r.status as "pending" | "approved" | "declined",
           createdAt: r.createdAt,
           decidedAt: r.decidedAt,
@@ -43,6 +49,10 @@ export default async function AccessPage() {
           id: i.id,
           email: i.email,
           organizationName: i.organizationName,
+          kind: i.kind,
+          birthYear: i.birthYear,
+          forWhom: i.forWhom,
+          childName: i.childName,
           expiresAt: i.expiresAt,
           usedAt: i.usedAt,
           revokedAt: i.revokedAt,

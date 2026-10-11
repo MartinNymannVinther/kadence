@@ -19,7 +19,7 @@
       "titleFor": "Link for {email}",
       "copy": "Copy link",
       "copied": "Copied",
-      "noMail": "Kadence sends no e-mail. Copy the link and send it yourself by text or e-mail. It only works for that address."
+      "noMail": "Copy the link and send it yourself by text or e-mail. It only works for that address."
     },
     "rider": "Rider"
   },
@@ -60,7 +60,8 @@
       "title": "Try it without creating anything",
       "body": "You get your own U19 team in full swing: riders, a season plan after DCU, weeks of sessions, activities and check-ins. You start as the coach and can switch to the rider Emma and her mother to see Kadence through their eyes. It is all deleted after {hours, plural, one {# hour} other {# hours}}. No email, no sign-up.",
       "privacy": "Do not put real personal data in the demo. It passes through a database and possibly a language model on the way.",
-      "cta": "Open a demo"
+      "cta": "Open a demo",
+      "ctaAlone": "Try it as a rider on your own"
     },
     "featuresLabel": "What you get",
     "features": {
@@ -90,7 +91,20 @@
       "failed": "The password could not be saved. Try again.",
       "missing": "The link is not whole. Ask a coach on your team for a new one.",
       "done": "Your password is changed, and you are signed out everywhere else.",
-      "login": "Sign in"
+      "login": "Sign in",
+      "bodyMail": "The link came by email. It works once, and you are signed out everywhere else.",
+      "invalidMail": "The link is used, has expired or is not whole. Ask for a new one under Forgot your password."
+    },
+    "forgot": {
+      "title": "Forgot your password",
+      "body": "Write the email you sign in with. We send a link where you can choose a new password.",
+      "email": "Email",
+      "submit": "Send the link",
+      "sent": "If the address is in Kadence, we have sent a link to it. The link works for one hour. Look in spam too if it does not arrive.",
+      "tooMany": "Many links were asked for in a short time. Try again in an hour.",
+      "failed": "It could not be sent. Try again in a moment.",
+      "coach": "You can also ask a coach on your team for a link. If you have a passkey, you can sign in with it instead.",
+      "back": "Back to sign in"
     },
     "login": {
       "forgot": "Forgot your password?",
@@ -129,7 +143,10 @@
       "errorInvitationInvalid": "The invitation has expired or has already been used. Ask for a new link.",
       "invitationInvalidTitle": "This link no longer works",
       "invitationInvalidBody": "The invitation has expired, been used, or been replaced by a newer one. Ask the person who invited you for a new link, or apply for access again.",
-      "applyLink": "Apply for access"
+      "applyLink": "Apply for access",
+      "errorTooYoung": "You must be at least 15 to create an account yourself. A parent can create it and invite you.",
+      "personalMe": "You get your own workspace, {workspace}. Here you are both your own coach and rider: you plan your sessions, ride them and follow your form.",
+      "personalChild": "You get a workspace, {workspace}, where you plan the training for {child}. Once the account exists, you can invite {child} from the rider's page."
     },
     "twoFactor": {
       "title": "Two-factor authentication",
@@ -157,9 +174,51 @@
       "sentBody": "You will hear from the owner of this installation at {email}. The reply comes from a person, so allow a day or two.",
       "errorInvalid": "Check the fields and try again.",
       "errorTooMany": "Many applications have been sent from here in a short time. Try again in an hour.",
-      "privacy": "We store your name, email and organisation to handle the application, and nothing else. If it is declined, the details remain only as a note of the decision.",
+      "privacy": "We store your name, email and organisation to handle the application, and nothing else. If it is for one person, we also store the birth year and, for a child, the child's name and email if given. If it is declined, the details remain only as a note of the decision.",
       "haveAccount": "Already have an account?",
-      "loginLink": "Log in"
+      "loginLink": "Log in",
+      "kindLegend": "Who is Kadence for?",
+      "kindClub": "A club or a team",
+      "kindPersonal": "Myself",
+      "forWhomLegend": "Who will train?",
+      "forMe": "It is for me",
+      "forChild": "It is for my child",
+      "birthYear": "Your birth year",
+      "birthYearHint": "The year decides the class, for example U17 or U19. We do not ask for a date.",
+      "childName": "Your child's name",
+      "childBirthYear": "Your child's birth year",
+      "childEmail": "Your child's email",
+      "childEmailHint": "Optional. With an email you get a link your child can create their own account with. You can also do it later.",
+      "tooYoung": "If you are under 15, you cannot create an account yourself. Ask a parent to apply and choose \"It is for my child\". They can invite you afterwards.",
+      "workspaceName": "{name}'s training",
+      "workspaceNameSibilant": "{name}'s training"
+    },
+    "self": {
+      "title": "Create your own workspace",
+      "subtitle": "For your own training or your child's. You confirm your e-mail before you start.",
+      "name": "Your name",
+      "email": "Your e-mail",
+      "consentLegend": "What you say yes to",
+      "terms": "I have read <link>the terms and the privacy policy</link>",
+      "healthMe": "I give my explicit consent for Kadence to store health data about me: my check-ins with sleep, pain and illness, my measurements and the heart rate from my rides. I can withdraw the consent under Settings → Data. Kadence then turns check-in and measurements off, and the rest works as before: the calendar, the rides, the season plan and Rulle.",
+      "healthChild": "I am the parent and give explicit consent on my child's behalf for Kadence to store health data about the child: check-ins with sleep, pain and illness, measurements and the heart rate from the rides. I can withdraw the consent under Settings → Data. Kadence then turns check-in and measurements off, and the rest works as before: the calendar, the rides, the season plan and Rulle.",
+      "verifyNote": "We send a link to your e-mail. You open it before you can use Kadence. If you do not confirm the address within 7 days, we delete the account again.",
+      "submit": "Create workspace",
+      "clubLink": "A club or a team? Apply here",
+      "errorConsent": "Tick both boxes to create the workspace.",
+      "errorTooMany": "Many accounts have been created from here in a short time. Try again in an hour.",
+      "errorClosed": "You cannot create an account yourself here right now. You can still apply for access."
+    },
+    "verify": {
+      "title": "Confirm your e-mail",
+      "body": "We have sent a mail to {email} with a link. Open the link to get started. Until then you cannot use the rest of Kadence.",
+      "spam": "If you cannot find the mail, look in spam. The link works for an hour. You can get a new mail three times an hour.",
+      "resend": "Send the mail again",
+      "sent": "We have sent a new mail.",
+      "rateLimited": "You have had three mails in the last hour. Try again a little later.",
+      "failed": "The mail could not be sent right now. Try again in a moment.",
+      "signOut": "Sign out",
+      "expiry": "If you do not confirm the address within {days, plural, one {# day} other {# days}}, we delete the account and everything in it."
     }
   },
   "app": {
@@ -214,6 +273,18 @@
         "title": "Links for a new password",
         "body": "When a coach makes a link to reset your password, it shows here. If you did not ask for it, tell a coach.",
         "item": "{name} made a link {date}"
+      },
+      "address": {
+        "title": "Your email address",
+        "verified": "Confirmed",
+        "unverified": "Not confirmed yet",
+        "body": "Confirm the address, so you know that email from Kadence gets through. Kadence only sends short emails with a link, never anything about training or health.",
+        "send": "Send a confirmation email",
+        "sent": "The email is on its way to {email}. Open the link in it. It works for one hour.",
+        "tooMany": "You have asked for several emails in a short time. Try again in an hour.",
+        "failed": "The email could not be sent. Try again in a moment.",
+        "done": "Thank you. Your address is confirmed.",
+        "expired": "The link is used, has expired or is not whole. Send a new email."
       },
       "title": "Security",
       "subtitle": "Passkeys and two-factor authentication for your account.",
@@ -288,11 +359,26 @@
       "jsonTitle": "Machine-readable copy",
       "jsonBody": "The same data as JSON, with every id kept. It is the file that lets you move to something other than Kadence without losing the links between sessions, activities and comments.",
       "jsonAction": "Download JSON",
+      "auditNote": "The audit trail in the spreadsheet is the newest {rows, number} rows. The whole trail is in the JSON file.",
+      "filesTitle": "Your files",
+      "filesBody": "The original file from every ride, in one zip with a folder per rider. These are the files from the watch, the bike computer or Rulle, as they came in.",
+      "filesAction": "Download your files",
+      "limitedExport": "The export has been downloaded three times in this workspace in the last hour. You can download it again in {minutes} min.",
+      "limitedFiles": "The files have been downloaded twice in this workspace in the last hour. You can download them again in {minutes} min.",
       "sheetsLabel": "Tabs in the file (named in Danish, as the file writes them):",
       "membersSheet": "Brugere",
       "notBackupTitle": "This is not a backup.",
       "notBackupBody": "An export can be read but not restored, and it is only as fresh as the day you downloaded it. The night's encrypted dump is what saves you when the database is gone.",
-      "privacy": "The export holds what you may see in the workspace and its history: a coach gets the whole team, a rider their own data. Passwords, passkeys, device tokens and the workspace's model key never go in it. That you downloaded the file is written to the audit trail."
+      "privacy": "The export holds what you may see in the workspace and its history: a coach gets the whole team, a rider their own data. Passwords, passkeys, device tokens and the workspace's model key never go in it. That you downloaded the file is written to the audit trail.",
+      "storage": {
+        "title": "Room for files",
+        "body": "The rides' original files take up this room. When it is used up, new files are refused and everything else works. Delete old rides or download them first if you are getting close.",
+        "usedOf": "{used} of {quota} used.",
+        "usedNoQuota": "{used} used. No limit is set.",
+        "full": "The room for files is used up. Delete old rides or download them first.",
+        "inDatabase": "The files are kept in Kadence's own database on the server.",
+        "inStore": "The files are kept in an object store in the EU, encrypted, and only Kadence can read them. Deleted files are gone from the store within the hour."
+      }
     }
   },
   "settings": {
@@ -300,6 +386,7 @@
     "subtitleCoach": "You, the team and the workspace.",
     "subtitleRider": "You, your devices and your security.",
     "subtitleOther": "You and your security.",
+    "subtitlePersonal": "Yourself, your training, your AI and your data.",
     "appearance": {
       "title": "Appearance",
       "body": "Applies on this device. Light or dark otherwise follows the system.",
@@ -324,6 +411,7 @@
       "team": "Team",
       "me": "Profile",
       "devices": "Devices",
+      "training": "Training",
       "groups": {
         "you": "You",
         "team": "Team",
@@ -342,6 +430,12 @@
       "linkBody": "Shown only now. Copy it and send it yourself. It works for 7 days and only once.",
       "copy": "Copy link",
       "copiedToast": "Link copied.",
+      "linkBodyMail": "Shown only now. Send it by email, or copy it and send it yourself. It works for 7 days and only once.",
+      "mail": "Send the link",
+      "mailed": "Sent",
+      "mailedToast": "The link is sent to {email}.",
+      "mailTooMany": "The link has been sent several times just now. Try again in an hour, or copy it.",
+      "mailFailed": "The email could not be sent. Copy the link and send it yourself.",
       "inviteTitle": "Invite directly",
       "inviteBody": "Without an application first. Same link, same rules.",
       "inviteEmail": "E-mail",
@@ -360,13 +454,16 @@
       "stateUsed": "Used",
       "stateExpired": "Expired",
       "stateRevoked": "Replaced",
-      "errorInvalid": "Check the email and the workspace name."
+      "errorInvalid": "Check the email and the workspace name.",
+      "inviteName": "The person's name",
+      "personalMe": "Personal workspace · for themselves · born {year}",
+      "personalChild": "Personal workspace · for their child, {child} · born {year}"
     },
     "workspace": {
       "resetLink": {
         "button": "Link for a new password",
         "title": "Link for a new password for {name}",
-        "body": "Send the link to {name} yourself, by text message for instance. It works once and only until {until}. Kadence sends no e-mail.",
+        "body": "Send the link to {name} yourself, by text message for instance. It works once and only until {until}.",
         "copy": "Copy",
         "copied": "Copied",
         "seen": "{name} can see on their security page that you made the link, and is signed out everywhere else when it is used.",
@@ -385,14 +482,20 @@
       },
       "delete": {
         "title": "Delete the workspace",
-        "body": "Everything in the workspace goes: every member's conversations and files, roles, tasks, and the whole audit trail about them. It cannot be undone.",
+        "body": "Everything in the workspace goes: every member's conversations and files, roles, tasks, and the whole audit trail about them. It cannot be undone. The rides' files are gone from the store within the hour.",
         "exportFirst": "Take an export first if you want to keep anything. It is under Data.",
         "typeName": "Type {name} to confirm",
         "action": "Delete the workspace permanently",
         "deleting": "Deleting …",
         "failed": "The workspace was not deleted. Try again.",
         "notOwner": "Only the workspace owner can delete it.",
-        "nameMismatch": "That name does not match. Type the workspace's name exactly."
+        "nameMismatch": "That name does not match. Type the workspace's name exactly.",
+        "personal": {
+          "title": "Delete my account and everything about me",
+          "body": "Everything about your training goes: sessions, rides, check-ins, the season plan, the files and the audit trail about them. If you are not on a team in Kadence, your account is deleted too. It cannot be undone. The files are gone from the store within the hour.",
+          "exportFirst": "Download an export first if you want to keep anything. It is just above.",
+          "action": "Delete my account and everything about me"
+        }
       },
       "images": {
         "title": "Logo and picture",
@@ -435,7 +538,57 @@
       "privacy": "You see figures and the clubs' names, which is all the database hands over here.",
       "newClub": "A new club comes in through an application you approve.",
       "toAccess": "Go to Access",
-      "help": "If a club wants help, it can invite you as a coach for a while. It shows in its member list and in the log, and the club removes you again afterwards."
+      "help": "If a club wants help, it can invite you as a coach for a while. It shows in its member list and in the log, and the club removes you again afterwards.",
+      "aiMonth": {
+        "title": "AI this month",
+        "body": "What the installation's key has spent for each club since the 1st, and the club's budget. When the budget is spent, the AI rests for that club until next month, and everything else works. An empty field is the default of {budget}.",
+        "total": "In total {total}: the clubs {clubs}, individuals {persons}.",
+        "unknownTotal": "{count, plural, one {# call has} other {# calls have}} a price Kadence does not know and {count, plural, one {is} other {are}} not counted.",
+        "unknown": "price unknown for {count, plural, one {# call} other {# calls}}",
+        "club": "Club",
+        "spent": "Spent",
+        "budget": "Budget",
+        "spentOf": "{spent} of {budget}",
+        "noBudget": "no limit",
+        "budgetLabel": "Monthly AI budget in euro for {club}",
+        "save": "Save",
+        "saved": "Saved.",
+        "invalid": "Write an amount in euro, e.g. 7.50, or leave the field empty.",
+        "failed": "The budget was not saved. Try again."
+      },
+      "fileQuota": {
+        "title": "Room for files",
+        "body": "How much each club's files take, and the club's limit. Over the limit new files are refused and everything else works. An empty field is the default: {club} for a club and {personal} for a person.",
+        "inDatabase": "The files are kept in the database (FILES_STORAGE=db).",
+        "inStore": "The files are kept in an object store in the EU (FILES_STORAGE=s3).",
+        "persons": "Individuals take {used} in total.",
+        "club": "Club",
+        "used": "Used",
+        "quota": "Limit",
+        "usedOf": "{used} of {quota}",
+        "noQuota": "no limit",
+        "quotaLabel": "File limit in GB for {club}",
+        "save": "Save",
+        "saved": "Saved.",
+        "invalid": "Write a number in GB, e.g. 20, or leave the field empty.",
+        "failed": "The limit was not saved. Try again."
+      },
+      "persons": {
+        "title": "Individuals",
+        "counts": "{count, plural, one {# personal workspace} other {# personal workspaces}}, {seen, plural, one {# used} other {# used}} in the last week · {mb, number} MB of files · {ai, plural, one {# AI call} other {# AI calls}} in the last day",
+        "aiMonth": "{cost} on AI this month",
+        "privacy": "People who use Kadence on their own. You see only the totals, never names."
+      },
+      "jobs": {
+        "title": "Background work",
+        "counts": "{pending, plural, =0 {Nothing is waiting} one {# job is waiting} other {# jobs are waiting}}, and {failed, plural, =0 {none has given up} one {# has given up} other {# have given up}}.",
+        "oldest": "The oldest has waited {minutes, plural, one {# minute} other {# minutes}}.",
+        "last": "Last taken: {when}.",
+        "never": "No job has been taken yet.",
+        "inWorker": "A worker container runs the jobs.",
+        "inApp": "The app runs the jobs itself, because no worker is set up.",
+        "failedHelp": "A job that has given up was tried five times. The deployment guide (docs/deploy.md) says how to see it and try it again."
+      }
     },
     "ai": {
       "title": "AI",
@@ -485,6 +638,10 @@
       "limitsHint": "A model call costs money on a hosted installation and minutes on a local one. The numbers are generous for a person and mean for a script.",
       "perUser": "Calls per user per hour",
       "perWorkspace": "Calls per workspace per day",
+      "perMonth": "AI budget this month",
+      "perMonthValue": "{spent} of {budget}",
+      "perMonthNone": "{spent}, no limit",
+      "perMonthOwnKey": "This workspace uses its own key and pays for itself, so the budget does not apply.",
       "messageLength": "Characters in a message, at most",
       "principlesTitle": "How Kadence uses AI",
       "principleDecides": "The AI answers, the person decides. The model writes an answer; it never sends anything out of the house, never deletes anything and changes nothing unless you do.",
@@ -510,6 +667,7 @@
       "setupLocalComment": "or locally (Ollama)",
       "setupKeyPlaceholder": "your-key-here",
       "perInstallation": "Calls across the installation per day",
+      "failBudget": "The workspace's AI budget for the month is spent, so the AI rests until next month. The installation's owner can give it more.",
       "failCeiling": "Kadence's own ceiling on AI calls was reached, not the provider's. The ceilings are under “Ceiling on AI calls” below; the installation's own is set with AI_DAILY_CALL_CAP. Try again shortly."
     },
     "members": {
@@ -557,7 +715,17 @@
         "action": "Leave the team",
         "title": "Leave the team?",
         "body": "You lose access to the team straight away. What you have entered stays with the team. If you want a copy, download it under Data first. A coach can invite you again.",
-        "confirm": "Leave the team"
+        "bodyWithChoice": "You lose access to the team straight away. A coach can invite you again.",
+        "confirm": "Leave the team",
+        "history": {
+          "legend": "Take your training with you?",
+          "yes": "Yes, to a workspace of my own",
+          "no": "No, leave it with the team",
+          "body": "Your sessions, rides, check-ins, goals and season plan move to a workspace that is yours alone. The team keeps no copy, only a line in its log that the training left. Your parents are confirmed again there.",
+          "staysBody": "What you have entered stays with the team. If you want a copy, download it under Data first.",
+          "hasHistory": "You already have a workspace of your own with training in it, so the training cannot be moved there. Leave the team without it, or download a copy under Data first.",
+          "failed": "The training could not be moved, so you are still on the team. Try again in a moment."
+        }
       },
       "sharing": {
         "title": "What your parents can see",
@@ -631,7 +799,11 @@
       "ai": "May the AI read the riders' data",
       "aiHint": "Off by default. The riders' training and check-ins are health data about young people. If you turn it on, the AI may read them when a coach asks for a week proposal or a summary of the week's points of attention. It never writes anything itself.",
       "on": "On",
-      "off": "Off"
+      "off": "Off",
+      "personalTitle": "Your training",
+      "personalBody": "How you plan your season, and what the AI may read.",
+      "aiPersonal": "May the AI read your data",
+      "aiPersonalHint": "Off by default. Your training and your check-ins are health data. If you turn it on, the AI may read them when you ask for a week proposal or a summary of the week. It never writes anything itself."
     }
   },
   "demo": {
@@ -655,6 +827,26 @@
       "parent": "Parent"
     }
   },
+  "consent": {
+    "offTitle": "Check-in is off",
+    "offBody": "The consent to health data has been withdrawn, so Kadence stores no new check-ins or measurements. The rest works as before.",
+    "giveAgain": "Give consent again",
+    "given": "The consent is given again. Check-in and measurements are on.",
+    "failed": "That did not work. Try again.",
+    "card": {
+      "title": "Consent to health data",
+      "givenBody": "You gave your consent on {date} for Kadence to store check-ins and measurements.",
+      "withdrawnBody": "You withdrew the consent on {date}. Check-in and measurements are off.",
+      "withdrawAction": "Withdraw the consent to health data",
+      "withdrawEffect": "If you withdraw it, Kadence turns check-in and measurements off. The rest works as before: the calendar, the rides, the season plan and Rulle.",
+      "keepNote": "The check-ins and measurements already stored stay. You can download them with the export above and delete them with \"Delete my account and everything about me\" below.",
+      "confirmTitle": "Withdraw the consent?",
+      "confirmBody": "Check-in and measurements are turned off at once. You can give the consent again here or on Today.",
+      "confirmAction": "Withdraw",
+      "withdrawn": "The consent is withdrawn. Check-in and measurements are off.",
+      "failed": "That did not work. Try again."
+    }
+  },
   "terms": {
     "title": "Terms and privacy",
     "updated": "Last updated 19 September 2026.",
@@ -667,7 +859,7 @@
     },
     "account": {
       "title": "Accounts and access",
-      "body": "You get in by applying or being invited. We store your name, your email and your workspace's name, and use them to sign you in and to write to you about the service. Passwords are stored hashed, and you can add a passkey and two-factor. We sell nothing, and we do not send marketing you did not ask for."
+      "body": "You get in by applying or being invited. We store your name, your email and your workspace's name, and use them to sign you in and to show who you are on the team. Passwords are stored hashed, and you can add a passkey and two-factor. We sell nothing, and we do not send marketing you did not ask for."
     },
     "yourData": {
       "title": "Your data",
@@ -700,7 +892,7 @@
     "subprocessorsNote": "Who can see what is listed in",
     "shareLinks": {
       "title": "Invitations",
-      "body": "An invitation link is for one address and expires after a week. You send it; we send no mail."
+      "body": "An invitation link is for one address and expires after a week. You send it."
     }
   },
   "join": {
@@ -726,7 +918,17 @@
     "loginLink": "Sign in",
     "errorEmailExists": "An account with that address already exists. Sign in and open the link again.",
     "errorInvalid": "Something you wrote could not be used. Check the fields.",
-    "errorGeneric": "That went wrong. Try again."
+    "errorGeneric": "That went wrong. Try again.",
+    "history": {
+      "legend": "Take your training with you onto the team?",
+      "yes": "Yes, take it along",
+      "no": "No, leave it",
+      "body": "Your sessions, rides, check-ins, goals and season plan move from {workspace} onto the team, and {workspace} is closed afterwards. Your parents are confirmed again on the team.",
+      "staysBody": "Your training stays in {workspace}, and you have two workspaces to switch between. It cannot be moved later.",
+      "stayed": "You are on the team. Your training was not moved and is still in your own workspace.",
+      "stayedTargetHasHistory": "You are on the team. The coach has already planned sessions for you here, so your training was not moved. It is still in your own workspace.",
+      "continue": "Go to Today"
+    }
   },
   "help": {
     "title": "Knowledge and help",
@@ -753,7 +955,7 @@
       },
       "password": {
         "title": "Forgotten password",
-        "body": "Kadence sends no e-mail, so the way back in goes through a coach. A coach opens Settings → Workspace, presses Link for a new password by the person, and sends the link on themselves, by text message for instance. The link works once and only for the next hour; whoever uses it chooses a new password and is signed out everywhere else. The person can always see on their security page that a link was made, and by whom. A coach can make links for riders, parents and other coaches on the team, but not for the team's owner; an owner who forgot the password signs in with their passkey or gets help from whoever runs Kadence. If you have turned on two-step verification, you still need the code from your app."
+        "body": "If Kadence is set up to send email, the sign-in page has a link under Forgot your password, and you can get a link by email yourself. Otherwise the way back in goes through a coach. A coach opens Settings → Workspace, presses Link for a new password by the person, and sends the link on themselves, by text message for instance. The link works once and only for the next hour; whoever uses it chooses a new password and is signed out everywhere else. The person can always see on their security page that a link was made, and by whom. A coach can make links for riders, parents and other coaches on the team, but not for the team's owner; an owner who forgot the password signs in with their passkey or gets help from whoever runs Kadence. If you have turned on two-step verification, you still need the code from your app."
       },
       "words": {
         "title": "Session, block, programme and season plan",
@@ -1044,10 +1246,16 @@
       "empty": "You have no rides yet. Upload a file below and it will show up here.",
       "km": "{km} km",
       "more": "Show more"
+    },
+    "personal": {
+      "body": "You are also your own coach. Your thresholds and a parent who can follow along are on your rider page.",
+      "link": "Open your rider page"
     }
   },
   "errors": {
     "too_many_reset_links": "You have made many links just now. Try again in an hour.",
+    "too_many_mails": "You have sent many emails just now. Try again in an hour, or share the link instead.",
+    "mail_not_sent": "The email could not be sent. Share the link instead, or try again in a moment.",
     "unauthorized": "You are no longer signed in.",
     "forbidden": "You may not do that here. Ask a coach on the team.",
     "invalid": "Something in the form is not valid.",
@@ -1613,6 +1821,9 @@
       "until": "Works until {until}",
       "share": "Share",
       "shareLabel": "Share the link with {name}",
+      "mail": "Send by email",
+      "mailLabel": "Send the link to {name} by email",
+      "mailed": "Sent",
       "copied": "The text with the link is copied. Paste it into a text message or a chat.",
       "failed": "The link could not be shared or copied. Try again.",
       "textRider": "Hi {name}. You are invited to the team {team} in Kadence as a rider. Open the link and create your account with {email}. The link works until {until}.",
@@ -2564,6 +2775,7 @@
         "unreadableFiles": "{count, plural, one {# file could not be read.} other {# files could not be read.}}",
         "nothing": "There were no new rides in the archive.",
         "limit": "Today's limit is reached. {count, plural, one {The last ride} other {The last # rides}} can be fetched in {hours, plural, one {# hour} other {# hours}}: add the archive again, and it goes on where it stopped.",
+        "quota": "The room for files is used up, so {count, plural, one {the last ride was} other {the last # rides were}} not fetched. Delete old rides or download them first, and add the archive again.",
         "signedOut": "You are no longer signed in. Sign in, and add the archive again; it goes on where it stopped.",
         "failed": "Something went wrong on the way, and {count, plural, one {# ride is} other {# rides are}} missing. Add the archive again; it goes on where it stopped.",
         "cancelled": "Stopped. {count, plural, one {# ride is} other {# rides are}} missing; add the archive again when you want to go on.",
@@ -2604,7 +2816,8 @@
         "generic": "Something went wrong with the file. Try again.",
         "unknown_format": "Kadence does not know that file format. Use FIT, TCX or GPX, packed as .gz or .zip if you like.",
         "no_activity": "The zip file has no .fit, .tcx or .gpx file in it.",
-        "not_bike": "Not a ride, so it was skipped."
+        "not_bike": "Not a ride, so it was skipped.",
+        "quota": "The room for files is used up. Delete old rides or download them first."
       }
     },
     "routeTitle": "The route",
@@ -2760,7 +2973,7 @@
     "basisLabel": "Plan from",
     "pickBasis": "Choose a class",
     "basisHint": "The rider's class is chosen. Pick another if the rider should plan from another year, for example because they started late.",
-    "noClass": "The rider is not in one of DCU's classes (U17 to U23) this season. Choose the class the plan should build on.",
+    "noClass": "DCU has no hours for the rider's class this season, only for U17 to U23. Choose a class the plan can start from. Afterwards you change the hours to your own, month by month.",
     "basis": "{category} year {year}",
     "basisNow": "The plan builds on DCU's hours for {basis}.",
     "basisOwn": "The team plans with its own hours. The rider is {basis}.",
@@ -2929,6 +3142,7 @@
       "notAllowed": "The team has not let the AI read the riders' data. It is off by default, because it is health data about young people.",
       "notAllowedLink": "Settings → Team",
       "rateLimited": "Many AI calls have been made just now. Try again in a moment.",
+      "budget": "The AI is resting until next month. Everything else works.",
       "unreachable": "The language model is not answering. Try again in a moment.",
       "badAnswer": "The language model answered with something that could not be used. Try again.",
       "notFound": "It no longer exists. Reload the page.",
@@ -3029,6 +3243,7 @@
       "provider_unavailable": "{name} did not answer the last time Kadence tried. It usually sorts itself out.",
       "invalid_file": "A ride from {name} could not be read. Upload the file yourself if it is missing.",
       "download": "A ride could not be fetched from {name}. Upload the file yourself if it is missing.",
+      "quota": "A ride from {name} had no room: the room for files is used up. Delete old rides or download them first, and upload the file yourself.",
       "unknown": "Something went wrong with {name} last time. Connect again if your rides do not come in."
     },
     "connected": "{name} is connected. Your next rides come in by themselves.",
@@ -3060,6 +3275,7 @@
       "address": "A program sends the files to",
       "lastError": {
         "invalid_file": "The latest file could not be read. Upload it yourself if the ride is missing.",
+        "quota": "The latest file had no room: the room for files is used up. Delete old rides or download them first.",
         "unknown": "Something went wrong with the latest file. Upload it yourself if the ride is missing."
       },
       "remove": "Remove",
@@ -3439,6 +3655,13 @@
     "body": "Kadence can remind you of what matters on this device. No reminders come between 21:30 and 7:00.",
     "bodyCoach": "Kadence can remind you of what matters on this device. Between 21:30 and 7:00 only wellbeing reminders come.",
     "privacy": "The message itself is fetched from Kadence when it arrives. Your browser's push service only sees that there is something new.",
+    "weekMail": {
+      "title": "The week by email",
+      "body": "On Sunday evening you can also get a short email saying there is news about the week. The email says nothing about your child, only a link to Kadence.",
+      "label": "The week's overview by email too",
+      "hint": "The email goes to {email}.",
+      "hintPlain": "The email goes to the address you sign in with."
+    },
     "enable": "Turn on reminders on this device",
     "disable": "Turn off",
     "on": "Reminders are on for this device.",
@@ -3765,7 +3988,8 @@
         "rateLimited": "You've saved many rides in the last hour. Try again in a little while.",
         "not_rider": "Only a rider can save a ride.",
         "notFound": "The session no longer exists. Download the FIT file and upload it on “Me”.",
-        "too_large": "The ride is too large to save from here. Download the FIT file and upload it on “Me”."
+        "too_large": "The ride is too large to save from here. Download the FIT file and upload it on “Me”.",
+        "quota": "The room for files is used up, so the ride was not saved. Download the FIT file, and delete old rides or download them first."
       }
     },
     "little": {
@@ -5573,6 +5797,42 @@
     "download": {
       "button": "Download as a file",
       "print": "Print or save as PDF"
+    }
+  },
+  "mail": {
+    "greeting": "Hi",
+    "signoff": "Best regards\nKadence",
+    "verify": {
+      "subject": "Confirm your email address",
+      "body": "Open the link to confirm that the address is yours. The link works for one hour.",
+      "ignore": "If you did not ask for this, you can ignore this email. Nothing happens to your account."
+    },
+    "reset": {
+      "subject": "Choose a new password for Kadence",
+      "body": "Someone asked for a link to choose a new password for your Kadence account. The link works once and for one hour. When you have saved the new password, you are signed out everywhere else.",
+      "ignore": "If you did not ask for this, you can ignore this email. Your password stays the same."
+    },
+    "invite": {
+      "subject": "You are invited to {team} in Kadence",
+      "rider": "{inviter} has invited you to join the team {team} in Kadence as a rider.",
+      "parentOf": "{inviter} has invited you to join the team {team} in Kadence as a parent of {child}.",
+      "parent": "{inviter} has invited you to join the team {team} in Kadence as a parent.",
+      "member": "{inviter} has invited you to join the team {team} in Kadence.",
+      "how": "Open the link and create your account with the address this email was sent to. The link works until {until}.",
+      "parentNext": "When {child} has said yes to you in Kadence, you can follow along.",
+      "parentNextPlain": "When the rider has said yes to you in Kadence, you can follow along.",
+      "unknown": "If you do not know {inviter} or the team, you can ignore this email."
+    },
+    "access": {
+      "subject": "You can now get into Kadence",
+      "body": "{inviter} has given you access to Kadence with the workspace {workspace}.",
+      "how": "Open the link and create your account with the address this email was sent to. The link works once and until {until}.",
+      "unknown": "If you did not ask for access, you can ignore this email."
+    },
+    "week": {
+      "subject": "There is news about the week in Kadence",
+      "body": "There is news about the week in Kadence. Open the link to see it.",
+      "why": "You get this email because you chose the week's overview by email under Settings → Profile. You can turn it off there too."
     }
   }
 }

@@ -9,6 +9,7 @@ import { handleWebhook, type WebhookOutcome } from "@/modules/devices/webhooks";
 import { SPORT } from "@/modules/fit";
 import { listSessions } from "@/modules/training/sessions";
 import { adminPool } from "../helpers/db";
+import { drainResults } from "../helpers/jobs";
 import { insertSql, seedPerson } from "../helpers/rows";
 import { encodeRide, steadyHour } from "../fit/fixtures";
 import { bytes, fakeFetch, json, POLAR_SECRET, withProviderKeys } from "./fake-fetch";
@@ -41,7 +42,7 @@ async function linkRow() {
   return rows[0] as Record<string, unknown> | undefined;
 }
 
-/** Posts a notification, signed unless told otherwise, and runs the deferred work inline. */
+/** Posts a notification, signed unless told otherwise, and runs the jobs it queued as the worker would. */
 async function deliver(body: unknown, headers: Record<string, string> = {}, sign = true) {
   const raw = JSON.stringify(body);
   const signature = polarSignature(new TextEncoder().encode(raw), POLAR_SECRET);
@@ -54,11 +55,8 @@ async function deliver(body: unknown, headers: Record<string, string> = {}, sign
     },
     body: raw,
   });
-  const work: Promise<unknown>[] = [];
-  const response = await handleWebhook("polar", request, (fn) => {
-    work.push(fn());
-  });
-  const outcomes = (await Promise.all(work)).flat() as WebhookOutcome[];
+  const response = await handleWebhook("polar", request);
+  const outcomes = (await drainResults(["device.fetch"])) as WebhookOutcome[];
   return { status: response.status, outcomes };
 }
 

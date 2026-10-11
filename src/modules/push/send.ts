@@ -1,3 +1,4 @@
+import { errorName, log } from "@/core/log";
 import { isPushEndpoint, pushService } from "./endpoint";
 import { vapidAuthorization, type VapidKeys } from "./vapid";
 
@@ -58,11 +59,10 @@ export async function sendPush(
       signal: AbortSignal.timeout(TIMEOUT_MS),
     });
   } catch (error) {
-    console.error(
-      "reminders: push failed",
-      pushService(endpoint),
-      error instanceof Error ? error.name : "error",
-    );
+    await log.error("reminders: push failed", {
+      service: pushService(endpoint),
+      error: errorName(error),
+    });
     return { outcome: "failed", status: null, transient: true };
   }
   // The body says nothing Kadence acts on; read it so the socket is freed.
@@ -70,7 +70,10 @@ export async function sendPush(
   if (response.ok) return { outcome: "sent" };
   if (response.status === 404 || response.status === 410)
     return { outcome: "gone", status: response.status };
-  console.error("reminders: push refused", pushService(endpoint), response.status);
+  await log.error("reminders: push refused", {
+    service: pushService(endpoint),
+    status: response.status,
+  });
   return {
     outcome: "failed",
     status: response.status,

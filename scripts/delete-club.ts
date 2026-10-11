@@ -9,8 +9,9 @@ import { Pool } from "pg";
  * the owner has left, and someone the club answers for has asked in
  * writing. Everything the club owns goes, and the audit rows about it,
  * exactly as when the club's owner deletes it from Settings → Workspace
- * (delete_workspace, drizzle/0003). One line stays in the log: that the
- * installation deleted it, and why.
+ * (delete_workspace, drizzle/0003 and 0045). One line stays in the log:
+ * that the installation deleted it, why, and how many rows each table
+ * held. The cascade itself writes nothing to the trail (ADR 0084).
  *
  *     pnpm script scripts/delete-club.ts                               # lists the clubs
  *     pnpm script scripts/delete-club.ts <org id> "<the club's name>" "<why>"
@@ -48,6 +49,10 @@ async function main(): Promise<void> {
     const client = await pool.connect();
     try {
       await client.query("begin");
+      const counts = await client.query<{ rows: Record<string, number> }>(
+        "select workspace_row_counts($1) as rows",
+        [orgId],
+      );
       await client.query("delete from organizations where id = $1", [orgId]);
       await client.query("set local session_replication_role = replica");
       await client.query("delete from audit_log where org_id = $1", [orgId]);
@@ -55,7 +60,10 @@ async function main(): Promise<void> {
       await client.query(
         `insert into audit_log (org_id, actor_user_id, actor_type, action, entity_type, entity_id, after_data)
          values (null, null, 'system', 'workspace.deleted_by_installation', 'organizations', $1, $2)`,
-        [orgId, JSON.stringify({ reason: reason.trim().slice(0, 500) })],
+        [
+          orgId,
+          JSON.stringify({ reason: reason.trim().slice(0, 500), rows: counts.rows[0]!.rows }),
+        ],
       );
       await client.query("commit");
     } catch (error) {

@@ -26,7 +26,7 @@ import {
 
 const OFF: NavFlags = { club: false, coachesRoom: false, rides: false, parent: false };
 const ON: NavFlags = { club: true, coachesRoom: true, rides: false, parent: false };
-const ROLES: NavRole[] = ["coach", "rider", "parent", "member"];
+const ROLES: NavRole[] = ["coach", "rider", "parent", "member", "self", "family"];
 const EVERY_FLAGS: NavFlags[] = [OFF, ON, { ...ON, rides: true, parent: true }];
 
 /** The two tiers as their keys, the way a reader meets them. */

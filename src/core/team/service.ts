@@ -5,6 +5,7 @@ import { auth } from "@/core/auth/auth";
 import { authDb } from "@/core/db/client";
 import { invitations, organizations, users } from "@/core/db/schema";
 import { env } from "@/core/env";
+import { errorName, log, requestIdFrom } from "@/core/log";
 
 /**
  * The team: who is in a workspace, and how somebody joins it.
@@ -17,9 +18,10 @@ import { env } from "@/core/env";
  * pending invitation per address, an expiry, the recipient's address has
  * to match, only owners and admins may invite.
  *
- * No mail is sent. The person who invites copies the link and sends it
- * the way they talk to their colleague anyway; a mail provider is a
- * dependency the tool does not need to have.
+ * The person who invites copies the link and sends it the way they talk
+ * to their colleague anyway. Where the installation sends mail, a coach
+ * can also send a rider's or a parent's link to its address from the
+ * riders page (src/modules/team/mail-invitation.ts, docs/adr/0086).
  */
 
 export const TEAM_ROLES = ["member", "admin"] as const;
@@ -85,7 +87,10 @@ export async function inviteMember(
       if (error.status === "FORBIDDEN" || /not allowed/i.test(message))
         return { ok: false, error: "forbidden" };
     }
-    console.error("team: invitation failed", error);
+    await log.error("team: invitation failed", {
+      requestId: requestIdFrom(headers),
+      error: errorName(error),
+    });
     return { ok: false, error: "generic" };
   }
 }
@@ -124,13 +129,18 @@ export async function cancelInvitation(headers: Headers, invitationId: string): 
     await auth.api.cancelInvitation({ body: { invitationId }, headers });
     return true;
   } catch (error) {
-    console.error("team: cancelling invitation failed", error);
+    await log.error("team: cancelling invitation failed", {
+      requestId: requestIdFrom(headers),
+      error: errorName(error),
+    });
     return false;
   }
 }
 
 export type InvitationView = {
   id: string;
+  /** The workspace the invitation is to; for the server's own use, never shown. */
+  organizationId: string;
   email: string;
   role: string;
   workspaceName: string;
@@ -149,6 +159,7 @@ export async function findTeamInvitation(invitationId: string): Promise<Invitati
   const [row] = await authDb
     .select({
       id: invitations.id,
+      organizationId: invitations.organizationId,
       email: invitations.email,
       role: invitations.role,
       status: invitations.status,
@@ -166,6 +177,7 @@ export async function findTeamInvitation(invitationId: string): Promise<Invitati
     row.status === "pending" && row.expiresAt.getTime() <= Date.now() ? "expired" : row.status;
   return {
     id: row.id,
+    organizationId: row.organizationId,
     email: row.email,
     role: row.role ?? "member",
     workspaceName: row.workspaceName,
@@ -199,7 +211,16 @@ export async function acceptTeamInvitation(
   invitationId: string,
 ): Promise<AcceptResult> {
   try {
-    await auth.api.acceptInvitation({ body: { invitationId }, headers });
+    const accepted = await auth.api.acceptInvitation({ body: { invitationId }, headers });
+    // Better Auth makes the team the active one in the database only. Set
+    // again through its own door, it is written into the session's cookie
+    // cache too (docs/adr/0083), so the next page opens the team just
+    // joined rather than the one the cookie remembers.
+    const organizationId = accepted?.member.organizationId;
+    if (organizationId)
+      await auth.api
+        .setActiveOrganization({ body: { organizationId }, headers })
+        .catch((error: unknown) => console.error("team: opening the joined team failed", error));
     return "accepted";
   } catch (error) {
     if (error instanceof APIError) {
@@ -207,7 +228,10 @@ export async function acceptTeamInvitation(
       if (/recipient/i.test(message)) return "wrongPerson";
       if (/not found|expired/i.test(message)) return "invalid";
     }
-    console.error("team: accepting invitation failed", error);
+    await log.error("team: accepting invitation failed", {
+      requestId: requestIdFrom(headers),
+      error: errorName(error),
+    });
     return "failed";
   }
 }
@@ -219,7 +243,10 @@ export async function removeMember(headers: Headers, memberIdOrEmail: string): P
     await auth.api.removeMember({ body: { memberIdOrEmail }, headers });
     return true;
   } catch (error) {
-    console.error("team: removing member failed", error);
+    await log.error("team: removing member failed", {
+      requestId: requestIdFrom(headers),
+      error: errorName(error),
+    });
     return false;
   }
 }
@@ -233,7 +260,10 @@ export async function updateMemberRole(
     await auth.api.updateMemberRole({ body: { memberId, role }, headers });
     return true;
   } catch (error) {
-    console.error("team: changing role failed", error);
+    await log.error("team: changing role failed", {
+      requestId: requestIdFrom(headers),
+      error: errorName(error),
+    });
     return false;
   }
 }
@@ -243,7 +273,10 @@ export async function leaveWorkspace(headers: Headers, organizationId: string): 
     await auth.api.leaveOrganization({ body: { organizationId }, headers });
     return true;
   } catch (error) {
-    console.error("team: leaving failed", error);
+    await log.error("team: leaving failed", {
+      requestId: requestIdFrom(headers),
+      error: errorName(error),
+    });
     return false;
   }
 }

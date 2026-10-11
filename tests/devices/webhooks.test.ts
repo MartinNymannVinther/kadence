@@ -7,6 +7,7 @@ import { linkOwner, saveLink } from "@/modules/devices/links";
 import { handleWebhook, type WebhookOutcome } from "@/modules/devices/webhooks";
 import { listSessions } from "@/modules/training/sessions";
 import { adminPool, appClient, asApp } from "../helpers/db";
+import { drainResults } from "../helpers/jobs";
 import { insertSql, seedPerson } from "../helpers/rows";
 import { encodeRide, steadyHour } from "../fit/fixtures";
 import { bytes, fakeFetch, WEBHOOK_TOKEN, withProviderKeys } from "./fake-fetch";
@@ -49,13 +50,10 @@ const post = (provider: string, body: unknown, headers: Record<string, string> =
     body: typeof body === "string" ? body : JSON.stringify(body),
   });
 
-/** Runs the deferred work inline and hands back its outcomes. */
+/** Posts a notification, then runs the jobs it queued as the worker would, and hands back their outcomes. */
 async function deliver(provider: string, body: unknown, headers?: Record<string, string>) {
-  const work: Promise<unknown>[] = [];
-  const response = await handleWebhook(provider, post(provider, body, headers), (fn) => {
-    work.push(fn());
-  });
-  const outcomes = (await Promise.all(work)).flat() as WebhookOutcome[];
+  const response = await handleWebhook(provider, post(provider, body, headers));
+  const outcomes = (await drainResults(["device.fetch"])) as WebhookOutcome[];
   return { status: response.status, outcomes };
 }
 

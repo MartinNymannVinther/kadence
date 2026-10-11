@@ -6,6 +6,7 @@ import { nextCookies } from "better-auth/next-js";
 import { organization, twoFactor } from "better-auth/plugins";
 import { platformRoleForNewUser } from "@/core/access/service";
 import {
+  canCreatePersonalWorkspace,
   canCreateWorkspace,
   defaultWorkspaceId,
   markWorkspaceUsed,
@@ -15,14 +16,13 @@ import { authDb } from "@/core/db/client";
 import * as schema from "@/core/db/schema";
 import { env } from "@/core/env";
 import { coachesTeam, COACH_ONLY_PATHS, trimForMember } from "./coach-only";
+import { resetByMail, verificationByMail } from "./mail-hooks";
 import {
+  attemptFromRequest,
   countUsers,
-  DEMO_HEADER,
-  INVITATION_HEADER,
   isDemoEmail,
-  isDemoSignup,
+  isSelfSignupRequest,
   signupAllowed,
-  TEAM_INVITATION_HEADER,
 } from "./signup";
 
 const baseUrl = new URL(env.BETTER_AUTH_URL);
@@ -37,6 +37,19 @@ export const TEAM_INVITATION_LIMIT = 200;
  * until when read the date from the invitation itself.
  */
 export const TEAM_INVITATION_DAYS = 7;
+
+/** The organization plugin's endpoints that write a workspace's own row. */
+const WORKSPACE_WRITE_PATHS = new Set(["/organization/create", "/organization/update"]);
+
+/** Whether a request body tries to say what kind of workspace it is, at its top or in `data`. */
+export function bodyNamesKind(body: unknown): boolean {
+  if (!body || typeof body !== "object") return false;
+  const data = (body as { data?: unknown }).data;
+  return (
+    Object.hasOwn(body, "kind") ||
+    Boolean(data && typeof data === "object" && Object.hasOwn(data, "kind"))
+  );
+}
 
 export const auth = betterAuth({
   appName: "Kadence",
@@ -59,22 +72,44 @@ export const auth = betterAuth({
       // Role on the installation (see src/core/access). `input: false`
       // keeps it out of every request body: nobody registers as owner.
       platformRole: { type: "string", required: false, input: false },
+      // Came in through door 2 (docs/adr/0088): confirms the address
+      // before anything else, and goes after seven days unconfirmed. Set
+      // at creation from door 2's key, never from a request body.
+      selfSignup: { type: "boolean", required: false, input: false, defaultValue: false },
     },
   },
-  session: { modelName: "sessions" },
+  session: {
+    modelName: "sessions",
+    // The session is read from a signed cookie for five minutes before the
+    // database is asked again (docs/adr/0083): one query less on every
+    // request. Signing out clears the cookie at once. Whether the person
+    // is still on the team is not in the cookie: getOrgContext reads the
+    // membership on every page (session.ts), so removal from a team takes
+    // effect on the next page as before. What waits up to five minutes is
+    // a session revoked elsewhere, such as the other devices signed out
+    // when a coach's reset link is used.
+    cookieCache: { enabled: true, maxAge: 5 * 60 },
+  },
   account: { modelName: "accounts" },
+  // A link to confirm the address, asked for under Settings → Sikkerhed;
+  // only when the installation sends mail (docs/adr/0086).
+  ...verificationByMail(),
   verification: { modelName: "verifications" },
   emailAndPassword: {
     enabled: true,
-    // OWASP ASVS: minimum 12 characters. No email provider before phase 2,
-    // so verification is intentionally off (recorded in ADR 0001).
+    // OWASP ASVS: minimum 12 characters. A confirmed address is not
+    // required to sign in (docs/adr/0086); a person who signs up alone
+    // through door 2 is held at /verify until theirs is (verify-first.ts,
+    // docs/adr/0088), signed in, so they can ask for the mail again.
     minPasswordLength: 12,
     requireEmailVerification: false,
-    // A link a coach made (ADR 0032) is the way back in: using it signs the
-    // person out everywhere else, and the audit trail keeps that it was
-    // used. Asking for a link by e-mail stays closed, since there is no
-    // sendResetPassword.
+    // A link a coach made (ADR 0032) is the way back in on every
+    // installation: using it signs the person out everywhere else, and the
+    // audit trail keeps that it was used. With mail (docs/adr/0086) the
+    // person can ask for the same link by e-mail at /forgot-password;
+    // without it there is no sendResetPassword, and Better Auth refuses.
     revokeSessionsOnPasswordReset: true,
+    ...resetByMail(),
     onPasswordReset: async ({ user }) => {
       await recordAuthEvent({
         action: "auth.password_reset",
@@ -95,6 +130,10 @@ export const auth = betterAuth({
     customRules: {
       "/sign-in/email": { window: 60, max: 10 },
       "/reset-password": { window: 60, max: 10 },
+      // The mail doors, for a caller that comes straight to Better Auth
+      // rather than through /forgot-password (docs/adr/0086).
+      "/request-password-reset": { window: 60 * 60, max: 5 },
+      "/send-verification-email": { window: 60 * 60, max: 5 },
       "/sign-up/email": { window: 60, max: 10 },
       "/two-factor/verify-totp": { window: 60, max: 10 },
     },
@@ -105,10 +144,11 @@ export const auth = betterAuth({
         // The first account on an empty installation owns it. Decided
         // here, at the moment of creation, so it holds for every path
         // that can create a user and not only for the registration form.
-        before: async (user) => ({
+        before: async (user, context) => ({
           data: {
             ...user,
             platformRole: platformRoleForNewUser(await countUsers(), isDemoEmail(user.email)),
+            selfSignup: isSelfSignupRequest(context?.headers, user.email),
           },
         }),
       },
@@ -140,15 +180,36 @@ export const auth = betterAuth({
     // The endpoint is the door, not the page. Hiding the registration form
     // closes the front door only; this closes the one that matters.
     before: createAuthMiddleware(async (ctx) => {
+      // What a workspace is — a club, or one person's own training — is
+      // ours to set, right after creation (docs/adr/0080). Better Auth
+      // does not know the column and would drop it; refusing a body that
+      // carries it keeps that true if a later version learns to pass it on.
+      if (WORKSPACE_WRITE_PATHS.has(ctx.path) && bodyNamesKind(ctx.body)) {
+        throw new APIError("BAD_REQUEST", {
+          code: "WORKSPACE_KIND_NOT_SETTABLE",
+          message: "A workspace's kind is not set from a request",
+        });
+      }
+      // A workspace made on a person's behalf, with no session: Better
+      // Auth's server-only path, which skips allowUserToCreateOrganization
+      // and which a request can never take (a request without a session is
+      // refused by the endpoint itself). Our server code takes it for one
+      // thing, the personal workspace a rider leaving a team moves their
+      // training into (docs/adr/0081), and a person gets one of those.
+      if (ctx.path === "/organization/create") {
+        const body = (ctx.body ?? {}) as { userId?: unknown };
+        if (typeof body.userId === "string") {
+          const session = ctx.context.session ?? (await getSessionFromCtx(ctx));
+          if (!session && !(await canCreatePersonalWorkspace(body.userId))) {
+            throw new APIError("FORBIDDEN", {
+              code: "PERSONAL_WORKSPACE_EXISTS",
+              message: "A person has one personal workspace",
+            });
+          }
+        }
+      }
       if (ctx.path === "/sign-up/email") {
-        const body = (ctx.body ?? {}) as { email?: unknown };
-        const attempt = {
-          email: typeof body.email === "string" ? body.email : null,
-          invitationToken: ctx.headers?.get(INVITATION_HEADER) ?? null,
-          teamInvitationId: ctx.headers?.get(TEAM_INVITATION_HEADER) ?? null,
-          demo: isDemoSignup(ctx.headers?.get(DEMO_HEADER)),
-        };
-        if (!(await signupAllowed(attempt))) {
+        if (!(await signupAllowed(attemptFromRequest(ctx.headers, ctx.body)))) {
           throw new APIError("FORBIDDEN", { code: "SIGNUP_CLOSED", message: "Sign-up is closed" });
         }
       }

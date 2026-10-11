@@ -1,16 +1,20 @@
 import { authDb } from "@/core/db/client";
 import { auditLog } from "@/core/db/schema";
+import { errorName, log } from "@/core/log";
 
 export type SemanticAuditEvent = {
   action:
     | "auth.login"
     | "auth.logout"
     | "auth.password_reset"
+    | "auth.email_verified"
     | "access.requested"
     | "access.approved"
     | "access.declined"
     | "invitation.created"
-    | "invitation.used";
+    | "invitation.used"
+    | "invitation.mailed"
+    | "account.deleted";
   orgId?: string | null;
   actorUserId?: string | null;
   entityType: string;
@@ -44,6 +48,10 @@ export async function recordAuthEvent(event: SemanticAuditEvent): Promise<void> 
       userAgent: event.userAgent ?? null,
     });
   } catch (error) {
-    console.error("audit: failed to record auth event", error);
+    await log.error("audit: failed to record auth event", {
+      action: event.action,
+      orgId: event.orgId ?? undefined,
+      error: errorName(error),
+    });
   }
 }

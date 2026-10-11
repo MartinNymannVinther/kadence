@@ -2,7 +2,10 @@
 
 import { useTranslations } from "next-intl";
 import { labelKey, type NavKey, type NavMenu } from "@/app/[locale]/(app)/nav-items";
-import type { SettingsItem } from "@/app/[locale]/(app)/(narrow)/settings/settings-items";
+import {
+  settingsLabelKey,
+  type SettingsItem,
+} from "@/app/[locale]/(app)/(narrow)/settings/settings-items";
 import { durationText } from "@/components/training/duration";
 import {
   riderHref,
@@ -82,7 +85,7 @@ export function useSearchSources({
   const settingsWord = nav("settings");
   const tabsHits = settings.map((item): PaletteHit => ({
     id: `settings:${item.key}`,
-    label: tabs(item.key),
+    label: tabs(settingsLabelKey(item)),
     meta: settingsWord,
     href: item.href,
     mark: { kind: "settings" },

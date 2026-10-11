@@ -44,7 +44,7 @@ export async function POST(request: Request) {
   if (fromAnotherSite(request)) return new Response(null, { status: 403 });
   const ctx = await requireOrgContext();
   if (!ctx) return land("/login");
-  if (!rateLimit(`upload:${ctx.userId}`, 30, HOUR).allowed)
+  if (!(await rateLimit(`upload:${ctx.userId}`, 30, HOUR)).allowed)
     return land("/today?shared=rate_limited");
   // Before the files are read: only a rider has rides to share.
   if (!(await sharingRider(ctx))) return land("/today?shared=not_a_rider");

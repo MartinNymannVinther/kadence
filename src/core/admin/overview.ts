@@ -9,7 +9,13 @@ import { appDb } from "@/core/db/client";
  * not the owner; this asks it as the owner, with nothing set but who is
  * asking. There is no org context, so no domain table is readable here.
  * The pilot's three numbers (drizzle/0031, docs/adr/0066) come as counts
- * for the last full week, the same for every club.
+ * for the last full week, the same for every club. A personal workspace
+ * (drizzle/0041, docs/adr/0080) comes without its name, which is a
+ * person's; the page shows persons as one line (`personsSummary`). This
+ * month's AI cost on the installation's key, the calls whose price is not
+ * known, and the workspace's own budget come too (drizzle/0049,
+ * docs/adr/0089), and the workspace's own file quota (drizzle/0051,
+ * docs/adr/0087).
  */
 export type PilotCounts = {
   /** The Monday of the last full week, a Copenhagen day. */
@@ -23,7 +29,9 @@ export type PilotCounts = {
 
 export type ClubOverview = {
   orgId: string;
+  /** Empty for a personal workspace: the database never hands its name over. */
   name: string;
+  kind: "club" | "personal";
   createdAt: Date;
   coaches: number;
   riders: number;
@@ -32,6 +40,14 @@ export type ClubOverview = {
   lastSeen: Date | null;
   fileBytes: number;
   aiCallsDay: number;
+  /** Micro-euro the installation's key spent for the workspace this calendar month. */
+  aiCostMonthMicro: number;
+  /** This month's calls that used tokens at a price nobody knows: "pris ukendt". */
+  aiUnpricedMonth: number;
+  /** The workspace's own monthly budget in micro-euro; null is the installation's default. */
+  aiBudgetMicro: number | null;
+  /** The workspace's own file quota in bytes; null is the installation's default for its kind. */
+  fileQuotaBytes: number | null;
   pilot: PilotCounts;
 };
 
@@ -39,7 +55,8 @@ type Count = string | number;
 
 type Row = {
   org_id: string;
-  name: string;
+  name: string | null;
+  kind: string;
   created_at: Date | string;
   coaches: Count;
   riders: Count;
@@ -54,6 +71,10 @@ type Row = {
   pilot_sessions: Count;
   pilot_receipts: Count;
   pilot_minutes: Count;
+  ai_cost_month_micro: Count;
+  ai_unpriced_month: Count;
+  ai_budget_micro: Count | null;
+  file_quota_bytes: Count | null;
 };
 
 const date = (v: Date | string) => (v instanceof Date ? v : new Date(v));
@@ -71,7 +92,8 @@ export async function platformOverview(userId: string): Promise<ClubOverview[] |
   });
   return rows.map((r) => ({
     orgId: r.org_id,
-    name: r.name,
+    name: r.kind === "personal" ? "" : (r.name ?? ""),
+    kind: r.kind === "personal" ? "personal" : "club",
     createdAt: date(r.created_at),
     coaches: Number(r.coaches),
     riders: Number(r.riders),
@@ -80,6 +102,10 @@ export async function platformOverview(userId: string): Promise<ClubOverview[] |
     lastSeen: r.last_seen ? date(r.last_seen) : null,
     fileBytes: Number(r.file_bytes),
     aiCallsDay: Number(r.ai_calls_day),
+    aiCostMonthMicro: Number(r.ai_cost_month_micro),
+    aiUnpricedMonth: Number(r.ai_unpriced_month),
+    aiBudgetMicro: r.ai_budget_micro === null ? null : Number(r.ai_budget_micro),
+    fileQuotaBytes: r.file_quota_bytes === null ? null : Number(r.file_quota_bytes),
     pilot: {
       week: r.pilot_monday,
       riders: Number(r.pilot_riders),
@@ -89,4 +115,31 @@ export async function platformOverview(userId: string): Promise<ClubOverview[] |
       minutes: Number(r.pilot_minutes),
     },
   }));
+}
+
+/** The persons on the installation as one line: how many, not who (docs/adr/0080). */
+export type PersonsSummary = {
+  count: number;
+  /** Personal workspaces someone was in during the last seven days. */
+  seenWeek: number;
+  fileBytes: number;
+  aiCallsDay: number;
+  aiCostMonthMicro: number;
+  aiUnpricedMonth: number;
+};
+
+const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+
+/** Adds up the personal workspaces in the overview. Pure. */
+export function personsSummary(rows: ClubOverview[], now = new Date()): PersonsSummary {
+  const persons = rows.filter((r) => r.kind === "personal");
+  return {
+    count: persons.length,
+    seenWeek: persons.filter((r) => r.lastSeen && now.getTime() - r.lastSeen.getTime() < WEEK_MS)
+      .length,
+    fileBytes: persons.reduce((n, r) => n + r.fileBytes, 0),
+    aiCallsDay: persons.reduce((n, r) => n + r.aiCallsDay, 0),
+    aiCostMonthMicro: persons.reduce((n, r) => n + r.aiCostMonthMicro, 0),
+    aiUnpricedMonth: persons.reduce((n, r) => n + r.aiUnpricedMonth, 0),
+  };
 }

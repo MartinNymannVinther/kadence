@@ -1,30 +1,14 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { env } from "@/core/env";
-import { pushConfig, runRemindersOnce, startReminderTimer } from "@/modules/push/timer";
+import { pushConfig, runRemindersOnce } from "@/modules/push/timer";
 import { newVapidKeyPair } from "@/modules/push/vapid";
 
 /**
- * When the reminder run happens (docs/adr/0060): a timer started once per
- * process however often it is asked, never holding the process open, a
- * run that does nothing without the key pair, and two calls at once that
- * share one run. The job itself is tests/push/job.test.ts.
+ * One reminder run (docs/adr/0060): nothing without the key pair, and two
+ * calls at once share one run. When it runs is a recurring job now
+ * (docs/adr/0085, tests/jobs/moved.test.ts); the job itself is
+ * tests/push/job.test.ts.
  */
-
-const state = globalThis as unknown as { kadenceReminderTimer?: ReturnType<typeof setInterval> };
-
-afterEach(() => {
-  if (state.kadenceReminderTimer) clearInterval(state.kadenceReminderTimer);
-  state.kadenceReminderTimer = undefined;
-  vi.useRealTimers();
-});
-
-describe("the reminder timer", () => {
-  it("starts once per process", () => {
-    vi.useFakeTimers();
-    expect(startReminderTimer()).toBe(true);
-    expect(startReminderTimer()).toBe(false);
-  });
-});
 
 describe("a run", () => {
   it("does nothing without the key pair", async () => {

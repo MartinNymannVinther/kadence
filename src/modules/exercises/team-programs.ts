@@ -3,6 +3,7 @@ import type { z } from "zod";
 import { Refused } from "@/core/action";
 import { teamPrograms, type TeamProgramRow } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
+import { log } from "@/core/log";
 import { requireCoach } from "@/modules/team/access";
 import { checkProgramRefs, parseOrRefuse, refsOf } from "./refs";
 import { programPartsSchema, teamProgramInputSchema, type ProgramPart } from "./types";
@@ -31,7 +32,7 @@ export type TeamProgram = {
 export function readTeamProgram(row: TeamProgramRow): TeamProgram | null {
   const parts = programPartsSchema.safeParse(row.parts);
   if (!parts.success) {
-    console.error("exercises: a stored team programme does not fit the contract", row.id);
+    void log.error("exercises: a stored team programme does not fit the contract", { id: row.id });
     return null;
   }
   return {

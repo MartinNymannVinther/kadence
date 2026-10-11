@@ -2,11 +2,15 @@ import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest
 import type { Pool } from "pg";
 import { env } from "@/core/env";
 import { refreshOwnRaces, refreshOwnRacesLater } from "@/modules/results/own";
-import { whenIdle } from "@/modules/results/queue";
-import { refreshRaces, refreshStaleRaces } from "@/modules/results/refresh";
+import {
+  refreshRaces,
+  refreshStaleRaces,
+  refreshStaleRacesOnVisit,
+} from "@/modules/results/refresh";
 import { setUciId } from "@/modules/results/service";
 import { fakeFetch } from "../devices/fake-fetch";
 import { adminPool } from "../helpers/db";
+import { drainJobs } from "../helpers/jobs";
 import { insertSql, seedPerson } from "../helpers/rows";
 import { PAGE, profilePage, UCI } from "../results/profile-fixture";
 
@@ -90,8 +94,8 @@ describe("opening Kadence", () => {
   it("does not read the rider's page again within three hours", async () => {
     Object.assign(env, { DCU_RESULTS: "on" });
     const calls = fakeFetch({ [PORTAL]: () => html(PAGE) });
-    refreshOwnRacesLater(RIDER);
-    await whenIdle();
+    await refreshOwnRacesLater(RIDER);
+    await drainJobs(["dcu.read_rider"]);
     expect(calls).toHaveLength(0);
   });
 
@@ -99,7 +103,7 @@ describe("opening Kadence", () => {
     Object.assign(env, { DCU_RESULTS: "on" });
     const calls = fakeFetch({ [PORTAL]: () => html(PAGE) });
     await refreshStaleRaces(COACH);
-    await whenIdle();
+    await drainJobs(["dcu.read_rider"]);
     expect(calls).toHaveLength(1);
     const rows = await races();
     expect(rows).toHaveLength(6);
@@ -110,7 +114,7 @@ describe("opening Kadence", () => {
     Object.assign(env, { DCU_RESULTS: "on" });
     const calls = fakeFetch({ [PORTAL]: () => html(PAGE) });
     await refreshStaleRaces(COACH);
-    await whenIdle();
+    await drainJobs(["dcu.read_rider"]);
     expect(await refreshRaces(COACH, "rv_rider")).toEqual({ state: "fresh" });
     expect(calls).toHaveLength(0);
   });
@@ -139,5 +143,39 @@ describe("opening Kadence", () => {
     expect(await races()).toEqual([]);
     const left = await admin.query(`select 1 from race_results where org_id = $1`, [ORG]);
     expect(left.rowCount).toBe(0);
+  });
+});
+
+describe("a coach's visit from the layout", () => {
+  it("reads the team at most once an hour, however many pages are opened", async () => {
+    Object.assign(env, { DCU_RESULTS: "on" });
+    await admin.query(
+      `update riders set uci_id = $1, races_checked_at = null where id = 'rv_rider'`,
+      [UCI],
+    );
+    const calls = fakeFetch({ [PORTAL]: () => html(PAGE) });
+    await refreshStaleRacesOnVisit(COACH);
+    await drainJobs(["dcu.read_rider"]);
+    expect(calls).toHaveLength(1);
+
+    // Stale again, and the coach opens another page: the hour is not over.
+    await admin.query(`update riders set races_checked_at = null where id = 'rv_rider'`);
+    await refreshStaleRacesOnVisit(COACH);
+    await drainJobs(["dcu.read_rider"]);
+    expect(calls).toHaveLength(1);
+    const { rows } = await admin.query(
+      `select count from app_rate_limits where key = $1 and reset_at > now() + interval '59 minutes'`,
+      [`dcu-visit:${ORG}`],
+    );
+    expect(rows).toEqual([{ count: 2 }]);
+  });
+
+  it("counts nothing while the installation does not read races", async () => {
+    Object.assign(env, { DCU_RESULTS: "off" });
+    await refreshStaleRacesOnVisit({ orgId: "org_racevisits_off", userId: COACH.userId });
+    const { rows } = await admin.query(`select 1 from app_rate_limits where key = $1`, [
+      "dcu-visit:org_racevisits_off",
+    ]);
+    expect(rows).toEqual([]);
   });
 });

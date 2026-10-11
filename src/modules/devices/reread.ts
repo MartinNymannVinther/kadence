@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 import { activities, activityFiles, riders } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { FitError } from "@/modules/fit";
+import { loadFile } from "@/modules/storage/keep";
 import { requireCoach } from "@/modules/team/access";
 import { activityFromFit } from "./from-fit";
 
@@ -28,6 +29,7 @@ export async function rereadActivityDetails(
       const [row] = await tx
         .select({
           bytes: activityFiles.bytes,
+          storageKey: activityFiles.storageKey,
           ftp: riders.ftpWatts,
           thresholdHr: riders.thresholdHr,
         })
@@ -35,8 +37,13 @@ export async function rereadActivityDetails(
         .innerJoin(riders, eq(riders.id, activityFiles.riderId))
         .where(eq(activityFiles.activityId, activityId));
       if (!row) return;
+      const bytes = await loadFile(row);
+      if (!bytes) {
+        failed++;
+        return;
+      }
       try {
-        const values = activityFromFit(new Uint8Array(row.bytes), row);
+        const values = activityFromFit(bytes, row);
         await tx
           .update(activities)
           .set({

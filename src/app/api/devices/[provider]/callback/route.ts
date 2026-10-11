@@ -30,7 +30,7 @@ export async function GET(
   const ctx = await requireOrgContext();
   let location: string;
   if (!ctx) location = settingsUrl({ error: "unauthorized" });
-  else if (!rateLimit(`device-callback:${ctx.userId}`, 20, 10 * 60_000).allowed)
+  else if (!(await rateLimit(`device-callback:${ctx.userId}`, 20, 10 * 60_000)).allowed)
     location = settingsUrl({ error: "rate_limited" });
   else {
     try {

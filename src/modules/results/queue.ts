@@ -1,61 +1,49 @@
+import { field, payload } from "@/core/jobs/payload";
+import { jobKind } from "@/core/jobs/registry";
+
 /**
- * The line the readings from Cykling Danmark wait in (ADR 0039). Opening
- * Kadence puts a whole team's riders in it at once; it reads them one at a
- * time, ten seconds apart — six a minute, the installation's ceiling — in
- * this process, after the page has long been answered. A rider already in
- * the line is not put in twice, and a job that turns out to have nothing
- * to read (fresh, off) lets the next one go at once.
+ * The line the readings from Cykling Danmark wait in (ADR 0039), as jobs
+ * (docs/adr/0085). It used to be a list in one process's memory, lost in
+ * a restart and kept separately by every instance; now each reading is a
+ * row in `jobs`, taken by the worker.
  *
- * In memory, like the rate limiter (src/core/rate-limit.ts): Kadence is one
- * process, and a line lost in a restart is filled again by the next visit.
- * Imports nothing, so it is tested on its own.
+ * A coach's visit, a calendar or a rider's page, and the hourly job put a
+ * team's stale riders in it (refresh.ts); a rider's visit puts in their
+ * own (own.ts). A rider already waiting is not put in twice: the key is
+ * the rider for a coach's reading and the person for their own. Readings
+ * put in together are spaced ten seconds apart, as the line spaced them;
+ * what holds across the installation — one reading per rider at a time,
+ * six pages a minute — is counted with the counters (read.ts), and a
+ * reading that finds the minute's six taken is put back for ten seconds
+ * rather than dropped (jobs.ts).
+ *
+ * The payload is whose reading it is and as whom: ids and a word. Imports
+ * nothing but the job's own kernel, so it is tested on its own.
  */
 
-const GAP_MS = 10_000;
-/** A job answers whether it fetched a page, so only real readings are spaced. */
-type Job = { key: string; run: () => Promise<boolean> };
+/** Readings put in together are this far apart. */
+export const GAP_MS = 10_000;
 
-const line: Job[] = [];
-const waiting = new Set<string>();
-let draining: Promise<void> | null = null;
+export const dcuReadRider = jobKind(
+  "dcu.read_rider",
+  payload({
+    /** A coach's reading of a rider, or a rider's of their own. */
+    as: field.word(["coach", "rider"]),
+    /** The person the reading runs as. */
+    userId: field.id(),
+    /** The rider, for a coach's reading. */
+    riderId: field.id().optional(),
+  }),
+  // The page is fetched with its own deadline; a minute is plenty.
+  { team: true, timeoutMs: 60_000 },
+);
 
-const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-async function drain() {
-  while (line.length > 0) {
-    const job = line.shift()!;
-    let fetched = false;
-    try {
-      fetched = await job.run();
-    } catch (error) {
-      // A name, never a message: a database error's message carries its parameters.
-      console.warn(
-        "dcu results: queued read failed",
-        error instanceof Error ? error.name : "unknown",
-      );
-    } finally {
-      waiting.delete(job.key);
-    }
-    if (fetched && line.length > 0) await pause(GAP_MS);
-  }
+/** The dedupe key: one waiting reading per rider for coaches, per person for their own. */
+export function readKey(reading: { as: "coach" | "rider"; userId: string; riderId?: string }) {
+  return reading.as === "coach" ? `coach:${reading.riderId}` : `rider:${reading.userId}`;
 }
 
-function start() {
-  draining = drain().finally(() => {
-    draining = null;
-    // A job that arrived as the last one finished still gets its turn.
-    if (line.length > 0) start();
-  });
-}
-
-export function enqueue(key: string, run: () => Promise<boolean>): void {
-  if (waiting.has(key)) return;
-  waiting.add(key);
-  line.push({ key, run });
-  if (!draining) start();
-}
-
-/** When the line is empty: for tests, and for nothing else. */
-export async function whenIdle(): Promise<void> {
-  while (draining) await draining;
+/** How long after now the `index`th of readings put in together is due. */
+export function spacedBy(index: number): number {
+  return Math.max(0, index) * GAP_MS;
 }

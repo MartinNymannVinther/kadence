@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { Refused } from "@/core/action";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
+import { log } from "@/core/log";
 import { peekRateLimit, rateLimit } from "@/core/rate-limit";
 import { cleanTitle } from "@/modules/files/strava-archive";
 import { requireWriteFor } from "@/modules/team/access";
@@ -97,13 +98,13 @@ export async function keepArchiveFiles(
       results.push({ name, ok: false, error: "duplicate" });
       continue;
     }
-    const room = peekRateLimit(keptKey, ARCHIVE_KEPT_PER_DAY);
+    const room = await peekRateLimit(keptKey, ARCHIVE_KEPT_PER_DAY);
     if (!room.allowed) {
       wait(room.retryAfterSeconds);
       results.push({ name, ok: false, error: "rateLimited" });
       continue;
     }
-    const read = rateLimit(readKey, ARCHIVE_READ_PER_DAY, DAY);
+    const read = await rateLimit(readKey, ARCHIVE_READ_PER_DAY, DAY);
     if (!read.allowed) {
       wait(read.retryAfterSeconds);
       results.push({ name, ok: false, error: "rateLimited" });
@@ -118,11 +119,11 @@ export async function keepArchiveFiles(
         onlySport: onlyBike ? "bike" : undefined,
         sportHint: file.kind,
       });
-      rateLimit(keptKey, ARCHIVE_KEPT_PER_DAY, DAY);
+      await rateLimit(keptKey, ARCHIVE_KEPT_PER_DAY, DAY);
       results.push({ name, ok: true, activityId: imported.activityId });
     } catch (error) {
       if (!(error instanceof Refused)) {
-        console.error("archive: import failed", loggable(error));
+        await log.error("archive: import failed", { error: loggable(error) });
         results.push({ name, ok: false, error: "generic" });
       } else results.push({ name, ok: false, error: error.detail ?? error.code });
     }

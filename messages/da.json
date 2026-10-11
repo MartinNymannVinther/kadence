@@ -19,7 +19,7 @@
       "titleFor": "Link til {email}",
       "copy": "Kopiér link",
       "copied": "Kopieret",
-      "noMail": "Kadence sender ingen mail. Kopiér linket, og send det selv på sms eller mail. Det virker kun for den e-mailadresse."
+      "noMail": "Kopiér linket, og send det selv på sms eller mail. Det virker kun for den e-mailadresse."
     },
     "rider": "Rytter"
   },
@@ -60,7 +60,8 @@
       "title": "Prøv uden at oprette noget",
       "body": "Du får dit eget U19-hold i fuld gang: ryttere, en sæsonplan efter DCU, uger med pas, aktiviteter og check-ins. Du starter som træner og kan skifte til rytteren Emma og hendes mor for at se Kadence med deres øjne. Det hele slettes efter {hours, plural, one {# time} other {# timer}}. Ingen e-mail, ingen tilmelding.",
       "privacy": "Skriv ikke rigtige personoplysninger i demoen. Den passerer en database og eventuelt en sprogmodel på vejen.",
-      "cta": "Åbn en demo"
+      "cta": "Åbn en demo",
+      "ctaAlone": "Prøv som rytter alene"
     },
     "featuresLabel": "Det du får",
     "features": {
@@ -90,7 +91,20 @@
       "failed": "Adgangskoden kunne ikke gemmes. Prøv igen.",
       "missing": "Linket er ikke helt. Bed en træner på dit hold om et nyt.",
       "done": "Din adgangskode er skiftet, og du er logget ud alle andre steder.",
-      "login": "Log ind"
+      "login": "Log ind",
+      "bodyMail": "Linket kom på mail. Det virker én gang, og du bliver logget ud alle andre steder.",
+      "invalidMail": "Linket er brugt, udløbet eller ikke helt. Bed om et nyt under Glemt adgangskode."
+    },
+    "forgot": {
+      "title": "Glemt adgangskode",
+      "body": "Skriv den e-mail, du logger ind med. Så sender vi et link, hvor du kan vælge en ny adgangskode.",
+      "email": "E-mail",
+      "submit": "Send linket",
+      "sent": "Hvis adressen findes i Kadence, har vi sendt et link til den. Linket virker i en time. Kig også i spam, hvis det ikke kommer.",
+      "tooMany": "Der er bedt om mange links på kort tid. Prøv igen om en time.",
+      "failed": "Det lykkedes ikke at sende. Prøv igen om lidt.",
+      "coach": "Du kan også bede en træner på dit hold om et link. Har du en passkey, kan du logge ind med den i stedet.",
+      "back": "Tilbage til log ind"
     },
     "login": {
       "forgot": "Glemt adgangskode?",
@@ -129,7 +143,10 @@
       "errorInvitationInvalid": "Invitationen er udløbet eller allerede brugt. Bed om et nyt link.",
       "invitationInvalidTitle": "Linket virker ikke længere",
       "invitationInvalidBody": "Invitationen er udløbet, brugt eller erstattet af en nyere. Bed den der inviterede dig om et nyt link, eller ansøg om adgang igen.",
-      "applyLink": "Ansøg om adgang"
+      "applyLink": "Ansøg om adgang",
+      "errorTooYoung": "Man skal være mindst 15 år for at oprette en konto selv. En forælder kan oprette den og invitere dig.",
+      "personalMe": "Du får dit eget arbejdsrum, {workspace}. Her er du både din egen træner og rytter: du lægger dine pas, kører dem og følger din form.",
+      "personalChild": "Du får et arbejdsrum, {workspace}, hvor du planlægger træningen for {child}. Når kontoen er oprettet, kan du invitere {child} fra rytterens side."
     },
     "twoFactor": {
       "title": "Totrinsbekræftelse",
@@ -157,9 +174,51 @@
       "sentBody": "Du hører fra ejeren af denne installation på {email}. Svaret kommer fra et menneske, så regn med en dag eller to.",
       "errorInvalid": "Tjek felterne og prøv igen.",
       "errorTooMany": "Der er sendt mange ansøgninger herfra på kort tid. Prøv igen om en time.",
-      "privacy": "Vi gemmer navn, e-mail og organisation for at behandle ansøgningen, og ikke andet. Bliver den afvist, står oplysningerne kun tilbage som en note om afgørelsen.",
+      "privacy": "Vi gemmer navn, e-mail og organisation for at behandle ansøgningen, og ikke andet. Er det til én person, gemmer vi også fødselsåret og, for et barn, barnets navn og eventuelt e-mail. Bliver ansøgningen afvist, står oplysningerne kun tilbage som en note om afgørelsen.",
       "haveAccount": "Har du allerede en konto?",
-      "loginLink": "Log ind"
+      "loginLink": "Log ind",
+      "kindLegend": "Hvem er Kadence til?",
+      "kindClub": "En klub eller et hold",
+      "kindPersonal": "Mig selv",
+      "forWhomLegend": "Hvem skal træne?",
+      "forMe": "Det er til mig",
+      "forChild": "Det er til mit barn",
+      "birthYear": "Dit fødselsår",
+      "birthYearHint": "Året bestemmer klassen, fx U17 eller U19. Vi spørger ikke om dato.",
+      "childName": "Barnets navn",
+      "childBirthYear": "Barnets fødselsår",
+      "childEmail": "Barnets e-mail",
+      "childEmailHint": "Valgfrit. Med en e-mail får du et link, barnet kan oprette sin egen konto med. Du kan også gøre det senere.",
+      "tooYoung": "Er du under 15 år, kan du ikke oprette en konto selv. Bed en forælder om at ansøge og vælge \"Det er til mit barn\". Så kan de invitere dig bagefter.",
+      "workspaceName": "{name}s træning",
+      "workspaceNameSibilant": "{name}' træning"
+    },
+    "self": {
+      "title": "Opret dit eget arbejdsrum",
+      "subtitle": "Til din egen træning eller til dit barns. Du bekræfter din e-mail, før du går i gang.",
+      "name": "Dit navn",
+      "email": "Din e-mail",
+      "consentLegend": "Det skal du sige ja til",
+      "terms": "Jeg har læst <link>vilkårene og privatlivspolitikken</link>",
+      "healthMe": "Jeg giver mit udtrykkelige samtykke til, at Kadence gemmer helbredsoplysninger om mig: mine check-ins med søvn, smerte og sygdom, mine målinger og pulsen fra mine ture. Jeg kan trække samtykket tilbage under Indstillinger → Data. Så slår Kadence check-in og målinger fra, og resten virker som før: kalenderen, turene, sæsonplanen og Rulle.",
+      "healthChild": "Jeg er forælder og giver udtrykkeligt samtykke på mit barns vegne til, at Kadence gemmer helbredsoplysninger om barnet: check-ins med søvn, smerte og sygdom, målinger og pulsen fra turene. Jeg kan trække samtykket tilbage under Indstillinger → Data. Så slår Kadence check-in og målinger fra, og resten virker som før: kalenderen, turene, sæsonplanen og Rulle.",
+      "verifyNote": "Vi sender et link til din e-mail. Du åbner det, før du kan bruge Kadence. Bekræfter du ikke adressen inden for 7 dage, sletter vi kontoen igen.",
+      "submit": "Opret arbejdsrum",
+      "clubLink": "En klub eller et hold? Ansøg her",
+      "errorConsent": "Sæt kryds i begge felter for at oprette arbejdsrummet.",
+      "errorTooMany": "Der er oprettet mange konti herfra på kort tid. Prøv igen om en time.",
+      "errorClosed": "Du kan ikke oprette en konto selv her lige nu. Du kan stadig ansøge om adgang."
+    },
+    "verify": {
+      "title": "Bekræft din e-mail",
+      "body": "Vi har sendt en mail til {email} med et link. Åbn linket for at gå i gang. Indtil da kan du ikke bruge resten af Kadence.",
+      "spam": "Kan du ikke finde mailen, så kig i spam. Linket virker i en time. Du kan få en ny mail tre gange i timen.",
+      "resend": "Send mailen igen",
+      "sent": "Vi har sendt en ny mail.",
+      "rateLimited": "Du har fået tre mails den sidste time. Prøv igen lidt senere.",
+      "failed": "Mailen kunne ikke sendes lige nu. Prøv igen om lidt.",
+      "signOut": "Log ud",
+      "expiry": "Bekræfter du ikke adressen inden for {days, plural, one {# dag} other {# dage}}, sletter vi kontoen og alt i den."
     }
   },
   "app": {
@@ -214,6 +273,18 @@
         "title": "Links til ny adgangskode",
         "body": "Når en træner laver et link til at nulstille din adgangskode, står det her. Har du ikke bedt om det, så sig det til en træner.",
         "item": "{name} lavede et link {date}"
+      },
+      "address": {
+        "title": "Din e-mailadresse",
+        "verified": "Bekræftet",
+        "unverified": "Ikke bekræftet endnu",
+        "body": "Bekræft adressen, så du ved, at mails fra Kadence når frem. Kadence sender kun korte mails med et link, aldrig noget om træning eller helbred.",
+        "send": "Send en mail til bekræftelse",
+        "sent": "Mailen er på vej til {email}. Tryk på linket i den. Det virker i en time.",
+        "tooMany": "Du har bedt om flere mails på kort tid. Prøv igen om en time.",
+        "failed": "Mailen kunne ikke sendes. Prøv igen om lidt.",
+        "done": "Tak. Din adresse er bekræftet.",
+        "expired": "Linket er brugt, udløbet eller ikke helt. Send en ny mail."
       },
       "title": "Sikkerhed",
       "subtitle": "Passkeys og totrinsbekræftelse for din konto.",
@@ -288,11 +359,26 @@
       "jsonTitle": "Maskinlæsbar kopi",
       "jsonBody": "De samme data som JSON, med alle id'er bevaret. Det er den fil der gør, at I kan flytte til noget andet end Kadence uden at miste sammenhængen mellem pas, aktiviteter og kommentarer.",
       "jsonAction": "Hent JSON",
+      "auditNote": "Revisionssporet i regnearket er de nyeste {rows, number} rækker. Hele sporet er i JSON-filen.",
+      "filesTitle": "Dine filer",
+      "filesBody": "Den originale fil fra hver tur, samlet i en zip med en mappe for hver rytter. Det er filerne fra uret, cykelcomputeren eller Rulle, som de kom ind.",
+      "filesAction": "Hent dine filer",
+      "limitedExport": "Eksporten er hentet tre gange i arbejdsrummet den sidste time. Du kan hente den igen om {minutes} min.",
+      "limitedFiles": "Filerne er hentet to gange i arbejdsrummet den sidste time. Du kan hente dem igen om {minutes} min.",
       "sheetsLabel": "Faner i filen:",
       "membersSheet": "Brugere",
       "notBackupTitle": "Det her er ikke en backup.",
       "notBackupBody": "En eksport kan læses, men den kan ikke lægges tilbage, og den er kun så ny som den dag du hentede den. Den dag databasen er væk, er det det natlige krypterede dump der redder dig.",
-      "privacy": "Eksporten indeholder det du må se i arbejdsrummet og dets historik: en træner får hele holdet, en rytter sine egne data. Adgangskoder, passkeys, enhedsnøgler og nøglen til arbejdsrummets sprogmodel kommer aldrig med. At du henter filen bliver skrevet i revisionssporet."
+      "privacy": "Eksporten indeholder det du må se i arbejdsrummet og dets historik: en træner får hele holdet, en rytter sine egne data. Adgangskoder, passkeys, enhedsnøgler og nøglen til arbejdsrummets sprogmodel kommer aldrig med. At du henter filen bliver skrevet i revisionssporet.",
+      "storage": {
+        "title": "Plads til filer",
+        "body": "Turenes originale filer fylder det her. Når pladsen er brugt, afvises nye filer, og alt andet virker. Slet gamle ture eller hent dem ud først, hvis I nærmer jer loftet.",
+        "usedOf": "{used} af {quota} brugt.",
+        "usedNoQuota": "{used} brugt. Der er ikke sat et loft.",
+        "full": "Pladsen til filer er brugt. Slet gamle ture eller hent dem ud først.",
+        "inDatabase": "Filerne ligger i Kadences egen database på serveren.",
+        "inStore": "Filerne ligger i et objektlager i EU, krypteret, og kun Kadence kan læse dem. Slettede filer er væk fra lageret inden for en time."
+      }
     }
   },
   "settings": {
@@ -300,6 +386,7 @@
     "subtitleCoach": "Dig selv, holdet og arbejdsrummet.",
     "subtitleRider": "Dig selv, dine enheder og din sikkerhed.",
     "subtitleOther": "Dig selv og din sikkerhed.",
+    "subtitlePersonal": "Dig selv, din træning, din AI og dine data.",
     "appearance": {
       "title": "Udseende",
       "body": "Gælder på denne enhed. Lys eller mørk følger ellers systemet.",
@@ -324,6 +411,7 @@
       "team": "Holdet",
       "me": "Profil",
       "devices": "Enheder",
+      "training": "Træning",
       "groups": {
         "you": "Dig",
         "team": "Holdet",
@@ -342,6 +430,12 @@
       "linkBody": "Vises kun nu. Kopiér det og send det selv. Det virker i 7 dage og kun én gang.",
       "copy": "Kopiér link",
       "copiedToast": "Linket er kopieret.",
+      "linkBodyMail": "Vises kun nu. Send det på mail, eller kopiér det og send det selv. Det virker i 7 dage og kun én gang.",
+      "mail": "Send linket",
+      "mailed": "Sendt",
+      "mailedToast": "Linket er sendt til {email}.",
+      "mailTooMany": "Linket er sendt flere gange lige nu. Prøv igen om en time, eller kopiér det.",
+      "mailFailed": "Mailen kunne ikke sendes. Kopiér linket, og send det selv.",
       "inviteTitle": "Inviter direkte",
       "inviteBody": "Uden ansøgning først. Samme link, samme regler.",
       "inviteEmail": "E-mail",
@@ -360,13 +454,16 @@
       "stateUsed": "Brugt",
       "stateExpired": "Udløbet",
       "stateRevoked": "Erstattet",
-      "errorInvalid": "Tjek e-mail og navnet på arbejdsrummet."
+      "errorInvalid": "Tjek e-mail og navnet på arbejdsrummet.",
+      "inviteName": "Personens navn",
+      "personalMe": "Personligt arbejdsrum · til sig selv · født {year}",
+      "personalChild": "Personligt arbejdsrum · til sit barn, {child} · født {year}"
     },
     "workspace": {
       "resetLink": {
         "button": "Link til ny adgangskode",
         "title": "Link til ny adgangskode til {name}",
-        "body": "Send linket til {name} selv, fx på SMS. Det virker én gang og kun indtil kl. {until}. Kadence sender ingen mails.",
+        "body": "Send linket til {name} selv, fx på SMS. Det virker én gang og kun indtil kl. {until}.",
         "copy": "Kopiér",
         "copied": "Kopieret",
         "seen": "{name} kan se på sin sikkerhedsside, at du har lavet linket, og bliver logget ud alle andre steder, når det bruges.",
@@ -385,14 +482,20 @@
       },
       "delete": {
         "title": "Slet arbejdsrummet",
-        "body": "Alt i arbejdsrummet forsvinder: alle medlemmers samtaler og filer, roller, opgaver og hele revisionssporet om dem. Det kan ikke fortrydes.",
+        "body": "Alt i arbejdsrummet forsvinder: alle medlemmers samtaler og filer, roller, opgaver og hele revisionssporet om dem. Det kan ikke fortrydes. Turenes filer er væk fra lageret inden for en time.",
         "exportFirst": "Hent en eksport først, hvis du vil beholde noget. Den findes under Data.",
         "typeName": "Skriv {name} for at bekræfte",
         "action": "Slet arbejdsrummet permanent",
         "deleting": "Sletter …",
         "failed": "Arbejdsrummet blev ikke slettet. Prøv igen.",
         "notOwner": "Kun ejeren af arbejdsrummet kan slette det.",
-        "nameMismatch": "Navnet passer ikke. Skriv arbejdsrummets navn præcis som det står."
+        "nameMismatch": "Navnet passer ikke. Skriv arbejdsrummets navn præcis som det står.",
+        "personal": {
+          "title": "Slet min konto og alt om mig",
+          "body": "Alt om din træning forsvinder: pas, ture, check-ins, sæsonplanen, filerne og revisionssporet om dem. Er du ikke på et hold i Kadence, slettes din konto også. Det kan ikke fortrydes. Filerne er væk fra lageret inden for en time.",
+          "exportFirst": "Hent en eksport først, hvis du vil beholde noget. Den findes lige ovenfor.",
+          "action": "Slet min konto og alt om mig"
+        }
       },
       "images": {
         "title": "Logo og billede",
@@ -435,7 +538,57 @@
       "privacy": "Du ser tal og klubbernes navne, og det er alt, databasen giver fra sig her.",
       "newClub": "En ny klub kommer ind gennem en ansøgning, som du godkender.",
       "toAccess": "Gå til Adgang",
-      "help": "Vil en klub have hjælp, kan den invitere dig som træner for en tid. Det står i dens medlemsliste og i loggen, og klubben fjerner dig igen bagefter."
+      "help": "Vil en klub have hjælp, kan den invitere dig som træner for en tid. Det står i dens medlemsliste og i loggen, og klubben fjerner dig igen bagefter.",
+      "aiMonth": {
+        "title": "AI denne måned",
+        "body": "Det, installationens nøgle har brugt for hver klub siden den 1., og klubbens budget. Når budgettet er brugt, holder AI'en pause for klubben til næste måned, og alt andet virker. Et tomt felt er standarden på {budget}.",
+        "total": "I alt {total}: klubberne {clubs}, enkeltpersonerne {persons}.",
+        "unknownTotal": "{count, plural, one {# kald} other {# kald}} har en pris, Kadence ikke kender, og er ikke talt med.",
+        "unknown": "pris ukendt for {count, plural, one {# kald} other {# kald}}",
+        "club": "Klub",
+        "spent": "Brugt",
+        "budget": "Budget",
+        "spentOf": "{spent} af {budget}",
+        "noBudget": "intet loft",
+        "budgetLabel": "Månedligt AI-budget i euro for {club}",
+        "save": "Gem",
+        "saved": "Gemt.",
+        "invalid": "Skriv et beløb i euro, fx 7,50, eller lad feltet stå tomt.",
+        "failed": "Budgettet blev ikke gemt. Prøv igen."
+      },
+      "fileQuota": {
+        "title": "Plads til filer",
+        "body": "Hvor meget hver klubs filer fylder, og klubbens loft. Over loftet afvises nye filer, og alt andet virker. Et tomt felt er standarden: {club} for en klub og {personal} for en person.",
+        "inDatabase": "Filerne ligger i databasen (FILES_STORAGE=db).",
+        "inStore": "Filerne ligger i et objektlager i EU (FILES_STORAGE=s3).",
+        "persons": "Enkeltpersonerne fylder {used} i alt.",
+        "club": "Klub",
+        "used": "Brugt",
+        "quota": "Loft",
+        "usedOf": "{used} af {quota}",
+        "noQuota": "intet loft",
+        "quotaLabel": "Loft for filer i GB for {club}",
+        "save": "Gem",
+        "saved": "Gemt.",
+        "invalid": "Skriv et tal i GB, fx 20, eller lad feltet stå tomt.",
+        "failed": "Loftet blev ikke gemt. Prøv igen."
+      },
+      "persons": {
+        "title": "Enkeltpersoner",
+        "counts": "{count, plural, one {# personligt arbejdsrum} other {# personlige arbejdsrum}}, {seen, plural, one {# brugt} other {# brugt}} den seneste uge · {mb, number} MB filer · {ai, plural, one {# AI-kald} other {# AI-kald}} det seneste døgn",
+        "aiMonth": "{cost} til AI denne måned",
+        "privacy": "Folk, der bruger Kadence alene. Du ser kun tallene samlet, aldrig navne."
+      },
+      "jobs": {
+        "title": "Baggrundsarbejde",
+        "counts": "{pending, plural, =0 {Intet venter} one {# job venter} other {# job venter}}, og {failed, plural, =0 {intet er opgivet} one {# er opgivet} other {# er opgivet}}.",
+        "oldest": "Det ældste har ventet {minutes, plural, one {# minut} other {# minutter}}.",
+        "last": "Sidst taget: {when}.",
+        "never": "Intet job er taget endnu.",
+        "inWorker": "En worker-container kører jobbene.",
+        "inApp": "Appen kører jobbene selv, fordi der ikke er sat en worker op.",
+        "failedHelp": "Et opgivet job er prøvet fem gange. Vejledningen til drift (docs/deploy.md) fortæller, hvordan du ser det og prøver det igen."
+      }
     },
     "ai": {
       "title": "AI",
@@ -485,6 +638,10 @@
       "limitsHint": "Et modelkald koster penge på en hostet installation og minutter på en lokal. Tallene er rundhåndede for et menneske og nærige for et script.",
       "perUser": "Kald pr. bruger i timen",
       "perWorkspace": "Kald pr. arbejdsrum i døgnet",
+      "perMonth": "AI-budget denne måned",
+      "perMonthValue": "{spent} af {budget}",
+      "perMonthNone": "{spent}, intet loft",
+      "perMonthOwnKey": "Arbejdsrummet bruger sin egen nøgle og betaler selv, så budgettet gælder ikke.",
       "messageLength": "Tegn i en besked, højst",
       "principlesTitle": "Sådan bruger Kadence AI",
       "principleDecides": "AI'en svarer, mennesket beslutter. Modellen skriver et svar; den sender aldrig noget ud af huset, sletter aldrig noget og ændrer intet uden at du gør det.",
@@ -510,6 +667,7 @@
       "setupLocalComment": "eller lokalt (Ollama)",
       "setupKeyPlaceholder": "din-nøgle-her",
       "perInstallation": "Kald i hele installationen i døgnet",
+      "failBudget": "Arbejdsrummets AI-budget for måneden er brugt, så AI'en holder pause til næste måned. Ejeren af installationen kan give mere.",
       "failCeiling": "Kadences eget loft over AI-kald blev nået, ikke udbyderens. Loftet står under “Loft over AI-kald” herunder; installationens samlede loft sættes med AI_DAILY_CALL_CAP. Prøv igen om lidt."
     },
     "members": {
@@ -557,7 +715,17 @@
         "action": "Forlad holdet",
         "title": "Forlad holdet?",
         "body": "Du mister adgangen til holdet med det samme. Det, du har lagt ind, bliver hos holdet. Vil du have en kopi, så hent den under Data først. En træner kan invitere dig igen.",
-        "confirm": "Forlad holdet"
+        "bodyWithChoice": "Du mister adgangen til holdet med det samme. En træner kan invitere dig igen.",
+        "confirm": "Forlad holdet",
+        "history": {
+          "legend": "Tag din træning med?",
+          "yes": "Ja, til et arbejdsrum der kun er mit",
+          "no": "Nej, lad den blive hos holdet",
+          "body": "Dine pas, ture, check-ins, mål og sæsonplan flytter med til et arbejdsrum, der kun er dit. Holdet beholder ingen kopi, kun en linje i loggen om at træningen forlod holdet. Dine forældre skal bekræftes igen der.",
+          "staysBody": "Det, du har lagt ind, bliver hos holdet. Vil du have en kopi, så hent den under Data først.",
+          "hasHistory": "Du har allerede et eget arbejdsrum med træning i, så træningen kan ikke flyttes derhen. Forlad holdet uden at tage den med, eller hent en kopi under Data først.",
+          "failed": "Træningen kunne ikke flyttes, så du er stadig på holdet. Prøv igen om lidt."
+        }
       },
       "sharing": {
         "title": "Hvad dine forældre kan se",
@@ -631,7 +799,11 @@
       "ai": "Må AI'en læse rytternes data",
       "aiHint": "Slået fra som standard. Rytternes træning og check-ins er helbredsdata om unge mennesker. Slår I det til, må AI'en læse dem, når en træner beder om et ugeforslag eller et resumé af ugens opmærksomhedspunkter. Den skriver aldrig selv noget.",
       "on": "Slået til",
-      "off": "Slået fra"
+      "off": "Slået fra",
+      "personalTitle": "Din træning",
+      "personalBody": "Hvordan du planlægger din sæson, og hvad AI'en må læse.",
+      "aiPersonal": "Må AI'en læse dine data",
+      "aiPersonalHint": "Slået fra som standard. Din træning og dine check-ins er helbredsdata. Slår du det til, må AI'en læse dem, når du beder om et ugeforslag eller et resumé af ugen. Den skriver aldrig selv noget."
     }
   },
   "demo": {
@@ -655,6 +827,26 @@
       "parent": "Forælder"
     }
   },
+  "consent": {
+    "offTitle": "Check-in er slået fra",
+    "offBody": "Samtykket til helbredsoplysninger er trukket tilbage, så Kadence gemmer ingen nye check-ins og målinger. Resten virker som før.",
+    "giveAgain": "Giv samtykke igen",
+    "given": "Samtykket er givet igen. Check-in og målinger er slået til.",
+    "failed": "Det lykkedes ikke. Prøv igen.",
+    "card": {
+      "title": "Samtykke til helbredsoplysninger",
+      "givenBody": "Du gav samtykke den {date} til, at Kadence gemmer check-ins og målinger.",
+      "withdrawnBody": "Du trak samtykket tilbage den {date}. Check-in og målinger er slået fra.",
+      "withdrawAction": "Træk samtykket til helbredsoplysninger tilbage",
+      "withdrawEffect": "Trækker du det tilbage, slår Kadence check-in og målinger fra. Resten virker som før: kalenderen, turene, sæsonplanen og Rulle.",
+      "keepNote": "De check-ins og målinger, der allerede er gemt, bliver liggende. Du kan hente dem med eksporten ovenfor og slette dem med \"Slet min konto og alt om mig\" nedenfor.",
+      "confirmTitle": "Træk samtykket tilbage?",
+      "confirmBody": "Check-in og målinger slås fra med det samme. Du kan give samtykket igen her eller på I dag.",
+      "confirmAction": "Træk tilbage",
+      "withdrawn": "Samtykket er trukket tilbage. Check-in og målinger er slået fra.",
+      "failed": "Det lykkedes ikke. Prøv igen."
+    }
+  },
   "terms": {
     "title": "Vilkår og privatliv",
     "updated": "Senest opdateret 19. september 2026.",
@@ -667,7 +859,7 @@
     },
     "account": {
       "title": "Konto og adgang",
-      "body": "Du får adgang ved at ansøge eller blive inviteret. Vi gemmer dit navn, din e-mail og navnet på dit arbejdsrum, og vi bruger dem til at logge dig ind og til at skrive til dig om tjenesten. Adgangskoder gemmes hashet, og du kan tilføje passkey og totrinsbekræftelse. Vi sælger ikke noget, og vi sender ikke markedsmails du ikke har bedt om."
+      "body": "Du får adgang ved at ansøge eller blive inviteret. Vi gemmer dit navn, din e-mail og navnet på dit arbejdsrum, og vi bruger dem til at logge dig ind og til at vise, hvem du er på holdet. Adgangskoder gemmes hashet, og du kan tilføje passkey og totrinsbekræftelse. Vi sælger ikke noget, og vi sender ikke markedsmails du ikke har bedt om."
     },
     "yourData": {
       "title": "Jeres data",
@@ -700,7 +892,7 @@
     "subprocessorsNote": "Hvem der kan se hvad, står i",
     "shareLinks": {
       "title": "Invitationer",
-      "body": "Et invitationslink gælder én adresse og udløber efter en uge. Det er dig der sender det; vi sender ingen mails."
+      "body": "Et invitationslink gælder én adresse og udløber efter en uge. Det er dig, der sender det."
     }
   },
   "join": {
@@ -726,7 +918,17 @@
     "loginLink": "Log ind",
     "errorEmailExists": "Der findes allerede en konto med den adresse. Log ind, og åbn linket igen.",
     "errorInvalid": "Noget i det du skrev kunne ikke bruges. Se felterne igennem.",
-    "errorGeneric": "Det gik galt. Prøv igen."
+    "errorGeneric": "Det gik galt. Prøv igen.",
+    "history": {
+      "legend": "Tag din træning med over på holdet?",
+      "yes": "Ja, tag den med",
+      "no": "Nej, lad den blive",
+      "body": "Dine pas, ture, check-ins, mål og sæsonplan flytter fra {workspace} over på holdet, og {workspace} lukkes bagefter. Dine forældre skal bekræftes igen på holdet.",
+      "staysBody": "Din træning bliver i {workspace}, og du har to arbejdsrum at skifte imellem. Du kan ikke flytte den senere.",
+      "stayed": "Du er med på holdet. Din træning blev ikke flyttet og ligger stadig i dit eget arbejdsrum.",
+      "stayedTargetHasHistory": "Du er med på holdet. Træneren har allerede lagt pas til dig her, så din træning blev ikke flyttet. Den ligger stadig i dit eget arbejdsrum.",
+      "continue": "Gå til I dag"
+    }
   },
   "help": {
     "title": "Viden og hjælp",
@@ -753,7 +955,7 @@
       },
       "password": {
         "title": "Glemt adgangskode",
-        "body": "Kadence sender ingen mails, så vejen tilbage går gennem en træner. En træner åbner Indstillinger → Arbejdsrum, trykker Link til ny adgangskode ved personen og sender linket selv, fx på SMS. Linket virker én gang og kun den næste time; den, der bruger det, vælger en ny adgangskode og bliver logget ud alle andre steder. Personen kan altid se på sin sikkerhedsside, at et link er lavet, og af hvem. En træner kan lave links til ryttere, forældre og andre trænere på holdet, men ikke til holdets ejer; en ejer, der har glemt sin adgangskode, logger ind med sin passkey eller får hjælp af den, der driver Kadence. Har du slået totrinsbekræftelse til, skal du stadig bruge koden fra din app."
+        "body": "Er Kadence sat op til at sende mail, står der et link under Glemt adgangskode på siden Log ind, og så kan du selv få et link på mail. Ellers går vejen tilbage gennem en træner. En træner åbner Indstillinger → Arbejdsrum, trykker Link til ny adgangskode ved personen og sender linket selv, fx på SMS. Linket virker én gang og kun den næste time; den, der bruger det, vælger en ny adgangskode og bliver logget ud alle andre steder. Personen kan altid se på sin sikkerhedsside, at et link er lavet, og af hvem. En træner kan lave links til ryttere, forældre og andre trænere på holdet, men ikke til holdets ejer; en ejer, der har glemt sin adgangskode, logger ind med sin passkey eller får hjælp af den, der driver Kadence. Har du slået totrinsbekræftelse til, skal du stadig bruge koden fra din app."
       },
       "words": {
         "title": "Pas, forløb, program og sæsonplan",
@@ -1044,10 +1246,16 @@
       "empty": "Du har ingen ture endnu. Upload en fil herunder, så kommer den her.",
       "km": "{km} km",
       "more": "Vis flere"
+    },
+    "personal": {
+      "body": "Du er også din egen træner. Dine tærskler og en forælder, der kan følge med, ligger på din rytterside.",
+      "link": "Åbn din rytterside"
     }
   },
   "errors": {
     "too_many_reset_links": "Du har lavet mange links lige nu. Prøv igen om en time.",
+    "too_many_mails": "Du har sendt mange mails lige nu. Prøv igen om en time, eller del linket i stedet.",
+    "mail_not_sent": "Mailen kunne ikke sendes. Del linket i stedet, eller prøv igen om lidt.",
     "unauthorized": "Du er ikke logget ind længere.",
     "forbidden": "Det må du ikke her. Spørg en træner på holdet.",
     "invalid": "Noget i formularen er ikke gyldigt.",
@@ -1613,6 +1821,9 @@
       "until": "Virker til {until}",
       "share": "Del",
       "shareLabel": "Del linket med {name}",
+      "mail": "Send på mail",
+      "mailLabel": "Send linket til {name} på mail",
+      "mailed": "Sendt",
       "copied": "Teksten med linket er kopieret. Sæt den ind i en sms eller en chat.",
       "failed": "Linket kunne ikke deles eller kopieres. Prøv igen.",
       "textRider": "Hej {name}. Du er inviteret med på holdet {team} i Kadence som rytter. Åbn linket, og opret din konto med {email}. Linket virker til {until}.",
@@ -2564,6 +2775,7 @@
         "unreadableFiles": "{count, plural, one {# fil kunne ikke læses.} other {# filer kunne ikke læses.}}",
         "nothing": "Der var ingen nye ture i arkivet.",
         "limit": "Dagens grænse er nået. {count, plural, one {Den sidste tur} other {De sidste # ture}} kan hentes om {hours, plural, one {# time} other {# timer}}: læg arkivet ind igen, så fortsætter det, hvor det slap.",
+        "quota": "Pladsen til filer er brugt, så {count, plural, one {den sidste tur} other {de sidste # ture}} blev ikke hentet. Slet gamle ture eller hent dem ud først, og læg arkivet ind igen.",
         "signedOut": "Du er ikke logget ind længere. Log ind, og læg arkivet ind igen; det fortsætter, hvor det slap.",
         "failed": "Noget gik galt undervejs, og {count, plural, one {# tur} other {# ture}} mangler. Læg arkivet ind igen; det fortsætter, hvor det slap.",
         "cancelled": "Stoppet. {count, plural, one {# tur} other {# ture}} mangler; læg arkivet ind igen, når du vil fortsætte.",
@@ -2604,7 +2816,8 @@
         "generic": "Noget gik galt med filen. Prøv igen.",
         "unknown_format": "Kadence kender ikke det filformat. Brug FIT, TCX eller GPX, gerne pakket som .gz eller .zip.",
         "no_activity": "Zip-filen har ingen .fit-, .tcx- eller .gpx-fil i sig.",
-        "not_bike": "Ikke en cykeltur, så den blev sprunget over."
+        "not_bike": "Ikke en cykeltur, så den blev sprunget over.",
+        "quota": "Pladsen til filer er brugt. Slet gamle ture eller hent dem ud først."
       }
     },
     "routeTitle": "Ruten",
@@ -2760,7 +2973,7 @@
     "basisLabel": "Plan ud fra",
     "pickBasis": "Vælg årgang",
     "basisHint": "Rytterens årgang er valgt. Vælg en anden, hvis rytteren skal planlægge ud fra et andet år, fx fordi rytteren er startet sent.",
-    "noClass": "Rytteren er ikke i en af DCU's årgange (U17 til U23) i denne sæson. Vælg den årgang, planen skal bygge på.",
+    "noClass": "DCU har ingen timetal for rytterens klasse i denne sæson, kun for U17 til U23. Vælg en årgang, planen kan starte fra. Bagefter retter du timerne til dine egne, måned for måned.",
     "basis": "{category} {year}. år",
     "basisNow": "Planen bygger på DCU's timer for {basis}.",
     "basisOwn": "Holdet planlægger med egne timer. Rytteren er {basis}.",
@@ -2929,6 +3142,7 @@
       "notAllowed": "Holdet har ikke givet AI'en lov til at læse rytternes data. Det er slået fra som standard, fordi det er helbredsdata om unge.",
       "notAllowedLink": "Indstillinger → Holdet",
       "rateLimited": "Der er brugt mange AI-kald lige nu. Prøv igen om lidt.",
+      "budget": "AI'en holder pause til næste måned. Alt andet virker.",
       "unreachable": "Sprogmodellen svarer ikke. Prøv igen om lidt.",
       "badAnswer": "Sprogmodellen svarede med noget, der ikke kunne bruges. Prøv igen.",
       "notFound": "Det findes ikke længere. Genindlæs siden.",
@@ -3029,6 +3243,7 @@
       "provider_unavailable": "{name} svarede ikke sidst, Kadence prøvede. Det ordner sig som regel selv.",
       "invalid_file": "En tur fra {name} kunne ikke læses. Upload filen selv, hvis den mangler.",
       "download": "En tur kunne ikke hentes fra {name}. Upload filen selv, hvis den mangler.",
+      "quota": "En tur fra {name} fik ikke plads: pladsen til filer er brugt. Slet gamle ture eller hent dem ud først, og upload filen selv.",
       "unknown": "Noget gik galt med {name} sidst. Forbind igen, hvis dine ture ikke kommer ind."
     },
     "connected": "{name} er forbundet. Dine næste ture kommer ind af sig selv.",
@@ -3060,6 +3275,7 @@
       "address": "Et program sender filerne til",
       "lastError": {
         "invalid_file": "Den seneste fil kunne ikke læses. Upload den selv, hvis turen mangler.",
+        "quota": "Den seneste fil fik ikke plads: pladsen til filer er brugt. Slet gamle ture eller hent dem ud først.",
         "unknown": "Noget gik galt med den seneste fil. Upload den selv, hvis turen mangler."
       },
       "remove": "Fjern",
@@ -3439,6 +3655,13 @@
     "body": "Kadence kan minde dig om det vigtigste på denne enhed. Der kommer ingen påmindelser mellem 21.30 og 7.",
     "bodyCoach": "Kadence kan minde dig om det vigtigste på denne enhed. Mellem 21.30 og 7 kommer kun påmindelser om trivsel.",
     "privacy": "Selve beskeden hentes fra Kadence, når den kommer. Din browsers push-tjeneste ser kun, at der er noget nyt.",
+    "weekMail": {
+      "title": "Ugen på mail",
+      "body": "Søndag aften kan du også få en kort mail om, at der er nyt om ugen. Der står intet om dit barn i mailen, kun et link til Kadence.",
+      "label": "Ugens overblik også på mail",
+      "hint": "Mailen går til {email}.",
+      "hintPlain": "Mailen går til den adresse, du logger ind med."
+    },
     "enable": "Slå påmindelser til på denne enhed",
     "disable": "Slå fra",
     "on": "Påmindelser er slået til på denne enhed.",
@@ -3765,7 +3988,8 @@
         "rateLimited": "Du har gemt mange ture den sidste time. Prøv igen om lidt.",
         "not_rider": "Kun en rytter kan gemme en tur.",
         "notFound": "Passet findes ikke længere. Hent FIT-filen, og upload den på “Mig”.",
-        "too_large": "Turen er for stor til at gemme herfra. Hent FIT-filen, og upload den på “Mig”."
+        "too_large": "Turen er for stor til at gemme herfra. Hent FIT-filen, og upload den på “Mig”.",
+        "quota": "Pladsen til filer er brugt, så turen blev ikke gemt. Hent FIT-filen, og slet gamle ture eller hent dem ud først."
       }
     },
     "little": {
@@ -5573,6 +5797,42 @@
     "download": {
       "button": "Hent som fil",
       "print": "Udskriv eller gem som PDF"
+    }
+  },
+  "mail": {
+    "greeting": "Hej",
+    "signoff": "Venlig hilsen\nKadence",
+    "verify": {
+      "subject": "Bekræft din e-mailadresse",
+      "body": "Tryk på linket for at bekræfte, at adressen er din. Linket virker i en time.",
+      "ignore": "Har du ikke bedt om det, kan du se bort fra mailen. Der sker ikke noget med din konto."
+    },
+    "reset": {
+      "subject": "Vælg en ny adgangskode til Kadence",
+      "body": "Der er bedt om et link til at vælge en ny adgangskode til din konto i Kadence. Linket virker én gang og i en time. Når du har gemt den nye adgangskode, bliver du logget ud alle andre steder.",
+      "ignore": "Har du ikke bedt om det, kan du se bort fra mailen. Din adgangskode er den samme som før."
+    },
+    "invite": {
+      "subject": "Du er inviteret til {team} i Kadence",
+      "rider": "{inviter} har inviteret dig med på holdet {team} i Kadence som rytter.",
+      "parentOf": "{inviter} har inviteret dig med på holdet {team} i Kadence som forælder til {child}.",
+      "parent": "{inviter} har inviteret dig med på holdet {team} i Kadence som forælder.",
+      "member": "{inviter} har inviteret dig med på holdet {team} i Kadence.",
+      "how": "Åbn linket, og opret din konto med den adresse, mailen er sendt til. Linket virker til {until}.",
+      "parentNext": "Når {child} har sagt ja til dig i Kadence, kan du følge med.",
+      "parentNextPlain": "Når rytteren har sagt ja til dig i Kadence, kan du følge med.",
+      "unknown": "Kender du ikke {inviter} eller holdet, kan du se bort fra mailen."
+    },
+    "access": {
+      "subject": "Du kan nu komme ind i Kadence",
+      "body": "{inviter} har givet dig adgang til Kadence med arbejdsrummet {workspace}.",
+      "how": "Åbn linket, og opret din konto med den adresse, mailen er sendt til. Linket virker én gang og til {until}.",
+      "unknown": "Har du ikke bedt om adgang, kan du se bort fra mailen."
+    },
+    "week": {
+      "subject": "Der er nyt om ugen i Kadence",
+      "body": "Der er nyt om ugen i Kadence. Åbn linket for at se den.",
+      "why": "Du får mailen, fordi du har valgt ugens overblik på mail under Indstillinger → Profil. Der kan du også slå den fra."
     }
   }
 }

@@ -8,10 +8,56 @@
 # Coolify's variable list must be replaced before the first deploy; the
 # migration step and the app both refuse to run on one, and say so.
 
+# Docker's default json-file driver keeps every line forever; on a long-
+# running VPS that fills the disk under the database before anything else
+# notices. The same three lines on every service cap it at 100 MB total
+# (20 MB × 5 files), rotated rather than dropped, which is plenty for
+# `docker logs` and for Coolify's log viewer (docs/deploy.md §Overvågning).
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "20m"
+    max-file: "5"
+
 services:
   db:
     image: postgres:16
     restart: unless-stopped
+    # Sized for a 4 GB VPS shared with the app (docs/adr/0083, docs/deploy.md
+    # "Postgres settings"). Postgres's defaults are for a machine of 2005:
+    # 128 MB of shared buffers and a hundred connections nobody uses.
+    #   shared_buffers         a quarter of the RAM: 1GB here, 2GB at 8 GB, 4GB at 16 GB
+    #   effective_cache_size   what the OS will cache too, three quarters:
+    #                          3GB here, 6GB at 8 GB, 12GB at 16 GB
+    #   work_mem               per sort or hash, per query: 16MB here, 32MB at 8 GB and above
+    #   maintenance_work_mem   vacuum and index builds: 256MB here, 512MB at 8 GB, 1GB at 16 GB
+    #   max_connections        two pools of ten per app instance, the migration and
+    #                          a psql or two: 60 leaves room for a second instance
+    # pg_stat_statements shows which queries cost the most (drizzle/0043
+    # creates the extension); statements over half a second are logged; a
+    # transaction left idle for 15 s is ended, as the roles already ask.
+    # A change here takes effect on the next restart of the db service.
+    # Docker gives a container 64 MB of /dev/shm, which a parallel query
+    # with this work_mem can outgrow ("could not resize shared memory").
+    shm_size: 256mb
+    command:
+      - postgres
+      - -c
+      - shared_buffers=1GB
+      - -c
+      - effective_cache_size=3GB
+      - -c
+      - work_mem=16MB
+      - -c
+      - maintenance_work_mem=256MB
+      - -c
+      - max_connections=60
+      - -c
+      - shared_preload_libraries=pg_stat_statements
+      - -c
+      - log_min_duration_statement=500
+      - -c
+      - idle_in_transaction_session_timeout=15000
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD (openssl rand -hex 24)}
@@ -26,6 +72,7 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+    logging: *default-logging
 
   migrate:
     build:
@@ -43,6 +90,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    logging: *default-logging
 
   app:
     build:
@@ -54,7 +102,7 @@ services:
         KADENCE_COMMIT: ${KADENCE_COMMIT:-}
         KADENCE_BUILT_AT: ${KADENCE_BUILT_AT:-}
     restart: unless-stopped
-    environment:
+    environment: &app-environment
       APP_DATABASE_URL: postgres://kadence_app:${KADENCE_APP_PASSWORD:?}@db:5432/kadence
       AUTH_DATABASE_URL: postgres://kadence_auth:${KADENCE_AUTH_PASSWORD:?}@db:5432/kadence
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?set BETTER_AUTH_SECRET (openssl rand -base64 32)}
@@ -77,6 +125,10 @@ services:
       MISTRAL_BASE_URL: ${MISTRAL_BASE_URL:-}
       LLM_MODEL: ${LLM_MODEL:-}
       OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-}
+      # closed (default), open (a demo instance) or individuals: a person
+      # creates their own workspace with an address they confirm, clubs
+      # still apply (docs/adr/0088). individuals refuses to start without
+      # the five SMTP variables below.
       SIGNUP: ${SIGNUP:-}
       DEMO: ${DEMO:-}
       # Races from Cykling Danmark (ADR 0039), off unless set.
@@ -98,11 +150,43 @@ services:
       PUSH_PUBLIC_KEY: ${PUSH_PUBLIC_KEY:-}
       PUSH_PRIVATE_KEY: ${PUSH_PRIVATE_KEY:-}
       PUSH_CONTACT: ${PUSH_CONTACT:-}
-      # The installation's own roof over model calls (docs/adr/0035). An
-      # unset variable is the empty string here and absent to env.ts, so
-      # it falls back to the default rather than being read as `0` — and
-      # `0`, which means no roof at all, still reaches the app as `0`.
+      # Mail through an EU provider (docs/adr/0086): all five or none, and
+      # without them nothing is sent. The password is a secret: Coolify only.
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      MAIL_FROM: ${MAIL_FROM:-}
+      # Who runs the background jobs (docs/adr/0085): "on" here, because
+      # the worker service below runs them and the app only puts them in
+      # the queue. To run everything in the one app container instead, set
+      # WORKER=off and leave the worker out (`docker compose up -d --scale
+      # worker=0`); the app then runs the jobs itself, as it ran the
+      # reminder timer before. The worker container runs them whatever
+      # this says.
+      WORKER: ${WORKER:-on}
+      # Each workspace's AI budget for the month in micro-euro, 5 € unless
+      # set, and the optional emergency roof over model calls across the
+      # installation, off unless set (docs/adr/0089, 0009). An unset
+      # variable is the empty string here and absent to env.ts, so it
+      # falls back to the default rather than being read as `0`; `0`
+      # (no budget, no roof) still reaches the app as `0`.
+      AI_MONTHLY_BUDGET_MICRO: ${AI_MONTHLY_BUDGET_MICRO:-}
       AI_DAILY_CALL_CAP: ${AI_DAILY_CALL_CAP:-}
+      # Where riders' ride files live (docs/adr/0087): in the database
+      # unless FILES_STORAGE=s3, with all five S3_FILES_* set, puts them in
+      # an S3-compatible store in the EU (Hetzner Object Storage, a bucket
+      # of its own, never the backups'). The keys are secrets: Coolify only.
+      # The quotas per workspace are 20 GB for a club and 2 GB for a
+      # person unless set; the owner changes one club's under Installation.
+      FILES_STORAGE: ${FILES_STORAGE:-}
+      S3_FILES_ENDPOINT: ${S3_FILES_ENDPOINT:-}
+      S3_FILES_REGION: ${S3_FILES_REGION:-}
+      S3_FILES_BUCKET: ${S3_FILES_BUCKET:-}
+      S3_FILES_ACCESS_KEY: ${S3_FILES_ACCESS_KEY:-}
+      S3_FILES_SECRET_KEY: ${S3_FILES_SECRET_KEY:-}
+      FILES_QUOTA_CLUB_BYTES: ${FILES_QUOTA_CLUB_BYTES:-}
+      FILES_QUOTA_PERSONAL_BYTES: ${FILES_QUOTA_PERSONAL_BYTES:-}
       TRUSTED_PROXY_HOPS: ${TRUSTED_PROXY_HOPS:-}
       # Wahoo, Garmin and Polar, for riders who choose to connect
       # (.env.example, docs/devices-setup.md).
@@ -121,6 +205,7 @@ services:
     volumes:
       - kadence-map:/data/map:ro
       - kadence-teams:/data/teams
+    logging: *default-logging
     # No published port. Coolify's proxy reaches the app over the compose
     # network and terminates TLS in front of it; binding 0.0.0.0:3000 as
     # well would put the same app on the VPS's public address in cleartext,
@@ -128,6 +213,37 @@ services:
     # a proxy should bind loopback explicitly and put one in front.
     expose:
       - "3000"
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+  # The background jobs (docs/adr/0085): reminders, rides from Wahoo,
+  # Garmin and Polar, races from Cykling Danmark, the teams page and the
+  # demos' clean-up, taken from the jobs table one at a time. The same
+  # Dockerfile, source and production dependencies as the app, run without
+  # Next (the Dockerfile's worker stage says why it is not the runner's
+  # standalone build). One replica: two would be safe, since each job is
+  # taken by one worker with FOR UPDATE SKIP LOCKED, but not faster, and
+  # nothing here needs it yet. It answers no HTTP and publishes no port; it
+  # shares the app's environment and the teams page's volume, since the
+  # daily refresh writes there.
+  worker:
+    build:
+      context: .
+      target: worker
+      args:
+        KADENCE_COMMIT: ${KADENCE_COMMIT:-}
+        KADENCE_BUILT_AT: ${KADENCE_BUILT_AT:-}
+    restart: unless-stopped
+    environment: *app-environment
+    volumes:
+      - kadence-teams:/data/teams
+    logging: *default-logging
+    # Docker's grace before SIGKILL; the worker gives back what it has not
+    # started and waits eight seconds for the job it is running.
+    stop_grace_period: 10s
     depends_on:
       db:
         condition: service_healthy

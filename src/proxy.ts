@@ -2,9 +2,12 @@ import { getSessionCookie } from "better-auth/cookies";
 import createIntlMiddleware from "next-intl/middleware";
 import { NextResponse, type NextRequest } from "next/server";
 import { features, parkedPath } from "./core/features";
+import { requestIdFrom } from "./core/log";
 import { routing } from "./i18n/routing";
 
 const intlMiddleware = createIntlMiddleware(routing);
+
+const REQUEST_ID_HEADER = "x-request-id";
 
 const PROTECTED_PREFIXES = [
   "/today",
@@ -70,6 +73,23 @@ function parkedResponse(request: NextRequest): NextResponse {
 }
 
 /**
+ * Carries `requestId` on to the rendered page, where `headers()` (used by
+ * `src/core/log.ts`) can read it, and on to the client for support. This
+ * is the same contract `NextResponse.next({ request: { headers } })`
+ * builds under the hood (`x-middleware-request-*` plus
+ * `x-middleware-override-headers`, see
+ * node_modules/next/dist/server/web/spec-extension/response.js) — applied
+ * here directly because next-intl's middleware has already built the
+ * response by the time this function sees it.
+ */
+function withRequestId(response: NextResponse, requestId: string): NextResponse {
+  response.headers.set(`x-middleware-request-${REQUEST_ID_HEADER}`, requestId);
+  response.headers.set("x-middleware-override-headers", REQUEST_ID_HEADER);
+  response.headers.set(REQUEST_ID_HEADER, requestId);
+  return response;
+}
+
+/**
  * Optimistic auth redirect based on the presence of the session cookie.
  * This is UX only — the (app) layout verifies the session for real, and RLS
  * is the actual isolation boundary.
@@ -81,8 +101,11 @@ function parkedResponse(request: NextRequest): NextResponse {
  * while the app layout pushes it back on the real session check.
  */
 export default function proxy(request: NextRequest) {
+  const requestId = requestIdFrom(request.headers);
   const pathname = stripLocale(request.nextUrl.pathname);
-  if (parkedPath(pathname, features())) return parkedResponse(request);
+  if (parkedPath(pathname, features())) {
+    return withRequestId(parkedResponse(request), requestId);
+  }
 
   const hasSessionCookie = Boolean(getSessionCookie(request));
 
@@ -90,10 +113,10 @@ export default function proxy(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = localizedPath(request.nextUrl.pathname, "/login");
     url.search = "";
-    return NextResponse.redirect(url);
+    return withRequestId(NextResponse.redirect(url), requestId);
   }
 
-  return intlMiddleware(request);
+  return withRequestId(intlMiddleware(request), requestId);
 }
 
 export const config = {

@@ -17,7 +17,7 @@ const MINUTE = 60 * 1000;
 export async function GET(request: Request) {
   const ctx = await requireOrgContext();
   if (!ctx) return new Response(null, { status: 401 });
-  if (!rateLimit(`map:${ctx.userId}`, 1200, MINUTE).allowed)
+  if (!(await rateLimit(`map:${ctx.userId}`, 1200, MINUTE)).allowed)
     return new Response(null, { status: 429 });
   const size = await mapSize();
   if (size === null) return new Response(null, { status: 404 });

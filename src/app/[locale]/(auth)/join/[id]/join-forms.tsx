@@ -14,8 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { authClient } from "@/core/auth/client";
-import { acceptInvitationAction, joinRegisterAction } from "@/core/team/actions";
+import { joinRegisterAction } from "@/core/team/actions";
 import { Link, useRouter } from "@/i18n/navigation";
 
 /** A field the invitation decided: visibly settled, not visibly disabled. */
@@ -132,65 +131,5 @@ export function JoinRegisterForm({
         </Link>
       </CardFooter>
     </Card>
-  );
-}
-
-/** Somebody signed in: accept, or sign out first when it is the wrong account. */
-export function AcceptForm({
-  invitationId,
-  mode,
-}: {
-  invitationId: string;
-  mode: "accept" | "switch";
-}) {
-  const t = useTranslations("join");
-  const router = useRouter();
-  const [pending, setPending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  async function accept() {
-    setPending(true);
-    setError(null);
-    const result = await acceptInvitationAction({ invitationId });
-    if (result !== "accepted") {
-      setPending(false);
-      setError(result === "wrongPerson" ? t("wrongPerson") : t("invalidBody"));
-      return;
-    }
-    router.push("/today");
-    router.refresh();
-  }
-
-  async function switchAccount() {
-    setPending(true);
-    await authClient.signOut();
-    router.refresh();
-    setPending(false);
-  }
-
-  return (
-    <div className="flex flex-col gap-3">
-      {error ? (
-        <p role="alert" className="text-destructive text-sm">
-          {error}
-        </p>
-      ) : null}
-      {mode === "accept" ? (
-        <Button type="button" onClick={accept} disabled={pending} className="w-full">
-          {pending ? <Loader2 data-slot="icon" className="animate-spin" /> : null}
-          {t("accept")}
-        </Button>
-      ) : (
-        <Button
-          type="button"
-          variant="outline"
-          onClick={switchAccount}
-          disabled={pending}
-          className="w-full"
-        >
-          {t("switchAccount")}
-        </Button>
-      )}
-    </div>
   );
 }

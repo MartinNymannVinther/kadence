@@ -10,8 +10,8 @@ import { firstName, type Recipient, type RecipientLink } from "./invitation-reci
 /**
  * "Del": one person's invitation as a short text and the link, through
  * the phone's own share sheet (SMS, chat) where there is one, copied to
- * the clipboard where there is not. Kadence sends nothing itself (ADR
- * 0032); the text says what the person is invited as, which address the
+ * the clipboard where there is not. "Send på mail" beside it, where the
+ * installation sends mail, is mail-invitation-button.tsx (ADR 0086); the text says what the person is invited as, which address the
  * account must use, and until when the link works.
  */
 export function ShareInvitationButton({

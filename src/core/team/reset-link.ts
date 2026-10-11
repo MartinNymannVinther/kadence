@@ -7,12 +7,12 @@ import { env } from "@/core/env";
 import { rateLimit } from "@/core/rate-limit";
 
 /**
- * A way back in for a member who forgot the password (docs/adr/0032).
- * Kadence sends no mail, so a coach makes a link and passes it on by hand,
- * the way an invitation goes. The link is Better Auth's own password
+ * A way back in for a member who forgot the password (docs/adr/0032): a
+ * coach makes a link and passes it on by hand, the way an invitation goes.
+ * It works on every installation; where there is mail, the person can
+ * also ask for one at /forgot-password (docs/adr/0086). The link is Better Auth's own password
  * reset: a token in its verification table that `/reset-password` takes
- * once, within the hour, signing the person out everywhere else. Asking
- * for one by e-mail stays closed, as there is no mail to send it by.
+ * once, within the hour, signing the person out everywhere else.
  *
  * Who may make one is the team's own rule for who may remove a member: a
  * coach, for anyone on the team but an owner and themselves. The link is
@@ -56,8 +56,8 @@ export async function createResetLink(
   const allowed = await mayMake(ctx, userId);
   if (allowed !== "ok") return allowed;
   if (
-    !rateLimit(`reset-link:${ctx.userId}`, PER_COACH, HOUR).allowed ||
-    !rateLimit(`reset-link-for:${userId}`, PER_PERSON, HOUR).allowed
+    !(await rateLimit(`reset-link:${ctx.userId}`, PER_COACH, HOUR)).allowed ||
+    !(await rateLimit(`reset-link-for:${userId}`, PER_PERSON, HOUR)).allowed
   )
     return "rateLimited";
 

@@ -1,7 +1,8 @@
 import { APIError } from "better-auth";
 import { z } from "zod";
 import { auth } from "@/core/auth/auth";
-import { DEMO_HEADER, INVITATION_HEADER, TEAM_INVITATION_HEADER } from "@/core/auth/signup";
+import { TEAM_INVITATION_HEADER, withoutOurHeaders } from "@/core/auth/signup";
+import { errorName, log, requestIdFrom } from "@/core/log";
 import { acceptTeamInvitation, findTeamInvitation } from "./service";
 
 export const JoinRegisterSchema = z.object({
@@ -46,10 +47,7 @@ export async function registerInvited(
   if (!invitation || invitation.state !== "pending")
     return { ok: false, error: "invitationInvalid" };
 
-  const signUpHeaders = new Headers(requestHeaders);
-  signUpHeaders.delete(INVITATION_HEADER);
-  signUpHeaders.delete(TEAM_INVITATION_HEADER);
-  signUpHeaders.delete(DEMO_HEADER);
+  const signUpHeaders = withoutOurHeaders(requestHeaders);
   signUpHeaders.set(TEAM_INVITATION_HEADER, invitationId);
 
   let sessionHeaders: Headers;
@@ -64,7 +62,10 @@ export async function registerInvited(
     if (error instanceof APIError && error.body?.code === "USER_ALREADY_EXISTS") {
       return { ok: false, error: "emailExists" };
     }
-    console.error("join: sign-up failed", error);
+    await log.error("join: sign-up failed", {
+      requestId: requestIdFrom(requestHeaders),
+      error: errorName(error),
+    });
     return { ok: false, error: "generic" };
   }
 
@@ -73,7 +74,10 @@ export async function registerInvited(
     // The account exists and is signed in; without a workspace the app
     // sends them to onboarding, where they can create one or ask for a
     // new link.
-    console.error("join: account created but the invitation was not accepted:", accepted);
+    await log.error("join: account created but the invitation was not accepted", {
+      requestId: requestIdFrom(requestHeaders),
+      accepted,
+    });
     return { ok: false, error: "invitationInvalid", sessionHeaders };
   }
   return { ok: true, sessionHeaders };
