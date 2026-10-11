@@ -1,4 +1,5 @@
 import { and, eq, gte, isNull, or } from "drizzle-orm";
+import { forget, recall, remember } from "@/core/counters";
 import { env } from "@/core/env";
 import { calendarEvents, raceResults, riders } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
@@ -7,7 +8,7 @@ import { whoAmIIn } from "@/modules/team/access";
 import type { DcuProfile } from "./dcu-profile";
 import { planImport } from "./plan";
 import { enqueue } from "./queue";
-import { exclusive, readProfile, sinceFor, staleSince } from "./read";
+import { exclusive, readProfile, sinceFor, STALE_MS, staleSince } from "./read";
 import type { RefreshOutcome } from "./refresh";
 import { readsRacesFor } from "./switch";
 
@@ -19,16 +20,23 @@ import { readsRacesFor } from "./switch";
  * coach's to write, so they wait for a coach's visit (refresh.ts), which
  * finds these races and hangs the results on them.
  *
- * When this read last is kept in memory: the rider may not write the
- * rider row's note of when the races were read (drizzle/0016), and a
- * restart costs at most one extra reading.
+ * When this read last is kept with the counters (src/core/counters.ts,
+ * ADR 0083), for as long as a reading stays fresh: the rider may not
+ * write the rider row's note of when the races were read (drizzle/0016),
+ * and the counters are shared by every instance and survive a restart.
  */
 
-const ownReads = new Map<string, number>();
+const ownReadKey = (riderId: string) => `dcu-own-read:${riderId}`;
 
 /** A rider's new UCI ID is read afresh, whenever the last reading was. */
-export function forgetOwnRead(riderId: string): void {
-  ownReads.delete(riderId);
+export async function forgetOwnRead(riderId: string): Promise<void> {
+  await forget(ownReadKey(riderId));
+}
+
+/** Whether the rider's own reading is still fresh: read less than three hours ago. */
+async function readLately(riderId: string): Promise<boolean> {
+  const until = await recall(ownReadKey(riderId));
+  return until !== null && until.getTime() > Date.now();
 }
 
 export async function refreshOwnRaces(
@@ -51,14 +59,13 @@ export async function refreshOwnRaces(
   });
   const uciId = rider?.uciId;
   if (!rider || !uciId || !readsRacesFor(env.DCU_RESULTS, uciId)) return { state: "off" };
-  const own = ownReads.get(rider.id);
-  if (!staleSince(rider.at) || !staleSince(own ? new Date(own) : null)) return { state: "fresh" };
+  if (!staleSince(rider.at) || (await readLately(rider.id))) return { state: "fresh" };
 
   const outcome = await exclusive(rider.id, async (): Promise<RefreshOutcome> => {
     const read = options.profile
       ? { profile: options.profile }
       : await readProfile(uciId, rider.birthYear);
-    ownReads.set(rider.id, Date.now());
+    await remember(ownReadKey(rider.id), new Date(Date.now() + STALE_MS));
     if ("error" in read) return { state: "failed", error: read.error };
     const since = sinceFor(options.today ?? todayInCopenhagen());
     return withOrgContext(ctx, async (tx) => {

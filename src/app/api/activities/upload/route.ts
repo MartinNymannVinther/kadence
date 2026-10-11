@@ -32,10 +32,10 @@ export async function POST(request: Request) {
   if (fromAnotherSite(request)) return Response.json({ error: "forbidden" }, { status: 403 });
   const ctx = await requireOrgContext();
   if (!ctx) return Response.json({ error: "unauthorized" }, { status: 401 });
-  const limit = rateLimit(`upload:${ctx.userId}`, 30, HOUR);
+  const limit = await rateLimit(`upload:${ctx.userId}`, 30, HOUR);
   if (!limit.allowed) return Response.json({ error: "rateLimited" }, { status: 429 });
 
-  if (!signedInReads.enter(ctx.userId))
+  if (!(await signedInReads.enter(ctx.userId)))
     return Response.json(
       { error: "busy" },
       { status: 429, headers: { "Retry-After": String(BUSY_SECONDS) } },
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
   try {
     return await keep(request, ctx);
   } finally {
-    signedInReads.leave(ctx.userId);
+    await signedInReads.leave(ctx.userId);
   }
 }
 
@@ -84,7 +84,7 @@ async function keep(request: Request, ctx: OrgContext): Promise<Response> {
     // Stored files count, not tries: at most sixty an hour per person,
     // whichever door they come in by.
     const stored = storedFilesKey(ctx.userId);
-    if (!peekRateLimit(stored, STORED_FILES_PER_HOUR).allowed) {
+    if (!(await peekRateLimit(stored, STORED_FILES_PER_HOUR)).allowed) {
       results.push({ name, ok: false, error: "rateLimited" });
       continue;
     }
@@ -95,7 +95,7 @@ async function keep(request: Request, ctx: OrgContext): Promise<Response> {
         source: "fit",
         unnamed: !kept.own,
       });
-      rateLimit(stored, STORED_FILES_PER_HOUR, HOUR);
+      await rateLimit(stored, STORED_FILES_PER_HOUR, HOUR);
       results.push({ name, ok: true, ...imported });
     } catch (error) {
       if (error instanceof Refused)

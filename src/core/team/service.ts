@@ -199,7 +199,16 @@ export async function acceptTeamInvitation(
   invitationId: string,
 ): Promise<AcceptResult> {
   try {
-    await auth.api.acceptInvitation({ body: { invitationId }, headers });
+    const accepted = await auth.api.acceptInvitation({ body: { invitationId }, headers });
+    // Better Auth makes the team the active one in the database only. Set
+    // again through its own door, it is written into the session's cookie
+    // cache too (docs/adr/0083), so the next page opens the team just
+    // joined rather than the one the cookie remembers.
+    const organizationId = accepted?.member.organizationId;
+    if (organizationId)
+      await auth.api
+        .setActiveOrganization({ body: { organizationId }, headers })
+        .catch((error: unknown) => console.error("team: opening the joined team failed", error));
     return "accepted";
   } catch (error) {
     if (error instanceof APIError) {

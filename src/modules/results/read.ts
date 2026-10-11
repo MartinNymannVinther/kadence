@@ -1,4 +1,5 @@
 import { rateLimit } from "@/core/rate-limit";
+import { inFlight } from "@/modules/devices/in-flight";
 import { DeviceHttpError, loggable } from "@/modules/devices/http";
 import { DcuPageError, parseDcuProfile, type DcuProfile } from "./dcu-profile";
 import { fetchDcuProfile } from "./fetch-dcu";
@@ -9,12 +10,15 @@ import { fetchDcuProfile } from "./fetch-dcu";
  * (ADR 0039): one reading per rider at a time, never more than six pages a
  * minute for the whole installation, and a page that does not read
  * cleanly turned into a short word, never into an import of nothing.
+ * Both counts are kept in the database (src/core/counters.ts, ADR 0083),
+ * so they hold across instances and restarts.
  */
 
 /** How old a rider's races may be before opening Kadence reads them again. */
 export const STALE_MS = 3 * 60 * 60 * 1000;
 const PER_MINUTE = 6;
-const inFlight = new Set<string>();
+/** A rider's page is read by one request at a time, on whichever instance. */
+const reading = inFlight("dcu-read", 1);
 
 export type Read = { profile: DcuProfile } | { error: string };
 
@@ -44,13 +48,12 @@ export function staleSince(at: Date | null | undefined, gap = STALE_MS): boolean
  * "busy", and the next visit tries again.
  */
 export async function exclusive<T>(riderId: string, work: () => Promise<T>): Promise<T | "busy"> {
-  if (inFlight.has(riderId)) return "busy";
-  if (!rateLimit("dcu-results", PER_MINUTE, 60_000).allowed) return "busy";
-  inFlight.add(riderId);
+  if (!(await reading.enter(riderId))) return "busy";
   try {
+    if (!(await rateLimit("dcu-results", PER_MINUTE, 60_000)).allowed) return "busy";
     return await work();
   } finally {
-    inFlight.delete(riderId);
+    await reading.leave(riderId);
   }
 }
 

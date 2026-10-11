@@ -107,7 +107,7 @@ export async function latestFor(userId: string, now: Date = new Date()): Promise
     const rows = await withOrgContext(ctx, (tx) => toldMine(tx));
     for (const row of rows) if (!newest || row.toldAt > newest.row.toldAt) newest = { ctx, row };
   }
-  const tested = testSentAt(userId, now);
+  const tested = await testSentAt(userId, now);
   if (tested && (!newest || tested >= newest.row.toldAt))
     return { kind: "test", path: REMINDERS_PATH };
   return newest ? noteFor(newest.ctx, newest.row) : null;

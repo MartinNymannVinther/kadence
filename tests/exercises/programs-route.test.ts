@@ -44,8 +44,8 @@ beforeAll(async () => {
   await admin.query(q.text, q.values);
 });
 
-beforeEach(() => {
-  resetRateLimits();
+beforeEach(async () => {
+  await resetRateLimits();
   auth.session = null;
 });
 

@@ -69,7 +69,7 @@ describe("an address that keeps guessing", () => {
 describe("the hour's files", () => {
   it("are the ones kept: a ride Kadence has never uses the hour up", async () => {
     for (let i = 0; i < STORED_FILES_PER_HOUR; i++)
-      rateLimit(storedFilesKey(team.ida.userId), STORED_FILES_PER_HOUR, HOUR);
+      await rateLimit(storedFilesKey(team.ida.userId), STORED_FILES_PER_HOUR, HOUR);
     const fresh = await send(team.idaKey, rideOn(6), { name: "ny.fit" });
     expect(fresh.status).toBe(429);
     expect(Number(fresh.headers.get("retry-after"))).toBeGreaterThan(0);
@@ -81,7 +81,7 @@ describe("the hour's files", () => {
 
   it("are counted per person, one for each ride kept", async () => {
     for (let i = 0; i < STORED_FILES_PER_HOUR - 1; i++)
-      rateLimit(storedFilesKey(team.ida.userId), STORED_FILES_PER_HOUR, HOUR);
+      await rateLimit(storedFilesKey(team.ida.userId), STORED_FILES_PER_HOUR, HOUR);
     expect((await send(team.idaKey, ride)).status).toBe(200);
     expect((await send(team.idaKey, rideOn(7), { name: "sidste.fit" })).status).toBe(201);
     expect((await send(team.idaKey, rideOn(8), { name: "over.fit" })).status).toBe(429);
@@ -102,7 +102,7 @@ describe("the hour's reading", () => {
   it("counts a file that was a ride Kadence has under other bytes", async () => {
     const before = await ridesOf(team.idaRider);
     for (let i = 0; i < FILES_READ_PER_HOUR; i++)
-      rateLimit(readFilesKey(team.ida.userId), FILES_READ_PER_HOUR, HOUR);
+      await rateLimit(readFilesKey(team.ida.userId), FILES_READ_PER_HOUR, HOUR);
     // The same ride with a byte added: a new hash, the same start. It has to be read to be known.
     const padded = new Uint8Array(ride.byteLength + 1);
     padded.set(ride);
@@ -114,7 +114,7 @@ describe("the hour's reading", () => {
 
   it("follows the person: a key removed and made again starts nothing afresh", async () => {
     for (let i = 0; i < FILES_READ_PER_HOUR; i++)
-      rateLimit(readFilesKey(team.mikkel.userId), FILES_READ_PER_HOUR, HOUR);
+      await rateLimit(readFilesKey(team.mikkel.userId), FILES_READ_PER_HOUR, HOUR);
     expect((await send(team.mikkelKey, bytesOf("junk"))).status).toBe(429);
     const again = await createUploadKey(team.mikkel, "En ny nøgle");
     expect((await send(again.key, bytesOf("junk"))).status).toBe(429);
@@ -146,17 +146,17 @@ describe("two files at once is the most a person's keys are read for", () => {
   }
 
   /** Waits for something that happens on its own, a few milliseconds at a time. */
-  async function until(happened: () => boolean) {
-    for (let i = 0; i < 600 && !happened(); i++)
+  async function until(happened: () => Promise<boolean>) {
+    for (let i = 0; i < 600 && !(await happened()); i++)
       await new Promise((resolve) => setTimeout(resolve, 5));
-    expect(happened()).toBe(true);
+    expect(await happened()).toBe(true);
   }
 
   it("answers the third with 429, whichever of the person's keys it comes with", async () => {
     const other = await createUploadKey(team.ida, "Telefon");
     const first = held(team.idaKey, rideOn(9));
     const second = held(other.key, rideOn(10));
-    await until(() => readingNow(team.ida.userId) === 2);
+    await until(async () => (await readingNow(team.ida.userId)) === 2);
 
     const third = await send(team.idaKey, rideOn(11), { name: "tredje.fit" });
     expect(third.status).toBe(429);
@@ -168,7 +168,7 @@ describe("two files at once is the most a person's keys are read for", () => {
     second.release();
     expect((await first.response).status).toBe(201);
     expect((await second.response).status).toBe(201);
-    expect(readingNow(team.ida.userId)).toBe(0);
+    expect(await readingNow(team.ida.userId)).toBe(0);
     expect((await send(team.idaKey, rideOn(11), { name: "tredje.fit" })).status).toBe(201);
     await removeUploadKey(team.ida, other.id);
   });
@@ -188,14 +188,14 @@ describe("two files at once is the most a person's keys are read for", () => {
       } as RequestInit),
     );
     expect(response.status).toBe(400);
-    expect(readingNow(team.ida.userId)).toBe(0);
+    expect(await readingNow(team.ida.userId)).toBe(0);
   });
 
   it("brings nothing in with a key that was removed while the file was on its way", async () => {
     const doomed = await createUploadKey(team.ida, "Skal fjernes");
     const before = await ridesOf(team.idaRider);
     const onItsWay = held(doomed.key, rideOn(20));
-    await until(() => readingNow(team.ida.userId) === 1);
+    await until(async () => (await readingNow(team.ida.userId)) === 1);
     await removeUploadKey(team.coach, doomed.id);
     onItsWay.release();
 
@@ -203,7 +203,7 @@ describe("two files at once is the most a person's keys are read for", () => {
     expect(response.status).toBe(401);
     expect(await response.json()).toEqual({ status: "refused", reason: "unauthorized" });
     expect(await ridesOf(team.idaRider)).toBe(before);
-    expect(readingNow(team.ida.userId)).toBe(0);
+    expect(await readingNow(team.ida.userId)).toBe(0);
   });
 });
 
