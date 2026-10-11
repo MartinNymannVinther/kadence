@@ -1,6 +1,6 @@
 # ADR 0072: The teams page — Danish U19 and U23 teams, read from the lists
 
-Status: accepted · Date: 2026-10-08 · Builds on 0013, 0023, 0039, 0047, 0057 · Amends 0013 (points on an open guide) · Amended the same day (photographs from Commons, jersey patterns)
+Status: accepted · Date: 2026-10-08 · Builds on 0013, 0023, 0039, 0047, 0057 · Amends 0013 (points on an open guide) · Amended the same day (photographs from Commons, jersey patterns) and by ADR 0085 (a daily job refreshes it)
 
 ## Context
 
