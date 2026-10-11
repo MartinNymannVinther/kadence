@@ -114,7 +114,23 @@ KADENCE_URL=https://kadence.example sh scripts/send-rides.sh /Volumes/GARMIN
 ## backup-kadence.sh
 
 Nightly encrypted dump of the database to EU object storage. Runs on the
-VPS from cron, not in a container; docs/deploy.md section 7 has the setup.
+VPS from cron, not in a container; docs/deploy.md section 7.3 has the
+setup. It is the independent second copy beside pgBackRest.
+
+## restore-drill.sh
+
+The quarterly restore drill for pgBackRest (docker-compose.backup.yml,
+docs/adr/0089). On the VPS, beside the running stack:
+
+```
+scripts/restore-drill.sh                                  # the newest point
+scripts/restore-drill.sh --target "2026-10-11 14:05:00+02"   # a point in time
+```
+
+Restores into a throwaway container from the sidecar's image, counts
+users and Kadence's other tables, prints the recovery point and removes
+the container; the running database and the bucket are not touched.
+docs/deploy.md section 7.4 has the rest.
 
 ## icons.ts
 
