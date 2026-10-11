@@ -7,19 +7,21 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { formatDay } from "@/core/dates";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   approveAccessRequestAction,
-  createInvitationAction,
   declineAccessRequestAction,
+  renewInvitationAction,
   type IssuedLink,
 } from "@/core/access/actions";
 import { invitationState } from "@/core/access/state";
 import { useRouter } from "@/i18n/navigation";
+import { InviteForm } from "./invite-form";
+import { DecidedRequests } from "./decided-requests";
+import { KindNote, type KindInfo } from "./kind-note";
 
-export type RequestItem = {
+export type RequestItem = KindInfo & {
   id: string;
   name: string;
   email: string;
@@ -30,7 +32,7 @@ export type RequestItem = {
   decidedAt: Date | null;
 };
 
-export type InvitationItem = {
+export type InvitationItem = KindInfo & {
   id: string;
   email: string;
   organizationName: string;
@@ -57,7 +59,6 @@ export function AccessAdmin({
   const locale = useLocale();
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
-  const [inviting, setInviting] = useState(false);
   const [fresh, setFresh] = useState<IssuedLink | null>(null);
 
   const formatDate = (value: Date | string) => formatDay(new Date(value), locale);
@@ -97,28 +98,19 @@ export function AccessAdmin({
     }
   }
 
-  async function invite(email: string, organizationName: string) {
-    const result = await createInvitationAction({ email, organizationName });
-    if (!result.ok) {
-      toast.error(result.error === "invalid" ? t("errorInvalid") : tCommon("error"));
-      return false;
+  async function renew(id: string) {
+    setBusy(id);
+    try {
+      const result = await renewInvitationAction(id);
+      if (!result.ok) return void toast.error(tCommon("error"));
+      setFresh(result.data);
+      router.refresh();
+    } catch (error) {
+      console.error("access: renew failed", error);
+      toast.error(tCommon("error"));
+    } finally {
+      setBusy(null);
     }
-    setFresh(result.data);
-    router.refresh();
-    return true;
-  }
-
-  async function handleInvite(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const formElement = event.currentTarget;
-    const form = new FormData(formElement);
-    setInviting(true);
-    const ok = await invite(
-      String(form.get("email") ?? ""),
-      String(form.get("organizationName") ?? ""),
-    );
-    setInviting(false);
-    if (ok) formElement.reset();
   }
 
   async function copyFresh() {
@@ -176,6 +168,7 @@ export function AccessAdmin({
                       </span>
                     </p>
                     <p className="text-muted-foreground">{request.email}</p>
+                    <KindNote info={request} />
                     {request.message ? (
                       <p className="mt-1.5 leading-relaxed whitespace-pre-line">
                         {request.message}
@@ -216,30 +209,12 @@ export function AccessAdmin({
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("inviteTitle")}</CardTitle>
-          <CardDescription>{t("inviteBody")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleInvite} className="flex flex-col gap-3">
-            <FieldGroup className="sm:flex-row sm:gap-3">
-              <Field className="flex-1">
-                <FieldLabel htmlFor="invite-email">{t("inviteEmail")}</FieldLabel>
-                <Input id="invite-email" name="email" type="email" required />
-              </Field>
-              <Field className="flex-1">
-                <FieldLabel htmlFor="invite-organization">{t("inviteOrganization")}</FieldLabel>
-                <Input id="invite-organization" name="organizationName" required maxLength={200} />
-              </Field>
-            </FieldGroup>
-            <Button type="submit" variant="outline" className="w-fit" disabled={inviting}>
-              {inviting ? <Loader2 data-slot="icon" className="animate-spin" /> : null}
-              {t("inviteSubmit")}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+      <InviteForm
+        onIssued={(link) => {
+          setFresh(link);
+          router.refresh();
+        }}
+      />
 
       <Card>
         <CardHeader>
@@ -264,6 +239,7 @@ export function AccessAdmin({
                           · {invitation.organizationName}
                         </span>
                       </p>
+                      <KindNote info={invitation} />
                       <p className="text-meta text-xs">
                         {state === "used" && invitation.usedAt
                           ? t("used", { date: formatDate(invitation.usedAt) })
@@ -277,7 +253,8 @@ export function AccessAdmin({
                       <Button
                         size="sm"
                         variant="ghost"
-                        onClick={() => invite(invitation.email, invitation.organizationName)}
+                        disabled={busy === invitation.id}
+                        onClick={() => renew(invitation.id)}
                       >
                         <RefreshCw data-slot="icon" />
                         {t("renew")}
@@ -291,42 +268,7 @@ export function AccessAdmin({
         </CardContent>
       </Card>
 
-      {decided.length > 0 ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("historyTitle")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="flex flex-col">
-              {decided.map((request) => (
-                <li
-                  key={request.id}
-                  className="border-border flex items-center gap-3 border-b py-2.5 text-sm first:pt-0 last:border-b-0 last:pb-0"
-                >
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate font-medium">
-                      {request.name}{" "}
-                      <span className="text-muted-foreground font-normal">
-                        · {request.organizationName}
-                      </span>
-                    </p>
-                    <p className="text-muted-foreground truncate">{request.email}</p>
-                  </div>
-                  <Badge variant="outline">
-                    {request.status === "approved"
-                      ? t("decidedApproved", {
-                          date: formatDate(request.decidedAt ?? request.createdAt),
-                        })
-                      : t("decidedDeclined", {
-                          date: formatDate(request.decidedAt ?? request.createdAt),
-                        })}
-                  </Badge>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-      ) : null}
+      <DecidedRequests requests={decided} />
     </div>
   );
 }

@@ -25,11 +25,18 @@ export function TeamSettingsForm({
   settings,
   canManage,
   clubChampionship,
+  personal = false,
 }: {
   settings: TeamSettings;
   canManage: boolean;
   /** Whether the installation offers the club championship (`featureOn`, read by the page). */
   clubChampionship: boolean;
+  /**
+   * One person's own training (ADR 0080): the same choices about how to
+   * plan, in the person's words, without what is about a team — its kind
+   * and its championship.
+   */
+  personal?: boolean;
 }) {
   const t = useTranslations("settings.team");
   const common = useTranslations("common");
@@ -47,36 +54,40 @@ export function TeamSettingsForm({
       }}
     >
       <div className="flex flex-col gap-1.5">
-        <h2 className="text-base font-semibold">{t("title")}</h2>
-        <p className="text-meta text-2sm leading-relaxed">{t("body")}</p>
+        <h2 className="text-base font-semibold">{t(personal ? "personalTitle" : "title")}</h2>
+        <p className="text-meta text-2sm leading-relaxed">
+          {t(personal ? "personalBody" : "body")}
+        </p>
         {!canManage && <p className="text-meta text-2sm">{t("coachOnly")}</p>}
       </div>
       <fieldset disabled={!canManage} className="flex flex-col gap-5">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("kindTitle")}</CardTitle>
-            <CardDescription>{t("kindBody")}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <label htmlFor={kindId} className="sr-only">
-              {t("kindTitle")}
-            </label>
-            <NativeSelect
-              id={kindId}
-              value={draft.teamKind}
-              className="max-w-xs max-sm:h-11"
-              onChange={(e) =>
-                setDraft({ ...draft, teamKind: e.target.value as TeamSettings["teamKind"] })
-              }
-            >
-              {KINDS.map((kind) => (
-                <option key={kind} value={kind}>
-                  {t(`kinds.${kind}`)}
-                </option>
-              ))}
-            </NativeSelect>
-          </CardContent>
-        </Card>
+        {!personal && (
+          <Card>
+            <CardHeader>
+              <CardTitle>{t("kindTitle")}</CardTitle>
+              <CardDescription>{t("kindBody")}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <label htmlFor={kindId} className="sr-only">
+                {t("kindTitle")}
+              </label>
+              <NativeSelect
+                id={kindId}
+                value={draft.teamKind}
+                className="max-w-xs max-sm:h-11"
+                onChange={(e) =>
+                  setDraft({ ...draft, teamKind: e.target.value as TeamSettings["teamKind"] })
+                }
+              >
+                {KINDS.map((kind) => (
+                  <option key={kind} value={kind}>
+                    {t(`kinds.${kind}`)}
+                  </option>
+                ))}
+              </NativeSelect>
+            </CardContent>
+          </Card>
+        )}
         <Card>
           <CardHeader>
             <CardTitle>{t("guidanceTitle")}</CardTitle>
@@ -102,7 +113,7 @@ export function TeamSettingsForm({
             </div>
           </CardContent>
         </Card>
-        {clubChampionship && (
+        {clubChampionship && !personal && (
           <Card>
             <CardHeader>
               <CardTitle>{t("clubTitle")}</CardTitle>
@@ -131,8 +142,8 @@ export function TeamSettingsForm({
               onChange={(allowYouthWeight) => setDraft({ ...draft, allowYouthWeight })}
             />
             <SwitchRow
-              label={t("ai")}
-              hint={t("aiHint")}
+              label={t(personal ? "aiPersonal" : "ai")}
+              hint={t(personal ? "aiPersonalHint" : "aiHint")}
               checked={draft.aiOnRiderData}
               stateText={draft.aiOnRiderData ? t("on") : t("off")}
               onChange={(aiOnRiderData) => setDraft({ ...draft, aiOnRiderData })}

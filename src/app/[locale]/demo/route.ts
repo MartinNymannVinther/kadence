@@ -48,7 +48,9 @@ export async function GET(
 
   const { locale } = await params;
   const language = locale === "en" ? "en" : "da";
-  const demo = await createDemoWorkspace(language);
+  // "Prøv alene": one rider in a workspace of their own (ADR 0080).
+  const variant = request.nextUrl.searchParams.get("alene") === "1" ? "alone" : "team";
+  const demo = await createDemoWorkspace(language, variant);
   if (!demo) return refusal("The demo is not available right now.", 503);
 
   // Both the destination and the cookie's Secure flag come from the public

@@ -15,19 +15,35 @@ import {
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { ChoiceRadios } from "@/components/access/choice-radios";
+import {
+  EMPTY_PERSONAL,
+  PersonalFields,
+  personalPayload,
+  tooYoung,
+  type PersonalDraft,
+} from "@/components/access/personal-fields";
 import { requestAccessAction } from "@/core/access/actions";
+import type { WorkspaceKind } from "@/core/access/personal";
 import { Link } from "@/i18n/navigation";
 
 /**
  * The application a closed installation shows instead of a closed sign.
  * No password and no account: it stores a request for the owner and
- * nothing else, and says so.
+ * nothing else, and says so. It is for a club or a team, or for one
+ * person's own training (docs/adr/0080): the applicant's, or their
+ * child's. A personal workspace has no name to type; the server names it
+ * after its rider. Someone under 15 is told plainly that a parent creates
+ * it, and the form does not send.
  */
 export function AccessRequestForm() {
   const t = useTranslations("auth.apply");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sentTo, setSentTo] = useState<string | null>(null);
+  const [kind, setKind] = useState<WorkspaceKind>("club");
+  const [personal, setPersonal] = useState<PersonalDraft>(EMPTY_PERSONAL);
+  const blocked = kind === "personal" && tooYoung(personal);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -38,13 +54,21 @@ export function AccessRequestForm() {
     const result = await requestAccessAction({
       name: String(form.get("name") ?? ""),
       email,
-      organizationName: String(form.get("organizationName") ?? ""),
+      kind,
+      ...(kind === "personal"
+        ? { personal: personalPayload(personal) }
+        : { organizationName: String(form.get("organizationName") ?? "") }),
       message: String(form.get("message") ?? ""),
       website: String(form.get("website") ?? ""),
     });
     setPending(false);
     if (!result.ok) {
-      setError(result.error === "tooMany" ? t("errorTooMany") : t("errorInvalid"));
+      const messages = {
+        tooMany: t("errorTooMany"),
+        tooYoung: t("tooYoung"),
+        invalid: t("errorInvalid"),
+      };
+      setError(messages[result.error]);
       return;
     }
     setSentTo(email);
@@ -75,6 +99,15 @@ export function AccessRequestForm() {
       <CardContent>
         <form method="post" onSubmit={handleSubmit} className="flex flex-col gap-4">
           <FieldGroup>
+            <ChoiceRadios
+              legend={t("kindLegend")}
+              value={kind}
+              onChange={setKind}
+              options={[
+                { value: "club", label: t("kindClub") },
+                { value: "personal", label: t("kindPersonal") },
+              ]}
+            />
             <Field>
               <FieldLabel htmlFor="apply-name">{t("name")}</FieldLabel>
               <Input id="apply-name" name="name" autoComplete="name" required maxLength={200} />
@@ -83,16 +116,20 @@ export function AccessRequestForm() {
               <FieldLabel htmlFor="apply-email">{t("email")}</FieldLabel>
               <Input id="apply-email" name="email" type="email" autoComplete="email" required />
             </Field>
-            <Field>
-              <FieldLabel htmlFor="apply-organization">{t("organizationName")}</FieldLabel>
-              <Input
-                id="apply-organization"
-                name="organizationName"
-                autoComplete="organization"
-                required
-                maxLength={200}
-              />
-            </Field>
+            {kind === "club" ? (
+              <Field>
+                <FieldLabel htmlFor="apply-organization">{t("organizationName")}</FieldLabel>
+                <Input
+                  id="apply-organization"
+                  name="organizationName"
+                  autoComplete="organization"
+                  required
+                  maxLength={200}
+                />
+              </Field>
+            ) : (
+              <PersonalFields idPrefix="apply" draft={personal} onChange={setPersonal} />
+            )}
             <Field>
               <FieldLabel htmlFor="apply-message">{t("message")}</FieldLabel>
               <Textarea id="apply-message" name="message" rows={3} maxLength={1000} />
@@ -115,7 +152,7 @@ export function AccessRequestForm() {
               {error}
             </p>
           ) : null}
-          <Button type="submit" disabled={pending} className="w-full">
+          <Button type="submit" disabled={pending || blocked} className="w-full">
             {pending ? <Loader2 data-slot="icon" className="animate-spin" /> : null}
             {t("submit")}
           </Button>

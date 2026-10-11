@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { Client, Pool } from "pg";
-import { platformOverview } from "@/core/admin/overview";
+import { personsSummary, platformOverview } from "@/core/admin/overview";
 import { todayInCopenhagen } from "@/core/dates";
 import { lastFullWeek } from "@/modules/insight/pilot-numbers";
 import { adminPool, appClient, expectSqlError } from "../helpers/db";
@@ -26,6 +26,15 @@ beforeAll(async () => {
   await seedMember(admin, club.orgId, "ov_rider");
   await admin.query(
     `insert into riders (id, org_id, user_id, name, birth_year) values ('rider_ov', 'org_ov_club', 'user_ov_rider', 'Hemmelig Rytter', 2010)`,
+  );
+  const person = await seedWorkspace(admin, "ov_person");
+  await admin.query(
+    `update organizations set kind = 'personal', name = 'Sofies træning' where id = $1`,
+    [person.orgId],
+  );
+  await admin.query(
+    `insert into riders (id, org_id, user_id, name, birth_year) values ('rider_ov_person', $1, $2, 'Sofie Alene', 2010)`,
+    [person.orgId, person.userId],
   );
   await seedWorkspace(admin, "ov_demo");
   await admin.query(
@@ -58,6 +67,54 @@ describe("the installation's overview", () => {
     });
   });
 
+  it("gives a personal workspace's kind and counts, never its name (ADR 0080)", async () => {
+    const rows = await platformOverview("user_ov_owner");
+    const person = rows?.find((c) => c.orgId === "org_ov_person");
+    expect(person).toMatchObject({ kind: "personal", name: "", riders: 1 });
+    expect(rows?.find((c) => c.orgId === "org_ov_club")?.kind).toBe("club");
+    expect(JSON.stringify(rows)).not.toContain("Sofies træning");
+    expect(JSON.stringify(rows)).not.toContain("Sofie Alene");
+    expect(personsSummary(rows ?? [], new Date())).toMatchObject({ count: 1, seenWeek: 0 });
+  });
+
+  it("adds persons up into one line: how many, seen this week, files and AI calls", () => {
+    const base = {
+      orgId: "x",
+      name: "",
+      createdAt: new Date(),
+      coaches: 1,
+      riders: 1,
+      parents: 0,
+      members: 1,
+      pilot: { week: "2026-10-05", riders: 0, checkedIn: 0, sessions: 0, receipts: 0, minutes: 0 },
+    };
+    const now = new Date("2026-10-11T12:00:00Z");
+    const rows = [
+      {
+        ...base,
+        kind: "personal" as const,
+        lastSeen: new Date("2026-10-10T12:00:00Z"),
+        fileBytes: 10,
+        aiCallsDay: 2,
+      },
+      {
+        ...base,
+        kind: "personal" as const,
+        lastSeen: new Date("2026-09-01T12:00:00Z"),
+        fileBytes: 5,
+        aiCallsDay: 0,
+      },
+      { ...base, kind: "personal" as const, lastSeen: null, fileBytes: 0, aiCallsDay: 1 },
+      { ...base, kind: "club" as const, lastSeen: now, fileBytes: 999, aiCallsDay: 9 },
+    ];
+    expect(personsSummary(rows, now)).toEqual({
+      count: 3,
+      seenWeek: 1,
+      fileBytes: 15,
+      aiCallsDay: 3,
+    });
+  });
+
   it("leaves demo workspaces out", async () => {
     const clubs = await platformOverview("user_ov_owner");
     expect(clubs?.some((c) => c.orgId === "org_ov_demo")).toBe(false);
@@ -85,6 +142,7 @@ describe("the installation's overview", () => {
     expect(owner.fields.map((f) => f.name)).toEqual([
       "org_id",
       "name",
+      "kind",
       "created_at",
       "coaches",
       "riders",

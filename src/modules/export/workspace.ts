@@ -1,6 +1,6 @@
 import { and, eq, sql } from "drizzle-orm";
 import { auth } from "@/core/auth/auth";
-import { memberships, users } from "@/core/db/schema";
+import { memberships, organizations, users } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { memberAddress, memberAddresses } from "@/modules/team/addresses";
 
@@ -59,6 +59,18 @@ export async function currentRole(ctx: OrgContext): Promise<string | null> {
       .where(and(eq(memberships.userId, ctx.userId), eq(memberships.organizationId, ctx.orgId)))
       .limit(1);
     return row?.role ?? null;
+  });
+}
+
+/** The active workspace's name, as its members see it. */
+export async function workspaceName(ctx: OrgContext): Promise<string | null> {
+  return withOrgContext(ctx, async (tx) => {
+    const [row] = await tx
+      .select({ name: organizations.name })
+      .from(organizations)
+      .where(eq(organizations.id, ctx.orgId))
+      .limit(1);
+    return row?.name ?? null;
   });
 }
 

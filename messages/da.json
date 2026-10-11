@@ -60,7 +60,8 @@
       "title": "Prøv uden at oprette noget",
       "body": "Du får dit eget U19-hold i fuld gang: ryttere, en sæsonplan efter DCU, uger med pas, aktiviteter og check-ins. Du starter som træner og kan skifte til rytteren Emma og hendes mor for at se Kadence med deres øjne. Det hele slettes efter {hours, plural, one {# time} other {# timer}}. Ingen e-mail, ingen tilmelding.",
       "privacy": "Skriv ikke rigtige personoplysninger i demoen. Den passerer en database og eventuelt en sprogmodel på vejen.",
-      "cta": "Åbn en demo"
+      "cta": "Åbn en demo",
+      "ctaAlone": "Prøv som rytter alene"
     },
     "featuresLabel": "Det du får",
     "features": {
@@ -129,7 +130,10 @@
       "errorInvitationInvalid": "Invitationen er udløbet eller allerede brugt. Bed om et nyt link.",
       "invitationInvalidTitle": "Linket virker ikke længere",
       "invitationInvalidBody": "Invitationen er udløbet, brugt eller erstattet af en nyere. Bed den der inviterede dig om et nyt link, eller ansøg om adgang igen.",
-      "applyLink": "Ansøg om adgang"
+      "applyLink": "Ansøg om adgang",
+      "errorTooYoung": "Man skal være mindst 15 år for at oprette en konto selv. En forælder kan oprette den og invitere dig.",
+      "personalMe": "Du får dit eget arbejdsrum, {workspace}. Her er du både din egen træner og rytter: du lægger dine pas, kører dem og følger din form.",
+      "personalChild": "Du får et arbejdsrum, {workspace}, hvor du planlægger træningen for {child}. Når kontoen er oprettet, kan du invitere {child} fra rytterens side."
     },
     "twoFactor": {
       "title": "Totrinsbekræftelse",
@@ -157,9 +161,24 @@
       "sentBody": "Du hører fra ejeren af denne installation på {email}. Svaret kommer fra et menneske, så regn med en dag eller to.",
       "errorInvalid": "Tjek felterne og prøv igen.",
       "errorTooMany": "Der er sendt mange ansøgninger herfra på kort tid. Prøv igen om en time.",
-      "privacy": "Vi gemmer navn, e-mail og organisation for at behandle ansøgningen, og ikke andet. Bliver den afvist, står oplysningerne kun tilbage som en note om afgørelsen.",
+      "privacy": "Vi gemmer navn, e-mail og organisation for at behandle ansøgningen, og ikke andet. Er det til én person, gemmer vi også fødselsåret og, for et barn, barnets navn og eventuelt e-mail. Bliver ansøgningen afvist, står oplysningerne kun tilbage som en note om afgørelsen.",
       "haveAccount": "Har du allerede en konto?",
-      "loginLink": "Log ind"
+      "loginLink": "Log ind",
+      "kindLegend": "Hvem er Kadence til?",
+      "kindClub": "En klub eller et hold",
+      "kindPersonal": "Mig selv",
+      "forWhomLegend": "Hvem skal træne?",
+      "forMe": "Det er til mig",
+      "forChild": "Det er til mit barn",
+      "birthYear": "Dit fødselsår",
+      "birthYearHint": "Året bestemmer klassen, fx U17 eller U19. Vi spørger ikke om dato.",
+      "childName": "Barnets navn",
+      "childBirthYear": "Barnets fødselsår",
+      "childEmail": "Barnets e-mail",
+      "childEmailHint": "Valgfrit. Med en e-mail får du et link, barnet kan oprette sin egen konto med. Du kan også gøre det senere.",
+      "tooYoung": "Er du under 15 år, kan du ikke oprette en konto selv. Bed en forælder om at ansøge og vælge \"Det er til mit barn\". Så kan de invitere dig bagefter.",
+      "workspaceName": "{name}s træning",
+      "workspaceNameSibilant": "{name}' træning"
     }
   },
   "app": {
@@ -300,6 +319,7 @@
     "subtitleCoach": "Dig selv, holdet og arbejdsrummet.",
     "subtitleRider": "Dig selv, dine enheder og din sikkerhed.",
     "subtitleOther": "Dig selv og din sikkerhed.",
+    "subtitlePersonal": "Dig selv, din træning, din AI og dine data.",
     "appearance": {
       "title": "Udseende",
       "body": "Gælder på denne enhed. Lys eller mørk følger ellers systemet.",
@@ -324,6 +344,7 @@
       "team": "Holdet",
       "me": "Profil",
       "devices": "Enheder",
+      "training": "Træning",
       "groups": {
         "you": "Dig",
         "team": "Holdet",
@@ -360,7 +381,10 @@
       "stateUsed": "Brugt",
       "stateExpired": "Udløbet",
       "stateRevoked": "Erstattet",
-      "errorInvalid": "Tjek e-mail og navnet på arbejdsrummet."
+      "errorInvalid": "Tjek e-mail og navnet på arbejdsrummet.",
+      "inviteName": "Personens navn",
+      "personalMe": "Personligt arbejdsrum · til sig selv · født {year}",
+      "personalChild": "Personligt arbejdsrum · til sit barn, {child} · født {year}"
     },
     "workspace": {
       "resetLink": {
@@ -392,7 +416,13 @@
         "deleting": "Sletter …",
         "failed": "Arbejdsrummet blev ikke slettet. Prøv igen.",
         "notOwner": "Kun ejeren af arbejdsrummet kan slette det.",
-        "nameMismatch": "Navnet passer ikke. Skriv arbejdsrummets navn præcis som det står."
+        "nameMismatch": "Navnet passer ikke. Skriv arbejdsrummets navn præcis som det står.",
+        "personal": {
+          "title": "Slet min konto og alt om mig",
+          "body": "Alt om din træning forsvinder: pas, ture, check-ins, sæsonplanen, filerne og revisionssporet om dem. Er du ikke på et hold i Kadence, slettes din konto også. Det kan ikke fortrydes.",
+          "exportFirst": "Hent en eksport først, hvis du vil beholde noget. Den findes lige ovenfor.",
+          "action": "Slet min konto og alt om mig"
+        }
       },
       "images": {
         "title": "Logo og billede",
@@ -435,7 +465,12 @@
       "privacy": "Du ser tal og klubbernes navne, og det er alt, databasen giver fra sig her.",
       "newClub": "En ny klub kommer ind gennem en ansøgning, som du godkender.",
       "toAccess": "Gå til Adgang",
-      "help": "Vil en klub have hjælp, kan den invitere dig som træner for en tid. Det står i dens medlemsliste og i loggen, og klubben fjerner dig igen bagefter."
+      "help": "Vil en klub have hjælp, kan den invitere dig som træner for en tid. Det står i dens medlemsliste og i loggen, og klubben fjerner dig igen bagefter.",
+      "persons": {
+        "title": "Enkeltpersoner",
+        "counts": "{count, plural, one {# personligt arbejdsrum} other {# personlige arbejdsrum}}, {seen, plural, one {# brugt} other {# brugt}} den seneste uge · {mb, number} MB filer · {ai, plural, one {# AI-kald} other {# AI-kald}} det seneste døgn",
+        "privacy": "Folk, der bruger Kadence alene. Du ser kun tallene samlet, aldrig navne."
+      }
     },
     "ai": {
       "title": "AI",
@@ -631,7 +666,11 @@
       "ai": "Må AI'en læse rytternes data",
       "aiHint": "Slået fra som standard. Rytternes træning og check-ins er helbredsdata om unge mennesker. Slår I det til, må AI'en læse dem, når en træner beder om et ugeforslag eller et resumé af ugens opmærksomhedspunkter. Den skriver aldrig selv noget.",
       "on": "Slået til",
-      "off": "Slået fra"
+      "off": "Slået fra",
+      "personalTitle": "Din træning",
+      "personalBody": "Hvordan du planlægger din sæson, og hvad AI'en må læse.",
+      "aiPersonal": "Må AI'en læse dine data",
+      "aiPersonalHint": "Slået fra som standard. Din træning og dine check-ins er helbredsdata. Slår du det til, må AI'en læse dem, når du beder om et ugeforslag eller et resumé af ugen. Den skriver aldrig selv noget."
     }
   },
   "demo": {
@@ -1044,6 +1083,10 @@
       "empty": "Du har ingen ture endnu. Upload en fil herunder, så kommer den her.",
       "km": "{km} km",
       "more": "Vis flere"
+    },
+    "personal": {
+      "body": "Du er også din egen træner. Dine tærskler og en forælder, der kan følge med, ligger på din rytterside.",
+      "link": "Åbn din rytterside"
     }
   },
   "errors": {
@@ -2760,7 +2803,7 @@
     "basisLabel": "Plan ud fra",
     "pickBasis": "Vælg årgang",
     "basisHint": "Rytterens årgang er valgt. Vælg en anden, hvis rytteren skal planlægge ud fra et andet år, fx fordi rytteren er startet sent.",
-    "noClass": "Rytteren er ikke i en af DCU's årgange (U17 til U23) i denne sæson. Vælg den årgang, planen skal bygge på.",
+    "noClass": "DCU har ingen timetal for rytterens klasse i denne sæson, kun for U17 til U23. Vælg en årgang, planen kan starte fra. Bagefter retter du timerne til dine egne, måned for måned.",
     "basis": "{category} {year}. år",
     "basisNow": "Planen bygger på DCU's timer for {basis}.",
     "basisOwn": "Holdet planlægger med egne timer. Rytteren er {basis}.",

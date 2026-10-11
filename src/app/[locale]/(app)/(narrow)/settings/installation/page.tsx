@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { PilotClubs } from "@/components/insight/pilot-clubs";
-import { platformOverview } from "@/core/admin/overview";
+import { personsSummary, platformOverview } from "@/core/admin/overview";
 import { getSession } from "@/core/auth/session";
 import { formatDay } from "@/core/dates";
 import { Link } from "@/i18n/navigation";
@@ -17,13 +17,18 @@ export async function generateMetadata(): Promise<Metadata> {
  * coaches, riders and parents, when someone was last in, how much space
  * their files take and the AI calls of the last day, and the pilot's
  * three numbers for the last full week (ADR 0066). Counts only; the
- * database hands nothing else over. Anyone else gets a 404, as for
+ * database hands nothing else over. People who use Kadence alone are one
+ * line, "Enkeltpersoner", with how many, how many were in this week,
+ * their files and AI calls (ADR 0080). Anyone else gets a 404, as for
  * admission.
  */
 export default async function InstallationPage() {
   const session = await getSession();
-  const clubs = session ? await platformOverview(session.user.id) : null;
-  if (!clubs) notFound();
+  const overview = session ? await platformOverview(session.user.id) : null;
+  if (!overview) notFound();
+  // Clubs one by one; persons alone as one line of counts, never names (ADR 0080).
+  const clubs = overview.filter((c) => c.kind === "club");
+  const persons = personsSummary(overview);
 
   const t = await getTranslations("settings.installation");
   const locale = await getLocale();
@@ -84,6 +89,21 @@ export default async function InstallationPage() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {persons.count > 0 && (
+        <div className="border-border bg-card flex flex-col gap-1 rounded-xl border p-4 text-2sm shadow-surface">
+          <p className="font-medium">{t("persons.title")}</p>
+          <p className="tabular-nums">
+            {t("persons.counts", {
+              count: persons.count,
+              seen: persons.seenWeek,
+              mb: megabytes(persons.fileBytes),
+              ai: persons.aiCallsDay,
+            })}
+          </p>
+          <p className="text-meta text-xs">{t("persons.privacy")}</p>
         </div>
       )}
 

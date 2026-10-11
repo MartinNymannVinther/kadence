@@ -133,12 +133,21 @@ export default async function HomePage() {
               <h2 className="font-heading text-base font-semibold">{t("demo.title")}</h2>
               <p className="mt-1.5 text-sm">{t("demo.body", { hours: DEMO_TTL_HOURS })}</p>
               <p className="text-meta mt-1.5 text-sm">{t("demo.privacy")}</p>
-              <a
-                href={`${locale === "da" ? "" : `/${locale}`}/demo`}
-                className={cn(buttonVariants({ size: "sm" }), "mt-3")}
-              >
-                {t("demo.cta")}
-              </a>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <a
+                  href={`${locale === "da" ? "" : `/${locale}`}/demo`}
+                  className={buttonVariants({ size: "sm" })}
+                >
+                  {t("demo.cta")}
+                </a>
+                {/* One rider alone, in a workspace of their own (ADR 0080). */}
+                <a
+                  href={`${locale === "da" ? "" : `/${locale}`}/demo?alene=1`}
+                  className={buttonVariants({ size: "sm", variant: "outline" })}
+                >
+                  {t("demo.ctaAlone")}
+                </a>
+              </div>
             </div>
           </section>
         )}

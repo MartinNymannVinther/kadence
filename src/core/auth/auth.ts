@@ -38,6 +38,19 @@ export const TEAM_INVITATION_LIMIT = 200;
  */
 export const TEAM_INVITATION_DAYS = 7;
 
+/** The organization plugin's endpoints that write a workspace's own row. */
+const WORKSPACE_WRITE_PATHS = new Set(["/organization/create", "/organization/update"]);
+
+/** Whether a request body tries to say what kind of workspace it is, at its top or in `data`. */
+export function bodyNamesKind(body: unknown): boolean {
+  if (!body || typeof body !== "object") return false;
+  const data = (body as { data?: unknown }).data;
+  return (
+    Object.hasOwn(body, "kind") ||
+    Boolean(data && typeof data === "object" && Object.hasOwn(data, "kind"))
+  );
+}
+
 export const auth = betterAuth({
   appName: "Kadence",
   baseURL: env.BETTER_AUTH_URL,
@@ -140,6 +153,16 @@ export const auth = betterAuth({
     // The endpoint is the door, not the page. Hiding the registration form
     // closes the front door only; this closes the one that matters.
     before: createAuthMiddleware(async (ctx) => {
+      // What a workspace is — a club, or one person's own training — is
+      // ours to set, right after creation (docs/adr/0080). Better Auth
+      // does not know the column and would drop it; refusing a body that
+      // carries it keeps that true if a later version learns to pass it on.
+      if (WORKSPACE_WRITE_PATHS.has(ctx.path) && bodyNamesKind(ctx.body)) {
+        throw new APIError("BAD_REQUEST", {
+          code: "WORKSPACE_KIND_NOT_SETTABLE",
+          message: "A workspace's kind is not set from a request",
+        });
+      }
       if (ctx.path === "/sign-up/email") {
         const body = (ctx.body ?? {}) as { email?: unknown };
         const attempt = {

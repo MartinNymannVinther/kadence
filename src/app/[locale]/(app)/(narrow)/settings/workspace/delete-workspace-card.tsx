@@ -14,19 +14,32 @@ import { deleteWorkspaceAction } from "@/modules/export/actions";
  * goes: everything, including the audit trail about it. The export is one
  * page away and is offered here in words rather than as a step to skip.
  */
-export function DeleteWorkspaceCard({ workspaceName }: { workspaceName: string }) {
+export function DeleteWorkspaceCard({
+  workspaceName,
+  personal = false,
+}: {
+  workspaceName: string;
+  /**
+   * One person's own workspace (ADR 0080): the same deletion, called what
+   * it is for them — their account and everything about them — since the
+   * account goes too when no other team holds it.
+   */
+  personal?: boolean;
+}) {
   const t = useTranslations("settings.workspace.delete");
+  const word = (key: "title" | "body" | "exportFirst" | "action") =>
+    personal ? t(`personal.${key}`) : t(key);
   const [typed, setTyped] = useState("");
   const [pending, startTransition] = useTransition();
 
   return (
     <Card className="border-destructive/40">
       <CardHeader>
-        <CardTitle className="text-destructive">{t("title")}</CardTitle>
-        <CardDescription>{t("body")}</CardDescription>
+        <CardTitle className="text-destructive">{word("title")}</CardTitle>
+        <CardDescription>{word("body")}</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
-        <p className="text-meta text-2sm leading-relaxed">{t("exportFirst")}</p>
+        <p className="text-meta text-2sm leading-relaxed">{word("exportFirst")}</p>
         <label htmlFor="confirm-name" className="text-sm">
           {t("typeName", { name: workspaceName })}
         </label>
@@ -55,7 +68,7 @@ export function DeleteWorkspaceCard({ workspaceName }: { workspaceName: string }
             })
           }
         >
-          {pending ? t("deleting") : t("action")}
+          {pending ? t("deleting") : word("action")}
         </Button>
       </CardContent>
     </Card>

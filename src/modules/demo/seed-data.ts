@@ -10,6 +10,9 @@ export const pick = (text: Text, l: L) => text[l];
 
 export const TEAM_NAME: Text = { da: "Demo CK U19", en: "Demo CC U19" };
 
+/** "Prøv alene" (seed-alone.ts): the personal workspace of the team demo's Emma (docs/adr/0080). */
+export const ALONE_NAME: Text = { da: "Emmas træning", en: "Emma's training" };
+
 /** Born so they ride U19 in the coming racing year: years 1 and 2. */
 export const RIDERS: Array<{
   name: string;

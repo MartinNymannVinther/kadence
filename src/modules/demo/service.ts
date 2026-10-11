@@ -4,13 +4,15 @@ import { installationHasOwner } from "@/core/access/service";
 import { auth } from "@/core/auth/auth";
 import { authDb } from "@/core/db/client";
 import { demoWorkspaces } from "@/core/db/schema";
+import { markWorkspacePersonal } from "@/core/auth/register-personal";
 import { DEMO_HEADER, demoSignupHeaderValue } from "@/core/auth/signup";
 import { env } from "@/core/env";
 import { organizationSlug } from "@/lib/slug";
 import { arrivalOrigin } from "./origin";
 import { createDemoRoles, readAccounts } from "./roles";
 import { seedDemoTeam } from "./seed";
-import { TEAM_NAME } from "./seed-data";
+import { ALONE_RIDER, seedDemoAlone } from "./seed-alone";
+import { ALONE_NAME, TEAM_NAME } from "./seed-data";
 
 /**
  * A demo is a real workspace with a throwaway account in it and a date on
@@ -19,7 +21,9 @@ import { TEAM_NAME } from "./seed-data";
  * here can quietly differ from what a customer would get. A demo opens
  * on a U19 team in full swing (seed.ts), written through the same
  * services a person uses, with a rider and a parent beside the coach so
- * the visitor can see all three roles (roles.ts).
+ * the visitor can see all three roles (roles.ts). `/demo?alene=1` opens
+ * on one U19 rider alone instead, a personal workspace whose owner and
+ * rider is the visitor (seed-alone.ts, docs/adr/0080).
  *
  * Nothing here runs unless DEMO=on. On an installation that has not asked
  * for it, the route below answers 404 and this file is dead code.
@@ -78,6 +82,9 @@ export function demoCookieSecure(host: string | null = null): boolean {
 
 export type DemoSession = { headers: Headers } | null;
 
+/** A team in full swing with three people, or one rider alone (`/demo?alene=1`, ADR 0080). */
+export type DemoVariant = "team" | "alone";
+
 /** Turns the set-cookie headers of an API response into a cookie header. */
 function cookieHeaderFrom(responseHeaders: Headers): Headers {
   const cookie = responseHeaders
@@ -131,16 +138,21 @@ async function liveDemoCount(): Promise<number> {
  * writing rows, so a demo session is a session like any other and every
  * guard behaves the way it will for a real user.
  */
-export async function createDemoWorkspace(locale: "da" | "en"): Promise<DemoSession> {
+export async function createDemoWorkspace(
+  locale: "da" | "en",
+  variant: DemoVariant = "team",
+): Promise<DemoSession> {
   if (!(await demoReady())) return null;
   await cleanupExpiredDemos();
   if ((await liveDemoCount()) >= MAX_LIVE_DEMOS) return null;
 
+  const alone = variant === "alone";
   const key = randomBytes(9).toString("hex");
   const email = `demo-${key}@demo.invalid`;
   const password = randomBytes(24).toString("base64url");
-  const name = locale === "da" ? "Gæst" : "Guest";
-  const workspaceName = TEAM_NAME[locale];
+  // Alone, the visitor is the rider, so the menu greets them by her name.
+  const name = alone ? ALONE_RIDER.name : locale === "da" ? "Gæst" : "Guest";
+  const workspaceName = (alone ? ALONE_NAME : TEAM_NAME)[locale];
 
   let sessionHeaders: Headers;
   let userId: string;
@@ -174,6 +186,19 @@ export async function createDemoWorkspace(locale: "da" | "en"): Promise<DemoSess
     userId,
     expiresAt: new Date(Date.now() + DEMO_TTL_HOURS * 60 * 60 * 1000),
   });
+
+  if (alone) {
+    // One person's own workspace (docs/adr/0080), set as the registration
+    // sets it; the visitor is its owner and its one rider, and there is
+    // nobody to switch to.
+    try {
+      await markWorkspacePersonal(organization.id);
+      await seedDemoAlone({ orgId: organization.id, userId }, locale);
+    } catch (error) {
+      console.error("demo: could not seed the person alone", error);
+    }
+    return { headers: sessionHeaders };
+  }
 
   try {
     await seedDemoTeam({ orgId: organization.id, userId }, locale);

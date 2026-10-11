@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { firstName } from "@/core/access/personal";
 import { findValidInvitation } from "@/core/access/service";
 import { signupAllowed } from "@/core/auth/signup";
 import { Link } from "@/i18n/navigation";
@@ -38,6 +39,12 @@ export default async function RegisterPage({
             token,
             email: invitation.email,
             organizationName: invitation.organizationName,
+            personal: invitation.personal && {
+              forWhom: invitation.personal.forWhom,
+              childFirstName: invitation.personal.childName
+                ? firstName(invitation.personal.childName)
+                : null,
+            },
           }}
         />
       );
