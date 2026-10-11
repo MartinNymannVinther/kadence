@@ -8,7 +8,7 @@ import { DEMO_HEADER, demoSignupHeaderValue } from "@/core/auth/signup";
 import { env } from "@/core/env";
 import { organizationSlug } from "@/lib/slug";
 import { arrivalOrigin } from "./origin";
-import { createDemoRoles, readAccounts } from "./roles";
+import { createDemoRoles } from "./roles";
 import { seedDemoTeam } from "./seed";
 import { TEAM_NAME } from "./seed-data";
 
@@ -93,31 +93,34 @@ function cookieHeaderFrom(responseHeaders: Headers): Headers {
  * installation that gets visitors needs no scheduler; `scripts/cleanup-demos.ts`
  * and the endpoint exist for one that does not.
  *
- * The organization's cascades take the workspace's rows with it. The
- * throwaway users — the visitor, the demo's rider and parent — are removed too, because a demo that leaves accounts
- * behind is a demo that leaks addresses nobody gave.
+ * `delete_expired_demo()` (drizzle/0045) does each one in the database:
+ * the organization, whose cascades take the workspace's rows with it; the
+ * throwaway users — the visitor, the demo's rider and parent — because a
+ * demo that leaves accounts behind is a demo that leaks addresses nobody
+ * gave; and every audit row about either, because a stranger's sandbox
+ * is not the installation's history (ADR 0088). It refuses anything that
+ * is not a demo past its time, so the auth role cannot point it at a club.
  */
-export async function cleanupExpiredDemos(now = new Date()): Promise<number> {
+export async function cleanupExpiredDemos(): Promise<number> {
   const expired = await authDb
-    .delete(demoWorkspaces)
-    .where(lt(demoWorkspaces.expiresAt, now))
-    .returning({
-      organizationId: demoWorkspaces.organizationId,
-      userId: demoWorkspaces.userId,
-      accounts: demoWorkspaces.accounts,
-    });
+    .select({ organizationId: demoWorkspaces.organizationId })
+    .from(demoWorkspaces)
+    // The database's clock, the one delete_expired_demo() checks again.
+    .where(lt(demoWorkspaces.expiresAt, sql`now()`));
+  let deleted = 0;
   for (const row of expired) {
     try {
-      await authDb.execute(sql`delete from organizations where id = ${row.organizationId}`);
-      // The visitor and the demo's rider and parent: every account it made.
-      const people = new Set([row.userId, ...readAccounts(row.accounts).map((a) => a.userId)]);
-      for (const id of people) await authDb.execute(sql`delete from users where id = ${id}`);
+      const result = await authDb.execute<{ deleted: boolean }>(
+        sql`select delete_expired_demo(${row.organizationId}) as deleted`,
+      );
+      // False when another clean-up got there first: nothing was touched.
+      if (result.rows[0]?.deleted) deleted += 1;
     } catch (error) {
       // One stuck demo must not stop the others being cleaned up.
       console.error("demo: cleanup failed for", row.organizationId, error);
     }
   }
-  return expired.length;
+  return deleted;
 }
 
 async function liveDemoCount(): Promise<number> {

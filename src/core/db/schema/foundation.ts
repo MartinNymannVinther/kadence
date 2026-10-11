@@ -238,6 +238,9 @@ export const auditLog = pgTable(
   (t) => [
     index("audit_log_org_created_idx").on(t.orgId, t.createdAt),
     index("audit_log_entity_idx").on(t.entityType, t.entityId),
+    // Three more are hand-written in drizzle/0045: (org_id, id) for the
+    // export's pages, and the partial expression indexes on
+    // before_data/after_data ->> 'rider_id' for erase_rider().
   ],
 );
 

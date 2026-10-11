@@ -372,6 +372,11 @@ describe("rls coverage (guards future tables)", () => {
     // Links a new member to the rider or guardian row a coach prepared,
     // for an invitation the caller accepted to their own address.
     "claim_invitation_links",
+    // Deletes a demo whose time is up, its throwaway accounts and every
+    // audit row about either, for the clean-up on the auth role
+    // (drizzle/0045, docs/adr/0088). Refuses, by doing nothing, anything
+    // that is not a demo past its time, so no real club can be reached.
+    "delete_expired_demo",
     // Deletes a workspace the caller owns, audit rows included, which is
     // dogma 3 and which RLS and the append-only guard would otherwise
     // forbid (docs/adr/0003). Checks the caller's role itself.
