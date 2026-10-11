@@ -2,7 +2,6 @@ import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest
 import type { Pool } from "pg";
 import { env } from "@/core/env";
 import { refreshOwnRaces, refreshOwnRacesLater } from "@/modules/results/own";
-import { whenIdle } from "@/modules/results/queue";
 import {
   refreshRaces,
   refreshStaleRaces,
@@ -11,6 +10,7 @@ import {
 import { setUciId } from "@/modules/results/service";
 import { fakeFetch } from "../devices/fake-fetch";
 import { adminPool } from "../helpers/db";
+import { drainJobs } from "../helpers/jobs";
 import { insertSql, seedPerson } from "../helpers/rows";
 import { PAGE, profilePage, UCI } from "../results/profile-fixture";
 
@@ -94,8 +94,8 @@ describe("opening Kadence", () => {
   it("does not read the rider's page again within three hours", async () => {
     Object.assign(env, { DCU_RESULTS: "on" });
     const calls = fakeFetch({ [PORTAL]: () => html(PAGE) });
-    refreshOwnRacesLater(RIDER);
-    await whenIdle();
+    await refreshOwnRacesLater(RIDER);
+    await drainJobs(["dcu.read_rider"]);
     expect(calls).toHaveLength(0);
   });
 
@@ -103,7 +103,7 @@ describe("opening Kadence", () => {
     Object.assign(env, { DCU_RESULTS: "on" });
     const calls = fakeFetch({ [PORTAL]: () => html(PAGE) });
     await refreshStaleRaces(COACH);
-    await whenIdle();
+    await drainJobs(["dcu.read_rider"]);
     expect(calls).toHaveLength(1);
     const rows = await races();
     expect(rows).toHaveLength(6);
@@ -114,7 +114,7 @@ describe("opening Kadence", () => {
     Object.assign(env, { DCU_RESULTS: "on" });
     const calls = fakeFetch({ [PORTAL]: () => html(PAGE) });
     await refreshStaleRaces(COACH);
-    await whenIdle();
+    await drainJobs(["dcu.read_rider"]);
     expect(await refreshRaces(COACH, "rv_rider")).toEqual({ state: "fresh" });
     expect(calls).toHaveLength(0);
   });
@@ -155,13 +155,13 @@ describe("a coach's visit from the layout", () => {
     );
     const calls = fakeFetch({ [PORTAL]: () => html(PAGE) });
     await refreshStaleRacesOnVisit(COACH);
-    await whenIdle();
+    await drainJobs(["dcu.read_rider"]);
     expect(calls).toHaveLength(1);
 
     // Stale again, and the coach opens another page: the hour is not over.
     await admin.query(`update riders set races_checked_at = null where id = 'rv_rider'`);
     await refreshStaleRacesOnVisit(COACH);
-    await whenIdle();
+    await drainJobs(["dcu.read_rider"]);
     expect(calls).toHaveLength(1);
     const { rows } = await admin.query(
       `select count from app_rate_limits where key = $1 and reset_at > now() + interval '59 minutes'`,

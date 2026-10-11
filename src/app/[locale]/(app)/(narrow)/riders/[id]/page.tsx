@@ -110,6 +110,7 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
     raceStatus(ctx, rider.id),
     listLinkableMembers(ctx, rider.id),
   ]);
+  // Stale races into the queue (ADR 0085); if lost, the hourly dcu.races job queues them.
   after(() => refreshStaleRaces(ctx, [rider.id]));
   const insight = insights[0] ?? null;
   const shownMeasurements: MeasurementRow[] = measurements.flatMap((m) =>

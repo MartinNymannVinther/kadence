@@ -165,6 +165,13 @@ export const EnvSchema = z
       .string()
       .regex(/^(mailto:|https:\/\/)/)
       .optional(),
+    // Who runs the background jobs (docs/adr/0085): reminders, rides from
+    // Wahoo, Garmin and Polar, races from Cykling Danmark, the teams page
+    // and the demos' clean-up. "on" means a worker container runs them
+    // (the `worker` service in docker-compose.yml) and the app only puts
+    // them in the queue. Unset, the app runs them itself, as it ran the
+    // reminder timer before: one container is still a whole installation.
+    WORKER: z.enum(["off", "on"]).default("off"),
   })
   .superRefine((value, ctx) => {
     // `next build` runs with NODE_ENV=production and placeholder values

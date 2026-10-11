@@ -476,6 +476,16 @@
         "title": "Individuals",
         "counts": "{count, plural, one {# personal workspace} other {# personal workspaces}}, {seen, plural, one {# used} other {# used}} in the last week · {mb, number} MB of files · {ai, plural, one {# AI call} other {# AI calls}} in the last day",
         "privacy": "People who use Kadence on their own. You see only the totals, never names."
+      },
+      "jobs": {
+        "title": "Background work",
+        "counts": "{pending, plural, =0 {Nothing is waiting} one {# job is waiting} other {# jobs are waiting}}, and {failed, plural, =0 {none has given up} one {# has given up} other {# have given up}}.",
+        "oldest": "The oldest has waited {minutes, plural, one {# minute} other {# minutes}}.",
+        "last": "Last taken: {when}.",
+        "never": "No job has been taken yet.",
+        "inWorker": "A worker container runs the jobs.",
+        "inApp": "The app runs the jobs itself, because no worker is set up.",
+        "failedHelp": "A job that has given up was tried five times. The deployment guide (docs/deploy.md) says how to see it and try it again."
       }
     },
     "ai": {

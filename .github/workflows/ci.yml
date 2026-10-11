@@ -89,12 +89,13 @@ jobs:
           NEXT_TELEMETRY_DISABLED: "1"
 
   image:
-    name: Docker image (migrator and runner)
+    name: Docker images (migrator, worker and runner)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      # only shows up here, not in pnpm build. Both targets, no push.
+      # only shows up here, not in pnpm build. Every target, no push.
       - run: docker build --target migrator -t kadence-migrator:ci .
+      - run: docker build --target worker -t kadence-worker:ci .
       - run: docker build --target runner -t kadence-runner:ci .
 
       # Building an image proves it builds. It does not prove it runs, and
@@ -129,6 +130,27 @@ jobs:
           fi
           echo "$out" | grep -q "Nothing answers on" || {
             echo "::error::The migrator image did not reach its own error handling (exit $code)."
+            exit 1
+          }
+
+      # The same proof for the worker (docs/adr/0085): with a valid
+      # environment and a database nobody answers for, it should load every
+      # job kind through tsx, say it started, and keep trying the database
+      # until it is told to stop. Twenty seconds, then SIGTERM.
+      - name: The worker image can run its entrypoint
+        run: |
+          set -uo pipefail
+          set +e
+          out=$(timeout --signal=TERM 20 docker run --rm \
+            -e APP_DATABASE_URL='postgres://kadence:kadence@127.0.0.1:1/kadence' \
+            -e AUTH_DATABASE_URL='postgres://kadence:kadence@127.0.0.1:1/kadence' \
+            -e BETTER_AUTH_SECRET='ci-only-secret-that-is-long-enough-0123456789' \
+            -e BETTER_AUTH_URL='https://kadence.example' \
+            kadence-worker:ci 2>&1)
+          set -e
+          echo "$out"
+          echo "$out" | grep -q "jobs: worker started" || {
+            echo "::error::The worker image did not start its loop."
             exit 1
           }
 

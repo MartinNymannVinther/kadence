@@ -111,9 +111,10 @@ function withNewCookies(request: Headers, response: Headers): Headers {
 }
 
 /**
- * Deletes every demo whose time is up. Called on each visit, so an
- * installation that gets visitors needs no scheduler; `scripts/cleanup-demos.ts`
- * and the endpoint exist for one that does not.
+ * Deletes every demo whose time is up. Called every hour by the worker
+ * (`demo.cleanup`, job.ts, docs/adr/0085) and before each new demo, which
+ * counts the live ones right after; `scripts/cleanup-demos.ts` and the
+ * endpoint do it on demand.
  *
  * `delete_expired_demo()` (drizzle/0042) does each one in the database:
  * the organization, whose cascades take the workspace's rows with it; the
