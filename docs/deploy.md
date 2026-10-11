@@ -402,12 +402,20 @@ rclone config                             # configure an EU remote named eu-stor
 
 ```
 # crontab -e
-25 2 * * * DB_CONTAINER=<kadence db container id> /root/backup-kadence.sh
+25 2 * * * DB_CONTAINER=<kadence db container id> BACKUP_PING_URL=<push monitor URL> /root/backup-kadence.sh
 ```
 
 Name the container explicitly: on a server that also runs Haij there is
 more than one database container called `db`, and the script's fallback
 picks the first one it finds.
+
+`BACKUP_PING_URL` is optional and the backup runs the same without it,
+but a cron job that silently stops running is the usual way a backup
+dies unnoticed. Point it at an Uptime Kuma push monitor (below) and the
+script hits it plain on success, or with `?status=down&msg=<why>` on
+failure — including the two checks above (no container, no recipient
+key) and anything the dump, the encryption or the upload itself fails
+on.
 
 Thirty days is what the terms page promises a workspace whose data has
 been deleted, so the script keeps thirty at both ends: `KEEP_DAYS`
@@ -426,6 +434,76 @@ age -d -i kadence-backup.key kadence-2026-01-01.dump.age | pg_restore -d kadence
 
 Any new storage, mail or model provider goes into `docs/subprocessors.md`
 first.
+
+## 7b. Monitoring
+
+Nothing above tells you when it stops working. [Uptime Kuma](https://github.com/louislam/uptime-kuma)
+closes that gap, open source and EU-hosted the same way Kadence is: by
+running on your own server, as its own Coolify service, with its own
+subdomain (e.g. `status.haij.dk`) and its own tiny Postgres-free
+storage. It is a separate application from Kadence; it has no row in
+`docs/subprocessors.md` because it sends nothing outside the server it
+runs on, besides the alert it sends you.
+
+1. In Coolify: **New resource**, point it at Uptime Kuma's own Docker
+   image (`louislam/uptime-kuma`), give it a subdomain, deploy.
+2. Add an **HTTP(s) monitor** on `https://kadence.haij.dk/api/health`
+   (the readiness check — no `?live=1`), checked every minute. This is
+   what Docker's own healthcheck already asks the container, from
+   outside the server instead of inside it, so a monitor still fires
+   when the whole VPS is unreachable.
+3. Add a **passive/push monitor** for the nightly backup: Uptime Kuma
+   gives you a URL the moment you create one; put it in `BACKUP_PING_URL`
+   on the VPS's crontab line (section 7, above) and set the monitor's
+   expected interval a little over 24 hours, so a backup that silently
+   stopped running is itself an alert, not just a backup that failed
+   loudly.
+4. Point both monitors' notifications at whatever you read daily — email
+   is built in; a phone push needs a service of its own (ntfy, Pushover),
+   which would need a row here first if it is not EU-hosted.
+
+**Docker's own logs** are capped, not silenced: the `logging:` block on
+`db`, `migrate` and `app` in `docker-compose.yml` keeps at most 100 MB
+per service (five files of 20 MB, rotated) instead of growing without a
+limit until the disk under the database is the thing that runs out.
+Read them with `docker logs <container>` on the VPS, or in Coolify's own
+log viewer for the service — both read the same rotated files, so
+restarting a container does not lose the last few hours the way an
+in-memory buffer would. Every line the app writes through
+`src/core/log.ts` is one JSON object with `ts`, `level`, `event` and a
+`requestId` that ties one request's lines together (read off the
+`x-request-id` header Coolify's proxy can set, or one `src/proxy.ts`
+makes up when nothing in front of it did) — `grep` or `jq` reads it the
+same as `docker logs` does.
+
+**What to look at weekly**, by hand, until something above pages you
+instead:
+
+- **Disk.** `df -h` on the VPS. The database, the map tile file, the
+  teams page's snapshot and the rotated container logs all live on the
+  same disk; none of them is monitored for size yet.
+- **The nightly dump's size** (`ls -lh /root/backups`). A sudden jump or
+  a sudden drop both mean something changed that is worth knowing about
+  before the next restore drill, not after.
+- **Slow queries**, when the flags that enable it are set (a separate
+  story adds `pg_stat_statements` and `log_min_duration_statement` to
+  `docker-compose.yml`'s Postgres `command:`): `select query, calls,
+mean_exec_time from pg_stat_statements order by mean_exec_time desc
+limit 10;` in `psql`, as the migration role. Nothing on
+  kadence.haij.dk today turns this on; the paragraph is here so the next
+  deploy that does turn it on has somewhere to say how to read it.
+
+**What this installation does not have yet: error reporting.** A model
+or a database call can fail in a way that answers the person politely
+("noModel", "generic") and tells nobody that it happened, beyond the one
+log line above. A hosted error-reporting service (Sentry and the like)
+would see every stack trace, and with it whatever was in scope when it
+was thrown — which, for a tool that holds health data about minors, is
+not a decision to make by installing the first SDK that offers a free
+tier. Dogma four means the real candidate is a self-hosted, EU-run one
+such as [GlitchTip](https://glitchtip.com) on this same server, which is
+left for a later story rather than decided here. Until then, reading the
+logs above is the error reporting there is.
 
 ## 8. Updating
 
