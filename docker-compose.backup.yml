@@ -1,0 +1,101 @@
+# Backups that restore to the minute (docs/adr/0089, docs/deploy.md §7).
+#
+# Optional, and on top of docker-compose.yml rather than in it, so a plain
+# `docker compose up` is exactly what it was (dogma two): one server, no
+# bucket, no key. With it:
+#
+#   docker compose -f docker-compose.yml -f docker-compose.backup.yml up -d
+#
+# the database is built with pgBackRest beside it and archives every WAL
+# segment to an S3-compatible bucket in the EU at least once a minute,
+# and the `pgbackrest` sidecar takes a full backup every night. Both are
+# encrypted on the server before they leave it. The nightly dump
+# (scripts/backup-kadence.sh) stays as the independent second copy.
+#
+# Every variable below is required and has no default: a backup pointed
+# at a bucket nobody chose, or encrypted with a passphrase from a file in
+# git, is worse than none.
+
+x-pgbackrest-env: &pgbackrest-env
+  # Hetzner Object Storage: S3_BACKUP_ENDPOINT fsn1.your-objectstorage.com
+  # or nbg1.your-objectstorage.com, S3_BACKUP_REGION fsn1 or nbg1.
+  PGBACKREST_REPO1_S3_BUCKET: ${S3_BACKUP_BUCKET:?set S3_BACKUP_BUCKET (the bucket for pgBackRest)}
+  PGBACKREST_REPO1_S3_ENDPOINT: ${S3_BACKUP_ENDPOINT:?set S3_BACKUP_ENDPOINT, e.g. fsn1.your-objectstorage.com}
+  PGBACKREST_REPO1_S3_REGION: ${S3_BACKUP_REGION:?set S3_BACKUP_REGION, e.g. fsn1}
+  PGBACKREST_REPO1_S3_KEY: ${S3_BACKUP_ACCESS_KEY:?set S3_BACKUP_ACCESS_KEY}
+  PGBACKREST_REPO1_S3_KEY_SECRET: ${S3_BACKUP_SECRET_KEY:?set S3_BACKUP_SECRET_KEY}
+  # The passphrase the repository is encrypted with (openssl rand -base64 48).
+  # Keep a copy in the password manager: without it the backups are noise.
+  PGBACKREST_REPO1_CIPHER_PASS: ${PGBACKREST_REPO_CIPHER_PASS:?set PGBACKREST_REPO_CIPHER_PASS (openssl rand -base64 48)}
+
+services:
+  db:
+    image: kadence-postgres-pgbackrest:16-2.59.3
+    build:
+      context: ./docker/pgbackrest
+    # docker-compose.yml's flags, repeated because compose replaces a
+    # command rather than adding to it — keep the two in step
+    # (tests/meta/compose-backup.test.ts checks that they are) — and four
+    # more that send each finished WAL segment to pgBackRest, at least
+    # once a minute while anything is written.
+    command:
+      - postgres
+      - -c
+      - shared_buffers=1GB
+      - -c
+      - effective_cache_size=3GB
+      - -c
+      - work_mem=16MB
+      - -c
+      - maintenance_work_mem=256MB
+      - -c
+      - max_connections=60
+      - -c
+      - shared_preload_libraries=pg_stat_statements
+      - -c
+      - log_min_duration_statement=500
+      - -c
+      - idle_in_transaction_session_timeout=15000
+      - -c
+      - wal_level=replica
+      - -c
+      - archive_mode=on
+      - -c
+      - archive_command=pgbackrest --stanza=kadence archive-push %p
+      - -c
+      - archive_timeout=60
+    environment:
+      <<: *pgbackrest-env
+    volumes:
+      - kadence-pgsocket:/var/run/postgresql
+
+  pgbackrest:
+    image: kadence-postgres-pgbackrest:16-2.59.3
+    build:
+      context: ./docker/pgbackrest
+    restart: unless-stopped
+    user: postgres
+    entrypoint: ["/usr/local/bin/kadence-pgbackrest-sidecar"]
+    environment:
+      <<: *pgbackrest-env
+      TZ: Europe/Copenhagen
+      # When the nightly full backup starts, Copenhagen time.
+      BACKUP_PGBACKREST_AT: ${BACKUP_PGBACKREST_AT:-03:40}
+      # Optional: an Uptime Kuma push monitor for the nightly backup.
+      BACKUP_PGBACKREST_PING_URL: ${BACKUP_PGBACKREST_PING_URL:-}
+    volumes:
+      # The database's files, read to copy them, never written.
+      - kadence-pgdata:/var/lib/postgresql/data:ro
+      # Its socket, so the sidecar can ask it to start and stop a backup.
+      - kadence-pgsocket:/var/run/postgresql
+    depends_on:
+      db:
+        condition: service_healthy
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"
+
+volumes:
+  kadence-pgsocket:

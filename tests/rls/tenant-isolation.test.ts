@@ -292,6 +292,11 @@ describe("rls coverage (guards future tables)", () => {
     // reminders on, changing them and turning them off stay audited, and
     // tests/push/isolation.test.ts proves both.
     "push_runs",
+    // The installation's price list for model calls (drizzle/0049,
+    // docs/adr/0089): nobody owns it, the application role only reads it,
+    // and only a migration writes it, so its history is the migration's
+    // history in git. tests/ai/prices-table.test.ts proves both.
+    "ai_prices",
   ];
 
   it("every domain table has an audit trigger", async () => {
@@ -449,6 +454,13 @@ describe("rls coverage (guards future tables)", () => {
     // reads all of that as the owner, under the ordinary policies, so what
     // crosses the boundary is that a person has said yes to reminders.
     "push_subscriptions_due",
+    // A workspace's monthly AI budget, set by the installation's owner
+    // (drizzle/0049, docs/adr/0089). It refuses everyone whose app.user_id
+    // is not the owner, writes one column of one team_settings row — which
+    // a guard trigger keeps every other writer away from — and answers
+    // nothing; the audit trigger on team_settings records the change.
+    // tests/ai/budget.test.ts proves the refusal and the guard.
+    "set_ai_budget",
     // The addresses the caller may read (drizzle/0034, docs/adr/0070),
     // now that the application role has no SELECT on users.email: the
     // caller's own, the whole team's to a coach of the active team, and

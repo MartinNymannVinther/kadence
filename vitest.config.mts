@@ -41,6 +41,12 @@ export default defineConfig({
       // default is "off" is proven in tests/core/env.
       DEMO: "on",
       LLM_PROVIDER: "none",
+      // The AI's ceilings, pinned so a developer's .env cannot move them:
+      // the installation's daily roof is off by default (docs/adr/0089) and
+      // on here, so tests/ai/limits exercises it; the monthly budget is
+      // the shipped default. Both defaults are proven from EnvSchema.
+      AI_DAILY_CALL_CAP: "2000",
+      AI_MONTHLY_BUDGET_MICRO: "5000000",
       // The parts an installation may park are pinned off here, so every
       // gate is exercised; they are on by default (tests/core/features), and
       // a test that needs one on mocks "@/core/features"

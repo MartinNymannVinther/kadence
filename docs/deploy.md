@@ -61,16 +61,17 @@ backup (section 7). Nothing needs doing about it.
    repository, branch `main`. Coolify picks up `docker-compose.yml`.
 2. Set the environment variables (Coolify → Environment Variables):
 
-   | Variable                | Value                                                                |
-   | ----------------------- | -------------------------------------------------------------------- |
-   | `POSTGRES_PASSWORD`     | `openssl rand -hex 24`                                               |
-   | `KADENCE_APP_PASSWORD`  | `openssl rand -hex 24`                                               |
-   | `KADENCE_AUTH_PASSWORD` | `openssl rand -hex 24`                                               |
-   | `BETTER_AUTH_SECRET`    | `openssl rand -base64 32`                                            |
-   | `BETTER_AUTH_URL`       | `https://kadence.haij.dk` (public URL; passkeys bind to this origin) |
-   | `LLM_PROVIDER`          | `mistral` hosted, `ollama` self-hosted, or leave unset for `none`    |
-   | `MISTRAL_API_KEY`       | only with `LLM_PROVIDER=mistral`                                     |
-   | `AI_DAILY_CALL_CAP`     | model calls per day across the whole installation; `0` for no roof   |
+   | Variable                  | Value                                                                                  |
+   | ------------------------- | -------------------------------------------------------------------------------------- |
+   | `POSTGRES_PASSWORD`       | `openssl rand -hex 24`                                                                 |
+   | `KADENCE_APP_PASSWORD`    | `openssl rand -hex 24`                                                                 |
+   | `KADENCE_AUTH_PASSWORD`   | `openssl rand -hex 24`                                                                 |
+   | `BETTER_AUTH_SECRET`      | `openssl rand -base64 32`                                                              |
+   | `BETTER_AUTH_URL`         | `https://kadence.haij.dk` (public URL; passkeys bind to this origin)                   |
+   | `LLM_PROVIDER`            | `mistral` hosted, `ollama` self-hosted, or leave unset for `none`                      |
+   | `MISTRAL_API_KEY`         | only with `LLM_PROVIDER=mistral`                                                       |
+   | `AI_MONTHLY_BUDGET_MICRO` | each workspace's AI budget per month in micro-euro (default 5 €); `0` for none         |
+   | `AI_DAILY_CALL_CAP`       | optional emergency roof on model calls per day across the installation; off by default |
 
    Hex, not base64, for the three database passwords, and that is not a
    style preference. `docker-compose.yml` builds the connection strings by
@@ -490,11 +491,103 @@ phone says "En rytter har brug for en snak", and tapping it opens the
 points of attention under Kalender. Saving the same check-in again sends
 nothing more that day.
 
-## 7. Nightly encrypted backups (EU object storage)
+## 7. Backups: to the minute, and a second copy
 
-Per the family's dogmas: nightly encrypted dumps to EU-owned object storage
-(e.g. Hetzner Object Storage or a Storage Box). The script lives in this
-repository at `scripts/backup-kadence.sh`. On the VPS:
+Kadence has two backups, and they are independent on purpose
+(docs/adr/0089). Each one alone can bring the installation back.
+
+| Backup                                             | What it is                                                                                         | Loses at most  | Needs                                  |
+| -------------------------------------------------- | -------------------------------------------------------------------------------------------------- | -------------- | -------------------------------------- |
+| **pgBackRest** (`docker-compose.backup.yml`)       | A full backup every night and every WAL segment at least once a minute, encrypted, in an EU bucket | about a minute | the overlay, a bucket and a passphrase |
+| **The nightly dump** (`scripts/backup-kadence.sh`) | `pg_dump` once a night, encrypted with `age` to a public key, on the VPS and in an EU bucket       | up to a day    | cron on the VPS, `age`, `rclone`       |
+
+A self-hoster who runs only `docker compose up` has neither by default
+and loses nothing by it: the dump is one cron line (below) and is
+enough for a club on its own server. The minute-by-minute one is for an
+installation that holds many clubs.
+
+Both keep thirty days, because the terms promise that what is deleted in
+Kadence is gone from the backups within thirty days. Change either and
+you have changed a promise — change the sentence in `terms.leaving.body`
+with it.
+
+### 7.1 Hetzner Object Storage
+
+One bucket per backup, so the two do not share a key or a fate:
+
+1. In Hetzner's Cloud Console: **Object Storage → Create Bucket**, in
+   Falkenstein (`fsn1`) or Nuremberg (`nbg1`), private, named for
+   example `kadence-pgbackrest` (and `kadence-dumps` for the dump).
+2. **Security → S3 credentials → Generate credentials.** Copy the access
+   key and the secret key at once; the secret is shown one time. Put them
+   in the password manager.
+3. The endpoint is `<location>.your-objectstorage.com`, for example
+   `fsn1.your-objectstorage.com`, and the region is the location, `fsn1`.
+
+Hetzner Object Storage is on `docs/subprocessors.md`. Another
+S3-compatible store in the EU works the same way; it gets a row there
+first.
+
+### 7.2 pgBackRest: backups to the minute
+
+The overlay builds the database with pgBackRest beside it (the official
+`postgres:16` image plus pgBackRest from apt.postgresql.org,
+`docker/pgbackrest/Dockerfile`), archives every finished WAL segment to
+the bucket — at least once a minute while anything is written
+(`archive_timeout=60`) — and starts a `pgbackrest` sidecar that takes a
+full backup every night at 03:40 Copenhagen time. Everything is encrypted
+on the server with a passphrase before it is sent; the bucket holds
+ciphertext.
+
+Set these in Coolify, all required, none with a default:
+
+| Variable                      | Value                                                             |
+| ----------------------------- | ----------------------------------------------------------------- |
+| `S3_BACKUP_BUCKET`            | the bucket, e.g. `kadence-pgbackrest`                             |
+| `S3_BACKUP_ENDPOINT`          | `fsn1.your-objectstorage.com` or `nbg1.your-objectstorage.com`    |
+| `S3_BACKUP_REGION`            | `fsn1` or `nbg1`                                                  |
+| `S3_BACKUP_ACCESS_KEY`        | from 7.1                                                          |
+| `S3_BACKUP_SECRET_KEY`        | from 7.1                                                          |
+| `PGBACKREST_REPO_CIPHER_PASS` | `openssl rand -base64 48`; **also in the password manager**       |
+| `BACKUP_PGBACKREST_PING_URL`  | optional: an Uptime Kuma push monitor for the nightly backup (7b) |
+
+Without the passphrase the backups cannot be read by anyone, you
+included. It has to be on the server, because the server encrypts; that
+is the price of a backup that runs by itself (the dump's private key, by
+contrast, never is).
+
+Then deploy with both files. In Coolify, set the compose file locations
+to `docker-compose.yml` and `docker-compose.backup.yml`; by hand:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.backup.yml up -d --build
+```
+
+The first start rebuilds the database's image and restarts the database
+(a minute), then the sidecar creates the repository, checks that WAL
+arrives, and takes the first full backup. Its log says each step:
+
+```bash
+docker logs <kadence pgbackrest container>     # "full backup done", "next full backup at …"
+docker exec <kadence pgbackrest container> pgbackrest --stanza=kadence info
+```
+
+`info` lists the full backups and the WAL range: the newest WAL is the
+newest minute you can restore to. pgBackRest expires what the thirty days
+no longer need after each night's backup (`repo1-retention-full=29`,
+time-based: it keeps the newest full backup older than the window, so
+nothing is older than thirty days).
+
+If archiving stops — the bucket is unreachable, a key was revoked — the
+database keeps its WAL on its own disk until it can send it, and the
+sidecar's ping (if set) goes down at the next backup. Watch the disk
+(7b) on a day the bucket is out.
+
+### 7.3 The nightly dump: the second copy
+
+The dump is independent of pgBackRest: another tool, another key,
+another bucket. If pgBackRest's repository were ever unreadable, the dump
+still is. The script lives at `scripts/backup-kadence.sh`. On the VPS:
 
 ```bash
 # Generate the key pair on your own machine, not on the server.
@@ -518,26 +611,95 @@ picks the first one it finds.
 
 `BACKUP_PING_URL` is optional and the backup runs the same without it,
 but a cron job that silently stops running is the usual way a backup
-dies unnoticed. Point it at an Uptime Kuma push monitor (below) and the
+dies unnoticed. Point it at an Uptime Kuma push monitor (7b) and the
 script hits it plain on success, or with `?status=down&msg=<why>` on
 failure — including the two checks above (no container, no recipient
 key) and anything the dump, the encryption or the upload itself fails
 on.
 
-Thirty days is what the terms page promises a workspace whose data has
-been deleted, so the script keeps thirty at both ends: `KEEP_DAYS`
-prunes the dumps on the VPS and `rclone delete --min-age` prunes the
-bucket. Change one and you have changed a promise — change the sentence
-in `terms.leaving.body` with it.
+The script keeps thirty days at both ends: `KEEP_DAYS` prunes the dumps
+on the VPS and `rclone delete --min-age` prunes the bucket.
 
-Keep the age private key offline, never on the server: a backup an attacker
-on the server can decrypt is not a backup, it is a second copy of the leak.
-Test a restore at least quarterly — an untested backup is a hope, not a
-plan:
+Keep the age private key offline, never on the server: a backup an
+attacker on the server can decrypt is not a backup, it is a second copy
+of the leak. To read a dump:
 
 ```bash
 age -d -i kadence-backup.key kadence-2026-01-01.dump.age | pg_restore -d kadence_restore
 ```
+
+### 7.4 The quarterly drill
+
+An untested backup is a hope, not a plan. Once a quarter, on the VPS:
+
+```bash
+scripts/restore-drill.sh
+```
+
+It starts a throwaway container from the sidecar's image with the
+sidecar's settings, restores the newest point in the repository into
+that container's own scratch space, starts Postgres there with archiving
+off, and prints what it found and where it got to:
+
+```
+restore-drill: users:          41
+restore-drill: workspaces:     3
+restore-drill: riders:         28
+restore-drill: rides:          1904
+restore-drill: migrations:     47
+restore-drill: last change:    2026-10-11 14:04:51+00
+restore-drill: recovery point: 2026-10-11 14:04:51+00
+restore-drill: ok
+```
+
+The recovery point should be within a few minutes of now. Then the
+container is removed. The running database is never touched, nothing is
+written to the bucket, and no secret is written to disk or shown on a
+command line. It needs free disk about the size of the database.
+
+Read one dump the same quarter (7.3), so both copies are known to work.
+Write the date and the two recovery points in the operations log.
+
+### 7.5 Back to a minute: point-in-time recovery
+
+When something was deleted or broken at a known time — "the club's
+season plan was there at 14:05" — the database can be put back to just
+before it. Everything after that point is lost for every workspace on
+the installation, so try the drill first, to the same point, and look:
+
+```bash
+scripts/restore-drill.sh --target "2026-10-11 14:05:00+02"
+```
+
+If that is the state you want, restore the real database to it. In
+Coolify, stop the application (or on the VPS):
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.backup.yml stop app pgbackrest db
+docker compose -f docker-compose.yml -f docker-compose.backup.yml run --rm --no-deps \
+  --user postgres --entrypoint pgbackrest db \
+  --stanza=kadence --delta --type=time --target="2026-10-11 14:05:00+02" \
+  --target-action=promote restore
+docker compose -f docker-compose.yml -f docker-compose.backup.yml up -d
+```
+
+`--delta` rewrites only the files that differ, so it is quick on a
+database that is still there; the database replays WAL to the target on
+start and goes on from there on a new timeline, which pgBackRest keeps
+apart from the old one. Take a full backup at once rather than waiting
+for the night, so the new timeline has one of its own:
+
+```bash
+docker exec <kadence pgbackrest container> pgbackrest --stanza=kadence --type=full backup
+```
+
+To restore the latest point instead (a lost disk), leave out `--type`,
+`--target` and `--target-action`. This procedure was run end to end
+against a local repository when it was written (docs/adr/0089).
+
+To move to another machine, the same `restore` into an empty
+`kadence-pgdata` volume on the new server, with the same environment,
+is the whole move; the dump (7.3, section 9) works too.
 
 Any new storage, mail or model provider goes into `docs/subprocessors.md`
 first.
@@ -561,11 +723,12 @@ runs on, besides the alert it sends you.
    when the whole VPS is unreachable.
 3. Add a **passive/push monitor** for the nightly backup: Uptime Kuma
    gives you a URL the moment you create one; put it in `BACKUP_PING_URL`
-   on the VPS's crontab line (section 7, above) and set the monitor's
+   on the VPS's crontab line (section 7.3, above) and set the monitor's
    expected interval a little over 24 hours, so a backup that silently
    stopped running is itself an alert, not just a backup that failed
-   loudly.
-4. Point both monitors' notifications at whatever you read daily — email
+   loudly. With pgBackRest (7.2), a second push monitor of the same kind
+   goes in `BACKUP_PGBACKREST_PING_URL`.
+4. Point the monitors' notifications at whatever you read daily — email
    is built in; a phone push needs a service of its own (ntfy, Pushover),
    which would need a row here first if it is not EU-hosted.
 

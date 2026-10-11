@@ -11,7 +11,10 @@ import { appDb } from "@/core/db/client";
  * The pilot's three numbers (drizzle/0031, docs/adr/0066) come as counts
  * for the last full week, the same for every club. A personal workspace
  * (drizzle/0041, docs/adr/0080) comes without its name, which is a
- * person's; the page shows persons as one line (`personsSummary`).
+ * person's; the page shows persons as one line (`personsSummary`). This
+ * month's AI cost on the installation's key, the calls whose price is not
+ * known, and the workspace's own budget come too (drizzle/0049,
+ * docs/adr/0089).
  */
 export type PilotCounts = {
   /** The Monday of the last full week, a Copenhagen day. */
@@ -36,6 +39,12 @@ export type ClubOverview = {
   lastSeen: Date | null;
   fileBytes: number;
   aiCallsDay: number;
+  /** Micro-euro the installation's key spent for the workspace this calendar month. */
+  aiCostMonthMicro: number;
+  /** This month's calls that used tokens at a price nobody knows: "pris ukendt". */
+  aiUnpricedMonth: number;
+  /** The workspace's own monthly budget in micro-euro; null is the installation's default. */
+  aiBudgetMicro: number | null;
   pilot: PilotCounts;
 };
 
@@ -59,6 +68,9 @@ type Row = {
   pilot_sessions: Count;
   pilot_receipts: Count;
   pilot_minutes: Count;
+  ai_cost_month_micro: Count;
+  ai_unpriced_month: Count;
+  ai_budget_micro: Count | null;
 };
 
 const date = (v: Date | string) => (v instanceof Date ? v : new Date(v));
@@ -86,6 +98,9 @@ export async function platformOverview(userId: string): Promise<ClubOverview[] |
     lastSeen: r.last_seen ? date(r.last_seen) : null,
     fileBytes: Number(r.file_bytes),
     aiCallsDay: Number(r.ai_calls_day),
+    aiCostMonthMicro: Number(r.ai_cost_month_micro),
+    aiUnpricedMonth: Number(r.ai_unpriced_month),
+    aiBudgetMicro: r.ai_budget_micro === null ? null : Number(r.ai_budget_micro),
     pilot: {
       week: r.pilot_monday,
       riders: Number(r.pilot_riders),
@@ -104,6 +119,8 @@ export type PersonsSummary = {
   seenWeek: number;
   fileBytes: number;
   aiCallsDay: number;
+  aiCostMonthMicro: number;
+  aiUnpricedMonth: number;
 };
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
@@ -117,5 +134,7 @@ export function personsSummary(rows: ClubOverview[], now = new Date()): PersonsS
       .length,
     fileBytes: persons.reduce((n, r) => n + r.fileBytes, 0),
     aiCallsDay: persons.reduce((n, r) => n + r.aiCallsDay, 0),
+    aiCostMonthMicro: persons.reduce((n, r) => n + r.aiCostMonthMicro, 0),
+    aiUnpricedMonth: persons.reduce((n, r) => n + r.aiUnpricedMonth, 0),
   };
 }

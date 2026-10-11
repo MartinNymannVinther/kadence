@@ -4,14 +4,15 @@ import { revalidatePath } from "next/cache";
 import { requireOrgContext } from "@/core/auth/guard";
 import { withOrgContext } from "@/core/db/tenant";
 import { LlmError } from "@/core/llm";
-import { RateLimited, reserveAiCall } from "@/modules/ai/limits";
+import { BudgetReached, RateLimited, reserveAiCall } from "@/modules/ai/limits";
 import {
   getModelSettings,
   saveModelSettings,
   SaveModelSettingsInput,
-  workspaceLlmProvider,
+  workspaceLlm,
   type ModelSettingsView,
 } from "@/modules/ai/model-settings";
+import { recordAiUsage } from "@/modules/ai/usage";
 import { currentRole } from "@/modules/export/workspace";
 
 export type LlmTestResult =
@@ -20,7 +21,7 @@ export type LlmTestResult =
   | { status: "ok"; model: string; sample: string; ms: number }
   | {
       status: "failed";
-      reason: "auth" | "unreachable" | "config" | "rate_limit" | "ceiling" | "generic";
+      reason: "auth" | "unreachable" | "config" | "rate_limit" | "ceiling" | "budget" | "generic";
     };
 
 /**
@@ -47,15 +48,24 @@ export async function testLlmAction(): Promise<LlmTestResult> {
   const role = await currentRole(ctx);
   if (role !== "owner" && role !== "admin") return { status: "unauthorized" };
 
-  const provider = await workspaceLlmProvider(ctx);
-  if (!provider) return { status: "none" };
+  const llm = await workspaceLlm(ctx);
+  if (!llm) return { status: "none" };
+  const { provider, billedTo } = llm;
 
+  let callId: string;
   try {
-    await withOrgContext(ctx, (tx) => reserveAiCall(tx, ctx, "test", "test"));
+    callId = await withOrgContext(ctx, (tx) =>
+      reserveAiCall(tx, ctx, "test", "test", {
+        provider: provider.id,
+        model: provider.model,
+        billedTo,
+      }),
+    );
   } catch (error) {
     // Our own ceiling, not the provider's: the person is told which, or
     // they go looking for a billing page over a limit we set ourselves.
     if (error instanceof RateLimited) return { status: "failed", reason: "ceiling" };
+    if (error instanceof BudgetReached) return { status: "failed", reason: "budget" };
     console.error("llm: could not count the test call", error);
     return { status: "failed", reason: "generic" };
   }
@@ -74,6 +84,7 @@ export async function testLlmAction(): Promise<LlmTestResult> {
       // for a while reads itself off disk first, and that is not a fault.
       { maxTokens: 10, temperature: 0, timeoutMs: 120_000 },
     );
+    await recordAiUsage(ctx, callId, provider, completion);
     return {
       status: "ok",
       model: completion.model,

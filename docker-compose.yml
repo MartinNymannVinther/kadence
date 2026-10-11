@@ -153,10 +153,13 @@ services:
       SMTP_USER: ${SMTP_USER:-}
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
       MAIL_FROM: ${MAIL_FROM:-}
-      # The installation's own roof over model calls (docs/adr/0035). An
-      # unset variable is the empty string here and absent to env.ts, so
-      # it falls back to the default rather than being read as `0` — and
-      # `0`, which means no roof at all, still reaches the app as `0`.
+      # Each workspace's AI budget for the month in micro-euro, 5 € unless
+      # set, and the optional emergency roof over model calls across the
+      # installation, off unless set (docs/adr/0089, 0009). An unset
+      # variable is the empty string here and absent to env.ts, so it
+      # falls back to the default rather than being read as `0`; `0`
+      # (no budget, no roof) still reaches the app as `0`.
+      AI_MONTHLY_BUDGET_MICRO: ${AI_MONTHLY_BUDGET_MICRO:-}
       AI_DAILY_CALL_CAP: ${AI_DAILY_CALL_CAP:-}
       TRUSTED_PROXY_HOPS: ${TRUSTED_PROXY_HOPS:-}
       # Wahoo, Garmin and Polar, for riders who choose to connect

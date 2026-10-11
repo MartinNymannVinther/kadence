@@ -337,6 +337,13 @@
       "when": 1791750100000,
       "tag": "0048_mail_preferences",
       "breakpoints": true
+    },
+    {
+      "idx": 48,
+      "version": "7",
+      "when": 1791750200000,
+      "tag": "0049_ai_cost",
+      "breakpoints": true
     }
   ]
 }

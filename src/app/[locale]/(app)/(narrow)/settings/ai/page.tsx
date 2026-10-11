@@ -12,6 +12,8 @@ import {
   MAX_INPUT_CHARS,
 } from "@/modules/ai/limits";
 import { getModelSettings } from "@/modules/ai/model-settings";
+import { formatEuro } from "@/modules/ai/prices";
+import { aiMonth } from "@/modules/ai/usage";
 import { currentRole } from "@/modules/export/workspace";
 import { ModelForm } from "./model-form";
 import { TestConnection } from "./test-connection";
@@ -44,6 +46,9 @@ export default async function AiSettingsPage() {
   const canEdit = role === "owner" || role === "admin";
   const active = settings.effective.provider !== "none" && settings.effective.model !== "";
   const installationCap = MAX_CALLS_PER_INSTALLATION_PER_DAY;
+  const locale = await getLocale();
+  const month = await aiMonth(context);
+  const euro = (micro: number) => formatEuro(micro, locale);
 
   return (
     <div className="flex max-w-2xl flex-col gap-5">
@@ -155,6 +160,22 @@ export default async function AiSettingsPage() {
             <span className="text-muted-foreground">{t("perWorkspace")}</span>
             <span className="font-medium tabular-nums">{MAX_CALLS_PER_WORKSPACE_PER_DAY}</span>
           </div>
+          {/* The month's budget on the installation's key (docs/adr/0089). A
+              workspace on its own key pays its own bill and is told so. */}
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-muted-foreground">{t("perMonth")}</span>
+            <span className="font-medium tabular-nums">
+              {month.budgetMicro > 0
+                ? t("perMonthValue", {
+                    spent: euro(month.spentMicro),
+                    budget: euro(month.budgetMicro),
+                  })
+                : t("perMonthNone", { spent: euro(month.spentMicro) })}
+            </span>
+          </div>
+          {settings.effective.keyFrom === "workspace" && (
+            <p className="text-meta text-xs">{t("perMonthOwnKey")}</p>
+          )}
           {/* The installation's own roof (docs/adr/0035) can refuse a
               workspace that has spent nothing, so a page that lists the
               other two and not this one is a page that lies by omission.

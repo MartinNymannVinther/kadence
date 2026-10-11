@@ -1,6 +1,6 @@
 # ADR 0009: The installation's own roof over the AI
 
-Status: accepted · Date: 2026-09-18 (inherited from Tavle, ADR 0035 there; the numbers are provisional, see below)
+Status: accepted · Date: 2026-09-18 (inherited from Tavle, ADR 0035 there; the numbers are provisional, see below) · Amended by ADR 0089 (the roof is off by default; a monthly budget per workspace takes its place)
 
 > Inherited with the foundation from Plot, which took it from Makker and Domino (ADR 0001). The reasoning is the family's and holds here; where an example names a flow, a brick, a run, a conversation or an initiative, that is a sibling's example, not a feature of Kadence.
 

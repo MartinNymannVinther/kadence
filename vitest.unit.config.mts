@@ -42,6 +42,10 @@ export default defineConfig({
       "tests/wellbeing/checkin-prefill.test.ts",
       // Søg's matching, its groups and the words its static places need; the index needs the database.
       "tests/search/{match,groups,places}.test.ts",
+      // What a model call costs, and the providers' token counts it is priced from
+      // (docs/adr/0089); recording it and the budget need the database.
+      "tests/ai/prices.test.ts",
+      "tests/llm/usage-fixtures.test.ts",
     ],
   },
 });
