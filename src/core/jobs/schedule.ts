@@ -26,8 +26,12 @@ export const SCHEDULE = {
   teamsPage: 24 * HOUR,
   /** Demos past their 24 hours (ADR 0005, 0084). */
   demoCleanup: HOUR,
+  /** Accounts door 2 made and nobody confirmed in seven days (ADR 0088). */
+  signupSweep: 24 * HOUR,
   /** The counters' expired rows, Better Auth's, and old jobs. */
   sweep: 15 * MINUTE,
+  /** Objects whose row is gone (docs/adr/0087): deleted from the store a little after the row. */
+  fileTombstones: 15 * MINUTE,
 } as const;
 
 export const RECURRING_KEY = "recurring";

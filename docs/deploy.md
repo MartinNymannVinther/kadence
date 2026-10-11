@@ -206,6 +206,22 @@ users came with the data.
 Setting `SIGNUP=open` re-opens registration for anyone who finds the
 address. That is for a demo instance, not for an organisation's own Kadence.
 
+Setting `SIGNUP=individuals` opens one more door (ADR 0088): a person may
+create their own workspace at `/register` without applying — for
+themselves from the age of 15, or as a parent for their child — and a club
+still applies there, one link away, and waits for you. It needs mail
+(6b): the app refuses to start with `SIGNUP=individuals` and no SMTP
+settings, and says why. The person ticks two boxes, the terms and their
+explicit consent to health data, which are stored with the version of
+their words; then they see one page, "Bekræft din e-mail", until they have
+opened the link in the mail, and nothing else of Kadence. An account that
+is not confirmed within seven days is deleted by the `signup.sweep` job
+(6e) with its workspace, leaving one line in the audit trail with the
+account's id and no name or address. Five accounts an hour per network
+address, as for applications. Before you open this door on an installation
+you run for others, have the privacy policy, the DPIA and the consent texts
+read by your adviser (`docs/jura/`).
+
 ### Letting people in one at a time
 
 A closed installation still has a front door. `/register` shows a short
@@ -496,7 +512,8 @@ nothing more that day.
 Some of Kadence's work happens with nobody waiting for it: the reminder
 run every ten minutes, a ride Wahoo, Garmin or Polar says was saved,
 races from Cykling Danmark, the teams page once a day, the demos past
-their 24 hours, and the tidying of the counters. Each is a row in the
+their 24 hours, the accounts made through door 2 and never confirmed
+(section 5, once a day), and the tidying of the counters. Each is a row in the
 `jobs` table (ADR 0085), written before anybody is told it will be done,
 and the **worker** takes them one at a time. A deploy or a crash in the
 middle of a job loses nothing: the job's five-minute lease runs out and
@@ -549,6 +566,75 @@ day and jobs that gave up after thirty, by the sweep.
 **Locally**, `pnpm dev` runs the jobs itself unless `.env` says
 `WORKER=on`; then `pnpm script scripts/worker.ts` in a second terminal is
 the worker.
+
+## 6f. File storage: in the database, or in an EU object store
+
+Every ride's original file is in the database unless you say otherwise
+(ADR 0087), and for a club on its own server that is the right place:
+nothing to run, and a backup of the database is a backup of the files.
+`FILES_STORAGE` is `db` by default; a self-hoster leaves this section
+alone.
+
+**When to switch.** When the files are what makes the database big: the
+plan's own line says trin 1 is due at 10 GB of files (plan §5.5), and
+Installation shows every club's files. On kadence.haij.dk, with many
+clubs, the files go to Hetzner Object Storage.
+
+**How.** A bucket of its own, never the backups' (section 7.1 says how
+to make one): private, in Falkenstein or Nuremberg, with its own S3
+credentials. Then, in Coolify:
+
+```
+FILES_STORAGE=s3
+S3_FILES_ENDPOINT=https://fsn1.your-objectstorage.com
+S3_FILES_REGION=fsn1
+S3_FILES_BUCKET=kadence-files
+S3_FILES_ACCESS_KEY=…
+S3_FILES_SECRET_KEY=…
+```
+
+All five or none; the app refuses to start on half. Deploy. From now on
+every new file is an object under `<workspace>/<rider>/<sha256>.fit`,
+and the files already in the database still read from there. Then move
+them, once, from the worker's terminal:
+
+```bash
+docker compose exec worker node_modules/.bin/tsx scripts/migrate-files.ts            # puts the job in
+docker compose exec worker node_modules/.bin/tsx scripts/migrate-files.ts --status   # how many are left
+```
+
+The worker moves fifty files at a time, checks each object's hash
+against the row before it empties the row, and runs again until none is
+left; a deploy in the middle costs nothing, run it again. Settings →
+Installation says the files are in the store; `--status` says how many
+rows still hold bytes.
+
+**Check the encryption once.** Kadence writes every object with
+`x-amz-server-side-encryption: AES256`. Hetzner Object Storage says it
+encrypts at rest; after the first upload, look at one object's metadata
+in the Cloud Console (or `HEAD` it with any S3 client) and confirm the
+header came back. If the store ignores it, the files are still only
+readable with the installation's keys, as the database is — but
+`docs/subprocessors.md` says "encryption at rest", so know which it is.
+
+**What the self-hoster has.** The same code, `FILES_STORAGE=db`, the
+files in Postgres, and the quotas: 20 GB per club and 2 GB per person
+by default (`FILES_QUOTA_CLUB_BYTES`, `FILES_QUOTA_PERSONAL_BYTES`;
+`0` is no quota), which Installation lets the owner change per club. A
+file past the quota is refused with a plain sentence and everything else
+works.
+
+**Deleting.** The database cannot delete from a store, so a deleted
+ride, rider or workspace leaves its keys in `file_tombstones`, and the
+job `files.tombstones` deletes the objects every fifteen minutes, after
+a five-minute grace. The deletion page says "within the hour"; the
+terms' thirty days for backups are unchanged, since a bucket of objects
+is not backed up by pgBackRest and holds no copy of a deleted object.
+
+**Going back.** Set `FILES_STORAGE=db` again and new files go to the
+database; the objects already written still read, and stay until a job
+moves them back, which does not exist: an installation that goes back
+keeps the bucket. Nothing is lost either way.
 
 ## 7. Backups: to the minute, and a second copy
 

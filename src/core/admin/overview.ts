@@ -14,7 +14,8 @@ import { appDb } from "@/core/db/client";
  * person's; the page shows persons as one line (`personsSummary`). This
  * month's AI cost on the installation's key, the calls whose price is not
  * known, and the workspace's own budget come too (drizzle/0049,
- * docs/adr/0089).
+ * docs/adr/0089), and the workspace's own file quota (drizzle/0051,
+ * docs/adr/0087).
  */
 export type PilotCounts = {
   /** The Monday of the last full week, a Copenhagen day. */
@@ -45,6 +46,8 @@ export type ClubOverview = {
   aiUnpricedMonth: number;
   /** The workspace's own monthly budget in micro-euro; null is the installation's default. */
   aiBudgetMicro: number | null;
+  /** The workspace's own file quota in bytes; null is the installation's default for its kind. */
+  fileQuotaBytes: number | null;
   pilot: PilotCounts;
 };
 
@@ -71,6 +74,7 @@ type Row = {
   ai_cost_month_micro: Count;
   ai_unpriced_month: Count;
   ai_budget_micro: Count | null;
+  file_quota_bytes: Count | null;
 };
 
 const date = (v: Date | string) => (v instanceof Date ? v : new Date(v));
@@ -101,6 +105,7 @@ export async function platformOverview(userId: string): Promise<ClubOverview[] |
     aiCostMonthMicro: Number(r.ai_cost_month_micro),
     aiUnpricedMonth: Number(r.ai_unpriced_month),
     aiBudgetMicro: r.ai_budget_micro === null ? null : Number(r.ai_budget_micro),
+    fileQuotaBytes: r.file_quota_bytes === null ? null : Number(r.file_quota_bytes),
     pilot: {
       week: r.pilot_monday,
       riders: Number(r.pilot_riders),

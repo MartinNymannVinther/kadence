@@ -4,6 +4,10 @@ import { demoCleanupHandler } from "@/modules/demo/job";
 import { deviceFetchHandler } from "@/modules/devices/webhooks";
 import { remindersHandler } from "@/modules/push/jobs";
 import { dcuRacesHandler, dcuReadHandler } from "@/modules/results/jobs";
+import { signupSweepHandler } from "@/modules/signup/job";
+import { filesMigrateHandler } from "@/modules/storage/migrate";
+import { filesMoveHandler } from "@/modules/storage/move";
+import { fileTombstonesHandler } from "@/modules/storage/tombstones";
 import { teamsRefreshHandler } from "@/modules/teams/refresh";
 
 /**
@@ -20,6 +24,10 @@ export const HANDLERS: readonly Handler[] = [
   dcuRacesHandler,
   teamsRefreshHandler,
   demoCleanupHandler,
+  signupSweepHandler,
+  fileTombstonesHandler,
+  filesMoveHandler,
+  filesMigrateHandler,
 ];
 
 export function jobHandlers(): Map<string, Handler> {

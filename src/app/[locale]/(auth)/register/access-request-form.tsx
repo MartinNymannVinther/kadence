@@ -36,7 +36,7 @@ import { Link } from "@/i18n/navigation";
  * after its rider. Someone under 15 is told plainly that a parent creates
  * it, and the form does not send.
  */
-export function AccessRequestForm() {
+export function AccessRequestForm({ clubOnly = false }: { clubOnly?: boolean } = {}) {
   const t = useTranslations("auth.apply");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -99,15 +99,18 @@ export function AccessRequestForm() {
       <CardContent>
         <form method="post" onSubmit={handleSubmit} className="flex flex-col gap-4">
           <FieldGroup>
-            <ChoiceRadios
-              legend={t("kindLegend")}
-              value={kind}
-              onChange={setKind}
-              options={[
-                { value: "club", label: t("kindClub") },
-                { value: "personal", label: t("kindPersonal") },
-              ]}
-            />
+            {/* Under door 2 a person creates their own workspace instead (ADR 0088). */}
+            {!clubOnly && (
+              <ChoiceRadios
+                legend={t("kindLegend")}
+                value={kind}
+                onChange={setKind}
+                options={[
+                  { value: "club", label: t("kindClub") },
+                  { value: "personal", label: t("kindPersonal") },
+                ]}
+              />
+            )}
             <Field>
               <FieldLabel htmlFor="apply-name">{t("name")}</FieldLabel>
               <Input id="apply-name" name="name" autoComplete="name" required maxLength={200} />

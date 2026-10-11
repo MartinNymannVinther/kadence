@@ -7,6 +7,7 @@ import { dayLong } from "@/components/training/day-label";
 import { checkinValues } from "@/components/wellbeing/checkin-values";
 import { addDaysIso } from "@/core/dates";
 import type { OrgContext } from "@/core/db/tenant";
+import { holdsHealthConsent, isHealthConsentWithdrawn } from "@/modules/consent/service";
 import { listDeviceLinks } from "@/modules/devices/links";
 import { hasAnyRide, recentRides } from "@/modules/today/recent-rides";
 import { listGuardians } from "@/modules/team/guardians";
@@ -28,7 +29,7 @@ export async function riderDay(
   words: { today: string; yesterday: string; locale: string },
 ) {
   const tomorrow = addDaysIso(today, 1);
-  const [sessions, checkin, last, rides, rider, guardians, links] = await Promise.all([
+  const [sessions, checkin, last, rides, rider, guardians, links, consentOff] = await Promise.all([
     listSessions(ctx, { from: today, to: tomorrow, riderIds: [riderId] }),
     getCheckin(ctx, riderId, today),
     getLastCheckin(ctx, riderId, today),
@@ -36,6 +37,7 @@ export async function riderDay(
     getRider(ctx, riderId),
     listGuardians(ctx, riderId),
     listDeviceLinks(ctx),
+    isHealthConsentWithdrawn(ctx),
   ]);
   const cards = sessions.map(toTodayCard);
   const ride = rideToRate(rides, today);
@@ -81,6 +83,11 @@ export async function riderDay(
     ),
     toRate,
     checklist,
+    // Check-in is off once the consent to health data is withdrawn (ADR
+    // 0088); the one who holds the consent can give it again from here.
+    consent: consentOff
+      ? { off: true as const, canGive: await holdsHealthConsent(ctx) }
+      : { off: false as const, canGive: false },
   };
 }
 

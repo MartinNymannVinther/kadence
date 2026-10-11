@@ -9,13 +9,16 @@ import {
   type RiderMeasurementRow,
 } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
+import { requireHealthConsent } from "@/modules/consent/service";
 import { requireWriteFor } from "@/modules/team/access";
 
 /**
  * Measurements that change slowly: height through the growth spurt, the
  * thresholds a test gave, resting pulse. Weight is refused for riders
  * under 19 unless the team has turned it on (ADR 0013) — in the service,
- * because it is a team's choice, not a person's permission.
+ * because it is a team's choice, not a person's permission. None is
+ * written in a personal workspace whose consent to health data is
+ * withdrawn (docs/adr/0088); deleting one still works.
  */
 
 export const MEASUREMENT_KINDS = [
@@ -57,6 +60,8 @@ export function isYouth(birthYear: number, onDate: string): boolean {
 export async function addMeasurement(ctx: OrgContext, input: z.infer<typeof MeasurementInput>) {
   return withOrgContext(ctx, async (tx) => {
     await requireWriteFor(tx, ctx, input.riderId);
+    // Off once the person withdrew their consent to health data (ADR 0088).
+    await requireHealthConsent(tx);
     if (input.kind === "weight_kg") {
       const [rider] = await tx
         .select({ birthYear: riders.birthYear })

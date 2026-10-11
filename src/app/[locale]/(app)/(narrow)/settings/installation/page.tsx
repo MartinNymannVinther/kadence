@@ -2,16 +2,19 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { AiMonth } from "@/components/insight/ai-month";
+import { FilesQuota } from "@/components/insight/files-quota";
 import { InstallationJobs } from "@/components/insight/installation-jobs";
 import { PilotClubs } from "@/components/insight/pilot-clubs";
 import { personsSummary, platformOverview } from "@/core/admin/overview";
 import { getSession } from "@/core/auth/session";
 import { formatDay } from "@/core/dates";
 import { env } from "@/core/env";
+import { fileStorage } from "@/core/files/storage";
 import { jobsOverview } from "@/core/jobs/status";
 import { Link } from "@/i18n/navigation";
 import { DEFAULT_MONTHLY_BUDGET_MICRO } from "@/modules/ai/limits";
 import { formatEuro } from "@/modules/ai/prices";
+import { defaultQuotaBytes } from "@/modules/storage/quota";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("settings.installation");
@@ -27,7 +30,8 @@ export async function generateMetadata(): Promise<Metadata> {
  * line, "Enkeltpersoner", with how many, how many were in this week,
  * their files and AI calls (ADR 0080). This month's AI cost per club
  * against its budget, which the owner can change here, and one total
- * line (ADR 0089). Below them, the background work (ADR 0085): jobs
+ * line (ADR 0089); each club's files against its quota, which the owner
+ * can change here too (ADR 0087). Below them, the background work (ADR 0085): jobs
  * waiting and given up, and when a worker last took one. Anyone else
  * gets a 404, as for admission.
  */
@@ -124,6 +128,14 @@ export default async function InstallationPage() {
         clubs={clubs}
         persons={persons}
         defaultBudgetMicro={DEFAULT_MONTHLY_BUDGET_MICRO}
+        locale={locale}
+      />
+
+      <FilesQuota
+        clubs={clubs}
+        persons={persons}
+        defaults={{ club: defaultQuotaBytes("club"), personal: defaultQuotaBytes("personal") }}
+        storage={fileStorage().mode}
         locale={locale}
       />
 

@@ -169,6 +169,30 @@ describe("the device providers", () => {
     );
   });
 
+  it("refuse half an object store, and s3 without one (docs/adr/0087)", () => {
+    const half = failure({ ...REQUIRED, S3_FILES_ENDPOINT: "https://fsn1.your-objectstorage.com" });
+    expect(half).toContain("go together");
+    expect(half).toContain("S3_FILES_SECRET_KEY");
+    expect(failure({ ...REQUIRED, FILES_STORAGE: "s3" })).toContain("FILES_STORAGE=s3 needs");
+    const whole = EnvSchema.safeParse({
+      ...REQUIRED,
+      FILES_STORAGE: "s3",
+      S3_FILES_ENDPOINT: "https://fsn1.your-objectstorage.com",
+      S3_FILES_REGION: "fsn1",
+      S3_FILES_BUCKET: "kadence-files",
+      S3_FILES_ACCESS_KEY: "ak",
+      S3_FILES_SECRET_KEY: "sk",
+    });
+    expect(whole.success).toBe(true);
+  });
+
+  it("keep files in the database with 20 GB a club and 2 GB a person unless told otherwise", () => {
+    const parsed = EnvSchema.parse(REQUIRED);
+    expect(parsed.FILES_STORAGE).toBe("db");
+    expect(parsed.FILES_QUOTA_CLUB_BYTES).toBe(20_000_000_000);
+    expect(parsed.FILES_QUOTA_PERSONAL_BYTES).toBe(2_000_000_000);
+  });
+
   it("refuse a Wahoo webhook token with no Wahoo keys to go with it", () => {
     expect(failure({ ...REQUIRED, WAHOO_WEBHOOK_TOKEN: "a-long-enough-webhook-token" })).toContain(
       "WAHOO_WEBHOOK_TOKEN",

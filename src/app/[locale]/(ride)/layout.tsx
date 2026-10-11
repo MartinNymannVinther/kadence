@@ -1,5 +1,6 @@
 import { getLocale } from "next-intl/server";
 import { getSession } from "@/core/auth/session";
+import { mustVerifyFirst, VERIFY_PATH } from "@/core/auth/verify-first";
 import { redirect } from "@/i18n/navigation";
 
 /**
@@ -13,6 +14,11 @@ export default async function RideLayout({ children }: { children: React.ReactNo
   const locale = await getLocale();
   if (!session) {
     redirect({ href: "/login", locale });
+    return null;
+  }
+  // Door 2: the address first, and nothing else until it is (ADR 0088).
+  if (await mustVerifyFirst(session.user)) {
+    redirect({ href: VERIFY_PATH, locale });
     return null;
   }
   if (!session.session.activeOrganizationId) {

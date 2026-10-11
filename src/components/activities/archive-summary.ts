@@ -14,7 +14,7 @@ export type SummaryLine =
 
 export type SummaryOutcome =
   | { key: "limit"; values: { count: number; hours: number } }
-  | { key: "failed" | "cancelled"; values: { count: number } }
+  | { key: "quota" | "failed" | "cancelled"; values: { count: number } }
   | { key: "signedOut"; values?: undefined };
 
 export type Summary = { lines: SummaryLine[]; outcome: SummaryOutcome | null };
@@ -36,6 +36,7 @@ export function summarise(progress: ArchiveProgress): Summary {
       key: "limit",
       values: { count, hours: Math.max(1, Math.ceil(progress.retryAfterSeconds / 3600)) },
     };
+  else if (progress.outcome === "quota") outcome = { key: "quota", values: { count } };
   else if (progress.outcome === "signedOut") outcome = { key: "signedOut" };
   else if (progress.outcome === "failed" || progress.outcome === "cancelled")
     outcome = { key: progress.outcome, values: { count } };

@@ -1,6 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { Pool } from "pg";
 import { navRole } from "@/app/[locale]/(app)/nav-items";
+import { myHealthConsent } from "@/modules/consent/service";
 import { currentDemoRole } from "@/modules/demo/roles";
 import { cleanupExpiredDemos, createDemoWorkspace, isDemoWorkspace } from "@/modules/demo/service";
 import { whoAmI } from "@/modules/team/access";
@@ -88,6 +89,15 @@ describe("a demo of one rider alone", () => {
       [orgId],
     );
     expect(members.rows[0].n).toBe(1);
+  });
+
+  it("holds the consents a person gives at sign-up, so Data shows them (ADR 0088)", async () => {
+    expect(await myHealthConsent({ orgId, userId })).toMatchObject({ state: "given" });
+    const kinds = await admin.query(
+      `select kind from consents where org_id = $1 and user_id = $2 order by kind`,
+      [orgId, userId],
+    );
+    expect(kinds.rows.map((r) => r.kind)).toEqual(["health", "terms"]);
   });
 
   it("goes whole when its time is up, the visitor's account included", async () => {

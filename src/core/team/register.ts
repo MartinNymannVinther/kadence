@@ -1,7 +1,7 @@
 import { APIError } from "better-auth";
 import { z } from "zod";
 import { auth } from "@/core/auth/auth";
-import { DEMO_HEADER, INVITATION_HEADER, TEAM_INVITATION_HEADER } from "@/core/auth/signup";
+import { TEAM_INVITATION_HEADER, withoutOurHeaders } from "@/core/auth/signup";
 import { errorName, log, requestIdFrom } from "@/core/log";
 import { acceptTeamInvitation, findTeamInvitation } from "./service";
 
@@ -47,10 +47,7 @@ export async function registerInvited(
   if (!invitation || invitation.state !== "pending")
     return { ok: false, error: "invitationInvalid" };
 
-  const signUpHeaders = new Headers(requestHeaders);
-  signUpHeaders.delete(INVITATION_HEADER);
-  signUpHeaders.delete(TEAM_INVITATION_HEADER);
-  signUpHeaders.delete(DEMO_HEADER);
+  const signUpHeaders = withoutOurHeaders(requestHeaders);
   signUpHeaders.set(TEAM_INVITATION_HEADER, invitationId);
 
   let sessionHeaders: Headers;

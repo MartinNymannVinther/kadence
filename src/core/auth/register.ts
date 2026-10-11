@@ -6,8 +6,9 @@ import { todayInCopenhagen } from "@/core/dates";
 import { errorName, log, requestIdFrom } from "@/core/log";
 import { organizationSlug } from "@/lib/slug";
 import { auth } from "./auth";
+import { cookieHeaderFrom } from "./cookies";
 import { setUpPersonalWorkspace } from "./register-personal";
-import { DEMO_HEADER, INVITATION_HEADER, signupAllowed, TEAM_INVITATION_HEADER } from "./signup";
+import { INVITATION_HEADER, signupAllowed, withoutOurHeaders } from "./signup";
 
 export const RegisterSchema = z.object({
   name: z.string().trim().min(1).max(200),
@@ -26,16 +27,6 @@ export type RegisterResult =
       ok: false;
       error: "invalid" | "emailExists" | "closed" | "invitationInvalid" | "tooYoung" | "generic";
     };
-
-/** Turns the set-cookie headers of an API response into a cookie header. */
-function cookieHeaderFrom(responseHeaders: Headers): Headers {
-  const cookie = responseHeaders
-    .getSetCookie()
-    .map((c) => c.split(";")[0])
-    .filter(Boolean)
-    .join("; ");
-  return new Headers({ cookie });
-}
 
 /**
  * Registration: creates the user, signs them in, creates their organization
@@ -85,12 +76,9 @@ export async function registerUserWithOrganization(
 
   // The key reaches the gate inside Better Auth as a request header: the
   // sign-up body is Better Auth's, and a header is what its hook can read.
-  const signUpHeaders = new Headers(requestHeaders);
   // Whatever the caller sent under the names this flow gives meaning to is
   // dropped first: only what this function decides may reach the gate.
-  signUpHeaders.delete(INVITATION_HEADER);
-  signUpHeaders.delete(TEAM_INVITATION_HEADER);
-  signUpHeaders.delete(DEMO_HEADER);
+  const signUpHeaders = withoutOurHeaders(requestHeaders);
   if (invitationToken) signUpHeaders.set(INVITATION_HEADER, invitationToken);
 
   let sessionHeaders: Headers;

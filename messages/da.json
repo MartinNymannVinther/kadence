@@ -192,6 +192,33 @@
       "tooYoung": "Er du under 15 år, kan du ikke oprette en konto selv. Bed en forælder om at ansøge og vælge \"Det er til mit barn\". Så kan de invitere dig bagefter.",
       "workspaceName": "{name}s træning",
       "workspaceNameSibilant": "{name}' træning"
+    },
+    "self": {
+      "title": "Opret dit eget arbejdsrum",
+      "subtitle": "Til din egen træning eller til dit barns. Du bekræfter din e-mail, før du går i gang.",
+      "name": "Dit navn",
+      "email": "Din e-mail",
+      "consentLegend": "Det skal du sige ja til",
+      "terms": "Jeg har læst <link>vilkårene og privatlivspolitikken</link>",
+      "healthMe": "Jeg giver mit udtrykkelige samtykke til, at Kadence gemmer helbredsoplysninger om mig: mine check-ins med søvn, smerte og sygdom, mine målinger og pulsen fra mine ture. Jeg kan trække samtykket tilbage under Indstillinger → Data. Så slår Kadence check-in og målinger fra, og resten virker som før: kalenderen, turene, sæsonplanen og Rulle.",
+      "healthChild": "Jeg er forælder og giver udtrykkeligt samtykke på mit barns vegne til, at Kadence gemmer helbredsoplysninger om barnet: check-ins med søvn, smerte og sygdom, målinger og pulsen fra turene. Jeg kan trække samtykket tilbage under Indstillinger → Data. Så slår Kadence check-in og målinger fra, og resten virker som før: kalenderen, turene, sæsonplanen og Rulle.",
+      "verifyNote": "Vi sender et link til din e-mail. Du åbner det, før du kan bruge Kadence. Bekræfter du ikke adressen inden for 7 dage, sletter vi kontoen igen.",
+      "submit": "Opret arbejdsrum",
+      "clubLink": "En klub eller et hold? Ansøg her",
+      "errorConsent": "Sæt kryds i begge felter for at oprette arbejdsrummet.",
+      "errorTooMany": "Der er oprettet mange konti herfra på kort tid. Prøv igen om en time.",
+      "errorClosed": "Du kan ikke oprette en konto selv her lige nu. Du kan stadig ansøge om adgang."
+    },
+    "verify": {
+      "title": "Bekræft din e-mail",
+      "body": "Vi har sendt en mail til {email} med et link. Åbn linket for at gå i gang. Indtil da kan du ikke bruge resten af Kadence.",
+      "spam": "Kan du ikke finde mailen, så kig i spam. Linket virker i en time. Du kan få en ny mail tre gange i timen.",
+      "resend": "Send mailen igen",
+      "sent": "Vi har sendt en ny mail.",
+      "rateLimited": "Du har fået tre mails den sidste time. Prøv igen lidt senere.",
+      "failed": "Mailen kunne ikke sendes lige nu. Prøv igen om lidt.",
+      "signOut": "Log ud",
+      "expiry": "Bekræfter du ikke adressen inden for {days, plural, one {# dag} other {# dage}}, sletter vi kontoen og alt i den."
     }
   },
   "app": {
@@ -342,7 +369,16 @@
       "membersSheet": "Brugere",
       "notBackupTitle": "Det her er ikke en backup.",
       "notBackupBody": "En eksport kan læses, men den kan ikke lægges tilbage, og den er kun så ny som den dag du hentede den. Den dag databasen er væk, er det det natlige krypterede dump der redder dig.",
-      "privacy": "Eksporten indeholder det du må se i arbejdsrummet og dets historik: en træner får hele holdet, en rytter sine egne data. Adgangskoder, passkeys, enhedsnøgler og nøglen til arbejdsrummets sprogmodel kommer aldrig med. At du henter filen bliver skrevet i revisionssporet."
+      "privacy": "Eksporten indeholder det du må se i arbejdsrummet og dets historik: en træner får hele holdet, en rytter sine egne data. Adgangskoder, passkeys, enhedsnøgler og nøglen til arbejdsrummets sprogmodel kommer aldrig med. At du henter filen bliver skrevet i revisionssporet.",
+      "storage": {
+        "title": "Plads til filer",
+        "body": "Turenes originale filer fylder det her. Når pladsen er brugt, afvises nye filer, og alt andet virker. Slet gamle ture eller hent dem ud først, hvis I nærmer jer loftet.",
+        "usedOf": "{used} af {quota} brugt.",
+        "usedNoQuota": "{used} brugt. Der er ikke sat et loft.",
+        "full": "Pladsen til filer er brugt. Slet gamle ture eller hent dem ud først.",
+        "inDatabase": "Filerne ligger i Kadences egen database på serveren.",
+        "inStore": "Filerne ligger i et objektlager i EU, krypteret, og kun Kadence kan læse dem. Slettede filer er væk fra lageret inden for en time."
+      }
     }
   },
   "settings": {
@@ -446,7 +482,7 @@
       },
       "delete": {
         "title": "Slet arbejdsrummet",
-        "body": "Alt i arbejdsrummet forsvinder: alle medlemmers samtaler og filer, roller, opgaver og hele revisionssporet om dem. Det kan ikke fortrydes.",
+        "body": "Alt i arbejdsrummet forsvinder: alle medlemmers samtaler og filer, roller, opgaver og hele revisionssporet om dem. Det kan ikke fortrydes. Turenes filer er væk fra lageret inden for en time.",
         "exportFirst": "Hent en eksport først, hvis du vil beholde noget. Den findes under Data.",
         "typeName": "Skriv {name} for at bekræfte",
         "action": "Slet arbejdsrummet permanent",
@@ -456,7 +492,7 @@
         "nameMismatch": "Navnet passer ikke. Skriv arbejdsrummets navn præcis som det står.",
         "personal": {
           "title": "Slet min konto og alt om mig",
-          "body": "Alt om din træning forsvinder: pas, ture, check-ins, sæsonplanen, filerne og revisionssporet om dem. Er du ikke på et hold i Kadence, slettes din konto også. Det kan ikke fortrydes.",
+          "body": "Alt om din træning forsvinder: pas, ture, check-ins, sæsonplanen, filerne og revisionssporet om dem. Er du ikke på et hold i Kadence, slettes din konto også. Det kan ikke fortrydes. Filerne er væk fra lageret inden for en time.",
           "exportFirst": "Hent en eksport først, hvis du vil beholde noget. Den findes lige ovenfor.",
           "action": "Slet min konto og alt om mig"
         }
@@ -519,6 +555,23 @@
         "saved": "Gemt.",
         "invalid": "Skriv et beløb i euro, fx 7,50, eller lad feltet stå tomt.",
         "failed": "Budgettet blev ikke gemt. Prøv igen."
+      },
+      "fileQuota": {
+        "title": "Plads til filer",
+        "body": "Hvor meget hver klubs filer fylder, og klubbens loft. Over loftet afvises nye filer, og alt andet virker. Et tomt felt er standarden: {club} for en klub og {personal} for en person.",
+        "inDatabase": "Filerne ligger i databasen (FILES_STORAGE=db).",
+        "inStore": "Filerne ligger i et objektlager i EU (FILES_STORAGE=s3).",
+        "persons": "Enkeltpersonerne fylder {used} i alt.",
+        "club": "Klub",
+        "used": "Brugt",
+        "quota": "Loft",
+        "usedOf": "{used} af {quota}",
+        "noQuota": "intet loft",
+        "quotaLabel": "Loft for filer i GB for {club}",
+        "save": "Gem",
+        "saved": "Gemt.",
+        "invalid": "Skriv et tal i GB, fx 20, eller lad feltet stå tomt.",
+        "failed": "Loftet blev ikke gemt. Prøv igen."
       },
       "persons": {
         "title": "Enkeltpersoner",
@@ -772,6 +825,26 @@
       "coach": "Træner",
       "rider": "Rytter",
       "parent": "Forælder"
+    }
+  },
+  "consent": {
+    "offTitle": "Check-in er slået fra",
+    "offBody": "Samtykket til helbredsoplysninger er trukket tilbage, så Kadence gemmer ingen nye check-ins og målinger. Resten virker som før.",
+    "giveAgain": "Giv samtykke igen",
+    "given": "Samtykket er givet igen. Check-in og målinger er slået til.",
+    "failed": "Det lykkedes ikke. Prøv igen.",
+    "card": {
+      "title": "Samtykke til helbredsoplysninger",
+      "givenBody": "Du gav samtykke den {date} til, at Kadence gemmer check-ins og målinger.",
+      "withdrawnBody": "Du trak samtykket tilbage den {date}. Check-in og målinger er slået fra.",
+      "withdrawAction": "Træk samtykket til helbredsoplysninger tilbage",
+      "withdrawEffect": "Trækker du det tilbage, slår Kadence check-in og målinger fra. Resten virker som før: kalenderen, turene, sæsonplanen og Rulle.",
+      "keepNote": "De check-ins og målinger, der allerede er gemt, bliver liggende. Du kan hente dem med eksporten ovenfor og slette dem med \"Slet min konto og alt om mig\" nedenfor.",
+      "confirmTitle": "Træk samtykket tilbage?",
+      "confirmBody": "Check-in og målinger slås fra med det samme. Du kan give samtykket igen her eller på I dag.",
+      "confirmAction": "Træk tilbage",
+      "withdrawn": "Samtykket er trukket tilbage. Check-in og målinger er slået fra.",
+      "failed": "Det lykkedes ikke. Prøv igen."
     }
   },
   "terms": {
@@ -2702,6 +2775,7 @@
         "unreadableFiles": "{count, plural, one {# fil kunne ikke læses.} other {# filer kunne ikke læses.}}",
         "nothing": "Der var ingen nye ture i arkivet.",
         "limit": "Dagens grænse er nået. {count, plural, one {Den sidste tur} other {De sidste # ture}} kan hentes om {hours, plural, one {# time} other {# timer}}: læg arkivet ind igen, så fortsætter det, hvor det slap.",
+        "quota": "Pladsen til filer er brugt, så {count, plural, one {den sidste tur} other {de sidste # ture}} blev ikke hentet. Slet gamle ture eller hent dem ud først, og læg arkivet ind igen.",
         "signedOut": "Du er ikke logget ind længere. Log ind, og læg arkivet ind igen; det fortsætter, hvor det slap.",
         "failed": "Noget gik galt undervejs, og {count, plural, one {# tur} other {# ture}} mangler. Læg arkivet ind igen; det fortsætter, hvor det slap.",
         "cancelled": "Stoppet. {count, plural, one {# tur} other {# ture}} mangler; læg arkivet ind igen, når du vil fortsætte.",
@@ -2742,7 +2816,8 @@
         "generic": "Noget gik galt med filen. Prøv igen.",
         "unknown_format": "Kadence kender ikke det filformat. Brug FIT, TCX eller GPX, gerne pakket som .gz eller .zip.",
         "no_activity": "Zip-filen har ingen .fit-, .tcx- eller .gpx-fil i sig.",
-        "not_bike": "Ikke en cykeltur, så den blev sprunget over."
+        "not_bike": "Ikke en cykeltur, så den blev sprunget over.",
+        "quota": "Pladsen til filer er brugt. Slet gamle ture eller hent dem ud først."
       }
     },
     "routeTitle": "Ruten",
@@ -3168,6 +3243,7 @@
       "provider_unavailable": "{name} svarede ikke sidst, Kadence prøvede. Det ordner sig som regel selv.",
       "invalid_file": "En tur fra {name} kunne ikke læses. Upload filen selv, hvis den mangler.",
       "download": "En tur kunne ikke hentes fra {name}. Upload filen selv, hvis den mangler.",
+      "quota": "En tur fra {name} fik ikke plads: pladsen til filer er brugt. Slet gamle ture eller hent dem ud først, og upload filen selv.",
       "unknown": "Noget gik galt med {name} sidst. Forbind igen, hvis dine ture ikke kommer ind."
     },
     "connected": "{name} er forbundet. Dine næste ture kommer ind af sig selv.",
@@ -3199,6 +3275,7 @@
       "address": "Et program sender filerne til",
       "lastError": {
         "invalid_file": "Den seneste fil kunne ikke læses. Upload den selv, hvis turen mangler.",
+        "quota": "Den seneste fil fik ikke plads: pladsen til filer er brugt. Slet gamle ture eller hent dem ud først.",
         "unknown": "Noget gik galt med den seneste fil. Upload den selv, hvis turen mangler."
       },
       "remove": "Fjern",
@@ -3911,7 +3988,8 @@
         "rateLimited": "Du har gemt mange ture den sidste time. Prøv igen om lidt.",
         "not_rider": "Kun en rytter kan gemme en tur.",
         "notFound": "Passet findes ikke længere. Hent FIT-filen, og upload den på “Mig”.",
-        "too_large": "Turen er for stor til at gemme herfra. Hent FIT-filen, og upload den på “Mig”."
+        "too_large": "Turen er for stor til at gemme herfra. Hent FIT-filen, og upload den på “Mig”.",
+        "quota": "Pladsen til filer er brugt, så turen blev ikke gemt. Hent FIT-filen, og slet gamle ture eller hent dem ud først."
       }
     },
     "little": {

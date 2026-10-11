@@ -9,6 +9,7 @@ import { loggable } from "./http";
 import { inFlight } from "./in-flight";
 import { importFitIn, knownFileHashes } from "./import";
 import { receive, storedName, type Received } from "./ingest-request";
+import { isQuotaRefusal } from "@/modules/storage/quota";
 import { noteKeyUse, uploadKeyOwner, type KeyOwner } from "./upload-keys";
 
 /**
@@ -22,6 +23,7 @@ import { noteKeyUse, uploadKeyOwner, type KeyOwner } from "./upload-keys";
  *   401 no key Kadence knows · 408 the file did not arrive in time
  *   413 too large · 422 not a ride Kadence can read
  *   429 wait (Retry-After) · 500 try again later
+ *   507 the workspace's room for files is used up (docs/adr/0087)
  *
  * The key is looked at before the body is read, so a stranger cannot make
  * Kadence hold a file in memory. `upload_key_owner` finds whose key it
@@ -204,6 +206,10 @@ async function keep(owner: KeyOwner, received: Received): Promise<Response> {
     if (error.detail === "duplicate") {
       await noteKeyUse(owner, "");
       return answer(200, { status: "duplicate" });
+    }
+    if (isQuotaRefusal(error)) {
+      await noteKeyUse(owner, "quota");
+      return refuse(507, "quota");
     }
     if (error.code === "invalid") {
       await noteKeyUse(owner, "invalid_file");

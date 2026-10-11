@@ -66,8 +66,10 @@ describe("the schedule", () => {
     expect(added.sort()).toEqual([
       "dcu.races",
       "demo.cleanup",
+      "files.tombstones",
       "installation.sweep",
       "push.reminders",
+      "signup.sweep",
       "teams.refresh",
     ]);
     const { rows } = await admin.query(

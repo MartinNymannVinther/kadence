@@ -86,7 +86,7 @@ COPY --from=prod-deps /app/node_modules ./node_modules
 COPY package.json tsconfig.json ./
 COPY src ./src
 COPY messages ./messages
-COPY scripts/worker.ts scripts/retry-jobs.ts ./scripts/
+COPY scripts/worker.ts scripts/retry-jobs.ts scripts/migrate-files.ts ./scripts/
 ARG KADENCE_COMMIT=""
 ARG KADENCE_BUILT_AT=""
 ENV KADENCE_COMMIT=$KADENCE_COMMIT KADENCE_BUILT_AT=$KADENCE_BUILT_AT

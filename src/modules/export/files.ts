@@ -2,6 +2,7 @@ import { inArray, sql } from "drizzle-orm";
 import { activityFiles, auditLog } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { ZipWriter } from "@/core/zip";
+import { loadFile } from "@/modules/storage/keep";
 
 /**
  * "Hent dine filer": every ride's original file, as one ZIP with a folder
@@ -13,7 +14,9 @@ import { ZipWriter } from "@/core/zip";
  * rider their own, a parent their child's when the child shares training.
  * The list is read first, small; the files follow a few at a time, each
  * batch in its own short transaction, and go out as soon as they are
- * read. The archive is store-only: a FIT file is already dense.
+ * read. The archive is store-only: a FIT file is already dense. Where the
+ * installation keeps files as objects (docs/adr/0087), each is fetched
+ * after its row was read, so both back ends come out the same.
  */
 
 export type ExportFile = {
@@ -76,7 +79,7 @@ export async function listExportFiles(
     const organizationName = (org.rows[0] as { name?: string } | undefined)?.name ?? "kadence";
     const result = await tx.execute(sql`
       select f.id, f.activity_id, f.rider_id, coalesce(r.name, '') as rider_name,
-             to_char(a.on_date, 'YYYY-MM-DD') as on_date, octet_length(f.bytes) as size
+             to_char(a.on_date, 'YYYY-MM-DD') as on_date, f.size_bytes as size
       from activity_files f
       join activities a on a.id = f.activity_id
       left join riders r on r.id = f.rider_id
@@ -122,14 +125,23 @@ export function batches(files: ExportFile[]): ExportFile[][] {
   return out;
 }
 
-async function readBytes(ctx: OrgContext, ids: string[]): Promise<Map<string, Buffer>> {
+async function readBytes(ctx: OrgContext, ids: string[]): Promise<Map<string, Uint8Array>> {
   const rows = await withOrgContext(ctx, (tx) =>
     tx
-      .select({ id: activityFiles.id, bytes: activityFiles.bytes })
+      .select({
+        id: activityFiles.id,
+        bytes: activityFiles.bytes,
+        storageKey: activityFiles.storageKey,
+      })
       .from(activityFiles)
       .where(inArray(activityFiles.id, ids)),
   );
-  return new Map(rows.map((row) => [row.id, row.bytes]));
+  const out = new Map<string, Uint8Array>();
+  for (const row of rows) {
+    const bytes = await loadFile(row);
+    if (bytes) out.set(row.id, bytes);
+  }
+  return out;
 }
 
 /**

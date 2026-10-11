@@ -50,6 +50,13 @@ export const users = pgTable("users", {
    * writable from a request (Better Auth field is `input: false`).
    */
   platformRole: text("platform_role"),
+  /**
+   * Created through door 2 (docs/adr/0088): a person's own workspace
+   * without an application. Such an account confirms its address before
+   * anything else and is deleted after seven days unconfirmed. Set by the
+   * sign-up hook from door 2's key; never writable from a request.
+   */
+  selfSignup: boolean("self_signup").notNull().default(false),
   ...timestamps,
 });
 
