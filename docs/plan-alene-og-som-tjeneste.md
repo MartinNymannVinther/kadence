@@ -530,16 +530,17 @@ Claude forbereder udkast.
 
 Næste ledige nummer er 0080 (tjekkes igen før hver PR).
 
-| ADR  | Titel                                                                              | Trin |
-| ---- | ---------------------------------------------------------------------------------- | ---- |
-| 0080 | A person alone: a personal workspace, the owner who is also the rider              | A    |
-| 0081 | The history follows the rider: one definer function moves it between workspaces    | A    |
-| 0082 | Kadence as a service: what stays one server, what becomes optional, and when       | 5    |
-| 0083 | Counters in the database: rate limits, in-flight work and nonces without a process | 5.0  |
-| 0084 | A jobs table and a worker of the same image                                        | 5.1  |
-| 0085 | Mail through an EU provider, never about training or health                        | 5.1  |
-| 0086 | Files in the database or in an EU object store, behind one adapter, with quotas    | 5.1  |
-| 0087 | Who is the controller: clubs, persons, consent and age                             | 6    |
+| ADR  | Titel                                                                               | Trin |
+| ---- | ----------------------------------------------------------------------------------- | ---- |
+| 0080 | A person alone: a personal workspace, the owner who is also the rider               | A    |
+| 0081 | The history follows the rider: one definer function moves it between workspaces     | A    |
+| 0082 | Kadence as a service: what stays one server, what becomes optional, and when        | 5    |
+| 0083 | Counters in the database: rate limits, in-flight work and nonces without a process  | 5.0  |
+| 0084 | The trail without files, a deleted workspace as one event, the export has the files | 5.0  |
+| 0085 | A jobs table and a worker of the same image                                         | 5.1  |
+| 0086 | Mail through an EU provider, never about training or health                         | 5.1  |
+| 0087 | Files in the database or in an EU object store, behind one adapter, with quotas     | 5.1  |
+| 0088 | Who is the controller: clubs, persons, consent and age                              | 6    |
 
 ---
 
@@ -592,7 +593,7 @@ database, som rammen i `docs/backlog.md` §0 siger.
 
 ---
 
-## 10. Martins svar, 11. oktober 2026
+## 10. Martins svar, 11. oktober 2026, og hvad der er bygget samme dag
 
 1. **Ja** til afsnit 2: personligt arbejdsrum, rytterens menu med
    planlægning, under 13 via forælderen, historikken flyttes.
@@ -618,3 +619,16 @@ database, som rammen i `docs/backlog.md` §0 siger.
 Byggeriet starter samme dag: S-01 på `feat/alene`, og S-03, S-04 og S-05
 hver på sin gren, hver i eget worktree med egen database. S-02 følger
 efter S-01.
+
+### Bygget samme aften
+
+- **S-01** på `feat/alene`, PR #44 (ADR 0080, migrering 0041).
+- **S-03, S-04 og S-05** samlet på `feat/trin-0`, PR #45, med S-01 som
+  base (ADR 0083 og 0084, migreringer 0042–0045). Målinger og afvigelser
+  fra planen står i PR'en: `app_shell()` blev vejet og ikke lavet,
+  `session_replication_role = replica` slog kaskaderne fra og blev
+  erstattet af en trigger, der springer sletninger i et forsvundet
+  arbejdsrum over, og regnearkets revisionsspor er begrænset til 10.000
+  rækker, mens JSON har alt.
+- **A-08** i `docs/jura/`, PR #43. Alderen er 15, ikke 13.
+- **S-02** bygges oven på S-01 og får migrering 0046 og ADR 0081.
