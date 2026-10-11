@@ -115,6 +115,32 @@ export function envRules(value: z.infer<typeof EnvShape>, ctx: z.RefinementCtx):
       path: ["SIGNUP"],
     });
   }
+  // Files in an object store need every one of the five; half a store is
+  // an upload that fails at the bucket's door. Refused at start instead.
+  const files = [
+    "S3_FILES_ENDPOINT",
+    "S3_FILES_REGION",
+    "S3_FILES_BUCKET",
+    "S3_FILES_ACCESS_KEY",
+    "S3_FILES_SECRET_KEY",
+  ] as const;
+  const filesSet = files.filter((key) => value[key] !== undefined);
+  if (filesSet.length > 0 && filesSet.length < files.length) {
+    const missing = files.filter((key) => value[key] === undefined);
+    ctx.addIssue({
+      code: "custom",
+      message: `${files.join(", ")} go together: set all five for FILES_STORAGE=s3, or none. Missing: ${missing.join(", ")}`,
+      path: [missing[0]!],
+    });
+  }
+  if (value.FILES_STORAGE === "s3" && filesSet.length === 0) {
+    ctx.addIssue({
+      code: "custom",
+      message:
+        "FILES_STORAGE=s3 needs S3_FILES_ENDPOINT, S3_FILES_REGION, S3_FILES_BUCKET, S3_FILES_ACCESS_KEY and S3_FILES_SECRET_KEY",
+      path: ["FILES_STORAGE"],
+    });
+  }
   if (value.POLAR_WEBHOOK_SECRET && !value.POLAR_CLIENT_ID) {
     ctx.addIssue({
       code: "custom",

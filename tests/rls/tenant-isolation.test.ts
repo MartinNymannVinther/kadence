@@ -280,6 +280,11 @@ describe("rls coverage (guards future tables)", () => {
     // only (src/core/jobs/payload.ts, tests/jobs/payload.test.ts). What a
     // job does to a team's rows is audited where it lands.
     "jobs",
+    // Objects whose row is gone (drizzle/0051, docs/adr/0087): keys a
+    // trigger writes when a file's row is deleted and a job clears a
+    // little later, and a key written before an upload. Two ids and a
+    // hash, nobody's to keep; the row's deletion is in the trail already.
+    "file_tombstones",
     // Admission, which happens before a workspace exists to own it.
     "access_requests",
     "access_invitations",
@@ -359,6 +364,16 @@ describe("rls coverage (guards future tables)", () => {
    * policies already decided to allow.
    */
   const CALLABLE_DEFINER_FUNCTIONS = [
+    // Moving the files already in the database out to the object store
+    // (drizzle/0051, docs/adr/0087), for the job that runs with nobody
+    // signed in: the one update that points a row at its object, the rows
+    // that still hold bytes (the only definer that hands bytes over, to the
+    // worker alone), and two counts for scripts/migrate-files.ts. All three
+    // refuse a caller with a workspace in its context, so no request can
+    // reach them; tests/storage/migrate.test.ts proves it.
+    "activity_file_moved_out",
+    "activity_files_in_rows",
+    "activity_files_places",
     // Returns the installation's model-call count for the last day, across
     // every workspace (docs/adr/0035). A number crosses the boundary; no
     // row does, and it takes no arguments, so it can answer one question
@@ -432,6 +447,11 @@ describe("rls coverage (guards future tables)", () => {
     // append-only guard would otherwise keep forever. Checks itself that
     // the caller coaches the team, like delete_workspace.
     "erase_rider",
+    // The keys of objects whose row is gone and whose tombstone is older
+    // than the grace (drizzle/0051, docs/adr/0087), locked for the job's
+    // transaction; keys only, never a row, and refused from inside a
+    // workspace like the migration's. tests/storage/tombstones.test.ts.
+    "file_tombstones_due",
     // Whom an invitation is for, for the join page before anybody is
     // signed in (drizzle/0030, docs/adr/0065), and the only definer the
     // auth role may call. For an invitation that is still pending and in
@@ -487,6 +507,11 @@ describe("rls coverage (guards future tables)", () => {
     // nothing; the audit trigger on team_settings records the change.
     // tests/ai/budget.test.ts proves the refusal and the guard.
     "set_ai_budget",
+    // The installation's owner gives a workspace its own file quota
+    // (drizzle/0051, docs/adr/0087), the way set_ai_budget gives a budget:
+    // the same guard trigger refuses the application role, and the function
+    // refuses anyone but the owner. tests/storage/quota.test.ts proves both.
+    "set_file_quota",
     // The addresses the caller may read (drizzle/0034, docs/adr/0070),
     // now that the application role has no SELECT on users.email: the
     // caller's own, the whole team's to a coach of the active team, and
@@ -505,6 +530,12 @@ describe("rls coverage (guards future tables)", () => {
     // the key, which only its holder has. Everything after it runs as the
     // rider, under the ordinary policies.
     "upload_key_owner",
+    // How much file the active workspace holds and may hold (drizzle/0051,
+    // docs/adr/0087), for any member of it: a rider sees only their own
+    // rows under RLS and the quota is the workspace's. Two numbers and the
+    // workspace's kind, nothing about any file; refused outside a
+    // workspace and to a non-member. tests/storage/quota.test.ts.
+    "workspace_file_usage",
   ];
 
   it("only the named definer functions can be called by a runtime role", async () => {

@@ -2,12 +2,13 @@ import { and, eq } from "drizzle-orm";
 import { Refused } from "@/core/action";
 import { deviceLinks } from "@/core/db/schema";
 import { withOrgContext } from "@/core/db/tenant";
-import { handle } from "@/core/jobs/registry";
+import { GiveUp, handle } from "@/core/jobs/registry";
 import { log } from "@/core/log";
 import { callerKey, rateLimit } from "@/core/rate-limit";
 import { deviceFetch, enqueueDeviceEvents, payloadEvent } from "./fetch-job";
 import { DeviceHttpError, loggable, readLimited } from "./http";
 import { importFitIn } from "./import";
+import { isQuotaRefusal } from "@/modules/storage/quota";
 import { accessTokenFor, linkOwner, markLink, type LinkOwner } from "./links";
 import {
   isProviderId,
@@ -184,6 +185,13 @@ export async function processEvent(
         lastError: "",
       });
       return "duplicate";
+    }
+    if (isQuotaRefusal(error)) {
+      // The workspace's file quota is full (docs/adr/0087): trying again
+      // in an hour changes nothing, so the job gives up and the link says
+      // why. The ride is still on the provider for an upload later.
+      await markLink(riderCtx, owner.riderId, provider.id, { lastError: "quota" });
+      throw new GiveUp("quota");
     }
     if (error.code === "invalid") {
       await markLink(riderCtx, owner.riderId, provider.id, { lastError: "invalid_file" });

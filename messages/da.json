@@ -369,7 +369,16 @@
       "membersSheet": "Brugere",
       "notBackupTitle": "Det her er ikke en backup.",
       "notBackupBody": "En eksport kan læses, men den kan ikke lægges tilbage, og den er kun så ny som den dag du hentede den. Den dag databasen er væk, er det det natlige krypterede dump der redder dig.",
-      "privacy": "Eksporten indeholder det du må se i arbejdsrummet og dets historik: en træner får hele holdet, en rytter sine egne data. Adgangskoder, passkeys, enhedsnøgler og nøglen til arbejdsrummets sprogmodel kommer aldrig med. At du henter filen bliver skrevet i revisionssporet."
+      "privacy": "Eksporten indeholder det du må se i arbejdsrummet og dets historik: en træner får hele holdet, en rytter sine egne data. Adgangskoder, passkeys, enhedsnøgler og nøglen til arbejdsrummets sprogmodel kommer aldrig med. At du henter filen bliver skrevet i revisionssporet.",
+      "storage": {
+        "title": "Plads til filer",
+        "body": "Turenes originale filer fylder det her. Når pladsen er brugt, afvises nye filer, og alt andet virker. Slet gamle ture eller hent dem ud først, hvis I nærmer jer loftet.",
+        "usedOf": "{used} af {quota} brugt.",
+        "usedNoQuota": "{used} brugt. Der er ikke sat et loft.",
+        "full": "Pladsen til filer er brugt. Slet gamle ture eller hent dem ud først.",
+        "inDatabase": "Filerne ligger i Kadences egen database på serveren.",
+        "inStore": "Filerne ligger i et objektlager i EU, krypteret, og kun Kadence kan læse dem. Slettede filer er væk fra lageret inden for en time."
+      }
     }
   },
   "settings": {
@@ -473,7 +482,7 @@
       },
       "delete": {
         "title": "Slet arbejdsrummet",
-        "body": "Alt i arbejdsrummet forsvinder: alle medlemmers samtaler og filer, roller, opgaver og hele revisionssporet om dem. Det kan ikke fortrydes.",
+        "body": "Alt i arbejdsrummet forsvinder: alle medlemmers samtaler og filer, roller, opgaver og hele revisionssporet om dem. Det kan ikke fortrydes. Turenes filer er væk fra lageret inden for en time.",
         "exportFirst": "Hent en eksport først, hvis du vil beholde noget. Den findes under Data.",
         "typeName": "Skriv {name} for at bekræfte",
         "action": "Slet arbejdsrummet permanent",
@@ -483,7 +492,7 @@
         "nameMismatch": "Navnet passer ikke. Skriv arbejdsrummets navn præcis som det står.",
         "personal": {
           "title": "Slet min konto og alt om mig",
-          "body": "Alt om din træning forsvinder: pas, ture, check-ins, sæsonplanen, filerne og revisionssporet om dem. Er du ikke på et hold i Kadence, slettes din konto også. Det kan ikke fortrydes.",
+          "body": "Alt om din træning forsvinder: pas, ture, check-ins, sæsonplanen, filerne og revisionssporet om dem. Er du ikke på et hold i Kadence, slettes din konto også. Det kan ikke fortrydes. Filerne er væk fra lageret inden for en time.",
           "exportFirst": "Hent en eksport først, hvis du vil beholde noget. Den findes lige ovenfor.",
           "action": "Slet min konto og alt om mig"
         }
@@ -546,6 +555,23 @@
         "saved": "Gemt.",
         "invalid": "Skriv et beløb i euro, fx 7,50, eller lad feltet stå tomt.",
         "failed": "Budgettet blev ikke gemt. Prøv igen."
+      },
+      "fileQuota": {
+        "title": "Plads til filer",
+        "body": "Hvor meget hver klubs filer fylder, og klubbens loft. Over loftet afvises nye filer, og alt andet virker. Et tomt felt er standarden: {club} for en klub og {personal} for en person.",
+        "inDatabase": "Filerne ligger i databasen (FILES_STORAGE=db).",
+        "inStore": "Filerne ligger i et objektlager i EU (FILES_STORAGE=s3).",
+        "persons": "Enkeltpersonerne fylder {used} i alt.",
+        "club": "Klub",
+        "used": "Brugt",
+        "quota": "Loft",
+        "usedOf": "{used} af {quota}",
+        "noQuota": "intet loft",
+        "quotaLabel": "Loft for filer i GB for {club}",
+        "save": "Gem",
+        "saved": "Gemt.",
+        "invalid": "Skriv et tal i GB, fx 20, eller lad feltet stå tomt.",
+        "failed": "Loftet blev ikke gemt. Prøv igen."
       },
       "persons": {
         "title": "Enkeltpersoner",
@@ -2749,6 +2775,7 @@
         "unreadableFiles": "{count, plural, one {# fil kunne ikke læses.} other {# filer kunne ikke læses.}}",
         "nothing": "Der var ingen nye ture i arkivet.",
         "limit": "Dagens grænse er nået. {count, plural, one {Den sidste tur} other {De sidste # ture}} kan hentes om {hours, plural, one {# time} other {# timer}}: læg arkivet ind igen, så fortsætter det, hvor det slap.",
+        "quota": "Pladsen til filer er brugt, så {count, plural, one {den sidste tur} other {de sidste # ture}} blev ikke hentet. Slet gamle ture eller hent dem ud først, og læg arkivet ind igen.",
         "signedOut": "Du er ikke logget ind længere. Log ind, og læg arkivet ind igen; det fortsætter, hvor det slap.",
         "failed": "Noget gik galt undervejs, og {count, plural, one {# tur} other {# ture}} mangler. Læg arkivet ind igen; det fortsætter, hvor det slap.",
         "cancelled": "Stoppet. {count, plural, one {# tur} other {# ture}} mangler; læg arkivet ind igen, når du vil fortsætte.",
@@ -2789,7 +2816,8 @@
         "generic": "Noget gik galt med filen. Prøv igen.",
         "unknown_format": "Kadence kender ikke det filformat. Brug FIT, TCX eller GPX, gerne pakket som .gz eller .zip.",
         "no_activity": "Zip-filen har ingen .fit-, .tcx- eller .gpx-fil i sig.",
-        "not_bike": "Ikke en cykeltur, så den blev sprunget over."
+        "not_bike": "Ikke en cykeltur, så den blev sprunget over.",
+        "quota": "Pladsen til filer er brugt. Slet gamle ture eller hent dem ud først."
       }
     },
     "routeTitle": "Ruten",
@@ -3215,6 +3243,7 @@
       "provider_unavailable": "{name} svarede ikke sidst, Kadence prøvede. Det ordner sig som regel selv.",
       "invalid_file": "En tur fra {name} kunne ikke læses. Upload filen selv, hvis den mangler.",
       "download": "En tur kunne ikke hentes fra {name}. Upload filen selv, hvis den mangler.",
+      "quota": "En tur fra {name} fik ikke plads: pladsen til filer er brugt. Slet gamle ture eller hent dem ud først, og upload filen selv.",
       "unknown": "Noget gik galt med {name} sidst. Forbind igen, hvis dine ture ikke kommer ind."
     },
     "connected": "{name} er forbundet. Dine næste ture kommer ind af sig selv.",
@@ -3246,6 +3275,7 @@
       "address": "Et program sender filerne til",
       "lastError": {
         "invalid_file": "Den seneste fil kunne ikke læses. Upload den selv, hvis turen mangler.",
+        "quota": "Den seneste fil fik ikke plads: pladsen til filer er brugt. Slet gamle ture eller hent dem ud først.",
         "unknown": "Noget gik galt med den seneste fil. Upload den selv, hvis turen mangler."
       },
       "remove": "Fjern",
@@ -3958,7 +3988,8 @@
         "rateLimited": "Du har gemt mange ture den sidste time. Prøv igen om lidt.",
         "not_rider": "Kun en rytter kan gemme en tur.",
         "notFound": "Passet findes ikke længere. Hent FIT-filen, og upload den på “Mig”.",
-        "too_large": "Turen er for stor til at gemme herfra. Hent FIT-filen, og upload den på “Mig”."
+        "too_large": "Turen er for stor til at gemme herfra. Hent FIT-filen, og upload den på “Mig”.",
+        "quota": "Pladsen til filer er brugt, så turen blev ikke gemt. Hent FIT-filen, og slet gamle ture eller hent dem ud først."
       }
     },
     "little": {

@@ -11,6 +11,7 @@ import { whoAmI } from "@/modules/team/access";
 import { workspaceKind } from "@/modules/team/workspace-kind";
 import { DeleteWorkspaceCard } from "../workspace/delete-workspace-card";
 import { HealthConsentCard } from "@/components/consent/health-consent-card";
+import { StorageCard } from "./storage-card";
 import { cn } from "@/lib/utils";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -28,6 +29,8 @@ export async function generateMetadata(): Promise<Metadata> {
  * while feeling covered. The ride files are a third download beside them
  * (ADR 0084). Each is limited per workspace and hour; a download past the
  * limit comes back here with `?limited=`, and the page says when it lifts.
+ * A coach, and the owner of a personal workspace, also sees how much of
+ * the workspace's room for files is used (ADR 0087).
  */
 export default async function DataExportPage({
   searchParams,
@@ -41,7 +44,8 @@ export default async function DataExportPage({
   // there is no workspace tab (ADR 0080): "Slet min konto og alt om mig".
   const ctx = await getOrgContext();
   const personal = ctx ? (await workspaceKind(ctx.orgId, ctx.userId)) === "personal" : false;
-  const owner = personal && ctx ? (await currentRole(ctx)) === "owner" : false;
+  const role = ctx ? await currentRole(ctx) : null;
+  const owner = personal && role === "owner";
   const name = owner && ctx ? await workspaceName(ctx) : null;
   // The consent to health data the owner gave at sign-up (ADR 0088), and
   // the way to withdraw it or give it again. A workspace from before door
@@ -55,6 +59,7 @@ export default async function DataExportPage({
           timeZone: "Europe/Copenhagen",
         }).format(consent.state === "given" ? consent.givenAt : consent.withdrawnAt)
       : "";
+  const coach = role === "owner" || role === "admin";
   // The routes send a person back to the page in the language they use.
   const href = (path: string, query: string[] = []) => {
     const all = locale === "en" ? [...query, "locale=en"] : query;
@@ -136,6 +141,8 @@ export default async function DataExportPage({
           </a>
         </CardContent>
       </Card>
+
+      {coach && ctx && <StorageCard ctx={ctx} />}
 
       <div className="border-border bg-warning-tint rounded-lg border p-4">
         <p className="text-2sm leading-relaxed">

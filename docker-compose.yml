@@ -173,6 +173,20 @@ services:
       # (no budget, no roof) still reaches the app as `0`.
       AI_MONTHLY_BUDGET_MICRO: ${AI_MONTHLY_BUDGET_MICRO:-}
       AI_DAILY_CALL_CAP: ${AI_DAILY_CALL_CAP:-}
+      # Where riders' ride files live (docs/adr/0087): in the database
+      # unless FILES_STORAGE=s3, with all five S3_FILES_* set, puts them in
+      # an S3-compatible store in the EU (Hetzner Object Storage, a bucket
+      # of its own, never the backups'). The keys are secrets: Coolify only.
+      # The quotas per workspace are 20 GB for a club and 2 GB for a
+      # person unless set; the owner changes one club's under Installation.
+      FILES_STORAGE: ${FILES_STORAGE:-}
+      S3_FILES_ENDPOINT: ${S3_FILES_ENDPOINT:-}
+      S3_FILES_REGION: ${S3_FILES_REGION:-}
+      S3_FILES_BUCKET: ${S3_FILES_BUCKET:-}
+      S3_FILES_ACCESS_KEY: ${S3_FILES_ACCESS_KEY:-}
+      S3_FILES_SECRET_KEY: ${S3_FILES_SECRET_KEY:-}
+      FILES_QUOTA_CLUB_BYTES: ${FILES_QUOTA_CLUB_BYTES:-}
+      FILES_QUOTA_PERSONAL_BYTES: ${FILES_QUOTA_PERSONAL_BYTES:-}
       TRUSTED_PROXY_HOPS: ${TRUSTED_PROXY_HOPS:-}
       # Wahoo, Garmin and Polar, for riders who choose to connect
       # (.env.example, docs/devices-setup.md).

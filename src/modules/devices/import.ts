@@ -3,11 +3,22 @@ import { and, eq, inArray, isNull } from "drizzle-orm";
 import { Refused } from "@/core/action";
 import { activities, activityFiles, plannedSessions, riders } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
+import { objectKey } from "@/core/files/storage";
 import { baseName } from "@/modules/files";
 import { FitError } from "@/modules/fit";
 import { matchActivity } from "@/modules/load";
+import { discardPlaced, keepPlaced, placeFile } from "@/modules/storage/keep";
+import { assertFileRoom } from "@/modules/storage/quota";
 import { requireWriteFor } from "@/modules/team/access";
 import { activityFromFit } from "./from-fit";
+
+export {
+  deleteActivity,
+  getActivityFile,
+  getActivityFileName,
+  knownFileHashes,
+  MAX_KNOWN_HASHES,
+} from "./files";
 
 /**
  * A ride comes in: from the rider's upload, or from Wahoo, Garmin or Polar. The
@@ -16,6 +27,10 @@ import { activityFromFit } from "./from-fit";
  * lands on the planned session it fulfilled — same rider, same day, same
  * sport, closest in duration — so the calendar shows plan and done
  * together without anyone ticking anything off.
+ *
+ * The file goes where the installation keeps files (docs/adr/0087): in
+ * the row, or as an object the row names. A file that would take the
+ * workspace past its quota is refused before it is decoded.
  */
 
 export const MAX_UPLOAD_BYTES = 25 * 1024 * 1024;
@@ -85,6 +100,7 @@ export async function importFitIn(
     .from(activityFiles)
     .where(and(eq(activityFiles.riderId, riderId), eq(activityFiles.sha256, sha256)));
   if (seen) throw new Refused("conflict", "duplicate");
+  await assertFileRoom(tx, bytes.byteLength);
 
   let values;
   try {
@@ -126,14 +142,25 @@ export async function importFitIn(
     .onConflictDoNothing()
     .returning({ id: activities.id });
   if (!activity) throw new Refused("conflict", "duplicate");
-  await tx.insert(activityFiles).values({
-    orgId: ctx.orgId,
-    riderId,
-    activityId: activity.id,
-    fileName: fileName.slice(0, 200),
-    sha256,
-    bytes: Buffer.from(bytes),
-  });
+  // The object first, then the row that names it, in this transaction; a
+  // row that cannot be written takes the object with it (src/modules/storage/keep.ts).
+  const placed = await placeFile(objectKey(ctx.orgId, riderId, sha256), bytes);
+  try {
+    await tx.insert(activityFiles).values({
+      orgId: ctx.orgId,
+      riderId,
+      activityId: activity.id,
+      fileName: fileName.slice(0, 200),
+      sha256,
+      bytes: placed.bytes ? Buffer.from(placed.bytes) : null,
+      storageKey: placed.storageKey,
+      sizeBytes: placed.size,
+    });
+    await keepPlaced(tx, placed);
+  } catch (error) {
+    await discardPlaced(placed);
+    throw error;
+  }
 
   const open = await tx
     .select({
@@ -175,63 +202,4 @@ export async function importFit(
   origin?: ImportSource,
 ): Promise<ImportResult> {
   return withOrgContext(ctx, (tx) => importFitIn(tx, ctx, riderId, fileName, bytes, origin));
-}
-
-/** At most this many hashes are asked about at once. */
-export const MAX_KNOWN_HASHES = 500;
-
-/**
- * Which of these files Kadence already holds for the rider, by sha256:
- * what lets a folder from a device, or a helper sending everything again,
- * leave out the rides that are there. Answered only to someone who may
- * write for the rider, the same people who could find out by uploading.
- */
-export async function knownFileHashes(
-  ctx: OrgContext,
-  riderId: string,
-  hashes: string[],
-): Promise<string[]> {
-  const asked = [...new Set(hashes)].filter((h) => /^[0-9a-f]{64}$/.test(h));
-  if (asked.length > MAX_KNOWN_HASHES) throw new Refused("invalid");
-  return withOrgContext(ctx, async (tx) => {
-    await requireWriteFor(tx, ctx, riderId);
-    if (asked.length === 0) return [];
-    const rows = await tx
-      .select({ sha256: activityFiles.sha256 })
-      .from(activityFiles)
-      .where(and(eq(activityFiles.riderId, riderId), inArray(activityFiles.sha256, asked)));
-    return rows.map((r) => r.sha256);
-  });
-}
-
-/** The original file, for the rider's own download. */
-export async function getActivityFile(ctx: OrgContext, activityId: string) {
-  return withOrgContext(ctx, async (tx) => {
-    const [row] = await tx
-      .select({ fileName: activityFiles.fileName, bytes: activityFiles.bytes })
-      .from(activityFiles)
-      .where(eq(activityFiles.activityId, activityId));
-    return row ?? null;
-  });
-}
-
-/** The stored file's name, for the page to say what format the ride came in. */
-export async function getActivityFileName(ctx: OrgContext, activityId: string) {
-  return withOrgContext(ctx, async (tx) => {
-    const [row] = await tx
-      .select({ fileName: activityFiles.fileName })
-      .from(activityFiles)
-      .where(eq(activityFiles.activityId, activityId));
-    return row?.fileName ?? null;
-  });
-}
-
-/** Deleting an activity (and its file): the rider's or a coach's. The session it fulfilled opens again. */
-export async function deleteActivity(ctx: OrgContext, activityId: string): Promise<void> {
-  await withOrgContext(ctx, async (tx) => {
-    const [row] = await tx.select().from(activities).where(eq(activities.id, activityId));
-    if (!row) throw new Refused("notFound");
-    await requireWriteFor(tx, ctx, row.riderId);
-    await tx.delete(activities).where(eq(activities.id, activityId));
-  });
 }

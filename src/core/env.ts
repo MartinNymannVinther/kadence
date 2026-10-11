@@ -185,6 +185,39 @@ export const EnvShape = z.object({
   // them in the queue. Unset, the app runs them itself, as it ran the
   // reminder timer before: one container is still a whole installation.
   WORKER: z.enum(["off", "on"]).default("off"),
+  // Where riders' ride files live (docs/adr/0087): "db" keeps each file
+  // in its row in Postgres, as always; "s3" keeps it as an object in an
+  // S3-compatible store in the EU (Hetzner Object Storage on
+  // kadence.haij.dk) and the row keeps only its key. The row decides
+  // who may read either way. With "s3" all five S3_FILES_* are
+  // required; they are separate from S3_BACKUP_*, which pgBackRest
+  // reads (docs/adr/0089), so the files and the backups never share a
+  // bucket or a key. Secrets: the access and secret key live in Coolify.
+  FILES_STORAGE: z.enum(["db", "s3"]).default("db"),
+  S3_FILES_ENDPOINT: z.url().optional(),
+  S3_FILES_REGION: z.string().min(1).max(64).optional(),
+  S3_FILES_BUCKET: z.string().min(3).max(63).optional(),
+  S3_FILES_ACCESS_KEY: z.string().min(1).optional(),
+  S3_FILES_SECRET_KEY: z.string().min(1).optional(),
+  // How much file a workspace may hold, in bytes, unless the
+  // installation's owner gave it another quota under Indstillinger ->
+  // Installation (team_settings.file_quota_bytes): 20 GB for a club,
+  // 2 GB for one person (Martin's choice, 11 October 2026), decimal
+  // gigabytes as the pages show them. An upload that would pass it is
+  // refused with a plain sentence and everything else works. 0 is no
+  // quota.
+  FILES_QUOTA_CLUB_BYTES: z.coerce
+    .number()
+    .int()
+    .min(0)
+    .max(1_000_000_000_000_000)
+    .default(20_000_000_000),
+  FILES_QUOTA_PERSONAL_BYTES: z.coerce
+    .number()
+    .int()
+    .min(0)
+    .max(1_000_000_000_000_000)
+    .default(2_000_000_000),
 });
 
 /**

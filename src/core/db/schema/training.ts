@@ -195,11 +195,42 @@ export const activityFiles = pgTable(
       .references(() => activities.id, { onDelete: "cascade" }),
     fileName: text("file_name").notNull(),
     sha256: text("sha256").notNull(),
-    bytes: bytea("bytes").notNull(),
+    /**
+     * The file itself when the installation keeps files in the database
+     * (docs/adr/0087, `FILES_STORAGE=db`); null when it is an object.
+     */
+    bytes: bytea("bytes"),
+    /**
+     * The object's key, `<org id>/<rider id>/<sha256>.fit`, when the
+     * installation keeps files in an S3-compatible store; null otherwise.
+     * Exactly one of `bytes` and `storage_key` is set (drizzle/0051).
+     */
+    storageKey: text("storage_key"),
+    /** The file's size, whichever place holds it: what the quota adds up. */
+    sizeBytes: integer("size_bytes").notNull().default(0),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [uniqueIndex("activity_files_rider_sha_uq").on(t.riderId, t.sha256)],
+  (t) => [
+    uniqueIndex("activity_files_rider_sha_uq").on(t.riderId, t.sha256),
+    index("activity_files_storage_key_idx").on(t.storageKey),
+    check("activity_files_one_place", sql`(${t.bytes} is null) <> (${t.storageKey} is null)`),
+    check("activity_files_size", sql`${t.sizeBytes} >= 0`),
+  ],
 );
+
+/**
+ * Objects whose row is gone (docs/adr/0087). The database cannot delete
+ * from an object store, so a trigger writes the key here when a file's
+ * row is deleted or its key changes, and the job `files.tombstones`
+ * deletes the objects and these rows a little later. A key is also
+ * written here before an object is uploaded, so an upload whose
+ * transaction never commits leaves nothing behind. The installation's
+ * table, like `jobs`: no workspace, no audit trigger; a key holds ids only.
+ */
+export const fileTombstones = pgTable("file_tombstones", {
+  storageKey: text("storage_key").primaryKey(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
 
 /**
  * The conversation about a rider's training: on a planned session, on an

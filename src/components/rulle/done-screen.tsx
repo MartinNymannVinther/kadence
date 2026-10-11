@@ -230,6 +230,14 @@ export function DoneScreen({
 
 function failure(result: SaveResult | null, t: (key: string) => string): string {
   const code = result && !result.ok ? result.error : "generic";
-  const known = ["invalid", "duplicate", "rateLimited", "not_rider", "notFound", "too_large"];
+  const known = [
+    "invalid",
+    "duplicate",
+    "rateLimited",
+    "not_rider",
+    "notFound",
+    "too_large",
+    "quota",
+  ];
   return known.includes(code) ? t(`error.${code}`) : t("failed");
 }
