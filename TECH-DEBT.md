@@ -81,13 +81,23 @@ with `generateStaticParams` and `setRequestLocale`.
 That is a real trade with a real cost. It deserves its own change, with a
 test, not a line in a hardening pass.
 
-### Rate limiting is per process
+### What is still per process
 
-`src/core/rate-limit.ts` counts in memory, which is correct for one
-container behind one proxy and says so. An installation scaled to several
-instances gets a limit per instance rather than a limit. The file is
-written so that it is the only one to replace; the call sites do not
-change. The export's limits per workspace (ADR 0088) are among them.
+Paid in October 2026 (docs/adr/0083): the rate limits, the places held
+while a ride is read, Cykling Danmark's six readings a minute and one per
+rider, a rider's own last reading, the test push's moment and the demo's
+nonce are kept in the database or derived from the secret, so they hold
+across a restart and across instances.
+
+What remains is the line the DCU readings wait in
+(`src/modules/results/queue.ts`): its order is this instance's list of
+work, and a restart loses it until the next visit fills it again. Two
+instances may each queue the same rider; the shared per-rider place and
+`races_checked_at` keep the page from being read twice. It moves to the
+job table when one exists (plan step 1, backlog S-06). The reminder
+timer (`src/modules/push/timer.ts`) also runs in every instance; its
+marks are in the database, so a second instance repeats the work but
+not the reminders.
 
 ### The workspace model key is bound to its workspace, but old ciphertexts are not
 

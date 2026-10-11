@@ -1,4 +1,5 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { appPool } from "@/core/db/client";
 import {
   addressBehind,
   callerKey,
@@ -7,51 +8,104 @@ import {
   resetRateLimits,
   SHARED_BUCKET,
 } from "@/core/rate-limit";
+import { adminPool } from "../helpers/db";
 
 /**
- * The limiter guarding the public endpoints. It is in memory on purpose;
- * these tests pin the behaviour that decision rests on, so replacing it
- * with a shared store later is a swap rather than a rewrite.
+ * The limiter guarding the doors. Its counts live in the database
+ * (src/core/counters.ts, docs/adr/0083), so these run against it: the
+ * window, its end, asking without counting, two instances sharing one
+ * count, and the answer when the database does not answer.
  */
 
+const admin = adminPool();
+const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 beforeEach(() => resetRateLimits());
+afterAll(() => admin.end());
 
 describe("rateLimit", () => {
-  it("allows up to the limit and refuses the one after", () => {
-    for (let i = 0; i < 5; i++) expect(rateLimit("a", 5, 60_000).allowed).toBe(true);
-    const refused = rateLimit("a", 5, 60_000);
+  it("allows up to the limit and refuses the one after", async () => {
+    for (let i = 0; i < 5; i++) expect((await rateLimit("a", 5, 60_000)).allowed).toBe(true);
+    const refused = await rateLimit("a", 5, 60_000);
     expect(refused.allowed).toBe(false);
     expect(refused.retryAfterSeconds).toBeGreaterThan(0);
+    expect(refused.retryAfterSeconds).toBeLessThanOrEqual(60);
   });
 
-  it("counts each key on its own", () => {
-    for (let i = 0; i < 5; i++) rateLimit("a", 5, 60_000);
-    expect(rateLimit("b", 5, 60_000).allowed).toBe(true);
+  it("counts each key on its own", async () => {
+    for (let i = 0; i < 5; i++) await rateLimit("a", 5, 60_000);
+    expect((await rateLimit("b", 5, 60_000)).allowed).toBe(true);
   });
 
   it("forgets a key once its window has passed", async () => {
-    expect(rateLimit("c", 1, 20).allowed).toBe(true);
-    expect(rateLimit("c", 1, 20).allowed).toBe(false);
-    await new Promise((resolve) => setTimeout(resolve, 30));
-    expect(rateLimit("c", 1, 20).allowed).toBe(true);
+    expect((await rateLimit("c", 1, 50)).allowed).toBe(true);
+    expect((await rateLimit("c", 1, 50)).allowed).toBe(false);
+    await pause(80);
+    expect((await rateLimit("c", 1, 50)).allowed).toBe(true);
+  });
+
+  it("keeps its count in the database, where every instance reads it", async () => {
+    await rateLimit("shared", 3, 60_000);
+    await rateLimit("shared", 3, 60_000);
+    const { rows } = await admin.query(
+      "select count, reset_at > now() as open from app_rate_limits where key = 'shared'",
+    );
+    expect(rows).toEqual([{ count: 2, open: true }]);
+  });
+
+  it("is one count for two instances: a second copy of the module goes on from the first", async () => {
+    const first = await import("@/core/rate-limit");
+    await first.rateLimit("two", 2, 60_000);
+    vi.resetModules();
+    const second = await import("@/core/rate-limit");
+    expect(second).not.toBe(first);
+    expect((await second.rateLimit("two", 2, 60_000)).allowed).toBe(true);
+    expect((await first.rateLimit("two", 2, 60_000)).allowed).toBe(false);
+    expect((await second.peekRateLimit("two", 2)).allowed).toBe(false);
+  });
+
+  it("counts every one of many at once, with none lost between them", async () => {
+    const answers = await Promise.all(
+      Array.from({ length: 20 }, () => rateLimit("crowd", 10, 60_000)),
+    );
+    expect(answers.filter((a) => a.allowed)).toHaveLength(10);
+  });
+
+  it("refuses, with a short wait, when the database does not answer", async () => {
+    const quiet = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const sweep = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const down = vi.spyOn(appPool, "query").mockRejectedValue(new Error("connection refused"));
+    try {
+      expect(await rateLimit("down", 100, 60_000)).toEqual({
+        allowed: false,
+        retryAfterSeconds: 5,
+      });
+      expect(await peekRateLimit("down", 100)).toEqual({ allowed: false, retryAfterSeconds: 5 });
+      // By name only: a database error's message carries its parameters.
+      expect(quiet).toHaveBeenCalledWith("rate-limit: the counters did not answer", "Error");
+    } finally {
+      down.mockRestore();
+      quiet.mockRestore();
+      sweep.mockRestore();
+    }
   });
 });
 
 describe("peekRateLimit", () => {
-  it("answers without counting, so asking is free", () => {
-    for (let i = 0; i < 20; i++) expect(peekRateLimit("p", 2).allowed).toBe(true);
-    expect(rateLimit("p", 2, 60_000).allowed).toBe(true);
-    expect(rateLimit("p", 2, 60_000).allowed).toBe(true);
-    const full = peekRateLimit("p", 2);
+  it("answers without counting, so asking is free", async () => {
+    for (let i = 0; i < 20; i++) expect((await peekRateLimit("p", 2)).allowed).toBe(true);
+    expect((await rateLimit("p", 2, 60_000)).allowed).toBe(true);
+    expect((await rateLimit("p", 2, 60_000)).allowed).toBe(true);
+    const full = await peekRateLimit("p", 2);
     expect(full.allowed).toBe(false);
     expect(full.retryAfterSeconds).toBeGreaterThan(0);
   });
 
   it("opens again once the window has passed", async () => {
-    rateLimit("q", 1, 20);
-    expect(peekRateLimit("q", 1).allowed).toBe(false);
-    await new Promise((resolve) => setTimeout(resolve, 30));
-    expect(peekRateLimit("q", 1).allowed).toBe(true);
+    await rateLimit("q", 1, 50);
+    expect((await peekRateLimit("q", 1)).allowed).toBe(false);
+    await pause(80);
+    expect((await peekRateLimit("q", 1)).allowed).toBe(true);
   });
 });
 

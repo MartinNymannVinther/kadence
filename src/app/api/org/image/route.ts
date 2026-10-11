@@ -25,7 +25,7 @@ export async function POST(request: Request) {
   if (fromAnotherSite(request)) return Response.json({ error: "forbidden" }, { status: 403 });
   const ctx = await requireOrgContext();
   if (!ctx) return Response.json({ error: "unauthorized" }, { status: 401 });
-  if (!rateLimit(`org-image:${ctx.userId}`, 30, HOUR).allowed)
+  if (!(await rateLimit(`org-image:${ctx.userId}`, 30, HOUR)).allowed)
     return Response.json({ error: "rateLimited" }, { status: 429 });
 
   let form: FormData;

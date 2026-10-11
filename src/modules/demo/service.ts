@@ -96,6 +96,20 @@ function cookieHeaderFrom(responseHeaders: Headers): Headers {
   return new Headers({ cookie });
 }
 
+/** The cookies in `request`, with those `response` set in place of the old. */
+function withNewCookies(request: Headers, response: Headers): Headers {
+  const jar = new Map<string, string>();
+  const pairs = [
+    ...(request.get("cookie")?.split("; ") ?? []),
+    ...response.getSetCookie().map((c) => c.split(";")[0]!),
+  ];
+  for (const pair of pairs) {
+    const at = pair.indexOf("=");
+    if (at > 0) jar.set(pair.slice(0, at), pair.slice(at + 1));
+  }
+  return new Headers({ cookie: [...jar].map(([name, value]) => `${name}=${value}`).join("; ") });
+}
+
 /**
  * Deletes every demo whose time is up. Called on each visit, so an
  * installation that gets visitors needs no scheduler; `scripts/cleanup-demos.ts`
@@ -183,10 +197,15 @@ export async function createDemoWorkspace(
     headers: sessionHeaders,
   });
   if (!organization) return null;
-  await auth.api.setActiveOrganization({
+  const { headers: activeHeaders } = await auth.api.setActiveOrganization({
     body: { organizationId: organization.id },
     headers: sessionHeaders,
+    returnHeaders: true,
   });
+  // The session's cookie cache now names the team (docs/adr/0083). The
+  // sign-up's named none; the roles' invitations and the visitor's browser
+  // get this one.
+  sessionHeaders = withNewCookies(sessionHeaders, activeHeaders);
 
   await authDb.insert(demoWorkspaces).values({
     organizationId: organization.id,

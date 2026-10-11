@@ -55,7 +55,7 @@ export async function handleWebhook(
   if (!isProviderId(providerId)) return new Response(null, { status: 404 });
   const provider = providerById(providerId);
 
-  const limit = rateLimit(
+  const limit = await rateLimit(
     callerKey(request.headers, `device-webhook:${provider.id}`),
     RATE_LIMIT.count,
     RATE_LIMIT.windowMs,

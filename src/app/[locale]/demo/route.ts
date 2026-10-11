@@ -40,7 +40,7 @@ export async function GET(
   // Not before somebody owns the installation (backlog P1-09).
   if (!(await demoReady())) return refusal("Not found", 404);
 
-  const limit = rateLimit(callerKey(request.headers, "demo"), 5, 60 * 60 * 1000);
+  const limit = await rateLimit(callerKey(request.headers, "demo"), 5, 60 * 60 * 1000);
   if (!limit.allowed)
     return refusal("Too many demo workspaces from this address. Try again later.", 429, {
       "Retry-After": String(limit.retryAfterSeconds),

@@ -21,11 +21,22 @@ const globalForDb = globalThis as unknown as {
   kadenceAuthPool?: Pool;
 };
 
+/**
+ * How the pools wait (docs/adr/0083). A request that cannot get a
+ * connection within five seconds fails rather than queues behind a
+ * stuck one, and a connection idle for thirty is closed, so a quiet
+ * installation holds few. The database ends a statement after thirty
+ * seconds and a transaction left idle after fifteen, set on the roles
+ * themselves (drizzle/0043), so every connection has them whoever opens
+ * it.
+ */
+const waiting = { max: 10, connectionTimeoutMillis: 5_000, idleTimeoutMillis: 30_000 };
+
 export const appPool =
-  globalForDb.kadenceAppPool ?? new Pool({ connectionString: env.APP_DATABASE_URL, max: 10 });
+  globalForDb.kadenceAppPool ?? new Pool({ connectionString: env.APP_DATABASE_URL, ...waiting });
 
 export const authPool =
-  globalForDb.kadenceAuthPool ?? new Pool({ connectionString: env.AUTH_DATABASE_URL, max: 10 });
+  globalForDb.kadenceAuthPool ?? new Pool({ connectionString: env.AUTH_DATABASE_URL, ...waiting });
 
 if (env.NODE_ENV !== "production") {
   globalForDb.kadenceAppPool = appPool;

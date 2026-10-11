@@ -74,7 +74,7 @@ export async function createUploadKey(
     const me = await whoAmIIn(tx, ctx);
     if (!me?.rider) throw new Refused("forbidden", "not_a_rider");
     const riderId = me.rider.id;
-    if (!rateLimit(`upload-key-made:${ctx.userId}`, MADE_PER_HOUR, 60 * 60 * 1000).allowed)
+    if (!(await rateLimit(`upload-key-made:${ctx.userId}`, MADE_PER_HOUR, 60 * 60 * 1000)).allowed)
       throw new Refused("conflict", "too_many_keys_made");
     // The rider's row is held while the keys are counted, so two presses
     // at once cannot both be the fifth.

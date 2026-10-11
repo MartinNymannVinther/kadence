@@ -16,7 +16,7 @@ export const dynamic = "force-dynamic";
  */
 export async function POST(request: Request) {
   if (!remindersOn()) return new NextResponse("Not found", { status: 404 });
-  const limit = rateLimit(callerKey(request.headers, "push-tick"), 6, 60_000);
+  const limit = await rateLimit(callerKey(request.headers, "push-tick"), 6, 60_000);
   if (!limit.allowed)
     return new NextResponse(null, {
       status: 429,

@@ -270,6 +270,11 @@ describe("rls coverage (guards future tables)", () => {
     "sessions",
     "verifications",
     "rate_limits",
+    // The installation's own counters (drizzle/0043, docs/adr/0083): rate
+    // limits, places held while a ride is read, and moments to remember,
+    // written on every limited request. The same kind of row as
+    // Better Auth's rate_limits beside it, and as little anybody's.
+    "app_rate_limits",
     // Admission, which happens before a workspace exists to own it.
     "access_requests",
     "access_invitations",

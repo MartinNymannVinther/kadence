@@ -39,7 +39,7 @@ export async function POST(request: Request) {
   if (fromAnotherSite(request)) return answer({ error: "forbidden" }, 403);
   const ctx = await requireOrgContext();
   if (!ctx) return answer({ error: "unauthorized" }, 401);
-  if (!rateLimit(`upload:${ctx.userId}`, 30, HOUR).allowed)
+  if (!(await rateLimit(`upload:${ctx.userId}`, 30, HOUR)).allowed)
     return answer({ error: "rateLimited" }, 429);
 
   let bytes: Uint8Array;
@@ -69,7 +69,7 @@ export async function POST(request: Request) {
     .slice(0, 120);
 
   const stored = storedFilesKey(ctx.userId);
-  if (!peekRateLimit(stored, STORED_FILES_PER_HOUR).allowed)
+  if (!(await peekRateLimit(stored, STORED_FILES_PER_HOUR)).allowed)
     return answer({ error: "rateLimited" }, 429);
   try {
     const imported = await importFit(ctx, riderId, "rulle.fit", bytes, {
@@ -77,7 +77,7 @@ export async function POST(request: Request) {
       title: session?.title ?? (name || undefined),
       sessionId: session?.id,
     });
-    rateLimit(stored, STORED_FILES_PER_HOUR, HOUR);
+    await rateLimit(stored, STORED_FILES_PER_HOUR, HOUR);
     return answer({ ...imported, duplicate: false }, 201);
   } catch (error) {
     if (error instanceof Refused) {

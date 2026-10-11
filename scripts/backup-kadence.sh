@@ -68,7 +68,10 @@ TARGET="$BACKUP_DIR/kadence-$STAMP.dump.age"
 
 # Write to a temporary name first: a half-written file that looks like a
 # backup is worse than no file at all, because you will trust it.
-docker exec "$DB_CONTAINER" pg_dump -U postgres -Fc kadence \
+# The counters (app_rate_limits, docs/adr/0083) are unlogged and
+# throwaway, and some of their keys are addresses: their table is in the
+# dump, their rows are not.
+docker exec "$DB_CONTAINER" pg_dump -U postgres -Fc --no-unlogged-table-data kadence \
   | age -r "$(cat "$RECIPIENT_FILE")" \
   > "$TARGET.partial"
 mv "$TARGET.partial" "$TARGET"

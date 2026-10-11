@@ -16,6 +16,45 @@ runtime but the machine.
 - Point DNS for your app hostname (e.g. `kadence.haij.dk`) at the server.
 - Install Coolify (their one-line installer) and log in.
 
+### Postgres settings
+
+`docker-compose.yml` starts Postgres with settings for a 4 GB VPS shared
+with the app (docs/adr/0083), not Postgres's defaults:
+
+| Setting                               | 4 GB (as shipped)    | 8 GB  | 16 GB |
+| ------------------------------------- | -------------------- | ----- | ----- |
+| `shared_buffers`                      | 1GB                  | 2GB   | 4GB   |
+| `effective_cache_size`                | 3GB                  | 6GB   | 12GB  |
+| `work_mem`                            | 16MB                 | 32MB  | 32MB  |
+| `maintenance_work_mem`                | 256MB                | 512MB | 1GB   |
+| `max_connections`                     | 60                   | 60    | 60    |
+| `shared_preload_libraries`            | `pg_stat_statements` | same  | same  |
+| `log_min_duration_statement`          | 500 (ms)             | same  | same  |
+| `idle_in_transaction_session_timeout` | 15000 (ms)           | same  | same  |
+
+Change them in the `command:` of the `db` service; they take effect when
+the database container is recreated, which a redeploy in Coolify does.
+`max_connections` counts two pools of ten per app instance: 60 is room
+for two instances, the migration step and a `psql` or two. Raise it by
+twenty for each instance beyond the second, whatever the memory.
+`shm_size: 256mb` is there because Docker's 64 MB of `/dev/shm` is too
+little for a parallel query with this `work_mem`.
+
+The runtime roles carry their own timeouts, set by the migration
+(drizzle/0043): a statement is ended after 30 seconds and a transaction
+left idle after 15. Statements slower than half a second are in the
+database's log. To see which queries cost the most:
+
+```bash
+docker exec -it <kadence db container> psql -U postgres -d kadence -c \
+  "select calls, round(total_exec_time) as ms, left(query, 80) from pg_stat_statements order by total_exec_time desc limit 20"
+```
+
+The rate limits and the other counters live in the unlogged table
+`app_rate_limits`: shared by every instance, kept across a restart of
+the app, emptied by a crash of the database, and left out of the nightly
+backup (section 7). Nothing needs doing about it.
+
 ## 2. Create the application
 
 1. In Coolify: **New resource → Docker Compose**, connect this Git
