@@ -1,5 +1,14 @@
 import { sql } from "drizzle-orm";
-import { check, date, index, pgTable, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  check,
+  date,
+  index,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+} from "drizzle-orm/pg-core";
 import { domainId, users } from "./foundation";
 import { tenant, timestamps } from "./shared";
 
@@ -82,3 +91,33 @@ export const pushRuns = pgTable(
 );
 
 export type PushRunRow = typeof pushRuns.$inferSelect;
+
+/**
+ * A person's choice of mail on one team (docs/adr/0086): for now one
+ * thing, the parents' week "også på mail" beside the push (ADR 0060), and
+ * the language the mail is written in, taken from the page the choice was
+ * made on. Not per browser, as a push is: a mail goes to the account's
+ * address. Its owner's alone, like a push subscription; the weekly run
+ * finds the rows through `mail_week_due()` and reads everything else as
+ * that person (drizzle/0048).
+ */
+export const mailPreferences = pgTable(
+  "mail_preferences",
+  {
+    id: domainId("id"),
+    orgId: tenant(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    week: boolean("week").notNull().default(false),
+    locale: text("locale").notNull().default("da"),
+    ...timestamps,
+  },
+  (t) => [
+    uniqueIndex("mail_preferences_person_uq").on(t.orgId, t.userId),
+    index("mail_preferences_user_idx").on(t.userId),
+    check("mail_preferences_locale", sql`${t.locale} in ('da', 'en')`),
+  ],
+);
+
+export type MailPreferenceRow = typeof mailPreferences.$inferSelect;

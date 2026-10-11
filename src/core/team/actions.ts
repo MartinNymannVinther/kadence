@@ -10,6 +10,7 @@ import { pushSubscriptions } from "@/core/db/schema";
 import { withOrgContext } from "@/core/db/tenant";
 import { errorName, log } from "@/core/log";
 import { fail, ok, type Result } from "@/core/result";
+import { forgetMailChoice } from "@/modules/push/mail-choice";
 import { registerInvited, type JoinRegisterResult } from "./register";
 import { createResetLink } from "./reset-link";
 import {
@@ -105,6 +106,8 @@ export async function leaveWorkspaceAction(): Promise<Result<boolean>> {
           and(eq(pushSubscriptions.orgId, ctx.orgId), eq(pushSubscriptions.userId, ctx.userId)),
         ),
     );
+    // So does the choice of the week by mail (docs/adr/0086), the same way.
+    await forgetMailChoice(ctx);
   } catch (error) {
     await log.error("team: forgetting reminders after leaving failed", {
       orgId: ctx.orgId,

@@ -1,7 +1,9 @@
 import { env } from "@/core/env";
 import { remindersOn } from "@/core/features";
 import { errorName, log } from "@/core/log";
+import { mailConfigured } from "@/core/mail/mailer";
 import { runReminders, type RunReport } from "./job";
+import { runWeekMails } from "./mail-week";
 import type { PushConfig } from "./send";
 import { parseVapidKeys, vapidSubject } from "./vapid";
 
@@ -12,6 +14,10 @@ import { parseVapidKeys, vapidSubject } from "./vapid";
  * runs the same thing for an installation that would rather drive it
  * from outside. Two runs never overlap in one process, and the job's
  * own marks make overlapping runs across processes harmless.
+ *
+ * The same run sends the parents' week by mail (docs/adr/0086) where the
+ * installation sends mail, with or without the push keys; until the job
+ * table (backlog S-06) carries it, it rides on this timer.
  */
 
 export const INTERVAL_MS = 10 * 60 * 1000;
@@ -32,10 +38,23 @@ export function pushConfig(): PushConfig | null {
   };
 }
 
+/** The parents' week by mail, when there is mail; a failure is said and never stops the push run. */
+async function mailTheWeek(): Promise<void> {
+  if (!mailConfigured()) return;
+  try {
+    const report = await runWeekMails();
+    if (report.sent + report.failed > 0)
+      await log.info("mail: week run finished", { sent: report.sent, failed: report.failed });
+  } catch (error) {
+    await log.error("mail: the week run failed", { error: errorName(error) });
+  }
+}
+
 /** One run, unless one is already going in this process; then that one's answer. */
 export function runRemindersOnce(): Promise<RunReport | null> {
   if (state.kadenceReminderRun) return state.kadenceReminderRun;
   const run = (async () => {
+    await mailTheWeek();
     try {
       const config = pushConfig();
       if (!config) return null;

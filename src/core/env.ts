@@ -165,6 +165,14 @@ export const EnvSchema = z
       .string()
       .regex(/^(mailto:|https:\/\/)/)
       .optional(),
+    // Mail through an EU provider (docs/adr/0086), all five or none; without
+    // them nothing is sent and links are shared by hand, as before. MAIL_FROM
+    // is on the provider's verified domain. Secret: SMTP_PASSWORD (Coolify).
+    SMTP_HOST: z.string().min(1).max(255).optional(),
+    SMTP_PORT: z.coerce.number().int().min(1).max(65535).optional(),
+    SMTP_USER: z.string().min(1).max(255).optional(),
+    SMTP_PASSWORD: z.string().min(1).optional(),
+    MAIL_FROM: z.string().min(3).max(320).optional(),
   })
   .superRefine((value, ctx) => {
     // `next build` runs with NODE_ENV=production and placeholder values
@@ -247,6 +255,17 @@ export const EnvSchema = z
         message:
           "PUSH_PUBLIC_KEY and PUSH_PRIVATE_KEY go together: set both to send reminders, or neither",
         path: [value.PUSH_PUBLIC_KEY ? "PUSH_PRIVATE_KEY" : "PUSH_PUBLIC_KEY"],
+      });
+    }
+    // Half a mail setup fails at the provider's door; refused at start.
+    const mail = ["SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASSWORD", "MAIL_FROM"] as const;
+    const mailSet = mail.filter((key) => value[key] !== undefined);
+    if (mailSet.length > 0 && mailSet.length < mail.length) {
+      const missing = mail.filter((key) => value[key] === undefined);
+      ctx.addIssue({
+        code: "custom",
+        message: `${mail.join(", ")} go together: set all five to send mail, or none. Missing: ${missing.join(", ")}`,
+        path: [missing[0]!],
       });
     }
     if (value.POLAR_WEBHOOK_SECRET && !value.POLAR_CLIENT_ID) {

@@ -19,7 +19,7 @@
       "titleFor": "Link for {email}",
       "copy": "Copy link",
       "copied": "Copied",
-      "noMail": "Kadence sends no e-mail. Copy the link and send it yourself by text or e-mail. It only works for that address."
+      "noMail": "Copy the link and send it yourself by text or e-mail. It only works for that address."
     },
     "rider": "Rider"
   },
@@ -91,7 +91,20 @@
       "failed": "The password could not be saved. Try again.",
       "missing": "The link is not whole. Ask a coach on your team for a new one.",
       "done": "Your password is changed, and you are signed out everywhere else.",
-      "login": "Sign in"
+      "login": "Sign in",
+      "bodyMail": "The link came by email. It works once, and you are signed out everywhere else.",
+      "invalidMail": "The link is used, has expired or is not whole. Ask for a new one under Forgot your password."
+    },
+    "forgot": {
+      "title": "Forgot your password",
+      "body": "Write the email you sign in with. We send a link where you can choose a new password.",
+      "email": "Email",
+      "submit": "Send the link",
+      "sent": "If the address is in Kadence, we have sent a link to it. The link works for one hour. Look in spam too if it does not arrive.",
+      "tooMany": "Many links were asked for in a short time. Try again in an hour.",
+      "failed": "It could not be sent. Try again in a moment.",
+      "coach": "You can also ask a coach on your team for a link. If you have a passkey, you can sign in with it instead.",
+      "back": "Back to sign in"
     },
     "login": {
       "forgot": "Forgot your password?",
@@ -234,6 +247,18 @@
         "body": "When a coach makes a link to reset your password, it shows here. If you did not ask for it, tell a coach.",
         "item": "{name} made a link {date}"
       },
+      "address": {
+        "title": "Your email address",
+        "verified": "Confirmed",
+        "unverified": "Not confirmed yet",
+        "body": "Confirm the address, so you know that email from Kadence gets through. Kadence only sends short emails with a link, never anything about training or health.",
+        "send": "Send a confirmation email",
+        "sent": "The email is on its way to {email}. Open the link in it. It works for one hour.",
+        "tooMany": "You have asked for several emails in a short time. Try again in an hour.",
+        "failed": "The email could not be sent. Try again in a moment.",
+        "done": "Thank you. Your address is confirmed.",
+        "expired": "The link is used, has expired or is not whole. Send a new email."
+      },
       "title": "Security",
       "subtitle": "Passkeys and two-factor authentication for your account.",
       "passkeys": {
@@ -369,6 +394,12 @@
       "linkBody": "Shown only now. Copy it and send it yourself. It works for 7 days and only once.",
       "copy": "Copy link",
       "copiedToast": "Link copied.",
+      "linkBodyMail": "Shown only now. Send it by email, or copy it and send it yourself. It works for 7 days and only once.",
+      "mail": "Send the link",
+      "mailed": "Sent",
+      "mailedToast": "The link is sent to {email}.",
+      "mailTooMany": "The link has been sent several times just now. Try again in an hour, or copy it.",
+      "mailFailed": "The email could not be sent. Copy the link and send it yourself.",
       "inviteTitle": "Invite directly",
       "inviteBody": "Without an application first. Same link, same rules.",
       "inviteEmail": "E-mail",
@@ -396,7 +427,7 @@
       "resetLink": {
         "button": "Link for a new password",
         "title": "Link for a new password for {name}",
-        "body": "Send the link to {name} yourself, by text message for instance. It works once and only until {until}. Kadence sends no e-mail.",
+        "body": "Send the link to {name} yourself, by text message for instance. It works once and only until {until}.",
         "copy": "Copy",
         "copied": "Copied",
         "seen": "{name} can see on their security page that you made the link, and is signed out everywhere else when it is used.",
@@ -745,7 +776,7 @@
     "subprocessorsNote": "Who can see what is listed in",
     "shareLinks": {
       "title": "Invitations",
-      "body": "An invitation link is for one address and expires after a week. You send it; we send no mail."
+      "body": "An invitation link is for one address and expires after a week. You send it."
     }
   },
   "join": {
@@ -798,7 +829,7 @@
       },
       "password": {
         "title": "Forgotten password",
-        "body": "Kadence sends no e-mail, so the way back in goes through a coach. A coach opens Settings → Workspace, presses Link for a new password by the person, and sends the link on themselves, by text message for instance. The link works once and only for the next hour; whoever uses it chooses a new password and is signed out everywhere else. The person can always see on their security page that a link was made, and by whom. A coach can make links for riders, parents and other coaches on the team, but not for the team's owner; an owner who forgot the password signs in with their passkey or gets help from whoever runs Kadence. If you have turned on two-step verification, you still need the code from your app."
+        "body": "If Kadence is set up to send email, the sign-in page has a link under Forgot your password, and you can get a link by email yourself. Otherwise the way back in goes through a coach. A coach opens Settings → Workspace, presses Link for a new password by the person, and sends the link on themselves, by text message for instance. The link works once and only for the next hour; whoever uses it chooses a new password and is signed out everywhere else. The person can always see on their security page that a link was made, and by whom. A coach can make links for riders, parents and other coaches on the team, but not for the team's owner; an owner who forgot the password signs in with their passkey or gets help from whoever runs Kadence. If you have turned on two-step verification, you still need the code from your app."
       },
       "words": {
         "title": "Session, block, programme and season plan",
@@ -1097,6 +1128,8 @@
   },
   "errors": {
     "too_many_reset_links": "You have made many links just now. Try again in an hour.",
+    "too_many_mails": "You have sent many emails just now. Try again in an hour, or share the link instead.",
+    "mail_not_sent": "The email could not be sent. Share the link instead, or try again in a moment.",
     "unauthorized": "You are no longer signed in.",
     "forbidden": "You may not do that here. Ask a coach on the team.",
     "invalid": "Something in the form is not valid.",
@@ -1662,6 +1695,9 @@
       "until": "Works until {until}",
       "share": "Share",
       "shareLabel": "Share the link with {name}",
+      "mail": "Send by email",
+      "mailLabel": "Send the link to {name} by email",
+      "mailed": "Sent",
       "copied": "The text with the link is copied. Paste it into a text message or a chat.",
       "failed": "The link could not be shared or copied. Try again.",
       "textRider": "Hi {name}. You are invited to the team {team} in Kadence as a rider. Open the link and create your account with {email}. The link works until {until}.",
@@ -3488,6 +3524,13 @@
     "body": "Kadence can remind you of what matters on this device. No reminders come between 21:30 and 7:00.",
     "bodyCoach": "Kadence can remind you of what matters on this device. Between 21:30 and 7:00 only wellbeing reminders come.",
     "privacy": "The message itself is fetched from Kadence when it arrives. Your browser's push service only sees that there is something new.",
+    "weekMail": {
+      "title": "The week by email",
+      "body": "On Sunday evening you can also get a short email saying there is news about the week. The email says nothing about your child, only a link to Kadence.",
+      "label": "The week's overview by email too",
+      "hint": "The email goes to {email}.",
+      "hintPlain": "The email goes to the address you sign in with."
+    },
     "enable": "Turn on reminders on this device",
     "disable": "Turn off",
     "on": "Reminders are on for this device.",
@@ -5622,6 +5665,42 @@
     "download": {
       "button": "Download as a file",
       "print": "Print or save as PDF"
+    }
+  },
+  "mail": {
+    "greeting": "Hi",
+    "signoff": "Best regards\nKadence",
+    "verify": {
+      "subject": "Confirm your email address",
+      "body": "Open the link to confirm that the address is yours. The link works for one hour.",
+      "ignore": "If you did not ask for this, you can ignore this email. Nothing happens to your account."
+    },
+    "reset": {
+      "subject": "Choose a new password for Kadence",
+      "body": "Someone asked for a link to choose a new password for your Kadence account. The link works once and for one hour. When you have saved the new password, you are signed out everywhere else.",
+      "ignore": "If you did not ask for this, you can ignore this email. Your password stays the same."
+    },
+    "invite": {
+      "subject": "You are invited to {team} in Kadence",
+      "rider": "{inviter} has invited you to join the team {team} in Kadence as a rider.",
+      "parentOf": "{inviter} has invited you to join the team {team} in Kadence as a parent of {child}.",
+      "parent": "{inviter} has invited you to join the team {team} in Kadence as a parent.",
+      "member": "{inviter} has invited you to join the team {team} in Kadence.",
+      "how": "Open the link and create your account with the address this email was sent to. The link works until {until}.",
+      "parentNext": "When {child} has said yes to you in Kadence, you can follow along.",
+      "parentNextPlain": "When the rider has said yes to you in Kadence, you can follow along.",
+      "unknown": "If you do not know {inviter} or the team, you can ignore this email."
+    },
+    "access": {
+      "subject": "You can now get into Kadence",
+      "body": "{inviter} has given you access to Kadence with the workspace {workspace}.",
+      "how": "Open the link and create your account with the address this email was sent to. The link works once and until {until}.",
+      "unknown": "If you did not ask for access, you can ignore this email."
+    },
+    "week": {
+      "subject": "There is news about the week in Kadence",
+      "body": "There is news about the week in Kadence. Open the link to see it.",
+      "why": "You get this email because you chose the week's overview by email under Settings → Profile. You can turn it off there too."
     }
   }
 }

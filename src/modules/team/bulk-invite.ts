@@ -43,7 +43,8 @@ import { attachRiderInvitationIn, createRiderIn, RiderInput } from "./riders";
  * 4. create every row in one transaction; if it fails, the rows roll
  *    back and the links are cancelled.
  *
- * Nothing is sent: the coach shares each link from their own phone.
+ * Nothing is sent here: the coach shares each link from their own phone,
+ * or sends it with "Send på mail" where there is mail (mail-invitation.ts).
  */
 
 export const BulkInviteInput = z.object({

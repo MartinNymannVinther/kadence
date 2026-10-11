@@ -249,6 +249,10 @@ export function columnNames(columns: string): string[] {
  *   rather than the team, and nothing about training. That reminders were
  *   turned on and off is in the audit trail, without the address. Nor
  *   `push_runs`, the run's marks beside it: when a reminder went out.
+ * - `mail_preferences`: whether a parent has chosen the week by mail too,
+ *   and in which language (ADR 0086). The person's own choice, which the
+ *   policy shows to nobody else, the coach exporting included, and nothing
+ *   about training. That it was turned on and off is in the audit trail.
  * - `planned_session_deletions`: a deleted session's day and title, kept
  *   for seven days so a rider's reminder can say the plan changed (ADR
  *   0060, drizzle/0037). The deletion itself, and this record of it, are

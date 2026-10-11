@@ -36,7 +36,15 @@ type Refusal = { problems: LineProblem[]; listProblem: ListProblemCode | null; f
  * "Del". The browser reads the list for the preview; the server reads it
  * again, checks it against the team and decides.
  */
-export function BulkInviteDialog({ team, today }: { team: string; today: string }) {
+export function BulkInviteDialog({
+  team,
+  today,
+  mailOn,
+}: {
+  team: string;
+  today: string;
+  mailOn: boolean;
+}) {
   const t = useTranslations("riders.bulk");
   const common = useTranslations("common");
   const { run, pending } = useRun();
@@ -90,7 +98,7 @@ export function BulkInviteDialog({ team, today }: { team: string; today: string 
       <Dialog open={open} onOpenChange={reset}>
         <DialogContent className="sm:max-w-2xl">
           {created ? (
-            <BulkResult lines={created} team={team} onDone={() => reset(false)} />
+            <BulkResult lines={created} team={team} mailOn={mailOn} onDone={() => reset(false)} />
           ) : (
             <form onSubmit={submit} className="flex min-w-0 flex-col gap-4">
               <DialogHeader>

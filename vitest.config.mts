@@ -55,6 +55,15 @@ export default defineConfig({
       // and a stand-in fetch (tests/push); an empty value is "not set".
       PUSH_PUBLIC_KEY: "",
       PUSH_PRIVATE_KEY: "",
+      // Mail is off (docs/adr/0086): with a developer's SMTP settings the
+      // suite would send real mail. A test that needs mail on sets the five
+      // in vi.hoisted and sends through a recording transport
+      // (tests/helpers/mail.ts); the mailer refuses SMTP in a test anyway.
+      SMTP_HOST: "",
+      SMTP_PORT: "",
+      SMTP_USER: "",
+      SMTP_PASSWORD: "",
+      MAIL_FROM: "",
     },
     environment: "node",
     include: ["tests/**/*.test.ts"],
