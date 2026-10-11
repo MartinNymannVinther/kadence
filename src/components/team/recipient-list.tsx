@@ -3,13 +3,23 @@
 import { useLocale, useTranslations } from "next-intl";
 import { formatStamp } from "@/core/dates";
 import type { Recipient } from "./invitation-recipients";
+import { MailInvitationButton } from "./mail-invitation-button";
 import { ShareInvitationButton } from "./share-invitation-button";
 
 /**
  * The people with a link, one row each: who they are to the team, the
- * address the link is bound to, until when it works, and "Del".
+ * address the link is bound to, until when it works, "Del", and "Send på
+ * mail" where the installation sends mail (docs/adr/0086).
  */
-export function RecipientList({ recipients, team }: { recipients: Recipient[]; team: string }) {
+export function RecipientList({
+  recipients,
+  team,
+  mailOn = false,
+}: {
+  recipients: Recipient[];
+  team: string;
+  mailOn?: boolean;
+}) {
   const t = useTranslations("riders.recipients");
   const locale = useLocale();
   const children = (r: Recipient) =>
@@ -36,7 +46,10 @@ export function RecipientList({ recipients, team }: { recipients: Recipient[]; t
                 {t("until", { until: formatStamp(new Date(r.link.expiresAt), locale) })}
               </span>
             </span>
-            <ShareInvitationButton recipient={r} link={r.link} team={team} />
+            <span className="flex flex-wrap gap-2">
+              {mailOn && <MailInvitationButton invitationId={r.link.id} name={r.name} />}
+              <ShareInvitationButton recipient={r} link={r.link} team={team} />
+            </span>
           </li>
         ) : null,
       )}

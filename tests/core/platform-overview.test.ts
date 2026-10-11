@@ -86,6 +86,8 @@ describe("the installation's overview", () => {
       riders: 1,
       parents: 0,
       members: 1,
+      aiUnpricedMonth: 0,
+      aiBudgetMicro: null,
       pilot: { week: "2026-10-05", riders: 0, checkedIn: 0, sessions: 0, receipts: 0, minutes: 0 },
     };
     const now = new Date("2026-10-11T12:00:00Z");
@@ -96,6 +98,7 @@ describe("the installation's overview", () => {
         lastSeen: new Date("2026-10-10T12:00:00Z"),
         fileBytes: 10,
         aiCallsDay: 2,
+        aiCostMonthMicro: 1_500,
       },
       {
         ...base,
@@ -103,15 +106,33 @@ describe("the installation's overview", () => {
         lastSeen: new Date("2026-09-01T12:00:00Z"),
         fileBytes: 5,
         aiCallsDay: 0,
+        aiCostMonthMicro: 0,
       },
-      { ...base, kind: "personal" as const, lastSeen: null, fileBytes: 0, aiCallsDay: 1 },
-      { ...base, kind: "club" as const, lastSeen: now, fileBytes: 999, aiCallsDay: 9 },
+      {
+        ...base,
+        kind: "personal" as const,
+        lastSeen: null,
+        fileBytes: 0,
+        aiCallsDay: 1,
+        aiCostMonthMicro: 500,
+        aiUnpricedMonth: 2,
+      },
+      {
+        ...base,
+        kind: "club" as const,
+        lastSeen: now,
+        fileBytes: 999,
+        aiCallsDay: 9,
+        aiCostMonthMicro: 9_999,
+      },
     ];
     expect(personsSummary(rows, now)).toEqual({
       count: 3,
       seenWeek: 1,
       fileBytes: 15,
       aiCallsDay: 3,
+      aiCostMonthMicro: 2_000,
+      aiUnpricedMonth: 2,
     });
   });
 
@@ -157,6 +178,44 @@ describe("the installation's overview", () => {
       "pilot_sessions",
       "pilot_receipts",
       "pilot_minutes",
+      "ai_cost_month_micro",
+      "ai_unpriced_month",
+      "ai_budget_micro",
     ]);
+  });
+
+  /**
+   * docs/adr/0089: this month's cost on the installation's key, the calls
+   * whose price is unknown, and the workspace's own budget. A call on the
+   * workspace's own key and a call from last month are not this month's
+   * bill. The month is Copenhagen's, so "last month" is placed safely
+   * before its first day.
+   */
+  it("adds this month's AI cost, the unpriced calls and the budget", async () => {
+    await admin.query(
+      `insert into ai_calls (org_id, kind, engine, tokens_in, tokens_out, cost_micro, billed_to, created_at) values
+         ('org_ov_club', 'test', 'mistral:x', 1000, 100, 1200, 'installation', now()),
+         ('org_ov_club', 'test', 'mistral:x', 1000, 100, 300, 'installation', now()),
+         ('org_ov_club', 'test', 'mistral:x', 1000, 100, 9000, 'workspace', now()),
+         ('org_ov_club', 'test', 'mistral:x', 1000, 100, null, 'installation', now()),
+         ('org_ov_club', 'test', 'mistral:x', null, null, null, 'installation', now()),
+         ('org_ov_club', 'test', 'mistral:x', 1000, 100, 7777,  'installation',
+          date_trunc('month', now() at time zone 'Europe/Copenhagen') at time zone 'Europe/Copenhagen' - interval '1 hour')`,
+    );
+    let club = (await platformOverview("user_ov_owner"))?.find((c) => c.orgId === "org_ov_club");
+    expect(club).toMatchObject({ aiCostMonthMicro: 1500, aiUnpricedMonth: 1, aiBudgetMicro: null });
+
+    const owner = await admin.connect();
+    try {
+      await owner.query("begin");
+      await owner.query("select set_config('app.user_id', 'user_ov_owner', true)");
+      await owner.query("select set_ai_budget('org_ov_club', 12000000)");
+      await owner.query("commit");
+    } finally {
+      owner.release();
+    }
+    club = (await platformOverview("user_ov_owner"))?.find((c) => c.orgId === "org_ov_club");
+    expect(club?.aiBudgetMicro).toBe(12_000_000);
+    await admin.query("delete from ai_calls where org_id = 'org_ov_club'");
   });
 });

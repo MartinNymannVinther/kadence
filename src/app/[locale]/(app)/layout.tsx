@@ -70,10 +70,13 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const logo = images?.logo ?? null;
   const t = await getTranslations("app.nav");
   const isCoach = Boolean(me?.isCoach);
-  // Opening Kadence is when races are read from Cykling Danmark (ADR 0039):
-  // a coach's visit reads the whole team, at most once an hour (ADR 0083),
-  // a rider's their own, in the background after the page, and only what
-  // is more than three hours old.
+  // Opening Kadence puts races from Cykling Danmark in the queue (ADR 0039):
+  // a coach's visit the whole team, at most once an hour (ADR 0083), a
+  // rider's their own, and only what is more than three hours old. The
+  // reading is a job (ADR 0085); after() is only for the putting in, a
+  // query or two the page need not wait for. Lost in a deploy, it loses
+  // nothing: a coach's team is read by the hourly dcu.races job anyway,
+  // and a rider's own races by their next visit.
   if (context && me?.isCoach) after(() => refreshStaleRacesOnVisit(context));
   else if (context && me?.rider) after(() => refreshOwnRacesLater(context));
   // One menu per role, in two tiers (ADR 0061, 0068, 0077). The club

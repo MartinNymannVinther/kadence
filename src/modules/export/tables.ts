@@ -169,7 +169,7 @@ export const EXPORT_TABLES: ExportTable[] = [
     table: "team_settings",
     sheet: "Indstillinger",
     columns:
-      "id, org_id, team_kind, ai_on_rider_data, allow_youth_weight, updated_by, created_at, updated_at, guidance, club_championship, low_intensity_first",
+      "id, org_id, team_kind, ai_on_rider_data, allow_youth_weight, updated_by, created_at, updated_at, guidance, club_championship, low_intensity_first, ai_budget_micro",
   },
   // The club championship (ADR 0051): the club's own seasons, rounds,
   // results and roll of honour.
@@ -249,11 +249,17 @@ export function columnNames(columns: string): string[] {
  *   rather than the team, and nothing about training. That reminders were
  *   turned on and off is in the audit trail, without the address. Nor
  *   `push_runs`, the run's marks beside it: when a reminder went out.
+ * - `mail_preferences`: whether a parent has chosen the week by mail too,
+ *   and in which language (ADR 0086). The person's own choice, which the
+ *   policy shows to nobody else, the coach exporting included, and nothing
+ *   about training. That it was turned on and off is in the audit trail.
  * - `planned_session_deletions`: a deleted session's day and title, kept
  *   for seven days so a rider's reminder can say the plan changed (ADR
  *   0060, drizzle/0037). The deletion itself, and this record of it, are
  *   in the audit trail, which is exported.
- * - `ai_calls`: a counter for rate limiting, not something a workspace owns.
+ * - `ai_calls`: a counter for the ceilings and the month's AI budget, with
+ *   tokens and cost (ADR 0089) — metering, no content, not something a
+ *   workspace owns.
  * - `workspace_llm_settings`: the model choice, which holds an encrypted
  *   key; a workspace that leaves gets its data, not its secrets.
  * - Everything Better Auth owns (users, sessions, accounts, passkeys, two

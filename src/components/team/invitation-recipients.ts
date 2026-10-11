@@ -8,7 +8,8 @@ import type { CreatedLine } from "@/modules/team/bulk-invite";
  * open invitations for "Links, der venter".
  */
 
-export type RecipientLink = { url: string; email: string; expiresAt: string };
+/** `id` is the invitation's, for "Send på mail" (docs/adr/0086); the server checks it again. */
+export type RecipientLink = { id: string; url: string; email: string; expiresAt: string };
 
 export type Recipient = {
   key: string;
@@ -87,6 +88,7 @@ export function waitingRecipients(input: {
     const invitation = !row.userId && row.invitationId ? open.get(row.invitationId) : undefined;
     if (!invitation) return null;
     return {
+      id: invitation.id,
       url: invitation.url,
       email: invitation.email,
       expiresAt: invitation.expiresAt.toISOString(),

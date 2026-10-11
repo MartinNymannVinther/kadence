@@ -19,7 +19,7 @@
       "titleFor": "Link til {email}",
       "copy": "Kopiér link",
       "copied": "Kopieret",
-      "noMail": "Kadence sender ingen mail. Kopiér linket, og send det selv på sms eller mail. Det virker kun for den e-mailadresse."
+      "noMail": "Kopiér linket, og send det selv på sms eller mail. Det virker kun for den e-mailadresse."
     },
     "rider": "Rytter"
   },
@@ -91,7 +91,20 @@
       "failed": "Adgangskoden kunne ikke gemmes. Prøv igen.",
       "missing": "Linket er ikke helt. Bed en træner på dit hold om et nyt.",
       "done": "Din adgangskode er skiftet, og du er logget ud alle andre steder.",
-      "login": "Log ind"
+      "login": "Log ind",
+      "bodyMail": "Linket kom på mail. Det virker én gang, og du bliver logget ud alle andre steder.",
+      "invalidMail": "Linket er brugt, udløbet eller ikke helt. Bed om et nyt under Glemt adgangskode."
+    },
+    "forgot": {
+      "title": "Glemt adgangskode",
+      "body": "Skriv den e-mail, du logger ind med. Så sender vi et link, hvor du kan vælge en ny adgangskode.",
+      "email": "E-mail",
+      "submit": "Send linket",
+      "sent": "Hvis adressen findes i Kadence, har vi sendt et link til den. Linket virker i en time. Kig også i spam, hvis det ikke kommer.",
+      "tooMany": "Der er bedt om mange links på kort tid. Prøv igen om en time.",
+      "failed": "Det lykkedes ikke at sende. Prøv igen om lidt.",
+      "coach": "Du kan også bede en træner på dit hold om et link. Har du en passkey, kan du logge ind med den i stedet.",
+      "back": "Tilbage til log ind"
     },
     "login": {
       "forgot": "Glemt adgangskode?",
@@ -234,6 +247,18 @@
         "body": "Når en træner laver et link til at nulstille din adgangskode, står det her. Har du ikke bedt om det, så sig det til en træner.",
         "item": "{name} lavede et link {date}"
       },
+      "address": {
+        "title": "Din e-mailadresse",
+        "verified": "Bekræftet",
+        "unverified": "Ikke bekræftet endnu",
+        "body": "Bekræft adressen, så du ved, at mails fra Kadence når frem. Kadence sender kun korte mails med et link, aldrig noget om træning eller helbred.",
+        "send": "Send en mail til bekræftelse",
+        "sent": "Mailen er på vej til {email}. Tryk på linket i den. Det virker i en time.",
+        "tooMany": "Du har bedt om flere mails på kort tid. Prøv igen om en time.",
+        "failed": "Mailen kunne ikke sendes. Prøv igen om lidt.",
+        "done": "Tak. Din adresse er bekræftet.",
+        "expired": "Linket er brugt, udløbet eller ikke helt. Send en ny mail."
+      },
       "title": "Sikkerhed",
       "subtitle": "Passkeys og totrinsbekræftelse for din konto.",
       "passkeys": {
@@ -369,6 +394,12 @@
       "linkBody": "Vises kun nu. Kopiér det og send det selv. Det virker i 7 dage og kun én gang.",
       "copy": "Kopiér link",
       "copiedToast": "Linket er kopieret.",
+      "linkBodyMail": "Vises kun nu. Send det på mail, eller kopiér det og send det selv. Det virker i 7 dage og kun én gang.",
+      "mail": "Send linket",
+      "mailed": "Sendt",
+      "mailedToast": "Linket er sendt til {email}.",
+      "mailTooMany": "Linket er sendt flere gange lige nu. Prøv igen om en time, eller kopiér det.",
+      "mailFailed": "Mailen kunne ikke sendes. Kopiér linket, og send det selv.",
       "inviteTitle": "Inviter direkte",
       "inviteBody": "Uden ansøgning først. Samme link, samme regler.",
       "inviteEmail": "E-mail",
@@ -396,7 +427,7 @@
       "resetLink": {
         "button": "Link til ny adgangskode",
         "title": "Link til ny adgangskode til {name}",
-        "body": "Send linket til {name} selv, fx på SMS. Det virker én gang og kun indtil kl. {until}. Kadence sender ingen mails.",
+        "body": "Send linket til {name} selv, fx på SMS. Det virker én gang og kun indtil kl. {until}.",
         "copy": "Kopiér",
         "copied": "Kopieret",
         "seen": "{name} kan se på sin sikkerhedsside, at du har lavet linket, og bliver logget ud alle andre steder, når det bruges.",
@@ -472,10 +503,38 @@
       "newClub": "En ny klub kommer ind gennem en ansøgning, som du godkender.",
       "toAccess": "Gå til Adgang",
       "help": "Vil en klub have hjælp, kan den invitere dig som træner for en tid. Det står i dens medlemsliste og i loggen, og klubben fjerner dig igen bagefter.",
+      "aiMonth": {
+        "title": "AI denne måned",
+        "body": "Det, installationens nøgle har brugt for hver klub siden den 1., og klubbens budget. Når budgettet er brugt, holder AI'en pause for klubben til næste måned, og alt andet virker. Et tomt felt er standarden på {budget}.",
+        "total": "I alt {total}: klubberne {clubs}, enkeltpersonerne {persons}.",
+        "unknownTotal": "{count, plural, one {# kald} other {# kald}} har en pris, Kadence ikke kender, og er ikke talt med.",
+        "unknown": "pris ukendt for {count, plural, one {# kald} other {# kald}}",
+        "club": "Klub",
+        "spent": "Brugt",
+        "budget": "Budget",
+        "spentOf": "{spent} af {budget}",
+        "noBudget": "intet loft",
+        "budgetLabel": "Månedligt AI-budget i euro for {club}",
+        "save": "Gem",
+        "saved": "Gemt.",
+        "invalid": "Skriv et beløb i euro, fx 7,50, eller lad feltet stå tomt.",
+        "failed": "Budgettet blev ikke gemt. Prøv igen."
+      },
       "persons": {
         "title": "Enkeltpersoner",
         "counts": "{count, plural, one {# personligt arbejdsrum} other {# personlige arbejdsrum}}, {seen, plural, one {# brugt} other {# brugt}} den seneste uge · {mb, number} MB filer · {ai, plural, one {# AI-kald} other {# AI-kald}} det seneste døgn",
+        "aiMonth": "{cost} til AI denne måned",
         "privacy": "Folk, der bruger Kadence alene. Du ser kun tallene samlet, aldrig navne."
+      },
+      "jobs": {
+        "title": "Baggrundsarbejde",
+        "counts": "{pending, plural, =0 {Intet venter} one {# job venter} other {# job venter}}, og {failed, plural, =0 {intet er opgivet} one {# er opgivet} other {# er opgivet}}.",
+        "oldest": "Det ældste har ventet {minutes, plural, one {# minut} other {# minutter}}.",
+        "last": "Sidst taget: {when}.",
+        "never": "Intet job er taget endnu.",
+        "inWorker": "En worker-container kører jobbene.",
+        "inApp": "Appen kører jobbene selv, fordi der ikke er sat en worker op.",
+        "failedHelp": "Et opgivet job er prøvet fem gange. Vejledningen til drift (docs/deploy.md) fortæller, hvordan du ser det og prøver det igen."
       }
     },
     "ai": {
@@ -526,6 +585,10 @@
       "limitsHint": "Et modelkald koster penge på en hostet installation og minutter på en lokal. Tallene er rundhåndede for et menneske og nærige for et script.",
       "perUser": "Kald pr. bruger i timen",
       "perWorkspace": "Kald pr. arbejdsrum i døgnet",
+      "perMonth": "AI-budget denne måned",
+      "perMonthValue": "{spent} af {budget}",
+      "perMonthNone": "{spent}, intet loft",
+      "perMonthOwnKey": "Arbejdsrummet bruger sin egen nøgle og betaler selv, så budgettet gælder ikke.",
       "messageLength": "Tegn i en besked, højst",
       "principlesTitle": "Sådan bruger Kadence AI",
       "principleDecides": "AI'en svarer, mennesket beslutter. Modellen skriver et svar; den sender aldrig noget ud af huset, sletter aldrig noget og ændrer intet uden at du gør det.",
@@ -551,6 +614,7 @@
       "setupLocalComment": "eller lokalt (Ollama)",
       "setupKeyPlaceholder": "din-nøgle-her",
       "perInstallation": "Kald i hele installationen i døgnet",
+      "failBudget": "Arbejdsrummets AI-budget for måneden er brugt, så AI'en holder pause til næste måned. Ejeren af installationen kan give mere.",
       "failCeiling": "Kadences eget loft over AI-kald blev nået, ikke udbyderens. Loftet står under “Loft over AI-kald” herunder; installationens samlede loft sættes med AI_DAILY_CALL_CAP. Prøv igen om lidt."
     },
     "members": {
@@ -755,7 +819,7 @@
     "subprocessorsNote": "Hvem der kan se hvad, står i",
     "shareLinks": {
       "title": "Invitationer",
-      "body": "Et invitationslink gælder én adresse og udløber efter en uge. Det er dig der sender det; vi sender ingen mails."
+      "body": "Et invitationslink gælder én adresse og udløber efter en uge. Det er dig, der sender det."
     }
   },
   "join": {
@@ -818,7 +882,7 @@
       },
       "password": {
         "title": "Glemt adgangskode",
-        "body": "Kadence sender ingen mails, så vejen tilbage går gennem en træner. En træner åbner Indstillinger → Arbejdsrum, trykker Link til ny adgangskode ved personen og sender linket selv, fx på SMS. Linket virker én gang og kun den næste time; den, der bruger det, vælger en ny adgangskode og bliver logget ud alle andre steder. Personen kan altid se på sin sikkerhedsside, at et link er lavet, og af hvem. En træner kan lave links til ryttere, forældre og andre trænere på holdet, men ikke til holdets ejer; en ejer, der har glemt sin adgangskode, logger ind med sin passkey eller får hjælp af den, der driver Kadence. Har du slået totrinsbekræftelse til, skal du stadig bruge koden fra din app."
+        "body": "Er Kadence sat op til at sende mail, står der et link under Glemt adgangskode på siden Log ind, og så kan du selv få et link på mail. Ellers går vejen tilbage gennem en træner. En træner åbner Indstillinger → Arbejdsrum, trykker Link til ny adgangskode ved personen og sender linket selv, fx på SMS. Linket virker én gang og kun den næste time; den, der bruger det, vælger en ny adgangskode og bliver logget ud alle andre steder. Personen kan altid se på sin sikkerhedsside, at et link er lavet, og af hvem. En træner kan lave links til ryttere, forældre og andre trænere på holdet, men ikke til holdets ejer; en ejer, der har glemt sin adgangskode, logger ind med sin passkey eller får hjælp af den, der driver Kadence. Har du slået totrinsbekræftelse til, skal du stadig bruge koden fra din app."
       },
       "words": {
         "title": "Pas, forløb, program og sæsonplan",
@@ -1117,6 +1181,8 @@
   },
   "errors": {
     "too_many_reset_links": "Du har lavet mange links lige nu. Prøv igen om en time.",
+    "too_many_mails": "Du har sendt mange mails lige nu. Prøv igen om en time, eller del linket i stedet.",
+    "mail_not_sent": "Mailen kunne ikke sendes. Del linket i stedet, eller prøv igen om lidt.",
     "unauthorized": "Du er ikke logget ind længere.",
     "forbidden": "Det må du ikke her. Spørg en træner på holdet.",
     "invalid": "Noget i formularen er ikke gyldigt.",
@@ -1682,6 +1748,9 @@
       "until": "Virker til {until}",
       "share": "Del",
       "shareLabel": "Del linket med {name}",
+      "mail": "Send på mail",
+      "mailLabel": "Send linket til {name} på mail",
+      "mailed": "Sendt",
       "copied": "Teksten med linket er kopieret. Sæt den ind i en sms eller en chat.",
       "failed": "Linket kunne ikke deles eller kopieres. Prøv igen.",
       "textRider": "Hej {name}. Du er inviteret med på holdet {team} i Kadence som rytter. Åbn linket, og opret din konto med {email}. Linket virker til {until}.",
@@ -2998,6 +3067,7 @@
       "notAllowed": "Holdet har ikke givet AI'en lov til at læse rytternes data. Det er slået fra som standard, fordi det er helbredsdata om unge.",
       "notAllowedLink": "Indstillinger → Holdet",
       "rateLimited": "Der er brugt mange AI-kald lige nu. Prøv igen om lidt.",
+      "budget": "AI'en holder pause til næste måned. Alt andet virker.",
       "unreachable": "Sprogmodellen svarer ikke. Prøv igen om lidt.",
       "badAnswer": "Sprogmodellen svarede med noget, der ikke kunne bruges. Prøv igen.",
       "notFound": "Det findes ikke længere. Genindlæs siden.",
@@ -3508,6 +3578,13 @@
     "body": "Kadence kan minde dig om det vigtigste på denne enhed. Der kommer ingen påmindelser mellem 21.30 og 7.",
     "bodyCoach": "Kadence kan minde dig om det vigtigste på denne enhed. Mellem 21.30 og 7 kommer kun påmindelser om trivsel.",
     "privacy": "Selve beskeden hentes fra Kadence, når den kommer. Din browsers push-tjeneste ser kun, at der er noget nyt.",
+    "weekMail": {
+      "title": "Ugen på mail",
+      "body": "Søndag aften kan du også få en kort mail om, at der er nyt om ugen. Der står intet om dit barn i mailen, kun et link til Kadence.",
+      "label": "Ugens overblik også på mail",
+      "hint": "Mailen går til {email}.",
+      "hintPlain": "Mailen går til den adresse, du logger ind med."
+    },
     "enable": "Slå påmindelser til på denne enhed",
     "disable": "Slå fra",
     "on": "Påmindelser er slået til på denne enhed.",
@@ -5642,6 +5719,42 @@
     "download": {
       "button": "Hent som fil",
       "print": "Udskriv eller gem som PDF"
+    }
+  },
+  "mail": {
+    "greeting": "Hej",
+    "signoff": "Venlig hilsen\nKadence",
+    "verify": {
+      "subject": "Bekræft din e-mailadresse",
+      "body": "Tryk på linket for at bekræfte, at adressen er din. Linket virker i en time.",
+      "ignore": "Har du ikke bedt om det, kan du se bort fra mailen. Der sker ikke noget med din konto."
+    },
+    "reset": {
+      "subject": "Vælg en ny adgangskode til Kadence",
+      "body": "Der er bedt om et link til at vælge en ny adgangskode til din konto i Kadence. Linket virker én gang og i en time. Når du har gemt den nye adgangskode, bliver du logget ud alle andre steder.",
+      "ignore": "Har du ikke bedt om det, kan du se bort fra mailen. Din adgangskode er den samme som før."
+    },
+    "invite": {
+      "subject": "Du er inviteret til {team} i Kadence",
+      "rider": "{inviter} har inviteret dig med på holdet {team} i Kadence som rytter.",
+      "parentOf": "{inviter} har inviteret dig med på holdet {team} i Kadence som forælder til {child}.",
+      "parent": "{inviter} har inviteret dig med på holdet {team} i Kadence som forælder.",
+      "member": "{inviter} har inviteret dig med på holdet {team} i Kadence.",
+      "how": "Åbn linket, og opret din konto med den adresse, mailen er sendt til. Linket virker til {until}.",
+      "parentNext": "Når {child} har sagt ja til dig i Kadence, kan du følge med.",
+      "parentNextPlain": "Når rytteren har sagt ja til dig i Kadence, kan du følge med.",
+      "unknown": "Kender du ikke {inviter} eller holdet, kan du se bort fra mailen."
+    },
+    "access": {
+      "subject": "Du kan nu komme ind i Kadence",
+      "body": "{inviter} har givet dig adgang til Kadence med arbejdsrummet {workspace}.",
+      "how": "Åbn linket, og opret din konto med den adresse, mailen er sendt til. Linket virker én gang og til {until}.",
+      "unknown": "Har du ikke bedt om adgang, kan du se bort fra mailen."
+    },
+    "week": {
+      "subject": "Der er nyt om ugen i Kadence",
+      "body": "Der er nyt om ugen i Kadence. Åbn linket for at se den.",
+      "why": "Du får mailen, fordi du har valgt ugens overblik på mail under Indstillinger → Profil. Der kan du også slå den fra."
     }
   }
 }

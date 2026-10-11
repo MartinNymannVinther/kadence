@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { authClient } from "@/core/auth/client";
 import { Link, useRouter } from "@/i18n/navigation";
 
-export function LoginForm({ signupOpen }: { signupOpen: boolean }) {
+export function LoginForm({ signupOpen, mailOn }: { signupOpen: boolean; mailOn: boolean }) {
   const t = useTranslations("auth.login");
   const router = useRouter();
   const [pending, setPending] = useState(false);
@@ -96,12 +96,21 @@ export function LoginForm({ signupOpen }: { signupOpen: boolean }) {
               />
             </Field>
           </FieldGroup>
-          <details className="text-sm">
-            <summary className="focus-ring text-primary w-fit cursor-pointer font-medium">
+          {mailOn ? (
+            <Link
+              href="/forgot-password"
+              className="focus-ring text-primary w-fit text-sm font-medium underline-offset-4 hover:underline"
+            >
               {t("forgot")}
-            </summary>
-            <p className="text-muted-foreground mt-1.5 leading-relaxed">{t("forgotBody")}</p>
-          </details>
+            </Link>
+          ) : (
+            <details className="text-sm">
+              <summary className="focus-ring text-primary w-fit cursor-pointer font-medium">
+                {t("forgot")}
+              </summary>
+              <p className="text-muted-foreground mt-1.5 leading-relaxed">{t("forgotBody")}</p>
+            </details>
+          )}
           {error ? (
             <p role="alert" className="text-destructive text-sm">
               {error}

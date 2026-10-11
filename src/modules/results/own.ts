@@ -1,13 +1,14 @@
 import { and, eq, gte, isNull, or } from "drizzle-orm";
 import { forget, recall, remember } from "@/core/counters";
 import { env } from "@/core/env";
+import { enqueue } from "@/core/jobs/queue";
 import { calendarEvents, raceResults, riders } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { todayInCopenhagen } from "@/core/dates";
 import { whoAmIIn } from "@/modules/team/access";
 import type { DcuProfile } from "./dcu-profile";
 import { planImport } from "./plan";
-import { enqueue } from "./queue";
+import { dcuReadRider, readKey } from "./queue";
 import { exclusive, readProfile, sinceFor, STALE_MS, staleSince } from "./read";
 import type { RefreshOutcome } from "./refresh";
 import { readsRacesFor } from "./switch";
@@ -118,11 +119,13 @@ export async function refreshOwnRaces(
   return outcome === "busy" ? { state: "busy" } : outcome;
 }
 
-/** When a rider opens Kadence: their own races, in the line, if they are more than three hours old. */
-export function refreshOwnRacesLater(ctx: OrgContext): void {
+/**
+ * When a rider opens Kadence: their own races, in the line as a job for
+ * the worker (queue.ts), which reads them if they are more than three
+ * hours old.
+ */
+export async function refreshOwnRacesLater(ctx: OrgContext): Promise<void> {
   if (env.DCU_RESULTS === "off") return;
-  enqueue(`rider:${ctx.orgId}:${ctx.userId}`, async () => {
-    const outcome = await refreshOwnRaces(ctx);
-    return outcome.state === "read" || outcome.state === "failed";
-  });
+  const reading = { as: "rider" as const, userId: ctx.userId };
+  await enqueue(dcuReadRider, reading, { orgId: ctx.orgId, dedupeKey: readKey(reading) });
 }

@@ -16,6 +16,7 @@ import { authDb } from "@/core/db/client";
 import * as schema from "@/core/db/schema";
 import { env } from "@/core/env";
 import { coachesTeam, COACH_ONLY_PATHS, trimForMember } from "./coach-only";
+import { resetByMail, verificationByMail } from "./mail-hooks";
 import {
   countUsers,
   DEMO_HEADER,
@@ -88,18 +89,24 @@ export const auth = betterAuth({
     cookieCache: { enabled: true, maxAge: 5 * 60 },
   },
   account: { modelName: "accounts" },
+  // A link to confirm the address, asked for under Settings → Sikkerhed;
+  // only when the installation sends mail (docs/adr/0086).
+  ...verificationByMail(),
   verification: { modelName: "verifications" },
   emailAndPassword: {
     enabled: true,
-    // OWASP ASVS: minimum 12 characters. No email provider before phase 2,
-    // so verification is intentionally off (recorded in ADR 0001).
+    // OWASP ASVS: minimum 12 characters. A confirmed address is not
+    // required to sign in (docs/adr/0086); S-08 asks for one first from a
+    // person who signs up alone.
     minPasswordLength: 12,
     requireEmailVerification: false,
-    // A link a coach made (ADR 0032) is the way back in: using it signs the
-    // person out everywhere else, and the audit trail keeps that it was
-    // used. Asking for a link by e-mail stays closed, since there is no
-    // sendResetPassword.
+    // A link a coach made (ADR 0032) is the way back in on every
+    // installation: using it signs the person out everywhere else, and the
+    // audit trail keeps that it was used. With mail (docs/adr/0086) the
+    // person can ask for the same link by e-mail at /forgot-password;
+    // without it there is no sendResetPassword, and Better Auth refuses.
     revokeSessionsOnPasswordReset: true,
+    ...resetByMail(),
     onPasswordReset: async ({ user }) => {
       await recordAuthEvent({
         action: "auth.password_reset",
@@ -120,6 +127,10 @@ export const auth = betterAuth({
     customRules: {
       "/sign-in/email": { window: 60, max: 10 },
       "/reset-password": { window: 60, max: 10 },
+      // The mail doors, for a caller that comes straight to Better Auth
+      // rather than through /forgot-password (docs/adr/0086).
+      "/request-password-reset": { window: 60 * 60, max: 5 },
+      "/send-verification-email": { window: 60 * 60, max: 5 },
       "/sign-up/email": { window: 60, max: 10 },
       "/two-factor/verify-totp": { window: 60, max: 10 },
     },

@@ -275,6 +275,11 @@ describe("rls coverage (guards future tables)", () => {
     // written on every limited request. The same kind of row as
     // Better Auth's rate_limits beside it, and as little anybody's.
     "app_rate_limits",
+    // The background jobs (drizzle/0047, docs/adr/0085): machinery the
+    // worker writes on every run, holding ids, days, counts and short words
+    // only (src/core/jobs/payload.ts, tests/jobs/payload.test.ts). What a
+    // job does to a team's rows is audited where it lands.
+    "jobs",
     // Admission, which happens before a workspace exists to own it.
     "access_requests",
     "access_invitations",
@@ -292,6 +297,11 @@ describe("rls coverage (guards future tables)", () => {
     // reminders on, changing them and turning them off stay audited, and
     // tests/push/isolation.test.ts proves both.
     "push_runs",
+    // The installation's price list for model calls (drizzle/0049,
+    // docs/adr/0089): nobody owns it, the application role only reads it,
+    // and only a migration writes it, so its history is the migration's
+    // history in git. tests/ai/prices-table.test.ts proves both.
+    "ai_prices",
   ];
 
   it("every domain table has an audit trigger", async () => {
@@ -377,6 +387,13 @@ describe("rls coverage (guards future tables)", () => {
     // Links a new member to the rider or guardian row a coach prepared,
     // for an invitation the caller accepted to their own address.
     "claim_invitation_links",
+    // Which teams have riders with a UCI ID, and one coach of each, for the
+    // hourly job that reads races from Cykling Danmark with nobody signed in
+    // (drizzle/0047, docs/adr/0085). The team's id and the coach's user id,
+    // and nothing else — no rider, no UCI ID, no name. Everything after it
+    // runs as that coach, under the ordinary policies, as the coach's own
+    // visit does; tests/jobs/dcu-teams-due.test.ts proves what it answers.
+    "dcu_teams_due",
     // Deletes a demo whose time is up, its throwaway accounts and every
     // audit row about either, for the clean-up on the auth role
     // (drizzle/0042, docs/adr/0084). Refuses, by doing nothing, anything
@@ -411,6 +428,13 @@ describe("rls coverage (guards future tables)", () => {
     // tests/team/invitation-kind.test.ts proves it, and that the
     // application role cannot call it.
     "invitation_kind",
+    // Who has chosen the parents' week by mail, for the weekly run that
+    // starts with nobody signed in (drizzle/0048, docs/adr/0086): the team
+    // and the person, for people still on the team, and nothing else — no
+    // address, no language, nothing about a child. The run reads all of
+    // that as the person, as push_subscriptions_due's job does.
+    // tests/mail/week.test.ts proves it.
+    "mail_week_due",
     // Moves one rider's history from their rider row in one workspace onto
     // their rider row in another (drizzle/0042, docs/adr/0081): the first
     // function that writes across two workspaces. It moves only when the
@@ -442,6 +466,13 @@ describe("rls coverage (guards future tables)", () => {
     // reads all of that as the owner, under the ordinary policies, so what
     // crosses the boundary is that a person has said yes to reminders.
     "push_subscriptions_due",
+    // A workspace's monthly AI budget, set by the installation's owner
+    // (drizzle/0049, docs/adr/0089). It refuses everyone whose app.user_id
+    // is not the owner, writes one column of one team_settings row — which
+    // a guard trigger keeps every other writer away from — and answers
+    // nothing; the audit trigger on team_settings records the change.
+    // tests/ai/budget.test.ts proves the refusal and the guard.
+    "set_ai_budget",
     // The addresses the caller may read (drizzle/0034, docs/adr/0070),
     // now that the application role has no SELECT on users.email: the
     // caller's own, the whole team's to a coach of the active team, and

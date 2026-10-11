@@ -1,11 +1,13 @@
 "use server";
 
 import { headers } from "next/headers";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { z } from "zod";
 import { getSession } from "@/core/auth/session";
 import { errorName, log } from "@/core/log";
+import { mailLocale } from "@/core/mail/words";
 import { clientAddress } from "@/core/rate-limit";
+import { mailAccessInvitation } from "./mail";
 import { firstName, PersonalFields, riderNameFor, workspaceNameKey } from "./personal";
 import {
   approveAccessRequest,
@@ -156,6 +158,30 @@ export async function renewInvitationAction(
     return { ok: true, data: issued(await renewInvitation(actor, String(invitationId))) };
   } catch (error) {
     console.error("access: renew failed", error);
+    return { ok: false, error: "generic" };
+  }
+}
+
+/**
+ * "Send linket": the link just shown, sent to the address it admits
+ * (docs/adr/0086). The browser hands back the key it was shown; the
+ * server sends it only if it names an open invitation, and only there.
+ */
+export async function mailAccessInvitationAction(
+  token: string,
+): Promise<OwnerActionResult<{ email: string }> | { ok: false; error: "rateLimited" }> {
+  const actor = await ownerUserId();
+  if (!actor) return { ok: false, error: "unauthorized" };
+  if (typeof token !== "string" || token.length < 1 || token.length > 200)
+    return { ok: false, error: "invalid" };
+  try {
+    const sent = await mailAccessInvitation(actor, token, mailLocale(await getLocale()));
+    if (sent === "rateLimited") return { ok: false, error: "rateLimited" };
+    if (typeof sent === "string")
+      return { ok: false, error: sent === "notFound" ? "invalid" : "generic" };
+    return { ok: true, data: sent };
+  } catch (error) {
+    await log.error("access: mailing the link failed", { actor, error: errorName(error) });
     return { ok: false, error: "generic" };
   }
 }

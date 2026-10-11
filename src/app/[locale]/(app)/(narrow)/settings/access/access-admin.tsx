@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Copy, Loader2, RefreshCw, X } from "lucide-react";
+import { Check, Loader2, RefreshCw, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { formatDay } from "@/core/dates";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import {
   approveAccessRequestAction,
   declineAccessRequestAction,
@@ -17,6 +16,7 @@ import {
 } from "@/core/access/actions";
 import { invitationState } from "@/core/access/state";
 import { useRouter } from "@/i18n/navigation";
+import { FreshLink } from "./fresh-link";
 import { InviteForm } from "./invite-form";
 import { DecidedRequests } from "./decided-requests";
 import { KindNote, type KindInfo } from "./kind-note";
@@ -44,15 +44,18 @@ export type InvitationItem = KindInfo & {
 
 /**
  * Approve, decline, invite, and the one thing that cannot be looked up
- * later: the link. It is shown once, right after it is minted, because
+ * later: the link (fresh-link.tsx), to copy or, with mail, to send. It is shown once, right after it is minted, because
  * only its hash is stored. "New link" mints another and retires the old.
  */
 export function AccessAdmin({
   requests,
   invitations,
+  mailOn,
 }: {
   requests: RequestItem[];
   invitations: InvitationItem[];
+  /** Whether the installation sends mail, so the link can be sent (docs/adr/0086). */
+  mailOn: boolean;
 }) {
   const t = useTranslations("settings.access");
   const tCommon = useTranslations("common");
@@ -113,16 +116,6 @@ export function AccessAdmin({
     }
   }
 
-  async function copyFresh() {
-    if (!fresh) return;
-    try {
-      await navigator.clipboard.writeText(fresh.url);
-      toast.success(t("copiedToast"));
-    } catch {
-      toast.error(tCommon("error"));
-    }
-  }
-
   const stateLabel = {
     open: t("stateOpen"),
     used: t("stateUsed"),
@@ -132,19 +125,7 @@ export function AccessAdmin({
 
   return (
     <div className="flex flex-col gap-5">
-      {fresh ? (
-        <div className="border-primary/40 bg-accent rounded-lg border p-4">
-          <p className="text-sm font-semibold">{t("linkTitle", { email: fresh.email })}</p>
-          <p className="text-meta mt-1 text-2sm leading-relaxed">{t("linkBody")}</p>
-          <div className="mt-3 flex gap-2">
-            <Input readOnly value={fresh.url} className="min-w-0 flex-1 font-mono text-xs" />
-            <Button type="button" size="sm" onClick={copyFresh}>
-              <Copy data-slot="icon" />
-              {t("copy")}
-            </Button>
-          </div>
-        </div>
-      ) : null}
+      {fresh ? <FreshLink key={fresh.url} fresh={fresh} mailOn={mailOn} /> : null}
 
       <Card>
         <CardHeader>

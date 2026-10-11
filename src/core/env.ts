@@ -65,16 +65,26 @@ export const EnvSchema = z
     // Off by default: an installation running real work should not hand
     // out accounts, and the route answers 404 while this is "off".
     DEMO: z.enum(["off", "on"]).default("off"),
-    // The whole installation's ceiling on model calls in any 24 hours,
-    // counted across every workspace (src/modules/ai/limits.ts, ADR 0035).
-    // The ceilings per user and per workspace are counted inside a tenant
-    // context and so cannot see each other; this is the one that can. The
-    // default is roughly three workspaces running flat out, which no real
-    // team approaches and a script reaches in an afternoon. 0 turns the
-    // installation ceiling off — the honest setting for a self-hoster
-    // whose model runs on their own machine and costs nothing per call;
-    // the per-user and per-workspace ceilings stand either way.
-    AI_DAILY_CALL_CAP: z.coerce.number().int().min(0).max(1_000_000).default(2000),
+    // Each workspace's AI budget for a calendar month, in micro-euro
+    // (1 € = 1,000,000), counted from what the installation's own key
+    // spent (src/modules/ai/limits.ts, docs/adr/0089). A workspace over it
+    // is told the AI is resting until next month and everything else
+    // works; the installation's owner can give a workspace another budget
+    // under Indstillinger → Installation. 5 € is a few thousand proposals
+    // on Mistral Small. 0 turns budgets off — the honest setting for a
+    // self-hoster on Ollama, where a call costs nothing.
+    AI_MONTHLY_BUDGET_MICRO: z.coerce
+      .number()
+      .int()
+      .min(0)
+      .max(1_000_000_000_000)
+      .default(5_000_000),
+    // An optional emergency roof on model calls in any 24 hours, counted
+    // across every workspace (ADR 0009). Off (0) by default since the
+    // monthly budget per workspace took over its job (docs/adr/0089): a
+    // shared roof let one busy club close the AI for everybody. Set it
+    // when something is running away and you want a hard stop today.
+    AI_DAILY_CALL_CAP: z.coerce.number().int().min(0).max(1_000_000).default(0),
     // How many proxies in front of Kadence append to X-Forwarded-For. The
     // rightmost entries are the ones your own infrastructure wrote and are
     // therefore the only ones worth trusting; everything to the left of
@@ -165,6 +175,21 @@ export const EnvSchema = z
       .string()
       .regex(/^(mailto:|https:\/\/)/)
       .optional(),
+    // Mail through an EU provider (docs/adr/0086), all five or none; without
+    // them nothing is sent and links are shared by hand, as before. MAIL_FROM
+    // is on the provider's verified domain. Secret: SMTP_PASSWORD (Coolify).
+    SMTP_HOST: z.string().min(1).max(255).optional(),
+    SMTP_PORT: z.coerce.number().int().min(1).max(65535).optional(),
+    SMTP_USER: z.string().min(1).max(255).optional(),
+    SMTP_PASSWORD: z.string().min(1).optional(),
+    MAIL_FROM: z.string().min(3).max(320).optional(),
+    // Who runs the background jobs (docs/adr/0085): reminders, rides from
+    // Wahoo, Garmin and Polar, races from Cykling Danmark, the teams page
+    // and the demos' clean-up. "on" means a worker container runs them
+    // (the `worker` service in docker-compose.yml) and the app only puts
+    // them in the queue. Unset, the app runs them itself, as it ran the
+    // reminder timer before: one container is still a whole installation.
+    WORKER: z.enum(["off", "on"]).default("off"),
   })
   .superRefine((value, ctx) => {
     // `next build` runs with NODE_ENV=production and placeholder values
@@ -247,6 +272,17 @@ export const EnvSchema = z
         message:
           "PUSH_PUBLIC_KEY and PUSH_PRIVATE_KEY go together: set both to send reminders, or neither",
         path: [value.PUSH_PUBLIC_KEY ? "PUSH_PRIVATE_KEY" : "PUSH_PUBLIC_KEY"],
+      });
+    }
+    // Half a mail setup fails at the provider's door; refused at start.
+    const mail = ["SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASSWORD", "MAIL_FROM"] as const;
+    const mailSet = mail.filter((key) => value[key] !== undefined);
+    if (mailSet.length > 0 && mailSet.length < mail.length) {
+      const missing = mail.filter((key) => value[key] === undefined);
+      ctx.addIssue({
+        code: "custom",
+        message: `${mail.join(", ")} go together: set all five to send mail, or none. Missing: ${missing.join(", ")}`,
+        path: [missing[0]!],
       });
     }
     if (value.POLAR_WEBHOOK_SECRET && !value.POLAR_CLIENT_ID) {

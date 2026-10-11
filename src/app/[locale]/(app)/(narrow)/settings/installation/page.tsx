@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
+import { AiMonth } from "@/components/insight/ai-month";
+import { InstallationJobs } from "@/components/insight/installation-jobs";
 import { PilotClubs } from "@/components/insight/pilot-clubs";
 import { personsSummary, platformOverview } from "@/core/admin/overview";
 import { getSession } from "@/core/auth/session";
 import { formatDay } from "@/core/dates";
+import { env } from "@/core/env";
+import { jobsOverview } from "@/core/jobs/status";
 import { Link } from "@/i18n/navigation";
+import { DEFAULT_MONTHLY_BUDGET_MICRO } from "@/modules/ai/limits";
+import { formatEuro } from "@/modules/ai/prices";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("settings.installation");
@@ -19,8 +25,11 @@ export async function generateMetadata(): Promise<Metadata> {
  * three numbers for the last full week (ADR 0066). Counts only; the
  * database hands nothing else over. People who use Kadence alone are one
  * line, "Enkeltpersoner", with how many, how many were in this week,
- * their files and AI calls (ADR 0080). Anyone else gets a 404, as for
- * admission.
+ * their files and AI calls (ADR 0080). This month's AI cost per club
+ * against its budget, which the owner can change here, and one total
+ * line (ADR 0089). Below them, the background work (ADR 0085): jobs
+ * waiting and given up, and when a worker last took one. Anyone else
+ * gets a 404, as for admission.
  */
 export default async function InstallationPage() {
   const session = await getSession();
@@ -29,6 +38,7 @@ export default async function InstallationPage() {
   // Clubs one by one; persons alone as one line of counts, never names (ADR 0080).
   const clubs = overview.filter((c) => c.kind === "club");
   const persons = personsSummary(overview);
+  const jobs = await jobsOverview();
 
   const t = await getTranslations("settings.installation");
   const locale = await getLocale();
@@ -103,11 +113,23 @@ export default async function InstallationPage() {
               ai: persons.aiCallsDay,
             })}
           </p>
+          <p className="tabular-nums">
+            {t("persons.aiMonth", { cost: formatEuro(persons.aiCostMonthMicro, locale) })}
+          </p>
           <p className="text-meta text-xs">{t("persons.privacy")}</p>
         </div>
       )}
 
+      <AiMonth
+        clubs={clubs}
+        persons={persons}
+        defaultBudgetMicro={DEFAULT_MONTHLY_BUDGET_MICRO}
+        locale={locale}
+      />
+
       {clubs.length > 0 && <PilotClubs clubs={clubs} />}
+
+      <InstallationJobs jobs={jobs} worker={env.WORKER === "on"} />
 
       <div className="border-border bg-card flex flex-col gap-1.5 rounded-xl border p-4 text-2sm leading-relaxed">
         <p>{t("privacy")}</p>

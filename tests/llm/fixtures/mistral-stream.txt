@@ -1,0 +1,8 @@
+data: {"id":"cmpl-8b2f","object":"chat.completion.chunk","created":1760195160,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+data: {"id":"cmpl-8b2f","object":"chat.completion.chunk","created":1760195160,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":"Mandag: hvile."},"finish_reason":null}]}
+
+data: {"id":"cmpl-8b2f","object":"chat.completion.chunk","created":1760195160,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":" Tirsdag: 2x15 medium."},"finish_reason":"stop"}],"usage":{"prompt_tokens":2210,"total_tokens":2224,"completion_tokens":14}}
+
+data: [DONE]
+

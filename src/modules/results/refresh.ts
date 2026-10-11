@@ -1,6 +1,7 @@
 import { and, eq, gte, inArray, isNull, lte, or, sql } from "drizzle-orm";
 import { Refused } from "@/core/action";
 import { env } from "@/core/env";
+import { enqueue } from "@/core/jobs/queue";
 import { rateLimit } from "@/core/rate-limit";
 import { calendarEvents, raceResults, riders } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
@@ -8,7 +9,7 @@ import { todayInCopenhagen } from "@/core/dates";
 import { requireCoach } from "@/modules/team/access";
 import type { DcuProfile } from "./dcu-profile";
 import { planImport } from "./plan";
-import { enqueue } from "./queue";
+import { dcuReadRider, readKey, spacedBy } from "./queue";
 import { exclusive, readProfile, sinceFor, staleSince } from "./read";
 import { readsRacesFor } from "./switch";
 
@@ -17,12 +18,14 @@ import { readsRacesFor } from "./switch";
  * calendar (ADR 0039): a race Kadence makes for the day where the
  * calendar has none, and the result on it for the coach.
  *
- * Kadence has no scheduled job, so this runs when a coach opens Kadence —
- * the whole team, in the line in queue.ts, for every rider whose races
- * are more than three hours old — and when a coach asks, with the button
- * on the rider's page, at most every ten minutes. A rider opening Kadence
- * reads their own races into their calendar (own.ts); the places are
- * written here, by a coach's visit, because only a coach writes them.
+ * It runs for every rider whose races are more than three hours old, as
+ * jobs in the line in queue.ts (docs/adr/0085): every hour for every team
+ * with riders who have a UCI ID, read as a coach of the team (jobs.ts),
+ * and when a coach opens Kadence, at most once an hour per team. A coach
+ * may also ask, with the button on the rider's page, at most every ten
+ * minutes. A rider opening Kadence reads their own races into their
+ * calendar (own.ts); the places are written here, as a coach, because
+ * only a coach writes them.
  *
  * The page is fetched outside any transaction; what it says is written in
  * one, as the coach who asked, under the ordinary policies.
@@ -176,10 +179,10 @@ async function store(
 }
 
 /**
- * When a coach opens Kadence, or a page about riders: every rider among
- * `riderIds` whose races are more than three hours old goes in the line.
- * Whatever goes wrong is noted on the rider and never reaches the page,
- * which has already been answered.
+ * When a coach opens Kadence, a page about riders, or the hourly job runs:
+ * every rider among `riderIds` whose races are more than three hours old
+ * goes in the line, as a job for the worker. Whatever goes wrong with a
+ * reading is noted on the rider and never reaches the page.
  */
 export async function refreshStaleRaces(ctx: OrgContext, riderIds?: string[]) {
   if (env.DCU_RESULTS === "off" || riderIds?.length === 0) return;
@@ -190,11 +193,14 @@ export async function refreshStaleRaces(ctx: OrgContext, riderIds?: string[]) {
       .from(riders)
       .where(and(eq(riders.archived, false), riderIds ? inArray(riders.id, riderIds) : undefined));
   }).catch(() => []);
+  let index = 0;
   for (const rider of due) {
     if (!readsRacesFor(env.DCU_RESULTS, rider.uciId) || !staleSince(rider.at)) continue;
-    enqueue(`coach:${rider.id}`, async () => {
-      const outcome = await refreshRaces(ctx, rider.id);
-      return outcome.state === "read" || outcome.state === "failed";
+    const reading = { as: "coach" as const, userId: ctx.userId, riderId: rider.id };
+    await enqueue(dcuReadRider, reading, {
+      orgId: ctx.orgId,
+      dedupeKey: readKey(reading),
+      delayMs: spacedBy(index++),
     });
   }
 }
