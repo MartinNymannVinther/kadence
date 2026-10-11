@@ -641,7 +641,10 @@ efter S-01.
   pgBackRest ligger i db-billedet selv oven på `postgres:16`, fordi
   `archive_command` alligevel kører der; retention er 29 dage, så
   vilkårenes 30 holder. Ikke prøvet mod Hetzners S3.
-- **S-08 og S-09** er i gang oven på trin 1 (migreringer 0050 og 0051,
-  ADR 0088 og 0087).
+- **S-08 og S-09** på `feat/doer-2-og-filer`, PR #48 med trin 1 som base
+  (ADR 0088 og 0087, migreringer 0050 og 0051). Dør 2 kræver mail og
+  gemmer samtykket med version; filerne har gravsten og kvoter.
 
-Rækkefølgen af PR'er til merge: #44, #45, #46, #47, og derefter S-08/S-09.
+Rækkefølgen af PR'er til merge: #44, #45, #46, #47, #48. Uafhængige: #42
+(denne plan) og #43 (jura). Tilbage: S-11 når tallene i 5.5 beder om det,
+S-12 (gebyrets form) og S-13 (det vilkårene lover), begge efter Martins ord.
