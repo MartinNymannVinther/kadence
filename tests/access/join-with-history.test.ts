@@ -178,7 +178,10 @@ describe("yes: the training comes along", () => {
       [mads.userId],
     );
     expect(memberships.rows.map((r) => r.organization_id)).toEqual([coach.orgId]);
-    const session = await auth.api.getSession({ headers: mads.headers });
+    const session = await auth.api.getSession({
+      headers: mads.headers,
+      query: { disableCookieCache: true },
+    });
     expect(session?.session.activeOrganizationId).toBe(coach.orgId);
     const trail = await admin.query(
       `select entity_type from audit_log where org_id = $1 and action = 'rider.history_moved_in' order by 1`,

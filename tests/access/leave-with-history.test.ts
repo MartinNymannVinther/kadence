@@ -167,7 +167,10 @@ describe("a rider leaves with the training", () => {
   });
 
   it("opens the new workspace for the person", async () => {
-    const session = await auth.api.getSession({ headers: riders.emma.headers });
+    const session = await auth.api.getSession({
+      headers: riders.emma.headers,
+      query: { disableCookieCache: true },
+    });
     expect(session?.session.activeOrganizationId).toBe(newOrgId);
   });
 
