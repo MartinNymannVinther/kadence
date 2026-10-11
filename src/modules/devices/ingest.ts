@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { Refused } from "@/core/action";
 import { uploadKeys } from "@/core/db/schema";
 import { withOrgContext } from "@/core/db/tenant";
+import { log } from "@/core/log";
 import { callerKey, peekRateLimit, rateLimit } from "@/core/rate-limit";
 import { loggable } from "./http";
 import { inFlight } from "./in-flight";
@@ -125,7 +126,7 @@ export async function handleIngestCheck(request: Request): Promise<Response> {
     await noteKeyUse(owner);
     return answer(200, { status: "ok" });
   } catch (error) {
-    console.error("ingest: check failed", loggable(error));
+    await log.error("ingest: check failed", { error: loggable(error) });
     return refuse(500, "generic");
   }
 }
@@ -142,7 +143,7 @@ export async function handleIngest(request: Request): Promise<Response> {
   try {
     owner = await admit(request);
   } catch (error) {
-    console.error("ingest: failed", loggable(error));
+    await log.error("ingest: failed", { error: loggable(error) });
     return refuse(500, "generic");
   }
   if (owner instanceof Response) return owner;
@@ -154,7 +155,7 @@ export async function handleIngest(request: Request): Promise<Response> {
   } catch (error) {
     // The rider left, or the key was removed, while the file was on its way.
     if (error instanceof Refused) return refuse(401, "unauthorized");
-    console.error("ingest: failed", loggable(error));
+    await log.error("ingest: failed", { error: loggable(error) });
     return refuse(500, "generic");
   } finally {
     reading.leave(owner.riderUserId);

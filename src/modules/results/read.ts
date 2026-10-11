@@ -1,3 +1,4 @@
+import { log } from "@/core/log";
 import { rateLimit } from "@/core/rate-limit";
 import { DeviceHttpError, loggable } from "@/modules/devices/http";
 import { DcuPageError, parseDcuProfile, type DcuProfile } from "./dcu-profile";
@@ -69,7 +70,7 @@ export async function readProfile(uciId: string, birthYear: number): Promise<Rea
     if (profile.person.birthYear !== birthYear) return { error: "wrong_person" };
     return { profile };
   } catch (error) {
-    console.warn("dcu results: read failed", loggable(error));
+    await log.warn("dcu results: read failed", { error: loggable(error) });
     return { error: errorWord(error) };
   }
 }

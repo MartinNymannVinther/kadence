@@ -3,6 +3,7 @@ import { Refused } from "@/core/action";
 import { openSecret, sealSecret } from "@/core/crypto/secret-box";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { env } from "@/core/env";
+import { log } from "@/core/log";
 import { whoAmIIn } from "@/modules/team/access";
 import { loggable } from "./http";
 import { saveLink } from "./links";
@@ -140,7 +141,10 @@ export async function finishConnect(
     externalUserId = await provider.userId(tokens.accessToken, tokens.externalUserId);
     await provider.register?.(tokens.accessToken, externalUserId);
   } catch (error) {
-    console.error("device connect: exchange failed", providerId, loggable(error));
+    await log.error("device connect: exchange failed", {
+      provider: providerId,
+      error: loggable(error),
+    });
     return settingsUrl({ error: "exchange_failed" });
   }
   try {

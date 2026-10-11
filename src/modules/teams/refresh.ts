@@ -1,4 +1,5 @@
 import { env } from "@/core/env";
+import { log } from "@/core/log";
 import { fetchDcu } from "./dcu/fetch";
 import { refreshPhotos } from "./photos";
 import { readSnapshot, teamsDir, writeSnapshot } from "./snapshot";
@@ -56,7 +57,7 @@ async function readSource<T>(
     return { fetchedAt: now.toISOString(), data: await fetchIt(), error: null };
   } catch (error) {
     const why = describe(error);
-    console.warn(`teams: source failed: ${why}`);
+    await log.warn("teams: source failed", { why });
     // The last good answer stays; only the time and the word change.
     return { fetchedAt: now.toISOString(), data: previous.data, error: why };
   }
@@ -90,7 +91,7 @@ export function refreshTeams(
       try {
         await writeSnapshot(next);
       } catch (error) {
-        console.warn(`teams: snapshot not written to ${teamsDir()}: ${describe(error)}`);
+        await log.warn("teams: snapshot not written", { dir: teamsDir(), why: describe(error) });
       }
     }
     return next;

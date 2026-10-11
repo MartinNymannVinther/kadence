@@ -1,6 +1,7 @@
 import { eq, sql } from "drizzle-orm";
 import { appDb } from "@/core/db/client";
 import { pushSubscriptions } from "@/core/db/schema";
+import { errorName, log } from "@/core/log";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { whoAmIIn } from "@/modules/team/access";
 import { copenhagenClock, decide, isQuiet, type Mark } from "./due";
@@ -62,7 +63,7 @@ async function sweepDeletions(): Promise<void> {
   try {
     await appDb.execute(sql`select planned_session_deletions_sweep()`);
   } catch (error) {
-    console.error("reminders: could not sweep", error instanceof Error ? error.message : "");
+    await log.error("reminders: could not sweep", { error: errorName(error) });
   }
 }
 
@@ -136,7 +137,7 @@ export async function runReminders(config: PushConfig, now: Date = new Date()): 
       try {
         marked = await decideAndMark(ctx, ids, now);
       } catch (error) {
-        console.error("reminders: could not decide", error instanceof Error ? error.message : "");
+        await log.error("reminders: could not decide", { orgId, error: errorName(error) });
         continue;
       }
       if (marked.length === 0) continue;
@@ -152,11 +153,11 @@ export async function runReminders(config: PushConfig, now: Date = new Date()): 
             if (result.transient) await unmark(ctx, item);
           }
         } catch (error) {
-          console.error(
-            "reminders: could not record",
-            pushService(item.row.endpoint),
-            error instanceof Error ? error.message : "",
-          );
+          await log.error("reminders: could not record", {
+            orgId,
+            service: pushService(item.row.endpoint),
+            error: errorName(error),
+          });
         }
       }
       break;

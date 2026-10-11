@@ -1,5 +1,6 @@
 import { authDb } from "@/core/db/client";
 import { auditLog } from "@/core/db/schema";
+import { errorName, log } from "@/core/log";
 
 export type SemanticAuditEvent = {
   action:
@@ -44,6 +45,10 @@ export async function recordAuthEvent(event: SemanticAuditEvent): Promise<void> 
       userAgent: event.userAgent ?? null,
     });
   } catch (error) {
-    console.error("audit: failed to record auth event", error);
+    await log.error("audit: failed to record auth event", {
+      action: event.action,
+      orgId: event.orgId ?? undefined,
+      error: errorName(error),
+    });
   }
 }

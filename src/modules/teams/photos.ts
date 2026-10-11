@@ -1,5 +1,6 @@
 import { mkdir, readFile, rename, stat, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import { errorName, log } from "@/core/log";
 import { readLimited } from "@/modules/devices/http";
 import { getJson, SourceError, type FetchLike } from "./http";
 import { REGISTRY } from "./registry";
@@ -128,9 +129,7 @@ export async function refreshPhotos(
     try {
       next[team.id] = await copyPhoto(fetchFn, team.id, team.photo, now);
     } catch (error) {
-      console.warn(
-        `teams: photo for ${team.id} not copied: ${error instanceof Error ? error.message : "?"}`,
-      );
+      await log.warn("teams: photo not copied", { teamId: team.id, error: errorName(error) });
       if (had) next[team.id] = had;
     }
   }

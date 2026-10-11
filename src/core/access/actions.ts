@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { getSession } from "@/core/auth/session";
+import { errorName, log } from "@/core/log";
 import { clientAddress } from "@/core/rate-limit";
 import {
   approveAccessRequest,
@@ -54,7 +55,7 @@ export async function approveAccessRequestAction(
   try {
     return { ok: true, data: issued(await approveAccessRequest(actor, String(requestId))) };
   } catch (error) {
-    console.error("access: approve failed", error);
+    await log.error("access: approve failed", { actor, error: errorName(error) });
     return { ok: false, error: "generic" };
   }
 }
@@ -66,7 +67,7 @@ export async function declineAccessRequestAction(requestId: string): Promise<Own
     await declineAccessRequest(actor, String(requestId));
     return { ok: true, data: undefined };
   } catch (error) {
-    console.error("access: decline failed", error);
+    await log.error("access: decline failed", { actor, error: errorName(error) });
     return { ok: false, error: "generic" };
   }
 }
@@ -85,7 +86,7 @@ export async function createInvitationAction(input: {
   try {
     return { ok: true, data: issued(await createInvitation(actor, { email, organizationName })) };
   } catch (error) {
-    console.error("access: invite failed", error);
+    await log.error("access: invite failed", { actor, error: errorName(error) });
     return { ok: false, error: "generic" };
   }
 }
