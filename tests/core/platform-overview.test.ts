@@ -88,6 +88,7 @@ describe("the installation's overview", () => {
       members: 1,
       aiUnpricedMonth: 0,
       aiBudgetMicro: null,
+      fileQuotaBytes: null,
       pilot: { week: "2026-10-05", riders: 0, checkedIn: 0, sessions: 0, receipts: 0, minutes: 0 },
     };
     const now = new Date("2026-10-11T12:00:00Z");
@@ -181,6 +182,7 @@ describe("the installation's overview", () => {
       "ai_cost_month_micro",
       "ai_unpriced_month",
       "ai_budget_micro",
+      "file_quota_bytes",
     ]);
   });
 

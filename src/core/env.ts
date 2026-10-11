@@ -190,6 +190,39 @@ export const EnvSchema = z
     // them in the queue. Unset, the app runs them itself, as it ran the
     // reminder timer before: one container is still a whole installation.
     WORKER: z.enum(["off", "on"]).default("off"),
+    // Where riders' ride files live (docs/adr/0087): "db" keeps each file
+    // in its row in Postgres, as always; "s3" keeps it as an object in an
+    // S3-compatible store in the EU (Hetzner Object Storage on
+    // kadence.haij.dk) and the row keeps only its key. The row decides
+    // who may read either way. With "s3" all five S3_FILES_* are
+    // required; they are separate from S3_BACKUP_*, which pgBackRest
+    // reads (docs/adr/0089), so the files and the backups never share a
+    // bucket or a key. Secrets: the access and secret key live in Coolify.
+    FILES_STORAGE: z.enum(["db", "s3"]).default("db"),
+    S3_FILES_ENDPOINT: z.url().optional(),
+    S3_FILES_REGION: z.string().min(1).max(64).optional(),
+    S3_FILES_BUCKET: z.string().min(3).max(63).optional(),
+    S3_FILES_ACCESS_KEY: z.string().min(1).optional(),
+    S3_FILES_SECRET_KEY: z.string().min(1).optional(),
+    // How much file a workspace may hold, in bytes, unless the
+    // installation's owner gave it another quota under Indstillinger ->
+    // Installation (team_settings.file_quota_bytes): 20 GB for a club,
+    // 2 GB for one person (Martin's choice, 11 October 2026), decimal
+    // gigabytes as the pages show them. An upload that would pass it is
+    // refused with a plain sentence and everything else works. 0 is no
+    // quota.
+    FILES_QUOTA_CLUB_BYTES: z.coerce
+      .number()
+      .int()
+      .min(0)
+      .max(1_000_000_000_000_000)
+      .default(20_000_000_000),
+    FILES_QUOTA_PERSONAL_BYTES: z.coerce
+      .number()
+      .int()
+      .min(0)
+      .max(1_000_000_000_000_000)
+      .default(2_000_000_000),
   })
   .superRefine((value, ctx) => {
     // `next build` runs with NODE_ENV=production and placeholder values
@@ -283,6 +316,32 @@ export const EnvSchema = z
         code: "custom",
         message: `${mail.join(", ")} go together: set all five to send mail, or none. Missing: ${missing.join(", ")}`,
         path: [missing[0]!],
+      });
+    }
+    // Files in an object store need every one of the five; half a store is
+    // an upload that fails at the bucket's door. Refused at start instead.
+    const files = [
+      "S3_FILES_ENDPOINT",
+      "S3_FILES_REGION",
+      "S3_FILES_BUCKET",
+      "S3_FILES_ACCESS_KEY",
+      "S3_FILES_SECRET_KEY",
+    ] as const;
+    const filesSet = files.filter((key) => value[key] !== undefined);
+    if (filesSet.length > 0 && filesSet.length < files.length) {
+      const missing = files.filter((key) => value[key] === undefined);
+      ctx.addIssue({
+        code: "custom",
+        message: `${files.join(", ")} go together: set all five for FILES_STORAGE=s3, or none. Missing: ${missing.join(", ")}`,
+        path: [missing[0]!],
+      });
+    }
+    if (value.FILES_STORAGE === "s3" && filesSet.length === 0) {
+      ctx.addIssue({
+        code: "custom",
+        message:
+          "FILES_STORAGE=s3 needs S3_FILES_ENDPOINT, S3_FILES_REGION, S3_FILES_BUCKET, S3_FILES_ACCESS_KEY and S3_FILES_SECRET_KEY",
+        path: ["FILES_STORAGE"],
       });
     }
     if (value.POLAR_WEBHOOK_SECRET && !value.POLAR_CLIENT_ID) {

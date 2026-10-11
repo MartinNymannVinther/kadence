@@ -61,6 +61,13 @@ export const teamSettings = pgTable(
      * installation's default, AI_MONTHLY_BUDGET_MICRO.
      */
     aiBudgetMicro: bigint("ai_budget_micro", { mode: "number" }),
+    /**
+     * How much file the workspace may hold, in bytes, set by the
+     * installation's owner only (docs/adr/0087, drizzle/0051); null is the
+     * installation's default for the workspace's kind, FILES_QUOTA_CLUB_BYTES
+     * or FILES_QUOTA_PERSONAL_BYTES.
+     */
+    fileQuotaBytes: bigint("file_quota_bytes", { mode: "number" }),
     updatedBy: text("updated_by").references(() => users.id, { onDelete: "set null" }),
     ...timestamps,
   },
@@ -68,6 +75,7 @@ export const teamSettings = pgTable(
     check("team_settings_kind", sql`${t.teamKind} in ('U17','U19','U23','mixed')`),
     check("team_settings_guidance", sql`${t.guidance} in ('dcu-2025','none')`),
     check("team_settings_ai_budget", sql`${t.aiBudgetMicro} >= 0`),
+    check("team_settings_file_quota", sql`${t.fileQuotaBytes} >= 0`),
   ],
 );
 

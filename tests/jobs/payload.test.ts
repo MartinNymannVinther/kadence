@@ -46,7 +46,7 @@ describe("every kind of job", () => {
 
   it("is run as the team's own people, or has no team", () => {
     const teams = HANDLERS.filter((h) => h.kind.team).map((h) => h.kind.kind);
-    expect(teams).toEqual(["dcu.read_rider"]);
+    expect(teams.sort()).toEqual(["dcu.read_rider", "files.move"]);
   });
 });
 

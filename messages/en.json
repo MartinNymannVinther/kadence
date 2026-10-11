@@ -342,7 +342,16 @@
       "membersSheet": "Brugere",
       "notBackupTitle": "This is not a backup.",
       "notBackupBody": "An export can be read but not restored, and it is only as fresh as the day you downloaded it. The night's encrypted dump is what saves you when the database is gone.",
-      "privacy": "The export holds what you may see in the workspace and its history: a coach gets the whole team, a rider their own data. Passwords, passkeys, device tokens and the workspace's model key never go in it. That you downloaded the file is written to the audit trail."
+      "privacy": "The export holds what you may see in the workspace and its history: a coach gets the whole team, a rider their own data. Passwords, passkeys, device tokens and the workspace's model key never go in it. That you downloaded the file is written to the audit trail.",
+      "storage": {
+        "title": "Room for files",
+        "body": "The rides' original files take up this room. When it is used up, new files are refused and everything else works. Delete old rides or download them first if you are getting close.",
+        "usedOf": "{used} of {quota} used.",
+        "usedNoQuota": "{used} used. No limit is set.",
+        "full": "The room for files is used up. Delete old rides or download them first.",
+        "inDatabase": "The files are kept in Kadence's own database on the server.",
+        "inStore": "The files are kept in an object store in the EU, encrypted, and only Kadence can read them. Deleted files are gone from the store within the hour."
+      }
     }
   },
   "settings": {
@@ -446,7 +455,7 @@
       },
       "delete": {
         "title": "Delete the workspace",
-        "body": "Everything in the workspace goes: every member's conversations and files, roles, tasks, and the whole audit trail about them. It cannot be undone.",
+        "body": "Everything in the workspace goes: every member's conversations and files, roles, tasks, and the whole audit trail about them. It cannot be undone. The rides' files are gone from the store within the hour.",
         "exportFirst": "Take an export first if you want to keep anything. It is under Data.",
         "typeName": "Type {name} to confirm",
         "action": "Delete the workspace permanently",
@@ -456,7 +465,7 @@
         "nameMismatch": "That name does not match. Type the workspace's name exactly.",
         "personal": {
           "title": "Delete my account and everything about me",
-          "body": "Everything about your training goes: sessions, rides, check-ins, the season plan, the files and the audit trail about them. If you are not on a team in Kadence, your account is deleted too. It cannot be undone.",
+          "body": "Everything about your training goes: sessions, rides, check-ins, the season plan, the files and the audit trail about them. If you are not on a team in Kadence, your account is deleted too. It cannot be undone. The files are gone from the store within the hour.",
           "exportFirst": "Download an export first if you want to keep anything. It is just above.",
           "action": "Delete my account and everything about me"
         }
@@ -519,6 +528,23 @@
         "saved": "Saved.",
         "invalid": "Write an amount in euro, e.g. 7.50, or leave the field empty.",
         "failed": "The budget was not saved. Try again."
+      },
+      "fileQuota": {
+        "title": "Room for files",
+        "body": "How much each club's files take, and the club's limit. Over the limit new files are refused and everything else works. An empty field is the default: {club} for a club and {personal} for a person.",
+        "inDatabase": "The files are kept in the database (FILES_STORAGE=db).",
+        "inStore": "The files are kept in an object store in the EU (FILES_STORAGE=s3).",
+        "persons": "Individuals take {used} in total.",
+        "club": "Club",
+        "used": "Used",
+        "quota": "Limit",
+        "usedOf": "{used} of {quota}",
+        "noQuota": "no limit",
+        "quotaLabel": "File limit in GB for {club}",
+        "save": "Save",
+        "saved": "Saved.",
+        "invalid": "Write a number in GB, e.g. 20, or leave the field empty.",
+        "failed": "The limit was not saved. Try again."
       },
       "persons": {
         "title": "Individuals",
@@ -2702,6 +2728,7 @@
         "unreadableFiles": "{count, plural, one {# file could not be read.} other {# files could not be read.}}",
         "nothing": "There were no new rides in the archive.",
         "limit": "Today's limit is reached. {count, plural, one {The last ride} other {The last # rides}} can be fetched in {hours, plural, one {# hour} other {# hours}}: add the archive again, and it goes on where it stopped.",
+        "quota": "The room for files is used up, so {count, plural, one {the last ride was} other {the last # rides were}} not fetched. Delete old rides or download them first, and add the archive again.",
         "signedOut": "You are no longer signed in. Sign in, and add the archive again; it goes on where it stopped.",
         "failed": "Something went wrong on the way, and {count, plural, one {# ride is} other {# rides are}} missing. Add the archive again; it goes on where it stopped.",
         "cancelled": "Stopped. {count, plural, one {# ride is} other {# rides are}} missing; add the archive again when you want to go on.",
@@ -2742,7 +2769,8 @@
         "generic": "Something went wrong with the file. Try again.",
         "unknown_format": "Kadence does not know that file format. Use FIT, TCX or GPX, packed as .gz or .zip if you like.",
         "no_activity": "The zip file has no .fit, .tcx or .gpx file in it.",
-        "not_bike": "Not a ride, so it was skipped."
+        "not_bike": "Not a ride, so it was skipped.",
+        "quota": "The room for files is used up. Delete old rides or download them first."
       }
     },
     "routeTitle": "The route",
@@ -3168,6 +3196,7 @@
       "provider_unavailable": "{name} did not answer the last time Kadence tried. It usually sorts itself out.",
       "invalid_file": "A ride from {name} could not be read. Upload the file yourself if it is missing.",
       "download": "A ride could not be fetched from {name}. Upload the file yourself if it is missing.",
+      "quota": "A ride from {name} had no room: the room for files is used up. Delete old rides or download them first, and upload the file yourself.",
       "unknown": "Something went wrong with {name} last time. Connect again if your rides do not come in."
     },
     "connected": "{name} is connected. Your next rides come in by themselves.",
@@ -3199,6 +3228,7 @@
       "address": "A program sends the files to",
       "lastError": {
         "invalid_file": "The latest file could not be read. Upload it yourself if the ride is missing.",
+        "quota": "The latest file had no room: the room for files is used up. Delete old rides or download them first.",
         "unknown": "Something went wrong with the latest file. Upload it yourself if the ride is missing."
       },
       "remove": "Remove",
@@ -3911,7 +3941,8 @@
         "rateLimited": "You've saved many rides in the last hour. Try again in a little while.",
         "not_rider": "Only a rider can save a ride.",
         "notFound": "The session no longer exists. Download the FIT file and upload it on “Me”.",
-        "too_large": "The ride is too large to save from here. Download the FIT file and upload it on “Me”."
+        "too_large": "The ride is too large to save from here. Download the FIT file and upload it on “Me”.",
+        "quota": "The room for files is used up, so the ride was not saved. Download the FIT file, and delete old rides or download them first."
       }
     },
     "little": {

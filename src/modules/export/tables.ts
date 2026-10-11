@@ -169,7 +169,7 @@ export const EXPORT_TABLES: ExportTable[] = [
     table: "team_settings",
     sheet: "Indstillinger",
     columns:
-      "id, org_id, team_kind, ai_on_rider_data, allow_youth_weight, updated_by, created_at, updated_at, guidance, club_championship, low_intensity_first, ai_budget_micro",
+      "id, org_id, team_kind, ai_on_rider_data, allow_youth_weight, updated_by, created_at, updated_at, guidance, club_championship, low_intensity_first, ai_budget_micro, file_quota_bytes",
   },
   // The club championship (ADR 0051): the club's own seasons, rounds,
   // results and roll of honour.

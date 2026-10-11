@@ -66,6 +66,7 @@ describe("the schedule", () => {
     expect(added.sort()).toEqual([
       "dcu.races",
       "demo.cleanup",
+      "files.tombstones",
       "installation.sweep",
       "push.reminders",
       "teams.refresh",

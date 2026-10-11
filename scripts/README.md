@@ -56,6 +56,22 @@ is right for a fresh install and wrong for a development database full of
 test users, which is what this script is for. ADR 0004 explains why it is
 a script and not a setting.
 
+## migrate-files.ts
+
+Moves the ride files already in the database out to the object store,
+after `FILES_STORAGE` was switched to `s3` (ADR 0087, docs/deploy.md
+"File storage").
+
+```
+pnpm script scripts/migrate-files.ts            # puts the job files.migrate in the queue
+pnpm script scripts/migrate-files.ts --status   # how many files still sit in rows
+```
+
+It only puts a job in; the worker moves fifty files at a time, verifies
+each object's sha256 and then empties the row. Run it again at any time.
+It refuses to put the job in where `FILES_STORAGE` is not `s3`, since the
+job would only give up.
+
 ## ensure-roles.ts
 
 Gives the two runtime database roles their login rights and passwords.

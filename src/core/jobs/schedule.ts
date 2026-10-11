@@ -28,6 +28,8 @@ export const SCHEDULE = {
   demoCleanup: HOUR,
   /** The counters' expired rows, Better Auth's, and old jobs. */
   sweep: 15 * MINUTE,
+  /** Objects whose row is gone (docs/adr/0087): deleted from the store a little after the row. */
+  fileTombstones: 15 * MINUTE,
 } as const;
 
 export const RECURRING_KEY = "recurring";

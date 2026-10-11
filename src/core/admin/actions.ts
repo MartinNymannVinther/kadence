@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { MAX_BUDGET_MICRO, setAiBudget } from "./ai-budget";
+import { MAX_QUOTA_BYTES, setFileQuota } from "./file-quota";
 import { getSession } from "@/core/auth/session";
 import { errorName, log } from "@/core/log";
 
@@ -42,6 +43,33 @@ export async function setAiBudgetAction(input: unknown): Promise<BudgetResult> {
     return { ok: true };
   } catch (error) {
     await log.error("installation: setting an AI budget failed", { error: errorName(error) });
+    return { ok: false, error: "generic" };
+  }
+}
+
+const QuotaInput = z.object({
+  orgId: z.string().trim().min(1).max(200),
+  /** Bytes; null gives the workspace the installation's default back. */
+  bytes: z.number().int().min(0).max(MAX_QUOTA_BYTES).nullable(),
+});
+
+/**
+ * The owner sets a workspace's file quota (docs/adr/0087), the same way
+ * as the budget above: caller resolved here, input checked here, the
+ * database function checks the owner once more.
+ */
+export async function setFileQuotaAction(input: unknown): Promise<BudgetResult> {
+  const session = await getSession();
+  if (!session) return { ok: false, error: "unauthorized" };
+  const parsed = QuotaInput.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "invalid" };
+  try {
+    const done = await setFileQuota(session.user.id, parsed.data.orgId, parsed.data.bytes);
+    if (done === "unauthorized") return { ok: false, error: "unauthorized" };
+    revalidatePath("/settings/installation");
+    return { ok: true };
+  } catch (error) {
+    await log.error("installation: setting a file quota failed", { error: errorName(error) });
     return { ok: false, error: "generic" };
   }
 }

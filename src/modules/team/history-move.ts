@@ -2,6 +2,7 @@ import { and, eq, sql } from "drizzle-orm";
 import { Refused } from "@/core/action";
 import { riders } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
+import { enqueueFileMove } from "@/modules/storage/move";
 
 /**
  * The history follows the rider (docs/adr/0081). `move_rider_history`
@@ -10,7 +11,9 @@ import { withOrgContext, type OrgContext } from "@/core/db/tenant";
  * for itself who may: the caller's account must be on both rider rows, a
  * member of both workspaces, and the target row must have no history yet.
  * The service here only calls it, with the target workspace as the
- * context, and turns its refusal into a word the interface can say.
+ * context, and turns its refusal into a word the interface can say. Where
+ * files are objects, their keys still name the workspace left; a job
+ * copies them under the new one afterwards (src/modules/storage/move.ts).
  */
 
 export type MovedTable = { table: string; rows: number };
@@ -62,8 +65,9 @@ export async function moveRiderHistory(
   fromRiderId: string,
   toRiderId: string,
 ): Promise<MovedTable[]> {
+  let moved: MovedTable[];
   try {
-    return await withOrgContext(ctx, async (tx) => {
+    moved = await withOrgContext(ctx, async (tx) => {
       const result = await tx.execute(
         sql`select table_name, rows_moved from move_rider_history(${fromRiderId}, ${toRiderId})`,
       );
@@ -77,6 +81,9 @@ export async function moveRiderHistory(
     if (refusal) throw new Refused("forbidden", refusal);
     throw error;
   }
+  if (moved.some((row) => row.table === "activity_files" && row.rows > 0))
+    await enqueueFileMove(ctx, toRiderId);
+  return moved;
 }
 
 /** The caller's own rider row in a workspace, under RLS: id and name, or null. */
