@@ -81,10 +81,28 @@ function parkedResponse(request: NextRequest): NextResponse {
  * node_modules/next/dist/server/web/spec-extension/response.js) — applied
  * here directly because next-intl's middleware has already built the
  * response by the time this function sees it.
+ *
+ * The override list is the whole list: Next replaces the request's
+ * headers with exactly the names in it (server/lib/router-utils/
+ * resolve-routes.js), so a list of one name would strip the cookie and
+ * every page would see no session. Every request header goes on the list
+ * as `NextResponse.next` does, and the request id is added to it; a list
+ * another middleware already wrote is extended, not replaced.
  */
-function withRequestId(response: NextResponse, requestId: string): NextResponse {
+function withRequestId(request: NextRequest, response: NextResponse, requestId: string) {
+  const existing = response.headers.get("x-middleware-override-headers");
+  const names = new Set<string>();
+  if (existing) {
+    for (const name of existing.split(",")) if (name.trim()) names.add(name.trim());
+  } else {
+    for (const [name, value] of request.headers) {
+      response.headers.set(`x-middleware-request-${name}`, value);
+      names.add(name);
+    }
+  }
+  names.add(REQUEST_ID_HEADER);
   response.headers.set(`x-middleware-request-${REQUEST_ID_HEADER}`, requestId);
-  response.headers.set("x-middleware-override-headers", REQUEST_ID_HEADER);
+  response.headers.set("x-middleware-override-headers", [...names].join(","));
   response.headers.set(REQUEST_ID_HEADER, requestId);
   return response;
 }
@@ -104,7 +122,7 @@ export default function proxy(request: NextRequest) {
   const requestId = requestIdFrom(request.headers);
   const pathname = stripLocale(request.nextUrl.pathname);
   if (parkedPath(pathname, features())) {
-    return withRequestId(parkedResponse(request), requestId);
+    return withRequestId(request, parkedResponse(request), requestId);
   }
 
   const hasSessionCookie = Boolean(getSessionCookie(request));
@@ -113,10 +131,10 @@ export default function proxy(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = localizedPath(request.nextUrl.pathname, "/login");
     url.search = "";
-    return withRequestId(NextResponse.redirect(url), requestId);
+    return withRequestId(request, NextResponse.redirect(url), requestId);
   }
 
-  return withRequestId(intlMiddleware(request), requestId);
+  return withRequestId(request, intlMiddleware(request), requestId);
 }
 
 export const config = {

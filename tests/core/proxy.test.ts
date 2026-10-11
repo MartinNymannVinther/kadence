@@ -108,3 +108,30 @@ describe("the rest of Kadence", () => {
     expect(proxy(request("/today")).headers.get("location")).toBe(`${ORIGIN}/login`);
   });
 });
+
+describe("the request id", () => {
+  // Next replaces the request's headers with exactly the names in
+  // x-middleware-override-headers. A list of one name stripped the
+  // cookie from every page, and every signed-in person was sent to
+  // /login (kadence.haij.dk, 11 October 2026).
+  it("keeps every request header, the cookie first of all, and adds its own", () => {
+    const response = proxy(request("/today", "__Secure-better-auth.session_token=abc"));
+    const names = (response.headers.get("x-middleware-override-headers") ?? "").split(",");
+    expect(names).toContain("cookie");
+    expect(names).toContain("x-request-id");
+    expect(response.headers.get("x-middleware-request-cookie")).toBe(
+      "__Secure-better-auth.session_token=abc",
+    );
+    expect(response.headers.get("x-middleware-request-x-request-id")).toBe(
+      response.headers.get("x-request-id"),
+    );
+  });
+
+  it("keeps the id the proxy in front gave the request", () => {
+    const response = proxy(
+      new NextRequest(`${ORIGIN}/login`, { headers: { "x-request-id": "front-123" } }),
+    );
+    expect(response.headers.get("x-request-id")).toBe("front-123");
+    expect(response.headers.get("x-middleware-override-headers")).toContain("x-request-id");
+  });
+});
