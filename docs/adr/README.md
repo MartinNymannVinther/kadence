@@ -96,3 +96,4 @@ session reads, and **TECH-DEBT.md** is what we know is not right yet.
 | [0074](0074-rulle-the-challenger.md)                                       | Rulle: the challenger, a race for two kilometres now and then, a slipstream behind him                        | → 0034, 0045, 0073             |
 | [0075](0075-rulle-the-sprinter.md)                                         | Rulle: the sprinter HYLDTOFT calls, on your wheel until a 1150 W sprint and a jump over the line              | → 0013, 0045, 0074             |
 | [0076](0076-rulle-a-loading-screen.md)                                     | Rulle: ten seconds of the route and Johan or Hyldtoft turning, before the countdown                           | → 0033, 0074, 0075             |
+| [0082](0082-kadence-as-a-service.md)                                       | Kadence as a service: what stays one server, what becomes optional, and when; measured steps, a fee allowed   | → 0001, 0002, 0003, 0048       |
