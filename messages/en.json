@@ -31,7 +31,7 @@
     },
     "hero": {
       "title": "Young riders at the right cadence.",
-      "subtitle": "Training planning for U17, U19 and U23 riders, their coaches and parents, with DCU's recommendations as the default. Open source, in the EU.",
+      "subtitle": "Training planning for U17, U19 and U23 riders, their coaches and parents, with DCU's recommendations as the default. Also for you who train alone, young or adult. Open source, in the EU.",
       "ctaPrimary": "Create account",
       "ctaSecondary": "Log in",
       "trust": "AGPL-3.0 · Passkeys and two-factor sign-in · Your data out in one click",
@@ -70,7 +70,18 @@
       "load": "Load, form and freshness, also without a power meter",
       "devices": "FIT files, Wahoo, Garmin and Polar",
       "parents": "A page for parents and a wellbeing check-in",
-      "model": "AI at Mistral in the EU or Ollama on your own machine"
+      "model": "AI at Mistral in the EU or Ollama on your own machine",
+      "alone": "Alone or on a team, young or adult"
+    },
+    "ways": {
+      "label": "Two ways to use Kadence",
+      "teamTitle": "On a team",
+      "teamBody": "The coach lays sessions in the riders' calendars, sees the team's week and who is worth a talk. The riders ride, and parents follow what the rider shares. The club applies, and we set the team up.",
+      "aloneTitle": "Alone",
+      "aloneBody": "You plan your own week and season, add your rides and check in, without being on a team. If you are U17, U19 or U23, DCU's numbers stand beside yours; if you are an adult, you set your own hours. Join a team later and your training comes with you.",
+      "aloneAge": "From 15 you create your own account. For a younger rider, a parent creates it and follows the child's training.",
+      "aloneCta": "Apply as yourself",
+      "aloneDemo": "Try as a rider alone"
     }
   },
   "notFound": {
