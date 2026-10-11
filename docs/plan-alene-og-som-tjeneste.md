@@ -122,17 +122,19 @@ bagdøren.
 Formularen spørger om fødselsår, som rytterformularen gør i dag
 (`src/modules/team/birth-year.ts`), og klassen følger af det.
 
-Et barn under 13 år kan ikke selv oprette en konto. Databeskyttelsesloven
-§ 6, stk. 3 sætter grænsen for et barns eget samtykke til
-informationssamfundstjenester til 13 år i Danmark (GDPR art. 8 lader
+Et barn under 15 år kan ikke selv oprette en konto. Databeskyttelsesloven
+§ 6, stk. 2 og 3 sætter grænsen for et barns eget samtykke til
+informationssamfundstjenester til 15 år i Danmark, hævet fra 13 den 1.
+januar 2024 (lov nr. 1783 af 28. december 2023; GDPR art. 8 lader
 medlemsstaterne vælge mellem 13 og 16). Kadence behandler desuden
 helbredsoplysninger (GDPR art. 9) om barnet: søvn, smerte, puls. Så for
-et barn under 13 er det forælderen, der opretter det personlige
+et barn under 15 er det forælderen, der opretter det personlige
 arbejdsrum som ejer og tilføjer barnet som rytter med en invitation,
 præcis som en træner gør i dag; forælderen er "træner" for sit eget
-barn, og barnet ser rytterens menu. Fra 13 år og op kan den unge selv
+barn, og barnet ser rytterens menu. Fra 15 år og op kan den unge selv
 oprette, og kan invitere en forælder som i et hold (ADR 0011: forælderen
-ser det, rytteren deler). Kilderne står ved tallet i koden.
+ser det, rytteren deler). Kilderne står ved tallet i koden. Planens
+første udkast sagde 13; A-08's gennemgang af loven rettede det samme dag.
 
 ### 2.4 Ind på et hold, og ud igen: historikken følger rytteren
 
@@ -494,8 +496,8 @@ Claude forbereder udkast.
   afkrydsningsfelt, der kan trækkes tilbage under Indstillinger → Data,
   og et nej slår check-in og målinger fra og lader resten virke. For
   klubber er det klubbens hjemmel, og aftalen siger det.
-- **Alder.** 13 år for eget samtykke (databeskyttelsesloven § 6, stk. 3);
-  under 13 opretter forælderen (afsnit 2.3). Kilden står ved tallet i
+- **Alder.** 15 år for eget samtykke (databeskyttelsesloven § 6, stk. 2
+  og 3, siden 1. januar 2024); under 15 opretter forælderen (afsnit 2.3). Kilden står ved tallet i
   `src/core/auth/register-personal.ts`.
 - **Konsekvensanalyse (art. 35).** Helbredsoplysninger om mindreårige i
   stort tal er efter Datatilsynets liste over behandlinger, der kræver
@@ -503,6 +505,18 @@ Claude forbereder udkast.
   `docs/dpia.md`, og Martins rådgiver afgør.
 - **Fortegnelse (art. 30)** som `docs/fortegnelse.md`: hvilke
   oplysninger, formål, hjemmel, modtagere, slettefrister.
+- **A-08's udkast ligger i `docs/jura/`** (gren `docs/jura`): databehandleraftale
+  med bilag, forslag til vilkår og privatlivspolitik på dansk og engelsk,
+  DPIA og fortegnelse. DPIA'en konkluderer, at en konsekvensanalyse er
+  påkrævet (helbredsoplysninger om børn, GPS sammen med helbred, en
+  sprogmodel der læser check-in-flag), men ikke forudgående høring af
+  Datatilsynet. Den fandt ni steder, hvor koden ikke holder, hvad `/terms`
+  lover; de tre, der kræver kode, bliver story S-13: medlemmers konti
+  slettes ikke med arbejdsrummet og ingen kan slette sin egen konto;
+  logins skrives i revisionssporet med IP-adresse og browser under
+  holdets `org_id`, så trænere kan læse rytteres og forældres IP-adresser
+  i sporet og i eksporten; en rytter kan ikke selv slette sin egen
+  historik (`erase_rider` er trænerens).
 - **Rettelser, der kan laves nu:** `/terms` siger "vi skriver til dig om
   tjenesten", men Kadence sender ingen mail; Mistral-rækken i
   `docs/subprocessors.md` beskriver et søsterprodukts prompts

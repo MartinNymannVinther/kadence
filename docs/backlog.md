@@ -23,6 +23,7 @@ eller mere. Rækkefølgen inden for en prioritet er den anbefalede.
 
 P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter #21 og #22). Hvert spor bygges i sit eget worktree med egen database og flettes ind på P1-grenen, når det er grønt. Statusloggen nyeste først:
 
+- **11. okt., aften.** A-08 er skrevet som udkast i docs/jura (gren docs/jura): databehandleraftale med bilag, vilkår og privatlivspolitik på dansk og engelsk, DPIA (påkrævet, ikke forudgående høring) og fortegnelse. Fundet undervejs: aldersgrænsen for et barns eget samtykke er 15, ikke 13, siden 1. januar 2024; planen, S-01 og S-08 er rettet. Ni steder hvor koden ikke holder vilkårene; de tre med kode er S-13. Forbrug: ca. 240k tokens.
 - **11. okt., senere.** Martin svarede ja på alle otte spørgsmål i planens afsnit 9 (mail: Claude vælger udbyder, valget er Scaleway Transactional Email; egen jobtabel; egen S3-signering og Hetzner Object Storage; kvoter og 24 måneders opbevaring som foreslået; et enkelt gebyr for drift og vedligehold, S-12 skrives senere; S-01 først og trin 0 parallelt). S-01, S-03, S-04 og S-05 er sat i gang, hver i eget worktree med egen database.
 - **11. okt.** Alene, og som en tjeneste: plan til godkendelse i docs/plan-alene-og-som-tjeneste.md, efter Martins input om at Kadence skal kunne bruges af én person (barn eller voksen) med mulighed for at komme på et hold senere, og at klubberne vil bruge kadence.haij.dk som tjeneste frem for egen installation. To agenter kortlagde konti/roller og driften: modellen bærer allerede en person alene (ADR 0010), men intet opretter ejerens rytterrække, menuen behandler ejeren som træner, og intet flytter historik mellem arbejdsrum; driften regner fem steder med én proces, filerne ligger som bytea i databasen, demoens revisionsrækker bliver liggende, og eksporten læser alt i hukommelsen. Planen: personligt arbejdsrum (`organizations.kind`), historikken følger rytteren (`move_rider_history`), tre driftstrin uden at bryde dogme to, og jura før døren åbnes. Stories S-01 til S-11 og A-08 nedenfor. Ingen kode. Forbrug: ca. 0,5M tokens inkl. agenterne.
 - **10. okt.** Ture ind: en samlet undersøgelse af, om rytterne har de bedste muligheder for let upload og synkronisering fra deres enheder, kørt som én workflow med 67 agenter (seks spor, to uafhængige efterprøvere pr. påstand, tre dommere, en kritiker og en anden runde). Resultatet ligger i docs/research/rides-in-options.md: de nøglefri veje er de bedste en webapp kan have, men intet er automatisk endnu, intet er prøvet på en rigtig enhed, og flertallet (Edge + iPhone) har en omvej på otte tryk, som appen ikke forklarer. Tredict er stadig den eneste automatiske vej for mindreårige, nu i to varianter (eget token eller OAuth-klient) med fire skriftlige svar udestående; ugens visninger behøver kun turens tal, så et indtag af tal uden fil er det billigste automatiske skridt. A-07 er skrevet om til tre akser. Ingen kode. Forbrug: ca. 0,7M tokens i den sidste kørsel af workflowet; to tidligere kørsler stoppede på sessionens grænse og blev genoptaget fra cachen.
@@ -1346,8 +1347,8 @@ hold for at planlægge og følge min træning.
 - `organizations.kind` ('club' | 'personal'), sat kun af serverkoden;
   `platform_overview()` viser enkeltpersoner som ét tal.
 - Ansøgningen på `/register` får valget "En klub eller et hold" / "Mig
-  selv", fødselsår og for et barn under 13 forælderens oprettelse med
-  barnet som inviteret rytter; kilden til 13 år står ved tallet.
+  selv", fødselsår og for et barn under 15 forælderens oprettelse med
+  barnet som inviteret rytter; kilden til 15 år står ved tallet.
 - Den godkendte registrering opretter rum, rytterrække (`createRiderIn`
   med `userId`) og klasse efter året; "senior" og "youth" får ingen
   DCU-tal, og sæsonplanen siger det.
@@ -1369,8 +1370,8 @@ fra src/core/auth/register-personal.ts og access-godkendelsen; en
 before-hook på /organization/create afviser feltet fra en request body.
 Ansøgning med kind og birth_year (to kolonner på access_requests, uden
 org_id som ADR 0004). registerPersonal: zod med forWhom 'me'|'child';
-under 13 afvises for 'me' med en plain besked og kilden
-(databeskyttelsesloven § 6, stk. 3). Rytterrække via createRiderIn med
+under 15 afvises for 'me' med en plain besked og kilden
+(databeskyttelsesloven § 6, stk. 2 og 3, 15 år siden 1. januar 2024). Rytterrække via createRiderIn med
 userId. menuFor(role, flags, kind) og settingsItems(me, kind). Demo
 alene. Tests: tests/access/register-personal, tests/nav, tests/demo,
 tests/i18n. ADR 0080. Ingen ny afhængighed.
@@ -1571,6 +1572,37 @@ dekodning i workeren. Hele suiten grøn mod pgbouncer. ADR'er som
 planen siger.
 ```
 
+### S-13 Det, vilkårene lover
+
+**Som** rytter eller forælder **vil jeg** at det, `/terms` lover, også er
+det, koden gør, **så** jeg kan slette mig selv, og min IP-adresse ikke
+ligger i trænerens spor.
+
+Fundet af A-08's DPIA (docs/jura/dpia.md, R9 m.fl.):
+
+- `delete_workspace` sletter ikke medlemmernes konti, og ingen kan
+  slette sin egen konto; "Slet min konto" under Indstillinger → Mig
+  sletter kontoen, når den ikke er på andre hold (og først forlader
+  holdet, hvor den er).
+- Logins skrives i revisionssporet med IP-adresse og browser under
+  holdets `org_id`; trænere læser dem i sporet og i eksporten. Flyt
+  `auth.*`-hændelser til installationens eget spor uden `org_id`, eller
+  fjern IP og browser fra dem; eksporten følger med.
+- En rytter kan selv slette sin historik (`erase_rider` for egen række),
+  med bekræftelse og eksport først.
+
+**Størrelse:** M · **Afhænger af:** A-08
+
+**Tokens:** ca. 300–500k · **Model:** Opus 5.5 (`claude-opus-5-5`), audit og sletning.
+
+```text
+Følg rammen i docs/backlog.md §0. Gren: feat/det-vilkaarene-lover.
+Læs docs/jura/dpia.md og vilkaar-og-privatliv-forslag.md (listen
+"hvor koden ikke holder"), ADR 0003, 0006. Byg de tre punkter ovenfor
+med RLS- og audit-tests; ret /terms' sætninger, der stadig ikke holder,
+eller lad dem sige det, koden gør. ADR.
+```
+
 ## A — afklaringer uden kode
 
 ### A-01 En sportsdiætist læser madguiden
@@ -1690,7 +1722,7 @@ standardkontraktsbestemmelser med Kadences bilag (hvad, hvor, hvordan
 klubben henter og sletter); et forslag til at dele /terms i vilkår og
 privatlivspolitik, der navngiver den dataansvarlige for klubber og for
 personer alene og hjemlen for helbredsoplysninger; docs/dpia.md og
-docs/fortegnelse.md. Alderen 13 med kilde. Ingen kode. Supplerer A-05.
+docs/fortegnelse.md. Alderen 15 med kilde (hævet fra 13 den 1. januar 2024). Ingen kode. Supplerer A-05.
 ```
 
 ## R — oprydning
