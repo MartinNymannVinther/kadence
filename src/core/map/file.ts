@@ -10,10 +10,13 @@ import { env } from "@/core/env";
  * holds no file, there is no map and routes are drawn alone.
  */
 
+// The file lives outside the build (a volume in production), so every
+// path here is marked turbopackIgnore: without it the build cannot tell
+// which file is meant and traces the whole project into the server.
 export function mapPath(): string | null {
   const file = env.MAP_FILE;
   if (!file) return null;
-  return isAbsolute(file) ? file : resolve(process.cwd(), file);
+  return isAbsolute(file) ? file : resolve(/* turbopackIgnore: true */ process.cwd(), file);
 }
 
 /** The file's size, or null when there is no map. */
@@ -21,7 +24,7 @@ export async function mapSize(): Promise<number | null> {
   const path = mapPath();
   if (!path) return null;
   try {
-    const info = await stat(path);
+    const info = await stat(/* turbopackIgnore: true */ path);
     return info.isFile() && info.size > 0 ? info.size : null;
   } catch {
     return null;
@@ -48,7 +51,7 @@ export function parseRange(
 export const MAX_RANGE_BYTES = 4 * 1024 * 1024;
 
 export async function readRange(start: number, end: number): Promise<Uint8Array> {
-  const handle = await open(mapPath()!, "r");
+  const handle = await open(/* turbopackIgnore: true */ mapPath()!, "r");
   try {
     const length = end - start + 1;
     const buffer = new Uint8Array(length);
