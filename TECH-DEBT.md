@@ -111,6 +111,23 @@ costs nothing while it waits.
 rider turns 18, because Kadence only stores the birth year (DCU's classes
 go by year). Up to a year early, never late (ADR 0011).
 
+### No error reporting service
+
+A failure that is not a service's deliberate refusal is logged
+(`src/core/log.ts`) and answered to the person with a generic word
+("generic", "noModel") — nobody is paged, and nothing keeps the stack
+trace once the log line rotates away (`docker-compose.yml`'s
+`logging:`). Reading `docker logs` or Coolify's log viewer after someone
+reports a problem is what there is today (docs/deploy.md,
+"Monitoring"). A hosted error-reporting SaaS (Sentry and the like) would
+fix that, at the cost of a new subprocessor seeing every stack trace and
+whatever local variables were in scope when it was thrown — for a tool
+that holds health data about minors, that is not a trade to make by
+installing the first SDK with a free tier. Dogma four means the real
+candidate is a self-hosted, EU-run one on this same server, such as
+GlitchTip; it is left for a later story once a real winter has shown
+whether the log lines above are enough.
+
 ## Waiting for real use
 
 ### A phone, a cable and a share sheet

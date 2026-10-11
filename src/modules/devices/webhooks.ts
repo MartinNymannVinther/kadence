@@ -2,6 +2,7 @@ import { and, eq } from "drizzle-orm";
 import { Refused } from "@/core/action";
 import { deviceLinks } from "@/core/db/schema";
 import { withOrgContext } from "@/core/db/tenant";
+import { log } from "@/core/log";
 import { callerKey, rateLimit } from "@/core/rate-limit";
 import { DeviceHttpError, loggable, readLimited } from "./http";
 import { importFitIn } from "./import";
@@ -96,7 +97,10 @@ export async function processWebhookEvents(
     try {
       outcomes.push(await processEvent(provider, event));
     } catch (error) {
-      console.error("device webhook: event failed", provider.id, loggable(error));
+      await log.error("device webhook: event failed", {
+        provider: provider.id,
+        error: loggable(error),
+      });
       outcomes.push("refused");
     }
   }

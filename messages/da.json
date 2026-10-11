@@ -706,7 +706,7 @@
     },
     "account": {
       "title": "Konto og adgang",
-      "body": "Du får adgang ved at ansøge eller blive inviteret. Vi gemmer dit navn, din e-mail og navnet på dit arbejdsrum, og vi bruger dem til at logge dig ind og til at skrive til dig om tjenesten. Adgangskoder gemmes hashet, og du kan tilføje passkey og totrinsbekræftelse. Vi sælger ikke noget, og vi sender ikke markedsmails du ikke har bedt om."
+      "body": "Du får adgang ved at ansøge eller blive inviteret. Vi gemmer dit navn, din e-mail og navnet på dit arbejdsrum, og vi bruger dem til at logge dig ind og til at vise, hvem du er på holdet. Adgangskoder gemmes hashet, og du kan tilføje passkey og totrinsbekræftelse. Vi sælger ikke noget, og vi sender ikke markedsmails du ikke har bedt om."
     },
     "yourData": {
       "title": "Jeres data",

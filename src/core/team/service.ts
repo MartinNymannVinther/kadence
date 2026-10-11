@@ -5,6 +5,7 @@ import { auth } from "@/core/auth/auth";
 import { authDb } from "@/core/db/client";
 import { invitations, organizations, users } from "@/core/db/schema";
 import { env } from "@/core/env";
+import { errorName, log, requestIdFrom } from "@/core/log";
 
 /**
  * The team: who is in a workspace, and how somebody joins it.
@@ -85,7 +86,10 @@ export async function inviteMember(
       if (error.status === "FORBIDDEN" || /not allowed/i.test(message))
         return { ok: false, error: "forbidden" };
     }
-    console.error("team: invitation failed", error);
+    await log.error("team: invitation failed", {
+      requestId: requestIdFrom(headers),
+      error: errorName(error),
+    });
     return { ok: false, error: "generic" };
   }
 }
@@ -124,7 +128,10 @@ export async function cancelInvitation(headers: Headers, invitationId: string): 
     await auth.api.cancelInvitation({ body: { invitationId }, headers });
     return true;
   } catch (error) {
-    console.error("team: cancelling invitation failed", error);
+    await log.error("team: cancelling invitation failed", {
+      requestId: requestIdFrom(headers),
+      error: errorName(error),
+    });
     return false;
   }
 }
@@ -207,7 +214,10 @@ export async function acceptTeamInvitation(
       if (/recipient/i.test(message)) return "wrongPerson";
       if (/not found|expired/i.test(message)) return "invalid";
     }
-    console.error("team: accepting invitation failed", error);
+    await log.error("team: accepting invitation failed", {
+      requestId: requestIdFrom(headers),
+      error: errorName(error),
+    });
     return "failed";
   }
 }
@@ -219,7 +229,10 @@ export async function removeMember(headers: Headers, memberIdOrEmail: string): P
     await auth.api.removeMember({ body: { memberIdOrEmail }, headers });
     return true;
   } catch (error) {
-    console.error("team: removing member failed", error);
+    await log.error("team: removing member failed", {
+      requestId: requestIdFrom(headers),
+      error: errorName(error),
+    });
     return false;
   }
 }
@@ -233,7 +246,10 @@ export async function updateMemberRole(
     await auth.api.updateMemberRole({ body: { memberId, role }, headers });
     return true;
   } catch (error) {
-    console.error("team: changing role failed", error);
+    await log.error("team: changing role failed", {
+      requestId: requestIdFrom(headers),
+      error: errorName(error),
+    });
     return false;
   }
 }
@@ -243,7 +259,10 @@ export async function leaveWorkspace(headers: Headers, organizationId: string): 
     await auth.api.leaveOrganization({ body: { organizationId }, headers });
     return true;
   } catch (error) {
-    console.error("team: leaving failed", error);
+    await log.error("team: leaving failed", {
+      requestId: requestIdFrom(headers),
+      error: errorName(error),
+    });
     return false;
   }
 }

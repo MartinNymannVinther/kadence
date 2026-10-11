@@ -8,6 +8,7 @@ import { requireOrgContext } from "@/core/auth/guard";
 import { getSession } from "@/core/auth/session";
 import { pushSubscriptions } from "@/core/db/schema";
 import { withOrgContext } from "@/core/db/tenant";
+import { errorName, log } from "@/core/log";
 import { fail, ok, type Result } from "@/core/result";
 import { registerInvited, type JoinRegisterResult } from "./register";
 import { createResetLink } from "./reset-link";
@@ -105,7 +106,10 @@ export async function leaveWorkspaceAction(): Promise<Result<boolean>> {
         ),
     );
   } catch (error) {
-    console.error("team: forgetting reminders after leaving failed", error);
+    await log.error("team: forgetting reminders after leaving failed", {
+      orgId: ctx.orgId,
+      error: errorName(error),
+    });
   }
   return ok(true);
 }

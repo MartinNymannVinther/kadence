@@ -7,6 +7,7 @@ import { demoWorkspaces } from "@/core/db/schema";
 import { markWorkspacePersonal } from "@/core/auth/register-personal";
 import { DEMO_HEADER, demoSignupHeaderValue } from "@/core/auth/signup";
 import { env } from "@/core/env";
+import { errorName, log } from "@/core/log";
 import { organizationSlug } from "@/lib/slug";
 import { arrivalOrigin } from "./origin";
 import { createDemoRoles, readAccounts } from "./roles";
@@ -121,7 +122,10 @@ export async function cleanupExpiredDemos(now = new Date()): Promise<number> {
       for (const id of people) await authDb.execute(sql`delete from users where id = ${id}`);
     } catch (error) {
       // One stuck demo must not stop the others being cleaned up.
-      console.error("demo: cleanup failed for", row.organizationId, error);
+      await log.error("demo: cleanup failed", {
+        orgId: row.organizationId,
+        error: errorName(error),
+      });
     }
   }
   return expired.length;
@@ -167,7 +171,7 @@ export async function createDemoWorkspace(
     sessionHeaders = cookieHeaderFrom(responseHeaders);
     userId = response.user!.id;
   } catch (error) {
-    console.error("demo: could not create the visitor's account", error);
+    await log.error("demo: could not create the visitor's account", { error: errorName(error) });
     return null;
   }
 
@@ -211,7 +215,10 @@ export async function createDemoWorkspace(
     });
   } catch (error) {
     // An empty demo, or one with only the coach, is still a demo.
-    console.error("demo: could not seed the team", error);
+    await log.error("demo: could not seed the team", {
+      orgId: organization.id,
+      error: errorName(error),
+    });
   }
 
   return { headers: sessionHeaders };

@@ -2,6 +2,7 @@ import { and, eq } from "drizzle-orm";
 import { Refused } from "@/core/action";
 import { deviceLinks, plannedSessions, riders } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
+import { log } from "@/core/log";
 import { requireWriteFor } from "@/modules/team/access";
 import { readStructure } from "@/modules/workouts/structure";
 import { DeviceHttpError, loggable } from "./http";
@@ -80,7 +81,7 @@ export async function pushSession(
     return { provider: providerId, externalId: sent.externalId };
   } catch (error) {
     if (!(error instanceof DeviceHttpError)) throw error;
-    console.error("device push failed", providerId, loggable(error));
+    await log.error("device push failed", { provider: providerId, error: loggable(error) });
     if (error.unauthorized) {
       await markLink({ orgId: owner.orgId, userId: owner.riderUserId }, owner.riderId, providerId, {
         status: "error",

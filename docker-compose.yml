@@ -8,6 +8,17 @@
 # Coolify's variable list must be replaced before the first deploy; the
 # migration step and the app both refuse to run on one, and say so.
 
+# Docker's default json-file driver keeps every line forever; on a long-
+# running VPS that fills the disk under the database before anything else
+# notices. The same three lines on every service cap it at 100 MB total
+# (20 MB × 5 files), rotated rather than dropped, which is plenty for
+# `docker logs` and for Coolify's log viewer (docs/deploy.md §Overvågning).
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "20m"
+    max-file: "5"
+
 services:
   db:
     image: postgres:16
@@ -26,6 +37,7 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+    logging: *default-logging
 
   migrate:
     build:
@@ -43,6 +55,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    logging: *default-logging
 
   app:
     build:
@@ -121,6 +134,7 @@ services:
     volumes:
       - kadence-map:/data/map:ro
       - kadence-teams:/data/teams
+    logging: *default-logging
     # No published port. Coolify's proxy reaches the app over the compose
     # network and terminates TLS in front of it; binding 0.0.0.0:3000 as
     # well would put the same app on the VPS's public address in cleartext,

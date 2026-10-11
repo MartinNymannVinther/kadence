@@ -2,6 +2,7 @@ import { and, eq, sql } from "drizzle-orm";
 import { auth } from "@/core/auth/auth";
 import { memberships, organizations, users } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
+import { errorName, log } from "@/core/log";
 import { memberAddress, memberAddresses } from "@/modules/team/addresses";
 
 /**
@@ -130,7 +131,7 @@ export async function deleteWorkspace(
     // docker-compose.yml starts the app only on the migration step's
     // `service_completed_successfully`.
     if (sqlStateOf(error) === INSUFFICIENT_PRIVILEGE) return "notOwner";
-    console.error("workspace: delete failed", error);
+    await log.error("workspace: delete failed", { orgId: ctx.orgId, error: errorName(error) });
     return "failed";
   }
   return "deleted";
