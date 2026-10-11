@@ -6,9 +6,29 @@ import { memberships } from "@/core/db/schema";
 import type { OrgContext } from "@/core/db/tenant";
 import { auth } from "./auth";
 
-/** Current session, or null. Cached per request. */
+/**
+ * The session as the database has it, past the cookie cache. Cached per
+ * request.
+ */
+const getStoredSession = cache(async () => {
+  return auth.api.getSession({ headers: await headers(), query: { disableCookieCache: true } });
+});
+
+/**
+ * Current session, or null. Cached per request.
+ *
+ * Better Auth keeps the session in a signed cookie for five minutes
+ * (auth.ts, docs/adr/0083), so most pages read no session row at all. The
+ * cookie can be behind the database in one way that matters: a person who
+ * just joined a team, or left one, has it set or cleared as their active
+ * team in the database by Better Auth, which does not rewrite the cookie.
+ * A session that names no team is therefore read from the database
+ * before anybody is sent to onboarding.
+ */
 export const getSession = cache(async () => {
-  return auth.api.getSession({ headers: await headers() });
+  const cached = await auth.api.getSession({ headers: await headers() });
+  if (!cached || cached.session.activeOrganizationId) return cached;
+  return getStoredSession();
 });
 
 /**
@@ -44,6 +64,13 @@ export async function getOrgContext(): Promise<OrgContext | null> {
   if (!session) return null;
   const orgId = session.session.activeOrganizationId;
   if (!orgId) return null;
-  if (!(await stillAMember(session.user.id, orgId))) return null;
-  return { orgId, userId: session.user.id };
+  if (await stillAMember(session.user.id, orgId)) return { orgId, userId: session.user.id };
+  // Not a member of the team the cookie names. Either they were removed,
+  // and the answer is no, or they left it and the cookie has not heard:
+  // the database's session says which team, if any, is theirs now.
+  const stored = await getStoredSession();
+  const storedOrgId = stored?.session.activeOrganizationId;
+  if (!stored || !storedOrgId || storedOrgId === orgId) return null;
+  if (!(await stillAMember(stored.user.id, storedOrgId))) return null;
+  return { orgId: storedOrgId, userId: stored.user.id };
 }

@@ -59,9 +59,9 @@ export async function POST(request: Request) {
   if (fromAnotherSite(request)) return refuse("forbidden", 403);
   const ctx = await requireOrgContext();
   if (!ctx) return refuse("unauthorized", 401);
-  const asked = rateLimit(archiveRequestsKey(ctx.userId), ARCHIVE_REQUESTS_PER_DAY, DAY);
+  const asked = await rateLimit(archiveRequestsKey(ctx.userId), ARCHIVE_REQUESTS_PER_DAY, DAY);
   if (!asked.allowed) return refuse("rateLimited", 429, asked.retryAfterSeconds);
-  const minute = rateLimit(archiveMinuteKey(ctx.userId), ARCHIVE_REQUESTS_PER_MINUTE, MINUTE);
+  const minute = await rateLimit(archiveMinuteKey(ctx.userId), ARCHIVE_REQUESTS_PER_MINUTE, MINUTE);
   if (!minute.allowed) return refuse("busy", 429, minute.retryAfterSeconds);
 
   const params = new URL(request.url).searchParams;
@@ -77,11 +77,11 @@ export async function POST(request: Request) {
     return refuse("generic", 500);
   }
 
-  if (!signedInReads.enter(ctx.userId)) return refuse("busy", 429, BUSY_SECONDS);
+  if (!(await signedInReads.enter(ctx.userId))) return refuse("busy", 429, BUSY_SECONDS);
   try {
     return await keep(request, ctx, riderId, only === "bike");
   } finally {
-    signedInReads.leave(ctx.userId);
+    await signedInReads.leave(ctx.userId);
   }
 }
 

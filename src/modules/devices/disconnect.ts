@@ -1,5 +1,6 @@
 import { Refused } from "@/core/action";
 import type { OrgContext } from "@/core/db/tenant";
+import { log } from "@/core/log";
 import { loggable } from "./http";
 import { accessTokenFor, deleteOwnLink, linkExternalUserId, ownLinkOwner } from "./links";
 import { providerById, type ProviderId } from "./providers";
@@ -25,7 +26,10 @@ export async function disconnect(ctx: OrgContext, providerId: ProviderId): Promi
       if (account) await provider.deregister(token, account);
     } catch (error) {
       if (!(error instanceof Refused))
-        console.error("device disconnect: deregister failed", providerId, loggable(error));
+        await log.error("device disconnect: deregister failed", {
+          provider: providerId,
+          error: loggable(error),
+        });
     }
   }
   if (!(await deleteOwnLink(ctx, providerId))) throw new Refused("notFound", "not_connected");

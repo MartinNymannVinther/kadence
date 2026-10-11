@@ -302,6 +302,16 @@ describe("a demo workspace", () => {
       people,
     ]);
     expect(left.rows[0].n).toBe(0);
+    // No trail either (ADR 0084): with DEMO=on it used to grow by a
+    // demo's worth of rows for every visitor, forever.
+    const trail = await admin.query(
+      `select count(*)::int as n from audit_log
+       where org_id = $1 or actor_user_id = any($2)
+          or (entity_type = 'users' and entity_id = any($2))
+          or before_data ->> 'user_id' = any($2) or after_data ->> 'user_id' = any($2)`,
+      [orgId, [userId, ...people]],
+    );
+    expect(trail.rows[0].n).toBe(0);
   });
 });
 

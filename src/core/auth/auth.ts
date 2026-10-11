@@ -74,7 +74,18 @@ export const auth = betterAuth({
       platformRole: { type: "string", required: false, input: false },
     },
   },
-  session: { modelName: "sessions" },
+  session: {
+    modelName: "sessions",
+    // The session is read from a signed cookie for five minutes before the
+    // database is asked again (docs/adr/0083): one query less on every
+    // request. Signing out clears the cookie at once. Whether the person
+    // is still on the team is not in the cookie: getOrgContext reads the
+    // membership on every page (session.ts), so removal from a team takes
+    // effect on the next page as before. What waits up to five minutes is
+    // a session revoked elsewhere, such as the other devices signed out
+    // when a coach's reset link is used.
+    cookieCache: { enabled: true, maxAge: 5 * 60 },
+  },
   account: { modelName: "accounts" },
   verification: { modelName: "verifications" },
   emailAndPassword: {

@@ -106,8 +106,8 @@ beforeAll(async () => {
   await admin.query(g.text, g.values);
 });
 
-beforeEach(() => {
-  resetRateLimits();
+beforeEach(async () => {
+  await resetRateLimits();
   auth.session = IDA;
 });
 
@@ -168,7 +168,7 @@ describe("a ride from the archive", () => {
     await send([{ name: "1005.fit.gz", bytes }]);
     // One ride of the day left.
     for (let i = 0; i < ARCHIVE_KEPT_PER_DAY - 2; i++)
-      rateLimit(archiveKeptKey(IDA.userId, "ar_ida"), ARCHIVE_KEPT_PER_DAY, DAY);
+      await rateLimit(archiveKeptKey(IDA.userId, "ar_ida"), ARCHIVE_KEPT_PER_DAY, DAY);
     const again = await (await send([{ name: "1005.fit.gz", bytes }])).json();
     expect(again.results[0]).toMatchObject({ ok: false, error: "duplicate" });
     const last = await (await send([{ name: "1006.fit.gz", bytes: nextRide() }])).json();
@@ -201,18 +201,18 @@ describe("a ride from the archive", () => {
 describe("the day's budget", () => {
   it("is the archive's own: the hour's sixty neither stop it nor are used by it", async () => {
     for (let i = 0; i < STORED_FILES_PER_HOUR; i++)
-      rateLimit(storedFilesKey(IDA.userId), STORED_FILES_PER_HOUR, HOUR);
+      await rateLimit(storedFilesKey(IDA.userId), STORED_FILES_PER_HOUR, HOUR);
     expect(
       (await (await send([{ name: "d1.fit.gz", bytes: nextRide() }])).json()).results[0].ok,
     ).toBe(true);
-    resetRateLimits();
+    await resetRateLimits();
     await send([{ name: "d2.fit.gz", bytes: nextRide() }]);
-    expect(peekRateLimit(storedFilesKey(IDA.userId), 1).allowed).toBe(true);
+    expect((await peekRateLimit(storedFilesKey(IDA.userId), 1)).allowed).toBe(true);
   });
 
   it("stops at the rides kept, and says when there is room again", async () => {
     for (let i = 0; i < ARCHIVE_KEPT_PER_DAY; i++)
-      rateLimit(archiveKeptKey(IDA.userId, "ar_ida"), ARCHIVE_KEPT_PER_DAY, DAY);
+      await rateLimit(archiveKeptKey(IDA.userId, "ar_ida"), ARCHIVE_KEPT_PER_DAY, DAY);
     const before = await count();
     const answer = await (await send([{ name: "e1.fit.gz", bytes: nextRide() }])).json();
     expect(answer.results).toEqual([{ name: "e1.fit.gz", ok: false, error: "rateLimited" }]);
@@ -222,14 +222,14 @@ describe("the day's budget", () => {
 
   it("stops at the files read, whatever they turned out to be", async () => {
     for (let i = 0; i < ARCHIVE_READ_PER_DAY; i++)
-      rateLimit(archiveReadKey(IDA.userId, "ar_ida"), ARCHIVE_READ_PER_DAY, DAY);
+      await rateLimit(archiveReadKey(IDA.userId, "ar_ida"), ARCHIVE_READ_PER_DAY, DAY);
     const answer = await (await send([{ name: "e2.fit.gz", bytes: nextRide() }])).json();
     expect(answer.results[0]).toMatchObject({ ok: false, error: "rateLimited" });
   });
 
   it("is the person's: a coach's day for the rider is not the rider's own", async () => {
     for (let i = 0; i < ARCHIVE_KEPT_PER_DAY; i++)
-      rateLimit(archiveKeptKey(COACH.userId, "ar_ida"), ARCHIVE_KEPT_PER_DAY, DAY);
+      await rateLimit(archiveKeptKey(COACH.userId, "ar_ida"), ARCHIVE_KEPT_PER_DAY, DAY);
     auth.session = COACH;
     expect(
       (await (await send([{ name: "f1.fit.gz", bytes: nextRide() }])).json()).results[0].error,
@@ -242,7 +242,7 @@ describe("the day's budget", () => {
 
   it("counts the requests too, and answers the last with when to come back", async () => {
     for (let i = 0; i < ARCHIVE_REQUESTS_PER_DAY; i++)
-      rateLimit(`archive:${IDA.userId}`, ARCHIVE_REQUESTS_PER_DAY, DAY);
+      await rateLimit(`archive:${IDA.userId}`, ARCHIVE_REQUESTS_PER_DAY, DAY);
     const response = await send([{ name: "g1.fit.gz", bytes: nextRide() }]);
     expect(response.status).toBe(429);
     expect(Number(response.headers.get("retry-after"))).toBeGreaterThan(0);
@@ -307,7 +307,7 @@ describe("the files Kadence has", () => {
     const bytes = nextRide();
     expect((await (await send([{ name: "l1.fit.gz", bytes }])).json()).results[0].ok).toBe(true);
     for (let i = 0; i < ARCHIVE_READ_PER_DAY; i++)
-      rateLimit(archiveReadKey(IDA.userId, "ar_ida"), ARCHIVE_READ_PER_DAY, DAY);
+      await rateLimit(archiveReadKey(IDA.userId, "ar_ida"), ARCHIVE_READ_PER_DAY, DAY);
     for (let i = 0; i < 3; i++) {
       const again = await (await send([{ name: "l1.fit.gz", bytes }])).json();
       expect(again.results[0]).toMatchObject({ ok: false, error: "duplicate" });

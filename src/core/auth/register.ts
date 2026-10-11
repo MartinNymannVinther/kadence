@@ -3,6 +3,7 @@ import { z } from "zod";
 import { personalProblem, type PersonalSpec } from "@/core/access/personal";
 import { consumeInvitation, findValidInvitation } from "@/core/access/service";
 import { todayInCopenhagen } from "@/core/dates";
+import { errorName, log, requestIdFrom } from "@/core/log";
 import { organizationSlug } from "@/lib/slug";
 import { auth } from "./auth";
 import { setUpPersonalWorkspace } from "./register-personal";
@@ -106,7 +107,10 @@ export async function registerUserWithOrganization(
     if (error instanceof APIError && error.body?.code === "USER_ALREADY_EXISTS") {
       return { ok: false, error: "emailExists" };
     }
-    console.error("register: sign-up failed", error);
+    await log.error("register: sign-up failed", {
+      requestId: requestIdFrom(requestHeaders),
+      error: errorName(error),
+    });
     return { ok: false, error: "generic" };
   }
 
@@ -138,7 +142,10 @@ export async function registerUserWithOrganization(
   } catch (error) {
     // The user exists and is signed in; the app falls back to
     // onboarding when no organization is present.
-    console.error("register: organization creation failed", error);
+    await log.error("register: organization creation failed", {
+      requestId: requestIdFrom(requestHeaders),
+      error: errorName(error),
+    });
   }
 
   return { ok: true };

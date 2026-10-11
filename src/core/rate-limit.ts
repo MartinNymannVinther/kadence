@@ -1,49 +1,51 @@
 import { isIP } from "node:net";
+import { countOne, currentCount, resetCounters } from "@/core/counters";
 import { env } from "@/core/env";
 
 /**
- * A small in-process rate limiter for public endpoints — the ones with no
- * session to count against, where the only handle is the caller's address.
+ * The rate limiter: how many times something may happen per key in a
+ * window. Most keys are a person (`upload:<user>`); the public endpoints,
+ * which have no session to count against, key on the caller's address.
  *
- * Deliberately in memory. Kadence runs as one container behind one proxy, so
- * one process is the whole installation and a shared store would be a
- * dependency bought for nothing. The honest limits of that: the counters
- * reset when the app restarts, and an installation that is ever scaled to
- * several instances gets a limit per instance rather than a limit. If that
- * day comes, this is the one file to replace, and the call sites do not
- * change.
+ * The counts live in the database (src/core/counters.ts, docs/adr/0083),
+ * so every instance of Kadence shares one count and a restart keeps it.
+ * Until October 2026 they lived in this process's memory; the functions
+ * kept their names and their answers, and became asynchronous.
  *
- * The authenticated surface does not use this: model calls are counted in
- * the database per user and per workspace (see modules/ai/limits.ts), and
- * Better Auth rate-limits its own endpoints.
+ * When the database cannot be asked, the answer is no: a limit that lets
+ * everything through while its store is down is no limit, and every door
+ * behind one needs the database for its own work anyway. The caller
+ * answers as it does for any refusal, with a short Retry-After, and the
+ * failure is logged once per refusal by name only.
+ *
+ * Model calls are counted elsewhere, per user and per workspace in their
+ * own table (src/modules/ai/limits.ts), and Better Auth rate-limits its own
+ * endpoints in `rate_limits`, which the counters' sweep also cleans.
  */
-
-type Bucket = { count: number; resetAt: number };
-
-const buckets = new Map<string, Bucket>();
-let lastSweep = 0;
-
-/** Drops expired buckets now and then, so a long-running process stays flat. */
-function sweep(now: number) {
-  if (now - lastSweep < 60_000) return;
-  lastSweep = now;
-  for (const [key, bucket] of buckets) if (bucket.resetAt <= now) buckets.delete(key);
-}
 
 export type RateLimit = { allowed: boolean; retryAfterSeconds: number };
 
-export function rateLimit(key: string, limit: number, windowMs: number): RateLimit {
-  const now = Date.now();
-  sweep(now);
-  const bucket = buckets.get(key);
-  if (!bucket || bucket.resetAt <= now) {
-    buckets.set(key, { count: 1, resetAt: now + windowMs });
-    return { allowed: true, retryAfterSeconds: 0 };
+/** How long a caller refused because the database did not answer is asked to wait. */
+const UNAVAILABLE_SECONDS = 5;
+
+function unavailable(error: unknown): RateLimit {
+  // A name, never a message: a database error's message carries its parameters.
+  console.error(
+    "rate-limit: the counters did not answer",
+    error instanceof Error ? error.name : "unknown",
+  );
+  return { allowed: false, retryAfterSeconds: UNAVAILABLE_SECONDS };
+}
+
+export async function rateLimit(key: string, limit: number, windowMs: number): Promise<RateLimit> {
+  try {
+    const { count, retryAfterSeconds } = await countOne(key, windowMs);
+    return count > limit
+      ? { allowed: false, retryAfterSeconds }
+      : { allowed: true, retryAfterSeconds: 0 };
+  } catch (error) {
+    return unavailable(error);
   }
-  bucket.count += 1;
-  if (bucket.count > limit)
-    return { allowed: false, retryAfterSeconds: Math.ceil((bucket.resetAt - now) / 1000) };
-  return { allowed: true, retryAfterSeconds: 0 };
 }
 
 /**
@@ -52,12 +54,14 @@ export function rateLimit(key: string, limit: number, windowMs: number): RateLim
  * same ride sent twice must not use up the hour: ask first, do the work,
  * and count with `rateLimit` only what was kept.
  */
-export function peekRateLimit(key: string, limit: number): RateLimit {
-  const now = Date.now();
-  const bucket = buckets.get(key);
-  if (!bucket || bucket.resetAt <= now || bucket.count < limit)
-    return { allowed: true, retryAfterSeconds: 0 };
-  return { allowed: false, retryAfterSeconds: Math.ceil((bucket.resetAt - now) / 1000) };
+export async function peekRateLimit(key: string, limit: number): Promise<RateLimit> {
+  try {
+    const now = await currentCount(key);
+    if (!now || now.count < limit) return { allowed: true, retryAfterSeconds: 0 };
+    return { allowed: false, retryAfterSeconds: now.retryAfterSeconds };
+  } catch (error) {
+    return unavailable(error);
+  }
 }
 
 /**
@@ -113,8 +117,7 @@ export function callerKey(headers: Headers, prefix: string): string {
   return `${prefix}:${clientAddress(headers)}`;
 }
 
-/** Only for tests: forget every bucket. */
-export function resetRateLimits() {
-  buckets.clear();
-  lastSweep = 0;
+/** Only for tests: forget every count. */
+export async function resetRateLimits(): Promise<void> {
+  await resetCounters();
 }

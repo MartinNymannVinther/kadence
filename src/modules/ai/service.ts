@@ -1,5 +1,6 @@
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { LlmError, type LlmMessage, type LlmStreamEvent } from "@/core/llm";
+import { errorName, log } from "@/core/log";
 import { reserveAiCall, type AiKind } from "./limits";
 import { workspaceLlmProvider } from "./model-settings";
 import { parseModelJson } from "./parse-json";
@@ -103,6 +104,6 @@ export function classifyAiError(error: unknown): AiFailure {
     if (error.reason === "rate_limit") return "rateLimited";
     return "badAnswer";
   }
-  console.error("ai: call failed", error);
+  void log.error("ai: call failed", { error: errorName(error) });
   return "generic";
 }

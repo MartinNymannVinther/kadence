@@ -90,10 +90,10 @@ describe("making a link", () => {
   });
 
   it("is counted: ten a coach an hour, five for one person", async () => {
-    for (let i = 0; i < 10; i++) rateLimit(`reset-link:${OWNER.userId}`, 10, 3_600_000);
+    for (let i = 0; i < 10; i++) await rateLimit(`reset-link:${OWNER.userId}`, 10, 3_600_000);
     expect(await createResetLink(OWNER, MOR.userId)).toBe("rateLimited");
-    resetRateLimits();
-    for (let i = 0; i < 5; i++) rateLimit(`reset-link-for:${MOR.userId}`, 5, 3_600_000);
+    await resetRateLimits();
+    for (let i = 0; i < 5; i++) await rateLimit(`reset-link-for:${MOR.userId}`, 5, 3_600_000);
     expect(await createResetLink(COACH, MOR.userId)).toBe("rateLimited");
   });
 });

@@ -82,10 +82,10 @@ function held(bytes: Uint8Array) {
 }
 
 /** Waits for something that happens on its own, a few milliseconds at a time. */
-async function until(happened: () => boolean) {
-  for (let i = 0; i < 600 && !happened(); i++)
+async function until(happened: () => Promise<boolean>) {
+  for (let i = 0; i < 600 && !(await happened()); i++)
     await new Promise((resolve) => setTimeout(resolve, 5));
-  expect(happened()).toBe(true);
+  expect(await happened()).toBe(true);
 }
 
 beforeAll(async () => {
@@ -110,8 +110,8 @@ beforeAll(async () => {
   await admin.query(g.text, g.values);
 });
 
-beforeEach(() => {
-  resetRateLimits();
+beforeEach(async () => {
+  await resetRateLimits();
   auth.session = IDA;
 });
 
@@ -125,13 +125,13 @@ describe("the body of a request", () => {
     const { response, state } = held(nextRide());
     expect((await response).status).toBe(403);
     expect(state.pulled).toBe(false);
-    expect(signedInReads.count(PARENT.userId)).toBe(0);
+    expect(await signedInReads.count(PARENT.userId)).toBe(0);
   });
 
   it("is read two at a time for a person, and a third is told to wait", async () => {
     const first = held(nextRide());
     const second = held(nextRide());
-    await until(() => signedInReads.count(IDA.userId) === 2);
+    await until(async () => (await signedInReads.count(IDA.userId)) === 2);
 
     const third = await send("n3.fit.gz", nextRide());
     expect(third.status).toBe(429);
@@ -145,7 +145,7 @@ describe("the body of a request", () => {
     second.release();
     expect((await first.response).status).toBe(200);
     expect((await second.response).status).toBe(200);
-    expect(signedInReads.count(IDA.userId)).toBe(0);
+    expect(await signedInReads.count(IDA.userId)).toBe(0);
   });
 
   it("that breaks off on the way gives its place back", async () => {
@@ -163,7 +163,7 @@ describe("the body of a request", () => {
       } as RequestInit),
     );
     expect(response.status).toBe(400);
-    expect(signedInReads.count(IDA.userId)).toBe(0);
+    expect(await signedInReads.count(IDA.userId)).toBe(0);
   });
 
   it("that says it is larger than three rides is refused before it is read", async () => {
@@ -181,7 +181,7 @@ describe("the body of a request", () => {
 describe("the minute's requests", () => {
   it("are thirty; the next is told to wait, not that the day is over", async () => {
     for (let i = 0; i < ARCHIVE_REQUESTS_PER_MINUTE; i++)
-      rateLimit(archiveMinuteKey(IDA.userId), ARCHIVE_REQUESTS_PER_MINUTE, MINUTE);
+      await rateLimit(archiveMinuteKey(IDA.userId), ARCHIVE_REQUESTS_PER_MINUTE, MINUTE);
     const response = await send("o1.fit.gz", nextRide());
     expect(response.status).toBe(429);
     const answer = await response.json();

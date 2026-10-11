@@ -1,5 +1,6 @@
 import { env } from "@/core/env";
 import { remindersOn } from "@/core/features";
+import { errorName, log } from "@/core/log";
 import { runReminders, type RunReport } from "./job";
 import type { PushConfig } from "./send";
 import { parseVapidKeys, vapidSubject } from "./vapid";
@@ -40,12 +41,14 @@ export function runRemindersOnce(): Promise<RunReport | null> {
       if (!config) return null;
       const report = await runReminders(config);
       if (report.sent + report.gone + report.failed > 0)
-        console.info(
-          `reminders: ${report.sent} sent, ${report.gone} gone, ${report.failed} failed`,
-        );
+        await log.info("reminders: run finished", {
+          sent: report.sent,
+          gone: report.gone,
+          failed: report.failed,
+        });
       return report;
     } catch (error) {
-      console.error("reminders: the run failed", error instanceof Error ? error.message : "");
+      await log.error("reminders: the run failed", { error: errorName(error) });
       return null;
     }
   })();
