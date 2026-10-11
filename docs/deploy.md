@@ -116,7 +116,7 @@ runtime but the machine.
 ## 3. Verify
 
 ```bash
-curl https://kadence.haij.dk/api/health    # {"status":"ok"}
+curl https://kadence.haij.dk/api/health    # {"status":"ok","checks":{"db":"ok"}}
 curl https://kadence.haij.dk/api/version   # the release you just deployed
 ```
 
