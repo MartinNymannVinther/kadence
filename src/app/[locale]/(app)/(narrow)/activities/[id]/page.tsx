@@ -4,6 +4,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { ActivityActions } from "@/components/activities/activity-actions";
 import { ActivityFeedback } from "@/components/activities/activity-feedback";
 import { ActivitySummary, type PlanFit } from "@/components/activities/activity-summary";
+import { FtpRaisedHint } from "@/components/activities/ftp-raised-hint";
 import { MoreData } from "@/components/activities/more-data";
 import type { Streams } from "@/components/activities/streams-chart";
 import { TogetherSection } from "@/components/activities/together-section";
@@ -15,9 +16,10 @@ import { SportIcon } from "@/components/training/sport-icon";
 import { EmptyState } from "@/components/ui/empty-state";
 import { getOrgContext } from "@/core/auth/session";
 import { mapAvailable } from "@/core/map/file";
-import { mondayOf, todayInCopenhagen } from "@/core/dates";
+import { addDaysIso, mondayOf, todayInCopenhagen } from "@/core/dates";
 import { Link, redirect } from "@/i18n/navigation";
 import { planVsRide } from "@/modules/load";
+import { ftpLooksRaised } from "@/modules/load/threshold-estimate";
 import { bikeStructureSchema } from "@/modules/workouts/structure";
 import { whoAmI } from "@/modules/team/access";
 import { getRider } from "@/modules/team/riders";
@@ -34,6 +36,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("activities");
   return { title: t("title") };
 }
+
+/** How long after a ride its page may still say it beat the saved FTP. */
+const RAISED_HINT_DAYS = 30;
 
 const isStreams = (value: unknown): value is Streams =>
   typeof value === "object" && value !== null && Array.isArray((value as Streams).t);
@@ -83,6 +88,12 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
   const planned = session ? await getSession(ctx, session.id) : null;
   const format = fileName ? formatOfName(fileName) : null;
   const canWrite = me.isCoach || me.rider?.id === activity.riderId;
+  // A recent ride that beats the saved FTP points to the proposal (docs/adr/0094).
+  const ftpRaised =
+    canWrite &&
+    activity.sport === "bike" &&
+    activity.onDate >= addDaysIso(todayInCopenhagen(), -RAISED_HINT_DAYS) &&
+    ftpLooksRaised(activity.bestPowers as Record<string, number> | null, rider?.ftpWatts ?? null);
   const back = calendarHref({
     week: mondayOf(activity.onDate),
     rider: me.rider?.id === activity.riderId ? null : activity.riderId,
@@ -148,6 +159,9 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
       </header>
 
       <ActivitySummary facts={activity} plan={fit} part="first" />
+      {ftpRaised && (
+        <FtpRaisedHint riderId={activity.riderId} own={me.rider?.id === activity.riderId} />
+      )}
 
       <section aria-labelledby="activity-feel" className="flex flex-col gap-3">
         <h2 id="activity-feel" className="text-lg font-semibold">
