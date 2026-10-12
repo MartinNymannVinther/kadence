@@ -246,6 +246,10 @@
     }
   },
   "app": {
+    "newVersion": {
+      "body": "Kadence was updated while this page was open. Reload the page and everything works again. If you have written something, copy it first.",
+      "reload": "Reload"
+    },
     "nav": {
       "help": "Help",
       "security": "Security",

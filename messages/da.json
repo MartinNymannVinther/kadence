@@ -246,6 +246,10 @@
     }
   },
   "app": {
+    "newVersion": {
+      "body": "Kadence er blevet opdateret, mens siden var åben. Genindlæs siden, så virker det hele igen. Har du skrevet noget, så kopiér det først.",
+      "reload": "Genindlæs"
+    },
     "nav": {
       "help": "Hjælp",
       "security": "Sikkerhed",
