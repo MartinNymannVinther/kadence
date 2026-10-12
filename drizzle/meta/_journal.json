@@ -365,6 +365,13 @@
       "when": 1791750400000,
       "tag": "0051_files_storage",
       "breakpoints": true
+    },
+    {
+      "idx": 52,
+      "version": "7",
+      "when": 1791750500000,
+      "tag": "0052_plans_and_payments",
+      "breakpoints": true
     }
   ]
 }

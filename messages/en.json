@@ -398,6 +398,7 @@
     "subtitleRider": "You, your devices and your security.",
     "subtitleOther": "You and your security.",
     "subtitlePersonal": "Yourself, your training, your AI and your data.",
+    "trialLine": "Trial: {days, plural, =0 {last day today} one {# day left} other {# days left}}, through {date}.",
     "appearance": {
       "title": "Appearance",
       "body": "Applies on this device. Light or dark otherwise follows the system.",
@@ -422,6 +423,8 @@
       "team": "Team",
       "me": "Profile",
       "devices": "Devices",
+      "subscription": "Subscription",
+      "billing": "Billing",
       "training": "Training",
       "groups": {
         "you": "You",
@@ -527,6 +530,7 @@
           "tooLarge": "The picture is too large, even after scaling. Try a smaller one.",
           "dimensions": "The picture is too wide or too tall. Try a smaller one.",
           "forbidden": "Only the team's coaches can change the logo and picture.",
+          "planExpired": "The workspace is read only now, so the picture was not saved.",
           "generic": "The picture could not be saved. Try again in a moment."
         }
       }
@@ -638,6 +642,7 @@
         "saved": "Saved",
         "saveFailed": "Could not be saved. Try again.",
         "notAllowed": "Only owners and administrators can change the workspace's model.",
+        "planExpired": "The workspace is read only now, so the setting was not saved.",
         "short_mistral": "Mistral",
         "short_ollama": "Ollama",
         "shortNone": "no model"
@@ -679,6 +684,7 @@
       "setupKeyPlaceholder": "your-key-here",
       "perInstallation": "Calls across the installation per day",
       "failBudget": "The workspace's AI budget for the month is spent, so the AI rests until next month. The installation's owner can give it more.",
+      "failPlanExpired": "The workspace is read only now, so the AI does not answer. See Settings → Subscription.",
       "failCeiling": "Kadence's own ceiling on AI calls was reached, not the provider's. The ceilings are under “Ceiling on AI calls” below; the installation's own is set with AI_DAILY_CALL_CAP. Try again shortly."
     },
     "members": {
@@ -1296,7 +1302,8 @@
     "uciBirthYear": "That UCI ID belongs to a rider born in another year. Check the number on the licence.",
     "uciUnknown": "Cykling Danmark does not know that UCI ID. Check the number on the licence.",
     "exerciseUnknown": "One of the exercises no longer exists. Reload the page and choose again.",
-    "exerciseArchived": "One of the exercises is archived, so it cannot go into a programme. You can bring it back in the library or choose another."
+    "exerciseArchived": "One of the exercises is archived, so it cannot go into a programme. You can bring it back in the library or choose another.",
+    "planExpired": "This workspace is read only now, because its trial or subscription has ended. You can still see everything and take it out."
   },
   "calendar": {
     "title": "Calendar",
@@ -2787,6 +2794,7 @@
         "nothing": "There were no new rides in the archive.",
         "limit": "Today's limit is reached. {count, plural, one {The last ride} other {The last # rides}} can be fetched in {hours, plural, one {# hour} other {# hours}}: add the archive again, and it goes on where it stopped.",
         "quota": "The room for files is used up, so {count, plural, one {the last ride was} other {the last # rides were}} not fetched. Delete old rides or download them first, and add the archive again.",
+        "planExpired": "The workspace is read only now, so {count, plural, one {the last ride was} other {the last # rides were}} not brought in.",
         "signedOut": "You are no longer signed in. Sign in, and add the archive again; it goes on where it stopped.",
         "failed": "Something went wrong on the way, and {count, plural, one {# ride is} other {# rides are}} missing. Add the archive again; it goes on where it stopped.",
         "cancelled": "Stopped. {count, plural, one {# ride is} other {# rides are}} missing; add the archive again when you want to go on.",
@@ -2828,7 +2836,8 @@
         "unknown_format": "Kadence does not know that file format. Use FIT, TCX or GPX, packed as .gz or .zip if you like.",
         "no_activity": "The zip file has no .fit, .tcx or .gpx file in it.",
         "not_bike": "Not a ride, so it was skipped.",
-        "quota": "The room for files is used up. Delete old rides or download them first."
+        "quota": "The room for files is used up. Delete old rides or download them first.",
+        "planExpired": "The workspace is read only now, so the file was not saved. Rides already here can still be seen and taken out."
       }
     },
     "routeTitle": "The route",
@@ -3154,6 +3163,7 @@
       "notAllowedLink": "Settings → Team",
       "rateLimited": "Many AI calls have been made just now. Try again in a moment.",
       "budget": "The AI is resting until next month. Everything else works.",
+      "planExpired": "The AI is resting, because the workspace is read only now. Everything in it can still be seen and taken out.",
       "unreachable": "The language model is not answering. Try again in a moment.",
       "badAnswer": "The language model answered with something that could not be used. Try again.",
       "notFound": "It no longer exists. Reload the page.",
@@ -3255,6 +3265,7 @@
       "invalid_file": "A ride from {name} could not be read. Upload the file yourself if it is missing.",
       "download": "A ride could not be fetched from {name}. Upload the file yourself if it is missing.",
       "quota": "A ride from {name} had no room: the room for files is used up. Delete old rides or download them first, and upload the file yourself.",
+      "planExpired": "A ride from {name} was not brought in, because the workspace is read only now. The ride is still at {name}.",
       "unknown": "Something went wrong with {name} last time. Connect again if your rides do not come in."
     },
     "connected": "{name} is connected. Your next rides come in by themselves.",
@@ -3287,6 +3298,7 @@
       "lastError": {
         "invalid_file": "The latest file could not be read. Upload it yourself if the ride is missing.",
         "quota": "The latest file had no room: the room for files is used up. Delete old rides or download them first.",
+        "planExpired": "The latest file was not saved, because the workspace is read only now.",
         "unknown": "Something went wrong with the latest file. Upload it yourself if the ride is missing."
       },
       "remove": "Remove",
@@ -4000,7 +4012,8 @@
         "not_rider": "Only a rider can save a ride.",
         "notFound": "The session no longer exists. Download the FIT file and upload it on “Me”.",
         "too_large": "The ride is too large to save from here. Download the FIT file and upload it on “Me”.",
-        "quota": "The room for files is used up, so the ride was not saved. Download the FIT file, and delete old rides or download them first."
+        "quota": "The room for files is used up, so the ride was not saved. Download the FIT file, and delete old rides or download them first.",
+        "planExpired": "The workspace is read only now, so the ride was not saved. Download the FIT file to keep it."
       }
     },
     "little": {
@@ -5810,6 +5823,90 @@
       "print": "Print or save as PDF"
     }
   },
+  "billing": {
+    "banner": {
+      "trialEnded": "The trial has ended.",
+      "subscriptionEnded": "The subscription has ended.",
+      "stillWorks": "You can still see everything and take it out, but nothing new can be added. Nothing is deleted.",
+      "stillWorksMember": "You can still see everything and take your data out, but nothing new can be added. The team's coaches can see what it takes.",
+      "trialEnding": "The trial ends {days, plural, =0 {today} one {tomorrow} other {in # days}}, {date}.",
+      "toSubscription": "See the subscription"
+    },
+    "state": {
+      "free": "This workspace is free. There is nothing to pay.",
+      "freeUntil": "This workspace is free through {date}.",
+      "freeFirstSeason": "The team is free for its first season, through {date}.",
+      "freeYouth": "This workspace is free because the rider is U19 or younger. That holds through {date}.",
+      "trial": "Trial through {date}. {days, plural, =0 {Today is the last day.} one {# day left.} other {# days left.}}",
+      "paid": "Paid through {date}.",
+      "expiredTrial": "The trial ended on {date}. The workspace is now read only.",
+      "expiredPaid": "The subscription ended on {date}. The workspace is now read only."
+    },
+    "subscription": {
+      "title": "Subscription",
+      "afterFree": "After that there is a trial of {days, plural, one {# day} other {# days}} before the workspace is paid for.",
+      "expiredWhat": "You can still see everything and take it out under Data. Nothing new can be added, and the AI rests until it is paid. Nothing is deleted.",
+      "priceTitle": "What it costs",
+      "price": "DKK {year} a year including VAT, about DKK {month} a month.",
+      "priceNoVat": "DKK {year} a year excluding VAT, about DKK {month} a month.",
+      "priceNone": "Free. There is nothing to pay.",
+      "riders": "The price is built on the team's {riders} riders: {included} riders are in the base price, and each rider beyond costs DKK {perRider} a year.",
+      "howTitle": "How to pay",
+      "how": "The invoice comes from Haij by mail, and it is paid by bank transfer. The account number and reference are on the invoice. Once the payment has come in, it is registered here.",
+      "paymentsTitle": "Payments",
+      "paymentsNone": "No payments have been registered yet.",
+      "paymentsOwnerOnly": "The payments can be seen by the workspace's owner."
+    },
+    "payments": {
+      "workspace": "Workspace",
+      "invoice": "Invoice",
+      "period": "Period",
+      "periodValue": "{from}–{to}",
+      "amount": "Amount",
+      "vat": "VAT included",
+      "kroner": "DKK {amount}"
+    },
+    "admin": {
+      "title": "Billing",
+      "subtitle": "Every workspace with its plan, its riders and the price from the price table, so the invoice can be written in your own bookkeeping. When the payment has come in, you register it here, and the workspace is paid through the period's last day.",
+      "none": "There are no workspaces yet.",
+      "workspace": "Workspace",
+      "state": "Plan",
+      "riders": "Riders",
+      "yearly": "Price a year",
+      "actions": "Actions",
+      "person": "Individual {ref}",
+      "kindPerson": "Individual",
+      "kindClub": "Club",
+      "created": "created {date}",
+      "reasonValue": "Reason: {reason}",
+      "noPrice": "No price",
+      "kroner": "DKK {amount}",
+      "register": "Register payment",
+      "makeFree": "Make free",
+      "registerTitle": "Register a payment for {workspace}",
+      "registerBody": "When the bank transfer has come in: the amount with VAT, the VAT in it, the invoice's number and the period it pays for. The workspace is paid through the period's last day.",
+      "amount": "Amount in DKK with VAT",
+      "vat": "VAT in it, DKK",
+      "invoiceNo": "Invoice number",
+      "from": "From",
+      "to": "Through",
+      "note": "Note (optional)",
+      "registerSave": "Register",
+      "freeTitle": "Make {workspace} free",
+      "freeBody": "A free workspace works like a paid one. Write a reason, such as pilot, DCU or friend. With a last day it gets a trial once that day has passed.",
+      "reason": "Reason",
+      "reasonPlaceholder": "such as pilot",
+      "through": "Last free day (optional)",
+      "throughHelp": "Without a date it is free until you change it.",
+      "freeSave": "Make free",
+      "invalid": "Something in the form is not valid. The VAT cannot be more than the amount, and the period cannot end before it begins.",
+      "failed": "It was not saved. Try again.",
+      "saved": "Saved.",
+      "paymentsTitle": "Latest payments",
+      "paymentsNone": "No payments have been registered yet."
+    }
+  },
   "mail": {
     "greeting": "Hi",
     "signoff": "Best regards\nKadence",
@@ -5844,6 +5941,24 @@
       "subject": "There is news about the week in Kadence",
       "body": "There is news about the week in Kadence. Open the link to see it.",
       "why": "You get this email because you chose the week's overview by email under Settings → Profile. You can turn it off there too."
+    },
+    "plan": {
+      "own": "your own Kadence",
+      "trialSubject": "Your Kadence trial ends on {date}",
+      "trialBody": "The trial for {workspace} ends on {date}. Until then everything works as it does now.",
+      "trialTomorrow": "The trial for {workspace} has its last day on {date}.",
+      "price": "The price is DKK {price} a year.",
+      "trialInvoice": "An invoice comes from Haij by mail. It is paid by bank transfer.",
+      "trialAfter": "If it is not paid, everything can still be seen and taken out afterwards, but nothing new can be added. Nothing is deleted.",
+      "paidSubject": "Your Kadence subscription runs until {date}",
+      "paidBody": "The subscription for {workspace} is paid through {date}.",
+      "paidInvoice": "An invoice for the next year comes from Haij by mail. It is paid by bank transfer.",
+      "expiredSubject": "Kadence is now read only",
+      "expiredTrialBody": "The trial for {workspace} ended on {date}, so the workspace is now read only.",
+      "expiredPaidBody": "The subscription for {workspace} ended on {date}, so the workspace is now read only.",
+      "expiredStill": "Everything is still there. It can be seen and taken out, but nothing new can be added. Nothing is deleted.",
+      "expiredInvoice": "To use it again, an invoice comes from Haij by mail. Once it is paid, everything works as before.",
+      "link": "See the subscription here:"
     }
   }
 }

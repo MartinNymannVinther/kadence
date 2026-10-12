@@ -65,6 +65,11 @@ export default defineConfig({
       // suite would send real mail. A test that needs mail on sets the five
       // in vi.hoisted and sends through a recording transport
       // (tests/helpers/mail.ts); the mailer refuses SMTP in a test anyway.
+      // Billing is off, as shipped (docs/adr/0090): a developer's .env
+      // must not price the suite's workspaces. tests/billing turns it on
+      // in vi.hoisted where it is the subject.
+      BILLING: "off",
+      TRIAL_DAYS: "30",
       SMTP_HOST: "",
       SMTP_PORT: "",
       SMTP_USER: "",

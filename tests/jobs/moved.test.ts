@@ -64,6 +64,7 @@ describe("the schedule", () => {
   it("has one row for each recurring kind, due a minute after the worker starts", async () => {
     const added = await ensureSchedule(jobHandlers());
     expect(added.sort()).toEqual([
+      "billing.expire",
       "dcu.races",
       "demo.cleanup",
       "files.tombstones",

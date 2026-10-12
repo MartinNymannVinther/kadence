@@ -398,6 +398,7 @@
     "subtitleRider": "Dig selv, dine enheder og din sikkerhed.",
     "subtitleOther": "Dig selv og din sikkerhed.",
     "subtitlePersonal": "Dig selv, din træning, din AI og dine data.",
+    "trialLine": "Prøveperiode: {days, plural, =0 {sidste dag i dag} one {# dag tilbage} other {# dage tilbage}}, til og med {date}.",
     "appearance": {
       "title": "Udseende",
       "body": "Gælder på denne enhed. Lys eller mørk følger ellers systemet.",
@@ -422,6 +423,8 @@
       "team": "Holdet",
       "me": "Profil",
       "devices": "Enheder",
+      "subscription": "Abonnement",
+      "billing": "Betaling",
       "training": "Træning",
       "groups": {
         "you": "Dig",
@@ -527,6 +530,7 @@
           "tooLarge": "Billedet er for stort, også efter skalering. Prøv et mindre billede.",
           "dimensions": "Billedet er for stort i bredde eller højde. Prøv et mindre billede.",
           "forbidden": "Kun holdets trænere kan skifte logo og billede.",
+          "planExpired": "Arbejdsrummet kan kun læses nu, så billedet blev ikke gemt.",
           "generic": "Billedet kunne ikke gemmes. Prøv igen om lidt."
         }
       }
@@ -638,6 +642,7 @@
         "saved": "Gemt",
         "saveFailed": "Kunne ikke gemmes. Prøv igen.",
         "notAllowed": "Kun ejere og administratorer kan ændre arbejdsrummets model.",
+        "planExpired": "Arbejdsrummet kan kun læses nu, så indstillingen blev ikke gemt.",
         "short_mistral": "Mistral",
         "short_ollama": "Ollama",
         "shortNone": "ingen model"
@@ -679,6 +684,7 @@
       "setupKeyPlaceholder": "din-nøgle-her",
       "perInstallation": "Kald i hele installationen i døgnet",
       "failBudget": "Arbejdsrummets AI-budget for måneden er brugt, så AI'en holder pause til næste måned. Ejeren af installationen kan give mere.",
+      "failPlanExpired": "Arbejdsrummet kan kun læses nu, så AI'en svarer ikke. Se Indstillinger → Abonnement.",
       "failCeiling": "Kadences eget loft over AI-kald blev nået, ikke udbyderens. Loftet står under “Loft over AI-kald” herunder; installationens samlede loft sættes med AI_DAILY_CALL_CAP. Prøv igen om lidt."
     },
     "members": {
@@ -1296,7 +1302,8 @@
     "uciBirthYear": "Det UCI ID tilhører en rytter med et andet fødselsår. Tjek tallet på licensen.",
     "uciUnknown": "Cykling Danmark kender ikke det UCI ID. Tjek tallet på licensen.",
     "exerciseUnknown": "En af øvelserne findes ikke længere. Genindlæs siden og vælg igen.",
-    "exerciseArchived": "En af øvelserne er arkiveret, så den kan ikke komme med i et program. Du kan tage den frem igen i biblioteket eller vælge en anden."
+    "exerciseArchived": "En af øvelserne er arkiveret, så den kan ikke komme med i et program. Du kan tage den frem igen i biblioteket eller vælge en anden.",
+    "planExpired": "Arbejdsrummet kan kun læses nu, fordi prøveperioden eller abonnementet er udløbet. Du kan stadig se alt og hente det ud."
   },
   "calendar": {
     "title": "Kalender",
@@ -2787,6 +2794,7 @@
         "nothing": "Der var ingen nye ture i arkivet.",
         "limit": "Dagens grænse er nået. {count, plural, one {Den sidste tur} other {De sidste # ture}} kan hentes om {hours, plural, one {# time} other {# timer}}: læg arkivet ind igen, så fortsætter det, hvor det slap.",
         "quota": "Pladsen til filer er brugt, så {count, plural, one {den sidste tur} other {de sidste # ture}} blev ikke hentet. Slet gamle ture eller hent dem ud først, og læg arkivet ind igen.",
+        "planExpired": "Arbejdsrummet kan kun læses nu, så {count, plural, one {den sidste tur} other {de sidste # ture}} blev ikke hentet.",
         "signedOut": "Du er ikke logget ind længere. Log ind, og læg arkivet ind igen; det fortsætter, hvor det slap.",
         "failed": "Noget gik galt undervejs, og {count, plural, one {# tur} other {# ture}} mangler. Læg arkivet ind igen; det fortsætter, hvor det slap.",
         "cancelled": "Stoppet. {count, plural, one {# tur} other {# ture}} mangler; læg arkivet ind igen, når du vil fortsætte.",
@@ -2828,7 +2836,8 @@
         "unknown_format": "Kadence kender ikke det filformat. Brug FIT, TCX eller GPX, gerne pakket som .gz eller .zip.",
         "no_activity": "Zip-filen har ingen .fit-, .tcx- eller .gpx-fil i sig.",
         "not_bike": "Ikke en cykeltur, så den blev sprunget over.",
-        "quota": "Pladsen til filer er brugt. Slet gamle ture eller hent dem ud først."
+        "quota": "Pladsen til filer er brugt. Slet gamle ture eller hent dem ud først.",
+        "planExpired": "Arbejdsrummet kan kun læses nu, så filen blev ikke gemt. Ture, der allerede er her, kan stadig ses og hentes ud."
       }
     },
     "routeTitle": "Ruten",
@@ -3154,6 +3163,7 @@
       "notAllowedLink": "Indstillinger → Holdet",
       "rateLimited": "Der er brugt mange AI-kald lige nu. Prøv igen om lidt.",
       "budget": "AI'en holder pause til næste måned. Alt andet virker.",
+      "planExpired": "AI'en holder pause, fordi arbejdsrummet kun kan læses nu. Alt, der er lagt ind, kan stadig ses og hentes ud.",
       "unreachable": "Sprogmodellen svarer ikke. Prøv igen om lidt.",
       "badAnswer": "Sprogmodellen svarede med noget, der ikke kunne bruges. Prøv igen.",
       "notFound": "Det findes ikke længere. Genindlæs siden.",
@@ -3255,6 +3265,7 @@
       "invalid_file": "En tur fra {name} kunne ikke læses. Upload filen selv, hvis den mangler.",
       "download": "En tur kunne ikke hentes fra {name}. Upload filen selv, hvis den mangler.",
       "quota": "En tur fra {name} fik ikke plads: pladsen til filer er brugt. Slet gamle ture eller hent dem ud først, og upload filen selv.",
+      "planExpired": "En tur fra {name} blev ikke hentet, fordi arbejdsrummet kun kan læses nu. Turen ligger stadig hos {name}.",
       "unknown": "Noget gik galt med {name} sidst. Forbind igen, hvis dine ture ikke kommer ind."
     },
     "connected": "{name} er forbundet. Dine næste ture kommer ind af sig selv.",
@@ -3287,6 +3298,7 @@
       "lastError": {
         "invalid_file": "Den seneste fil kunne ikke læses. Upload den selv, hvis turen mangler.",
         "quota": "Den seneste fil fik ikke plads: pladsen til filer er brugt. Slet gamle ture eller hent dem ud først.",
+        "planExpired": "Den seneste fil blev ikke gemt, fordi arbejdsrummet kun kan læses nu.",
         "unknown": "Noget gik galt med den seneste fil. Upload den selv, hvis turen mangler."
       },
       "remove": "Fjern",
@@ -4000,7 +4012,8 @@
         "not_rider": "Kun en rytter kan gemme en tur.",
         "notFound": "Passet findes ikke længere. Hent FIT-filen, og upload den på “Mig”.",
         "too_large": "Turen er for stor til at gemme herfra. Hent FIT-filen, og upload den på “Mig”.",
-        "quota": "Pladsen til filer er brugt, så turen blev ikke gemt. Hent FIT-filen, og slet gamle ture eller hent dem ud først."
+        "quota": "Pladsen til filer er brugt, så turen blev ikke gemt. Hent FIT-filen, og slet gamle ture eller hent dem ud først.",
+        "planExpired": "Arbejdsrummet kan kun læses nu, så turen blev ikke gemt. Hent FIT-filen, så har du den."
       }
     },
     "little": {
@@ -5810,6 +5823,90 @@
       "print": "Udskriv eller gem som PDF"
     }
   },
+  "billing": {
+    "banner": {
+      "trialEnded": "Prøveperioden er slut.",
+      "subscriptionEnded": "Abonnementet er udløbet.",
+      "stillWorks": "Du kan stadig se alt og hente det ud, men intet nyt kan lægges ind. Intet bliver slettet.",
+      "stillWorksMember": "Du kan stadig se alt og hente dine data ud, men intet nyt kan lægges ind. Holdets trænere kan se, hvad der skal til.",
+      "trialEnding": "Prøveperioden slutter {days, plural, =0 {i dag} one {i morgen} other {om # dage}}, {date}.",
+      "toSubscription": "Se abonnementet"
+    },
+    "state": {
+      "free": "Arbejdsrummet er gratis. Der er intet at betale.",
+      "freeUntil": "Arbejdsrummet er gratis til og med {date}.",
+      "freeFirstSeason": "Holdet er gratis i sin første sæson, til og med {date}.",
+      "freeYouth": "Arbejdsrummet er gratis, fordi rytteren er U19 eller yngre. Det gælder til og med {date}.",
+      "trial": "Prøveperiode til og med {date}. {days, plural, =0 {Det er sidste dag i dag.} one {Der er # dag tilbage.} other {Der er # dage tilbage.}}",
+      "paid": "Betalt til og med {date}.",
+      "expiredTrial": "Prøveperioden sluttede {date}. Arbejdsrummet kan nu kun læses.",
+      "expiredPaid": "Abonnementet udløb {date}. Arbejdsrummet kan nu kun læses."
+    },
+    "subscription": {
+      "title": "Abonnement",
+      "afterFree": "Derefter er der en prøveperiode på {days, plural, one {# dag} other {# dage}}, før arbejdsrummet skal betales.",
+      "expiredWhat": "Du kan stadig se alt og hente det ud under Data. Intet nyt kan lægges ind, og AI'en holder pause, til der er betalt. Intet bliver slettet.",
+      "priceTitle": "Det koster",
+      "price": "{year} kr. om året med moms, svarende til {month} kr. om måneden.",
+      "priceNoVat": "{year} kr. om året uden moms, svarende til {month} kr. om måneden.",
+      "priceNone": "Gratis. Der er intet at betale.",
+      "riders": "Prisen er bygget på holdets {riders} ryttere: {included} ryttere er med i grundprisen, og hver rytter derover koster {perRider} kr. om året.",
+      "howTitle": "Sådan betales der",
+      "how": "Fakturaen kommer fra Haij på mail, og den betales med bankoverførsel. Kontonummer og reference står på fakturaen. Når betalingen er kommet, bliver den registreret her.",
+      "paymentsTitle": "Betalinger",
+      "paymentsNone": "Der er ikke registreret nogen betalinger endnu.",
+      "paymentsOwnerOnly": "Betalingerne kan ses af arbejdsrummets ejer."
+    },
+    "payments": {
+      "workspace": "Arbejdsrum",
+      "invoice": "Faktura",
+      "period": "Periode",
+      "periodValue": "{from}–{to}",
+      "amount": "Beløb",
+      "vat": "Heraf moms",
+      "kroner": "{amount} kr."
+    },
+    "admin": {
+      "title": "Betaling",
+      "subtitle": "Hvert arbejdsrum med sin plan, sine ryttere og prisen efter pristabellen, så fakturaen kan skrives i dit eget regnskabsprogram. Når betalingen er kommet, registrerer du den her, og arbejdsrummet er betalt til og med periodens sidste dag.",
+      "none": "Der er ingen arbejdsrum endnu.",
+      "workspace": "Arbejdsrum",
+      "state": "Plan",
+      "riders": "Ryttere",
+      "yearly": "Pris pr. år",
+      "actions": "Handlinger",
+      "person": "Enkeltperson {ref}",
+      "kindPerson": "Enkeltperson",
+      "kindClub": "Klub",
+      "created": "oprettet {date}",
+      "reasonValue": "Grund: {reason}",
+      "noPrice": "Ingen pris",
+      "kroner": "{amount} kr.",
+      "register": "Registrér betaling",
+      "makeFree": "Sæt gratis",
+      "registerTitle": "Registrér betaling for {workspace}",
+      "registerBody": "Når bankoverførslen er kommet: beløbet med moms, momsen i det, fakturaens nummer og perioden, den betaler for. Arbejdsrummet er betalt til og med periodens sidste dag.",
+      "amount": "Beløb i kr. med moms",
+      "vat": "Heraf moms i kr.",
+      "invoiceNo": "Fakturanummer",
+      "from": "Fra",
+      "to": "Til og med",
+      "note": "Note (valgfri)",
+      "registerSave": "Registrér",
+      "freeTitle": "Sæt {workspace} gratis",
+      "freeBody": "Et gratis arbejdsrum virker som et betalt. Skriv en grund, fx pilot, DCU eller ven. Med en sidste dag får det en prøveperiode, når dagen er gået.",
+      "reason": "Grund",
+      "reasonPlaceholder": "fx pilot",
+      "through": "Sidste gratis dag (valgfri)",
+      "throughHelp": "Uden dato er det gratis, til du ændrer det.",
+      "freeSave": "Sæt gratis",
+      "invalid": "Noget i formularen er ikke gyldigt. Momsen kan ikke være større end beløbet, og perioden kan ikke slutte, før den begynder.",
+      "failed": "Det blev ikke gemt. Prøv igen.",
+      "saved": "Gemt.",
+      "paymentsTitle": "Seneste betalinger",
+      "paymentsNone": "Der er ikke registreret nogen betalinger endnu."
+    }
+  },
   "mail": {
     "greeting": "Hej",
     "signoff": "Venlig hilsen\nKadence",
@@ -5844,6 +5941,24 @@
       "subject": "Der er nyt om ugen i Kadence",
       "body": "Der er nyt om ugen i Kadence. Åbn linket for at se den.",
       "why": "Du får mailen, fordi du har valgt ugens overblik på mail under Indstillinger → Profil. Der kan du også slå den fra."
+    },
+    "plan": {
+      "own": "dit eget Kadence",
+      "trialSubject": "Prøveperioden i Kadence slutter {date}",
+      "trialBody": "Prøveperioden for {workspace} slutter {date}. Indtil da virker alt som nu.",
+      "trialTomorrow": "Prøveperioden for {workspace} har sin sidste dag {date}.",
+      "price": "Prisen er {price} kr. om året.",
+      "trialInvoice": "En faktura kommer fra Haij på mail. Den betales med bankoverførsel.",
+      "trialAfter": "Er den ikke betalt, kan alt stadig ses og hentes ud bagefter, men intet nyt kan lægges ind. Intet bliver slettet.",
+      "paidSubject": "Abonnementet på Kadence løber til {date}",
+      "paidBody": "Abonnementet for {workspace} er betalt til og med {date}.",
+      "paidInvoice": "En faktura for det næste år kommer fra Haij på mail. Den betales med bankoverførsel.",
+      "expiredSubject": "Kadence kan nu kun læses",
+      "expiredTrialBody": "Prøveperioden for {workspace} sluttede {date}, så arbejdsrummet kan nu kun læses.",
+      "expiredPaidBody": "Abonnementet for {workspace} udløb {date}, så arbejdsrummet kan nu kun læses.",
+      "expiredStill": "Alt er der stadig. Det kan ses og hentes ud, men intet nyt kan lægges ind. Intet bliver slettet.",
+      "expiredInvoice": "Vil du bruge det igen, kommer en faktura fra Haij på mail. Når den er betalt, virker alt som før.",
+      "link": "Se abonnementet her:"
     }
   }
 }

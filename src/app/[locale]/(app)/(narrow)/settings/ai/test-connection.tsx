@@ -74,9 +74,11 @@ export function TestConnection() {
                         ? t("failCeiling")
                         : result.reason === "budget"
                           ? t("failBudget")
-                          : result.reason === "rate_limit"
-                            ? t("failRateLimited")
-                            : t("failGeneric")}
+                          : result.reason === "planExpired"
+                            ? t("failPlanExpired")
+                            : result.reason === "rate_limit"
+                              ? t("failRateLimited")
+                              : t("failGeneric")}
               </p>
               <p className="text-meta mt-1 text-xs">{t("failWhereToLook")}</p>
             </div>

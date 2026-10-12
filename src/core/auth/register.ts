@@ -5,6 +5,7 @@ import { consumeInvitation, findValidInvitation } from "@/core/access/service";
 import { todayInCopenhagen } from "@/core/dates";
 import { errorName, log, requestIdFrom } from "@/core/log";
 import { organizationSlug } from "@/lib/slug";
+import { startPlanQuietly } from "@/modules/billing/start";
 import { auth } from "./auth";
 import { cookieHeaderFrom } from "./cookies";
 import { setUpPersonalWorkspace } from "./register-personal";
@@ -126,6 +127,16 @@ export async function registerUserWithOrganization(
           spec: personal,
         });
       }
+      // What it pays (docs/adr/0090): a person's trial, or a club the owner
+      // admitted free for its first season. The very first account, which
+      // came in without a key, is the installation's own and stays free.
+      if (invitationToken)
+        await startPlanQuietly(
+          organization.id,
+          personal
+            ? { kind: "personal", birthYear: personal.birthYear }
+            : { kind: "club", admitted: true },
+        );
     }
   } catch (error) {
     // The user exists and is signed in; the app falls back to

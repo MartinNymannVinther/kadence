@@ -13,7 +13,14 @@
 
 /** The word the interface shows for why the model did not answer. */
 export type AiFailure =
-  "noModel" | "rateLimited" | "budget" | "unreachable" | "badAnswer" | "notAllowed" | "generic";
+  | "noModel"
+  | "rateLimited"
+  | "budget"
+  | "planExpired"
+  | "unreachable"
+  | "badAnswer"
+  | "notAllowed"
+  | "generic";
 
 export type ProposalResult<T> =
   | { ok: true; proposal: T; engine: string }

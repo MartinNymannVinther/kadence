@@ -63,6 +63,27 @@ in June 2026 that Wahoo no longer passes on heart rate for riders under
 16; that report is not confirmed with Wahoo and should be asked about in
 the application.
 
+### A plan's AI budget and file quota are not yet the workspace's
+
+`price_plans` (drizzle/0052, ADR 0090) writes an AI budget and a file
+quota beside each price — 2 € and 2 GB for a young rider alone, 5 € and
+20 GB for a club — but a workspace still gets the installation's
+defaults (`AI_MONTHLY_BUDGET_MICRO`, `FILES_QUOTA_*`) or the number the
+owner set for it under Installation. Wiring the plan's numbers in is a
+change to `monthlyBudgetMicro` and `fileQuotaIn`: the plan's value where
+the owner set none. It waits for S-12b's price table, where the owner
+edits them.
+
+### Better Auth's organization endpoints ignore an expired plan
+
+An expired workspace (ADR 0090) refuses every server action that adds or
+changes something, but Better Auth's own endpoints — renaming the
+workspace, inviting through `/organization/invite-member`, changing a
+role — can still be called directly by a coach who knows them; Kadence's
+own buttons go through actions that refuse. Gating them needs the active
+workspace's plan in the before-hook in `src/core/auth/auth.ts`, which is
+at its size limit.
+
 ## Accepted, with the reason written down
 
 ### The content policy still allows inline scripts

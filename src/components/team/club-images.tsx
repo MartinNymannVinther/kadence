@@ -9,7 +9,7 @@ import { useRouter } from "@/i18n/navigation";
 import { IMAGE_KINDS, IMAGE_LIMITS, type ImageKind } from "@/modules/team/image-format";
 import { scaleImage } from "./scale-image";
 
-const ERRORS = new Set(["format", "tooLarge", "dimensions", "forbidden"]);
+const ERRORS = new Set(["format", "tooLarge", "dimensions", "forbidden", "planExpired"]);
 
 /**
  * The club's logo and picture under Settings → Workspace (ADR 0048). A

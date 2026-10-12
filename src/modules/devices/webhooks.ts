@@ -8,6 +8,7 @@ import { callerKey, rateLimit } from "@/core/rate-limit";
 import { deviceFetch, enqueueDeviceEvents, payloadEvent } from "./fetch-job";
 import { DeviceHttpError, loggable, readLimited } from "./http";
 import { importFitIn } from "./import";
+import { isPlanRefusal } from "@/modules/billing/plan";
 import { isQuotaRefusal } from "@/modules/storage/quota";
 import { accessTokenFor, linkOwner, markLink, type LinkOwner } from "./links";
 import {
@@ -192,6 +193,12 @@ export async function processEvent(
       // why. The ride is still on the provider for an upload later.
       await markLink(riderCtx, owner.riderId, provider.id, { lastError: "quota" });
       throw new GiveUp("quota");
+    }
+    if (isPlanRefusal(error)) {
+      // The workspace may only be read (docs/adr/0090): the same, until
+      // the installation's owner registers a payment.
+      await markLink(riderCtx, owner.riderId, provider.id, { lastError: "planExpired" });
+      throw new GiveUp("planExpired");
     }
     if (error.code === "invalid") {
       await markLink(riderCtx, owner.riderId, provider.id, { lastError: "invalid_file" });

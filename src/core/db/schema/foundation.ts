@@ -133,10 +133,27 @@ export const organizations = pgTable(
      */
     kind: text("kind").notNull().default("club"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    /**
+     * What the workspace pays (docs/adr/0090): 'free', 'trial', 'paid' or
+     * 'expired', with the dates beside it. Like `kind`, never set from a
+     * request: the registration sets it on the auth role, and afterwards
+     * only the database's own functions move it (set_payment,
+     * set_plan_free, expire_workspaces in drizzle/0052).
+     */
+    plan: text("plan").notNull().default("free"),
+    /** A key of price_plans; null is the one the kind gives ('person' or 'club'). */
+    pricePlan: text("price_plan"),
+    trialEndsAt: timestamp("trial_ends_at", { withTimezone: true }),
+    paidUntil: timestamp("paid_until", { withTimezone: true }),
+    freeReason: text("free_reason"),
+    /** A free workspace with a date becomes a trial when it passes ('first-season', 'youth'). */
+    freeUntil: timestamp("free_until", { withTimezone: true }),
   },
   (t) => [
     check("organizations_kind", sql`${t.kind} in ('club', 'personal')`),
+    check("organizations_plan", sql`${t.plan} in ('free', 'trial', 'paid', 'expired')`),
     index("organizations_kind_idx").on(t.kind),
+    index("organizations_plan_idx").on(t.plan),
   ],
 );
 

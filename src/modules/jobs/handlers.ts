@@ -1,5 +1,6 @@
 import { registry, type Handler } from "@/core/jobs/registry";
 import { sweepHandler } from "@/core/jobs/sweep";
+import { billingExpireHandler } from "@/modules/billing/jobs";
 import { demoCleanupHandler } from "@/modules/demo/job";
 import { deviceFetchHandler } from "@/modules/devices/webhooks";
 import { remindersHandler } from "@/modules/push/jobs";
@@ -25,6 +26,7 @@ export const HANDLERS: readonly Handler[] = [
   teamsRefreshHandler,
   demoCleanupHandler,
   signupSweepHandler,
+  billingExpireHandler,
   fileTombstonesHandler,
   filesMoveHandler,
   filesMigrateHandler,

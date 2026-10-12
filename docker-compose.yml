@@ -131,6 +131,13 @@ services:
       # the five SMTP variables below.
       SIGNUP: ${SIGNUP:-}
       DEMO: ${DEMO:-}
+      # What a workspace pays (docs/adr/0090): off (default, every
+      # workspace free) or on, which refuses to start without the five
+      # SMTP variables below; and the days of a new workspace's trial, 30
+      # unless set, 0 for none. The worker shares these, since the daily
+      # billing.expire job reads them.
+      BILLING: ${BILLING:-}
+      TRIAL_DAYS: ${TRIAL_DAYS:-}
       # Races from Cykling Danmark (ADR 0039), off unless set.
       DCU_RESULTS: ${DCU_RESULTS:-}
       # The parts an installation may park (docs/adr/0057), each on

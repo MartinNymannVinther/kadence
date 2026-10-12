@@ -121,6 +121,7 @@ export function classifyAiError(error: unknown): AiFailure {
   if (error instanceof NotAllowed) return "notAllowed";
   if (error instanceof Error && error.name === "RateLimited") return "rateLimited";
   if (error instanceof Error && error.name === "BudgetReached") return "budget";
+  if (error instanceof Error && error.name === "PlanExpired") return "planExpired";
   if (error instanceof LlmError) {
     if (error.reason === "unreachable" || error.reason === "auth") return "unreachable";
     if (error.reason === "rate_limit") return "rateLimited";

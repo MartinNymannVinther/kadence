@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { runAction } from "@/core/action";
+import { runAction, STILL_ALLOWED } from "@/core/action";
 import { listOwnRides, RideCursor } from "./own-rides";
 
 /**
@@ -10,7 +10,11 @@ import { listOwnRides, RideCursor } from "./own-rides";
  * rider is the session's, never an id from the browser (own-rides.ts).
  */
 export async function moreOwnRidesAction(raw: unknown) {
-  return runAction(raw, z.object({ before: RideCursor }), (ctx, input) =>
-    listOwnRides(ctx, { before: input.before }),
+  return runAction(
+    raw,
+    z.object({ before: RideCursor }),
+    (ctx, input) => listOwnRides(ctx, { before: input.before }),
+    [],
+    STILL_ALLOWED,
   );
 }

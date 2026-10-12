@@ -13,6 +13,7 @@ const LAST_ERRORS = [
   "provider_unavailable",
   "invalid_file",
   "quota",
+  "planExpired",
 ] as const;
 
 export function lastErrorKey(code: string): string | null {
@@ -22,7 +23,7 @@ export function lastErrorKey(code: string): string | null {
 }
 
 /** What an upload key noted about the last file it was used for (ingest.ts). */
-const KEY_ERRORS = ["invalid_file", "quota"] as const;
+const KEY_ERRORS = ["invalid_file", "quota", "planExpired"] as const;
 
 export function keyErrorKey(code: string): string | null {
   if (!code) return null;

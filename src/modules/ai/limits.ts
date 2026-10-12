@@ -2,6 +2,7 @@ import { and, count, eq, gt, gte, sql, sum } from "drizzle-orm";
 import { aiCalls, teamSettings } from "@/core/db/schema";
 import type { AppTransaction, OrgContext } from "@/core/db/tenant";
 import { env } from "@/core/env";
+import { planIn } from "@/modules/billing/state";
 import type { BilledTo } from "./model-settings";
 
 /**
@@ -58,6 +59,14 @@ export class BudgetReached extends Error {
   constructor() {
     super("budget reached");
     this.name = "BudgetReached";
+  }
+}
+
+/** The workspace's trial or payment has run out: it reads and exports, and asks no model (docs/adr/0090). */
+export class PlanExpired extends Error {
+  constructor() {
+    super("plan expired");
+    this.name = "PlanExpired";
   }
 }
 
@@ -120,6 +129,7 @@ export async function reserveAiCall(
   engine: string,
   billing: AiBilling | null = null,
 ): Promise<string> {
+  if ((await planIn(tx, ctx.orgId)).plan === "expired") throw new PlanExpired();
   const [perUser] = await tx
     .select({ n: count() })
     .from(aiCalls)

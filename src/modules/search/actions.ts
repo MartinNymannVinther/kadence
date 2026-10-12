@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { runAction } from "@/core/action";
+import { runAction, STILL_ALLOWED } from "@/core/action";
 import { searchIndex } from "./service";
 
 /**
@@ -12,5 +12,5 @@ import { searchIndex } from "./service";
 const Nothing = z.object({}).strict();
 
 export async function searchIndexAction(raw: unknown) {
-  return runAction(raw, Nothing, (ctx) => searchIndex(ctx));
+  return runAction(raw, Nothing, (ctx) => searchIndex(ctx), [], STILL_ALLOWED);
 }

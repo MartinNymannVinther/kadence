@@ -4,6 +4,7 @@ import { invitationUrl } from "@/core/access/tokens";
 import { env } from "@/core/env";
 import { appLink } from "@/core/mail/links";
 import { accessInvitationMail } from "@/core/mail/templates/access-invitation";
+import { planNoticeMail } from "@/core/mail/templates/plan-notice";
 import { resetPasswordMail } from "@/core/mail/templates/reset-password";
 import { teamInvitationMail } from "@/core/mail/templates/team-invitation";
 import { verifyAddressMail } from "@/core/mail/templates/verify-address";
@@ -120,6 +121,28 @@ function everyMail(locale: MailLocale) {
       url: invitationUrl("tok"),
     }),
     week: weekNewsMail(t, { url: appLink("/parents", locale) }),
+    // What a workspace pays (docs/adr/0090): to its owner, a club by name.
+    ...Object.fromEntries(
+      (["trial-7", "trial-1", "paid-14", "expired"] as const).map((kind) => [
+        `plan-${kind}`,
+        planNoticeMail(t, {
+          kind,
+          workspace: "Holbæk CK",
+          date: "30. september 2027",
+          price: "1.200",
+          wasTrial: kind !== "expired",
+          url: appLink("/settings/subscription", locale),
+        }),
+      ]),
+    ),
+    planPerson: planNoticeMail(t, {
+      kind: "expired",
+      workspace: null,
+      date: "11. november 2026",
+      price: "290",
+      wasTrial: true,
+      url: appLink("/settings/subscription", locale),
+    }),
   };
 }
 
@@ -163,6 +186,34 @@ describe("what a mail names", () => {
     expect(week.subject).toBe("Der er nyt om ugen i Kadence");
     expect(week.text).toContain(`${origin}/parents`);
     expect(everyMail("en").week.text).toContain(`${origin}/en/parents`);
+  });
+});
+
+describe("the mails about what a workspace pays", () => {
+  it("name the workspace, the day, the price and Haij's invoice, and no account number", () => {
+    const mails: Record<string, Mail> = everyMail("da");
+    const trial = mails["plan-trial-7"]!;
+    expect(trial.subject).toBe("Prøveperioden i Kadence slutter 30. september 2027");
+    expect(trial.text).toContain("Prøveperioden for Holbæk CK slutter 30. september 2027.");
+    expect(trial.text).toContain("Prisen er 1.200 kr. om året.");
+    expect(trial.text).toContain("En faktura kommer fra Haij på mail.");
+    expect(trial.text).toContain(`${origin}/settings/subscription`);
+    expect((everyMail("en") as Record<string, Mail>)["plan-paid-14"]!.text).toContain(
+      `${origin}/en/settings/subscription`,
+    );
+    for (const [name, mail] of Object.entries(mails).filter(([n]) => n.startsWith("plan"))) {
+      expect(`${mail.subject}${mail.text}`, name).not.toMatch(
+        /konto(nummer)?|reg\.? ?nr|iban|\d{4} ?\d{6,}/i,
+      );
+    }
+  });
+
+  it("call a person's own workspace by no name", () => {
+    const { planPerson } = everyMail("da");
+    expect(planPerson.text).toContain(
+      "Prøveperioden for dit eget Kadence sluttede 11. november 2026",
+    );
+    expect(everyMail("en").planPerson.text).toContain("your own Kadence");
   });
 });
 

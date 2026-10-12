@@ -8,6 +8,7 @@ import { mailConfigured } from "@/core/mail/mailer";
 import type { MailLocale } from "@/core/mail/words";
 import { callerKey, rateLimit } from "@/core/rate-limit";
 import { organizationSlug } from "@/lib/slug";
+import { startPlanQuietly } from "@/modules/billing/start";
 import { recordSignupConsents } from "@/modules/consent/service";
 import { auth } from "./auth";
 import { cookieHeaderFrom } from "./cookies";
@@ -137,6 +138,8 @@ export async function registerSelf(
       { orgId: organization.id, userId },
       { riderId, locale: options.locale },
     );
+    // A trial, or free for a young rider (docs/adr/0090); nothing while BILLING=off.
+    await startPlanQuietly(organization.id, { kind: "personal", birthYear: personal.birthYear });
   } catch (error) {
     // The account exists and cannot get past /verify without a workspace
     // that holds its consent; unconfirmed, the sweep takes it in seven

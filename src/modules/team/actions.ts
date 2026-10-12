@@ -3,7 +3,7 @@
 import { headers } from "next/headers";
 import { getLocale } from "next-intl/server";
 import { z } from "zod";
-import { Refused, runAction } from "@/core/action";
+import { Refused, runAction, STILL_ALLOWED } from "@/core/action";
 import { mailLocale } from "@/core/mail/words";
 import { inviteMember, type IssuedTeamInvitation } from "@/core/team/service";
 import { bulkInvite, BulkInviteInput } from "./bulk-invite";
@@ -159,6 +159,7 @@ export async function removeGuardianAction(raw: unknown) {
     z.object({ guardianId: id }),
     (ctx, input) => removeGuardian(ctx, input.guardianId),
     PATHS,
+    STILL_ALLOWED,
   );
 }
 
@@ -172,6 +173,7 @@ export async function eraseRiderAction(raw: unknown) {
     z.object({ riderId: id, confirm: z.literal(true) }),
     (ctx, input) => eraseRider(ctx, input.riderId),
     PATHS,
+    STILL_ALLOWED,
   );
 }
 

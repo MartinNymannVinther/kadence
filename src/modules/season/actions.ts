@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { runAction } from "@/core/action";
+import { runAction, STILL_ALLOWED } from "@/core/action";
 import { todayInCopenhagen } from "@/core/dates";
 import { CLASS_BASES } from "@/modules/dcu";
 import {
@@ -105,5 +105,6 @@ export async function previewSessionsAction(raw: unknown) {
       });
     },
     [],
+    STILL_ALLOWED,
   );
 }

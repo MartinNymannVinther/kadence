@@ -657,6 +657,54 @@ database; the objects already written still read, and stay until a job
 moves them back, which does not exist: an installation that goes back
 keeps the bucket. Nothing is lost either way.
 
+## 6g. Billing: a price, a trial and an invoice by hand
+
+Off by default (ADR 0090): every workspace is free and nothing about
+prices shows anywhere. A self-hoster leaves this section alone. On
+kadence.haij.dk, when clubs and persons are to pay:
+
+**The three settings.** In Coolify, beside the mail settings it needs:
+
+```
+BILLING=on
+TRIAL_DAYS=30   # 0 is no trial: free until you decide otherwise
+SIGNUP=individuals   # if persons may also create their own (section 5)
+```
+
+`BILLING=on` refuses to start without the five SMTP variables (section
+6b), because the owners are reminded by mail. The worker reads the same
+settings; the daily job `billing.expire` does the moving and the mails.
+
+**Who pays what.** Prices are rows of `price_plans`, seeded with the
+plan's numbers: a rider alone 290 kr. a year, a club 1,200 kr. a year
+for up to 20 riders and 50 kr. for each rider beyond, a rider alone who
+is at most U19 free. A person who creates their own workspace gets a
+trial of `TRIAL_DAYS` days. A club you admit is free for its **first
+season**: from your approval until the coming 30 September, after which
+it gets the same trial, with a mail a week and a day before it ends.
+Workspaces that existed before you turned billing on stay free until
+you say otherwise, and so does your own and every demo.
+
+**Registering a payment.** You make the invoice in your own bookkeeping
+— Indstillinger → Installation → Betaling lists every workspace with
+its riders and the price, a person as "Enkeltperson" and a short
+reference to put on the invoice. When the bank transfer has come in,
+press "Registrér betaling" on its row: the amount with VAT, the VAT, the
+invoice number and the period it pays for. The workspace is paid
+through the period's last day, and its owner gets a mail 14 days before
+that day. "Sæt gratis" makes a workspace free, with a reason and, if it
+is for a while, a last day.
+
+**What expired means.** A workspace past its trial or its payment can
+be read and taken out, and nothing new can be added: no session, no
+ride, no upload, no AI. Its people see a stripe at the top saying so,
+and its owner gets one mail. Nothing is ever deleted for it; register a
+payment and everything works as before, at once.
+
+**Turning it off again.** `BILLING=off` makes every workspace free
+again, whatever its row says, and stops the job and the mails. The
+plans stay in the database for the day you turn it back on.
+
 ## 7. Backups: to the minute, and a second copy
 
 Kadence has two backups, and they are independent on purpose

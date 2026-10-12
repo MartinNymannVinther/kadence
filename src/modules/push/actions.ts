@@ -2,7 +2,7 @@
 
 import { getLocale } from "next-intl/server";
 import { z } from "zod";
-import { runAction } from "@/core/action";
+import { runAction, STILL_ALLOWED } from "@/core/action";
 import { mailLocale } from "@/core/mail/words";
 import { setWeekMail, WeekMailInput } from "./mail-choice";
 import { Endpoint, Kinds, reminderState, setKinds, subscribe, unsubscribe } from "./subscriptions";
@@ -22,7 +22,13 @@ const Choice = z.object({ endpoint: Endpoint, kinds: Kinds });
 const Nothing = z.object({}).strict();
 
 export async function reminderStateAction(raw: unknown) {
-  return runAction(raw, ThisBrowser, (ctx, input) => reminderState(ctx, input.endpoint));
+  return runAction(
+    raw,
+    ThisBrowser,
+    (ctx, input) => reminderState(ctx, input.endpoint),
+    [],
+    STILL_ALLOWED,
+  );
 }
 
 export async function subscribeRemindersAction(raw: unknown) {
@@ -34,7 +40,13 @@ export async function setReminderKindsAction(raw: unknown) {
 }
 
 export async function unsubscribeRemindersAction(raw: unknown) {
-  return runAction(raw, ThisBrowser, (ctx, input) => unsubscribe(ctx, input.endpoint));
+  return runAction(
+    raw,
+    ThisBrowser,
+    (ctx, input) => unsubscribe(ctx, input.endpoint),
+    [],
+    STILL_ALLOWED,
+  );
 }
 
 /** "Send en prøve": one empty push to each of the person's own browsers here, three an hour. */

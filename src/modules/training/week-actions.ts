@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { runAction } from "@/core/action";
+import { runAction, STILL_ALLOWED } from "@/core/action";
 import { copyWeek, CopyWeekInput, previewCopyWeek } from "./week-copy";
 import { applyWeekPlan, previewWeekPlan, WeekPlanInput } from "./week-plan";
 import { loadPreviousWeek } from "./week-plan-load";
@@ -11,7 +11,7 @@ import { loadPreviousWeek } from "./week-plan-load";
 const PATHS = ["/calendar", "/today", "/season"];
 
 export async function previewCopyWeekAction(raw: unknown) {
-  return runAction(raw, CopyWeekInput, previewCopyWeek, []);
+  return runAction(raw, CopyWeekInput, previewCopyWeek, [], STILL_ALLOWED);
 }
 
 export async function copyWeekAction(raw: unknown) {
@@ -19,7 +19,7 @@ export async function copyWeekAction(raw: unknown) {
 }
 
 export async function previewWeekPlanAction(raw: unknown) {
-  return runAction(raw, WeekPlanInput, previewWeekPlan, []);
+  return runAction(raw, WeekPlanInput, previewWeekPlan, [], STILL_ALLOWED);
 }
 
 export async function applyWeekPlanAction(raw: unknown) {
@@ -36,5 +36,6 @@ export async function loadPreviousWeekAction(raw: unknown) {
     }),
     loadPreviousWeek,
     [],
+    STILL_ALLOWED,
   );
 }
