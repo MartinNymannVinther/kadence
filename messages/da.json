@@ -2810,6 +2810,7 @@
     },
     "upload": {
       "title": "Upload tur",
+      "quiet": "Upload turen",
       "body": "Filer fra din cykelcomputer, dit ur, din hometrainer eller en app: FIT, TCX og GPX, også pakket som .gz eller .zip (fx Garmin Connects eksport eller Stravas). Det virker altid, også uden Wahoo, Garmin og Polar.",
       "drop": "Træk filer hertil, eller tryk for at vælge",
       "busy": "Henter …",

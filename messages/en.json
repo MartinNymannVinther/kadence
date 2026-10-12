@@ -2810,6 +2810,7 @@
     },
     "upload": {
       "title": "Upload a ride",
+      "quiet": "Upload the ride",
       "body": "Files from your bike computer, your watch, your trainer or an app: FIT, TCX and GPX, also packed as .gz or .zip (such as Garmin Connect's or Strava's export). It always works, without Wahoo, Garmin and Polar too.",
       "drop": "Drag files here, or tap to choose",
       "busy": "Uploading …",
