@@ -219,3 +219,13 @@ describe("the device providers", () => {
     );
   });
 });
+
+describe("rides kept in an hour", () => {
+  it("is 60 unless the installation says otherwise, and never 0", () => {
+    expect(EnvSchema.parse(REQUIRED).UPLOAD_FILES_PER_HOUR).toBe(60);
+    expect(
+      EnvSchema.parse({ ...REQUIRED, UPLOAD_FILES_PER_HOUR: "200" }).UPLOAD_FILES_PER_HOUR,
+    ).toBe(200);
+    failure({ ...REQUIRED, UPLOAD_FILES_PER_HOUR: "0" });
+  });
+});
