@@ -12,6 +12,7 @@ import { listThreads, unreadThreadCount } from "@/modules/community/service";
 import { getTeamSettings } from "@/modules/team/settings";
 import { getRiders } from "@/modules/team/riders";
 import { recentRides } from "@/modules/today/recent-rides";
+import { hasRidesForProposal, proposeThresholds } from "@/modules/training/threshold-proposal";
 import { rideToRate } from "@/components/today/rpe-pick";
 import { addDaysIso, mondayOf, todayInCopenhagen } from "@/core/dates";
 import { listEvents } from "@/modules/training/events";
@@ -123,6 +124,28 @@ describe("a demo workspace", () => {
     const asked = rideToRate(rides, today);
     expect(asked).not.toBeNull();
     expect(asked).toMatchObject({ onDate: addDaysIso(today, -1), rpe: null, sport: "bike" });
+  });
+
+  it("proposes thresholds from a rider's rides that sit near her own (ADR 0094)", async () => {
+    const coach = { orgId, userId };
+    const emma = (await getRiders(coach)).find((r) => r.name === "Emma Holm")!;
+    expect(await hasRidesForProposal(coach, emma.id)).toBe(true);
+    const { estimates, read } = await proposeThresholds(coach, emma.id);
+    // The demo's rides are a few weeks of training at Emma's own FTP (225 W) and
+    // threshold pulse (176), with no all-out 20 minutes: the proposal stays under
+    // them, says it is not sure, and reads the pulse of a few rides only.
+    const ftp = estimates.ftpWatts;
+    expect(ftp.value).toBeGreaterThanOrEqual(225 * 0.75);
+    expect(ftp.value).toBeLessThanOrEqual(225 * 1.05);
+    expect(ftp.confidence).not.toBe("high");
+    expect(ftp.sources.length).toBeGreaterThan(0);
+    if (estimates.thresholdHr.value === null)
+      expect(estimates.thresholdHr.missing).toBe("noHardHeartRate");
+    else expect(Math.abs(estimates.thresholdHr.value - 176)).toBeLessThanOrEqual(18);
+    expect(estimates.maxHr.missing).toBe("notAboveCurrent");
+    expect(estimates.restingHr.missing).toBe("noMeasurement");
+    expect(read.streams).toBeLessThanOrEqual(18);
+    expect(read.streams).toBeLessThan(read.rides);
   });
 
   it("meets at the clubhouse for the rides the team does together (ADR 0058)", async () => {
