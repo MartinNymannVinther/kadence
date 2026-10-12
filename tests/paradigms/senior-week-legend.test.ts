@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { seniorWeeklyCorridor } from "@/modules/paradigms";
-import { volumeOf, type SeasonFrame } from "@/modules/season/volume";
+import { referenceHours, volumeOf, type SeasonFrame } from "@/modules/season/volume";
 
 /**
  * The week's legend for an adult on a training profile (docs/adr/0095):
@@ -31,6 +31,14 @@ describe("a senior's week against the profile", () => {
     }
     // The team's choice is still told apart: the strength line reads it.
     expect(volumeOf({ ...input("senior-motionist"), paradigm: null }).guided).toBe(false);
+  });
+
+  it("is the same rule the month and season views read (referenceHours)", () => {
+    const frameOf = () => ({ basis: "senior-motionist" as const, goal: null });
+    const november = { from: "2026-11-01", to: "2026-11-30" };
+    expect(referenceHours(november, frameOf, null).dcu).toBeCloseTo(16, 5);
+    const youth = () => ({ basis: "U19-1" as const, goal: null });
+    expect(referenceHours(november, youth, null).dcu).toBeNull();
   });
 
   it("has October's break for a senior too, rather than no reference", () => {

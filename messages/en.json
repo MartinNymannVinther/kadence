@@ -1359,6 +1359,66 @@
       "show": "Show",
       "team": "Whole team"
     },
+    "views": {
+      "label": "Show the calendar as",
+      "week": "Week",
+      "month": "Month",
+      "year": "Year"
+    },
+    "month": {
+      "nav": "Choose month",
+      "previous": "Previous month",
+      "next": "Next month",
+      "thisMonth": "This month",
+      "teamSubtitle": "The whole team's month",
+      "label": "The month's weeks",
+      "weekTotal": "The week on the bike",
+      "noHours": "No numbers for the week",
+      "legend": "What the colours mean",
+      "dayLabel": "{day}: {what}",
+      "nothing": "nothing planned",
+      "rides": "{count, plural, one {# ride without a session} other {# rides without a session}}",
+      "more": "+{count}",
+      "teamCaption": "The team's month: a row per rider and a column per day",
+      "rider": "Rider",
+      "bikeHours": "On the bike",
+      "of": "{done} of {planned} h",
+      "goal": "Season plan {hours} h",
+      "rest": "rest day"
+    },
+    "year": {
+      "nav": "Choose season",
+      "previous": "Previous season",
+      "next": "Next season",
+      "thisSeason": "This season",
+      "title": "Season {season}",
+      "teamSubtitle": "The whole team's season",
+      "label": "The season's months",
+      "soFar": "The season so far: {done} h ridden on the bike.",
+      "soFarGoal": "The season plan says {goal} h up to today.",
+      "soFarDcu": "{ref, select, dcu {DCU recommends} motionist {Motionist suggests} other {Supermotionist suggests}} {dcu} h up to today.",
+      "seasonGoal": "The whole season has {hours} h in the season plan.",
+      "toPlan": "Change it in the season plan",
+      "done": "Ridden {hours} h",
+      "goal": "Season plan {hours} h",
+      "noGoal": "No season plan",
+      "planned": "Scheduled {hours} h",
+      "dcu": "{ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}} {hours} h",
+      "sessions": "{done} of {planned, plural, one {# session} other {# sessions}} done",
+      "teamCaption": "The team's season: a row per rider and a column per month",
+      "rider": "Rider",
+      "total": "Total",
+      "races": "Races: {list}",
+      "cell": "{hours} h ridden",
+      "plannedOnly": "{hours} h scheduled",
+      "standing": {
+        "on": "on plan",
+        "under": "under plan",
+        "over": "over plan"
+      },
+      "legend": "What the colours mean",
+      "futureNote": "A month not yet begun shows the hours scheduled."
+    },
     "week": {
       "today": "Today",
       "nothing": "Nothing planned",
@@ -1913,7 +1973,63 @@
       "restingHr": "Resting HR",
       "bpm": "bpm",
       "date": "Measured on",
-      "hint": "Use the numbers from the latest test. Empty fields are fine: the sessions then show zones and feel."
+      "hint": "Use the numbers from the latest test. Empty fields are fine: the sessions then show zones and feel.",
+      "explainLabel": "What is {name}?",
+      "explain": {
+        "ftpWatts": "The highest power you can hold for about an hour. The zones on the bike are worked out from it. You find it with a 20-minute test, where FTP is 95 % of the average, or by letting Kadence propose it from the rides.",
+        "thresholdHr": "Your pulse when you ride as hard as you can hold for about an hour. The heart-rate zones are worked out from it. It is typically your average pulse over the last 20 minutes of a hard 30-minute ride on your own.",
+        "maxHr": "The highest pulse your heart reaches. It is personal and says nothing about how good you are. You typically see it at the end of a hard sprint uphill, when you are warm.",
+        "restingHr": "Your pulse when you lie still in the morning, before you get up. It often falls as your form grows. If it is high some days, it can be tiredness or illness on the way."
+      },
+      "propose": {
+        "own": "Propose from my rides",
+        "coach": "Propose from the rides",
+        "title": "Kadence's proposal",
+        "intro": "The numbers are worked out from the rides. Nothing is saved until you press Save.",
+        "now": "Now: {value}",
+        "nothing": "none",
+        "use": "Use the proposal",
+        "close": "Close",
+        "tick": "Use the proposal for {name}",
+        "filled": "The proposal is in the fields. Press Save to use it.",
+        "noneProposed": "There is not enough data for a proposal yet.",
+        "window": "{days, select, d90 {The last 90 days} other {The last year}}",
+        "from": "From",
+        "measuredOn": "measured {date}",
+        "confidence": {
+          "high": "Fairly sure",
+          "medium": "Reasonably sure",
+          "low": "Unsure"
+        },
+        "method": {
+          "criticalPower": "Worked out from the best 3 to 20 minutes (critical power).",
+          "best20Power": "95 % of the best 20 minutes.",
+          "best60Power": "The best hour on the bike. It was higher than what the 20 minutes give.",
+          "best20HeartRate": "A little under the highest average pulse over 20 minutes in a hard ride.",
+          "heldMaxHeartRate": "The highest pulse held for at least 10 seconds.",
+          "measuredRestingHr": "The middle of the measured resting pulses."
+        },
+        "missing": {
+          "noPower": "None of the rides has power, so there is no proposal for FTP.",
+          "fewPowerRides": "A proposal needs at least three rides with power, and the last year has fewer.",
+          "noHardTwentyMinutes": "There is no ride with 20 minutes of hard effort in the last 365 days.",
+          "noHeartRate": "None of the rides has a pulse.",
+          "fewHeartRateRides": "A proposal needs at least three rides with a pulse, and the last year has fewer.",
+          "noHardHeartRate": "There is no ride with 20 minutes of hard effort with a pulse in the last 365 days.",
+          "noAllOut": "No ride in the last year looks all-out, so the max pulse cannot be seen yet.",
+          "notAboveCurrent": "The rides have not gone above the max pulse saved now, so it stays.",
+          "noMeasurement": "The resting pulse cannot be seen on the rides. It is best measured in bed in the morning and written in here."
+        },
+        "note": {
+          "wideWindow": "The last 90 days held too little, so the number rests on the whole year.",
+          "youthGrows": "The number rests on the whole year. Young riders get stronger fast, so it may be too low.",
+          "fewRides": "There are few rides to work from.",
+          "effortUnconfirmed": "The ride has no pulse, so Kadence cannot see whether the 20 minutes were hard.",
+          "effortNotHard": "The pulse says the 20 minutes were not quite hard. The number is probably too low.",
+          "noShortEfforts": "There is no best 5 minutes to hold the 20 minutes against.",
+          "hourWasHigher": "The best hour was higher than what the 20 minutes gave."
+        }
+      }
     },
     "accountCard": {
       "title": "The rider's account",
@@ -2716,6 +2832,11 @@
     "weightOff": "Weight is turned off for riders under 19, as Team Danmark's ATK recommends. A coach can turn it on under Settings → Team."
   },
   "activities": {
+    "ftpRaised": {
+      "own": "The ride suggests your FTP has gone up.",
+      "coach": "The ride suggests the rider's FTP has gone up.",
+      "link": "See the proposal"
+    },
     "title": "Activity",
     "back": "Back to the week",
     "missing": "The activity does not exist",

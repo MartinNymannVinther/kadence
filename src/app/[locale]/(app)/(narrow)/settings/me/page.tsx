@@ -14,7 +14,7 @@ import { WeekMailCard } from "@/components/push/week-mail-card";
 import { OwnRacesCard } from "@/components/team/own-races-card";
 import { SharingForm } from "@/components/team/sharing-form";
 import { SeniorProfile } from "@/components/team/senior-profile";
-import { ThresholdsForm } from "@/components/team/thresholds-form";
+import { RiderThresholds } from "@/components/team/rider-thresholds";
 import { getOrgContext } from "@/core/auth/session";
 import { todayInCopenhagen } from "@/core/dates";
 import { env } from "@/core/env";
@@ -45,7 +45,11 @@ export async function generateMetadata(): Promise<Metadata> {
  * at the bottom (P1-07). "Udseende" — light or dark, and the rail in moss
  * or on paper — is this device's choice (docs/adr/0077).
  */
-export default async function MePage() {
+export default async function MePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ forslag?: string }>;
+}) {
   const ctx = await getOrgContext();
   const locale = await getLocale();
   if (!ctx) {
@@ -100,16 +104,12 @@ export default async function MePage() {
               />
             </>
           )}
-          <ThresholdsForm
-            riderId={rider.id}
+          <RiderThresholds
+            ctx={ctx}
+            rider={rider}
             today={todayInCopenhagen()}
-            initial={{
-              ftpWatts: rider.ftpWatts,
-              thresholdHr: rider.thresholdHr,
-              maxHr: rider.maxHr,
-              restingHr: rider.restingHr,
-              thresholdsOn: rider.thresholdsOn,
-            }}
+            own
+            ask={(await searchParams).forslag}
           />
           <SeniorProfile rider={rider} today={todayInCopenhagen()} />
           <OwnRacesCard

@@ -4,24 +4,26 @@ import { useId } from "react";
 import { useTranslations } from "next-intl";
 import { NativeSelect } from "@/components/ui/native-select";
 import { useRouter } from "@/i18n/navigation";
-import { calendarHref } from "./href";
+import { riderHref, teamHref, type CalendarQuery } from "./href";
 import type { RiderOption } from "./types";
 
 /**
- * Whose week to look at — every rider for a coach, each child for a
- * parent — with "the whole team" first for a coach. A real select, so a
- * phone shows its own picker.
+ * Whose calendar to look at — every rider for a coach, each child for a
+ * parent — with "the whole team" first for a coach, at the week, month
+ * or season already shown. A real select, so a phone shows its own
+ * picker.
  */
 export function RiderSelect({
   riders,
   value,
-  week,
+  query,
   withTeam,
 }: {
   riders: RiderOption[];
   /** The rider shown, or "team". */
   value: string;
-  week: string;
+  /** Where the calendar is: the choice keeps the scale and the place. */
+  query: CalendarQuery;
   withTeam: boolean;
 }) {
   const t = useTranslations("calendar.view");
@@ -38,9 +40,7 @@ export function RiderSelect({
         className="w-auto min-w-44 max-sm:h-11"
         onChange={(e) =>
           router.push(
-            e.target.value === "team"
-              ? calendarHref({ week, view: "team" })
-              : calendarHref({ week, rider: e.target.value }),
+            e.target.value === "team" ? teamHref(query) : riderHref(query, e.target.value),
           )
         }
       >

@@ -24,7 +24,7 @@ import { RiderAccount } from "@/components/team/rider-account";
 import { RiderInsightCard } from "@/components/team/rider-insight-card";
 import { RiderProfileForm } from "@/components/team/rider-profile-form";
 import { RiderSectionNav } from "@/components/team/rider-section-nav";
-import { ThresholdsForm } from "@/components/team/thresholds-form";
+import { RiderThresholds } from "@/components/team/rider-thresholds";
 import { MeasurementsCard, type MeasurementRow } from "@/components/wellbeing/measurements-card";
 import { zoneDays } from "@/components/wellbeing/zone-days";
 import { getOrgContext } from "@/core/auth/session";
@@ -67,7 +67,9 @@ export async function generateMetadata({
  * rider's account and invitation, the parents and their links, the way to archive the
  * rider — and, apart, to erase them.
  */
-export default async function RiderPage({ params }: { params: Promise<{ id: string }> }) {
+type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ forslag?: string }> };
+
+export default async function RiderPage({ params, searchParams }: Props) {
   const ctx = await getOrgContext();
   const locale = await getLocale();
   if (!ctx) {
@@ -236,16 +238,12 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
           classByYear={classText({ ...rider, categoryOverride: null }, today, classes)}
         />
         <SeniorProfile rider={rider} today={today} />
-        <ThresholdsForm
-          riderId={rider.id}
+        <RiderThresholds
+          ctx={ctx}
+          rider={rider}
           today={today}
-          initial={{
-            ftpWatts: rider.ftpWatts,
-            thresholdHr: rider.thresholdHr,
-            maxHr: rider.maxHr,
-            restingHr: rider.restingHr,
-            thresholdsOn: rider.thresholdsOn,
-          }}
+          own={false}
+          ask={(await searchParams).forslag}
         />
         <RaceCard
           riderId={rider.id}

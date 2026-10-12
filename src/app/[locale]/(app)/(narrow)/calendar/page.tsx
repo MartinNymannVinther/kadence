@@ -1,38 +1,31 @@
 import type { Metadata } from "next";
-import { after } from "next/server";
 import { getLocale, getTranslations } from "next-intl/server";
 import { buttonVariants } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { calendarHref, type CalendarQuery } from "@/components/calendar/href";
 import { RiderSelect } from "@/components/calendar/rider-select";
-import { RiderWeek } from "@/components/calendar/rider-week";
-import { TeamGrid } from "@/components/calendar/team-grid";
-import { toActivityCard, toCard, toEventCard, withResults } from "@/components/calendar/to-card";
-import { WeekNav } from "@/components/calendar/week-nav";
+import { ScaleSwitch } from "@/components/calendar/scale-switch";
+import { MonthView } from "@/components/calendar/views/month-view";
+import { WeekView } from "@/components/calendar/views/week-view";
+import { YearView } from "@/components/calendar/views/year-view";
 import { SessionSheet } from "@/components/session/session-sheet";
 import { SessionView } from "@/components/session/session-view";
-import { TeamAttention } from "@/components/insight/team-attention";
-import { teamAttentionData } from "@/components/insight/team-attention-data";
-import { ATTENTION_ID } from "@/components/insight/signals";
 import { getOrgContext } from "@/core/auth/session";
-import { mondayOf, todayInCopenhagen } from "@/core/dates";
-import { basisText } from "@/components/season/basis-text";
+import { addDaysIso, todayInCopenhagen } from "@/core/dates";
 import { Link, redirect } from "@/i18n/navigation";
+import {
+  monthBounds,
+  monthFrom,
+  scaleFrom,
+  seasonBounds,
+  seasonFrom,
+} from "@/modules/calendar/grid";
 import { seasonStartYear } from "@/modules/dcu";
-import { refreshStaleRaces } from "@/modules/results/refresh";
-import { listRaceResults } from "@/modules/results/service";
 import { riderClass } from "@/modules/season/class";
-import { volumesFor } from "@/modules/season/volumes";
-import { WeekNoteProvider } from "@/components/training/week-note";
 import { whoAmI } from "@/modules/team/access";
-import { getTeamName } from "@/modules/team/name";
 import { getRiders } from "@/modules/team/riders";
-import { listUnplanned } from "@/modules/training/activities";
-import { listEvents } from "@/modules/training/events";
-import { listSessions } from "@/modules/training/sessions";
-import { listOwnTemplates, listTemplates } from "@/modules/training/templates";
-import { weekDates, weekFrom } from "@/modules/training/week";
+import { weekFrom } from "@/modules/training/week";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("calendar");
@@ -42,15 +35,14 @@ export async function generateMetadata(): Promise<Metadata> {
 type Search = Promise<Record<string, string | string[] | undefined>>;
 
 /**
- * The calendar, the heart of Kadence: a week at a time, for one rider or
- * — for a coach — the whole team. `?week=` is the week's Monday (this
- * week in Copenhagen by default), `?rider=` whose week, `?view=team` the
- * team grid, and `?session=` the session whose panel is open. Who may see
- * which rider is the database's decision (ADR 0011): the list of riders
- * here is whatever it lets the caller read. The team's week in progress
- * also carries the signals — each rider's flags as badges, and under the
- * grid the attention list, the AI's summary and the coach's tips — so
- * that is where a coach sees who needs a talk (ADR 0062).
+ * The calendar, the heart of Kadence, at three scales (docs/adr/0093): a
+ * week (`?week=`, its Monday), a month (`?view=month&month=2026-11`) or a
+ * season from October (`?view=year&year=2026`) — for one rider
+ * (`?rider=`) or, for a coach, the whole team (`?view=team` for the
+ * week, `team=1` beside the month and the year). `?session=` is the
+ * session whose panel is open, on any scale. Who may see which rider is
+ * the database's decision (ADR 0011): the list of riders here is
+ * whatever it lets the caller read.
  */
 export default async function CalendarPage({ searchParams }: { searchParams: Search }) {
   const ctx = await getOrgContext();
@@ -65,15 +57,22 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
   const param = (key: string) => (typeof search[key] === "string" ? search[key] : undefined);
 
   const today = todayInCopenhagen();
+  const scale = scaleFrom(param("view"));
   const monday = weekFrom(param("week"), today);
-  const days = weekDates(monday);
-  const range = { from: monday, to: days[6] ?? monday };
+  const month = monthFrom(param("month"), today);
+  const season = seasonFrom(param("year"), today);
+  const shown =
+    scale === "month"
+      ? monthBounds(month)
+      : scale === "year"
+        ? seasonBounds(season)
+        : { from: monday, to: addDaysIso(monday, 6) };
   const riderRows = await getRiders(ctx);
   const visible = riderRows.map((r) => ({
     id: r.id,
     name: r.name,
     // An adult's strength series is measured against their profile (ADR 0092).
-    basis: riderClass(r, seasonStartYear(monday)).basis,
+    basis: riderClass(r, seasonStartYear(shown.from)).basis,
   }));
 
   if (!me || visible.length === 0) {
@@ -102,110 +101,54 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
 
   const own = me.rider ? visible.find((r) => r.id === me.rider?.id) : undefined;
   const asked = visible.find((r) => r.id === param("rider"));
-  const teamView =
-    me.isCoach && (param("view") === "team" || (!asked && !(own && visible.length === 1)));
+  const teamAsked = param("view") === "team" || param("team") === "1";
+  const teamView = me.isCoach && (teamAsked || (!asked && !(own && visible.length === 1)));
   const rider = asked ?? own ?? visible[0]!;
-  const riderIds = teamView ? visible.map((r) => r.id) : [rider.id];
-  const canWrite = me.isCoach || me.rider?.id === rider.id;
   const choose = me.isCoach || visible.length > 1;
-  const query: CalendarQuery = teamView
-    ? { week: monday, view: "team" }
-    : { week: monday, rider: choose ? rider.id : null };
-
-  // Flags belong to the week in progress (ADR 0026), so the signals come with that week only.
-  const thisMonday = mondayOf(today);
-  const [sessions, unplanned, eventRows, results, templates, volumes, attention, teamName] =
-    await Promise.all([
-      listSessions(ctx, { ...range, riderIds }),
-      listUnplanned(ctx, { ...range, riderIds }),
-      listEvents(ctx, { ...range, riderIds }),
-      // The places from Cykling Danmark are the coach's (ADR 0039).
-      me.isCoach ? listRaceResults(ctx, { ...range, riderIds }) : Promise.resolve([]),
-      canWrite ? listTemplates(ctx) : Promise.resolve([]),
-      volumesFor(ctx, riderIds, range, today),
-      teamView && monday === thisMonday
-        ? teamAttentionData(ctx, { today, locale, riders: riderRows })
-        : Promise.resolve(null),
-      getTeamName(ctx),
-    ]);
-  // A rider plans their own sessions into their own calendar too (ADR 0050).
-  const ownTemplates =
-    canWrite && !teamView && me.rider?.id === rider.id
-      ? await listOwnTemplates(ctx, { riderId: rider.id })
-      : [];
-  const events = withResults(eventRows.map(toEventCard), results);
-  // A coach's visit puts the stale riders' races in the queue (ADR 0039,
-  // 0085). after() only for the putting in, which is a query or two the
-  // page need not wait for; the reading is a job. Lost in a deploy, it
-  // loses nothing: the hourly dcu.races job finds the same riders.
-  if (me.isCoach) after(() => refreshStaleRaces(ctx, riderIds));
-  const templateOptions = [...ownTemplates, ...templates].map((tpl) => ({
-    id: tpl.id,
-    name: tpl.name,
-    sport: tpl.sport,
-    plannedMinutes: tpl.plannedMinutes,
-    source: tpl.source,
-  }));
+  const who = teamView
+    ? { team: true, rider: null }
+    : { team: false, rider: choose ? rider.id : null };
+  const query: CalendarQuery =
+    scale === "month"
+      ? { ...who, view: "month", month }
+      : scale === "year"
+        ? { ...who, view: "year", year: season }
+        : { ...who, view: teamView ? "team" : null, week: monday };
+  const props = { ctx, me, today, locale, riderRows, visible, rider, teamView, query };
   const openSession = param("session");
-  const volume = teamView ? null : (volumes.get(rider.id) ?? null);
-  const seasonT = await getTranslations("season");
+  const subtitle = teamView
+    ? t(
+        scale === "month"
+          ? "month.teamSubtitle"
+          : scale === "year"
+            ? "year.teamSubtitle"
+            : "teamSubtitle",
+      )
+    : rider.name;
 
   return (
     <div className="flex min-w-0 flex-col gap-5">
       <PageHeader
         title={t("title")}
-        subtitle={teamView ? t("teamSubtitle") : rider.name}
+        subtitle={subtitle}
         actions={
           choose ? (
             <RiderSelect
               riders={visible}
               value={teamView ? "team" : rider.id}
-              week={monday}
+              query={query}
               withTeam={me.isCoach}
             />
           ) : undefined
         }
       />
-      <WeekNav monday={monday} today={today} query={query} />
-      {teamView ? (
-        <TeamGrid
-          riders={visible}
-          days={days}
-          today={today}
-          sessions={sessions.map(toCard)}
-          activities={unplanned.map(toActivityCard)}
-          events={events}
-          templates={templateOptions}
-          query={query}
-          volumes={Object.fromEntries(volumes)}
-          signals={attention?.signals ?? {}}
-          teamName={teamName}
-        />
+      <ScaleSwitch scale={scale} query={query} shown={shown} today={today} />
+      {scale === "month" ? (
+        <MonthView {...props} month={month} />
+      ) : scale === "year" ? (
+        <YearView {...props} season={season} />
       ) : (
-        <WeekNoteProvider volume={volume}>
-          <RiderWeek
-            riderId={rider.id}
-            days={days}
-            today={today}
-            sessions={sessions.map(toCard)}
-            activities={unplanned.map(toActivityCard)}
-            events={events}
-            canWrite={canWrite}
-            isCoach={me.isCoach}
-            riders={me.isCoach ? visible : [rider]}
-            templates={templateOptions}
-            query={query}
-            volume={volume}
-            basisLabel={volume?.basis ? basisText(volume.basis, (k, v) => seasonT(k, v)) : null}
-            teamName={teamName}
-          />
-        </WeekNoteProvider>
-      )}
-      {teamView && (
-        <TeamAttention
-          data={attention}
-          thisWeekHref={`${calendarHref({ view: "team" })}#${ATTENTION_ID}`}
-        />
+        <WeekView {...props} monday={monday} />
       )}
       {openSession && (
         <SessionSheet key={openSession} closeHref={calendarHref(query)} title={t("sessionPanel")}>
