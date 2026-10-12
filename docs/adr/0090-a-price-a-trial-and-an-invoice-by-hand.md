@@ -1,6 +1,6 @@
 # ADR 0090: A price, a trial and an invoice by hand — what a workspace may do when it has not paid
 
-Status: accepted · Date: 2026-10-12 · Builds on 0048 (the owner's installation), 0080 (a person alone), 0082 (Kadence as a service, a fee allowed), 0085 (jobs), 0086 (mail), 0087 (quotas), 0088 (door 2), 0089 (AI budgets) · docs/plan-konto-og-priser.md, Martin's answers in §9, backlog S-12a
+Status: accepted · Date: 2026-10-12 · Amended 2026-10-12 (S-12b: the price page, prices with a history, a plan's budget and quota applied) · Builds on 0048 (the owner's installation), 0080 (a person alone), 0082 (Kadence as a service, a fee allowed), 0085 (jobs), 0086 (mail), 0087 (quotas), 0088 (door 2), 0089 (AI budgets) · docs/plan-konto-og-priser.md, Martin's answers in §9, backlog S-12a
 
 ## Context
 
@@ -151,3 +151,46 @@ no account number in Kadence — it is on the invoice.
 - **Dogma one holds.** The same code runs everywhere and nothing is only
   for payers: with `BILLING=off`, the default, a self-hosted club gets
   every feature for nothing, and the open price page S-12b adds says so.
+
+## Amended 2026-10-12: the price page, the price table, and a plan's limits (S-12b)
+
+- **Prices have a history.** `price_plans` is keyed by the plan and its
+  `valid_from` (drizzle/0053). `price_plan_now()` and `price_plans_now()`
+  pick the newest row whose day has come, a Copenhagen day, and every
+  reader — `plan_yearly_dkk`, `workspace_price`, `billing_overview`, the
+  pages — goes through them. `set_price_plan()` takes the day a change
+  takes effect (today when none is given, never a day that has passed),
+  adds a row for it and keeps the older ones; a second change the same
+  day replaces that day's row. Installation → Priser
+  (`settings/installation/prices`, the owner's only, with `BILLING=on`)
+  edits each plan's names, price, included riders, price per rider, AI
+  budget, file quota and VAT, and shows what 12, 20, 21 and 40 riders
+  pay as it is typed.
+- **A plan's AI budget and file quota are applied.** With `BILLING=on`,
+  `workspacePlan()` (src/modules/billing/state.ts) carries today's AI
+  budget and file quota of the workspace's price plan, and the AI's limit
+  (`monthlyBudgetMicro`) and the file quota (`fileQuotaIn`) use them
+  where the owner gave the workspace no number of its own: the
+  workspace's own number, then its plan's, then the installation's
+  default (ADR 0087, 0089). With `BILLING=off` the plans say nothing and
+  the installation's defaults apply as before. The TECH-DEBT entry is
+  closed.
+- **The open price page.** `/priser` (`/en/prices`) under `(open)`, from
+  today's rows: a card for a rider alone and one for a club, a year and a
+  month, what is included, what is free, the trial as `TRIAL_DAYS` says,
+  how one pays (an invoice from Haij by mail, bank transfer, a year in
+  advance, no account number) and that the code is AGPL-3.0 with a link
+  to it. With `BILLING=off` the proxy answers 404 before it renders, as
+  for a parked page (src/core/features.ts), and nothing links to it. The
+  front page links it in its top and bottom, Viden og hjælp has a card.
+- **The front page by `SIGNUP` and `BILLING`**
+  (src/modules/billing/landing.ts): with door 2 open, "Opret konto" first,
+  "Er I et hold? Så ansøger I først" under the hero's buttons, and the two
+  ways in each with a button; with billing on, one line with the trial and
+  the cheapest paid plan a month, or "Gratis at komme i gang" when
+  `TRIAL_DAYS=0`. Closed and open installations look as before.
+
+Trade-off: a price for a later day is invisible on the open page until
+that day, so an announced change is announced elsewhere; and the owner's
+list of other rows is read-only — a mistaken future row is overwritten by
+saving that day again, never deleted, so the table only grows.

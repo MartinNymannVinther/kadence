@@ -1,7 +1,7 @@
 import { getSessionCookie } from "better-auth/cookies";
 import createIntlMiddleware from "next-intl/middleware";
 import { NextResponse, type NextRequest } from "next/server";
-import { features, parkedPath } from "./core/features";
+import { features, parkedPath, pricePageParked, pricesOn } from "./core/features";
 import { requestIdFrom } from "./core/log";
 import { routing } from "./i18n/routing";
 
@@ -121,7 +121,7 @@ function withRequestId(request: NextRequest, response: NextResponse, requestId: 
 export default function proxy(request: NextRequest) {
   const requestId = requestIdFrom(request.headers);
   const pathname = stripLocale(request.nextUrl.pathname);
-  if (parkedPath(pathname, features())) {
+  if (parkedPath(pathname, features()) || pricePageParked(pathname, pricesOn())) {
     return withRequestId(request, parkedResponse(request), requestId);
   }
 

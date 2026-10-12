@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import { BookOpen, BookText, HeartHandshake } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { BookOpen, BookText, HeartHandshake, Tag } from "lucide-react";
+import { getLocale, getTranslations } from "next-intl/server";
 import { GuideDoor } from "@/components/guides/guide-door";
 import { TopicCards } from "@/components/guides/topic-cards";
 import { getOrgContext } from "@/core/auth/session";
 import { featureOn } from "@/core/features";
+import { pricesPath } from "@/modules/billing/landing";
+import { billingOn } from "@/modules/billing/plan";
 import { whoAmI } from "@/modules/team/access";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -58,7 +60,8 @@ const HOW_TO = [
  * Rulle on the trainer, upload keys, a Strava archive, the parents, the
  * AI, then the way out. Each wave adds the part it built. Every section
  * can be linked to: `/help#help-keys`. Rulle's world is described only
- * where the installation has it on (ADR 0057).
+ * where the installation has it on (ADR 0057). With BILLING=on a card
+ * leads to the open price page (docs/adr/0090).
  */
 export default async function HelpPage() {
   const t = await getTranslations("help");
@@ -68,6 +71,7 @@ export default async function HelpPage() {
   const me = ctx ? await whoAmI(ctx.orgId, ctx.userId) : null;
   const parentOnly = !!me && !me.isCoach && !me.rider && me.children.length > 0;
   const rulleWorld = featureOn("rulleWorld");
+  const prices = billingOn() ? pricesPath(await getLocale()) : null;
 
   return (
     <div className="mx-auto max-w-2xl pb-16">
@@ -109,6 +113,16 @@ export default async function HelpPage() {
           open={parents("open")}
           className={parentOnly ? "sm:col-span-2" : undefined}
         />
+        {prices && (
+          <GuideDoor
+            href={prices}
+            icon={Tag}
+            title={t("prices.title")}
+            body={t("prices.body")}
+            open={t("prices.open")}
+            className="sm:col-span-2"
+          />
+        )}
       </div>
 
       <section aria-labelledby="help-sport" className="mt-10 flex flex-col gap-3">

@@ -27,7 +27,8 @@
     "nav": {
       "login": "Log ind",
       "register": "Opret konto",
-      "apply": "Ansøg om adgang"
+      "apply": "Ansøg om adgang",
+      "prices": "Priser"
     },
     "hero": {
       "title": "Unge ryttere i den rigtige kadence.",
@@ -36,7 +37,8 @@
       "ctaSecondary": "Log ind",
       "trust": "AGPL-3.0 · Passkeys og totrinslogin · Jeres data kan hentes ud med ét klik",
       "ctaApply": "Ansøg om adgang",
-      "ctaDemo": "Prøv demoen"
+      "ctaDemo": "Prøv demoen",
+      "teamFirst": "Er I et hold? <link>Så ansøger I først.</link>"
     },
     "values": {
       "dcuTitle": "DCU som standard",
@@ -54,7 +56,8 @@
     "footer": {
       "license": "Open source under AGPL-3.0",
       "language": "English",
-      "terms": "Vilkår og privatliv"
+      "terms": "Vilkår og privatliv",
+      "prices": "Priser"
     },
     "demo": {
       "title": "Prøv uden at oprette noget",
@@ -81,7 +84,13 @@
       "aloneBody": "Du planlægger din egen uge og sæson, lægger dine ture ind og tager check-in, uden at være på et hold. Er du U17, U19 eller U23, står DCU's tal ved siden af dine; er du voksen, sætter du dine egne timer. Kommer du på et hold senere, følger din træning med.",
       "aloneAge": "Fra 15 år opretter du selv. Er rytteren yngre, opretter en forælder og følger barnets træning.",
       "aloneCta": "Ansøg som dig selv",
-      "aloneDemo": "Prøv som rytter alene"
+      "aloneDemo": "Prøv som rytter alene",
+      "aloneCreate": "Opret konto",
+      "teamApply": "Ansøg om et hold"
+    },
+    "price": {
+      "trial": "Gratis i {days, plural, one {# dag} other {# dage}}, derefter fra {monthly} kr. om måneden. <link>Se priserne.</link>",
+      "free": "Gratis at komme i gang. <link>Se priserne.</link>"
     }
   },
   "notFound": {
@@ -206,14 +215,14 @@
     },
     "self": {
       "title": "Opret dit eget arbejdsrum",
-      "subtitle": "Til din egen træning eller til dit barns. Du bekræfter din e-mail, før du går i gang.",
+      "subtitle": "Til din egen træning eller til dit barns. Du kan gå i gang med det samme.",
       "name": "Dit navn",
       "email": "Din e-mail",
       "consentLegend": "Det skal du sige ja til",
       "terms": "Jeg har læst <link>vilkårene og privatlivspolitikken</link>",
       "healthMe": "Jeg giver mit udtrykkelige samtykke til, at Kadence gemmer helbredsoplysninger om mig: mine check-ins med søvn, smerte og sygdom, mine målinger og pulsen fra mine ture. Jeg kan trække samtykket tilbage under Indstillinger → Data. Så slår Kadence check-in og målinger fra, og resten virker som før: kalenderen, turene, sæsonplanen og Rulle.",
       "healthChild": "Jeg er forælder og giver udtrykkeligt samtykke på mit barns vegne til, at Kadence gemmer helbredsoplysninger om barnet: check-ins med søvn, smerte og sygdom, målinger og pulsen fra turene. Jeg kan trække samtykket tilbage under Indstillinger → Data. Så slår Kadence check-in og målinger fra, og resten virker som før: kalenderen, turene, sæsonplanen og Rulle.",
-      "verifyNote": "Vi sender et link til din e-mail. Du åbner det, før du kan bruge Kadence. Bekræfter du ikke adressen inden for 7 dage, sletter vi kontoen igen.",
+      "verifyNote": "Du kan bruge Kadence med det samme. Vi sender et link til din e-mail, som du åbner inden for {grace, plural, one {# dag} other {# dage}}. Ellers venter Kadence på, at du gør det, og efter {days, plural, one {# dag} other {# dage}} sletter vi kontoen igen.",
       "submit": "Opret arbejdsrum",
       "clubLink": "En klub eller et hold? Ansøg her",
       "errorConsent": "Sæt kryds i begge felter for at oprette arbejdsrummet.",
@@ -222,7 +231,7 @@
     },
     "verify": {
       "title": "Bekræft din e-mail",
-      "body": "Vi har sendt en mail til {email} med et link. Åbn linket for at gå i gang. Indtil da kan du ikke bruge resten af Kadence.",
+      "body": "Vi har sendt en mail til {email} med et link. Der er gået mere end {grace, plural, one {# dag} other {# dage}}, så Kadence venter nu på, at du åbner linket. Alt det, du har lagt ind, er der stadig.",
       "spam": "Kan du ikke finde mailen, så kig i spam. Linket virker i en time. Du kan få en ny mail tre gange i timen.",
       "resend": "Send mailen igen",
       "sent": "Vi har sendt en ny mail.",
@@ -230,6 +239,10 @@
       "failed": "Mailen kunne ikke sendes lige nu. Prøv igen om lidt.",
       "signOut": "Log ud",
       "expiry": "Bekræfter du ikke adressen inden for {days, plural, one {# dag} other {# dage}}, sletter vi kontoen og alt i den."
+    },
+    "verifyStripe": {
+      "title": "Bekræft din adresse inden {date}.",
+      "body": "Vi har sendt dig en mail med et link. Efter den dag venter Kadence på, at du åbner det."
     }
   },
   "app": {
@@ -425,6 +438,7 @@
       "devices": "Enheder",
       "subscription": "Abonnement",
       "billing": "Betaling",
+      "prices": "Priser",
       "training": "Træning",
       "groups": {
         "you": "Dig",
@@ -955,6 +969,11 @@
       "body": "Hele Kadence i én guide til træner, rytter og forælder, med billeder. Hent den som PDF, eller læs den på skærmen.",
       "open": "Hent som PDF",
       "read": "Læs brugervejledningen på skærmen"
+    },
+    "prices": {
+      "title": "Priser",
+      "body": "Hvad Kadence koster for en rytter alene og for en klub, hvad der er gratis, og hvordan der betales.",
+      "open": "Se priserne"
     },
     "knowledge": {
       "title": "Viden om sporten",
@@ -4315,7 +4334,44 @@
     "contents": "Indhold",
     "updated": "Skrevet i oktober 2026. DCU's regler ændrer sig fra sæson til sæson, så DCU's egne sider har altid det sidste ord.",
     "experience": "Erfaring fra miljøet",
-    "experienceNote": "Det her står i ingen regler. Det er erfaring fra miljøet og vores egen læsning, så tag det som gode bud."
+    "experienceNote": "Det her står i ingen regler. Det er erfaring fra miljøet og vores egen læsning, så tag det som gode bud.",
+    "prices": {
+      "title": "Priser",
+      "intro": "Det koster lidt at bruge Kadence, så driften og vedligeholdet er betalt. Alle får de samme funktioner, og alle priser står her.",
+      "perYear": "{price} kr. om året",
+      "perMonth": "Svarer til {price} kr. om måneden.",
+      "vat": "Med moms.",
+      "noVat": "Uden moms.",
+      "perRider": "Op til {included} ryttere, derefter {price} kr. pr. rytter om året.",
+      "cards": {
+        "person": "Til dig, der træner alene uden et hold.",
+        "club": "Til klubben eller holdet. Klubben betaler for rytterne. Trænere og forældre koster ikke noget."
+      },
+      "included": {
+        "calendar": "Kalenderen med pas på cykel og i styrkerummet",
+        "rides": "Turene fra FIT-filer, Wahoo, Garmin og Polar",
+        "checkin": "Daglig check-in",
+        "rulle": "Rulle, der kører passet på hometraineren",
+        "ai": "AI'en, der foreslår, inden for et budget hver måned",
+        "files": "{gb} GB til filer",
+        "team": "Holdets uge og alle holdets trænere og forældre"
+      },
+      "freeTitle": "Det er gratis",
+      "free": {
+        "youth": "Unge ryttere alene, til og med U19.",
+        "coaches": "Trænere og forældre.",
+        "season": "En klubs første sæson, til og med 30. september."
+      },
+      "trialTitle": "Prøv det først",
+      "trial": "Træner du alene, får du {days, plural, one {# dag} other {# dage}} gratis, før du skal betale. En klub får resten af sæsonen gratis og derefter {days, plural, one {# dag} other {# dage}} til at beslutte sig.",
+      "trialNone": "Gratis at komme i gang. Der er ingen prøveperiode at holde øje med.",
+      "payTitle": "Sådan betaler du",
+      "pay": "Du får en faktura fra Haij på mail og betaler med bankoverførsel, et år ad gangen og forud. Der er ingen kortbetaling.",
+      "expiry": "Bliver der ikke betalt, kan du stadig se alt og hente det ud. Intet bliver slettet af den grund.",
+      "openTitle": "Open source",
+      "open": "Koden er open source under AGPL-3.0. En klub kan køre Kadence på sin egen server og betale ingen noget.",
+      "openLink": "Koden ligger på GitHub."
+    }
   },
   "guides": {
     "hub": {
@@ -5905,6 +5961,32 @@
       "saved": "Gemt.",
       "paymentsTitle": "Seneste betalinger",
       "paymentsNone": "Der er ikke registreret nogen betalinger endnu."
+    },
+    "prices": {
+      "title": "Priser",
+      "subtitle": "Pristabellen, som prissiden, forsiden, Abonnement og Betaling læser. En ændring gælder fra den dag, du vælger, i dag eller senere, og den gamle pris bliver stående som historik. AI-budgettet og filpladsen gælder for arbejdsrummene på planen, medmindre du har givet et arbejdsrum sit eget tal under Installation.",
+      "since": "Nøgle {key}. Gældende fra {date}.",
+      "fields": {
+        "nameDa": "Navn på dansk",
+        "nameEn": "Navn på engelsk",
+        "price": "Pris om året, kr.",
+        "validFrom": "Gælder fra",
+        "included": "Ryttere med i prisen",
+        "perRider": "Pris pr. rytter derover, kr. om året",
+        "ai": "AI-budget, € om måneden",
+        "files": "Filplads, GB",
+        "vat": "Prisen er med moms"
+      },
+      "example": "{riders} ryttere: {year} kr. om året, {month} kr. om måneden",
+      "flat": "{year} kr. om året, {month} kr. om måneden, uanset antal ryttere",
+      "history": "Lad ryttere og pris pr. rytter stå tomme, hvis prisen ikke vokser med rytterne. Gemmer du flere gange samme dag, er det den sidste, der gælder.",
+      "otherRows": "Andre priser",
+      "earlier": "Fra {date}: {price} kr. om året",
+      "later": "Fra {date}, kommende: {price} kr. om året",
+      "save": "Gem prisen",
+      "saved": "Prisen er gemt.",
+      "invalid": "Tjek tallene. Prisen kan gælde fra i dag eller senere, og ryttere og pris pr. rytter udfyldes begge eller ingen af dem.",
+      "failed": "Prisen kunne ikke gemmes. Prøv igen."
     }
   },
   "mail": {

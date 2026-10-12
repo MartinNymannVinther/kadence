@@ -213,10 +213,12 @@ still applies there, one link away, and waits for you. It needs mail
 (6b): the app refuses to start with `SIGNUP=individuals` and no SMTP
 settings, and says why. The person ticks two boxes, the terms and their
 explicit consent to health data, which are stored with the version of
-their words; then they see one page, "Bekræft din e-mail", until they have
-opened the link in the mail, and nothing else of Kadence. An account that
-is not confirmed within seven days is deleted by the `signup.sweep` job
-(6e) with its workspace, leaving one line in the audit trail with the
+their words; then they are in their workspace at once, with a stripe at
+the top of every page, "Bekræft din adresse inden …", and a button to send
+the mail again. A week on without the link opened, they see one page,
+"Bekræft din e-mail", and nothing else of Kadence until they have. An
+account that is not confirmed within thirty days is deleted by the
+`signup.sweep` job (6e) with its workspace, leaving one line in the audit trail with the
 account's id and no name or address. Five accounts an hour per network
 address, as for applications. Before you open this door on an installation
 you run for others, have the privacy policy, the DPIA and the consent texts
@@ -684,6 +686,28 @@ season**: from your approval until the coming 30 September, after which
 it gets the same trial, with a mail a week and a day before it ends.
 Workspaces that existed before you turned billing on stay free until
 you say otherwise, and so does your own and every demo.
+
+**The price table.** Indstillinger → Installation → Priser shows each
+plan with its names in Danish and English, its price a year, the riders
+it includes and the price per rider beyond, its AI budget in € a month,
+its file space in GB and whether VAT is in it, and works out what a club
+of 12, 20, 21 and 40 riders pays as you type. A change applies from the
+day you choose, today or later; the old price stays as history, and a
+price set for a later day waits for it. A plan's AI budget and file space
+are what the workspaces on it get, unless you gave a workspace its own
+number on the Installation page.
+
+**The price page.** With `BILLING=on` there is an open page at
+`/priser` (`/en/prices` in English) with the two plans, what is free,
+the trial, how one pays (an invoice from Haij, bank transfer, a year in
+advance) and that the code is open source. The front page links to it in
+its top and bottom, and Viden og hjælp has a card for it. With
+`SIGNUP=individuals` the front page says "Opret konto" first, with a line
+for a team that applies, and the price in one line under the buttons:
+"Gratis i 30 dage, derefter fra 24 kr. om måneden" — the trial and the
+cheapest paid plan, as the table has them — or "Gratis at komme i gang"
+with `TRIAL_DAYS=0`. With `BILLING=off` the page answers 404 and nothing
+links to it.
 
 **Registering a payment.** You make the invoice in your own bookkeeping
 — Indstillinger → Installation → Betaling lists every workspace with

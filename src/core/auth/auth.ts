@@ -66,7 +66,7 @@ export const auth = betterAuth({
       // keeps it out of every request body: nobody registers as owner.
       platformRole: { type: "string", required: false, input: false },
       // Came in through door 2 (docs/adr/0088): confirms the address
-      // before anything else, and goes after seven days unconfirmed. Set
+      // within a week, and goes after thirty days unconfirmed. Set
       // at creation from door 2's key, never from a request body.
       selfSignup: { type: "boolean", required: false, input: false, defaultValue: false },
     },

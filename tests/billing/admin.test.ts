@@ -221,17 +221,35 @@ describe("free", () => {
 });
 
 describe("a price", () => {
+  // A plan of its own, so the installation's three keep their one row each
+  // for the other files (a change is a new row from its day, drizzle/0053).
+  const set = (price: number) =>
+    `select set_price_plan('admin-test', 'Prøve', 'Test', ${price}, 50, 20, 5000000, 20000000000, true)`;
+
+  afterAll(async () => {
+    await admin.query("delete from price_plans where key = 'admin-test'");
+  });
+
   it("is set by the owner and nobody else, and audited", async () => {
-    const set = (price: number) =>
-      `select set_price_plan('club', 'Klub', 'Club', ${price}, 50, 20, 5000000, 20000000000, true)`;
     expect(await asApp(app, CLUB, (c) => expectSqlError(c.query(set(1300))))).toBe("42501");
     await asAppCommit(app, { orgId: "", userId: OWNER }, (c) => c.query(set(1300)));
-    const after = await admin.query("select price_year_dkk from price_plans where key = 'club'");
-    expect(after.rows[0].price_year_dkk).toBe(1300);
+    const after = await admin.query("select price_year_dkk from price_plan_now('admin-test')");
+    expect(after.rows).toEqual([{ price_year_dkk: 1300 }]);
+    const audit = await admin.query(
+      `select actor_user_id from audit_log where entity_type = 'price_plans' and action = 'price_plans.insert'`,
+    );
+    expect(audit.rows).toContainEqual({ actor_user_id: OWNER });
+  });
+
+  it("replaces the same day's row, and is audited as a change", async () => {
+    await asAppCommit(app, { orgId: "", userId: OWNER }, (c) => c.query(set(1250)));
+    const rows = await admin.query(
+      "select price_year_dkk from price_plans where key = 'admin-test'",
+    );
+    expect(rows.rows).toEqual([{ price_year_dkk: 1250 }]);
     const audit = await admin.query(
       `select actor_user_id from audit_log where entity_type = 'price_plans' and action = 'price_plans.update'`,
     );
     expect(audit.rows).toContainEqual({ actor_user_id: OWNER });
-    await asAppCommit(app, { orgId: "", userId: OWNER }, (c) => c.query(set(1200)));
   });
 });

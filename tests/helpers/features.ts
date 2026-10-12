@@ -11,10 +11,16 @@ import type * as Real from "@/core/features";
  *     (await import("../helpers/features")).featuresWith(await importOriginal(), on),
  *   );
  *
- * and may add to or delete from `on` between tests.
+ * and may add to or delete from `on` between tests. "billing" in the set
+ * stands for BILLING=on, which the open price page follows (ADR 0090).
  */
 export function featuresWith(real: typeof Real, on: Set<string>): typeof Real {
   const features = (): Real.Features =>
     Object.fromEntries(real.FEATURES.map((f) => [f, on.has(f)])) as Real.Features;
-  return { ...real, features, featureOn: (feature: Real.Feature) => on.has(feature) };
+  return {
+    ...real,
+    features,
+    featureOn: (feature: Real.Feature) => on.has(feature),
+    pricesOn: () => on.has("billing"),
+  };
 }

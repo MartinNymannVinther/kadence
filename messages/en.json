@@ -27,7 +27,8 @@
     "nav": {
       "login": "Log in",
       "register": "Create account",
-      "apply": "Apply for access"
+      "apply": "Apply for access",
+      "prices": "Prices"
     },
     "hero": {
       "title": "Young riders at the right cadence.",
@@ -36,7 +37,8 @@
       "ctaSecondary": "Log in",
       "trust": "AGPL-3.0 · Passkeys and two-factor sign-in · Your data out in one click",
       "ctaApply": "Apply for access",
-      "ctaDemo": "Try the demo"
+      "ctaDemo": "Try the demo",
+      "teamFirst": "Are you a team? <link>Then you apply first.</link>"
     },
     "values": {
       "dcuTitle": "DCU as the default",
@@ -54,7 +56,8 @@
     "footer": {
       "license": "Open source under AGPL-3.0",
       "language": "Dansk",
-      "terms": "Terms and privacy"
+      "terms": "Terms and privacy",
+      "prices": "Prices"
     },
     "demo": {
       "title": "Try it without creating anything",
@@ -81,7 +84,13 @@
       "aloneBody": "You plan your own week and season, add your rides and check in, without being on a team. If you are U17, U19 or U23, DCU's numbers stand beside yours; if you are an adult, you set your own hours. Join a team later and your training comes with you.",
       "aloneAge": "From 15 you create your own account. For a younger rider, a parent creates it and follows the child's training.",
       "aloneCta": "Apply as yourself",
-      "aloneDemo": "Try as a rider alone"
+      "aloneDemo": "Try as a rider alone",
+      "aloneCreate": "Create account",
+      "teamApply": "Apply for a team"
+    },
+    "price": {
+      "trial": "Free for {days, plural, one {# day} other {# days}}, then from {monthly} kr. a month. <link>See the prices.</link>",
+      "free": "Free to get started. <link>See the prices.</link>"
     }
   },
   "notFound": {
@@ -206,14 +215,14 @@
     },
     "self": {
       "title": "Create your own workspace",
-      "subtitle": "For your own training or your child's. You confirm your e-mail before you start.",
+      "subtitle": "For your own training or your child's. You can start right away.",
       "name": "Your name",
       "email": "Your e-mail",
       "consentLegend": "What you say yes to",
       "terms": "I have read <link>the terms and the privacy policy</link>",
       "healthMe": "I give my explicit consent for Kadence to store health data about me: my check-ins with sleep, pain and illness, my measurements and the heart rate from my rides. I can withdraw the consent under Settings → Data. Kadence then turns check-in and measurements off, and the rest works as before: the calendar, the rides, the season plan and Rulle.",
       "healthChild": "I am the parent and give explicit consent on my child's behalf for Kadence to store health data about the child: check-ins with sleep, pain and illness, measurements and the heart rate from the rides. I can withdraw the consent under Settings → Data. Kadence then turns check-in and measurements off, and the rest works as before: the calendar, the rides, the season plan and Rulle.",
-      "verifyNote": "We send a link to your e-mail. You open it before you can use Kadence. If you do not confirm the address within 7 days, we delete the account again.",
+      "verifyNote": "You can use Kadence right away. We send a link to your e-mail, which you open within {grace, plural, one {# day} other {# days}}. Otherwise Kadence waits for you to do so, and after {days, plural, one {# day} other {# days}} we delete the account again.",
       "submit": "Create workspace",
       "clubLink": "A club or a team? Apply here",
       "errorConsent": "Tick both boxes to create the workspace.",
@@ -222,7 +231,7 @@
     },
     "verify": {
       "title": "Confirm your e-mail",
-      "body": "We have sent a mail to {email} with a link. Open the link to get started. Until then you cannot use the rest of Kadence.",
+      "body": "We have sent a mail to {email} with a link. More than {grace, plural, one {# day} other {# days}} have passed, so Kadence now waits for you to open the link. Everything you have put in is still there.",
       "spam": "If you cannot find the mail, look in spam. The link works for an hour. You can get a new mail three times an hour.",
       "resend": "Send the mail again",
       "sent": "We have sent a new mail.",
@@ -230,6 +239,10 @@
       "failed": "The mail could not be sent right now. Try again in a moment.",
       "signOut": "Sign out",
       "expiry": "If you do not confirm the address within {days, plural, one {# day} other {# days}}, we delete the account and everything in it."
+    },
+    "verifyStripe": {
+      "title": "Confirm your address by {date}.",
+      "body": "We have sent you a mail with a link. After that day Kadence waits for you to open it."
     }
   },
   "app": {
@@ -425,6 +438,7 @@
       "devices": "Devices",
       "subscription": "Subscription",
       "billing": "Billing",
+      "prices": "Prices",
       "training": "Training",
       "groups": {
         "you": "You",
@@ -955,6 +969,11 @@
       "body": "All of Kadence in one guide for coaches, riders and parents, with pictures, in Danish. Download it as a PDF, or read it on screen.",
       "open": "Download as PDF",
       "read": "Read the manual on screen"
+    },
+    "prices": {
+      "title": "Prices",
+      "body": "What Kadence costs for a rider alone and for a club, what is free, and how to pay.",
+      "open": "See the prices"
     },
     "knowledge": {
       "title": "About the sport",
@@ -4315,7 +4334,44 @@
     "contents": "Contents",
     "updated": "Written in October 2026. DCU's rules change from season to season, so DCU's own pages always have the last word.",
     "experience": "Experience from the sport",
-    "experienceNote": "No rule says this. It is experience from the sport and our own reading, so take it as good guesses."
+    "experienceNote": "No rule says this. It is experience from the sport and our own reading, so take it as good guesses.",
+    "prices": {
+      "title": "Prices",
+      "intro": "Using Kadence costs a little, so running it and keeping it up are paid for. Everyone gets the same features, and every price is here.",
+      "perYear": "{price} kr. a year",
+      "perMonth": "That is {price} kr. a month.",
+      "vat": "VAT included.",
+      "noVat": "VAT not included.",
+      "perRider": "Up to {included} riders, then {price} kr. per rider a year.",
+      "cards": {
+        "person": "For you who train alone, without a team.",
+        "club": "For the club or the team. The club pays for the riders. Coaches and parents cost nothing."
+      },
+      "included": {
+        "calendar": "The calendar with sessions on the bike and in the gym",
+        "rides": "Rides from FIT files, Wahoo, Garmin and Polar",
+        "checkin": "Daily check-in",
+        "rulle": "Rulle, which rides the session on the smart trainer",
+        "ai": "The AI that proposes, within a budget each month",
+        "files": "{gb} GB for files",
+        "team": "The team's week and all the team's coaches and parents"
+      },
+      "freeTitle": "What is free",
+      "free": {
+        "youth": "Young riders alone, up to and including U19.",
+        "coaches": "Coaches and parents.",
+        "season": "A club's first season, through 30 September."
+      },
+      "trialTitle": "Try it first",
+      "trial": "If you train alone, you get {days, plural, one {# day} other {# days}} free before you pay. A club gets the rest of the season free and then {days, plural, one {# day} other {# days}} to decide.",
+      "trialNone": "Free to get started. There is no trial to keep an eye on.",
+      "payTitle": "How you pay",
+      "pay": "You get an invoice from Haij by mail and pay by bank transfer, a year at a time and in advance. There is no card payment.",
+      "expiry": "If nothing is paid, you can still see everything and take it out. Nothing is deleted for that reason.",
+      "openTitle": "Open source",
+      "open": "The code is open source under AGPL-3.0. A club can run Kadence on its own server and pay nobody anything.",
+      "openLink": "The code is on GitHub."
+    }
   },
   "guides": {
     "hub": {
@@ -5905,6 +5961,32 @@
       "saved": "Saved.",
       "paymentsTitle": "Latest payments",
       "paymentsNone": "No payments have been registered yet."
+    },
+    "prices": {
+      "title": "Prices",
+      "subtitle": "The price table that the price page, the front page, Subscription and Billing read. A change applies from the day you choose, today or later, and the old price stays as history. The AI budget and the file space apply to the workspaces on the plan, unless you gave a workspace its own number under Installation.",
+      "since": "Key {key}. In effect from {date}.",
+      "fields": {
+        "nameDa": "Name in Danish",
+        "nameEn": "Name in English",
+        "price": "Price a year, kr.",
+        "validFrom": "Applies from",
+        "included": "Riders included in the price",
+        "perRider": "Price per rider beyond, kr. a year",
+        "ai": "AI budget, € a month",
+        "files": "File space, GB",
+        "vat": "The price includes VAT"
+      },
+      "example": "{riders} riders: {year} kr. a year, {month} kr. a month",
+      "flat": "{year} kr. a year, {month} kr. a month, whatever the number of riders",
+      "history": "Leave the riders and the price per rider empty if the price does not grow with the riders. If you save several times on the same day, the last one applies.",
+      "otherRows": "Other prices",
+      "earlier": "From {date}: {price} kr. a year",
+      "later": "From {date}, upcoming: {price} kr. a year",
+      "save": "Save the price",
+      "saved": "The price is saved.",
+      "invalid": "Check the numbers. A price can apply from today or later, and the riders and the price per rider are both filled in or neither.",
+      "failed": "The price could not be saved. Try again."
     }
   },
   "mail": {

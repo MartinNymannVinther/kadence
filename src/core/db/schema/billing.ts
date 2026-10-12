@@ -7,6 +7,7 @@ import {
   index,
   integer,
   pgTable,
+  primaryKey,
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
@@ -16,14 +17,15 @@ import { domainId, organizations } from "./foundation";
  * What Kadence costs, as data (docs/adr/0090, drizzle/0052). The
  * installation's own list, without org_id: every role that shows a price
  * reads it, and only the installation's owner changes it, through the
- * database function set_price_plan(). Whole kroner, VAT included unless
+ * database function set_price_plan(), which adds a row from the day the
+ * change takes effect and keeps the older ones (drizzle/0053). Whole kroner, VAT included unless
  * the row says otherwise; the AI budget in micro-euro and the file quota
  * in bytes, as team_settings holds them (ADR 0087, 0089).
  */
 export const pricePlans = pgTable(
   "price_plans",
   {
-    key: text("key").primaryKey(),
+    key: text("key").notNull(),
     nameDa: text("name_da").notNull(),
     nameEn: text("name_en").notNull(),
     priceYearDkk: integer("price_year_dkk").notNull(),
@@ -39,6 +41,9 @@ export const pricePlans = pgTable(
     source: text("source"),
   },
   (t) => [
+    // A plan's price is a row per day it took effect (drizzle/0053): the
+    // latest that has come is today's, the older ones are its history.
+    primaryKey({ columns: [t.key, t.validFrom] }),
     check("price_plans_price", sql`${t.priceYearDkk} >= 0`),
     check("price_plans_per_rider", sql`${t.perRiderDkk} is null or ${t.perRiderDkk} >= 0`),
     check("price_plans_included", sql`${t.includedRiders} is null or ${t.includedRiders} >= 0`),

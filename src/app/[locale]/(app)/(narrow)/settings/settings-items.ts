@@ -14,7 +14,8 @@
  * With BILLING=on (docs/adr/0090) a coach also has "Abonnement", what the
  * workspace pays — under "Holdet", or under "Dig" in a personal workspace —
  * and the installation's owner has "Betaling", every workspace's plan and
- * the payments registered by hand. With it off neither exists.
+ * the payments registered by hand, and "Priser", the price table (S-12b).
+ * With it off none of them exists.
  *
  * In a personal workspace (ADR 0080) the person is their own coach, and
  * there is no team to set up: everything is "Dig" — the training's
@@ -39,6 +40,7 @@ export type SettingsKey =
   | "data"
   | "subscription"
   | "billing"
+  | "prices"
   | "about";
 
 /** The words in settings.nav a tab can be called by: the key's, or "training" for a person's team tab. */
@@ -62,9 +64,11 @@ type Who = {
   billing?: boolean;
 };
 
-/** Where a tab lives; Betaling sits under Installation's own address. */
+/** Where a tab lives; Betaling and Priser sit under Installation's own address. */
 function hrefOf(item: SettingsKey): string {
-  return item === "billing" ? "/settings/installation/billing" : `/settings/${item}`;
+  return item === "billing" || item === "prices"
+    ? `/settings/installation/${item}`
+    : `/settings/${item}`;
 }
 
 export function settingsGroups({
@@ -88,7 +92,12 @@ export function settingsGroups({
     ],
     [
       "installation",
-      [owner && "access", owner && "installation", owner && Boolean(billing) && "billing"],
+      [
+        owner && "access",
+        owner && "installation",
+        owner && Boolean(billing) && "billing",
+        owner && Boolean(billing) && "prices",
+      ],
     ],
     [null, ["about"]],
   ];

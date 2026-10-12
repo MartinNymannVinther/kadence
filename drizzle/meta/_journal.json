@@ -372,6 +372,13 @@
       "when": 1791750500000,
       "tag": "0052_plans_and_payments",
       "breakpoints": true
+    },
+    {
+      "idx": 53,
+      "version": "7",
+      "when": 1791750600000,
+      "tag": "0053_price_history_and_grace",
+      "breakpoints": true
     }
   ]
 }

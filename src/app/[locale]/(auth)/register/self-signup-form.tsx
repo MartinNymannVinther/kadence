@@ -22,6 +22,7 @@ import {
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { registerSelfAction } from "@/core/auth/actions";
+import { UNVERIFIED_DAYS, VERIFY_GRACE_DAYS } from "@/core/auth/verify-days";
 import { Link, useRouter } from "@/i18n/navigation";
 
 const linkClass = "focus-ring font-medium underline-offset-4 hover:underline";
@@ -78,7 +79,8 @@ export function SelfSignupForm() {
       setError(messages[result.error]);
       return;
     }
-    router.push("/verify");
+    // In at once (ADR 0088, amended): the stripe on every page asks for the address.
+    router.push("/today");
     router.refresh();
   }
 
@@ -163,7 +165,9 @@ export function SelfSignupForm() {
               {error}
             </p>
           ) : null}
-          <p className="text-meta text-2sm leading-relaxed">{t("verifyNote")}</p>
+          <p className="text-meta text-2sm leading-relaxed">
+            {t("verifyNote", { grace: VERIFY_GRACE_DAYS, days: UNVERIFIED_DAYS })}
+          </p>
           <Button type="submit" disabled={pending || blocked} className="w-full">
             {pending ? <Loader2 data-slot="icon" className="animate-spin" /> : null}
             {t("submit")}

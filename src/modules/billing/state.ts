@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { cache } from "react";
 import { organizations } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
@@ -14,6 +14,14 @@ import { isPlanState, type PlanState } from "./which-plan";
  * With BILLING=off every workspace is free, whatever its row says, and
  * nothing is read: the installation behaves exactly as it did before
  * there were plans.
+ *
+ * With it on, the plan also carries today's AI budget and file quota of
+ * the price plan the workspace is on (price_plans, drizzle/0053; ADR 0090
+ * amended 12 October 2026). The AI's limits (src/modules/ai/limits.ts) and
+ * the file quota (src/modules/storage/quota.ts) use them where the owner
+ * gave the workspace no number of its own, before the installation's
+ * defaults: the workspace's own number, then its plan's, then the
+ * installation's.
  */
 
 /** The word a write refused for an expired workspace carries, as the quota's carries "quota". */
@@ -26,6 +34,10 @@ export type WorkspacePlan = {
   paidUntil: Date | null;
   freeReason: string | null;
   freeUntil: Date | null;
+  /** The price plan's monthly AI budget in micro-euro; null with billing off or no such plan. */
+  aiBudgetMicro: number | null;
+  /** The price plan's file quota in bytes; null with billing off or no such plan. */
+  fileQuotaBytes: number | null;
 };
 
 const FREE: WorkspacePlan = {
@@ -35,7 +47,14 @@ const FREE: WorkspacePlan = {
   paidUntil: null,
   freeReason: null,
   freeUntil: null,
+  aiBudgetMicro: null,
+  fileQuotaBytes: null,
 };
+
+/** Today's row of the workspace's price plan: its own, or the one its kind gives. */
+const pricePlanNow = sql`price_plan_now(workspace_price_key(${organizations.kind}, ${organizations.pricePlan}))`;
+
+const asNumber = (v: string | number | null) => (v === null ? null : Number(v));
 
 export function billingOn(): boolean {
   return env.BILLING === "on";
@@ -52,6 +71,8 @@ export async function planIn(tx: AppTransaction, orgId: string): Promise<Workspa
       paidUntil: organizations.paidUntil,
       freeReason: organizations.freeReason,
       freeUntil: organizations.freeUntil,
+      aiBudgetMicro: sql<string | null>`(select pp.ai_budget_micro from ${pricePlanNow} pp)`,
+      fileQuotaBytes: sql<string | null>`(select pp.file_quota_bytes from ${pricePlanNow} pp)`,
     })
     .from(organizations)
     .where(eq(organizations.id, orgId))
@@ -64,6 +85,8 @@ export async function planIn(tx: AppTransaction, orgId: string): Promise<Workspa
     paidUntil: row.paidUntil,
     freeReason: row.freeReason,
     freeUntil: row.freeUntil,
+    aiBudgetMicro: asNumber(row.aiBudgetMicro),
+    fileQuotaBytes: asNumber(row.fileQuotaBytes),
   };
 }
 

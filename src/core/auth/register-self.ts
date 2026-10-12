@@ -19,9 +19,10 @@ import { selfSignupHeaders, signupAllowed } from "./signup";
  * Door 2 (docs/adr/0088): a person creates their own workspace — for
  * themselves from 15, or for their child — without an application, on an
  * installation with `SIGNUP=individuals`, which only starts with mail. The
- * account is made, signed in and sent a link to confirm the address; until
- * it is confirmed the person sees /verify and nothing else
- * (verify-first.ts). The two yeses on the form, the terms and the consent
+ * account is made, signed in and sent a link to confirm the address, and
+ * the person is in their workspace at once; a week later, if the address is
+ * still not confirmed, they see /verify and nothing else until it is
+ * (verify-first.ts, ADR 0088 amended 12 October 2026). The two yeses on the form, the terms and the consent
  * to health data, are stored with the version of their words.
  *
  * Framework-free, as the other registrations, so it is tested outside
@@ -141,8 +142,8 @@ export async function registerSelf(
     // A trial, or free for a young rider (docs/adr/0090); nothing while BILLING=off.
     await startPlanQuietly(organization.id, { kind: "personal", birthYear: personal.birthYear });
   } catch (error) {
-    // The account exists and cannot get past /verify without a workspace
-    // that holds its consent; unconfirmed, the sweep takes it in seven
+    // The account exists without a workspace that holds its consent, so it
+    // has no team to act in; unconfirmed, the sweep takes it in thirty
     // days. The person is told to try again.
     await log.error("register-self: workspace not made", {
       requestId: requestIdFrom(requestHeaders),

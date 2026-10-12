@@ -5,9 +5,10 @@ import { ownerAccessSummary } from "@/core/access/summary";
 import { getOrgContext, getSession } from "@/core/auth/session";
 import { teamCount } from "@/core/auth/teams";
 import { featureOn } from "@/core/features";
-import { mustVerifyFirst, VERIFY_PATH } from "@/core/auth/verify-first";
+import { mustVerifyFirst, verifyBy, VERIFY_PATH } from "@/core/auth/verify-first";
 import { redirect } from "@/i18n/navigation";
 import { SIDEBAR_TONE_COOKIE, sidebarToneFrom } from "@/components/common/sidebar-tone";
+import { VerifyStripe } from "@/components/access/verify-stripe";
 import { PlanBannerStripe } from "@/components/billing/plan-banner";
 import { DemoBanner } from "@/components/demo-banner";
 import { SearchProvider } from "@/components/search/search-provider";
@@ -37,11 +38,13 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     redirect({ href: "/login", locale });
     return null;
   }
-  // Door 2: the address first, and nothing else until it is (ADR 0088).
+  // Door 2: in at once, and the address within a week; after that, the
+  // address first and nothing else until it is (ADR 0088, amended).
   if (await mustVerifyFirst(session.user)) {
     redirect({ href: VERIFY_PATH, locale });
     return null;
   }
+  const confirmBy = await verifyBy(session.user);
   if (!session.session.activeOrganizationId) {
     redirect({ href: "/onboarding", locale });
     return null;
@@ -163,6 +166,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         }
       >
         {demo && <DemoBanner />}
+        {/* Door 2's week: confirm the address by this day (ADR 0088). */}
+        {confirmBy && <VerifyStripe by={confirmBy} />}
         {/* Read only, or a trial's last week (docs/adr/0090); nothing while BILLING=off. */}
         {banner && <PlanBannerStripe banner={banner} coach={isCoach} />}
         <MobileHeader userName={session.user.name} userEmail={session.user.email} home={home} />

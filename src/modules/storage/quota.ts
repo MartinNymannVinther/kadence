@@ -3,6 +3,7 @@ import { cache } from "react";
 import { Refused } from "@/core/action";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
 import { env } from "@/core/env";
+import { planIn } from "@/modules/billing/state";
 
 /**
  * How much file a workspace holds and may hold (docs/adr/0087). The
@@ -10,7 +11,8 @@ import { env } from "@/core/env";
  * (drizzle/0051) for any member of it — a rider sees only their own rows
  * under RLS, and the quota is the workspace's — and answers the sum, the
  * quota the owner set, and the workspace's kind, from which the
- * installation's default follows: FILES_QUOTA_CLUB_BYTES for a club,
+ * installation's default follows — or, with BILLING=on, the quota of the
+ * workspace's price plan comes first (docs/adr/0090): FILES_QUOTA_CLUB_BYTES for a club,
  * FILES_QUOTA_PERSONAL_BYTES for one person (Martin's choice, 11 October
  * 2026: 20 GiB and 2 GiB). A quota of 0 is no quota.
  *
@@ -38,15 +40,28 @@ export function defaultQuotaBytes(kind: "club" | "personal"): number | null {
   return value > 0 ? value : null;
 }
 
+/**
+ * The quota the workspace has: its own when the owner set one; else, with
+ * BILLING=on, its price plan's (docs/adr/0090, amended 12 October 2026);
+ * else the installation's default for its kind.
+ */
 export async function fileQuotaIn(tx: AppTransaction): Promise<FileQuota> {
   const result = await tx.execute(
-    sql`select used_bytes, quota_bytes, kind from workspace_file_usage()`,
+    sql`select used_bytes, quota_bytes, kind, app_current_org_id() as org_id
+          from workspace_file_usage()`,
   );
   const row = result.rows[0] as
-    { used_bytes: string | number; quota_bytes: string | number | null; kind: string } | undefined;
+    | {
+        used_bytes: string | number;
+        quota_bytes: string | number | null;
+        kind: string;
+        org_id: string | null;
+      }
+    | undefined;
   const kind = row?.kind === "personal" ? "personal" : "club";
   const own = row?.quota_bytes !== null && row?.quota_bytes !== undefined;
-  const quota = own ? Number(row!.quota_bytes) : defaultQuotaBytes(kind);
+  const planned = !own && row?.org_id ? (await planIn(tx, row.org_id)).fileQuotaBytes : null;
+  const quota = own ? Number(row!.quota_bytes) : (planned ?? defaultQuotaBytes(kind));
   return {
     usedBytes: Number(row?.used_bytes ?? 0),
     quotaBytes: quota !== null && quota > 0 ? quota : null,

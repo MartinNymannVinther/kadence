@@ -74,8 +74,8 @@ type Row = {
 const moment = (v: Date | string | null) =>
   v === null ? null : v instanceof Date ? v : new Date(v);
 
-/** As the owner, with nothing else in the context. */
-function asOwner<T>(userId: string, fn: (tx: AppTransaction) => Promise<T>): Promise<T> {
+/** As the owner, with nothing else in the context; the database functions check the owner again. */
+export function asOwner<T>(userId: string, fn: (tx: AppTransaction) => Promise<T>): Promise<T> {
   return appDb.transaction(async (tx) => {
     await tx.execute(sql`select set_config('app.user_id', ${userId}, true)`);
     return fn(tx);
