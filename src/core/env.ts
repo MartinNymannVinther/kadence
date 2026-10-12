@@ -74,6 +74,13 @@ export const EnvShape = z.object({
   // on Mistral Small. 0 turns budgets off — the honest setting for a
   // self-hoster on Ollama, where a call costs nothing.
   AI_MONTHLY_BUDGET_MICRO: z.coerce.number().int().min(0).max(1_000_000_000_000).default(5_000_000),
+  // How many new rides one person may have stored in an hour, whichever
+  // door they come by: upload, "Hent fra enheden", a share, an upload key
+  // or Rulle (ADR 0019). Each ride is decoded in the request and kept, so
+  // this is what protects the server; "Hent fra enheden" takes this many
+  // in one go and says how many more wait. 60 suits a server shared by
+  // many; a first import of a season's rides goes quicker at 200.
+  UPLOAD_FILES_PER_HOUR: z.coerce.number().int().min(1).max(1000).default(60),
   // An optional emergency roof on model calls in any 24 hours, counted
   // across every workspace (ADR 0009). Off (0) by default since the
   // monthly budget per workspace took over its job (docs/adr/0089): a

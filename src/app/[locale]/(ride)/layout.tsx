@@ -2,6 +2,8 @@ import { getLocale } from "next-intl/server";
 import { getSession } from "@/core/auth/session";
 import { mustVerifyFirst, VERIFY_PATH } from "@/core/auth/verify-first";
 import { redirect } from "@/i18n/navigation";
+import { NewVersionStripe } from "@/components/common/new-version-stripe";
+import { buildInfo } from "@/core/version";
 
 /**
  * Rulle's frame (ADR 0033): the whole screen, with no sidebar and no
@@ -27,6 +29,7 @@ export default async function RideLayout({ children }: { children: React.ReactNo
   }
   return (
     <main id="main" tabIndex={-1} className="bg-background min-h-svh">
+      <NewVersionStripe builtAt={buildInfo.builtAt} />
       {children}
     </main>
   );

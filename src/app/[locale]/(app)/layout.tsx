@@ -11,7 +11,11 @@ import { SIDEBAR_TONE_COOKIE, sidebarToneFrom } from "@/components/common/sideba
 import { VerifyStripe } from "@/components/access/verify-stripe";
 import { PlanBannerStripe } from "@/components/billing/plan-banner";
 import { DemoBanner } from "@/components/demo-banner";
+import { NewVersionStripe } from "@/components/common/new-version-stripe";
+import { buildInfo } from "@/core/version";
 import { SearchProvider } from "@/components/search/search-provider";
+import { UploadLimitProvider } from "@/components/activities/upload-limit";
+import { env } from "@/core/env";
 import { planBanner } from "@/modules/billing/banner";
 import { billingOn, workspacePlan } from "@/modules/billing/plan";
 import { isDemoWorkspace } from "@/modules/demo/service";
@@ -165,6 +169,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           />
         }
       >
+        {/* Kadence updated while this page was open: a reload is all it takes. */}
+        <NewVersionStripe builtAt={buildInfo.builtAt} />
         {demo && <DemoBanner />}
         {/* Door 2's week: confirm the address by this day (ADR 0088). */}
         {confirmBy && <VerifyStripe by={confirmBy} />}
@@ -184,5 +190,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       </SidebarShell>
     </div>
   );
-  return <SearchProvider {...search}>{shell}</SearchProvider>;
+  return (
+    <SearchProvider {...search}>
+      <UploadLimitProvider perHour={env.UPLOAD_FILES_PER_HOUR}>{shell}</UploadLimitProvider>
+    </SearchProvider>
+  );
 }
