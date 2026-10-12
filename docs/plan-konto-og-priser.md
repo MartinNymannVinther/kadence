@@ -297,3 +297,17 @@ S-12a først; S-12b oven på den. Begge på `feat/konto-og-priser`.
    adresse (2.2), eller bekræft først som i dag?
 5. **Kontonummer**: hvilket, og skal det stå på siden for alle eller kun
    efter login?
+
+---
+
+## 9. Martins svar, 12. oktober 2026
+
+1. **Priserne i 3.3: ja.**
+2. **Klubber: første sæson gratis.** Ved godkendelsen af en klub sættes
+   rummet `free` med grunden `first-season` og en dato (sæsonens udgang, 30. september), hvorefter det daglige job flytter det til `trial`
+   med 30 dage, så klubben får en påmindelse og tid til at beslutte sig.
+3. **Udløb: læs og hent ud, intet slettes. Ja.**
+4. **Brug med det samme, lås efter 7 dage uden bekræftet adresse. Ja.**
+5. **Intet kontonummer i Kadence**; det står på fakturaen. Abonnement og
+   mails siger kun, at en faktura kommer fra Haij, og hvad perioden og
+   beløbet er.
