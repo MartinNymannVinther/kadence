@@ -1,13 +1,22 @@
 import { addDaysIso } from "@/core/dates";
 import { CORRIDOR_BAND, COUNTS_TOWARD_DCU_HOURS, seasonStartYear } from "@/modules/dcu";
-import { DCU_2025, type Paradigm, type PlanBasis } from "@/modules/paradigms";
+import {
+  DCU_2025,
+  isSeniorBasis,
+  seniorMonthHours,
+  type Paradigm,
+  type PlanBasis,
+} from "@/modules/paradigms";
 
 /**
  * How much a rider rides against the season plan, in four numbers that
  * mean the same wherever they are shown (ADR 0040):
  *
  * - **DCU**: DCU's hours for the class-year, with the corridor round them
- *   — for a senior, the training profile's (docs/adr/0091);
+ *   — for a senior, the training profile's (docs/adr/0091), and the
+ *   profile's even where the team plans without a paradigm: the profile
+ *   is the adult's own choice, and Kadence's numbers, not DCU's
+ *   (docs/adr/0095);
  * - **Mål** (goal): the coach's own season plan;
  * - **Planlagt** (planned): the bike sessions in the calendar;
  * - **Udført** (done): what was actually ridden.
@@ -46,7 +55,7 @@ export type Volume = {
   done: number;
   /** Done, plus the bike sessions still to ride from today on: where the range is heading. */
   expected: number;
-  /** Whether the team plans by a paradigm (ADR 0049); without, `dcu` is always null. */
+  /** Whether the team plans by a paradigm (ADR 0049); without, `dcu` is null but for a senior's profile (ADR 0095). */
   guided: boolean;
 };
 
@@ -97,7 +106,7 @@ export function volumeOf(input: {
 
 /**
  * The reference side of the four numbers for a range: DCU's hours (or a
- * senior profile's) and the season plan's, each day carrying its month's
+ * senior profile's, with or without the team's paradigm) and the season plan's, each day carrying its month's
  * hours over the month's days. Null where any day's season lacks them.
  */
 export function referenceHours(
@@ -105,16 +114,21 @@ export function referenceHours(
   frameOf: (seasonStartYear: number) => SeasonFrame,
   paradigm: Paradigm | null,
 ): { dcu: number | null; goal: number | null } {
-  let dcu: number | null = paradigm ? 0 : null;
+  // A day's reference: the paradigm's hours, or without one a senior's
+  // profile still (ADR 0095); a youth rider without either has none.
+  const monthHours = (basis: PlanBasis | null, month: number): number | null => {
+    if (!basis) return null;
+    if (paradigm) return paradigm.monthHours(basis, month);
+    return isSeniorBasis(basis) ? seniorMonthHours(basis, month) : null;
+  };
+  let dcu: number | null = 0;
   let goal: number | null = 0;
   for (const day of days(range)) {
     const [year, month] = day.split("-").map(Number) as [number, number];
     const frame = frameOf(seasonStartYear(day));
     const share = 1 / daysInMonth(year, month);
-    dcu =
-      dcu === null || !frame.basis || !paradigm
-        ? null
-        : dcu + paradigm.monthHours(frame.basis, month) * share;
+    const hours: number | null = dcu === null ? null : monthHours(frame.basis, month);
+    dcu = dcu === null || hours === null ? null : dcu + hours * share;
     const planned = frame.goal?.find((m) => m.month === month);
     goal = goal === null || !planned ? null : goal + planned.hours * share;
   }

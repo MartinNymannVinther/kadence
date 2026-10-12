@@ -8,6 +8,7 @@ import { mondayOf } from "@/core/dates";
 import { refreshStaleRaces } from "@/modules/results/refresh";
 import { listRaceResults } from "@/modules/results/service";
 import { volumesFor } from "@/modules/season/volumes";
+import { WeekNoteProvider } from "@/components/training/week-note";
 import { getTeamName } from "@/modules/team/name";
 import { listUnplanned } from "@/modules/training/activities";
 import { listEvents } from "@/modules/training/events";
@@ -100,22 +101,24 @@ export async function WeekView({
           teamName={teamName}
         />
       ) : (
-        <RiderWeek
-          riderId={rider.id}
-          days={days}
-          today={today}
-          sessions={sessions.map(toCard)}
-          activities={unplanned.map(toActivityCard)}
-          events={events}
-          canWrite={canWrite}
-          isCoach={me.isCoach}
-          riders={me.isCoach ? visible : [rider]}
-          templates={templateOptions}
-          query={query}
-          volume={volume}
-          basisLabel={volume?.basis ? basisText(volume.basis, (k, v) => seasonT(k, v)) : null}
-          teamName={teamName}
-        />
+        <WeekNoteProvider volume={volume}>
+          <RiderWeek
+            riderId={rider.id}
+            days={days}
+            today={today}
+            sessions={sessions.map(toCard)}
+            activities={unplanned.map(toActivityCard)}
+            events={events}
+            canWrite={canWrite}
+            isCoach={me.isCoach}
+            riders={me.isCoach ? visible : [rider]}
+            templates={templateOptions}
+            query={query}
+            volume={volume}
+            basisLabel={volume?.basis ? basisText(volume.basis, (k, v) => seasonT(k, v)) : null}
+            teamName={teamName}
+          />
+        </WeekNoteProvider>
       )}
       {teamView && (
         <TeamAttention

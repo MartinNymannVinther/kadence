@@ -25,7 +25,11 @@ import { listComments } from "@/modules/training/comments";
 import { getSession as getPlannedSession } from "@/modules/training/sessions";
 import { clockText } from "@/modules/training/time-place";
 import { readStructure } from "@/modules/workouts/structure";
+import { modelConfigured } from "@/modules/ai/service";
+import { getTeamSettings } from "@/modules/team/settings";
+import { AiComment } from "./ai-comment";
 import { CommentThread } from "./comment-thread";
+import { DeviationInline } from "./deviation-inline";
 import { CompleteForm } from "./complete-form";
 import { DoneSummary } from "./done-summary";
 import { ExportMenu } from "./export-menu";
@@ -40,7 +44,9 @@ import { SendToDeviceButton } from "./send-to-device-button";
  * everything and writes nothing (ADR 0011, 0012). A bike session with
  * steps can be taken to a trainer or head unit as a file, and sent to the
  * rider's connected Wahoo or Garmin by the rider or a coach; the rider can
- * ride it indoors in Rulle, and a coach try it there (ADR 0033).
+ * ride it indoors in Rulle, and a coach try it there (ADR 0033). When it
+ * went off its plan, why stands under its mark; once done, the rider or a
+ * coach may ask the AI for a short comment on it (ADR 0095).
  */
 export async function SessionView({
   ctx,
@@ -92,6 +98,13 @@ export async function SessionView({
       : [];
   const today = todayInCopenhagen();
   const Heading = heading;
+  // The AI's comment: only on a done session, for whoever may write on it,
+  // with a model, and where the AI may read riders' data (ADR 0017, 0095).
+  const aiComment =
+    activity !== null &&
+    canWrite &&
+    (await modelConfigured(ctx)) &&
+    (await getTeamSettings(ctx)).aiOnRiderData;
 
   return (
     <article className="flex min-w-0 flex-col gap-6">
@@ -140,6 +153,7 @@ export async function SessionView({
           />
           {card.groupKey && <Badge variant="outline">{t("group")}</Badge>}
         </div>
+        <DeviationInline ctx={ctx} session={session} activity={activity} today={today} />
       </header>
 
       {card.description && (
@@ -200,6 +214,7 @@ export async function SessionView({
         ) : (
           <p className="text-meta text-2sm">{t("notDoneYet")}</p>
         )}
+        {aiComment && <AiComment sessionId={card.id} />}
       </section>
 
       <section aria-labelledby="session-comments" className="flex flex-col gap-3">

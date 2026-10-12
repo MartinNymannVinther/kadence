@@ -1,6 +1,6 @@
 # ADR 0091: Motionist and Supermotionist — a training profile for an adult, Kadence's own numbers where DCU has none
 
-Status: accepted · Date: 2026-10-12 · Amended by ADR 0092 (Kadence's sessions, programmes and weeks for the profiles; the team's plans, the group's AI week, the builder and a strength series read the profile) · Builds on 0014 (DCU as the default), 0040 (four numbers against the season plan), 0049 (DCU as a choice, the paradigm), 0053 (low intensity first), 0054 (every feature in the demo), 0080 (a person alone) · docs/research/senior-motionister.md
+Status: accepted · Date: 2026-10-12 · Amended by ADR 0092 (Kadence's sessions, programmes and weeks for the profiles; the team's plans, the group's AI week, the builder and a strength series read the profile) and ADR 0095 (the week's reference shows the profile's hours also where the team plans without a paradigm, never "ingen DCU-årgang") · Builds on 0014 (DCU as the default), 0040 (four numbers against the season plan), 0049 (DCU as a choice, the paradigm), 0053 (low intensity first), 0054 (every feature in the demo), 0080 (a person alone) · docs/research/senior-motionister.md
 
 ## Context
 

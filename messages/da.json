@@ -2288,6 +2288,29 @@
       "planned": "Planlagt",
       "unplanned": "Uden plan"
     },
+    "deviation": {
+      "open": "{state}. Se hvorfor",
+      "heading": {
+        "missed": "{sport, select, bike {Ikke kørt} other {Ikke udført}}",
+        "shorter": "Kortere end planlagt",
+        "longer": "Længere end planlagt",
+        "easier": "Lettere end planlagt",
+        "harder": "Hårdere end planlagt"
+      },
+      "fact": {
+        "missed": "Planlagt {planned}. Der er ikke kommet noget ind for passet.",
+        "time": "Planlagt {planned}. {sport, select, bike {Kørt} other {Trænet}} {done}.",
+        "load": "Belastning {done} mod planlagt {planned}.",
+        "intensityHard": "Passet var bygget om zone {zone} med {planned} min der eller over. Turen havde {done} min, mest i zone {most}.",
+        "intensityEasy": "Passet var et roligt pas i zone {zone}. {share} % af turen lå i passets zoner, mest i zone {most}.",
+        "noPlanDetail": "Passet havde kun en varighed, så der var ikke mere at sammenligne med."
+      },
+      "week": {
+        "inside": "Med resten af ugens pas ender ugen inden for {ref, select, dcu {DCU's ramme} other {profilens ramme}}.",
+        "over": "Med resten af ugens pas ender ugen over {ref, select, dcu {DCU's ramme} other {profilens ramme}}.",
+        "under": "Med resten af ugens pas ender ugen under {ref, select, dcu {DCU's ramme} other {profilens ramme}}."
+      }
+    },
     "eventKind": {
       "race": "Løb",
       "exam": "Eksamen",
@@ -3419,6 +3442,16 @@
       "accept": "{count, plural, =0 {Læg valgte i kalenderen} one {Læg det valgte pas i kalenderen} other {Læg # valgte pas i kalenderen}}",
       "again": "Foreslå igen",
       "added": "{count, plural, one {Passet er lagt i kalenderen.} other {# pas er lagt i kalenderen.}}"
+    },
+    "sessionComment": {
+      "ask": "Få en kommentar fra AI'en",
+      "thinking": "AI'en skriver en kommentar …",
+      "title": "Forslag fra AI'en",
+      "body": "En kommentar til passet. Den gemmes kun, hvis du trykker Gem som kommentar.",
+      "save": "Gem som kommentar",
+      "close": "Luk",
+      "saved": "Kommentaren er gemt under passet.",
+      "empty": "AI'en havde ikke noget at skrive om passet. Prøv igen."
     },
     "brief": {
       "ask": "Skriv et resumé",
