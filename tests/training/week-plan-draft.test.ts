@@ -1,5 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { Pool } from "pg";
+import { moveItem } from "@/components/week-plan/move";
+import { fromDraftPayload, toDraftPayload } from "@/components/week-plan/types";
 import { Refused } from "@/core/action";
 import {
   clearWeekPlanDraft,
@@ -16,6 +18,7 @@ import { insertSql, seedPerson } from "../helpers/rows";
  * rider's plan for the same week are kept apart; a rider of another team
  * is no scope; ids that are not the team's riders are left out; the draft
  * is cleared when the week is laid in; and riders and parents are refused.
+ * A session one coach moves to another day is the other coach's read.
  */
 
 const ORG = "org_wpdraft";
@@ -109,6 +112,29 @@ describe("the shared week plan draft", () => {
     expect(Date.parse(saved.updatedAt)).toBeGreaterThan(Date.parse(before!.updatedAt));
     const read = await getWeekPlanDraft(HEAD, TEAM);
     expect(read?.payload.items.map((i) => i.day)).toEqual([5]);
+    expect(read?.by).toEqual({ name: "Mads", me: false });
+  });
+
+  it("carries a session moved to another day to the other coach, the rest untouched", async () => {
+    const week = { monday: "2026-11-16", scope: "team" };
+    const first = await saveWeekPlanDraft(HEAD, {
+      ...week,
+      payload: { riderIds: ["wpdraft_a"], items: [built(1, "Intervaller"), built(3, "Langtur")] },
+    });
+    // The assistant's planner holds the draft, drags Intervaller from Tuesday to Thursday.
+    const shown = fromDraftPayload(first.payload, []);
+    const key = shown.items.find((i) => i.day === 1)!.key;
+    await new Promise((resolve) => setTimeout(resolve, 5));
+    await saveWeekPlanDraft(ASSISTANT, {
+      ...week,
+      payload: toDraftPayload({ ...shown, items: moveItem(shown.items, key, 3) }),
+    });
+    const read = await getWeekPlanDraft(HEAD, week);
+    expect(read?.payload.items.map((i) => [i.day, i.kind === "built" && i.session.title])).toEqual([
+      [3, "Langtur"],
+      [3, "Intervaller"],
+    ]);
+    expect(read?.payload.items[1]).toMatchObject({ startTime: "17:30", meetingPlace: "Klubhuset" });
     expect(read?.by).toEqual({ name: "Mads", me: false });
   });
 

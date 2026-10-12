@@ -12,9 +12,18 @@ import type { SharedDraftState } from "./use-shared-draft";
  * amended 2026-10-07): "Sidst gemt af Mads kl. 14.32", a plain word when
  * someone else's newer draft has just replaced the one shown, and what
  * still works when the server cannot be reached — the plan is kept on
- * this device and shared when the connection is back.
+ * this device and shared when the connection is back. In a personal
+ * workspace there are no other coaches, so the hint does not name them.
  */
-export function DraftStatus({ state, today }: { state: SharedDraftState; today: string }) {
+export function DraftStatus({
+  state,
+  today,
+  personal = false,
+}: {
+  state: SharedDraftState;
+  today: string;
+  personal?: boolean;
+}) {
   const t = useTranslations("weekPlan.draft");
   const locale = useLocale();
   const when = (iso: string) => {
@@ -58,7 +67,15 @@ export function DraftStatus({ state, today }: { state: SharedDraftState; today: 
         ) : (
           <Cloud aria-hidden className="mt-0.5 size-4 shrink-0" />
         )}
-        <span>{offline ? t("offline") : server ? savedBy(server) : t("hint")}</span>
+        <span>
+          {offline
+            ? t("offline")
+            : server
+              ? savedBy(server)
+              : personal
+                ? t("hintPersonal")
+                : t("hint")}
+        </span>
       </p>
     </div>
   );
