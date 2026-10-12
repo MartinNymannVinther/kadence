@@ -15,6 +15,7 @@ import { calendarHref } from "@/components/calendar/href";
 import { accountState } from "@/components/team/account-badge";
 import { ArchiveRider } from "@/components/team/archive-rider";
 import { classText } from "@/components/team/class-text";
+import { SeniorProfile } from "@/components/team/senior-profile";
 import { EraseRider } from "@/components/team/erase-rider";
 import { GuardianList } from "@/components/team/guardian-list";
 import { RaceCard } from "@/components/team/race-card";
@@ -59,14 +60,12 @@ export async function generateMetadata({
 }
 
 /**
- * One rider, for a coach: the week's warnings and the last two weeks of
- * check-ins, the load chart and the weeks' hours against DCU, height
- * through the growth spurt, a ride uploaded on the rider's behalf and the
- * rider's upload keys, if they have any; then the profile, the thresholds
- * the zones are worked out from, the UCI ID and the races read from
- * Cykling Danmark, the rider's own account and invitation, the parents
- * and where their links stand, the way to archive the rider — and,
- * apart, to erase them.
+ * One rider, for a coach: the week's warnings and two weeks of check-ins, the load chart
+ * and the weeks' hours against DCU, height through the growth spurt, a ride uploaded on
+ * the rider's behalf and their upload keys; then the profile, a senior's training profile
+ * (ADR 0091), the thresholds, the UCI ID and the races read from Cykling Danmark, the
+ * rider's account and invitation, the parents and their links, the way to archive the
+ * rider — and, apart, to erase them.
  */
 export default async function RiderPage({ params }: { params: Promise<{ id: string }> }) {
   const ctx = await getOrgContext();
@@ -236,6 +235,7 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
           }}
           classByYear={classText({ ...rider, categoryOverride: null }, today, classes)}
         />
+        <SeniorProfile rider={rider} today={today} />
         <ThresholdsForm
           riderId={rider.id}
           today={today}

@@ -29,7 +29,9 @@ function FlagBadge({ flag }: { flag: Flag }) {
     >
       <Icon aria-hidden className="size-3.5 shrink-0" />
       <span className="sr-only">{severities(flag.severity)}: </span>
-      <span className="truncate">{badges(flag.kind)}</span>
+      <span className="truncate">
+        {badges(flag.kind, { ref: typeof flag.values.ref === "string" ? flag.values.ref : "dcu" })}
+      </span>
     </span>
   );
 }

@@ -7,6 +7,8 @@ import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { seasonStartYear } from "@/modules/dcu";
 import { blockWeeks, previewWeeks, type WeekPreview } from "@/modules/load/blocks";
 import { weeklyTotals } from "@/modules/load/fitness";
+import { withReference } from "@/modules/insight/flag-reference";
+import { referenceOf } from "@/modules/paradigms";
 import { riderClass } from "@/modules/season/class";
 import { requireCoach } from "@/modules/team/access";
 import { teamParadigm } from "@/modules/team/settings";
@@ -96,7 +98,7 @@ export async function previewBlock(ctx: OrgContext, input: ApplyInputT): Promise
           (monday) =>
             klass.basis && paradigm ? paradigm.weeklyCorridor(klass.basis, monday) : null,
           previous,
-        ),
+        ).map((w) => ({ ...w, flags: withReference(w.flags, referenceOf(klass.basis)) })),
       };
     });
   });

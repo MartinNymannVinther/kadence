@@ -1,17 +1,13 @@
 import { addDaysIso } from "@/core/dates";
-import {
-  CORRIDOR_BAND,
-  COUNTS_TOWARD_DCU_HOURS,
-  seasonStartYear,
-  type ClassBasis,
-} from "@/modules/dcu";
-import { DCU_2025, type Paradigm } from "@/modules/paradigms";
+import { CORRIDOR_BAND, COUNTS_TOWARD_DCU_HOURS, seasonStartYear } from "@/modules/dcu";
+import { DCU_2025, type Paradigm, type PlanBasis } from "@/modules/paradigms";
 
 /**
  * How much a rider rides against the season plan, in four numbers that
  * mean the same wherever they are shown (ADR 0040):
  *
- * - **DCU**: DCU's hours for the class-year, with the corridor round them;
+ * - **DCU**: DCU's hours for the class-year, with the corridor round them
+ *   — for a senior, the training profile's (docs/adr/0091);
  * - **Mål** (goal): the coach's own season plan;
  * - **Planlagt** (planned): the bike sessions in the calendar;
  * - **Udført** (done): what was actually ridden.
@@ -29,7 +25,7 @@ export type VolumeRange = { from: string; to: string };
 
 /** What one season knows about a rider: the basis DCU's hours are read for, and the coach's months. */
 export type SeasonFrame = {
-  basis: ClassBasis | null;
+  basis: PlanBasis | null;
   goal: ReadonlyArray<{ month: number; hours: number }> | null;
 };
 
@@ -42,8 +38,8 @@ export type VolumeSession = {
 export type VolumeActivity = { onDate: string; sport: string; seconds: number };
 
 export type Volume = {
-  /** The DCU class-year the range is read for — its first day's season. */
-  basis: ClassBasis | null;
+  /** The DCU class-year or senior profile the range is read for — its first day's season. */
+  basis: PlanBasis | null;
   dcu: { low: number; target: number; high: number } | null;
   goal: number | null;
   planned: number;

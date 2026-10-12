@@ -1,7 +1,7 @@
 import { and, gte, inArray, lte } from "drizzle-orm";
 import { activities, plannedSessions, riders, seasonPlans } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
-import { isClassBasis, seasonStartYear } from "@/modules/dcu";
+import { seasonStartYear } from "@/modules/dcu";
 import { riderClass } from "./class";
 import { SeasonMonthsInput } from "./plans";
 import {
@@ -13,7 +13,7 @@ import {
   type VolumeRange,
   type VolumeSession,
 } from "./volume";
-import type { Paradigm } from "@/modules/paradigms";
+import { isPlanBasis, type Paradigm } from "@/modules/paradigms";
 import { teamParadigm } from "@/modules/team/settings";
 
 /**
@@ -95,7 +95,7 @@ export async function readFor(
       const plan = plans.find((p) => p.riderId === rider.id && p.seasonStartYear === season);
       const months = plan ? SeasonMonthsInput.safeParse(plan.months) : null;
       const frame: SeasonFrame = {
-        basis: plan && isClassBasis(plan.basis) ? plan.basis : riderClass(rider, season).basis,
+        basis: plan && isPlanBasis(plan.basis) ? plan.basis : riderClass(rider, season).basis,
         goal: months?.success ? months.data : null,
       };
       frames.set(season, frame);

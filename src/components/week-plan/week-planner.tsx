@@ -9,7 +9,7 @@ import { dayMonth, weekdayShort } from "@/components/training/day-label";
 import { Button } from "@/components/ui/button";
 import { addDaysIso } from "@/core/dates";
 import { useRouter } from "@/i18n/navigation";
-import type { ClassBasis } from "@/modules/dcu";
+import { isClassBasis } from "@/modules/dcu";
 import type { SharedDraft } from "@/modules/training/week-plan-draft";
 import { ApplyPlan } from "./apply-plan";
 import { DraftStatus } from "./draft-status";
@@ -80,9 +80,10 @@ export function WeekPlanner({
     const date = addDaysIso(monday, day);
     return `${weekdayShort(date, locale)} ${dayMonth(date, locale)}`;
   };
+  // The group's AI draft reads DCU's class-years; a senior's profile is not one (ADR 0091).
   const bases = riders
-    .filter((r) => riderIds.includes(r.id) && r.basis)
-    .map((r) => r.basis as ClassBasis);
+    .filter((r) => riderIds.includes(r.id))
+    .flatMap((r) => (isClassBasis(r.basis) ? [r.basis] : []));
 
   const change = (next: Partial<typeof draft>) => setDraft({ ...draft, ...next });
   /** A whole new week in — empty, last week, a block or the AI — with the old one a press away. */

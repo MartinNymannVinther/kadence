@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { riders, seasonPlans, type RiderRow } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
-import type { ClassBasis } from "@/modules/dcu";
+import { isClassBasis, type ClassBasis } from "@/modules/dcu";
 import { requireCoach } from "@/modules/team/access";
 import { teamParadigm } from "@/modules/team/settings";
 import { riderClass } from "./class";
@@ -14,7 +14,8 @@ import { startingMonths } from "./plans";
  * hours and phases for the rider's own class and year, or empty months
  * when the team plans without DCU (ADR 0049). A rider outside DCU's
  * classes is left for the coach to plan on the rider's own page, where
- * the class is chosen. A plan that exists is never touched. Coaches only.
+ * the class is chosen — a senior too, whose training profile is chosen
+ * there (ADR 0091). A plan that exists is never touched. Coaches only.
  */
 
 export type TeamPlanGaps = {
@@ -35,7 +36,8 @@ async function gaps(tx: AppTransaction, seasonStartYear: number) {
   const withClass: { rider: RiderRow; basis: ClassBasis }[] = [];
   for (const rider of without) {
     const basis = riderClass(rider, seasonStartYear).basis;
-    if (basis) withClass.push({ rider, basis });
+    // A senior's plan is made on their page, where the profile is chosen (ADR 0091).
+    if (isClassBasis(basis)) withClass.push({ rider, basis });
   }
   return { withClass, noClass: without.length - withClass.length };
 }

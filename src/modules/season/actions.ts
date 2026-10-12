@@ -4,6 +4,7 @@ import { z } from "zod";
 import { runAction, STILL_ALLOWED } from "@/core/action";
 import { todayInCopenhagen } from "@/core/dates";
 import { CLASS_BASES } from "@/modules/dcu";
+import { SENIOR_BASES } from "@/modules/paradigms";
 import {
   createSeasonPlan,
   deleteSeasonPlan,
@@ -19,6 +20,8 @@ import { monthsBetween } from "./volume";
 
 const PATHS = ["/season", "/calendar", "/today"];
 const id = z.string().min(1).max(100);
+/** DCU's class-years and the two senior profiles (docs/adr/0091). */
+const basis = z.enum([...CLASS_BASES, ...SENIOR_BASES]);
 
 export async function createSeasonPlanAction(raw: unknown) {
   return runAction(
@@ -26,7 +29,7 @@ export async function createSeasonPlanAction(raw: unknown) {
     z.object({
       riderId: id,
       seasonStartYear: z.number().int().min(2020).max(2100),
-      basis: z.enum(CLASS_BASES).optional(),
+      basis: basis.optional(),
     }),
     (ctx, input) => createSeasonPlan(ctx, input.riderId, input.seasonStartYear, input.basis),
     PATHS,
@@ -59,7 +62,7 @@ export async function saveSeasonMonthsAction(raw: unknown) {
 export async function resetSeasonPlanAction(raw: unknown) {
   return runAction(
     raw,
-    z.object({ planId: id, basis: z.enum(CLASS_BASES) }),
+    z.object({ planId: id, basis }),
     (ctx, input) => resetSeasonPlan(ctx, input.planId, input.basis),
     PATHS,
   );

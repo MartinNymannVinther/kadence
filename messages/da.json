@@ -995,7 +995,7 @@
       },
       "words": {
         "title": "Pas, forløb, program og sæsonplan",
-        "body": "Et pas er én træning i kalenderen, på cyklen eller i styrkerummet. Rytterens uge består af pas. Et forløb er flere ugers pas fra biblioteket, lagt ind fra en mandag hos en eller flere ryttere. Et program er en opskrift på ét styrkepas: øvelser med tegninger og doser, som bliver til et pas, når det lægges i kalenderen. DCU's styrkeprogrammer er noget tredje: en serie pas med progression, hentet ind i biblioteket. Sæsonplanen er timerne måned for måned fra oktober til september, med DCU's tal ved siden af. Planlæg ugen er det sted, træneren lægger en hel uge på én gang."
+        "body": "Et pas er én træning i kalenderen, på cyklen eller i styrkerummet. Rytterens uge består af pas. Et forløb er flere ugers pas fra biblioteket, lagt ind fra en mandag hos en eller flere ryttere. Et program er en opskrift på ét styrkepas: øvelser med tegninger og doser, som bliver til et pas, når det lægges i kalenderen. DCU's styrkeprogrammer er noget tredje: en serie pas med progression, hentet ind i biblioteket. Sæsonplanen er timerne måned for måned fra oktober til september, med DCU's tal ved siden af. En voksen rytter, senior, er motionist eller supermotionist: Kadences egne timer, omkring 5 eller 10 om ugen, for DCU har ingen for voksne. Planlæg ugen er det sted, træneren lægger en hel uge på én gang."
       },
       "overview": {
         "title": "Overblik: trænerens forside",
@@ -1365,7 +1365,7 @@
       "bike": "På cyklen mod sæsonplanen",
       "bikeFor": "På cyklen mod sæsonplanen, {basis}",
       "of": "{done} af {planned} t",
-      "strength": "Styrke: {done} af {planned} pas udført. DCU anbefaler {dcu} om ugen.",
+      "strength": "Styrke: {done} af {planned} pas udført. {ref, select, dcu {DCU anbefaler} motionist {Motionist foreslår} other {Supermotionist foreslår}} {dcu} om ugen.",
       "strengthOwn": "Styrke: {done} af {planned} pas udført."
     },
     "actions": {
@@ -1877,6 +1877,18 @@
       "classAuto": "Efter fødselsår ({class})",
       "senior": "Senior",
       "classHint": "Vælg kun en anden klasse, hvis rytteren fx er rykket op. Afvigelsen fra DCU vises altid."
+    },
+    "trainingProfile": {
+      "title": "Træningsprofil",
+      "body": "Rytteren er senior, og DCU har ingen timer for voksne. Vælg den profil, sæsonplanen og ugens ramme bygger på.",
+      "legend": "Profil",
+      "motionist": "Motionist",
+      "motionistBody": "Omkring 5 timer om ugen, mest rolige ture, et par hårde pas.",
+      "superMotionist": "Supermotionist",
+      "superMotionistBody": "Omkring 10 timer om ugen, bygget op mod sommerens løb og lange ture.",
+      "default": "Motionist er valgt, fordi der ikke er valgt en profil endnu. Du kan skifte når som helst.",
+      "seasonNote": "En sæsonplan, der allerede er lavet, beholder sine timer. Brug \"Fyld ud igen\" på sæsonsiden, hvis den skal bygge på den nye profil.",
+      "saved": "Profilen er gemt."
     },
     "thresholds": {
       "title": "Tærskler",
@@ -2445,6 +2457,7 @@
     "othersCalm": "{count, plural, one {# rytter mere ser ud til at være i balance.} other {# ryttere mere ser ud til at være i balance.}}",
     "modelNote": "Trivselszonerne følger Kolding Talents trivselsmodel fra Team Danmarks forældreguide: gul zone i en periode betyder en snak mellem rytter, forælder og træner inden for 14 dage, og rød zone betyder, at der skal hjælp fra fagfolk ind over. Kadence stiller aldrig en diagnose.",
     "basis": "{category} {year}. år",
+    "basisSenior": "{profile, select, motionist {Motionist} other {Supermotionist}}",
     "severity": {
       "alert": "Vigtigt nu",
       "warn": "Værd at se på",
@@ -2455,11 +2468,11 @@
       "help": "Hjælp fra fagfolk anbefales"
     },
     "flag": {
-      "hours_above_corridor": "Ugen er {hours} timer på cyklen, kørt og planlagt, over DCU's ramme på {high} timer for {klass}.",
-      "hours_below_corridor": "Ugen er {hours} timer på cyklen, kørt og planlagt, under DCU's ramme på mindst {low} timer for {klass}.",
+      "hours_above_corridor": "Ugen er {hours} timer på cyklen, kørt og planlagt, over {ref, select, dcu {DCU's ramme} other {profilens ramme}} på {high} timer for {klass}.",
+      "hours_below_corridor": "Ugen er {hours} timer på cyklen, kørt og planlagt, under {ref, select, dcu {DCU's ramme} other {profilens ramme}} på mindst {low} timer for {klass}.",
       "ramp": "Ugen er {hours} timer på cyklen, {percent} % mere end snittet på {average} timer i de seneste uger. Mere end {limit} % fra uge til uge øger risikoen for skader.",
-      "longest_ride": "Den længste tur i ugen var {hours} timer. DCU anbefaler højst {limitHours} timer eller {limitKm} km for årgangen.",
-      "longest_ride_km": "Den længste tur i ugen var {hours} timer og {km} km. DCU anbefaler højst {limitHours} timer eller {limitKm} km for årgangen.",
+      "longest_ride": "Den længste tur i ugen var {hours} timer. {ref, select, dcu {DCU anbefaler højst {limitHours} timer eller {limitKm} km for årgangen.} other {Profilen {klass} lægger op til højst {limitHours} timer eller {limitKm} km.}}",
+      "longest_ride_km": "Den længste tur i ugen var {hours} timer og {km} km. {ref, select, dcu {DCU anbefaler højst {limitHours} timer eller {limitKm} km for årgangen.} other {Profilen {klass} lægger op til højst {limitHours} timer eller {limitKm} km.}}",
       "strength_spacing": "Styrkepassene {first} og {second} ligger tæt. DCU anbefaler mindst 48 timer imellem.",
       "wellbeing_talk": "Check-ins i gul zone {days, plural, one {# dag} other {# dage}} de seneste tre uger.",
       "wellbeing_help_red": "Et check-in i rød zone de seneste syv dage.",
@@ -2487,8 +2500,8 @@
     "badge": {
       "label": "Opmærksomhedspunkter for {name}: {flags}. Gå til listen.",
       "more": "+{count}",
-      "hours_above_corridor": "Over DCU's ramme",
-      "hours_below_corridor": "Under DCU's ramme",
+      "hours_above_corridor": "Over {ref, select, dcu {DCU's ramme} other {rammen}}",
+      "hours_below_corridor": "Under {ref, select, dcu {DCU's ramme} other {rammen}}",
       "ramp": "Hurtig stigning",
       "longest_ride": "Lang tur",
       "strength_spacing": "Styrkepas tæt",
@@ -2982,7 +2995,7 @@
     "team": {
       "subtitle": "Hver rytters timer på cyklen i denne måned og i sæsonen indtil nu, mod sæsonplanen og DCU.",
       "toDate": "Sæsonen indtil nu",
-      "toDateValue": "Sæsonplan {goal} · lagt ind {planned} t · kørt {done} t · DCU {dcu}",
+      "toDateValue": "Sæsonplan {goal} · lagt ind {planned} t · kørt {done} t · {ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}} {dcu}",
       "empty": "Ingen ryttere at vise."
     },
     "teamPlans": {
@@ -3014,28 +3027,30 @@
     "basisHint": "Rytterens årgang er valgt. Vælg en anden, hvis rytteren skal planlægge ud fra et andet år, fx fordi rytteren er startet sent.",
     "noClass": "DCU har ingen timetal for rytterens klasse i denne sæson, kun for U17 til U23. Vælg en årgang, planen kan starte fra. Bagefter retter du timerne til dine egne, måned for måned.",
     "basis": "{category} {year}. år",
+    "basisSenior": "{profile, select, motionist {Motionist} other {Supermotionist}}",
     "basisNow": "Planen bygger på DCU's timer for {basis}.",
+    "basisNowSenior": "Planen bygger på profilen {basis}: Kadences egne timer for voksne, for DCU har ingen timer for seniorer.",
     "basisOwn": "Holdet planlægger med egne timer. Rytteren er {basis}.",
     "reset": {
-      "button": "Fyld ud igen fra DCU",
-      "title": "Fyld planen ud igen fra DCU?",
-      "body": "Alle måneder får DCU's timer og faser for {basis}. Jeres egne ændringer i månederne forsvinder, men noten til sæsonen bliver.",
+      "button": "Fyld ud igen fra {ref, select, dcu {DCU} other {profilen}}",
+      "title": "Fyld planen ud igen fra {ref, select, dcu {DCU} other {profilen}}?",
+      "body": "Alle måneder får {ref, select, dcu {DCU's timer og faser} other {profilens timer og faser}} for {basis}. Jeres egne ændringer i månederne forsvinder, men noten til sæsonen bliver.",
       "confirm": "Fyld ud igen",
-      "done": "Planen er fyldt ud igen fra DCU."
+      "done": "Planen er fyldt ud igen fra {ref, select, dcu {DCU} other {profilen}}."
     },
     "monthsTitle": "Måned for måned",
     "plan": "Sæsonplan",
-    "dcu": "DCU",
+    "dcu": "{ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}}",
     "scheduled": "Lagt ind",
     "ridden": "Kørt",
     "hours": "{hours} t",
-    "dcuHours": "DCU: {hours} t",
-    "deviationLabel": "Afvigelse fra DCU",
+    "dcuHours": "{ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}}: {hours} t",
+    "deviationLabel": "Afvigelse fra {ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}}",
     "deviation": {
-      "same": "Som DCU",
-      "over": "{hours} t over DCU",
-      "under": "{hours} t under DCU",
-      "breakOver": "DCU holder pause"
+      "same": "Som {ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}}",
+      "over": "{hours} t over {ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}}",
+      "under": "{hours} t under {ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}}",
+      "breakOver": "{ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}} holder pause"
     },
     "phase": {
       "break": "Pause og frit",
@@ -3077,7 +3092,7 @@
     "notePlaceholder": "Fx lejr eller eksamen",
     "planNote": "Note til sæsonen",
     "planNotePlaceholder": "Fx sæsonens mål, eller hvorfor planen afviger fra DCU",
-    "totals": "Sæsonen i alt: sæsonplan {plan} t · lagt ind {scheduled} t · kørt {ridden} t · DCU {dcu} t",
+    "totals": "Sæsonen i alt: sæsonplan {plan} t · lagt ind {scheduled} t · kørt {ridden} t · {ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}} {dcu} t",
     "totalsOwn": "Sæsonen i alt: sæsonplan {plan} t · lagt ind {scheduled} t · kørt {ridden} t",
     "readOnlyNote": "Du kan se planen. Træneren og rytteren kan rette den.",
     "intensity": {
@@ -3110,9 +3125,9 @@
       "planned": "Sæsonplan",
       "scheduled": "Lagt ind",
       "ridden": "Kørt",
-      "dcu": "DCU",
-      "label": "Timer på cyklen pr. måned i sæsonen: sæsonplan, lagt ind, kørt og DCU's timer",
-      "readout": "{month}: sæsonplan {plan} t · lagt ind {scheduled} t · kørt {ridden} t · DCU {dcu} t",
+      "dcu": "{ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}}",
+      "label": "Timer på cyklen pr. måned i sæsonen: sæsonplan, lagt ind, kørt og {ref, select, dcu {DCU's timer} other {profilens timer}}",
+      "readout": "{month}: sæsonplan {plan} t · lagt ind {scheduled} t · kørt {ridden} t · {ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}} {dcu} t",
       "readoutOwn": "{month}: sæsonplan {plan} t · lagt ind {scheduled} t · kørt {ridden} t",
       "hint": "Peg på en måned, eller brug piletasterne, for at se tallene."
     },
@@ -3136,27 +3151,35 @@
       "sourcesTitle": "Kilderne hos DCU",
       "opensElsewhere": "(åbner hos Cykling Danmark)",
       "snapshot": "Kadence har en kopi af tallene fra DCU's dokumenter. Når DCU udgiver nye anbefalinger, bliver tallene opdateret i hånden."
+    },
+    "senior": {
+      "body": "Planen fyldes ud med profilens timer, måned for måned fra oktober til september. Motionist og Supermotionist er Kadences egne tal for voksne, for DCU har ingen timer for seniorer. Bagefter kan du rette alt.",
+      "create": "Opret fra profilen",
+      "created": "Sæsonplanen er lavet ud fra profilen.",
+      "basisHint": "Rytterens profil er valgt. Du kan også vælge den anden profil eller en af DCU's årgange.",
+      "referenceTitle": "Motionist og Supermotionist",
+      "referenceBody": "Timerne er Kadences egne for voksne, for DCU har ingen timer for seniorer. Motionist er omkring 5 timer om ugen og Supermotionist omkring 10, bygget op gennem vinteren og med mest fra maj til august. WHO's anbefalinger for voksne er gulvet, og de norske tal for eliteryttere er loftet. Fordelingen på måneder er Kadences eget skøn. Kun timer på cyklen tæller med."
     }
   },
   "volume": {
     "done": "Kørt",
     "planned": "Lagt ind",
     "goal": "Sæsonplan",
-    "dcu": "DCU",
+    "dcu": "{ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}}",
     "hours": "{hours} t",
     "range": "{low}–{high} t",
     "noGoal": "ingen",
     "noDcu": "ingen DCU-årgang",
-    "said": "Sæsonplan {goal}, lagt ind {planned} t, kørt {done} t, DCU {dcu}.",
+    "said": "Sæsonplan {goal}, lagt ind {planned} t, kørt {done} t, {ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}} {dcu}.",
     "compact": "{done} af {planned} t",
     "goalShort": "Sæsonplan {hours}",
-    "dcuShort": "DCU {low}–{high}",
-    "dcuBreak": "DCU: pause og frit",
+    "dcuShort": "{ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}} {low}–{high}",
+    "dcuBreak": "{ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}}: pause og frit",
     "expected": "Forventet {hours} t på cyklen:",
     "state": {
-      "inside": "inden for DCU's ramme",
-      "over": "over DCU's ramme",
-      "under": "under DCU's ramme"
+      "inside": "inden for {ref, select, dcu {DCU's ramme} other {profilens ramme}}",
+      "over": "over {ref, select, dcu {DCU's ramme} other {profilens ramme}}",
+      "under": "under {ref, select, dcu {DCU's ramme} other {profilens ramme}}"
     },
     "toGoal": {
       "on": "som sæsonplanen",

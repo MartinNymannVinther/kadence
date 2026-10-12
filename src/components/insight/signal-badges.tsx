@@ -26,7 +26,9 @@ export function SignalBadges({
 }) {
   const t = useTranslations("insight.badge");
   const severities = useTranslations("insight.severity");
-  const said = signals.badges.map((b) => `${severities(b.severity)}: ${t(b.kind)}`);
+  const said = signals.badges.map(
+    (b) => `${severities(b.severity)}: ${t(b.kind, { ref: b.ref ?? "dcu" })}`,
+  );
   if (signals.more > 0) said.push(t("more", { count: signals.more }));
 
   const Wrap = asLink ? "a" : "span";
@@ -48,7 +50,7 @@ export function SignalBadges({
           <span
             key={badge.kind}
             aria-hidden
-            title={`${severities(badge.severity)}: ${t(badge.kind)}`}
+            title={`${severities(badge.severity)}: ${t(badge.kind, { ref: badge.ref ?? "dcu" })}`}
             className={cn(
               "inline-flex h-5 max-w-full min-w-0 items-center gap-1 rounded-full px-1.5 text-2xs font-medium",
               asLink && "group-hover:underline",
@@ -56,7 +58,7 @@ export function SignalBadges({
             )}
           >
             <Icon className="size-3 shrink-0" />
-            <span className="truncate">{t(badge.kind)}</span>
+            <span className="truncate">{t(badge.kind, { ref: badge.ref ?? "dcu" })}</span>
           </span>
         );
       })}

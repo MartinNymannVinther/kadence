@@ -75,6 +75,7 @@ export function SeasonPlan({
             ? t("totals", {
                 plan: total(shown.map((m) => m.hours)),
                 dcu: total(plan.dcu),
+                ref: plan.reference,
                 scheduled: total(scheduled.map((r) => r.hours)),
                 ridden: total(ridden.map((r) => r.hours)),
               })
@@ -98,6 +99,7 @@ export function SeasonPlan({
               key={month.month}
               month={month}
               dcu={plan.dcu ? (plan.dcu[i] ?? 0) : null}
+              reference={plan.reference}
               onChange={(next) => setMonths((all) => all.map((m, j) => (j === i ? next : m)))}
             />
           ) : (
@@ -105,6 +107,7 @@ export function SeasonPlan({
               key={month.month}
               month={month}
               dcu={plan.dcu ? (plan.dcu[i] ?? 0) : null}
+              reference={plan.reference}
               ridden={riddenOf(month.month)}
               scheduled={scheduledOf(month.month)}
             />

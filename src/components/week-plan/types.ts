@@ -1,6 +1,6 @@
 import type { TemplateOption } from "@/components/calendar/template-picker";
 import type { DraftValue } from "@/components/workouts/session-draft";
-import type { ClassBasis } from "@/modules/dcu";
+import type { PlanBasis } from "@/modules/paradigms";
 import type { BlockItemInputT } from "@/modules/training/blocks";
 import type { PlanItemInputT } from "@/modules/training/week-plan";
 import type { WeekPlanDraftPayloadT } from "@/modules/training/week-plan-draft";
@@ -23,7 +23,7 @@ export type PlanItem = {
   | { kind: "built"; session: DraftValue }
 );
 
-export type PlanRider = { id: string; name: string; basis: ClassBasis | null };
+export type PlanRider = { id: string; name: string; basis: PlanBasis | null };
 
 /** A block of the library as the planner starts from it: its items on the block's days. */
 export type PlanBlock = { id: string; name: string; weeks: number; items: PlanItemInputT[] };

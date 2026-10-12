@@ -6,6 +6,7 @@ import { monthLong, num } from "@/components/charts/format";
 import { barPath, linearScale, niceTicks } from "@/components/charts/scale";
 import { useHoverIndex } from "@/components/charts/use-hover-index";
 import { useWidth } from "@/components/charts/use-width";
+import type { Reference } from "@/modules/paradigms";
 
 export type SeasonChartMonth = {
   month: number;
@@ -27,10 +28,18 @@ const RIGHT = 8;
  * The season month by month in the four numbers (ADR 0040): the coach's
  * goal as a bar, beside it the hours planned in the calendar as an
  * outline with the hours done filling it, and DCU's hours as a dark tick
- * across each month — the reference the others are read against. A
- * pointer or the arrow keys read a month's four numbers above it.
+ * across each month — the reference the others are read against; for a
+ * senior, the training profile's hours (docs/adr/0091). A pointer or the
+ * arrow keys read a month's four numbers above it.
  */
-export function SeasonChart({ months }: { months: SeasonChartMonth[] }) {
+export function SeasonChart({
+  months,
+  reference = "dcu",
+}: {
+  months: SeasonChartMonth[];
+  /** Whose hours the tick is: DCU's, or a senior's profile's. */
+  reference?: Reference;
+}) {
   const t = useTranslations("season.chart");
   const locale = useLocale();
   const { ref, width } = useWidth<HTMLDivElement>();
@@ -57,7 +66,14 @@ export function SeasonChart({ months }: { months: SeasonChartMonth[] }) {
           { key: "scheduled", label: t("scheduled"), mark: "outline", color: RIDDEN },
           { key: "ridden", label: t("ridden"), mark: "bar", color: RIDDEN },
           ...(guided
-            ? [{ key: "dcu", label: t("dcu"), mark: "tick" as const, color: "var(--foreground)" }]
+            ? [
+                {
+                  key: "dcu",
+                  label: t("dcu", { ref: reference }),
+                  mark: "tick" as const,
+                  color: "var(--foreground)",
+                },
+              ]
             : []),
         ]}
       />
@@ -76,6 +92,7 @@ export function SeasonChart({ months }: { months: SeasonChartMonth[] }) {
                 scheduled: hours(shown.scheduled),
                 dcu: hours(shown.dcu),
                 ridden: hours(shown.ridden),
+                ref: reference,
               })
           : t("hint")}
       </p>
@@ -85,7 +102,7 @@ export function SeasonChart({ months }: { months: SeasonChartMonth[] }) {
           height={PLOT + AXIS}
           viewBox={`0 0 ${width} ${PLOT + AXIS}`}
           role="img"
-          aria-label={t("label")}
+          aria-label={t("label", { ref: reference })}
           className="focus-visible:outline-ring block touch-pan-y rounded-md outline-none focus-visible:outline-2 focus-visible:outline-solid"
           {...hover.handlers}
         >

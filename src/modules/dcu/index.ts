@@ -29,6 +29,7 @@ export {
   CORRIDOR_BAND,
   DCU_HOURS_2025,
   DCU_TOTALS_2025,
+  corridorOf,
   monthHours,
   seasonHours,
   weeklyCorridor,

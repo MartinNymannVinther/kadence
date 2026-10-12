@@ -12,15 +12,16 @@ import { SeasonChart } from "@/components/season/season-chart";
 import { SeasonPlan } from "@/components/season/season-plan";
 import { TeamPlans } from "@/components/season/team-plans";
 import { TeamSeason } from "@/components/season/team-season";
+import { ViewSwitch } from "@/components/season/view-switch";
 import { buttonVariants } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
-import { SegmentedFilter } from "@/components/ui/segmented";
 import { PageHeader } from "@/components/ui/page-header";
 import { getOrgContext } from "@/core/auth/session";
 import { todayInCopenhagen } from "@/core/dates";
 import { Link, redirect } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
-import { monthHours, seasonStartYear, type ClassBasis } from "@/modules/dcu";
+import { seasonStartYear } from "@/modules/dcu";
+import { isSeniorBasis, referenceOf } from "@/modules/paradigms";
 import { intensityWeeks } from "@/modules/season/intensity";
 import { getSeasonPlan, riderClass } from "@/modules/season/plans";
 import { teamPlanGaps } from "@/modules/season/team-plans";
@@ -45,7 +46,9 @@ type Search = Promise<Record<string, string | string[] | undefined>>;
  * coach's `?view=team` shows every rider's month and season so far in the
  * four numbers (ADR 0040), and one press makes a plan for every rider who
  * has none this season. In this season, the weeks around today show
- * how the bike sessions spread over three zones (ADR 0053).
+ * how the bike sessions spread over three zones (ADR 0053). A senior's
+ * plan stands against their training profile's hours, Kadence's own,
+ * and says so (ADR 0091).
  */
 export default async function SeasonPage({ searchParams }: { searchParams: Search }) {
   const ctx = await getOrgContext();
@@ -132,13 +135,14 @@ export default async function SeasonPage({ searchParams }: { searchParams: Searc
       rider: visible.length > 1 ? (query.rider ?? rider.id) : null,
       season: (query.season ?? season) === current ? null : String(query.season ?? season),
     });
-  // DCU's number beside the plan, when the team plans by DCU (ADR 0049).
-  const dcu =
-    plan && plan.guided
-      ? plan.months.map((m) => monthHours(plan.basis as ClassBasis, m.month))
-      : null;
+  // DCU's number beside the plan, when the team plans by DCU (ADR 0049) —
+  // or a senior's profile's (ADR 0091), as the deviations were read.
+  const dcu = plan && plan.guided ? plan.deviations.map((d) => d.dcu) : null;
+  const reference = referenceOf(plan?.basis);
   const guided = plan ? plan.guided : (await getTeamSettings(ctx)).guidance !== "none";
-  const tBasis = (k: "basis", v: Record<string, string | number>) => t(k, v);
+  const tBasis = (k: "basis" | "basisSenior", v: Record<string, string | number>) => t(k, v);
+  const riderBasis = riderClass(rider, season).basis;
+  const senior = guided && (plan ? isSeniorBasis(plan.basis) : isSeniorBasis(riderBasis));
 
   return (
     <div className="flex min-w-0 max-w-4xl flex-col gap-7">
@@ -198,13 +202,21 @@ export default async function SeasonPage({ searchParams }: { searchParams: Searc
                   {t("chart.title")}
                 </h2>
                 <p className="text-meta text-2sm">
-                  {t(guided ? "basisNow" : "basisOwn", { basis: basisText(plan.basis, tBasis) })}
+                  {t(
+                    !guided
+                      ? "basisOwn"
+                      : isSeniorBasis(plan.basis)
+                        ? "basisNowSenior"
+                        : "basisNow",
+                    { basis: basisText(plan.basis, tBasis) },
+                  )}
                 </p>
               </div>
               {canWrite && guided && <ResetPlan planId={plan.id} basis={plan.basis} />}
             </div>
             <div className="border-border bg-card rounded-xl border p-4 shadow-surface sm:p-5">
               <SeasonChart
+                reference={reference}
                 months={plan.months.map((m, i) => ({
                   month: m.month,
                   planned: m.hours,
@@ -221,7 +233,14 @@ export default async function SeasonPage({ searchParams }: { searchParams: Searc
             </h2>
             {!canWrite && <p className="text-meta text-2sm">{t("readOnlyNote")}</p>}
             <SeasonPlan
-              plan={{ id: plan.id, basis: plan.basis, months: plan.months, dcu, note: plan.note }}
+              plan={{
+                id: plan.id,
+                basis: plan.basis,
+                months: plan.months,
+                dcu,
+                reference,
+                note: plan.note,
+              }}
               ridden={ridden}
               scheduled={scheduled}
               canWrite={canWrite}
@@ -233,7 +252,7 @@ export default async function SeasonPage({ searchParams }: { searchParams: Searc
           key={`${rider.id}-${season}`}
           riderId={rider.id}
           seasonStartYear={season}
-          riderBasis={riderClass(rider, season).basis}
+          riderBasis={riderBasis}
           guided={guided}
         />
       ) : (
@@ -241,10 +260,27 @@ export default async function SeasonPage({ searchParams }: { searchParams: Searc
       )}
 
       {intensity && (
-        <IntensityWeeks data={intensity} today={today} guided={guided} isCoach={me.isCoach} />
+        <IntensityWeeks
+          data={intensity}
+          today={today}
+          guided={guided && !senior}
+          isCoach={me.isCoach}
+        />
       )}
 
-      {guided && (
+      {senior && (
+        <section
+          aria-labelledby="season-reference"
+          className="border-border flex flex-col gap-1 border-t pt-6"
+        >
+          <h2 id="season-reference" className="text-lg font-semibold">
+            {t("senior.referenceTitle")}
+          </h2>
+          <p className="text-meta text-2sm leading-relaxed">{t("senior.referenceBody")}</p>
+        </section>
+      )}
+
+      {guided && !senior && (
         <section
           aria-labelledby="season-reference"
           className="border-border flex flex-col gap-4 border-t pt-6"
@@ -259,19 +295,5 @@ export default async function SeasonPage({ searchParams }: { searchParams: Searc
         </section>
       )}
     </div>
-  );
-}
-
-/** The coach's two ways to look at the season: the whole team, or one rider's plan. */
-async function ViewSwitch({ team, riderHref }: { team: boolean; riderHref: string }) {
-  const view = await getTranslations("season.view");
-  return (
-    <SegmentedFilter
-      className="self-start"
-      items={[
-        { key: "rider", label: view("rider"), href: riderHref, active: !team },
-        { key: "team", label: view("team"), href: "/season?view=team", active: team },
-      ]}
-    />
   );
 }

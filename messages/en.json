@@ -995,7 +995,7 @@
       },
       "words": {
         "title": "Session, block, programme and season plan",
-        "body": "A session is one training in the calendar, on the bike or in the gym. A rider's week is made of sessions. A block is several weeks of sessions from the library, applied from a Monday for one or more riders. A programme is a recipe for one strength session: exercises with drawings and doses, which becomes a session when it is put in the calendar. DCU's strength programmes are a third thing: a series of sessions with a progression, fetched into the library. The season plan is the hours month by month from October to September, with DCU's numbers beside them. Plan the week is where the coach lays a whole week at once."
+        "body": "A session is one training in the calendar, on the bike or in the gym. A rider's week is made of sessions. A block is several weeks of sessions from the library, applied from a Monday for one or more riders. A programme is a recipe for one strength session: exercises with drawings and doses, which becomes a session when it is put in the calendar. DCU's strength programmes are a third thing: a series of sessions with a progression, fetched into the library. The season plan is the hours month by month from October to September, with DCU's numbers beside them. An adult rider, a senior, is a motionist or a supermotionist: Kadence's own hours, about 5 or 10 a week, since DCU has none for adults. Plan the week is where the coach lays a whole week at once."
       },
       "overview": {
         "title": "Overview: the coach's front page",
@@ -1365,7 +1365,7 @@
       "bike": "On the bike against the season plan",
       "bikeFor": "On the bike against the season plan, {basis}",
       "of": "{done} of {planned} h",
-      "strength": "Strength: {done} of {planned, plural, one {# session} other {# sessions}} done. DCU recommends {dcu} a week.",
+      "strength": "Strength: {done} of {planned, plural, one {# session} other {# sessions}} done. {ref, select, dcu {DCU recommends} motionist {Motionist suggests} other {Supermotionist suggests}} {dcu} a week.",
       "strengthOwn": "Strength: {done} of {planned, plural, one {# session} other {# sessions}} done."
     },
     "actions": {
@@ -1877,6 +1877,18 @@
       "classAuto": "By birth year ({class})",
       "senior": "Senior",
       "classHint": "Only choose another class if the rider has, say, moved up. The deviation from DCU is always shown."
+    },
+    "trainingProfile": {
+      "title": "Training profile",
+      "body": "The rider is a senior, and DCU has no hours for adults. Choose the profile the season plan and the week's range build on.",
+      "legend": "Profile",
+      "motionist": "Motionist",
+      "motionistBody": "About 5 hours a week, mostly easy rides, a couple of hard sessions.",
+      "superMotionist": "Supermotionist",
+      "superMotionistBody": "About 10 hours a week, built up towards summer's races and long rides.",
+      "default": "Motionist is chosen because no profile has been chosen yet. You can change it at any time.",
+      "seasonNote": "A season plan already made keeps its hours. Use \"Fill again\" on the season page if it should build on the new profile.",
+      "saved": "The profile is saved."
     },
     "thresholds": {
       "title": "Thresholds",
@@ -2445,6 +2457,7 @@
     "othersCalm": "{count, plural, one {# more rider looks to be in balance.} other {# more riders look to be in balance.}}",
     "modelNote": "The wellbeing zones follow Kolding Talent's wellbeing model from Team Danmark's guide for parents: yellow for a while means a conversation between rider, parent and coach within 14 days, and red means professionals should be involved. Kadence never diagnoses.",
     "basis": "{category} year {year}",
+    "basisSenior": "{profile, select, motionist {Motionist} other {Supermotionist}}",
     "severity": {
       "alert": "Important now",
       "warn": "Worth a look",
@@ -2455,11 +2468,11 @@
       "help": "Professional help is recommended"
     },
     "flag": {
-      "hours_above_corridor": "The week is {hours} h on the bike, ridden and planned, above DCU's range of {high} h for {klass}.",
-      "hours_below_corridor": "The week is {hours} h on the bike, ridden and planned, below DCU's range of at least {low} h for {klass}.",
+      "hours_above_corridor": "The week is {hours} h on the bike, ridden and planned, above {ref, select, dcu {DCU's range} other {the profile's range}} of {high} h for {klass}.",
+      "hours_below_corridor": "The week is {hours} h on the bike, ridden and planned, below {ref, select, dcu {DCU's range} other {the profile's range}} of at least {low} h for {klass}.",
       "ramp": "The week is {hours} h on the bike, {percent} % more than the average of {average} h in the last weeks. More than {limit} % from week to week raises the risk of injury.",
-      "longest_ride": "The longest ride this week was {hours} h. DCU recommends at most {limitHours} h or {limitKm} km for the class.",
-      "longest_ride_km": "The longest ride this week was {hours} h and {km} km. DCU recommends at most {limitHours} h or {limitKm} km for the class.",
+      "longest_ride": "The longest ride this week was {hours} h. {ref, select, dcu {DCU recommends at most {limitHours} h or {limitKm} km for the class.} other {The {klass} profile suggests at most {limitHours} h or {limitKm} km.}}",
+      "longest_ride_km": "The longest ride this week was {hours} h and {km} km. {ref, select, dcu {DCU recommends at most {limitHours} h or {limitKm} km for the class.} other {The {klass} profile suggests at most {limitHours} h or {limitKm} km.}}",
       "strength_spacing": "The strength sessions on {first} and {second} are close together. DCU recommends at least 48 hours between them.",
       "wellbeing_talk": "{days, plural, one {Check-ins in the yellow zone on # day in the last three weeks.} other {Check-ins in the yellow zone on # days in the last three weeks.}}",
       "wellbeing_help_red": "A check-in in the red zone in the last seven days.",
@@ -2487,8 +2500,8 @@
     "badge": {
       "label": "Points of attention for {name}: {flags}. Go to the list.",
       "more": "+{count}",
-      "hours_above_corridor": "Over DCU's range",
-      "hours_below_corridor": "Under DCU's range",
+      "hours_above_corridor": "Over {ref, select, dcu {DCU's range} other {the range}}",
+      "hours_below_corridor": "Under {ref, select, dcu {DCU's range} other {the range}}",
       "ramp": "Steep rise",
       "longest_ride": "Long ride",
       "strength_spacing": "Strength close",
@@ -2982,7 +2995,7 @@
     "team": {
       "subtitle": "Each rider's hours on the bike this month and in the season so far, against the season plan and DCU.",
       "toDate": "The season so far",
-      "toDateValue": "Season plan {goal} · scheduled {planned} h · ridden {done} h · DCU {dcu}",
+      "toDateValue": "Season plan {goal} · scheduled {planned} h · ridden {done} h · {ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}} {dcu}",
       "empty": "No riders to show."
     },
     "teamPlans": {
@@ -3014,28 +3027,30 @@
     "basisHint": "The rider's class is chosen. Pick another if the rider should plan from another year, for example because they started late.",
     "noClass": "DCU has no hours for the rider's class this season, only for U17 to U23. Choose a class the plan can start from. Afterwards you change the hours to your own, month by month.",
     "basis": "{category} year {year}",
+    "basisSenior": "{profile, select, motionist {Motionist} other {Supermotionist}}",
     "basisNow": "The plan builds on DCU's hours for {basis}.",
+    "basisNowSenior": "The plan builds on the {basis} profile: Kadence's own hours for adults, since DCU has none for seniors.",
     "basisOwn": "The team plans with its own hours. The rider is {basis}.",
     "reset": {
-      "button": "Fill again from DCU",
-      "title": "Fill the plan again from DCU?",
-      "body": "Every month gets DCU's hours and phases for {basis}. Your own changes to the months disappear, but the season's note stays.",
+      "button": "Fill again from {ref, select, dcu {DCU} other {the profile}}",
+      "title": "Fill the plan again from {ref, select, dcu {DCU} other {the profile}}?",
+      "body": "Every month gets {ref, select, dcu {DCU's hours and phases} other {the profile's hours and phases}} for {basis}. Your own changes to the months disappear, but the season's note stays.",
       "confirm": "Fill again",
-      "done": "The plan is filled again from DCU."
+      "done": "The plan is filled again from {ref, select, dcu {DCU} other {the profile}}."
     },
     "monthsTitle": "Month by month",
     "plan": "Season plan",
-    "dcu": "DCU",
+    "dcu": "{ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}}",
     "scheduled": "Scheduled",
     "ridden": "Ridden",
     "hours": "{hours} h",
-    "dcuHours": "DCU: {hours} h",
-    "deviationLabel": "Deviation from DCU",
+    "dcuHours": "{ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}}: {hours} h",
+    "deviationLabel": "Deviation from {ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}}",
     "deviation": {
-      "same": "As DCU",
-      "over": "{hours} h over DCU",
-      "under": "{hours} h under DCU",
-      "breakOver": "DCU takes a break"
+      "same": "As {ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}}",
+      "over": "{hours} h over {ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}}",
+      "under": "{hours} h under {ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}}",
+      "breakOver": "{ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}} takes a break"
     },
     "phase": {
       "break": "Break and free riding",
@@ -3077,7 +3092,7 @@
     "notePlaceholder": "E.g. a camp or exams",
     "planNote": "Note for the season",
     "planNotePlaceholder": "E.g. the season's goals, or why the plan differs from DCU",
-    "totals": "The season in total: season plan {plan} h · scheduled {scheduled} h · ridden {ridden} h · DCU {dcu} h",
+    "totals": "The season in total: season plan {plan} h · scheduled {scheduled} h · ridden {ridden} h · {ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}} {dcu} h",
     "totalsOwn": "The season in total: season plan {plan} h · scheduled {scheduled} h · ridden {ridden} h",
     "readOnlyNote": "You can see the plan. The coach and the rider can change it.",
     "intensity": {
@@ -3110,9 +3125,9 @@
       "planned": "Season plan",
       "scheduled": "Scheduled",
       "ridden": "Ridden",
-      "dcu": "DCU",
-      "label": "Hours on the bike per month in the season: season plan, scheduled, ridden and DCU's hours",
-      "readout": "{month}: season plan {plan} h · scheduled {scheduled} h · ridden {ridden} h · DCU {dcu} h",
+      "dcu": "{ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}}",
+      "label": "Hours on the bike per month in the season: season plan, scheduled, ridden and {ref, select, dcu {DCU's hours} other {the profile's hours}}",
+      "readout": "{month}: season plan {plan} h · scheduled {scheduled} h · ridden {ridden} h · {ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}} {dcu} h",
       "readoutOwn": "{month}: season plan {plan} h · scheduled {scheduled} h · ridden {ridden} h",
       "hint": "Point at a month, or use the arrow keys, to see the numbers."
     },
@@ -3136,27 +3151,35 @@
       "sourcesTitle": "The sources at DCU",
       "opensElsewhere": "(opens at Cycling Denmark)",
       "snapshot": "Kadence keeps a copy of the numbers from DCU's documents. When DCU publishes new recommendations, the numbers are updated by hand."
+    },
+    "senior": {
+      "body": "The plan is filled with the profile's hours, month by month from October to September. Motionist and Supermotionist are Kadence's own numbers for adults, since DCU has no hours for seniors. Afterwards you can change anything.",
+      "create": "Create from the profile",
+      "created": "The season plan is made from the profile.",
+      "basisHint": "The rider's profile is chosen. You can also pick the other profile or one of DCU's class-years.",
+      "referenceTitle": "Motionist and Supermotionist",
+      "referenceBody": "The hours are Kadence's own for adults, since DCU has no hours for seniors. Motionist is about 5 hours a week and Supermotionist about 10, built through the winter with the most from May to August. WHO's recommendations for adults are the floor, and the Norwegian figures for elite riders the ceiling. The split over the months is Kadence's own judgement. Only hours on the bike count."
     }
   },
   "volume": {
     "done": "Ridden",
     "planned": "Scheduled",
     "goal": "Season plan",
-    "dcu": "DCU",
+    "dcu": "{ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}}",
     "hours": "{hours} h",
     "range": "{low}–{high} h",
     "noGoal": "none",
     "noDcu": "no DCU class",
-    "said": "Season plan {goal}, scheduled {planned} h, ridden {done} h, DCU {dcu}.",
+    "said": "Season plan {goal}, scheduled {planned} h, ridden {done} h, {ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}} {dcu}.",
     "compact": "{done} of {planned} h",
     "goalShort": "Season plan {hours}",
-    "dcuShort": "DCU {low}–{high}",
-    "dcuBreak": "DCU: break and free riding",
+    "dcuShort": "{ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}} {low}–{high}",
+    "dcuBreak": "{ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}}: break and free riding",
     "expected": "Expected {hours} h on the bike:",
     "state": {
-      "inside": "inside DCU's range",
-      "over": "above DCU's range",
-      "under": "below DCU's range"
+      "inside": "inside {ref, select, dcu {DCU's range} other {the profile's range}}",
+      "over": "above {ref, select, dcu {DCU's range} other {the profile's range}}",
+      "under": "below {ref, select, dcu {DCU's range} other {the profile's range}}"
     },
     "toGoal": {
       "on": "in line with the season plan",
