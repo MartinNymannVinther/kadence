@@ -1,6 +1,6 @@
 "use client";
 
-import { useId } from "react";
+import { useId, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -9,6 +9,10 @@ import { cn } from "@/lib/utils";
  * floor), so a coach can clear a field and write a new number without the
  * field fighting back. An optional number — a cadence — is cleared
  * through `onClear`.
+ *
+ * With a unit inside the field the browser's spinner is hidden, so the
+ * unit never sits on top of its arrows; the keyboard's arrows still step.
+ * `labelAddon` sits beside the label — an explanation's button.
  */
 export function NumberField({
   label,
@@ -20,6 +24,7 @@ export function NumberField({
   suffix,
   className,
   hideLabel = false,
+  labelAddon,
 }: {
   label: string;
   /** Null shows an empty field. */
@@ -32,13 +37,26 @@ export function NumberField({
   suffix?: string;
   className?: string;
   hideLabel?: boolean;
+  labelAddon?: ReactNode;
 }) {
   const id = useId();
   return (
     <div className={cn("flex min-w-0 flex-col gap-1", className)}>
-      <label htmlFor={id} className={cn("text-label text-xs font-medium", hideLabel && "sr-only")}>
-        {label}
-      </label>
+      {labelAddon && !hideLabel ? (
+        <div className="flex min-h-5 items-center gap-1">
+          <label htmlFor={id} className="text-label text-xs font-medium">
+            {label}
+          </label>
+          {labelAddon}
+        </div>
+      ) : (
+        <label
+          htmlFor={id}
+          className={cn("text-label text-xs font-medium", hideLabel && "sr-only")}
+        >
+          {label}
+        </label>
+      )}
       <div className="relative">
         <input
           id={id}
@@ -54,7 +72,8 @@ export function NumberField({
           }}
           className={cn(
             "border-input bg-card focus-visible:border-ring focus-visible:ring-ring/18 h-11 w-full min-w-0 rounded-md border px-2.5 text-base tabular-nums outline-none focus-visible:ring-3 sm:h-9 sm:text-sm",
-            suffix && "pr-12",
+            suffix &&
+              "[appearance:textfield] pr-16 [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none",
           )}
         />
         {suffix && (
