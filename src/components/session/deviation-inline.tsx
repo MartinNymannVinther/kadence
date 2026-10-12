@@ -4,7 +4,7 @@ import {
   type DeviationT,
   type DurationT,
 } from "@/components/training/deviation-text";
-import { weekNoteOf } from "@/components/training/week-note";
+import { weekNoteOf } from "@/components/training/week-note-of";
 import { addDaysIso, mondayOf } from "@/core/dates";
 import type { OrgContext } from "@/core/db/tenant";
 import { deviation, type ZoneSecondsBySource } from "@/modules/load";
