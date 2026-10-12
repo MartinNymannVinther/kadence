@@ -159,6 +159,10 @@ Kadence har ingen styrkeprogrammer for voksne. DCU's U23-program ligger i
 biblioteket og kan bruges som indhold. Det er skrevet til landsholdsryttere,
 og en voksen motionist bør starte let og lægge teknik før belastning.
 
+Tilføjet samme dag med ADR 0092: Kadence har nu sine egne
+styrkeprogrammer, pas og færdige uger for begge profiler. Se
+docs/research/motionist-pas-og-programmer.md.
+
 ## 4. Hvad Kadence ikke gør for voksne
 
 - **DCU's løbsregler** (distancer, gearing, etapedage) gælder U17–U23 og
