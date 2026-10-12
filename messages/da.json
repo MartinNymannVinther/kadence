@@ -1484,6 +1484,8 @@
       },
       "close": "{first} og {second} ligger under 48 timer fra hinanden. DCU anbefaler mindst 48 timer mellem styrkepas.",
       "tooManyStrength": "Fra uge {week} ({date}) anbefaler DCU {max} styrkepas om ugen. Serien har {perWeek}.",
+      "closeProfile": "{first} og {second} ligger under 48 timer fra hinanden. Hold mindst 48 timer mellem to styrkepas.",
+      "tooManyStrengthProfile": "Fra uge {week} ({date}) foreslår {profile, select, motionist {Motionist} other {Supermotionist}} {max} styrkepas om ugen. Serien har {perWeek}.",
       "hint": "Hvert pas kan stadig flyttes og rettes for sig. \"Ret\" og \"Slet\" kan også tage resten af serien.",
       "preview": "Se timerne mod sæsonplanen"
     },
@@ -1598,6 +1600,8 @@
       "wish": "Hvad skal ugen handle om?",
       "wishPlaceholder": "Fx rolig uge før løbet søndag, eller to korte intervalpas og ét styrkepas",
       "hint": "AI'en får DCU's timer for årgangen, holdets egne begivenheder og biblioteket. Den får ingen rytterdata. Forslaget lander i planen, hvor du kan rette det.",
+      "hintSenior": "AI'en får timerne fra træningsprofilen, holdets egne begivenheder og biblioteket. Den får ingen rytterdata. Forslaget lander i planen, hvor du kan rette det.",
+      "basisOrProfile": "Årgang eller profil",
       "ask": "Foreslå ugen",
       "close": "Luk",
       "thinking": "Tænker … det kan tage lidt tid.",
@@ -1679,6 +1683,7 @@
     "showArchived": "Vis også arkiverede",
     "hideArchived": "Skjul arkiverede",
     "dcuSubtitle": "DCU's program. Det kan ikke rettes her, men du kan kopiere det og tilpasse kopien.",
+    "kadenceSubtitle": "Kadences eget pas til voksne på en træningsprofil. Det kan ikke rettes her, men du kan kopiere det og tilpasse kopien.",
     "coachOnlyTitle": "Kun trænere laver skabeloner",
     "coachOnlyBody": "Du kan stadig lægge bibliotekets pas i din egen kalender.",
     "actions": {
@@ -1708,6 +1713,10 @@
     "dcu": {
       "install": "Hent DCU's styrkeprogrammer",
       "done": "DCU's programmer er i biblioteket: {installed} nye, {updated} opdateret."
+    },
+    "kadence": {
+      "install": "Hent motionistpas",
+      "done": "Kadences pas, programmer og forløb til voksne er i biblioteket: {installed} nye, {updated} opdateret."
     },
     "blocks": {
       "title": "Forløb",
@@ -3002,6 +3011,7 @@
       "missing": "{count, plural, one {# rytter har ingen sæsonplan for {season} endnu.} other {# ryttere har ingen sæsonplan for {season} endnu.}}",
       "body": "Hver plan fyldes ud med DCU's timer og faser for rytterens årgang. Du kan rette den bagefter.",
       "bodyOwn": "Holdet planlægger med egne timer, så planerne starter tomme, og du skriver selv timerne ind.",
+      "bodySeniors": "Voksne får timerne fra deres træningsprofil, Motionist hvis der ikke er valgt nogen.",
       "noClass": "{count, plural, one {# rytter er ikke i en af DCU's årgange. Den plan laver du på rytterens egen side, hvor du vælger årgangen.} other {# ryttere er ikke i en af DCU's årgange. De planer laver du på rytterens egen side, hvor du vælger årgangen.}}",
       "button": "Opret sæsonplaner for alle uden en plan",
       "created": "{count, plural, =0 {Der var ingen planer at lave.} one {# sæsonplan er lavet.} other {# sæsonplaner er lavet.}}"
@@ -3233,6 +3243,7 @@
       },
       "category": "Årgang",
       "categoryNone": "Ingen bestemt",
+      "categoryOrProfile": "Årgang eller profil",
       "refine": "Ret i det pas, der står nu",
       "hint": "Vælger du årgang, holder forslaget sig til DCU's anbefalinger for den. Der går ingen rytterdata med, og intet gemmes, før du gemmer passet.",
       "ruleHint": "Kortform som \"3x10 min Z4 / 5 min pause\" læses af reglerne uden sprogmodel.",
@@ -3244,7 +3255,8 @@
       "use": "Brug forslaget",
       "used": "Forslaget ligger nu i passet.",
       "undo": "Fortryd",
-      "longestRide": "Passet er længere end DCU's længste træningstur for {category} på {hours} timer. Det er din beslutning."
+      "longestRide": "Passet er længere end DCU's længste træningstur for {category} på {hours} timer. Det er din beslutning.",
+      "longestRideProfile": "Passet er længere end den længste tur, Kadence foreslår for {profile, select, motionist {Motionist} other {Supermotionist}}, på {hours} timer. Det er din beslutning."
     },
     "week": {
       "open": "Foreslå ugen",
@@ -3859,6 +3871,7 @@
       "trial": "Du prøver passet med rytterens watt. En prøvetur gemmes ikke.",
       "fromTeam": "Pas fra holdets bibliotek",
       "fromDcu": "Standardpas fra DCU",
+      "fromKadence": "Et pas fra Kadence til voksne",
       "whenNote": "DCU sætter det: {when}. Det er tænkt som en rettesnor.",
       "source": "Kilde: {source}. Opvarmning, pauser og nedkørsel er Kadences.",
       "pickOther": "Vælg et andet pas",
@@ -3868,6 +3881,11 @@
       "team": "Holdets pas",
       "dcu": "DCU's standardpas",
       "dcuNote": "Bygget på DCU's intervalark og eksempeluger. Din træner kender din plan bedst.",
+      "kadence": "Kadences pas til voksne",
+      "kadenceNote": "Kadences egne pas til din træningsprofil. Kilden står under hvert pas.",
+      "kadenceWhen": "Hvornår: {when}",
+      "kadenceWhenNote": "Hvornår i sæsonen: {when}. Tænkt som en rettesnor.",
+      "kadenceSource": "Kilde: {source}.",
       "when": "DCU: {when}",
       "freeMeta": "Så længe du vil, uden intervaller"
     },
@@ -5471,6 +5489,11 @@
         "how": "Stå med forfoden på kanten af et trin og en hånd mod væggen. Hold benene strakte, gå op på tæerne og sænk hælene langsomt.",
         "why": "Træner læggene, som er med i hvert eneste pedaltråd."
       },
+      "squatJump": {
+        "name": "Squathop",
+        "how": "Stå med fødderne i hoftebredde. Gå ned i en kvart squat og sving armene bagud. Hop op med armene frem, og land blødt på forfoden med bøjede knæ.",
+        "why": "Hop belaster knoglerne på en måde, cyklen ikke gør. Start med små hop."
+      },
       "pushUp": {
         "name": "Armstrækninger",
         "how": "Sæt hænderne i gulvet lidt bredere end skuldrene og hold kroppen lige. Sænk brystet mod gulvet med albuerne lidt ind mod kroppen, og pres dig op igen. Er det for hårdt, så støt på knæene.",
@@ -5585,6 +5608,10 @@
       "bandsKettlebell": {
         "name": "Elastikker og kettlebell",
         "description": "Hofte, ben og skuldre med elastikker og en kettlebell. Varm op med 8 minutter på cyklen og 20 squat. Start let, og lad hoften gøre arbejdet i kettlebell-svinget. Hold mindst 48 timer mellem to styrkepas."
+      },
+      "motionistHome": {
+        "name": "Motionist styrke hjemme",
+        "description": "Hele kroppen hjemme med kropsvægt og en elastik, og hop for knoglerne. Omkring 35 minutter. To gange om ugen om vinteren, en gang resten af året. Start let, og hold mindst 48 timer mellem to styrkepas."
       }
     },
     "library": {

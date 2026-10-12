@@ -15,14 +15,16 @@ import type { Picked } from "./choices";
 
 /**
  * Choosing what to ride (ADR 0035): today's planned sessions first, then
- * the team's own from the library, then DCU's — each of those with DCU's
- * words for when it belongs in a season — and a ride without a session.
+ * the team's own from the library, for an adult Kadence's own for their
+ * profile (ADR 0092), then DCU's — each of those last with its words for
+ * when it belongs in a season — and a ride without a session.
  */
 export function SessionPicker({
   open,
   onOpenChange,
   today,
   team,
+  kadence,
   dcu,
   chosen,
   onChoose,
@@ -31,6 +33,7 @@ export function SessionPicker({
   onOpenChange: (open: boolean) => void;
   today: Picked[];
   team: Picked[];
+  kadence: Picked[];
   dcu: Picked[];
   chosen: string | null;
   onChoose: (id: string | null) => void;
@@ -47,7 +50,7 @@ export function SessionPicker({
       chosen={chosen === p.id}
       title={p.title}
       meta={durationText(p.minutes, duration)}
-      note={p.when ? t("when", { when: p.when }) : null}
+      note={p.when ? t(p.kind === "kadence" ? "kadenceWhen" : "when", { when: p.when }) : null}
       onClick={() => choose(p.id)}
     />
   );
@@ -62,6 +65,11 @@ export function SessionPicker({
         <div className="flex flex-col gap-5">
           {today.length > 0 && <Section title={t("today")}>{today.map(row)}</Section>}
           {team.length > 0 && <Section title={t("team")}>{team.map(row)}</Section>}
+          {kadence.length > 0 && (
+            <Section title={t("kadence")} note={t("kadenceNote")}>
+              {kadence.map(row)}
+            </Section>
+          )}
           <Section title={t("dcu")} note={t("dcuNote")}>
             {dcu.map(row)}
           </Section>

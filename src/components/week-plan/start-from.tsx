@@ -9,7 +9,7 @@ import type { TemplateOption } from "@/components/calendar/template-picker";
 import { Button } from "@/components/ui/button";
 import { NativeSelect } from "@/components/ui/native-select";
 import { SegmentedChoice } from "@/components/ui/segmented";
-import type { ClassBasis } from "@/modules/dcu";
+import type { PlanBasis } from "@/modules/paradigms";
 import { loadPreviousWeekAction } from "@/modules/training/week-actions";
 import { GroupWeekAi } from "./group-week-ai";
 import { fromInput, type PlanBlock, type PlanItem } from "./types";
@@ -27,6 +27,7 @@ export function StartFrom({
   monday,
   riderIds,
   bases,
+  seniors = false,
   blocks,
   templates,
   initial,
@@ -35,8 +36,10 @@ export function StartFrom({
   monday: string;
   /** The riders the week is for: last week is theirs. */
   riderIds: string[];
-  /** Their class-years, for the AI. */
-  bases: ClassBasis[];
+  /** Their class-years or training profiles, for the AI. */
+  bases: PlanBasis[];
+  /** The team has an adult, so the AI is offered the training profiles too (ADR 0092). */
+  seniors?: boolean;
   blocks: PlanBlock[];
   templates: TemplateOption[];
   initial?: StartMode;
@@ -171,6 +174,7 @@ export function StartFrom({
         <GroupWeekAi
           monday={monday}
           bases={bases}
+          seniors={seniors}
           templates={templates}
           onUse={onLoad}
           defaultOpen

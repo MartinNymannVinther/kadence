@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { dayMonth, weekdayShort } from "@/components/training/day-label";
 import { addDaysIso, weekNumber } from "@/core/dates";
+import { isSeniorBasis, type SeniorBasis } from "@/modules/paradigms";
 import { previewSessionsAction } from "@/modules/season/actions";
 import type { RiderPlanPreview } from "@/modules/season/preview";
 import {
@@ -22,6 +23,13 @@ import {
   type Repeat,
 } from "@/modules/training/recurrence";
 import { cn } from "@/lib/utils";
+import type { RiderOption } from "./types";
+
+/** The adults' profile when every chosen rider is on the same one; else none. */
+function commonProfile(chosen: RiderOption[]): SeniorBasis | null {
+  const first = chosen[0]?.basis;
+  return isSeniorBasis(first) && chosen.every((r) => r.basis === first) ? first : null;
+}
 
 /** A Monday to name the weekdays from: 1 is Monday, 7 Sunday. */
 const A_MONDAY = "2026-01-05";
@@ -32,13 +40,16 @@ const dayOf = (weekday: number) => addDaysIso(A_MONDAY, weekday - 1);
  * chosen day until a last one — every Tuesday and Thursday through the
  * winter. Says how many sessions it makes, what the guardrails would say
  * about a strength series, and — for a bike series — what it does to each
- * rider's hours against the season plan before anything is made.
+ * rider's hours against the season plan before anything is made. When
+ * every rider chosen is an adult on the same training profile, a strength
+ * series is measured against the profile's rhythm (ADR 0092).
  */
 export function RepeatFields({
   start,
   sport,
   plannedMinutes,
   riderIds,
+  riders = [],
   value,
   onChange,
 }: {
@@ -46,6 +57,8 @@ export function RepeatFields({
   sport: string | null;
   plannedMinutes: number;
   riderIds: string[];
+  /** The riders to choose from, with their basis where the page knows it. */
+  riders?: RiderOption[];
   value: Repeat | null;
   onChange: (value: Repeat | null) => void;
 }) {
@@ -62,7 +75,9 @@ export function RepeatFields({
   const problem = value ? repeatProblem(start, value) : null;
   const days = value && !problem ? repeatDates(start, value) : [];
   const total = days.length * Math.max(1, riderIds.length);
-  const notes = value && !problem && sport === "strength" ? strengthNotes(start, value) : [];
+  const profile = commonProfile(riders.filter((r) => riderIds.includes(r.id)));
+  const notes =
+    value && !problem && sport === "strength" ? strengthNotes(start, value, profile) : [];
   const day = (weekday: number) => weekdayShort(dayOf(weekday), locale);
 
   async function look() {
@@ -158,12 +173,15 @@ export function RepeatFields({
             >
               <CircleAlert aria-hidden className="mt-0.5 size-4 shrink-0" />
               {note.kind === "close"
-                ? t("close", { first: day(note.first), second: day(note.second) })
-                : t("tooManyStrength", {
+                ? note.profile
+                  ? t("closeProfile", { first: day(note.first), second: day(note.second) })
+                  : t("close", { first: day(note.first), second: day(note.second) })
+                : t(note.profile ? "tooManyStrengthProfile" : "tooManyStrength", {
                     week: weekNumber(note.from),
                     date: dayMonth(note.from, locale),
                     max: note.max,
                     perWeek: note.perWeek,
+                    profile: note.profile ?? "",
                   })}
             </p>
           ))}

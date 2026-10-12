@@ -2,19 +2,22 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { Pool } from "pg";
 import { navRole } from "@/app/[locale]/(app)/nav-items";
 import { seasonStartYear } from "@/modules/dcu";
+import { SENIOR_BIKE_SESSIONS, SENIOR_WEEKS, seasonOfMonth, seniorWeek } from "@/modules/paradigms";
 import { cleanupExpiredDemos, createDemoWorkspace, isDemoWorkspace } from "@/modules/demo/service";
 import { getSeasonPlan } from "@/modules/season/plans";
 import { whoAmI } from "@/modules/team/access";
 import { workspaceKind } from "@/modules/team/workspace-kind";
-import { todayInCopenhagen } from "@/core/dates";
+import { addDaysIso, mondayOf, todayInCopenhagen } from "@/core/dates";
 import { adminPool } from "../helpers/db";
 
 /**
  * "Prøv som voksen" (`/demo?alene=voksen`, docs/adr/0091, ADR 0054): an
  * adult alone in a personal workspace, born 1984, on the Supermotionist
  * profile, with a season plan from the profile's hours and six weeks of
- * training, as the youth rider alone has. Built through the ordinary
- * sign-up path and services.
+ * training, as the youth rider alone has; Kadence's sessions, programmes
+ * and ready weeks for adults in the library, and the profile's ready week
+ * for the time of year laid into next week (ADR 0092). Built through the
+ * ordinary sign-up path and services.
  */
 
 let admin: Pool;
@@ -86,6 +89,38 @@ describe("a demo of an adult alone", () => {
     expect(s.own_events).toBeGreaterThan(0);
     // DCU's winter goal is U17's and U19's.
     expect(s.dcu_goals).toBe(0);
+  });
+
+  it("holds Kadence's content for adults, and next week is a ready week", async () => {
+    const library = await admin.query(
+      `select source, source_key from workout_templates where org_id = $1 and source = 'kadence'`,
+      [orgId],
+    );
+    expect(library.rows).toHaveLength(SENIOR_BIKE_SESSIONS.length + 2);
+    const weeks = await admin.query(
+      `select source_key from training_blocks where org_id = $1 and source_key is not null`,
+      [orgId],
+    );
+    expect(weeks.rows.map((r) => r.source_key).sort()).toEqual(
+      SENIOR_WEEKS.map((w) => w.key).sort(),
+    );
+    const monday = addDaysIso(mondayOf(todayInCopenhagen()), 7);
+    const week = seniorWeek("super-motionist", seasonOfMonth(Number(monday.slice(5, 7))));
+    const next = await admin.query(
+      `select s.on_date::text as on_date, t.source_key from planned_sessions s
+       left join workout_templates t on t.id = s.template_id
+       where s.org_id = $1 and s.on_date between $2 and $3 order by s.on_date`,
+      [orgId, monday, addDaysIso(monday, 6)],
+    );
+    expect(next.rows).toHaveLength(week.items.length);
+    expect(next.rows.every((r) => r.source_key?.startsWith("kadence-"))).toBe(true);
+    // His strength through the six weeks is the Supermotionist programme.
+    const strength = await admin.query(
+      `select distinct t.source_key from planned_sessions s join workout_templates t on t.id = s.template_id
+       where s.org_id = $1 and s.sport = 'strength'`,
+      [orgId],
+    );
+    expect(strength.rows.map((r) => r.source_key)).toEqual(["kadence-strength-super-motionist"]);
   });
 
   it("goes whole when its time is up", async () => {

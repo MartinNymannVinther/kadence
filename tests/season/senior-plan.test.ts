@@ -13,8 +13,8 @@ import { insertSql, seedPerson } from "../helpers/rows";
 /**
  * A senior's season plan and week (docs/adr/0091): the plan starts from
  * the training profile's months, Motionist by default, and stands against
- * them; "fill again" takes the other profile; the team's plans leave
- * seniors to their own page; the week's corridor is the profile's. The profile is the
+ * them; "fill again" takes the other profile; the team's plans include
+ * seniors on their profile (ADR 0092); the week's corridor is the profile's. The profile is the
  * coach's or the rider's own to set, never a parent's or another rider's,
  * and the riders guard lets the rider set it and still nothing else. A
  * U19 rider beside them plans from DCU's hours as before.
@@ -86,13 +86,20 @@ describe("a senior's season plan", () => {
     expect((await getSeasonPlan(COACH, "sp_kim", 2027))!.basis).toBe("senior-super-motionist");
   });
 
-  it("is left out of the team's plans, for their own page where the profile is chosen", async () => {
-    expect(await createTeamSeasonPlans(COACH, 2028)).toEqual({ created: 1, noClass: 2 });
+  it("is planned with the team, on the profile (ADR 0092)", async () => {
+    // ADR 0091 left a senior to their own page; since ADR 0092 "Opret
+    // sæsonplaner for alle" plans them on their profile, Motionist when
+    // none is chosen, as their own page would. Lars (no profile) and Kim
+    // (Supermotionist) get theirs; Lea, U23, gets DCU's.
+    expect(await createTeamSeasonPlans(COACH, 2028)).toEqual({ created: 3, noClass: 0 });
     const lea = (await getSeasonPlan(COACH, "sp_lea", 2028))!;
     // Born 2010, racing year 2029: U23 first year.
     expect(lea.basis).toBe("U23-1");
     expect(lea.months.find((m) => m.month === 1)!.hours).toBe(monthHours("U23-1", 1));
-    expect(await getSeasonPlan(COACH, "sp_lars", 2028)).toBeNull();
+    const lars = (await getSeasonPlan(COACH, "sp_lars", 2028))!;
+    expect(lars.basis).toBe("senior-motionist");
+    expect(lars.months.reduce((sum, m) => sum + m.hours, 0)).toBe(280);
+    expect((await getSeasonPlan(COACH, "sp_kim", 2028))!.basis).toBe("senior-super-motionist");
   });
 
   it("starts empty when the team plans without a paradigm", async () => {

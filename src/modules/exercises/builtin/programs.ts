@@ -126,10 +126,50 @@ export const STRENGTH_NO_MACHINES: BuiltinProgram = {
   ],
 };
 
+/**
+ * "Motionist styrke" at home (docs/adr/0092, src/modules/paradigms/senior-strength.ts):
+ * the whole body with body weight and a band, and jumps for the bones,
+ * twice a week in winter and once after. For adults, so listed where the
+ * workspace has one.
+ */
+export const MOTIONIST_HOME: BuiltinProgram = {
+  id: "motionistHome",
+  audience: "adult",
+  source: `Kadence's own programme for adults: muscle-strengthening on 2 or more days a week (WHO 2020; Bull et al. 2020, Br J Sports Med 54:1451–1462); jumps for bone (Olmedillas et al. 2012, BMC Med 10:168); the exercises and doses are Kadence's; ${SOURCES.acsmStretch}`,
+  parts: [
+    {
+      key: "before",
+      items: [{ exercise: "builtin:catCow" }, { exercise: "builtin:squat", dose: reps(10) }],
+    },
+    {
+      key: "any",
+      items: [
+        { exercise: "builtin:squat", dose: reps(15, false, 2) },
+        { exercise: "builtin:splitSquat", dose: reps(10, true, 2) },
+        { exercise: "builtin:gluteBridge", dose: reps(15, false, 2) },
+        { exercise: "builtin:squatJump" },
+        { exercise: "builtin:bandRow" },
+        { exercise: "builtin:pushUp" },
+        { exercise: "builtin:plank" },
+        { exercise: "builtin:sidePlank" },
+      ],
+    },
+    {
+      key: "after",
+      items: [
+        { exercise: "builtin:quadStretch" },
+        { exercise: "builtin:hamstringStretch" },
+        { exercise: "builtin:hipFlexor" },
+      ],
+    },
+  ],
+};
+
 export const PROGRAMS: readonly BuiltinProgram[] = [
   MOBILITY_DAY,
   AFTER_RIDE,
   CORE_NO_EQUIPMENT,
   STRENGTH_NO_MACHINES,
   ...STRENGTH_ROOM_PROGRAMS,
+  MOTIONIST_HOME,
 ];

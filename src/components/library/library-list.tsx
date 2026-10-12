@@ -118,6 +118,7 @@ export function LibraryList({
                     >
                       <span className="min-w-0 break-words">{tpl.name}</span>
                       {tpl.source === "dcu" && <Badge variant="secondary">DCU</Badge>}
+                      {tpl.source === "kadence" && <Badge variant="secondary">Kadence</Badge>}
                       {tpl.archived && <Badge variant="outline">{t("archivedMark")}</Badge>}
                     </Link>
                     {tpl.plannedMinutes > 0 && (

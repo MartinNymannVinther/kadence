@@ -9,7 +9,7 @@ import { dayMonth, weekdayShort } from "@/components/training/day-label";
 import { Button } from "@/components/ui/button";
 import { addDaysIso } from "@/core/dates";
 import { useRouter } from "@/i18n/navigation";
-import { isClassBasis } from "@/modules/dcu";
+import { isPlanBasis, isSeniorBasis } from "@/modules/paradigms";
 import type { SharedDraft } from "@/modules/training/week-plan-draft";
 import { ApplyPlan } from "./apply-plan";
 import { DraftStatus } from "./draft-status";
@@ -80,10 +80,12 @@ export function WeekPlanner({
     const date = addDaysIso(monday, day);
     return `${weekdayShort(date, locale)} ${dayMonth(date, locale)}`;
   };
-  // The group's AI draft reads DCU's class-years; a senior's profile is not one (ADR 0091).
+  // The group's AI draft reads DCU's class-years and a senior's profile (ADR 0092).
   const bases = riders
     .filter((r) => riderIds.includes(r.id))
-    .flatMap((r) => (isClassBasis(r.basis) ? [r.basis] : []));
+    .flatMap((r) => (isPlanBasis(r.basis) ? [r.basis] : []));
+  // The profiles are offered to the AI only where the team has an adult.
+  const seniors = riders.some((r) => isSeniorBasis(r.basis));
 
   const change = (next: Partial<typeof draft>) => setDraft({ ...draft, ...next });
   /** A whole new week in — empty, last week, a block or the AI — with the old one a press away. */
@@ -117,6 +119,7 @@ export function WeekPlanner({
           monday={monday}
           riderIds={riderIds}
           bases={bases}
+          seniors={seniors}
           blocks={blocks}
           templates={templates}
           initial={start}

@@ -44,3 +44,25 @@ export {
   type Reference,
   type SeniorProfile,
 } from "./senior";
+export {
+  SENIOR_BIKE_SESSIONS,
+  seniorSession,
+  sessionsFor,
+  type SeniorBikeSession,
+  type SessionIntensity,
+} from "./senior-sessions";
+export {
+  SENIOR_STRENGTH_PROGRAMMES,
+  strengthProgrammeFor,
+  type SeniorStrengthProgramme,
+} from "./senior-strength";
+export {
+  HARD_PER_WEEK,
+  SENIOR_CONTENT_KEYS,
+  SENIOR_SEASONS,
+  SENIOR_WEEKS,
+  seasonOfMonth,
+  seniorWeek,
+  type SeniorSeason,
+  type SeniorWeek,
+} from "./senior-weeks";

@@ -31,9 +31,11 @@ export async function scheduleWeeks(
     strength: { id: string } | undefined;
     riderIds: string[];
     today: string;
+    /** Weeks laid in after this one: next week by default, none when a forløb fills it. */
+    ahead?: number;
   },
 ): Promise<{ firstMonday: string }> {
-  const { templates, strength, riderIds, today } = args;
+  const { templates, strength, riderIds, today, ahead = 1 } = args;
   const byText = (text: string) => templates[text]!;
   // The team rides Tuesday's intervals and Saturday's long ride together (ADR 0058).
   const clubhouse = pick({ da: "Klubhuset", en: "The clubhouse" }, l);
@@ -97,7 +99,7 @@ export async function scheduleWeeks(
   ];
   const firstMonday = addDaysIso(mondayOf(today), -7 * WEEKS_BACK);
   await ridersSince(ctx, riderIds, firstMonday);
-  for (let w = 0; w <= WEEKS_BACK + 1; w++) {
+  for (let w = 0; w <= WEEKS_BACK + ahead; w++) {
     const monday = addDaysIso(firstMonday, 7 * w);
     const inBreak = phaseOf(Number(addDaysIso(monday, 3).slice(5, 7))) === "break";
     for (const [i, slot] of (inBreak ? breakWeek : week).entries()) {

@@ -222,6 +222,12 @@ export type BuiltinProgram = {
   id: string;
   parts: ProgramPart[];
   source: string;
+  /**
+   * For adults on a training profile (docs/adr/0092): listed in the app
+   * only where the workspace has one, so a youth team's list stays as it
+   * was. The open page shows every programme.
+   */
+  audience?: "adult";
 };
 
 /** One exercise ready to show, whichever kind it is, in the reader's language. */

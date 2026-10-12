@@ -132,7 +132,8 @@ export const EXPORT_TABLES: ExportTable[] = [
     table: "training_blocks",
     sheet: "Forløb",
     orderBy: "name",
-    columns: "id, org_id, name, description, weeks, archived, created_by, created_at, updated_at",
+    columns:
+      "id, org_id, name, description, weeks, archived, source_key, created_by, created_at, updated_at",
   },
   {
     table: "training_block_items",

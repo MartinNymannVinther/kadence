@@ -133,6 +133,7 @@ export function ProgramScheduleDialog({
             sport={program.mobilityOnly ? null : "strength"}
             plannedMinutes={program.minutes}
             riderIds={riderIds}
+            riders={riders}
             value={repeat}
             onChange={setRepeat}
           />
