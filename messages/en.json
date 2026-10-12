@@ -739,6 +739,7 @@
     "me": {
       "title": "Profile",
       "subtitle": "Your own choices: what your parents can see, your thresholds and your security.",
+      "subtitleNoParents": "Your own choices: your thresholds, your profile and your security.",
       "security": "Security: passkeys and two-step verification",
       "coachNote": "You are a coach on the team. The team's own choices are under Team.",
       "memberNote": "You are on the team, but neither a rider nor a parent here. Ask a coach for an invitation if you should be.",
