@@ -91,7 +91,8 @@ goes "til 1 rytter" as group sessions.
   draft, so it is kept on the device and shared with the team's coaches
   like any other. The last move can be taken back with "Fortryd", as a
   replaced week can, and is told to a screen reader ("Løbetur er flyttet
-  til torsdag").
+  til torsdag"). After "Flyt til", the focus follows the card to its new
+  day, on its own "Flyt" button.
 - **A personal workspace (ADR 0080) has its own words.** For the owner
   who rides: "Læg ugen ind i din kalender" and "6 pas i din kalender";
   for a parent, the child's calendar by first name ("Emmas kalender").
@@ -99,9 +100,12 @@ goes "til 1 rytter" as group sessions.
   for one rider makes no group sessions anyway — but several weeks are
   still a series "så du kan rette dem samlet". There is no one to
   choose, so "Hvem er ugen for?" is not shown, and the way back is the
-  calendar. A club keeps the team's words, also with one rider: a team
-  may grow. Only the words change (`audience.ts`); the week is laid in
-  as before.
+  calendar. Where the week starts speaks the same way: "Hent sidste
+  uge" fetches "dine pas" (or "Emmas pas"), and the AI's panel is
+  "Forslag til din uge" and says it gets no data about you, without the
+  team's events. A club keeps the team's words, also with one rider: a
+  team may grow. Only the words change (`audience.ts`); the week is laid
+  in as before.
 
 Trade-offs accepted: no reordering within a day, since time decides the
 order; dragging does not work by touch in most phone browsers, where

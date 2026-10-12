@@ -5,6 +5,8 @@ import {
   appliedWords,
   applyWords,
   planAudience,
+  START_KEYS,
+  startWords,
   type PlanAudience,
   type Words,
 } from "@/components/week-plan/audience";
@@ -17,6 +19,8 @@ import en from "../../messages/en.json";
  * sessions, also when it has one rider, since a team may grow; a person
  * planning their own week reads "din kalender", a parent their child's,
  * and neither is asked whom the week is for or told about "Ret alle".
+ * Where the week starts speaks the same way: "Hent sidste uge" fetches
+ * your sessions, and the AI proposes your week, not the team's.
  */
 
 const EMMA = { id: "r_emma", name: "Emma Holm" };
@@ -131,14 +135,57 @@ describe("appliedWords", () => {
   });
 });
 
+describe("startWords", () => {
+  const team = startWords({ kind: "team" }, "da");
+  const self = startWords({ kind: "self" }, "da");
+  const child = startWords({ kind: "child", name: "Emma Holm" }, "da");
+
+  it("keeps the club's words for last week and the AI", () => {
+    expect(say("da", team.lastOne)).toBe("Henter rytterens pas fra ugen før.");
+    expect(say("da", team.aiTitle)).toBe("Forslag til holdets uge");
+    expect(say("da", team.aiHint(false))).toContain("holdets egne begivenheder");
+    expect(say("da", team.aiHint(true))).toContain("træningsprofilen, holdets egne begivenheder");
+  });
+
+  it("speaks of your own week, with nothing about a team or its riders", () => {
+    expect(say("da", self.lastOne)).toBe("Henter dine pas fra ugen før.");
+    expect(say("da", self.aiTitle)).toBe("Forslag til din uge");
+    expect(say("da", self.aiHint(false))).toBe(
+      "AI'en får DCU's timer for årgangen og biblioteket. Den får ingen data om dig. Forslaget lander i planen, hvor du kan rette det.",
+    );
+    expect(say("en", startWords({ kind: "self" }, "en").aiTitle)).toBe("Proposed week for you");
+  });
+
+  it("speaks of the child's week by first name, for a parent", () => {
+    expect(say("da", child.lastOne)).toBe("Henter Emmas pas fra ugen før.");
+    expect(say("da", child.aiTitle)).toBe("Forslag til Emmas uge");
+    expect(say("da", child.aiHint(true))).toContain("Den får ingen data om Emma.");
+    const en = startWords({ kind: "child", name: "Emma Holm" }, "en");
+    expect(say("en", en.lastOne)).toBe("Fetches Emma's sessions from the week before.");
+    expect(say("en", en.aiTitle)).toBe("Proposed week for Emma");
+  });
+
+  it("never says team, rider or 'holdets' in a personal workspace", () => {
+    for (const words of [self, child]) {
+      for (const w of [words.lastOne, words.aiTitle, words.aiHint(false), words.aiHint(true)]) {
+        expect(say("da", w)).not.toMatch(/hold|rytter/i);
+      }
+    }
+    for (const kind of ["self", "child"] as const) {
+      const en = startWords(kind === "self" ? { kind } : { kind, name: "Emma" }, "en");
+      for (const w of [en.lastOne, en.aiTitle, en.aiHint(false), en.aiHint(true)]) {
+        expect(say("en", w)).not.toMatch(/team|rider/i);
+      }
+    }
+  });
+});
+
 describe("the words exist", () => {
   it("in Danish and English, for every audience", () => {
-    const keys = Object.values(APPLY_KEYS).flatMap((k) => [
-      ...k.summary,
-      ...k.confirm,
-      k.applied,
-      k.empty,
-    ]);
+    const keys = [
+      ...Object.values(APPLY_KEYS).flatMap((k) => [...k.summary, ...k.confirm, k.applied, k.empty]),
+      ...Object.values(START_KEYS).flatMap((k) => Object.values(k)),
+    ];
     for (const messages of [da, en]) {
       const plan = messages.weekPlan as Record<string, unknown>;
       for (const key of keys) {

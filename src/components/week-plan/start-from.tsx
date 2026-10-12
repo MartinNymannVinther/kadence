@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Download, Eraser } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { useRun } from "@/components/common/use-run";
 import type { TemplateOption } from "@/components/calendar/template-picker";
@@ -11,6 +11,7 @@ import { NativeSelect } from "@/components/ui/native-select";
 import { SegmentedChoice } from "@/components/ui/segmented";
 import type { PlanBasis } from "@/modules/paradigms";
 import { loadPreviousWeekAction } from "@/modules/training/week-actions";
+import { startWords, type PlanAudience } from "./audience";
 import { GroupWeekAi } from "./group-week-ai";
 import { fromInput, type PlanBlock, type PlanItem } from "./types";
 
@@ -31,6 +32,7 @@ export function StartFrom({
   blocks,
   templates,
   initial,
+  audience = { kind: "team" },
   onLoad,
 }: {
   monday: string;
@@ -43,9 +45,13 @@ export function StartFrom({
   blocks: PlanBlock[];
   templates: TemplateOption[];
   initial?: StartMode;
+  /** A team's riders, or one person's own week: whose sessions "Sidste uge" fetches. */
+  audience?: PlanAudience;
   onLoad: (items: PlanItem[]) => void;
 }) {
   const t = useTranslations("weekPlan.start");
+  const plan = useTranslations("weekPlan");
+  const said = startWords(audience, useLocale() === "en" ? "en" : "da");
   const { run, pending } = useRun();
   const [mode, setMode] = useState<StartMode>(initial ?? "last");
   const [blockId, setBlockId] = useState(blocks[0]?.id ?? "");
@@ -108,7 +114,9 @@ export function StartFrom({
       )}
       {mode === "last" && (
         <div className="flex flex-wrap items-center gap-3">
-          <p className="text-2sm">{riderIds.length === 1 ? t("lastOne") : t("lastMany")}</p>
+          <p className="text-2sm">
+            {riderIds.length === 1 ? plan(said.lastOne.key, said.lastOne.values) : t("lastMany")}
+          </p>
           <Button
             type="button"
             variant="outline"
@@ -176,6 +184,7 @@ export function StartFrom({
           bases={bases}
           seniors={seniors}
           templates={templates}
+          audience={audience}
           onUse={onLoad}
           defaultOpen
         />

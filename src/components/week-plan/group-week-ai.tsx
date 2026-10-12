@@ -25,6 +25,7 @@ import {
   type PlanBasis,
 } from "@/modules/paradigms";
 import { Thinking } from "@/components/assist/thinking";
+import { startWords, type PlanAudience } from "./audience";
 import { newKey, type PlanItem } from "./types";
 
 /**
@@ -52,6 +53,7 @@ export function GroupWeekAi({
   bases,
   seniors = false,
   templates,
+  audience = { kind: "team" },
   onUse,
   defaultOpen = false,
 }: {
@@ -61,19 +63,24 @@ export function GroupWeekAi({
   /** The team has adults: offer their training profiles too. */
   seniors?: boolean;
   templates: TemplateOption[];
+  /** A team's riders, or one person's own week: whose week the panel speaks of. */
+  audience?: PlanAudience;
   onUse: (items: PlanItem[]) => void;
   /** Open on arrival, when the planner was opened for the AI ("Foreslå ugen"). */
   defaultOpen?: boolean;
 }) {
   const t = useTranslations("weekPlan.ai");
+  const plan = useTranslations("weekPlan");
   const season = useTranslations("season");
   const duration = useTranslations("training.duration");
   const locale = useLocale();
+  const said = startWords(audience, locale === "en" ? "en" : "da");
   const id = useId();
   const lightest = lightestOf(bases);
   const options: PlanBasis[] = seniors ? [...CLASS_BASES, ...SENIOR_BASES] : [...CLASS_BASES];
   const [open, setOpen] = useState(defaultOpen);
   const [basis, setBasis] = useState<PlanBasis>(lightest ?? "U17-1");
+  const hint = said.aiHint(isSeniorBasis(basis));
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<{ draft: WeekDraft; engine: string } | null>(null);
@@ -180,9 +187,7 @@ export function GroupWeekAi({
           onChange={(e) => setText(e.target.value)}
         />
       </div>
-      <p className="text-meta text-xs leading-relaxed">
-        {t(isSeniorBasis(basis) ? "hintSenior" : "hint")}
-      </p>
+      <p className="text-meta text-xs leading-relaxed">{plan(hint.key, hint.values)}</p>
       <div className="flex flex-wrap gap-2">
         <Button
           type="button"
@@ -211,7 +216,7 @@ export function GroupWeekAi({
       {error && <AiFailureText error={error} />}
       {result && (
         <ProposalFrame
-          title={t("title")}
+          title={plan(said.aiTitle.key, said.aiTitle.values)}
           engine={result.engine}
           body={t("body")}
           onClose={() => setResult(null)}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Plus } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { dayMonth, weekdayShort } from "@/components/training/day-label";
@@ -37,6 +38,9 @@ export function PlanDays({
   const t = useTranslations("weekPlan.days");
   const locale = useLocale();
   const drag = usePlanDrag(onMove);
+  // The card just moved by its menu, whose focus goes with it to its new day.
+  const [focusKey, setFocusKey] = useState<string | null>(null);
+  const focused = () => setFocusKey(null);
   const dayLabel = (day: number) => {
     const date = addDaysIso(monday, day);
     return `${weekdayShort(date, locale)} ${dayMonth(date, locale)}`;
@@ -82,7 +86,12 @@ export function PlanDays({
                   dragging={drag.draggingKey === item.key}
                   dragProps={drag.source({ key: item.key, day, title: itemTitle(item) })}
                   onEdit={() => onEdit(item)}
-                  onMove={(to) => onMove(item.key, to)}
+                  focusMove={focusKey === item.key}
+                  onFocused={focused}
+                  onMove={(to) => {
+                    setFocusKey(item.key);
+                    onMove(item.key, to);
+                  }}
                   onRemove={() => onRemove(item.key)}
                 />
               ))}

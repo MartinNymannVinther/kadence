@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { ArrowRightLeft, Pencil, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { durationText } from "@/components/training/duration";
@@ -22,13 +23,16 @@ import { itemMinutes, itemSport, itemTitle, type PlanItem } from "./types";
  * One session on a day of the plan: what it is, when and where, and what
  * can be done with it — edit, move to another day, remove. On a computer
  * the card can also be dragged to another day; "Flyt til" does the same
- * from a keyboard or a phone.
+ * from a keyboard or a phone, and focus follows the card to its new day,
+ * on its own "Flyt" button, so a keyboard can carry on from there.
  */
 export function PlanCard({
   item,
   dayLabel,
   dragging,
   dragProps,
+  focusMove = false,
+  onFocused,
   onEdit,
   onMove,
   onRemove,
@@ -37,6 +41,9 @@ export function PlanCard({
   dayLabel: (day: number) => string;
   dragging: boolean;
   dragProps: React.HTMLAttributes<HTMLLIElement>;
+  /** The card was just moved by its menu: its "Flyt" button takes the focus. */
+  focusMove?: boolean;
+  onFocused?: () => void;
   onEdit: () => void;
   onMove: (day: number) => void;
   onRemove: () => void;
@@ -44,6 +51,16 @@ export function PlanCard({
   const t = useTranslations("weekPlan.days");
   const duration = useTranslations("training.duration");
   const locale = useLocale();
+  const moveButton = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!focusMove) return;
+    // After the menu has closed and the card has landed on its new day.
+    const frame = requestAnimationFrame(() => {
+      moveButton.current?.focus();
+      onFocused?.();
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [focusMove, onFocused]);
   const title = itemTitle(item);
   const minutes = itemMinutes(item);
   const when = timePlaceText(
@@ -83,6 +100,7 @@ export function PlanCard({
             <DropdownMenuTrigger
               render={
                 <Button
+                  ref={moveButton}
                   type="button"
                   variant="ghost"
                   size="icon-sm"

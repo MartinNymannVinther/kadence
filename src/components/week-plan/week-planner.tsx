@@ -169,6 +169,7 @@ export function WeekPlanner({
           blocks={blocks}
           templates={templates}
           initial={start}
+          audience={audience}
           onLoad={replace}
         />
         {/* Always there, so a screen reader hears a move or a new week as soon as it is made. */}

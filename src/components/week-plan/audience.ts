@@ -9,7 +9,9 @@ import { possessive, type NoteLocale } from "@/modules/push/texts";
  * owner's own ("din kalender") or, for a parent, their child's ("Emmas
  * kalender"), with no rider to choose. Only the words differ; the week is
  * laid in the same way. A club with one rider keeps the club's words: a
- * team may grow. Pure, so the words can be tested without React.
+ * team may grow. The same goes for where the week starts: "Hent sidste
+ * uge" fetches your sessions, and the AI proposes your week. Pure, so the
+ * words can be tested without React.
  */
 
 export type PlanAudience = { kind: "team" } | { kind: "self" } | { kind: "child"; name: string };
@@ -91,4 +93,52 @@ export function appliedWords(
     key: APPLY_KEYS[audience.kind].applied,
     values: { ...counts, ...ownerOf(audience, locale) },
   };
+}
+
+/** Where the week starts, in the audience's words: last week, and the AI's panel. */
+export const START_KEYS = {
+  team: {
+    lastOne: "start.lastOne",
+    aiTitle: "ai.title",
+    aiHint: "ai.hint",
+    aiHintSenior: "ai.hintSenior",
+  },
+  self: {
+    lastOne: "start.lastOwn",
+    aiTitle: "ai.titleOwn",
+    aiHint: "ai.hintOwn",
+    aiHintSenior: "ai.hintSeniorOwn",
+  },
+  child: {
+    lastOne: "start.lastChild",
+    aiTitle: "ai.titleChild",
+    aiHint: "ai.hintChild",
+    aiHintSenior: "ai.hintSeniorChild",
+  },
+} as const;
+
+export type StartWords = {
+  /** "Hent sidste uge" for one rider; a team of several has its own words (`start.lastMany`). */
+  lastOne: Words;
+  aiTitle: Words;
+  /** What the AI is given, for a DCU class-year or a training profile. */
+  aiHint: (senior: boolean) => Words;
+};
+
+export function startWords(audience: PlanAudience, locale: NoteLocale): StartWords {
+  const keys = START_KEYS[audience.kind];
+  // "Emmas" and "Emma": a language may want either.
+  const values =
+    audience.kind === "child"
+      ? { ...ownerOf(audience, locale), name: firstName(audience.name) }
+      : {};
+  return {
+    lastOne: { key: keys.lastOne, values },
+    aiTitle: { key: keys.aiTitle, values },
+    aiHint: (senior) => ({ key: senior ? keys.aiHintSenior : keys.aiHint, values }),
+  };
+}
+
+function firstName(name: string): string {
+  return name.trim().split(/\s+/)[0] ?? name;
 }
