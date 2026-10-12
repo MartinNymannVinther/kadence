@@ -82,19 +82,6 @@ export function volumeOf(input: {
   paradigm?: Paradigm | null;
 }): Volume {
   const paradigm = input.paradigm === undefined ? DCU_2025 : input.paradigm;
-  let dcu: number | null = paradigm ? 0 : null;
-  let goal: number | null = 0;
-  for (const day of days(input.range)) {
-    const [year, month] = day.split("-").map(Number) as [number, number];
-    const frame = input.frameOf(seasonStartYear(day));
-    const share = 1 / daysInMonth(year, month);
-    dcu =
-      dcu === null || !frame.basis || !paradigm
-        ? null
-        : dcu + paradigm.monthHours(frame.basis, month) * share;
-    const planned = frame.goal?.find((m) => m.month === month);
-    goal = goal === null || !planned ? null : goal + planned.hours * share;
-  }
   const bike = input.sessions.filter((s) => counts(s.sport) && inRange(s.onDate, input.range));
   const planned = bike.reduce((sum, s) => sum + s.plannedMinutes, 0) / 60;
   const done =
@@ -105,16 +92,57 @@ export function volumeOf(input: {
     bike
       .filter((s) => !s.done && s.onDate >= input.today)
       .reduce((sum, s) => sum + s.plannedMinutes, 0) / 60;
+  return volumeFrom(input.range, input.frameOf, paradigm, { planned, done, ahead });
+}
+
+/**
+ * The reference side of the four numbers for a range: DCU's hours (or a
+ * senior profile's) and the season plan's, each day carrying its month's
+ * hours over the month's days. Null where any day's season lacks them.
+ */
+export function referenceHours(
+  range: VolumeRange,
+  frameOf: (seasonStartYear: number) => SeasonFrame,
+  paradigm: Paradigm | null,
+): { dcu: number | null; goal: number | null } {
+  let dcu: number | null = paradigm ? 0 : null;
+  let goal: number | null = 0;
+  for (const day of days(range)) {
+    const [year, month] = day.split("-").map(Number) as [number, number];
+    const frame = frameOf(seasonStartYear(day));
+    const share = 1 / daysInMonth(year, month);
+    dcu =
+      dcu === null || !frame.basis || !paradigm
+        ? null
+        : dcu + paradigm.monthHours(frame.basis, month) * share;
+    const planned = frame.goal?.find((m) => m.month === month);
+    goal = goal === null || !planned ? null : goal + planned.hours * share;
+  }
+  return { dcu, goal };
+}
+
+/**
+ * The four numbers from the calendar's side already summed — hours put
+ * in, ridden, and still to ride from today — as the month and season
+ * views read them from one aggregate query (docs/adr/0093).
+ */
+export function volumeFrom(
+  range: VolumeRange,
+  frameOf: (seasonStartYear: number) => SeasonFrame,
+  paradigm: Paradigm | null,
+  hours: { planned: number; done: number; ahead: number },
+): Volume {
+  const { dcu, goal } = referenceHours(range, frameOf, paradigm);
   return {
-    basis: input.frameOf(seasonStartYear(input.range.from)).basis,
+    basis: frameOf(seasonStartYear(range.from)).basis,
     dcu:
       dcu === null
         ? null
         : { low: dcu * (1 - CORRIDOR_BAND), target: dcu, high: dcu * (1 + CORRIDOR_BAND) },
     goal,
-    planned,
-    done,
-    expected: done + ahead,
+    planned: hours.planned,
+    done: hours.done,
+    expected: hours.done + hours.ahead,
     guided: paradigm !== null,
   };
 }

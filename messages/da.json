@@ -1359,6 +1359,66 @@
       "show": "Vis",
       "team": "Hele holdet"
     },
+    "views": {
+      "label": "Vis kalenderen som",
+      "week": "Uge",
+      "month": "Måned",
+      "year": "År"
+    },
+    "month": {
+      "nav": "Vælg måned",
+      "previous": "Forrige måned",
+      "next": "Næste måned",
+      "thisMonth": "Denne måned",
+      "teamSubtitle": "Hele holdets måned",
+      "label": "Månedens uger",
+      "weekTotal": "Ugen på cyklen",
+      "noHours": "Ingen tal for ugen",
+      "legend": "Farverne betyder",
+      "dayLabel": "{day}: {what}",
+      "nothing": "intet planlagt",
+      "rides": "{count, plural, one {# tur uden pas} other {# ture uden pas}}",
+      "more": "+{count}",
+      "teamCaption": "Holdets måned: en række pr. rytter og en kolonne pr. dag",
+      "rider": "Rytter",
+      "bikeHours": "På cyklen",
+      "of": "{done} af {planned} t",
+      "goal": "Sæsonplan {hours} t",
+      "rest": "hviledag"
+    },
+    "year": {
+      "nav": "Vælg sæson",
+      "previous": "Forrige sæson",
+      "next": "Næste sæson",
+      "thisSeason": "Denne sæson",
+      "title": "Sæson {season}",
+      "teamSubtitle": "Hele holdets sæson",
+      "label": "Sæsonens måneder",
+      "soFar": "Sæsonen indtil nu: {done} t kørt på cyklen.",
+      "soFarGoal": "Sæsonplanen siger {goal} t indtil i dag.",
+      "soFarDcu": "{ref, select, dcu {DCU anbefaler} motionist {Motionist foreslår} other {Supermotionist foreslår}} {dcu} t indtil i dag.",
+      "seasonGoal": "Hele sæsonen har {hours} t i sæsonplanen.",
+      "toPlan": "Ret i sæsonplanen",
+      "done": "Kørt {hours} t",
+      "goal": "Sæsonplan {hours} t",
+      "noGoal": "Ingen sæsonplan",
+      "planned": "Lagt ind {hours} t",
+      "dcu": "{ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}} {hours} t",
+      "sessions": "{done} af {planned} pas udført",
+      "teamCaption": "Holdets sæson: en række pr. rytter og en kolonne pr. måned",
+      "rider": "Rytter",
+      "total": "I alt",
+      "races": "Løb: {list}",
+      "cell": "{hours} t kørt",
+      "plannedOnly": "{hours} t lagt ind",
+      "standing": {
+        "on": "som planen",
+        "under": "under planen",
+        "over": "over planen"
+      },
+      "legend": "Farverne betyder",
+      "futureNote": "En måned, der ikke er begyndt, viser de timer, der er lagt ind."
+    },
     "week": {
       "today": "I dag",
       "nothing": "Intet planlagt",
@@ -1937,7 +1997,63 @@
       "restingHr": "Hvilepuls",
       "bpm": "slag/min",
       "date": "Målt den",
-      "hint": "Brug tallene fra den seneste test. Tomme felter er helt i orden: så viser passene zoner og følelse."
+      "hint": "Brug tallene fra den seneste test. Tomme felter er helt i orden: så viser passene zoner og følelse.",
+      "explainLabel": "Hvad er {name}?",
+      "explain": {
+        "ftpWatts": "Den højeste effekt, du kan holde i omkring en time. Zonerne på cyklen regnes ud fra den. Du finder den med en test på 20 minutter, hvor FTP er 95 % af gennemsnittet, eller ved at lade Kadence foreslå den ud fra turene.",
+        "thresholdHr": "Pulsen, når du kører så hårdt, som du kan holde i omkring en time. Pulszonerne regnes ud fra den. Den er typisk din gennemsnitspuls i de sidste 20 minutter af en hård tur på 30 minutter alene.",
+        "maxHr": "Den højeste puls, dit hjerte når. Den er personlig og siger intet om, hvor god du er. Du ser den typisk sidst i en hård spurt op ad bakke, når du er varm.",
+        "restingHr": "Din puls, når du ligger stille om morgenen, før du står op. Den falder ofte med formen. Er den høj nogle dage, kan det være træthed eller sygdom på vej."
+      },
+      "propose": {
+        "own": "Foreslå ud fra mine ture",
+        "coach": "Foreslå ud fra turene",
+        "title": "Kadences forslag",
+        "intro": "Tallene er regnet ud fra turene. Intet er gemt, før du trykker Gem.",
+        "now": "Nu: {value}",
+        "nothing": "intet",
+        "use": "Brug forslaget",
+        "close": "Luk",
+        "tick": "Brug forslaget til {name}",
+        "filled": "Forslaget står i felterne. Tryk Gem for at bruge det.",
+        "noneProposed": "Der er ikke data nok til et forslag endnu.",
+        "window": "{days, select, d90 {De seneste 90 dage} other {Det seneste år}}",
+        "from": "Fra",
+        "measuredOn": "målt {date}",
+        "confidence": {
+          "high": "Ret sikkert",
+          "medium": "Nogenlunde sikkert",
+          "low": "Usikkert"
+        },
+        "method": {
+          "criticalPower": "Regnet ud fra de bedste 3 til 20 minutter (kritisk effekt).",
+          "best20Power": "95 % af de bedste 20 minutter.",
+          "best60Power": "Den bedste time på cyklen. Den var højere end det, de 20 minutter giver.",
+          "best20HeartRate": "Lidt under den højeste gennemsnitspuls over 20 minutter i en hård tur.",
+          "heldMaxHeartRate": "Den højeste puls, der er holdt i mindst 10 sekunder.",
+          "measuredRestingHr": "Midten af de målte hvilepulser."
+        },
+        "missing": {
+          "noPower": "Ingen af turene har watt, så der er intet forslag til FTP.",
+          "fewPowerRides": "Der skal mindst tre ture med watt til et forslag, og der er færre det seneste år.",
+          "noHardTwentyMinutes": "Der er ingen tur med 20 minutters hård indsats de seneste 365 dage.",
+          "noHeartRate": "Ingen af turene har puls.",
+          "fewHeartRateRides": "Der skal mindst tre ture med puls til et forslag, og der er færre det seneste år.",
+          "noHardHeartRate": "Der er ingen tur med 20 minutters hård indsats med puls de seneste 365 dage.",
+          "noAllOut": "Ingen tur det seneste år ser ud til at være kørt helt i top, så maxpulsen kan ikke ses endnu.",
+          "notAboveCurrent": "Turene er ikke nået over den maxpuls, der står nu, så den bliver stående.",
+          "noMeasurement": "Hvilepulsen kan ikke ses på turene. Den måles bedst om morgenen i sengen og skrives ind her."
+        },
+        "note": {
+          "wideWindow": "Der var for lidt de seneste 90 dage, så tallet bygger på hele året.",
+          "youthGrows": "Tallet bygger på hele året. Unge ryttere bliver hurtigt stærkere, så det kan være for lavt.",
+          "fewRides": "Der er få ture at regne på.",
+          "effortUnconfirmed": "Turen har ingen puls, så Kadence kan ikke se, om de 20 minutter var hårde.",
+          "effortNotHard": "Pulsen tyder på, at de 20 minutter ikke var helt hårde. Tallet er nok for lavt.",
+          "noShortEfforts": "Der er ingen bedste 5 minutter at holde de 20 minutter op imod.",
+          "hourWasHigher": "Den bedste time var højere end det, de 20 minutter gav."
+        }
+      }
     },
     "accountCard": {
       "title": "Rytterens konto",
@@ -2717,6 +2833,11 @@
     "weightOff": "Vægt er slået fra for ryttere under 19, som Team Danmarks ATK anbefaler. En træner kan slå det til under Indstillinger → Holdet."
   },
   "activities": {
+    "ftpRaised": {
+      "own": "Turen tyder på, at din FTP er steget.",
+      "coach": "Turen tyder på, at rytterens FTP er steget.",
+      "link": "Se forslaget"
+    },
     "title": "Aktivitet",
     "back": "Tilbage til ugen",
     "missing": "Aktiviteten findes ikke",

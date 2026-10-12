@@ -42,7 +42,7 @@ export async function WeekNav({
       <Link href={href(addDaysIso(monday, 7))} className={icon} aria-label={t("next")}>
         <ChevronRight />
       </Link>
-      <MonthJump monday={monday} today={today} weekHref={href("__WEEK__")} />
+      <MonthJump at={monday} today={today} href={href("__AT__")} />
       {monday !== thisWeek && (
         <Link
           href={href(thisWeek)}
