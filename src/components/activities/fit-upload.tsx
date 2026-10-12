@@ -9,6 +9,7 @@ import { DeviceFolderButton, type FolderStatus } from "./device-folder-button";
 import { planArchive } from "./import-archive";
 import { recogniseZip, type ArchiveSource } from "./read-archive";
 import { StravaArchivePanel, type ArchiveState } from "./strava-archive-panel";
+import { useUploadLimit } from "./upload-limit";
 
 type FileResult = {
   name: string;
@@ -21,10 +22,8 @@ type FileResult = {
 
 /** The route takes three files at a time; more are sent in turns. */
 const BATCH = 3;
-/** Files picked by hand in one go. */
+/** Files picked by hand in one go, at most; never more than the server keeps in an hour. */
 const MAX_PICKED = 20;
-/** Rides from a device's folder in one go: what the server keeps in an hour (ADR 0019). */
-const MAX_FROM_DEVICE = 60;
 const QUIET: FolderStatus = { doing: "nothing", said: null };
 
 /**
@@ -51,6 +50,9 @@ export function FitUpload({
   onBusy?: (busy: boolean) => void;
 }) {
   const t = useTranslations("activities.upload");
+  // Rides from a device's folder in one go: what the server keeps in an hour (ADR 0019).
+  const maxFromDevice = useUploadLimit();
+  const maxPicked = Math.min(MAX_PICKED, maxFromDevice);
   const router = useRouter();
   const inputId = useId();
   const [over, setOver] = useState(false);
@@ -108,7 +110,7 @@ export function FitUpload({
   }
 
   async function send(list: FileList | File[], from: "hand" | "device") {
-    const files = Array.from(list).slice(0, from === "device" ? MAX_FROM_DEVICE : MAX_PICKED);
+    const files = Array.from(list).slice(0, from === "device" ? maxFromDevice : maxPicked);
     if (files.length === 0 || sending.current) return;
     sending.current = true;
     // What the folder or the archive held is about the files before these.
@@ -194,7 +196,7 @@ export function FitUpload({
       <DeviceFolderButton
         riderId={riderId}
         disabled={busy || archiveRunning}
-        max={MAX_FROM_DEVICE}
+        max={maxFromDevice}
         status={folder}
         onStatus={setFolder}
         onFresh={(files) => void send(files, "device")}

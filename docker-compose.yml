@@ -195,6 +195,9 @@ services:
       FILES_QUOTA_CLUB_BYTES: ${FILES_QUOTA_CLUB_BYTES:-}
       FILES_QUOTA_PERSONAL_BYTES: ${FILES_QUOTA_PERSONAL_BYTES:-}
       TRUSTED_PROXY_HOPS: ${TRUSTED_PROXY_HOPS:-}
+      # How many new rides one person may store in an hour (ADR 0019); 60
+      # unless set.
+      UPLOAD_FILES_PER_HOUR: ${UPLOAD_FILES_PER_HOUR:-}
       # Wahoo, Garmin and Polar, for riders who choose to connect
       # (.env.example, docs/devices-setup.md).
       WAHOO_CLIENT_ID: ${WAHOO_CLIENT_ID:-}
