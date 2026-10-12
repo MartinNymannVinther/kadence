@@ -60,6 +60,11 @@ export default async function MePage({
   const me = await whoAmI(ctx.orgId, ctx.userId);
   const rider = me?.rider ? await getRider(ctx, me.rider.id) : null;
   const guardians = rider ? await listGuardians(ctx, rider.id) : [];
+  // What parents see, and who they are, is only a question once a parent
+  // is linked to the rider (confirmed or waiting): a rider alone, an adult
+  // or a youth whose coach has added no parent, is not asked about parents
+  // they do not have. The sharing choice keeps its value meanwhile.
+  const hasParents = guardians.length > 0;
   const nothing = !rider && (me?.children.length ?? 0) === 0;
   const tone = sidebarToneFrom((await cookies()).get(SIDEBAR_TONE_COOKIE)?.value);
   // The parents' week by mail too, where the installation sends mail (docs/adr/0086).
@@ -69,25 +74,36 @@ export default async function MePage({
     <div className="flex max-w-2xl flex-col gap-5">
       <div className="flex flex-col gap-1.5">
         <h2 className="text-base font-semibold">{t("title")}</h2>
-        <p className="text-meta text-2sm leading-relaxed">{t("subtitle")}</p>
+        <p className="text-meta text-2sm leading-relaxed">
+          {t(rider && !hasParents ? "subtitleNoParents" : "subtitle")}
+        </p>
       </div>
 
       <AppearanceCard tone={tone} />
 
       {rider && (
         <>
-          <SharingForm
-            initial={{ shareTraining: rider.shareTraining, shareWellbeing: rider.shareWellbeing }}
-          />
-          <MyGuardians
-            guardians={guardians.map((g) => ({
-              id: g.id,
-              name: g.name,
-              relation: g.relation,
-              state: guardianState(g, rider.birthYear, new Set()),
-              account: g.accountEmail ? `${g.accountName ?? ""} · ${g.accountEmail}`.trim() : null,
-            }))}
-          />
+          {hasParents && (
+            <>
+              <SharingForm
+                initial={{
+                  shareTraining: rider.shareTraining,
+                  shareWellbeing: rider.shareWellbeing,
+                }}
+              />
+              <MyGuardians
+                guardians={guardians.map((g) => ({
+                  id: g.id,
+                  name: g.name,
+                  relation: g.relation,
+                  state: guardianState(g, rider.birthYear, new Set()),
+                  account: g.accountEmail
+                    ? `${g.accountName ?? ""} · ${g.accountEmail}`.trim()
+                    : null,
+                }))}
+              />
+            </>
+          )}
           <RiderThresholds
             ctx={ctx}
             rider={rider}

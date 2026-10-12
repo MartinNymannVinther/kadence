@@ -9,6 +9,7 @@ import { withQuery } from "@/components/calendar/href";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { rideableStructure } from "@/modules/rulle/rideable";
+import { UploadDialog } from "@/components/activities/upload-dialog";
 import { CompleteDialog } from "./complete-dialog";
 import { timePlaceText, type TimePlace } from "./time-place";
 
@@ -18,6 +19,9 @@ import { timePlaceText, type TimePlace } from "./time-place";
  * with steps can be ridden indoors in Rulle on the day (ADR 0033). The
  * title opens the whole session with its steps and comments; when and
  * where it starts stands under it, when the coach gave it (ADR 0058).
+ * Until a ride has come in for it, a quiet "Upload turen" opens the same
+ * upload as the calendar's, for the day the session was ridden on or after;
+ * a strength session has no file to send, so it has none.
  */
 export function TodaySession({
   session,
@@ -100,6 +104,9 @@ export function TodaySession({
         >
           {t("open")}
         </Link>
+        {canComplete && !done && session.onDate <= today && session.sport !== "strength" && (
+          <UploadDialog riderId={session.riderId} quiet />
+        )}
       </div>
     </article>
   );

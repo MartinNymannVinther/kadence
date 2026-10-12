@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { eq } from "drizzle-orm";
 import { Refused } from "@/core/action";
+import { env } from "@/core/env";
 import { uploadKeys } from "@/core/db/schema";
 import { withOrgContext } from "@/core/db/tenant";
 import { log } from "@/core/log";
@@ -52,10 +53,10 @@ const PER_ADDRESS = { count: 600, windowMs: 10 * MINUTE };
 const STRANGERS_PER_ADDRESS = { count: 20, windowMs: 10 * MINUTE };
 /** Requests for one person, rides Kadence already has included. */
 const PER_PERSON = { count: 600, windowMs: HOUR };
-/** Files read for one person in an hour, whatever they turned out to be: reading is the work. */
-export const FILES_READ_PER_HOUR = 120;
-/** Files kept for one person in an hour, whichever door they came in by (ADR 0019). */
-export const STORED_FILES_PER_HOUR = 60;
+/** Files kept for one person in an hour, whichever door they came in by (ADR 0019); `UPLOAD_FILES_PER_HOUR`. */
+export const STORED_FILES_PER_HOUR = env.UPLOAD_FILES_PER_HOUR;
+/** Files read for one person in an hour, whatever they turned out to be: reading is the work. Twice what is kept. */
+export const FILES_READ_PER_HOUR = 2 * STORED_FILES_PER_HOUR;
 /** Files being read for one person at the same moment. */
 const IN_FLIGHT = 2;
 
