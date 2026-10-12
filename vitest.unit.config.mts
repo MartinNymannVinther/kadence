@@ -34,7 +34,7 @@ export default defineConfig({
       // download route need the database.
       "tests/exercises/{builtin,contract,figure,view,compose,download-html,html-escape,library-paths,pose-edit,pose-props,program-draft,program-session}.test.ts",
       // The menu and the settings tabs by role and group (docs/adr/0068).
-      "tests/core/{nav-items,settings-items,log}.test.ts",
+      "tests/core/{nav-items,settings-items,log,new-version}.test.ts",
       // Which week plan the planner shows when this device and the shared draft differ
       // (docs/adr/0043, amended 2026-10-07); the draft's service and policies need the database.
       "tests/training/week-draft-merge.test.ts",

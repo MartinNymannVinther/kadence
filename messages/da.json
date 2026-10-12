@@ -246,6 +246,10 @@
     }
   },
   "app": {
+    "newVersion": {
+      "body": "Kadence er blevet opdateret, mens siden var åben. Genindlæs siden, så virker det hele igen. Har du skrevet noget, så kopiér det først.",
+      "reload": "Genindlæs"
+    },
     "nav": {
       "help": "Hjælp",
       "security": "Sikkerhed",
@@ -2830,6 +2834,7 @@
     },
     "upload": {
       "title": "Upload tur",
+      "quiet": "Upload turen",
       "body": "Filer fra din cykelcomputer, dit ur, din hometrainer eller en app: FIT, TCX og GPX, også pakket som .gz eller .zip (fx Garmin Connects eksport eller Stravas). Det virker altid, også uden Wahoo, Garmin og Polar.",
       "drop": "Træk filer hertil, eller tryk for at vælge",
       "busy": "Henter …",
