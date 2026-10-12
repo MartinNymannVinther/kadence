@@ -236,6 +236,40 @@ export const CALF_RAISE: BuiltinExercise = {
   },
 };
 
+/**
+ * A jump from a quarter squat, arms swung back; the arrow is the jump.
+ * For the bones (docs/adr/0092): road cycling builds little bone, and
+ * jumps are one way to add load (Olmedillas et al. 2012, BMC Med 10:168;
+ * Hinton et al. 2015, Bone 79:203–212, up to 100 jumps a session in men
+ * with low bone mass).
+ */
+export const SQUAT_JUMP: BuiltinExercise = {
+  id: "squatJump",
+  group: "legs",
+  equipment: [],
+  dose: { kind: "reps", reps: 6, perSide: false, sets: 3 },
+  source:
+    "Jumps for bone: Olmedillas et al. 2012, BMC Med 10:168 (cycling alone does not build bone; add osteogenic training); Hinton et al. 2015, Bone 79:203–212 (jumping raised bone density in men with low bone mass); 3 × 6 soft jumps is Kadence's own",
+  pose: {
+    joints: {
+      head: [106, 42],
+      neck: [114, 55],
+      hip: [137, 82],
+      elbowA: [133, 70],
+      handA: [150, 79],
+      elbowB: [133, 70],
+      handB: [150, 79],
+      kneeA: [113, 97],
+      footA: [124, 118],
+      kneeB: [113, 97],
+      footB: [124, 118],
+    },
+    hidden: ["armB", "legB"],
+    props: [{ kind: "floor", y: 122 }],
+    arrows: [{ from: [84, 80], to: [84, 30], bend: 0 }],
+  },
+};
+
 export const LEGS: readonly BuiltinExercise[] = [
   SQUAT,
   GOBLET_SQUAT,
@@ -245,4 +279,5 @@ export const LEGS: readonly BuiltinExercise[] = [
   SPLIT_SQUAT,
   ROMANIAN_DEADLIFT,
   CALF_RAISE,
+  SQUAT_JUMP,
 ];

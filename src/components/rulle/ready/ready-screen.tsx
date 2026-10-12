@@ -40,7 +40,7 @@ export function ReadyScreen({
   onDiscardKept,
 }: {
   picked: Picked | null;
-  choices: { today: Picked[]; team: Picked[]; dcu: Picked[] };
+  choices: { today: Picked[]; team: Picked[]; kadence: Picked[]; dcu: Picked[] };
   timeline: SessionTimeline | null;
   today: string;
   trial: boolean;
@@ -80,6 +80,7 @@ export function ReadyScreen({
           picked={picked}
           today={choices.today}
           team={choices.team}
+          kadence={choices.kadence}
           dcu={choices.dcu}
           timeline={timeline}
           todayDate={today}

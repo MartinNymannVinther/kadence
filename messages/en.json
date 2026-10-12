@@ -1484,6 +1484,8 @@
       },
       "close": "{first} and {second} are less than 48 hours apart. DCU recommends at least 48 hours between strength sessions.",
       "tooManyStrength": "From week {week} ({date}) DCU recommends {max, plural, one {# strength session} other {# strength sessions}} a week. The series has {perWeek}.",
+      "closeProfile": "{first} and {second} are less than 48 hours apart. Keep at least 48 hours between two strength sessions.",
+      "tooManyStrengthProfile": "From week {week} ({date}) {profile, select, motionist {Motionist} other {Supermotionist}} suggests {max, plural, one {# strength session} other {# strength sessions}} a week. The series has {perWeek}.",
       "hint": "Each session can still be moved and changed on its own. \"Edit\" and \"Delete\" can also take the rest of the series.",
       "preview": "See the hours against the season plan"
     },
@@ -1598,6 +1600,8 @@
       "wish": "What should the week be about?",
       "wishPlaceholder": "E.g. an easy week before Sunday's race, or two short interval sessions and one strength session",
       "hint": "The AI gets DCU's hours for the class, the team's own events and the library. It gets no rider data. The proposal lands in the plan, where you can change it.",
+      "hintSenior": "The AI gets the hours of the training profile, the team's own events and the library. It gets no rider data. The proposal lands in the plan, where you can change it.",
+      "basisOrProfile": "Class or profile",
       "ask": "Propose the week",
       "close": "Close",
       "thinking": "Thinking … this can take a while.",
@@ -1679,6 +1683,7 @@
     "showArchived": "Show archived too",
     "hideArchived": "Hide archived",
     "dcuSubtitle": "DCU's programme. It cannot be changed here, but you can copy it and adapt the copy.",
+    "kadenceSubtitle": "Kadence's own session for adults on a training profile. It cannot be changed here, but you can copy it and adapt the copy.",
     "coachOnlyTitle": "Only coaches make templates",
     "coachOnlyBody": "You can still put the library's sessions in your own calendar.",
     "actions": {
@@ -1708,6 +1713,10 @@
     "dcu": {
       "install": "Fetch DCU's strength programmes",
       "done": "DCU's programmes are in the library: {installed} new, {updated} updated."
+    },
+    "kadence": {
+      "install": "Fetch Motionist sessions",
+      "done": "Kadence's sessions, programmes and blocks for adults are in the library: {installed} new, {updated} updated."
     },
     "blocks": {
       "title": "Blocks",
@@ -3002,6 +3011,7 @@
       "missing": "{count, plural, one {# rider has no season plan for {season} yet.} other {# riders have no season plan for {season} yet.}}",
       "body": "Each plan is filled with DCU's hours and phases for the rider's class. You can change it afterwards.",
       "bodyOwn": "The team plans with its own hours, so the plans start empty and you type in the hours yourself.",
+      "bodySeniors": "Adults get the hours from their training profile, Motionist if none is chosen.",
       "noClass": "{count, plural, one {# rider is not in one of DCU's classes. You make that plan on the rider's own page, where you choose the class.} other {# riders are not in one of DCU's classes. You make those plans on the rider's own page, where you choose the class.}}",
       "button": "Create season plans for everyone without one",
       "created": "{count, plural, =0 {There were no plans to make.} one {# season plan is made.} other {# season plans are made.}}"
@@ -3233,6 +3243,7 @@
       },
       "category": "Class",
       "categoryNone": "None in particular",
+      "categoryOrProfile": "Class or profile",
       "refine": "Change the session as it stands",
       "hint": "Choose a class and the proposal keeps to DCU's recommendations for it. No rider data is sent, and nothing is saved until you save the session.",
       "ruleHint": "Shorthand like \"3x10 min Z4 / 5 min rest\" is read by the rules without a language model.",
@@ -3244,7 +3255,8 @@
       "use": "Use the proposal",
       "used": "The proposal is now in the session.",
       "undo": "Undo",
-      "longestRide": "The session is longer than DCU's longest training ride for {category}, {hours, plural, one {# hour} other {# hours}}. It is your decision."
+      "longestRide": "The session is longer than DCU's longest training ride for {category}, {hours, plural, one {# hour} other {# hours}}. It is your decision.",
+      "longestRideProfile": "The session is longer than the longest ride Kadence suggests for {profile, select, motionist {Motionist} other {Supermotionist}}, {hours, plural, one {# hour} other {# hours}}. It is your decision."
     },
     "week": {
       "open": "Propose the week",
@@ -3859,6 +3871,7 @@
       "trial": "You're trying the session with the rider's watts. A trial ride is not saved.",
       "fromTeam": "A session from the team's library",
       "fromDcu": "A standard session from DCU",
+      "fromKadence": "A session from Kadence for adults",
       "whenNote": "DCU puts it: {when}. Meant as a guide.",
       "source": "Source: {source}. The warm-up, pauses and cool-down are Kadence's.",
       "pickOther": "Choose another session",
@@ -3868,6 +3881,11 @@
       "team": "The team's sessions",
       "dcu": "DCU's standard sessions",
       "dcuNote": "Built on DCU's interval sheet and example weeks. Your coach knows your plan best.",
+      "kadence": "Kadence's sessions for adults",
+      "kadenceNote": "Kadence's own sessions for your training profile. The source is under each one.",
+      "kadenceWhen": "When: {when}",
+      "kadenceWhenNote": "When in the season: {when}. Meant as a guide.",
+      "kadenceSource": "Source: {source}.",
       "when": "DCU: {when}",
       "freeMeta": "As long as you like, no intervals"
     },
@@ -5471,6 +5489,11 @@
         "how": "Stand with the balls of your feet on the edge of a step and one hand against the wall. Keep your legs straight, rise onto your toes and lower your heels slowly.",
         "why": "Trains your calves, which take part in every pedal stroke."
       },
+      "squatJump": {
+        "name": "Squat jump",
+        "how": "Stand with your feet hip-width apart. Drop into a quarter squat and swing your arms back. Jump with your arms forward, and land softly on the balls of your feet with bent knees.",
+        "why": "Jumps load the bones in a way the bike does not. Start with small jumps."
+      },
       "pushUp": {
         "name": "Push-ups",
         "how": "Put your hands on the floor a little wider than your shoulders and keep your body straight. Lower your chest towards the floor with your elbows slightly in, and press back up. If that is too hard, rest on your knees.",
@@ -5585,6 +5608,10 @@
       "bandsKettlebell": {
         "name": "Bands and a kettlebell",
         "description": "Hips, legs and shoulders with elastic bands and a kettlebell. Warm up with 8 minutes on the bike and 20 squats. Start light, and let your hips do the work in the swing. Keep at least 48 hours between two strength sessions."
+      },
+      "motionistHome": {
+        "name": "Motionist strength at home",
+        "description": "The whole body at home with body weight and a band, and jumps for the bones. About 35 minutes. Twice a week in winter, once the rest of the year. Start light, and keep at least 48 hours between two strength sessions."
       }
     },
     "library": {

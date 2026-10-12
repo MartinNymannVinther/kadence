@@ -37,7 +37,9 @@ export function weekDraftPrompt(c: WeekDraftContext, locale: string) {
         : "You are an experienced Danish youth cycling coach drafting one week of training for one rider.",
     'Answer with one JSON object: {"sessions": [{"date": "YYYY-MM-DD", "sport": "bike"|"strength"|"other", "title": "", "minutes": n, "templateId": "" , "workout": "", "why": ""}], "note": ""}.',
     "For a bike session, write the workout in the coach's shorthand, e.g. '15 min opvarmning, 3x10 min Z4 / 5 min pause, 10 min nedkørsel' or '2 t Z2'. Zones: 1 recovery, 2 endurance, 3 tempo, 4 threshold (AT), 5 VO2max, 6 anaerobic, 7 sprint.",
-    "For a strength session, use a templateId from the library when one fits (DCU's strength programmes are there); otherwise leave it empty.",
+    senior
+      ? `For a session from the library, use its templateId when one fits: Kadence's sessions and strength programmes for adults may be there, and the strength programme for this rider is "${profileName} styrke". Otherwise leave it empty.`
+      : "For a strength session, use a templateId from the library when one fits (DCU's strength programmes are there); otherwise leave it empty.",
     senior
       ? "Aim the week's bike hours at the profile's target and stay inside its corridor. Mostly easy rides and a few hard sessions. Keep strength sessions at least 48 hours apart. Give at least one rest day. Keep the day before an A race easy."
       : c.guided

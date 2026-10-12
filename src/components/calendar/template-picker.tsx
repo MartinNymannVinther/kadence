@@ -72,6 +72,7 @@ export function TemplatePicker({
             <SportIcon sport={tpl.sport} />
             <span className="min-w-0 flex-1 truncate">{tpl.name}</span>
             {tpl.source === "dcu" && <Badge variant="secondary">DCU</Badge>}
+            {tpl.source === "kadence" && <Badge variant="secondary">Kadence</Badge>}
             {tpl.plannedMinutes > 0 && (
               <span className="text-meta shrink-0 text-xs tabular-nums">
                 {durationText(tpl.plannedMinutes, duration)}

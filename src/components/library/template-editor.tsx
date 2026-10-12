@@ -23,11 +23,14 @@ export function TemplateEditor({
   assistOpen = false,
   riderId,
   assist = true,
+  seniors = false,
 }: {
   /** A rider's own session (ADR 0050); absent for the team's library. */
   riderId?: string;
   /** "Byg med AI" is a coach's (ADR 0038). */
   assist?: boolean;
+  /** The workspace has an adult: "Byg med AI" offers the training profiles (ADR 0092). */
+  seniors?: boolean;
   /** The sport a new template starts on. */
   sport?: "bike" | "strength";
   /** "Byg med AI" open on arrival (`?ai=1`). */
@@ -86,6 +89,7 @@ export function TemplateEditor({
           onChange={setDraft}
           assist={assist}
           assistOpen={assist && assistOpen}
+          seniors={seniors}
         />
       </div>
       <div className="max-lg:hidden lg:row-span-3">

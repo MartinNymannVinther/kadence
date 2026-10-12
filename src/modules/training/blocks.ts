@@ -221,9 +221,15 @@ export async function updateBlock(ctx: OrgContext, id: string, input: BlockInput
       .from(trainingBlocks)
       .where(eq(trainingBlocks.id, id));
     if (!row) throw new Refused("notFound");
+    // A ready week of Kadence's that a coach changes becomes the coach's own (ADR 0092).
     await tx
       .update(trainingBlocks)
-      .set({ name: input.name, description: input.description, weeks: input.weeks })
+      .set({
+        name: input.name,
+        description: input.description,
+        weeks: input.weeks,
+        sourceKey: null,
+      })
       .where(eq(trainingBlocks.id, id));
     await writeItems(tx, ctx, id, input);
   });

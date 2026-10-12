@@ -1,4 +1,5 @@
 import type { OrgContext } from "@/core/db/tenant";
+import { hasSeniorRider } from "@/modules/season/seniors";
 import { EXERCISE_GROUPS } from "@/modules/workouts/structure";
 import { BUILTIN_EXERCISES, BUILTIN_PROGRAMS } from "./builtin";
 import type { Translate } from "./dose";
@@ -73,9 +74,11 @@ export async function libraryCatalogue(
   locale: string,
   options: { includeArchived?: boolean } = {},
 ): Promise<LibraryCatalogue> {
-  const [team, teamPrograms] = await Promise.all([
+  const [team, teamPrograms, adults] = await Promise.all([
     listTeamExercises(ctx, { includeArchived: true }),
     listTeamPrograms(ctx, { includeArchived: options.includeArchived }),
+    // Programmes for adults only where the workspace has one (ADR 0092).
+    hasSeniorRider(ctx),
   ]);
   const exercises = [...team.map(teamView), ...builtinExercises(t, locale)];
   const known = new Map<ExerciseRef, ExerciseView>(exercises.map((e) => [e.ref, e]));
@@ -88,7 +91,7 @@ export async function libraryCatalogue(
       archived: p.archived,
       ...summary(p.parts, known),
     })),
-    ...BUILTIN_PROGRAMS.map((p) => ({
+    ...BUILTIN_PROGRAMS.filter((p) => adults || p.audience !== "adult").map((p) => ({
       ref: `builtin:${p.id}` as ExerciseRef,
       name: t(`programs.${p.id}.name`),
       description: t(`programs.${p.id}.description`),

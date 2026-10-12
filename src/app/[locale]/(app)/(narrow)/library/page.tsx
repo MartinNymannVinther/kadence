@@ -5,6 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
 import { LibraryTabs } from "@/components/exercises/library/library-tabs";
 import { InstallDcuButton } from "@/components/library/install-dcu-button";
+import { InstallKadenceButton } from "@/components/library/install-kadence-button";
 import { LibraryActions } from "@/components/library/library-actions";
 import { BlockList } from "@/components/library/block-list";
 import { LibraryList } from "@/components/library/library-list";
@@ -12,6 +13,7 @@ import { getOrgContext } from "@/core/auth/session";
 import { todayInCopenhagen } from "@/core/dates";
 import { Link, redirect } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+import { hasSeniorRider } from "@/modules/season/seniors";
 import { whoAmI } from "@/modules/team/access";
 import { listBlocks } from "@/modules/training/blocks";
 import { listOwnTemplates, listTemplates } from "@/modules/training/templates";
@@ -44,7 +46,7 @@ export default async function LibraryPage({
   const me = await whoAmI(ctx.orgId, ctx.userId);
   const showArchived = (await searchParams).archived === "1";
   const isCoach = Boolean(me?.isCoach);
-  const [templates, riders, blocks, own] = await Promise.all([
+  const [templates, riders, blocks, own, senior] = await Promise.all([
     listTemplates(ctx, showArchived),
     ridersToPlanFor(ctx, me),
     listBlocks(ctx),
@@ -52,6 +54,8 @@ export default async function LibraryPage({
     isCoach || me?.rider
       ? listOwnTemplates(ctx, isCoach ? {} : { riderId: me!.rider!.id })
       : Promise.resolve([]),
+    // Kadence's sessions for adults are offered only where there is a senior (ADR 0092).
+    isCoach ? hasSeniorRider(ctx) : Promise.resolve(false),
   ]);
   const adopted = new Set(templates.map((tpl) => tpl.copiedFrom).filter(Boolean));
   const ownMode = isCoach ? ("coach" as const) : me?.rider ? ("rider" as const) : null;
@@ -65,13 +69,15 @@ export default async function LibraryPage({
           // The coach's corner of the library (docs/adr/0077): "Nyt pas"
           // with the three ways to a new session, and the rest behind
           // three dots.
-          isCoach ? <LibraryActions /> : undefined
+          isCoach ? <LibraryActions senior={senior} /> : undefined
         }
       />
       <LibraryTabs />
       {isCoach && templates.length === 0 && (
-        // An empty library is where DCU's programmes are most wanted.
-        <div>
+        // An empty library is where DCU's programmes are most wanted, and
+        // Kadence's for adults first where there is a senior (ADR 0092).
+        <div className="flex flex-wrap gap-2">
+          {senior && <InstallKadenceButton />}
           <InstallDcuButton />
         </div>
       )}

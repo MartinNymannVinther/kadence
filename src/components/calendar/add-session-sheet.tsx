@@ -166,6 +166,7 @@ export function AddSessionSheet({
             sport={sport}
             plannedMinutes={minutes}
             riderIds={riderIds}
+            riders={riders}
             value={repeat}
             onChange={setRepeat}
           />

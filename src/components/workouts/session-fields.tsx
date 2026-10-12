@@ -24,6 +24,7 @@ export function SessionFields({
   showKm = false,
   assist = false,
   assistOpen = false,
+  seniors = false,
 }: {
   draft: SessionDraft;
   onChange: (draft: SessionDraft) => void;
@@ -33,6 +34,8 @@ export function SessionFields({
   assist?: boolean;
   /** Open on arrival, for "Byg med AI" from the library's top. */
   assistOpen?: boolean;
+  /** The workspace has an adult: "Byg med AI" offers the training profiles (ADR 0092). */
+  seniors?: boolean;
 }) {
   const t = useTranslations("workouts.fields");
   const sports = useTranslations("training.sport");
@@ -77,7 +80,9 @@ export function SessionFields({
         />
       </div>
 
-      {assist && <BuildWithAi draft={draft} onChange={onChange} defaultOpen={assistOpen} />}
+      {assist && (
+        <BuildWithAi draft={draft} onChange={onChange} defaultOpen={assistOpen} seniors={seniors} />
+      )}
 
       <StructureBuilder
         structure={draft.structures[draft.sport]}

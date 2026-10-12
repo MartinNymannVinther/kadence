@@ -11,8 +11,9 @@ import type { TeamPlanGaps } from "@/modules/season/team-plans";
 /**
  * "Opret sæsonplaner for alle uden en plan" on the season's "Hele holdet":
  * one press gives every rider without a plan one for their own class and
- * year, from DCU or empty as the team plans. Says how many it made; a
- * rider outside DCU's classes is planned on their own page.
+ * year, from DCU or empty as the team plans, and an adult from their
+ * training profile (ADR 0092). Says how many it made; a rider outside the
+ * classes is planned on their own page.
  */
 export function TeamPlans({
   gaps,
@@ -42,6 +43,7 @@ export function TeamPlans({
             <p className="text-sm font-semibold">{t("missing", { count: gaps.missing, season })}</p>
             <p className="text-meta text-2sm leading-relaxed">
               {guided ? t("body") : t("bodyOwn")}
+              {guided && gaps.seniors > 0 && <> {t("bodySeniors")}</>}
             </p>
           </div>
           <Button

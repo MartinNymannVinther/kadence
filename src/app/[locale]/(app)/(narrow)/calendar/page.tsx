@@ -19,8 +19,10 @@ import { getOrgContext } from "@/core/auth/session";
 import { mondayOf, todayInCopenhagen } from "@/core/dates";
 import { basisText } from "@/components/season/basis-text";
 import { Link, redirect } from "@/i18n/navigation";
+import { seasonStartYear } from "@/modules/dcu";
 import { refreshStaleRaces } from "@/modules/results/refresh";
 import { listRaceResults } from "@/modules/results/service";
+import { riderClass } from "@/modules/season/class";
 import { volumesFor } from "@/modules/season/volumes";
 import { whoAmI } from "@/modules/team/access";
 import { getTeamName } from "@/modules/team/name";
@@ -66,7 +68,12 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
   const days = weekDates(monday);
   const range = { from: monday, to: days[6] ?? monday };
   const riderRows = await getRiders(ctx);
-  const visible = riderRows.map((r) => ({ id: r.id, name: r.name }));
+  const visible = riderRows.map((r) => ({
+    id: r.id,
+    name: r.name,
+    // An adult's strength series is measured against their profile (ADR 0092).
+    basis: riderClass(r, seasonStartYear(monday)).basis,
+  }));
 
   if (!me || visible.length === 0) {
     const waiting = me?.children.some((c) => !c.confirmed);

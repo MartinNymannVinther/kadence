@@ -13,18 +13,21 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "@/i18n/navigation";
 import { installDcuProgrammesAction } from "@/modules/training/dcu-actions";
+import { installKadenceContentAction } from "@/modules/training/kadence-actions";
 
 /**
  * The coach's corner of the library in two controls instead of four
  * buttons (docs/adr/0077): "Nyt pas" opens the three ways to a new
  * session — on the bike, in the gym, or written for the AI (ADR 0038) —
  * and the three dots hold what is done a few times a season, fetching
- * DCU's strength programmes (ADR 0014). The same addresses as before;
- * only the way to them is shorter.
+ * DCU's strength programmes (ADR 0014) and, where the workspace has a
+ * senior, Kadence's sessions for adults first (ADR 0092). The same
+ * addresses as before; only the way to them is shorter.
  */
-export function LibraryActions() {
+export function LibraryActions({ senior = false }: { senior?: boolean }) {
   const t = useTranslations("library");
   const dcu = useTranslations("library.dcu");
+  const kadence = useTranslations("library.kadence");
   const router = useRouter();
   const { run, pending } = useRun();
 
@@ -32,6 +35,12 @@ export function LibraryActions() {
     const result = await run(() => installDcuProgrammesAction({}));
     if (result)
       toast.success(dcu("done", { installed: result.installed, updated: result.updated }));
+  }
+
+  async function installKadence() {
+    const result = await run(() => installKadenceContentAction({}));
+    if (result)
+      toast.success(kadence("done", { installed: result.installed, updated: result.updated }));
   }
 
   return (
@@ -75,6 +84,12 @@ export function LibraryActions() {
           <Ellipsis />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="min-w-60">
+          {senior && (
+            <DropdownMenuItem disabled={pending} onClick={installKadence}>
+              <Download data-slot="icon" />
+              {kadence("install")}
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem disabled={pending} onClick={installDcu}>
             <Download data-slot="icon" />
             {dcu("install")}

@@ -386,6 +386,13 @@
       "when": 1791750700000,
       "tag": "0054_senior_profile",
       "breakpoints": true
+    },
+    {
+      "idx": 55,
+      "version": "7",
+      "when": 1791750800000,
+      "tag": "0055_kadence_sessions",
+      "breakpoints": true
     }
   ]
 }

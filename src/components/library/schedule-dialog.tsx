@@ -107,6 +107,7 @@ export function ScheduleDialog({
             sport={template.sport}
             plannedMinutes={template.plannedMinutes}
             riderIds={riderIds}
+            riders={riders}
             value={repeat}
             onChange={setRepeat}
           />

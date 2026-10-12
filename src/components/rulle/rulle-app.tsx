@@ -7,7 +7,7 @@ import type { RulleSession, RulleStart } from "@/modules/rulle/service";
 import { BleLogPanel } from "./ble-log-panel";
 import { BleLog } from "./bluetooth/ble-log";
 import { DoneScreen } from "./done-screen";
-import { dcuPicks, pickOf, plannedPick, teamPicks } from "./ready/choices";
+import { dcuPicks, kadencePicks, pickOf, plannedPick, teamPicks } from "./ready/choices";
 import { ReadyScreen } from "./ready/ready-screen";
 import { Beeps } from "./ride/beeps";
 import { forgetRide, keepRide, localOffsetSeconds, type RideMeta } from "./ride/ride-store";
@@ -57,10 +57,20 @@ export function RulleApp({
     const today = planned
       .filter((s, i) => planned.findIndex((x) => x.id === s.id) === i)
       .map(plannedPick);
-    return { today, team: teamPicks(start.library), dcu: dcuPicks(locale) };
+    return {
+      today,
+      team: teamPicks(start.library),
+      kadence: kadencePicks(locale, start.profile),
+      dcu: dcuPicks(locale),
+    };
   }, [start, locale]);
   const [chosenId, setChosenId] = useState<string | null>(start.chosen?.id ?? null);
-  const picked = pickOf(chosenId, [...choices.today, ...choices.team, ...choices.dcu]);
+  const picked = pickOf(chosenId, [
+    ...choices.today,
+    ...choices.team,
+    ...choices.kadence,
+    ...choices.dcu,
+  ]);
   const session = picked?.session ?? null;
   const riderOf = session?.riderId ?? start.riderId;
   const thresholds = riderOf ? (start.thresholds[riderOf] ?? null) : null;

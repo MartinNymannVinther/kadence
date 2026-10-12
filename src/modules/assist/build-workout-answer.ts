@@ -1,5 +1,12 @@
 import type { DcuCategory } from "@/modules/dcu";
 import { LONGEST_RIDE } from "@/modules/dcu";
+import {
+  SENIOR_LONGEST_RIDE,
+  isSeniorBasis,
+  profileOf,
+  type SeniorBasis,
+  type SeniorProfile,
+} from "@/modules/paradigms";
 import { asString, list, rec } from "@/modules/ai/sanitize-helpers";
 import {
   EXERCISE_GROUPS,
@@ -26,8 +33,17 @@ import { sanitizeParsed } from "./parse-workout";
 
 export type BuildSport = "bike" | "strength";
 
-/** A guardrail's word on a proposal: the session goes past DCU's longest ride. */
-export type WorkoutNote = { kind: "longestRide"; category: DcuCategory; hours: number };
+/** Who the session is for: one of DCU's classes, or an adult's training profile (ADR 0092). */
+export type BuildCategory = DcuCategory | SeniorBasis;
+
+/**
+ * A guardrail's word on a proposal: the session goes past DCU's longest
+ * ride for the class, or past the longest ride Kadence suggests for an
+ * adult's profile (ADR 0091).
+ */
+export type WorkoutNote =
+  | { kind: "longestRide"; category: DcuCategory; hours: number }
+  | { kind: "longestRideProfile"; profile: SeniorProfile; hours: number };
 
 export type BuiltWorkout = {
   /** Empty when the rules read the coach's shorthand: they make no name. */
@@ -113,11 +129,16 @@ export function sanitizeStrength(data: unknown): StrengthStructure | null {
 /** The guardrails' notes: shown under the proposal, never a reason to refuse it. */
 export function workoutNotes(
   structure: BikeStructure | StrengthStructure,
-  category: DcuCategory | null,
+  category: BuildCategory | null,
   /** A team that plans without DCU (ADR 0049) gets no note about DCU's longest ride. */
   guided = true,
 ): WorkoutNote[] {
   if (!guided || !category || structure.kind !== "bike") return [];
+  if (isSeniorBasis(category)) {
+    const hours = SENIOR_LONGEST_RIDE[category].hours;
+    if (structureMinutes(structure) <= hours * 60) return [];
+    return [{ kind: "longestRideProfile", profile: profileOf(category), hours }];
+  }
   const limit = LONGEST_RIDE[category];
   if (!limit || structureMinutes(structure) <= limit.hours * 60) return [];
   return [{ kind: "longestRide", category, hours: limit.hours }];
@@ -127,7 +148,7 @@ export function workoutNotes(
 export function sanitizeBuilt(
   sport: BuildSport,
   data: unknown,
-  category: DcuCategory | null,
+  category: BuildCategory | null,
   guided = true,
 ): BuiltWorkout | null {
   const structure = sport === "bike" ? sanitizeParsed(data) : sanitizeStrength(data);

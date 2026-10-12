@@ -14,8 +14,9 @@ import type { LibraryTemplate } from "./types";
 
 /**
  * What can be done with a template: plan it into the calendar, and for a
- * coach change it, copy it and put it away. DCU's own are read-only —
- * "Kopiér for at tilpasse" makes a copy the coach may change (ADR 0014).
+ * coach change it, copy it and put it away. DCU's and Kadence's own are
+ * read-only — "Kopiér for at tilpasse" makes a copy the coach may change
+ * (ADR 0014, 0092).
  */
 export function TemplateActions({
   template,
@@ -34,7 +35,7 @@ export function TemplateActions({
   const router = useRouter();
   const { run, pending } = useRun();
   const [scheduling, setScheduling] = useState(false);
-  const dcu = template.source === "dcu";
+  const fixed = template.source === "dcu" || template.source === "kadence";
   const small = "max-sm:h-11";
 
   async function duplicate() {
@@ -57,7 +58,7 @@ export function TemplateActions({
           {t("schedule")}
         </Button>
       )}
-      {isCoach && !dcu && showEdit && (
+      {isCoach && !fixed && showEdit && (
         <Link
           href={`/library/${template.id}`}
           className={cn(buttonVariants({ variant: "outline", size: "sm" }), small)}
@@ -75,7 +76,7 @@ export function TemplateActions({
           onClick={duplicate}
         >
           <Copy data-icon="inline-start" />
-          {dcu ? t("copyToAdapt") : t("copy")}
+          {fixed ? t("copyToAdapt") : t("copy")}
         </Button>
       )}
       {isCoach && (

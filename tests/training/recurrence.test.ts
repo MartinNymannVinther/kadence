@@ -81,3 +81,26 @@ describe("what the guardrails say about a strength series", () => {
     ]);
   });
 });
+
+describe("a strength series for an adult on a training profile (ADR 0092)", () => {
+  it("is measured against the Motionist's two a week in winter, and says whose", () => {
+    expect(
+      strengthNotes("2026-11-02", { weekdays: [1, 3, 5], until: "2026-11-29" }, "senior-motionist"),
+    ).toEqual([{ kind: "tooMany", from: "2026-11-02", perWeek: 3, max: 2, profile: "motionist" }]);
+    // DCU's two to three allow the same series for a youth rider.
+    expect(strengthNotes("2026-11-02", { weekdays: [1, 3, 5], until: "2026-11-29" })).toEqual([]);
+  });
+
+  it("keeps the Supermotionist at two through March, then one", () => {
+    const series = { weekdays: [2, 5], until: "2027-04-25" };
+    expect(strengthNotes("2027-03-01", series, "senior-super-motionist")).toEqual([
+      { kind: "tooMany", from: "2027-04-05", perWeek: 2, max: 1, profile: "super-motionist" },
+    ]);
+  });
+
+  it("names the profile when two days are too close", () => {
+    expect(
+      strengthNotes("2026-11-02", { weekdays: [1, 2], until: "2026-11-29" }, "senior-motionist"),
+    ).toEqual([{ kind: "close", first: 1, second: 2, profile: "motionist" }]);
+  });
+});

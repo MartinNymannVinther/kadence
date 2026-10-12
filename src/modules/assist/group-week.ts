@@ -11,7 +11,9 @@ import {
   weeklyCorridor,
   type ClassBasis,
 } from "@/modules/dcu";
+import { isSeniorBasis, type PlanBasis } from "@/modules/paradigms";
 import { requireCoach } from "@/modules/team/access";
+import { seniorGroupWeekPrompt } from "./group-week-senior";
 import { raceRulesLine, sanitizeWeekDraft, type WeekDraft } from "./week-draft";
 import { teamParadigm } from "@/modules/team/settings";
 
@@ -24,19 +26,26 @@ import { teamParadigm } from "@/modules/team/settings";
  * for riders' data (ADR 0017) is not asked; the per-rider draft still is.
  * The answer goes through the per-rider draft's sanitizer, and lands in
  * the week planner, where the coach changes it before anything is made.
+ * A group of adults is drafted from their training profile instead, in
+ * words of its own (group-week-senior.ts, ADR 0092).
  */
 
 type Context = {
   monday: string;
   /** Whether the team plans by DCU (ADR 0049). */
   guided: boolean;
-  basis: ClassBasis;
+  basis: PlanBasis;
   wish: string;
   events: Array<{ kind: string; title: string; from: string; to: string; priority: string | null }>;
   templates: Array<{ id: string; name: string; sport: string; minutes: number }>;
 };
 
 export function groupWeekPrompt(c: Context, locale: string) {
+  if (isSeniorBasis(c.basis)) return seniorGroupWeekPrompt({ ...c, basis: c.basis }, locale);
+  return classGroupWeekPrompt({ ...c, basis: c.basis }, locale);
+}
+
+function classGroupWeekPrompt(c: Context & { basis: ClassBasis }, locale: string) {
   const category = c.basis.split("-")[0]!;
   const corridor = weeklyCorridor(c.basis, c.monday);
   const strength = strengthFrequency(c.monday);
@@ -82,7 +91,7 @@ export function groupWeekPrompt(c: Context, locale: string) {
 
 export async function proposeGroupWeek(
   ctx: OrgContext,
-  input: { monday: string; basis: ClassBasis; text: string },
+  input: { monday: string; basis: PlanBasis; text: string },
   locale: string,
 ): Promise<{ proposal: WeekDraft; engine: string }> {
   const monday = mondayOf(input.monday);

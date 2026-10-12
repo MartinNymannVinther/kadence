@@ -4,7 +4,14 @@
  * server side of the line.
  */
 
-export type RiderOption = { id: string; name: string };
+import type { PlanBasis } from "@/modules/paradigms";
+
+/**
+ * A rider to choose. `basis` is the class-year or an adult's training
+ * profile this season, where the page knows it: a strength series is
+ * measured against the profile's rhythm for adults (ADR 0092).
+ */
+export type RiderOption = { id: string; name: string; basis?: PlanBasis | null };
 
 export type CalendarCard = {
   id: string;

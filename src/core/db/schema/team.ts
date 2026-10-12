@@ -352,9 +352,9 @@ export const workoutTemplates = pgTable(
     /** The steps, or the exercises and progression — src/modules/workouts/structure.ts. */
     structure: jsonb("structure").notNull(),
     plannedMinutes: smallint("planned_minutes").notNull().default(0),
-    /** dcu | own */
+    /** dcu | own | kadence — Kadence's own sessions for a senior (docs/adr/0092). */
     source: text("source").notNull().default("own"),
-    /** Stable key for a DCU template, so a newer edition can replace it. */
+    /** Stable key for a DCU or Kadence template, so a newer edition can replace it. */
     sourceKey: text("source_key"),
     archived: boolean("archived").notNull().default(false),
     createdBy: text("created_by").references(() => users.id, { onDelete: "set null" }),
@@ -377,7 +377,7 @@ export const workoutTemplates = pgTable(
       .on(t.orgId, t.sourceKey)
       .where(sql`${t.sourceKey} is not null`),
     check("workout_templates_sport", sql`${t.sport} in ('bike','strength','other')`),
-    check("workout_templates_source", sql`${t.source} in ('dcu','own')`),
+    check("workout_templates_source", sql`${t.source} in ('dcu','own','kadence')`),
     check("workout_templates_minutes", sql`${t.plannedMinutes} between 0 and 1440`),
   ],
 );
@@ -396,11 +396,20 @@ export const trainingBlocks = pgTable(
     description: text("description").notNull().default(""),
     weeks: smallint("weeks").notNull(),
     archived: boolean("archived").notNull().default(false),
+    /**
+     * Stable key for one of Kadence's ready weeks (docs/adr/0092), so
+     * fetching them again updates the block rather than adding another;
+     * null for a coach's own, and cleared when a coach changes one.
+     */
+    sourceKey: text("source_key"),
     createdBy: text("created_by").references(() => users.id, { onDelete: "set null" }),
     ...timestamps,
   },
   (t) => [
     index("training_blocks_org_idx").on(t.orgId, t.archived),
+    uniqueIndex("training_blocks_source_key_uq")
+      .on(t.orgId, t.sourceKey)
+      .where(sql`${t.sourceKey} is not null`),
     check("training_blocks_weeks", sql`${t.weeks} between 1 and 12`),
   ],
 );
