@@ -28,6 +28,7 @@ import {
   ThresholdsInput,
   updateRider,
 } from "./riders";
+import { setTrainingProfile, TrainingProfileInput } from "./training-profile";
 import { saveTeamSettings, TeamSettingsInput } from "./settings";
 
 /**
@@ -109,6 +110,15 @@ export async function setThresholdsAction(raw: unknown) {
     (ctx, { riderId, ...input }) => setThresholds(ctx, riderId, input),
     PATHS,
   );
+}
+
+/** A senior's Motionist or Supermotionist (docs/adr/0091): the coach's, or the rider's own. */
+export async function setTrainingProfileAction(raw: unknown) {
+  return runAction(raw, TrainingProfileInput, setTrainingProfile, [
+    ...PATHS,
+    "/season",
+    "/calendar",
+  ]);
 }
 
 export async function setSharingAction(raw: unknown) {

@@ -13,6 +13,7 @@ import { RemindersCard } from "@/components/push/reminders-card";
 import { WeekMailCard } from "@/components/push/week-mail-card";
 import { OwnRacesCard } from "@/components/team/own-races-card";
 import { SharingForm } from "@/components/team/sharing-form";
+import { SeniorProfile } from "@/components/team/senior-profile";
 import { ThresholdsForm } from "@/components/team/thresholds-form";
 import { getOrgContext } from "@/core/auth/session";
 import { todayInCopenhagen } from "@/core/dates";
@@ -37,7 +38,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /**
  * The person's own corner. A rider decides what their parents see,
- * confirms each parent, keeps their thresholds and may give their UCI ID;
+ * confirms each parent, keeps their thresholds, chooses their training
+ * profile when they ride as a senior (docs/adr/0091) and may give their UCI ID;
  * a parent sees their links and may end one; everybody finds their
  * security settings here, and whoever is not a coach the way off the team
  * at the bottom (P1-07). "Udseende" — light or dark, and the rail in moss
@@ -93,6 +95,7 @@ export default async function MePage() {
               thresholdsOn: rider.thresholdsOn,
             }}
           />
+          <SeniorProfile rider={rider} today={todayInCopenhagen()} />
           <OwnRacesCard
             riderId={rider.id}
             printed={rider.uciId ? formatUciId(rider.uciId) : null}

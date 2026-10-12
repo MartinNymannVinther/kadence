@@ -5,6 +5,7 @@ import { monthLong, num } from "@/components/charts/format";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Link } from "@/i18n/navigation";
 import type { Volume } from "@/modules/season/volume";
+import { referenceOf } from "@/modules/paradigms";
 import { VolumeBar } from "./volume-bar";
 
 export type TeamSeasonRow = {
@@ -56,6 +57,7 @@ export function TeamSeason({ rows, month }: { rows: TeamSeasonRow[]; month: numb
                   planned: h(so.planned),
                   goal: so.goal !== null ? v("hours", { hours: h(so.goal) }) : v("noGoal"),
                   dcu: so.dcu ? v("hours", { hours: h(so.dcu.target) }) : v("noDcu"),
+                  ref: referenceOf(so.basis),
                 })}
               </p>
             </div>

@@ -98,6 +98,13 @@ export const riders = pgTable(
     sex: text("sex"),
     /** A coach's override of the class and year the birth year gives ("U19-1"), e.g. a rider moved up. */
     categoryOverride: text("category_override"),
+    /**
+     * A senior's training profile, "motionist" or "super-motionist"
+     * (docs/adr/0091): Kadence's own numbers where DCU has none. Read only
+     * when the rider's class in the season is senior; null is the default,
+     * motionist. The rider may set their own (drizzle/0054).
+     */
+    trainingProfile: text("training_profile"),
     ftpWatts: smallint("ftp_watts"),
     thresholdHr: smallint("threshold_hr"),
     maxHr: smallint("max_hr"),
@@ -131,6 +138,10 @@ export const riders = pgTable(
     check(
       "riders_category",
       sql`${t.categoryOverride} is null or ${t.categoryOverride} in ('U17-1','U17-2','U19-1','U19-2','U23-1','U23-2','U23-3','U23-4','senior')`,
+    ),
+    check(
+      "riders_training_profile",
+      sql`${t.trainingProfile} is null or ${t.trainingProfile} in ('motionist','super-motionist')`,
     ),
   ],
 );
@@ -305,14 +316,23 @@ export const seasonPlans = pgTable(
       .references(() => riders.id, { onDelete: "cascade" }),
     /** The calendar year the season starts in (October). */
     seasonStartYear: integer("season_start_year").notNull(),
-    /** The DCU class and year the plan was filled from, e.g. "U19-1". */
+    /**
+     * The DCU class and year the plan was filled from, e.g. "U19-1", or a
+     * senior's profile, "senior-motionist" (docs/adr/0091).
+     */
     basis: text("basis").notNull(),
     /** [{ month: 10, hours: 0, phase: "break", note: "" }, … ] — twelve entries from October. */
     months: jsonb("months").notNull(),
     note: text("note").notNull().default(""),
     ...timestamps,
   },
-  (t) => [uniqueIndex("season_plans_rider_season_uq").on(t.riderId, t.seasonStartYear)],
+  (t) => [
+    uniqueIndex("season_plans_rider_season_uq").on(t.riderId, t.seasonStartYear),
+    check(
+      "season_plans_basis",
+      sql`${t.basis} in ('U17-1','U17-2','U19-1','U19-2','U23-1','U23-2','U23-3','U23-4','senior-motionist','senior-super-motionist')`,
+    ),
+  ],
 );
 
 /**

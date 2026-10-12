@@ -6,6 +6,7 @@ import { monthLong } from "@/components/charts/format";
 import { Input } from "@/components/ui/input";
 import { NativeSelect } from "@/components/ui/native-select";
 import { PHASES } from "@/modules/dcu/phases";
+import type { Reference } from "@/modules/paradigms";
 import { DeviationChip } from "./deviation-chip";
 import type { PlanMonth } from "./types";
 
@@ -17,11 +18,14 @@ import type { PlanMonth } from "./types";
 export function MonthEditor({
   month,
   dcu,
+  reference = "dcu",
   onChange,
 }: {
   month: PlanMonth;
   /** Null when the team plans without DCU (ADR 0049). */
   dcu: number | null;
+  /** Whose hours `dcu` is: DCU's, or a senior's profile's (docs/adr/0091). */
+  reference?: Reference;
   onChange: (month: PlanMonth) => void;
 }) {
   const t = useTranslations("season");
@@ -52,8 +56,10 @@ export function MonthEditor({
           />
           {dcu !== null && (
             <span id={`${ids.hours}-dcu`} className="flex flex-col gap-1 pt-0.5">
-              <span className="text-meta text-xs">{t("dcuHours", { hours: dcu })}</span>
-              <DeviationChip planned={month.hours} dcu={dcu} />
+              <span className="text-meta text-xs">
+                {t("dcuHours", { hours: dcu, ref: reference })}
+              </span>
+              <DeviationChip planned={month.hours} dcu={dcu} reference={reference} />
             </span>
           )}
         </div>

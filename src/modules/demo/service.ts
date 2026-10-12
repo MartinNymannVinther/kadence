@@ -12,6 +12,7 @@ import { organizationSlug } from "@/lib/slug";
 import { arrivalOrigin } from "./origin";
 import { createDemoRoles } from "./roles";
 import { seedDemoTeam } from "./seed";
+import { ADULT_NAME, ADULT_RIDER, seedDemoAdult } from "./seed-adult";
 import { ALONE_RIDER, seedDemoAlone } from "./seed-alone";
 import { ALONE_NAME, TEAM_NAME } from "./seed-data";
 
@@ -24,7 +25,9 @@ import { ALONE_NAME, TEAM_NAME } from "./seed-data";
  * services a person uses, with a rider and a parent beside the coach so
  * the visitor can see all three roles (roles.ts). `/demo?alene=1` opens
  * on one U19 rider alone instead, a personal workspace whose owner and
- * rider is the visitor (seed-alone.ts, docs/adr/0080).
+ * rider is the visitor (seed-alone.ts, docs/adr/0080), and
+ * `/demo?alene=voksen` on an adult alone, a senior on the Supermotionist
+ * profile (seed-adult.ts, docs/adr/0091).
  *
  * Nothing here runs unless DEMO=on. On an installation that has not asked
  * for it, the route below answers 404 and this file is dead code.
@@ -83,8 +86,11 @@ export function demoCookieSecure(host: string | null = null): boolean {
 
 export type DemoSession = { headers: Headers } | null;
 
-/** A team in full swing with three people, or one rider alone (`/demo?alene=1`, ADR 0080). */
-export type DemoVariant = "team" | "alone";
+/**
+ * A team in full swing with three people, one rider alone (`/demo?alene=1`,
+ * ADR 0080), or an adult alone (`/demo?alene=voksen`, ADR 0091).
+ */
+export type DemoVariant = "team" | "alone" | "adult";
 
 /** Turns the set-cookie headers of an API response into a cookie header. */
 function cookieHeaderFrom(responseHeaders: Headers): Headers {
@@ -168,13 +174,20 @@ export async function createDemoWorkspace(
   await cleanupExpiredDemos();
   if ((await liveDemoCount()) >= MAX_LIVE_DEMOS) return null;
 
-  const alone = variant === "alone";
+  const alone = variant !== "team";
+  const adult = variant === "adult";
   const key = randomBytes(9).toString("hex");
   const email = `demo-${key}@demo.invalid`;
   const password = randomBytes(24).toString("base64url");
   // Alone, the visitor is the rider, so the menu greets them by her name.
-  const name = alone ? ALONE_RIDER.name : locale === "da" ? "Gæst" : "Guest";
-  const workspaceName = (alone ? ALONE_NAME : TEAM_NAME)[locale];
+  const name = adult
+    ? ADULT_RIDER.name
+    : alone
+      ? ALONE_RIDER.name
+      : locale === "da"
+        ? "Gæst"
+        : "Guest";
+  const workspaceName = (adult ? ADULT_NAME : alone ? ALONE_NAME : TEAM_NAME)[locale];
 
   let sessionHeaders: Headers;
   let userId: string;
@@ -220,7 +233,8 @@ export async function createDemoWorkspace(
     // nobody to switch to.
     try {
       await markWorkspacePersonal(organization.id);
-      await seedDemoAlone({ orgId: organization.id, userId }, locale);
+      const seed = adult ? seedDemoAdult : seedDemoAlone;
+      await seed({ orgId: organization.id, userId }, locale);
     } catch (error) {
       console.error("demo: could not seed the person alone", error);
     }

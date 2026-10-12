@@ -48,8 +48,10 @@ export async function GET(
 
   const { locale } = await params;
   const language = locale === "en" ? "en" : "da";
-  // "Prøv alene": one rider in a workspace of their own (ADR 0080).
-  const variant = request.nextUrl.searchParams.get("alene") === "1" ? "alone" : "team";
+  // "Prøv alene": one rider in a workspace of their own (ADR 0080), or an
+  // adult on a senior's training profile (ADR 0091).
+  const alene = request.nextUrl.searchParams.get("alene");
+  const variant = alene === "1" ? "alone" : alene === "voksen" ? "adult" : "team";
   const demo = await createDemoWorkspace(language, variant);
   if (!demo) return refusal("The demo is not available right now.", 503);
 

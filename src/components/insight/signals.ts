@@ -19,7 +19,8 @@ export const BADGES_SHOWN = 3;
 /** One rider's entry in the list, the place a badge leads to. */
 export const attentionAnchor = (riderId: string) => `${ATTENTION_ID}-${riderId}`;
 
-export type SignalBadge = { kind: FlagKind; severity: Severity };
+/** `ref`, when set, names a senior's profile the flag's numbers are (docs/adr/0091); else DCU's. */
+export type SignalBadge = { kind: FlagKind; severity: Severity; ref?: string };
 
 export type RiderSignals = {
   /** The most serious kinds first, one badge per kind. */
@@ -47,7 +48,11 @@ export function riderSignals(
   const badges: SignalBadge[] = [];
   for (const flag of insight.flags)
     if (!badges.some((b) => b.kind === flag.kind))
-      badges.push({ kind: flag.kind, severity: flag.severity });
+      badges.push({
+        kind: flag.kind,
+        severity: flag.severity,
+        ...(typeof flag.values.ref === "string" ? { ref: flag.values.ref } : {}),
+      });
   if (badges.length === 0) return null;
   return {
     badges: badges.slice(0, shown),

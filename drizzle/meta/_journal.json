@@ -379,6 +379,13 @@
       "when": 1791750600000,
       "tag": "0053_price_history_and_grace",
       "breakpoints": true
+    },
+    {
+      "idx": 54,
+      "version": "7",
+      "when": 1791750700000,
+      "tag": "0054_senior_profile",
+      "breakpoints": true
     }
   ]
 }

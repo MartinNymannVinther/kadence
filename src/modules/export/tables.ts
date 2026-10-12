@@ -40,7 +40,7 @@ export const EXPORT_TABLES: ExportTable[] = [
     sheet: "Ryttere",
     orderBy: "name",
     columns:
-      "id, org_id, user_id, invitation_id, name, birth_year, sex, category_override, ftp_watts, threshold_hr, max_hr, resting_hr, thresholds_on, share_training, share_wellbeing, archived, created_at, updated_at, uci_id, races_checked_at, races_error",
+      "id, org_id, user_id, invitation_id, name, birth_year, sex, category_override, training_profile, ftp_watts, threshold_hr, max_hr, resting_hr, thresholds_on, share_training, share_wellbeing, archived, created_at, updated_at, uci_id, races_checked_at, races_error",
   },
   {
     table: "guardians",

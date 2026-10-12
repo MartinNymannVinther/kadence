@@ -99,13 +99,25 @@ function daysInMonth(year: number, month: number): number {
  * target ∓ `CORRIDOR_BAND`. Hours are unrounded; format at the edge.
  */
 export function weeklyCorridor(basis: ClassBasis, weekMondayIso: string): WeeklyCorridor {
+  return corridorOf((month) => monthHours(basis, month), weekMondayIso);
+}
+
+/**
+ * The same derivation for any table of month hours with October as its
+ * break: Kadence's own senior profiles use it too
+ * (src/modules/paradigms/senior.ts), so their corridor is shaped as DCU's.
+ */
+export function corridorOf(
+  hoursOfMonth: (month: number) => number,
+  weekMondayIso: string,
+): WeeklyCorridor {
   const monday = mondayOf(weekMondayIso);
   let target = 0;
   let breakDays = 0;
   for (let d = 0; d < 7; d++) {
     const [year, month] = addDaysIso(monday, d).split("-").map(Number) as [number, number];
     if (month === 10) breakDays++;
-    target += monthHours(basis, month) / daysInMonth(year, month);
+    target += hoursOfMonth(month) / daysInMonth(year, month);
   }
   return {
     low: target * (1 - CORRIDOR_BAND),

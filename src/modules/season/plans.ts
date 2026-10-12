@@ -4,15 +4,14 @@ import { Refused } from "@/core/action";
 import { riders, seasonPlans } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import {
-  buildSeasonPlan,
-  compareToDcu,
-  isClassBasis,
+  MONTH_NOTES,
   PHASES,
-  type ClassBasis,
+  SEASON_MONTHS,
+  phaseOf,
   type MonthDeviation,
   type SeasonPlanMonth,
 } from "@/modules/dcu";
-import type { Paradigm } from "@/modules/paradigms";
+import { isPlanBasis, isSeniorBasis, type Paradigm, type PlanBasis } from "@/modules/paradigms";
 import { requireWriteFor } from "@/modules/team/access";
 import { teamParadigm } from "@/modules/team/settings";
 import { riderClass } from "./class";
@@ -25,22 +24,47 @@ export { riderClass };
  * coach's to change. Every read comes with DCU's number beside the plan's,
  * so a deviation is always in view. A team that plans without DCU
  * (ADR 0049) starts from empty months, and no number stands beside them.
+ * A senior plans from their training profile, Kadence's own numbers
+ * where DCU has none (docs/adr/0091), and the profile's hours stand
+ * beside the plan in DCU's place.
  */
 
 /**
  * The twelve months a new plan starts with: the paradigm's hours, phases
  * and notes, or, without a paradigm, the same months at nought hours and
- * with no note — the coach's own to fill.
+ * with no note — the coach's own to fill. DCU's notes are written for
+ * young riders; a senior's months start without them.
  */
 export function startingMonths(
-  basis: ClassBasis,
+  basis: PlanBasis,
   seasonStartYear: number,
   paradigm: Paradigm | null,
 ): SeasonPlanMonth[] {
-  const months = buildSeasonPlan(basis, seasonStartYear).months;
-  return paradigm
-    ? months.map((m) => ({ ...m, hours: paradigm.monthHours(basis, m.month) }))
-    : months.map((m) => ({ ...m, hours: 0, note: "" }));
+  void seasonStartYear;
+  const dcuNotes = paradigm !== null && !isSeniorBasis(basis);
+  return SEASON_MONTHS.map((month) => ({
+    month,
+    hours: paradigm ? paradigm.monthHours(basis, month) : 0,
+    phase: phaseOf(month),
+    note: dcuNotes ? (MONTH_NOTES[month] ?? "") : "",
+  }));
+}
+
+/**
+ * Each planned month beside the paradigm's hours for the basis, in the
+ * order given: the same numbers as DCU's `compareToDcu` for a
+ * class-year, the profile's for a senior. Unrounded; format at the edge.
+ */
+export function compareToReference(
+  months: ReadonlyArray<{ month: number; hours: number }>,
+  basis: PlanBasis,
+  paradigm: Paradigm,
+): MonthDeviation[] {
+  return months.map(({ month, hours }) => {
+    const dcu = paradigm.monthHours(basis, month);
+    const diff = hours - dcu;
+    return { month, planned: hours, dcu, diff, diffPct: dcu === 0 ? null : (diff / dcu) * 100 };
+  });
 }
 
 const monthSchema = z.object({
@@ -59,9 +83,9 @@ export type SeasonPlanView = {
   id: string;
   riderId: string;
   seasonStartYear: number;
-  basis: ClassBasis;
+  basis: PlanBasis;
   months: SeasonPlanMonth[];
-  /** Empty when the team plans without DCU. */
+  /** Empty when the team plans without DCU; for a senior, against the profile's hours. */
   deviations: MonthDeviation[];
   /** Whether the team plans by DCU (ADR 0049), so DCU's numbers stand beside the plan. */
   guided: boolean;
@@ -72,7 +96,7 @@ function view(
   row: typeof seasonPlans.$inferSelect,
   paradigm: Paradigm | null,
 ): SeasonPlanView | null {
-  if (!isClassBasis(row.basis)) return null;
+  if (!isPlanBasis(row.basis)) return null;
   const parsed = SeasonMonthsInput.safeParse(row.months);
   if (!parsed.success) return null;
   return {
@@ -81,7 +105,7 @@ function view(
     seasonStartYear: row.seasonStartYear,
     basis: row.basis,
     months: parsed.data,
-    deviations: paradigm ? compareToDcu(parsed.data, row.basis) : [],
+    deviations: paradigm ? compareToReference(parsed.data, row.basis, paradigm) : [],
     guided: paradigm !== null,
     note: row.note,
   };
@@ -103,12 +127,15 @@ export async function getSeasonPlan(
   });
 }
 
-/** A new plan from DCU's table for the rider's class — or for the basis the coach chose. */
+/**
+ * A new plan from DCU's table for the rider's class, or the senior's
+ * profile — or for the basis the coach chose.
+ */
 export async function createSeasonPlan(
   ctx: OrgContext,
   riderId: string,
   seasonStartYear: number,
-  basis?: ClassBasis,
+  basis?: PlanBasis,
 ): Promise<{ id: string }> {
   return withOrgContext(ctx, async (tx) => {
     await requireWriteFor(tx, ctx, riderId);
@@ -150,7 +177,7 @@ export async function saveSeasonMonths(
 export async function resetSeasonPlan(
   ctx: OrgContext,
   planId: string,
-  basis: ClassBasis,
+  basis: PlanBasis,
 ): Promise<void> {
   await withOrgContext(ctx, async (tx) => {
     const [row] = await tx.select().from(seasonPlans).where(eq(seasonPlans.id, planId));

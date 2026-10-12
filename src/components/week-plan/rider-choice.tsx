@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { RiderPicker } from "@/components/calendar/rider-picker";
 import { cn } from "@/lib/utils";
+import { isClassBasis } from "@/modules/dcu";
 import type { PlanRider } from "./types";
 
 /**
@@ -19,7 +20,8 @@ export function RiderChoice({
   onChange: (ids: string[]) => void;
 }) {
   const t = useTranslations("weekPlan.riders");
-  const classOf = (r: PlanRider) => r.basis?.split("-")[0] ?? null;
+  // DCU's classes only; a senior's profile is not a class to pick by (ADR 0091).
+  const classOf = (r: PlanRider) => (isClassBasis(r.basis) ? r.basis.split("-")[0]! : null);
   const classes = [...new Set(riders.map(classOf).filter((c): c is string => c !== null))].sort();
   const same = (ids: string[]) =>
     ids.length === selected.length && ids.every((id) => selected.includes(id));
