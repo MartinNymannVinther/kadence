@@ -30,7 +30,9 @@ const { cookieHeaderFrom } = await import("@/core/auth/cookies");
 const { landingAfterVerify, registerSelf } = await import("@/core/auth/register-self");
 const { getOrgContext, getSession } = await import("@/core/auth/session");
 const { askForVerification } = await import("@/core/auth/verify");
-const { mustVerifyFirst } = await import("@/core/auth/verify-first");
+const { awaitingVerification, mustVerifyFirst, verifyBy } =
+  await import("@/core/auth/verify-first");
+const { VERIFY_GRACE_DAYS } = await import("@/core/auth/verify-days");
 const { todayInCopenhagen } = await import("@/core/dates");
 const { settleMail, useMailTransportForTests } = await import("@/core/mail/mailer");
 const { resetRateLimits } = await import("@/core/rate-limit");
@@ -38,12 +40,13 @@ const { adminPool } = await import("../helpers/db");
 const { FakeTransport, linksIn } = await import("../helpers/mail");
 
 /**
- * Door 2's first rule (docs/adr/0088): the person who created their own
- * workspace sees /verify and nothing else until the address is
- * confirmed — the app's layout and Rulle's send them there, and no team
- * is theirs to act in — and the link in the mail opens the app on Today.
- * Nobody else is asked: not a coach, a rider or a parent who came in by a
- * team's link, nor a person from before door 2.
+ * Door 2's first rule (docs/adr/0088, amended 12 October 2026): the
+ * person who created their own workspace is in it at once, with a stripe
+ * that asks for the address by the end of the week; a week on without it,
+ * /verify is all they see — the app's layout and Rulle's send them there,
+ * and no team is theirs to act in — until the link in the mail, which
+ * opens the app on Today. Nobody else is asked: not a coach, a rider or a
+ * parent who came in by a team's link, nor a person from before door 2.
  */
 
 const DOMAIN = "verify-first.example";
@@ -99,13 +102,54 @@ afterAll(async () => {
   }
 });
 
-describe("before the address is confirmed", () => {
-  it("must confirm first, and has no team to act in", async () => {
+const DAY = 24 * 60 * 60 * 1000;
+const ageBy = async (days: number) =>
+  admin.query(`update users set created_at = now() - make_interval(days => $2) where email = $1`, [
+    EMAIL,
+    days,
+  ]);
+
+describe("in the first week, before the address is confirmed", () => {
+  it("is in the workspace at once, with the day to confirm by", async () => {
     const session = await getSession();
     expect(session?.user).toMatchObject({ selfSignup: true, emailVerified: false });
     expect(session?.session.activeOrganizationId).toBeTruthy();
+    expect(await mustVerifyFirst(session!.user)).toBe(false);
+    expect(await awaitingVerification(session!.user)).toBe(true);
+    const ctx = await getOrgContext();
+    expect(ctx?.orgId).toBe(session?.session.activeOrganizationId);
+    const by = await verifyBy(session!.user);
+    const { rows } = await admin.query("select created_at from users where email = $1", [EMAIL]);
+    expect(by?.getTime()).toBe(rows[0].created_at.getTime() + VERIFY_GRACE_DAYS * DAY);
+  });
+
+  it("shows the stripe on every app page, and lands on Today from the form", () => {
+    const read = (path: string) =>
+      readFileSync(join(process.cwd(), "src/app/[locale]", path), "utf8");
+    const layout = read("(app)/layout.tsx");
+    expect(layout).toMatch(/const confirmBy = await verifyBy\(session\.user\);/);
+    expect(layout).toMatch(/\{confirmBy && <VerifyStripe by=\{confirmBy\} \/>\}/);
+    expect(read("(auth)/register/self-signup-form.tsx")).toMatch(/router\.push\("\/today"\);/);
+  });
+});
+
+describe("a week on, before the address is confirmed", () => {
+  it("must confirm first, has no team to act in and no stripe", async () => {
+    await ageBy(VERIFY_GRACE_DAYS + 1);
+    const session = await getSession();
     expect(await mustVerifyFirst(session!.user)).toBe(true);
     expect(await getOrgContext()).toBeNull();
+    expect(await verifyBy(session!.user)).toBeNull();
+    expect(await awaitingVerification(session!.user)).toBe(true);
+  });
+
+  it("is let in a moment before the week is up, and not a moment after", async () => {
+    const session = await getSession();
+    const { rows } = await admin.query("select created_at from users where email = $1", [EMAIL]);
+    const created: Date = rows[0].created_at;
+    const end = created.getTime() + VERIFY_GRACE_DAYS * DAY;
+    expect(await mustVerifyFirst(session!.user, new Date(end - 1000))).toBe(false);
+    expect(await mustVerifyFirst(session!.user, new Date(end))).toBe(true);
   });
 
   it("is sent to /verify by the app's layout and by Rulle's, and /verify does not send them on", () => {

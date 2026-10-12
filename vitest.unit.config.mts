@@ -45,6 +45,9 @@ export default defineConfig({
       // What a model call costs, and the providers' token counts it is priced from
       // (docs/adr/0089); recording it and the budget need the database.
       "tests/ai/prices.test.ts",
+      // Which price plan applies, what it costs, and what the pages say about a plan
+      // (docs/adr/0090); the plans in the database, the job and the mails need it.
+      "tests/billing/{which-plan,banner,allowlist,landing,price-page}.test.ts",
       "tests/llm/usage-fixtures.test.ts",
     ],
   },

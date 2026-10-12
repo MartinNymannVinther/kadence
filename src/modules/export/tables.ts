@@ -208,6 +208,15 @@ export const EXPORT_TABLES: ExportTable[] = [
     orderBy: "given_at",
     columns: "id, org_id, user_id, rider_id, kind, given_at, withdrawn_at, version, locale",
   },
+  // What the workspace paid, registered by hand (ADR 0090). The policy
+  // shows them to the workspace's owner only, so a coach's export has none.
+  {
+    table: "payments",
+    sheet: "Betalinger",
+    orderBy: "period_from",
+    columns:
+      "id, org_id, amount_dkk, vat_dkk, invoice_no, period_from, period_to, registered_by, registered_at, note",
+  },
   // The club's logo and picture (ADR 0048): which, what type, how big,
   // who and when. The image itself does not fit a spreadsheet cell; it is
   // one click away under Settings → Workspace, and the club has the file.
@@ -269,6 +278,7 @@ export function columnNames(columns: string): string[] {
  * - `ai_calls`: a counter for the ceilings and the month's AI budget, with
  *   tokens and cost (ADR 0089) — metering, no content, not something a
  *   workspace owns.
+ * - `price_plans`: the installation's prices (ADR 0090), not a workspace's.
  * - `workspace_llm_settings`: the model choice, which holds an encrypted
  *   key; a workspace that leaves gets its data, not its secrets.
  * - Everything Better Auth owns (users, sessions, accounts, passkeys, two

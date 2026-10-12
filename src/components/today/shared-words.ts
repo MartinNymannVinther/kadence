@@ -18,8 +18,11 @@ const KINDS = [
 ] as const;
 type Kind = (typeof KINDS)[number];
 
-/** The one refusal that is not the decoder's: the workspace's room for files is used up (docs/adr/0087). */
-type Reason = FitErrorCode | "quota";
+/**
+ * The refusals that are not the decoder's: the workspace's room for files
+ * is used up (docs/adr/0087), or it may only be read (docs/adr/0090).
+ */
+type Reason = FitErrorCode | "quota" | "planExpired";
 
 /**
  * Why a file is refused, each with words of its own in
@@ -37,6 +40,7 @@ const REASONS: Record<Reason, true> = {
   unknown_format: true,
   no_activity: true,
   quota: true,
+  planExpired: true,
 };
 
 /** The most rides one share brings in (MAX_SHARED_FILES). */

@@ -9,7 +9,7 @@ import { registerUserWithOrganization, type RegisterResult } from "./register";
 import { landingAfterVerify, registerSelf, type SelfSignupResult } from "./register-self";
 import { getSession } from "./session";
 import { askForVerification, type VerifyAsk } from "./verify";
-import { mustVerifyFirst } from "./verify-first";
+import { awaitingVerification } from "./verify-first";
 
 export type { ForgotResult, RegisterResult, SelfSignupResult, VerifyAsk };
 
@@ -47,11 +47,15 @@ export async function registerSelfAction(input: unknown): Promise<SelfSignupResu
   });
 }
 
-/** "Send mailen igen" on /verify: for a door-2 account still waiting, landing on Today. */
+/**
+ * "Send mailen igen" on /verify and in the stripe at the top of the app
+ * (docs/adr/0088): for a door-2 account still waiting, inside its week or
+ * past it, landing on Today. Three an hour, as any confirmation link.
+ */
 export async function resendVerificationAction(): Promise<VerifyAsk | "unauthorized"> {
   const session = await getSession();
   if (!session) return "unauthorized";
-  if (!(await mustVerifyFirst(session.user))) return "verified";
+  if (!(await awaitingVerification(session.user))) return "verified";
   const locale = mailLocale(await getLocale());
   return askForVerification(
     await headers(),

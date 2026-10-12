@@ -238,6 +238,7 @@ function failure(result: SaveResult | null, t: (key: string) => string): string 
     "notFound",
     "too_large",
     "quota",
+    "planExpired",
   ];
   return known.includes(code) ? t(`error.${code}`) : t("failed");
 }

@@ -1,7 +1,14 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { EnvSchema } from "@/core/env";
-import { FEATURES, featuresFrom, PARKED_PATHS, parkedPath, type Features } from "@/core/features";
+import {
+  FEATURES,
+  featuresFrom,
+  PARKED_PATHS,
+  parkedPath,
+  pricePageParked,
+  type Features,
+} from "@/core/features";
 
 /**
  * The parts an installation may park (docs/adr/0057) are on unless it
@@ -140,5 +147,23 @@ describe("docker-compose.yml", () => {
     "PUSH_CONTACT",
   ])("forwards %s to the container", (name) => {
     expect(compose).toContain(`${name}: \${${name}:-}`);
+  });
+});
+
+/**
+ * The open price page (docs/adr/0090): not a part an installation parks,
+ * but there only while BILLING=on, and answered 404 the same way.
+ */
+describe("the price page's path", () => {
+  it("is parked at both addresses while there are no prices, and not while there are", () => {
+    for (const path of ["/priser", "/prices"]) {
+      expect(pricePageParked(path, false)).toBe(true);
+      expect(pricePageParked(path, true)).toBe(false);
+    }
+  });
+
+  it("leaves everything else alone", () => {
+    for (const path of ["/", "/pris", "/priserne", "/guides", "/settings/installation/prices"])
+      expect(pricePageParked(path, false)).toBe(false);
   });
 });

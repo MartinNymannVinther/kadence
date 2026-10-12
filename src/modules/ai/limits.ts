@@ -2,6 +2,7 @@ import { and, count, eq, gt, gte, sql, sum } from "drizzle-orm";
 import { aiCalls, teamSettings } from "@/core/db/schema";
 import type { AppTransaction, OrgContext } from "@/core/db/tenant";
 import { env } from "@/core/env";
+import { planIn } from "@/modules/billing/state";
 import type { BilledTo } from "./model-settings";
 
 /**
@@ -14,7 +15,8 @@ import type { BilledTo } from "./model-settings";
  * answers for it: 60 calls per person an hour, 600 per workspace a day,
  * and a budget per workspace for the calendar month in micro-euro
  * (docs/adr/0089) — the installation's AI_MONTHLY_BUDGET_MICRO unless its
- * owner gave the workspace another. The budget counts only what the
+ * owner gave the workspace another, or, with BILLING=on, its price plan
+ * has one (docs/adr/0090). The budget counts only what the
  * installation's own key spent; a workspace on its own key (ADR 0006)
  * pays its own bill. The fourth, the installation's daily roof (ADR
  * 0009), is now an emergency brake that is off unless it is set: shared,
@@ -61,6 +63,14 @@ export class BudgetReached extends Error {
   }
 }
 
+/** The workspace's trial or payment has run out: it reads and exports, and asks no model (docs/adr/0090). */
+export class PlanExpired extends Error {
+  constructor() {
+    super("plan expired");
+    this.name = "PlanExpired";
+  }
+}
+
 /** Who answers the call, and whose key pays for it. */
 export type AiBilling = { provider: string; model: string; billedTo: BilledTo };
 
@@ -68,7 +78,8 @@ const MONTH_START = sql`(date_trunc('month', now() at time zone 'Europe/Copenhag
 
 /**
  * The workspace's budget for the month in micro-euro, or 0 for none: its
- * own when the owner set one, else the installation's.
+ * own when the owner set one; else, with BILLING=on, its price plan's
+ * (docs/adr/0090, amended 12 October 2026); else the installation's.
  */
 export async function monthlyBudgetMicro(tx: AppTransaction, ctx: OrgContext): Promise<number> {
   const [row] = await tx
@@ -76,7 +87,8 @@ export async function monthlyBudgetMicro(tx: AppTransaction, ctx: OrgContext): P
     .from(teamSettings)
     .where(eq(teamSettings.orgId, ctx.orgId))
     .limit(1);
-  return row?.budget ?? DEFAULT_MONTHLY_BUDGET_MICRO;
+  if (row?.budget !== null && row?.budget !== undefined) return row.budget;
+  return (await planIn(tx, ctx.orgId)).aiBudgetMicro ?? DEFAULT_MONTHLY_BUDGET_MICRO;
 }
 
 /** What the installation's key spent for this workspace this calendar month, in micro-euro. */
@@ -120,6 +132,7 @@ export async function reserveAiCall(
   engine: string,
   billing: AiBilling | null = null,
 ): Promise<string> {
+  if ((await planIn(tx, ctx.orgId)).plan === "expired") throw new PlanExpired();
   const [perUser] = await tx
     .select({ n: count() })
     .from(aiCalls)

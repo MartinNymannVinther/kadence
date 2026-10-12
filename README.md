@@ -55,8 +55,10 @@ by web push without content, and a rider's first-run checklist. Five
 parts sit behind installation flags, on by default, so an installation
 can park them until a real team has used the rest (ADR 0057): Rulle's
 land and towns, Trænerrummet, the club championship, the energy
-calculator and the food guide. What is left is in
-[docs/backlog.md](docs/backlog.md).
+calculator and the food guide. An installation that runs Kadence as a
+service can turn on a price page, a trial and invoices registered by
+hand (ADR 0090); it is off by default, and then everything is free. What
+is left is in [docs/backlog.md](docs/backlog.md).
 
 The navigation was laid in two tiers on 9 October 2026 (ADR 0077): at
 most four primary places per role, the same in the sidebar and in the

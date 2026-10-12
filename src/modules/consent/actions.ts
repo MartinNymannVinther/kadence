@@ -2,7 +2,7 @@
 
 import { getLocale } from "next-intl/server";
 import { z } from "zod";
-import { runAction } from "@/core/action";
+import { runAction, STILL_ALLOWED } from "@/core/action";
 import { giveHealthConsentAgain, withdrawHealthConsent } from "./service";
 
 /**
@@ -14,7 +14,7 @@ import { giveHealthConsentAgain, withdrawHealthConsent } from "./service";
 const PATHS = ["/today", "/settings/data", "/riders", "/me", "/calendar"];
 
 export async function withdrawHealthConsentAction() {
-  return runAction({}, z.object({}), (ctx) => withdrawHealthConsent(ctx), PATHS);
+  return runAction({}, z.object({}), (ctx) => withdrawHealthConsent(ctx), PATHS, STILL_ALLOWED);
 }
 
 export async function giveHealthConsentAction() {

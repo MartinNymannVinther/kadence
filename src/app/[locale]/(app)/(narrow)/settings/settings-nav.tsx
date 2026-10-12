@@ -26,6 +26,12 @@ export function SettingsNav({
   const t = useTranslations("settings.nav");
   const pathname = usePathname();
   const id = useId();
+  // The tab whose address is the longest that holds the page: Betaling,
+  // under Installation's own address, is not Installation (docs/adr/0090).
+  const activeHref = groups
+    .flatMap((group) => group.items.map((item) => item.href))
+    .filter((href) => pathname === href || pathname.startsWith(`${href}/`))
+    .sort((a, b) => b.length - a.length)[0];
 
   return (
     <nav
@@ -53,7 +59,7 @@ export function SettingsNav({
             ) : null}
             <ul aria-labelledby={headerId} className="flex gap-1 @2xl:flex-col @2xl:gap-0.5">
               {group.items.map((item) => {
-                const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+                const active = item.href === activeHref;
                 return (
                   <li key={item.href}>
                     <Link

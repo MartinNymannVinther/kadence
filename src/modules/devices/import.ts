@@ -8,6 +8,7 @@ import { baseName } from "@/modules/files";
 import { FitError } from "@/modules/fit";
 import { matchActivity } from "@/modules/load";
 import { discardPlaced, keepPlaced, placeFile } from "@/modules/storage/keep";
+import { assertWritableIn } from "@/modules/billing/plan";
 import { assertFileRoom } from "@/modules/storage/quota";
 import { requireWriteFor } from "@/modules/team/access";
 import { activityFromFit } from "./from-fit";
@@ -30,7 +31,8 @@ export {
  *
  * The file goes where the installation keeps files (docs/adr/0087): in
  * the row, or as an object the row names. A file that would take the
- * workspace past its quota is refused before it is decoded.
+ * workspace past its quota is refused before it is decoded, and so is
+ * every file for a workspace that may only be read (docs/adr/0090).
  */
 
 export const MAX_UPLOAD_BYTES = 25 * 1024 * 1024;
@@ -85,6 +87,7 @@ export async function importFitIn(
 ): Promise<ImportResult> {
   if (bytes.byteLength > MAX_UPLOAD_BYTES) throw new Refused("invalid", "too_large");
   await requireWriteFor(tx, ctx, riderId);
+  await assertWritableIn(tx, ctx.orgId);
   const [rider] = await tx
     .select({ ftp: riders.ftpWatts, thresholdHr: riders.thresholdHr })
     .from(riders)

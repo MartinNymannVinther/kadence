@@ -6,9 +6,9 @@ const PLACEHOLDER_SECRET = "dev-only-secret-change-me-in-production";
 
 /**
  * What the environment's variables must say together (src/core/env.ts):
- * the halves that go in pairs, mail all or nothing, door 2 only with mail,
- * and what production may not leave at a placeholder. Each refusal names
- * the variable and the fix, because the person reading it is setting up
+ * the halves that go in pairs, mail all or nothing, door 2 and billing only
+ * with mail, and what production may not leave at a placeholder. Each
+ * refusal names the variable and the fix, because the person reading it is setting up
  * an installation, not reading the code.
  */
 export function envRules(value: z.infer<typeof EnvShape>, ctx: z.RefinementCtx): void {
@@ -113,6 +113,17 @@ export function envRules(value: z.infer<typeof EnvShape>, ctx: z.RefinementCtx):
       message:
         "SIGNUP=individuals needs mail: a person who creates their own workspace confirms their address first (docs/adr/0088). Set SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD and MAIL_FROM, or choose SIGNUP=closed",
       path: ["SIGNUP"],
+    });
+  }
+  // Billing reminds an owner by mail before a trial or a payment runs out
+  // and when the workspace has become read-only (docs/adr/0090); without
+  // mail the first they would hear of it is a workspace that will not save.
+  if (value.BILLING === "on" && mailSet.length < mail.length) {
+    ctx.addIssue({
+      code: "custom",
+      message:
+        "BILLING=on needs mail: the owners are reminded by mail before a trial or a payment runs out (docs/adr/0090). Set SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD and MAIL_FROM, or choose BILLING=off",
+      path: ["BILLING"],
     });
   }
   // Files in an object store need every one of the five; half a store is

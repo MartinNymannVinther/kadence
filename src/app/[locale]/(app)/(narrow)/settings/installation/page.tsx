@@ -14,6 +14,8 @@ import { jobsOverview } from "@/core/jobs/status";
 import { Link } from "@/i18n/navigation";
 import { DEFAULT_MONTHLY_BUDGET_MICRO } from "@/modules/ai/limits";
 import { formatEuro } from "@/modules/ai/prices";
+import { billingOn } from "@/modules/billing/plan";
+import { currentPricePlans } from "@/modules/billing/price-list";
 import { defaultQuotaBytes } from "@/modules/storage/quota";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -31,7 +33,9 @@ export async function generateMetadata(): Promise<Metadata> {
  * their files and AI calls (ADR 0080). This month's AI cost per club
  * against its budget, which the owner can change here, and one total
  * line (ADR 0089); each club's files against its quota, which the owner
- * can change here too (ADR 0087). Below them, the background work (ADR 0085): jobs
+ * can change here too (ADR 0087). With BILLING=on a workspace without its
+ * own number has its plan's (ADR 0090): the club plan's for a club, the
+ * person plan's for one person, shown as the default. Below them, the background work (ADR 0085): jobs
  * waiting and given up, and when a worker last took one. Anyone else
  * gets a 404, as for admission.
  */
@@ -48,6 +52,15 @@ export default async function InstallationPage() {
   const locale = await getLocale();
   const total = (key: "coaches" | "riders" | "parents") => clubs.reduce((n, c) => n + c[key], 0);
   const megabytes = (bytes: number) => Math.round((bytes / 1024 / 1024) * 10) / 10;
+  // What a workspace without its own number gets: its plan's, with billing on.
+  const plans = billingOn() ? await currentPricePlans() : [];
+  const plan = (key: string) => plans.find((p) => p.key === key);
+  const budgetDefault = plan("club")?.aiBudgetMicro ?? DEFAULT_MONTHLY_BUDGET_MICRO;
+  const quotaOf = (key: string, kind: "club" | "personal") => {
+    const bytes = plan(key)?.fileQuotaBytes;
+    return bytes === undefined ? defaultQuotaBytes(kind) : bytes > 0 ? bytes : null;
+  };
+  const quotaDefaults = { club: quotaOf("club", "club"), personal: quotaOf("person", "personal") };
 
   return (
     <div className="flex max-w-3xl flex-col gap-5">
@@ -124,17 +137,12 @@ export default async function InstallationPage() {
         </div>
       )}
 
-      <AiMonth
-        clubs={clubs}
-        persons={persons}
-        defaultBudgetMicro={DEFAULT_MONTHLY_BUDGET_MICRO}
-        locale={locale}
-      />
+      <AiMonth clubs={clubs} persons={persons} defaultBudgetMicro={budgetDefault} locale={locale} />
 
       <FilesQuota
         clubs={clubs}
         persons={persons}
-        defaults={{ club: defaultQuotaBytes("club"), personal: defaultQuotaBytes("personal") }}
+        defaults={quotaDefaults}
         storage={fileStorage().mode}
         locale={locale}
       />

@@ -77,6 +77,25 @@ export function parkedPath(pathname: string, on: Features): boolean {
   );
 }
 
+/**
+ * The open price page, at /priser in Danish and /en/prices in English
+ * (docs/adr/0090): it is there only while the installation prices its
+ * workspaces. Not a part an installation parks — BILLING is off unless it
+ * is turned on — but it answers 404 the same way, from the proxy, before
+ * anything renders.
+ */
+export const PRICE_PATHS: readonly string[] = ["/priser", "/prices"];
+
+/** Whether this installation prices its workspaces (BILLING=on). */
+export function pricesOn(): boolean {
+  return env.BILLING === "on";
+}
+
+/** Whether `pathname` (its locale prefix stripped) is the price page while there are no prices. Pure. */
+export function pricePageParked(pathname: string, billing: boolean): boolean {
+  return !billing && PRICE_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+}
+
 /** Whether reminders can be sent: the installation has a push key pair. */
 export function remindersOn(): boolean {
   return Boolean(env.PUSH_PUBLIC_KEY && env.PUSH_PRIVATE_KEY);

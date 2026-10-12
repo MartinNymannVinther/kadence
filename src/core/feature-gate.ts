@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { z } from "zod";
-import { Refused, runAction } from "@/core/action";
+import { Refused, runAction, type ActionOptions } from "@/core/action";
 import type { OrgContext } from "@/core/db/tenant";
 import { featureOn, type Feature } from "@/core/features";
 import type { Result } from "@/core/result";
@@ -29,6 +29,7 @@ export function runFeatureAction<S extends z.ZodType, T>(
   schema: S,
   fn: (ctx: OrgContext, input: z.infer<S>) => Promise<T>,
   revalidate: string[] = [],
+  options: ActionOptions = {},
 ): Promise<Result<T>> {
   return runAction(
     raw,
@@ -38,5 +39,6 @@ export function runFeatureAction<S extends z.ZodType, T>(
       return fn(ctx, input);
     },
     revalidate,
+    options,
   );
 }

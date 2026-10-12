@@ -1,6 +1,6 @@
 "use server";
 
-import { runAction } from "@/core/action";
+import { runAction, STILL_ALLOWED } from "@/core/action";
 import {
   clearWeekPlanDraft,
   DraftKey,
@@ -16,7 +16,7 @@ import {
  */
 
 export async function loadWeekPlanDraftAction(raw: unknown) {
-  return runAction(raw, DraftKey, getWeekPlanDraft, []);
+  return runAction(raw, DraftKey, getWeekPlanDraft, [], STILL_ALLOWED);
 }
 
 export async function saveWeekPlanDraftAction(raw: unknown) {

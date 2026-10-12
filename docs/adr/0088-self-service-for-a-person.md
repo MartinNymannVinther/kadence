@@ -1,6 +1,6 @@
 # ADR 0088: Door 2 — a person creates their own workspace, with a confirmed address and consent to health data
 
-Status: accepted · Date: 2026-10-11 · Builds on 0004 (admission), 0011 (riders separated), 0080 (a person alone), 0083 (counters and nonces), 0085 (jobs), 0086 (mail) · docs/plan-alene-og-som-tjeneste.md §2.5 and §6, backlog S-08
+Status: accepted · Date: 2026-10-11 · Amended 2026-10-12 (in at once, locked after a week, swept after thirty days) · Builds on 0004 (admission), 0011 (riders separated), 0080 (a person alone), 0083 (counters and nonces), 0085 (jobs), 0086 (mail) · docs/plan-alene-og-som-tjeneste.md §2.5 and §6, backlog S-08
 
 ## Context
 
@@ -167,3 +167,39 @@ before door 2 opens.
   service too, at the price of rewriting two policies the rider
   separation tests stand on; done if the adviser says withdrawal must be
   as hard a wall as separation.
+
+## Amended 2026-10-12: in at once, locked after a week
+
+Martin's answer 4 to docs/plan-konto-og-priser.md (§2.2, §9): a person
+who creates their own workspace through door 2 is in it at once, and the
+address must be confirmed within a week. Built in backlog S-12b:
+
+- `mustVerifyFirst` (src/core/auth/verify-first.ts) is true only for a
+  door-2 account that is unconfirmed **and** older than
+  `VERIFY_GRACE_DAYS = 7` (src/core/auth/verify-days.ts), by the
+  account's `created_at` as the database has it. Until then
+  `getOrgContext` gives the workspace as to anyone, and a stripe at the
+  top of every app page says "Bekræft din adresse inden {date}" with
+  "Send mailen igen" — the /verify page's own action, three an hour. The
+  sign-up form lands on Today, not on /verify.
+- After the week nothing changes from before: the app's layout and
+  Rulle's send the person to /verify, `getOrgContext` answers no team,
+  and every service, action and route refuses, until the link is opened.
+  Nothing they made is lost; the page says so.
+- The sweep deletes an unconfirmed door-2 account after **thirty** days,
+  not seven (`UNVERIFIED_DAYS`, src/modules/signup/sweep.ts), and
+  `delete_unverified_signup()` (drizzle/0053) refuses anything younger by
+  the database's own clock.
+
+Why: the person who wants to try Kadence should see something before they
+have to switch to their mail. Why the lock stays: an address that does not
+exist cannot receive "Glemt adgangskode", and an account nobody can reach
+is an account nobody owns — so a week is the most it may be used
+unconfirmed, and thirty days the most it is kept.
+
+Trade-offs: for a week an unconfirmed address holds a workspace with
+whatever its holder typed in, health data included, under the same RLS and
+consent as any other; a typo in the address costs its owner the account
+after a week unless they notice the stripe. A flood of fake accounts now
+costs Kadence thirty days of empty rows instead of seven, still behind the
+five-an-hour count and the honeypot.

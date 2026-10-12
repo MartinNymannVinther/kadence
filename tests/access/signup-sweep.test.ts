@@ -20,13 +20,15 @@ import { todayInCopenhagen } from "@/core/dates";
 import { settleMail, useMailTransportForTests } from "@/core/mail/mailer";
 import { resetRateLimits } from "@/core/rate-limit";
 import { signupSweepHandler } from "@/modules/signup/job";
+import { VERIFY_GRACE_DAYS } from "@/core/auth/verify-days";
 import { sweepUnverifiedSignups, UNVERIFIED_DAYS } from "@/modules/signup/sweep";
 import { adminPool, authClient, expectSqlError, appClient } from "../helpers/db";
 import { FakeTransport } from "../helpers/mail";
 
 /**
- * Door 2's clean-up (docs/adr/0088): an account a person created alone
- * and never confirmed goes after seven days — its workspace, the account
+ * Door 2's clean-up (docs/adr/0088, amended 12 October 2026): an account
+ * a person created alone and never confirmed goes after thirty days —
+ * not after the week it may be used unconfirmed, which only locks it — its workspace, the account
  * and every audit row about either, leaving one line with the account's
  * id — and nothing else goes: not a younger one, whatever the clock in
  * the code says, not a confirmed one, not one made another way, not one
@@ -75,6 +77,7 @@ const exists = async (table: string, column: string, id: string) =>
 
 let gone: { userId: string; orgId: string };
 let young: { userId: string; orgId: string };
+let locked: { userId: string; orgId: string };
 let confirmed: { userId: string; orgId: string };
 let onTeam: { userId: string; orgId: string };
 
@@ -88,6 +91,7 @@ beforeAll(async () => {
   );
   gone = await signedUp("gone", UNVERIFIED_DAYS + 1);
   young = await signedUp("young", UNVERIFIED_DAYS - 1);
+  locked = await signedUp("locked", VERIFY_GRACE_DAYS + 1);
   confirmed = await signedUp("confirmed", UNVERIFIED_DAYS + 3);
   await admin.query("update users set email_verified = true where id = $1", [confirmed.userId]);
   onTeam = await signedUp("onteam", UNVERIFIED_DAYS + 3);
@@ -128,7 +132,12 @@ describe("the sweep", () => {
     expect(signupSweepHandler.kind.every).toBe(DAY);
   });
 
-  it("deletes only the door-2 account unconfirmed for more than seven days", async () => {
+  it("waits thirty days, well past the week before the account locks", () => {
+    expect(UNVERIFIED_DAYS).toBe(30);
+    expect(VERIFY_GRACE_DAYS).toBe(7);
+  });
+
+  it("deletes only the door-2 account unconfirmed for more than thirty days", async () => {
     // The clock the code is given: today. The young account is not even asked about.
     expect(await sweepUnverifiedSignups(new Date())).toBe(1);
 
@@ -137,7 +146,7 @@ describe("the sweep", () => {
     expect(await exists("riders", "org_id", gone.orgId)).toBe(false);
     expect(await exists("consents", "org_id", gone.orgId)).toBe(false);
 
-    for (const kept of [young, confirmed, onTeam])
+    for (const kept of [young, locked, confirmed, onTeam])
       expect(await exists("users", "id", kept.userId)).toBe(true);
     expect(await exists("organizations", "id", young.orgId)).toBe(true);
     expect(await exists("users", "id", "user_sweep_other")).toBe(true);

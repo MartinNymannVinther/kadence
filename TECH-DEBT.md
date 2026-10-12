@@ -63,6 +63,16 @@ in June 2026 that Wahoo no longer passes on heart rate for riders under
 16; that report is not confirmed with Wahoo and should be asked about in
 the application.
 
+### Better Auth's organization endpoints ignore an expired plan
+
+An expired workspace (ADR 0090) refuses every server action that adds or
+changes something, but Better Auth's own endpoints — renaming the
+workspace, inviting through `/organization/invite-member`, changing a
+role — can still be called directly by a coach who knows them; Kadence's
+own buttons go through actions that refuse. Gating them needs the active
+workspace's plan in the before-hook in `src/core/auth/auth.ts`, which is
+at its size limit.
+
 ## Accepted, with the reason written down
 
 ### The content policy still allows inline scripts

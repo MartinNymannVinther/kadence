@@ -11,6 +11,12 @@
  *   the team: admission and the installation (ADR 0048);
  * - "Om", what is running, last and on its own.
  *
+ * With BILLING=on (docs/adr/0090) a coach also has "Abonnement", what the
+ * workspace pays — under "Holdet", or under "Dig" in a personal workspace —
+ * and the installation's owner has "Betaling", every workspace's plan and
+ * the payments registered by hand, and "Priser", the price table (S-12b).
+ * With it off none of them exists.
+ *
  * In a personal workspace (ADR 0080) the person is their own coach, and
  * there is no team to set up: everything is "Dig" — the training's
  * settings (the team tab, called "Træning" there), the AI and the data,
@@ -32,6 +38,9 @@ export type SettingsKey =
   | "installation"
   | "ai"
   | "data"
+  | "subscription"
+  | "billing"
+  | "prices"
   | "about";
 
 /** The words in settings.nav a tab can be called by: the key's, or "training" for a person's team tab. */
@@ -51,11 +60,27 @@ type Who = {
   isRider: boolean;
   /** The workspace is one person's own training (ADR 0080). */
   personal?: boolean;
+  /** The installation prices its workspaces (BILLING=on, ADR 0090). */
+  billing?: boolean;
 };
 
-export function settingsGroups({ owner, isCoach, isRider, personal }: Who): SettingsGroup[] {
+/** Where a tab lives; Betaling and Priser sit under Installation's own address. */
+function hrefOf(item: SettingsKey): string {
+  return item === "billing" || item === "prices"
+    ? `/settings/installation/${item}`
+    : `/settings/${item}`;
+}
+
+export function settingsGroups({
+  owner,
+  isCoach,
+  isRider,
+  personal,
+  billing,
+}: Who): SettingsGroup[] {
+  const pays = Boolean(billing) && isCoach && "subscription";
   const yours: Array<SettingsKey | false> = personal
-    ? ["me", isRider && "devices", "security", isCoach && "team", isCoach && "ai", "data"]
+    ? ["me", isRider && "devices", "security", isCoach && "team", isCoach && "ai", pays, "data"]
     : ["me", isRider && "devices", "security", !isCoach && "data"];
   const groups: Array<[SettingsGroupKey | null, Array<SettingsKey | false>]> = [
     ["you", yours],
@@ -63,9 +88,17 @@ export function settingsGroups({ owner, isCoach, isRider, personal }: Who): Sett
       "team",
       personal
         ? []
-        : [isCoach && "team", isCoach && "workspace", isCoach && "ai", isCoach && "data"],
+        : [isCoach && "team", isCoach && "workspace", isCoach && "ai", pays, isCoach && "data"],
     ],
-    ["installation", [owner && "access", owner && "installation"]],
+    [
+      "installation",
+      [
+        owner && "access",
+        owner && "installation",
+        owner && Boolean(billing) && "billing",
+        owner && Boolean(billing) && "prices",
+      ],
+    ],
     [null, ["about"]],
   ];
   return groups
@@ -75,7 +108,7 @@ export function settingsGroups({ owner, isCoach, isRider, personal }: Who): Sett
         .filter((item): item is SettingsKey => item !== false)
         .map((item): SettingsItem => ({
           key: item,
-          href: `/settings/${item}`,
+          href: hrefOf(item),
           ...(personal && item === "team" ? { label: "training" as const } : {}),
         })),
     }))

@@ -99,6 +99,22 @@ describe("a parked page while its part is on", () => {
   });
 });
 
+describe("the open price page (docs/adr/0090)", () => {
+  it("answers 404 at /priser and /en/prices while BILLING is off", () => {
+    expect(rewriteOf(proxy(request("/priser")))).toBe(`${ORIGIN}/da/parked/priser`);
+    expect(rewriteOf(proxy(request("/en/prices")))).toBe(`${ORIGIN}/en/parked/prices`);
+    expect(rewriteOf(proxy(request("/prices")))).toBe(`${ORIGIN}/da/parked/prices`);
+  });
+
+  it("is served to anyone, with no login, while BILLING is on", () => {
+    on.add("billing");
+    const da = proxy(request("/priser"));
+    expect(rewriteOf(da)).toBe(`${ORIGIN}/da/priser`);
+    expect(da.headers.get("location")).toBeNull();
+    expect(rewriteOf(proxy(request("/en/prices")))).toBe(`${ORIGIN}/en/prices`);
+  });
+});
+
 describe("the rest of Kadence", () => {
   it("is untouched by the parked check", () => {
     const today = proxy(request("/today", "better-auth.session_token=abc"));

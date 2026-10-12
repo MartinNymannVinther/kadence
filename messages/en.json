@@ -27,7 +27,8 @@
     "nav": {
       "login": "Log in",
       "register": "Create account",
-      "apply": "Apply for access"
+      "apply": "Apply for access",
+      "prices": "Prices"
     },
     "hero": {
       "title": "Young riders at the right cadence.",
@@ -36,7 +37,8 @@
       "ctaSecondary": "Log in",
       "trust": "AGPL-3.0 · Passkeys and two-factor sign-in · Your data out in one click",
       "ctaApply": "Apply for access",
-      "ctaDemo": "Try the demo"
+      "ctaDemo": "Try the demo",
+      "teamFirst": "Are you a team? <link>Then you apply first.</link>"
     },
     "values": {
       "dcuTitle": "DCU as the default",
@@ -54,7 +56,8 @@
     "footer": {
       "license": "Open source under AGPL-3.0",
       "language": "Dansk",
-      "terms": "Terms and privacy"
+      "terms": "Terms and privacy",
+      "prices": "Prices"
     },
     "demo": {
       "title": "Try it without creating anything",
@@ -81,7 +84,13 @@
       "aloneBody": "You plan your own week and season, add your rides and check in, without being on a team. If you are U17, U19 or U23, DCU's numbers stand beside yours; if you are an adult, you set your own hours. Join a team later and your training comes with you.",
       "aloneAge": "From 15 you create your own account. For a younger rider, a parent creates it and follows the child's training.",
       "aloneCta": "Apply as yourself",
-      "aloneDemo": "Try as a rider alone"
+      "aloneDemo": "Try as a rider alone",
+      "aloneCreate": "Create account",
+      "teamApply": "Apply for a team"
+    },
+    "price": {
+      "trial": "Free for {days, plural, one {# day} other {# days}}, then from {monthly} kr. a month. <link>See the prices.</link>",
+      "free": "Free to get started. <link>See the prices.</link>"
     }
   },
   "notFound": {
@@ -206,14 +215,14 @@
     },
     "self": {
       "title": "Create your own workspace",
-      "subtitle": "For your own training or your child's. You confirm your e-mail before you start.",
+      "subtitle": "For your own training or your child's. You can start right away.",
       "name": "Your name",
       "email": "Your e-mail",
       "consentLegend": "What you say yes to",
       "terms": "I have read <link>the terms and the privacy policy</link>",
       "healthMe": "I give my explicit consent for Kadence to store health data about me: my check-ins with sleep, pain and illness, my measurements and the heart rate from my rides. I can withdraw the consent under Settings → Data. Kadence then turns check-in and measurements off, and the rest works as before: the calendar, the rides, the season plan and Rulle.",
       "healthChild": "I am the parent and give explicit consent on my child's behalf for Kadence to store health data about the child: check-ins with sleep, pain and illness, measurements and the heart rate from the rides. I can withdraw the consent under Settings → Data. Kadence then turns check-in and measurements off, and the rest works as before: the calendar, the rides, the season plan and Rulle.",
-      "verifyNote": "We send a link to your e-mail. You open it before you can use Kadence. If you do not confirm the address within 7 days, we delete the account again.",
+      "verifyNote": "You can use Kadence right away. We send a link to your e-mail, which you open within {grace, plural, one {# day} other {# days}}. Otherwise Kadence waits for you to do so, and after {days, plural, one {# day} other {# days}} we delete the account again.",
       "submit": "Create workspace",
       "clubLink": "A club or a team? Apply here",
       "errorConsent": "Tick both boxes to create the workspace.",
@@ -222,7 +231,7 @@
     },
     "verify": {
       "title": "Confirm your e-mail",
-      "body": "We have sent a mail to {email} with a link. Open the link to get started. Until then you cannot use the rest of Kadence.",
+      "body": "We have sent a mail to {email} with a link. More than {grace, plural, one {# day} other {# days}} have passed, so Kadence now waits for you to open the link. Everything you have put in is still there.",
       "spam": "If you cannot find the mail, look in spam. The link works for an hour. You can get a new mail three times an hour.",
       "resend": "Send the mail again",
       "sent": "We have sent a new mail.",
@@ -230,6 +239,10 @@
       "failed": "The mail could not be sent right now. Try again in a moment.",
       "signOut": "Sign out",
       "expiry": "If you do not confirm the address within {days, plural, one {# day} other {# days}}, we delete the account and everything in it."
+    },
+    "verifyStripe": {
+      "title": "Confirm your address by {date}.",
+      "body": "We have sent you a mail with a link. After that day Kadence waits for you to open it."
     }
   },
   "app": {
@@ -398,6 +411,7 @@
     "subtitleRider": "You, your devices and your security.",
     "subtitleOther": "You and your security.",
     "subtitlePersonal": "Yourself, your training, your AI and your data.",
+    "trialLine": "Trial: {days, plural, =0 {last day today} one {# day left} other {# days left}}, through {date}.",
     "appearance": {
       "title": "Appearance",
       "body": "Applies on this device. Light or dark otherwise follows the system.",
@@ -422,6 +436,9 @@
       "team": "Team",
       "me": "Profile",
       "devices": "Devices",
+      "subscription": "Subscription",
+      "billing": "Billing",
+      "prices": "Prices",
       "training": "Training",
       "groups": {
         "you": "You",
@@ -527,6 +544,7 @@
           "tooLarge": "The picture is too large, even after scaling. Try a smaller one.",
           "dimensions": "The picture is too wide or too tall. Try a smaller one.",
           "forbidden": "Only the team's coaches can change the logo and picture.",
+          "planExpired": "The workspace is read only now, so the picture was not saved.",
           "generic": "The picture could not be saved. Try again in a moment."
         }
       }
@@ -638,6 +656,7 @@
         "saved": "Saved",
         "saveFailed": "Could not be saved. Try again.",
         "notAllowed": "Only owners and administrators can change the workspace's model.",
+        "planExpired": "The workspace is read only now, so the setting was not saved.",
         "short_mistral": "Mistral",
         "short_ollama": "Ollama",
         "shortNone": "no model"
@@ -679,6 +698,7 @@
       "setupKeyPlaceholder": "your-key-here",
       "perInstallation": "Calls across the installation per day",
       "failBudget": "The workspace's AI budget for the month is spent, so the AI rests until next month. The installation's owner can give it more.",
+      "failPlanExpired": "The workspace is read only now, so the AI does not answer. See Settings → Subscription.",
       "failCeiling": "Kadence's own ceiling on AI calls was reached, not the provider's. The ceilings are under “Ceiling on AI calls” below; the installation's own is set with AI_DAILY_CALL_CAP. Try again shortly."
     },
     "members": {
@@ -949,6 +969,11 @@
       "body": "All of Kadence in one guide for coaches, riders and parents, with pictures, in Danish. Download it as a PDF, or read it on screen.",
       "open": "Download as PDF",
       "read": "Read the manual on screen"
+    },
+    "prices": {
+      "title": "Prices",
+      "body": "What Kadence costs for a rider alone and for a club, what is free, and how to pay.",
+      "open": "See the prices"
     },
     "knowledge": {
       "title": "About the sport",
@@ -1296,7 +1321,8 @@
     "uciBirthYear": "That UCI ID belongs to a rider born in another year. Check the number on the licence.",
     "uciUnknown": "Cykling Danmark does not know that UCI ID. Check the number on the licence.",
     "exerciseUnknown": "One of the exercises no longer exists. Reload the page and choose again.",
-    "exerciseArchived": "One of the exercises is archived, so it cannot go into a programme. You can bring it back in the library or choose another."
+    "exerciseArchived": "One of the exercises is archived, so it cannot go into a programme. You can bring it back in the library or choose another.",
+    "planExpired": "This workspace is read only now, because its trial or subscription has ended. You can still see everything and take it out."
   },
   "calendar": {
     "title": "Calendar",
@@ -2787,6 +2813,7 @@
         "nothing": "There were no new rides in the archive.",
         "limit": "Today's limit is reached. {count, plural, one {The last ride} other {The last # rides}} can be fetched in {hours, plural, one {# hour} other {# hours}}: add the archive again, and it goes on where it stopped.",
         "quota": "The room for files is used up, so {count, plural, one {the last ride was} other {the last # rides were}} not fetched. Delete old rides or download them first, and add the archive again.",
+        "planExpired": "The workspace is read only now, so {count, plural, one {the last ride was} other {the last # rides were}} not brought in.",
         "signedOut": "You are no longer signed in. Sign in, and add the archive again; it goes on where it stopped.",
         "failed": "Something went wrong on the way, and {count, plural, one {# ride is} other {# rides are}} missing. Add the archive again; it goes on where it stopped.",
         "cancelled": "Stopped. {count, plural, one {# ride is} other {# rides are}} missing; add the archive again when you want to go on.",
@@ -2828,7 +2855,8 @@
         "unknown_format": "Kadence does not know that file format. Use FIT, TCX or GPX, packed as .gz or .zip if you like.",
         "no_activity": "The zip file has no .fit, .tcx or .gpx file in it.",
         "not_bike": "Not a ride, so it was skipped.",
-        "quota": "The room for files is used up. Delete old rides or download them first."
+        "quota": "The room for files is used up. Delete old rides or download them first.",
+        "planExpired": "The workspace is read only now, so the file was not saved. Rides already here can still be seen and taken out."
       }
     },
     "routeTitle": "The route",
@@ -3154,6 +3182,7 @@
       "notAllowedLink": "Settings → Team",
       "rateLimited": "Many AI calls have been made just now. Try again in a moment.",
       "budget": "The AI is resting until next month. Everything else works.",
+      "planExpired": "The AI is resting, because the workspace is read only now. Everything in it can still be seen and taken out.",
       "unreachable": "The language model is not answering. Try again in a moment.",
       "badAnswer": "The language model answered with something that could not be used. Try again.",
       "notFound": "It no longer exists. Reload the page.",
@@ -3255,6 +3284,7 @@
       "invalid_file": "A ride from {name} could not be read. Upload the file yourself if it is missing.",
       "download": "A ride could not be fetched from {name}. Upload the file yourself if it is missing.",
       "quota": "A ride from {name} had no room: the room for files is used up. Delete old rides or download them first, and upload the file yourself.",
+      "planExpired": "A ride from {name} was not brought in, because the workspace is read only now. The ride is still at {name}.",
       "unknown": "Something went wrong with {name} last time. Connect again if your rides do not come in."
     },
     "connected": "{name} is connected. Your next rides come in by themselves.",
@@ -3287,6 +3317,7 @@
       "lastError": {
         "invalid_file": "The latest file could not be read. Upload it yourself if the ride is missing.",
         "quota": "The latest file had no room: the room for files is used up. Delete old rides or download them first.",
+        "planExpired": "The latest file was not saved, because the workspace is read only now.",
         "unknown": "Something went wrong with the latest file. Upload it yourself if the ride is missing."
       },
       "remove": "Remove",
@@ -4000,7 +4031,8 @@
         "not_rider": "Only a rider can save a ride.",
         "notFound": "The session no longer exists. Download the FIT file and upload it on “Me”.",
         "too_large": "The ride is too large to save from here. Download the FIT file and upload it on “Me”.",
-        "quota": "The room for files is used up, so the ride was not saved. Download the FIT file, and delete old rides or download them first."
+        "quota": "The room for files is used up, so the ride was not saved. Download the FIT file, and delete old rides or download them first.",
+        "planExpired": "The workspace is read only now, so the ride was not saved. Download the FIT file to keep it."
       }
     },
     "little": {
@@ -4302,7 +4334,44 @@
     "contents": "Contents",
     "updated": "Written in October 2026. DCU's rules change from season to season, so DCU's own pages always have the last word.",
     "experience": "Experience from the sport",
-    "experienceNote": "No rule says this. It is experience from the sport and our own reading, so take it as good guesses."
+    "experienceNote": "No rule says this. It is experience from the sport and our own reading, so take it as good guesses.",
+    "prices": {
+      "title": "Prices",
+      "intro": "Using Kadence costs a little, so running it and keeping it up are paid for. Everyone gets the same features, and every price is here.",
+      "perYear": "{price} kr. a year",
+      "perMonth": "That is {price} kr. a month.",
+      "vat": "VAT included.",
+      "noVat": "VAT not included.",
+      "perRider": "Up to {included} riders, then {price} kr. per rider a year.",
+      "cards": {
+        "person": "For you who train alone, without a team.",
+        "club": "For the club or the team. The club pays for the riders. Coaches and parents cost nothing."
+      },
+      "included": {
+        "calendar": "The calendar with sessions on the bike and in the gym",
+        "rides": "Rides from FIT files, Wahoo, Garmin and Polar",
+        "checkin": "Daily check-in",
+        "rulle": "Rulle, which rides the session on the smart trainer",
+        "ai": "The AI that proposes, within a budget each month",
+        "files": "{gb} GB for files",
+        "team": "The team's week and all the team's coaches and parents"
+      },
+      "freeTitle": "What is free",
+      "free": {
+        "youth": "Young riders alone, up to and including U19.",
+        "coaches": "Coaches and parents.",
+        "season": "A club's first season, through 30 September."
+      },
+      "trialTitle": "Try it first",
+      "trial": "If you train alone, you get {days, plural, one {# day} other {# days}} free before you pay. A club gets the rest of the season free and then {days, plural, one {# day} other {# days}} to decide.",
+      "trialNone": "Free to get started. There is no trial to keep an eye on.",
+      "payTitle": "How you pay",
+      "pay": "You get an invoice from Haij by mail and pay by bank transfer, a year at a time and in advance. There is no card payment.",
+      "expiry": "If nothing is paid, you can still see everything and take it out. Nothing is deleted for that reason.",
+      "openTitle": "Open source",
+      "open": "The code is open source under AGPL-3.0. A club can run Kadence on its own server and pay nobody anything.",
+      "openLink": "The code is on GitHub."
+    }
   },
   "guides": {
     "hub": {
@@ -5810,6 +5879,116 @@
       "print": "Print or save as PDF"
     }
   },
+  "billing": {
+    "banner": {
+      "trialEnded": "The trial has ended.",
+      "subscriptionEnded": "The subscription has ended.",
+      "stillWorks": "You can still see everything and take it out, but nothing new can be added. Nothing is deleted.",
+      "stillWorksMember": "You can still see everything and take your data out, but nothing new can be added. The team's coaches can see what it takes.",
+      "trialEnding": "The trial ends {days, plural, =0 {today} one {tomorrow} other {in # days}}, {date}.",
+      "toSubscription": "See the subscription"
+    },
+    "state": {
+      "free": "This workspace is free. There is nothing to pay.",
+      "freeUntil": "This workspace is free through {date}.",
+      "freeFirstSeason": "The team is free for its first season, through {date}.",
+      "freeYouth": "This workspace is free because the rider is U19 or younger. That holds through {date}.",
+      "trial": "Trial through {date}. {days, plural, =0 {Today is the last day.} one {# day left.} other {# days left.}}",
+      "paid": "Paid through {date}.",
+      "expiredTrial": "The trial ended on {date}. The workspace is now read only.",
+      "expiredPaid": "The subscription ended on {date}. The workspace is now read only."
+    },
+    "subscription": {
+      "title": "Subscription",
+      "afterFree": "After that there is a trial of {days, plural, one {# day} other {# days}} before the workspace is paid for.",
+      "expiredWhat": "You can still see everything and take it out under Data. Nothing new can be added, and the AI rests until it is paid. Nothing is deleted.",
+      "priceTitle": "What it costs",
+      "price": "DKK {year} a year including VAT, about DKK {month} a month.",
+      "priceNoVat": "DKK {year} a year excluding VAT, about DKK {month} a month.",
+      "priceNone": "Free. There is nothing to pay.",
+      "riders": "The price is built on the team's {riders} riders: {included} riders are in the base price, and each rider beyond costs DKK {perRider} a year.",
+      "howTitle": "How to pay",
+      "how": "The invoice comes from Haij by mail, and it is paid by bank transfer. The account number and reference are on the invoice. Once the payment has come in, it is registered here.",
+      "paymentsTitle": "Payments",
+      "paymentsNone": "No payments have been registered yet.",
+      "paymentsOwnerOnly": "The payments can be seen by the workspace's owner."
+    },
+    "payments": {
+      "workspace": "Workspace",
+      "invoice": "Invoice",
+      "period": "Period",
+      "periodValue": "{from}–{to}",
+      "amount": "Amount",
+      "vat": "VAT included",
+      "kroner": "DKK {amount}"
+    },
+    "admin": {
+      "title": "Billing",
+      "subtitle": "Every workspace with its plan, its riders and the price from the price table, so the invoice can be written in your own bookkeeping. When the payment has come in, you register it here, and the workspace is paid through the period's last day.",
+      "none": "There are no workspaces yet.",
+      "workspace": "Workspace",
+      "state": "Plan",
+      "riders": "Riders",
+      "yearly": "Price a year",
+      "actions": "Actions",
+      "person": "Individual {ref}",
+      "kindPerson": "Individual",
+      "kindClub": "Club",
+      "created": "created {date}",
+      "reasonValue": "Reason: {reason}",
+      "noPrice": "No price",
+      "kroner": "DKK {amount}",
+      "register": "Register payment",
+      "makeFree": "Make free",
+      "registerTitle": "Register a payment for {workspace}",
+      "registerBody": "When the bank transfer has come in: the amount with VAT, the VAT in it, the invoice's number and the period it pays for. The workspace is paid through the period's last day.",
+      "amount": "Amount in DKK with VAT",
+      "vat": "VAT in it, DKK",
+      "invoiceNo": "Invoice number",
+      "from": "From",
+      "to": "Through",
+      "note": "Note (optional)",
+      "registerSave": "Register",
+      "freeTitle": "Make {workspace} free",
+      "freeBody": "A free workspace works like a paid one. Write a reason, such as pilot, DCU or friend. With a last day it gets a trial once that day has passed.",
+      "reason": "Reason",
+      "reasonPlaceholder": "such as pilot",
+      "through": "Last free day (optional)",
+      "throughHelp": "Without a date it is free until you change it.",
+      "freeSave": "Make free",
+      "invalid": "Something in the form is not valid. The VAT cannot be more than the amount, and the period cannot end before it begins.",
+      "failed": "It was not saved. Try again.",
+      "saved": "Saved.",
+      "paymentsTitle": "Latest payments",
+      "paymentsNone": "No payments have been registered yet."
+    },
+    "prices": {
+      "title": "Prices",
+      "subtitle": "The price table that the price page, the front page, Subscription and Billing read. A change applies from the day you choose, today or later, and the old price stays as history. The AI budget and the file space apply to the workspaces on the plan, unless you gave a workspace its own number under Installation.",
+      "since": "Key {key}. In effect from {date}.",
+      "fields": {
+        "nameDa": "Name in Danish",
+        "nameEn": "Name in English",
+        "price": "Price a year, kr.",
+        "validFrom": "Applies from",
+        "included": "Riders included in the price",
+        "perRider": "Price per rider beyond, kr. a year",
+        "ai": "AI budget, € a month",
+        "files": "File space, GB",
+        "vat": "The price includes VAT"
+      },
+      "example": "{riders} riders: {year} kr. a year, {month} kr. a month",
+      "flat": "{year} kr. a year, {month} kr. a month, whatever the number of riders",
+      "history": "Leave the riders and the price per rider empty if the price does not grow with the riders. If you save several times on the same day, the last one applies.",
+      "otherRows": "Other prices",
+      "earlier": "From {date}: {price} kr. a year",
+      "later": "From {date}, upcoming: {price} kr. a year",
+      "save": "Save the price",
+      "saved": "The price is saved.",
+      "invalid": "Check the numbers. A price can apply from today or later, and the riders and the price per rider are both filled in or neither.",
+      "failed": "The price could not be saved. Try again."
+    }
+  },
   "mail": {
     "greeting": "Hi",
     "signoff": "Best regards\nKadence",
@@ -5844,6 +6023,24 @@
       "subject": "There is news about the week in Kadence",
       "body": "There is news about the week in Kadence. Open the link to see it.",
       "why": "You get this email because you chose the week's overview by email under Settings → Profile. You can turn it off there too."
+    },
+    "plan": {
+      "own": "your own Kadence",
+      "trialSubject": "Your Kadence trial ends on {date}",
+      "trialBody": "The trial for {workspace} ends on {date}. Until then everything works as it does now.",
+      "trialTomorrow": "The trial for {workspace} has its last day on {date}.",
+      "price": "The price is DKK {price} a year.",
+      "trialInvoice": "An invoice comes from Haij by mail. It is paid by bank transfer.",
+      "trialAfter": "If it is not paid, everything can still be seen and taken out afterwards, but nothing new can be added. Nothing is deleted.",
+      "paidSubject": "Your Kadence subscription runs until {date}",
+      "paidBody": "The subscription for {workspace} is paid through {date}.",
+      "paidInvoice": "An invoice for the next year comes from Haij by mail. It is paid by bank transfer.",
+      "expiredSubject": "Kadence is now read only",
+      "expiredTrialBody": "The trial for {workspace} ended on {date}, so the workspace is now read only.",
+      "expiredPaidBody": "The subscription for {workspace} ended on {date}, so the workspace is now read only.",
+      "expiredStill": "Everything is still there. It can be seen and taken out, but nothing new can be added. Nothing is deleted.",
+      "expiredInvoice": "To use it again, an invoice comes from Haij by mail. Once it is paid, everything works as before.",
+      "link": "See the subscription here:"
     }
   }
 }

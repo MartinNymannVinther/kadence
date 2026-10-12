@@ -1,30 +1,34 @@
 import { and, eq, lt, sql } from "drizzle-orm";
 import { authDb } from "@/core/db/client";
 import { users } from "@/core/db/schema";
+import { UNVERIFIED_DAYS } from "@/core/auth/verify-days";
 import { errorName, log } from "@/core/log";
+
+export { UNVERIFIED_DAYS };
 
 /**
  * An account a person created through door 2 and never confirmed is
- * deleted after seven days (docs/adr/0088): the workspace, then the
+ * deleted after thirty days (docs/adr/0088, amended 12 October 2026: it
+ * was seven while the account was locked from the start; now the person
+ * uses it for a week before it locks): the workspace, then the
  * account, as "Slet min konto og alt om mig" takes them, and every audit
  * row about either, leaving one line, `signup.expired`, with the account's
  * id and nothing else. Done in the database by
- * `delete_unverified_signup()` (drizzle/0050) on the auth role, which
+ * `delete_unverified_signup()` (drizzle/0053) on the auth role, which
  * refuses — by doing nothing — anything that is not a door-2 account,
- * unconfirmed, older than seven days by the database's clock and nothing
+ * unconfirmed, older than thirty days by the database's clock and nothing
  * but its own workspace: an account on a team, a confirmed one, an
  * owner's or one a few days old cannot be reached.
  */
 
-export const UNVERIFIED_DAYS = 7;
 const DAY_MS = 24 * 60 * 60 * 1000;
 /** Accounts looked at per run; the next run takes the rest. */
 const PER_RUN = 500;
 
 /**
- * Deletes the door-2 accounts unconfirmed for seven days before `now`,
+ * Deletes the door-2 accounts unconfirmed for thirty days before `now`,
  * and answers how many went. `now` is for a test's clock; the database
- * checks the seven days again against its own.
+ * checks the thirty days again against its own.
  */
 export async function sweepUnverifiedSignups(now: Date = new Date()): Promise<number> {
   const cutoff = new Date(now.getTime() - UNVERIFIED_DAYS * DAY_MS);

@@ -406,6 +406,17 @@ describe("rls coverage (guards future tables)", () => {
     // moderation: true or false about the caller, and nothing else.
     "app_is_platform_owner",
     "app_is_rider_self",
+    // What a workspace pays (drizzle/0052, docs/adr/0090), for the daily
+    // billing.expire job with nobody signed in: which owner of which
+    // workspace is due a mail, of which kind, about which moment — two ids,
+    // a word and a date, no address and no name; the job reads those as
+    // the owner, as mail_week_due's run does. Refused from a workspace.
+    "billing_notices_due",
+    // Installation → Betaling (drizzle/0052, docs/adr/0090): every
+    // workspace but the demos with its plan, its dates, its rider count and
+    // its price, a personal one without its name. Refuses everyone whose
+    // app.user_id is not the installation's owner. tests/billing/admin.test.ts.
+    "billing_overview",
     // Links a new member to the rider or guardian row a coach prepared,
     // for an invitation the caller accepted to their own address.
     "claim_invitation_links",
@@ -447,6 +458,12 @@ describe("rls coverage (guards future tables)", () => {
     // append-only guard would otherwise keep forever. Checks itself that
     // the caller coaches the team, like delete_workspace.
     "erase_rider",
+    // The daily job's one write across workspaces (drizzle/0052, docs/adr/
+    // 0090): a trial or a payment past its end becomes 'expired', a free
+    // workspace past its date a trial; never a demo, never a deletion. It
+    // answers the ids it moved and refuses a caller with a workspace in its
+    // context. tests/billing/expire.test.ts proves which rows move.
+    "expire_workspaces",
     // The keys of objects whose row is gone and whose tombstone is older
     // than the grace (drizzle/0051, docs/adr/0087), locked for the job's
     // transaction; keys only, never a row, and refused from inside a
@@ -512,6 +529,15 @@ describe("rls coverage (guards future tables)", () => {
     // the same guard trigger refuses the application role, and the function
     // refuses anyone but the owner. tests/storage/quota.test.ts proves both.
     "set_file_quota",
+    // The installation's owner registers a payment, makes a workspace
+    // free, or sets a price (drizzle/0052, docs/adr/0090), as set_ai_budget
+    // sets a budget: each refuses everyone whose app.user_id is not the
+    // owner, and none touches a demo. The audit triggers on payments,
+    // organizations and price_plans record each change.
+    // tests/billing/admin.test.ts proves the refusals.
+    "set_payment",
+    "set_plan_free",
+    "set_price_plan",
     // The addresses the caller may read (drizzle/0034, docs/adr/0070),
     // now that the application role has no SELECT on users.email: the
     // caller's own, the whole team's to a coach of the active team, and
@@ -536,6 +562,12 @@ describe("rls coverage (guards future tables)", () => {
     // workspace's kind, nothing about any file; refused outside a
     // workspace and to a non-member. tests/storage/quota.test.ts.
     "workspace_file_usage",
+    // What a workspace costs (drizzle/0052, docs/adr/0090): its plan's key,
+    // the yearly price for the riders it has, the rider count and the
+    // plan's terms. For a coach of the active workspace, the installation's
+    // owner, and the daily job with nobody signed in; refused to a rider or
+    // a parent and to another workspace's coach. tests/billing/price.test.ts.
+    "workspace_price",
   ];
 
   it("only the named definer functions can be called by a runtime role", async () => {

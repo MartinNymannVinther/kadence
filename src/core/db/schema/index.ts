@@ -26,3 +26,4 @@ export * from "./push";
 export * from "./exercises";
 export * from "./week-plan";
 export * from "./consent";
+export * from "./billing";

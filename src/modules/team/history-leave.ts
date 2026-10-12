@@ -5,6 +5,7 @@ import { createPersonalWorkspaceFor } from "@/core/auth/personal-workspace";
 import type { OrgContext } from "@/core/db/tenant";
 import { forgetReminders } from "@/core/team/leave";
 import { leaveWorkspace } from "@/core/team/service";
+import { startPlanQuietly } from "@/modules/billing/start";
 import { deleteWorkspace } from "@/modules/export/workspace";
 import { moveRiderHistory, ownRiderIn } from "./history-move";
 import { createRider } from "./riders";
@@ -65,6 +66,9 @@ export async function leaveWithHistory(
         })
       ).id;
     await moveRiderHistory(toCtx, from.id, toId);
+    // A new workspace of one's own is priced as any other (docs/adr/0090).
+    if (created)
+      await startPlanQuietly(target.orgId, { kind: "personal", birthYear: from.birthYear });
   } catch (error) {
     await undoCreation();
     if (error instanceof Refused && error.detail === "target_has_history") {

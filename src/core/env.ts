@@ -218,6 +218,18 @@ export const EnvShape = z.object({
     .min(0)
     .max(1_000_000_000_000_000)
     .default(2_000_000_000),
+  // What a workspace pays (docs/adr/0090). "off" (the default) is the
+  // self-hoster's and the pilot's setting: every workspace is free, and
+  // nothing about prices, trials or payments shows anywhere. "on" gives a
+  // new person's workspace a trial of TRIAL_DAYS days, a club the owner
+  // admits its first season free, sends the reminders by mail (so it
+  // needs mail) and makes a workspace past its trial or its payment read
+  // and export only, until the installation's owner registers a payment
+  // under Indstillinger -> Installation -> Betaling.
+  BILLING: z.enum(["off", "on"]).default("off"),
+  // How long a new workspace tries Kadence before it is paid for, in days.
+  // 0 is no trial: free until the installation's owner decides otherwise.
+  TRIAL_DAYS: z.coerce.number().int().min(0).max(3650).default(30),
 });
 
 /**

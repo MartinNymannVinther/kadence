@@ -52,8 +52,9 @@ export const users = pgTable("users", {
   platformRole: text("platform_role"),
   /**
    * Created through door 2 (docs/adr/0088): a person's own workspace
-   * without an application. Such an account confirms its address before
-   * anything else and is deleted after seven days unconfirmed. Set by the
+   * without an application. Such an account confirms its address within a
+   * week, or is locked until it does, and is deleted after thirty days
+   * unconfirmed (verify-days.ts). Set by the
    * sign-up hook from door 2's key; never writable from a request.
    */
   selfSignup: boolean("self_signup").notNull().default(false),
@@ -133,10 +134,27 @@ export const organizations = pgTable(
      */
     kind: text("kind").notNull().default("club"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    /**
+     * What the workspace pays (docs/adr/0090): 'free', 'trial', 'paid' or
+     * 'expired', with the dates beside it. Like `kind`, never set from a
+     * request: the registration sets it on the auth role, and afterwards
+     * only the database's own functions move it (set_payment,
+     * set_plan_free, expire_workspaces in drizzle/0052).
+     */
+    plan: text("plan").notNull().default("free"),
+    /** A key of price_plans; null is the one the kind gives ('person' or 'club'). */
+    pricePlan: text("price_plan"),
+    trialEndsAt: timestamp("trial_ends_at", { withTimezone: true }),
+    paidUntil: timestamp("paid_until", { withTimezone: true }),
+    freeReason: text("free_reason"),
+    /** A free workspace with a date becomes a trial when it passes ('first-season', 'youth'). */
+    freeUntil: timestamp("free_until", { withTimezone: true }),
   },
   (t) => [
     check("organizations_kind", sql`${t.kind} in ('club', 'personal')`),
+    check("organizations_plan", sql`${t.plan} in ('free', 'trial', 'paid', 'expired')`),
     index("organizations_kind_idx").on(t.kind),
+    index("organizations_plan_idx").on(t.plan),
   ],
 );
 

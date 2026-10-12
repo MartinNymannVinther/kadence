@@ -1,4 +1,5 @@
 import { requireOrgContext } from "@/core/auth/guard";
+import { PLAN_EXPIRED, planExpired } from "@/modules/billing/state";
 import { Refused } from "@/core/action";
 import { rateLimit } from "@/core/rate-limit";
 import { fromAnotherSite } from "@/core/same-site";
@@ -27,6 +28,8 @@ export async function POST(request: Request) {
   if (!ctx) return Response.json({ error: "unauthorized" }, { status: 401 });
   if (!(await rateLimit(`org-image:${ctx.userId}`, 30, HOUR)).allowed)
     return Response.json({ error: "rateLimited" }, { status: 429 });
+  // A workspace that may only be read takes no new picture (docs/adr/0090).
+  if (await planExpired(ctx)) return Response.json({ error: PLAN_EXPIRED }, { status: 402 });
 
   let form: FormData;
   try {

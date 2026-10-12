@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { runAction } from "@/core/action";
+import { runAction, STILL_ALLOWED } from "@/core/action";
 import { disconnect } from "./disconnect";
 import { deleteActivity } from "./import";
 import { PROVIDER_IDS } from "./providers";
@@ -27,9 +27,13 @@ export async function pushSessionAction(raw: unknown) {
 
 /** Disconnects the caller's own Wahoo, Garmin or Polar account. */
 export async function disconnectAction(raw: unknown) {
-  return runAction(raw, z.object({ provider }), (ctx, input) => disconnect(ctx, input.provider), [
-    "/settings/devices",
-  ]);
+  return runAction(
+    raw,
+    z.object({ provider }),
+    (ctx, input) => disconnect(ctx, input.provider),
+    ["/settings/devices"],
+    STILL_ALLOWED,
+  );
 }
 
 /**
@@ -52,6 +56,7 @@ export async function removeUploadKeyAction(raw: unknown) {
     z.object({ keyId: id }),
     (ctx, input) => removeUploadKey(ctx, input.keyId),
     ["/settings/devices", "/riders"],
+    STILL_ALLOWED,
   );
 }
 
@@ -62,5 +67,6 @@ export async function deleteActivityAction(raw: unknown) {
     z.object({ activityId: id }),
     (ctx, input) => deleteActivity(ctx, input.activityId),
     ["/calendar", "/today", "/riders", "/season"],
+    STILL_ALLOWED,
   );
 }

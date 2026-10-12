@@ -5,9 +5,10 @@ import { errorName, log } from "@/core/log";
 /**
  * Mail through an EU provider (docs/adr/0086). Optional: without the five
  * SMTP variables nothing is sent and every page behaves as it did before
- * there was mail. With them, Kadence sends four things and nothing else —
+ * there was mail. With them, Kadence sends five things and nothing else —
  * a link to confirm an address, a link to choose a new password, an
- * invitation, and the parents' "der er nyt om ugen" — each built by a
+ * invitation, the parents' "der er nyt om ugen", and with BILLING=on a
+ * word to a workspace's owner about its trial or payment — each built by a
  * template in ./templates that carries a link to Kadence and no word about
  * training or health. E-mail is not a secure channel, so a mail is a door
  * to Kadence, never the content.

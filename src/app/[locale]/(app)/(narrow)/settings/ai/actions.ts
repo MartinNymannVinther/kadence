@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { requireOrgContext } from "@/core/auth/guard";
 import { withOrgContext } from "@/core/db/tenant";
 import { LlmError } from "@/core/llm";
-import { BudgetReached, RateLimited, reserveAiCall } from "@/modules/ai/limits";
+import { BudgetReached, PlanExpired, RateLimited, reserveAiCall } from "@/modules/ai/limits";
 import {
   getModelSettings,
   saveModelSettings,
@@ -13,6 +13,7 @@ import {
   type ModelSettingsView,
 } from "@/modules/ai/model-settings";
 import { recordAiUsage } from "@/modules/ai/usage";
+import { planExpired } from "@/modules/billing/state";
 import { currentRole } from "@/modules/export/workspace";
 
 export type LlmTestResult =
@@ -21,7 +22,15 @@ export type LlmTestResult =
   | { status: "ok"; model: string; sample: string; ms: number }
   | {
       status: "failed";
-      reason: "auth" | "unreachable" | "config" | "rate_limit" | "ceiling" | "budget" | "generic";
+      reason:
+        | "auth"
+        | "unreachable"
+        | "config"
+        | "rate_limit"
+        | "ceiling"
+        | "budget"
+        | "planExpired"
+        | "generic";
     };
 
 /**
@@ -66,6 +75,7 @@ export async function testLlmAction(): Promise<LlmTestResult> {
     // they go looking for a billing page over a limit we set ourselves.
     if (error instanceof RateLimited) return { status: "failed", reason: "ceiling" };
     if (error instanceof BudgetReached) return { status: "failed", reason: "budget" };
+    if (error instanceof PlanExpired) return { status: "failed", reason: "planExpired" };
     console.error("llm: could not count the test call", error);
     return { status: "failed", reason: "generic" };
   }
@@ -111,7 +121,7 @@ export async function testLlmAction(): Promise<LlmTestResult> {
 
 export type SaveResult =
   | { ok: true; settings: ModelSettingsView }
-  | { ok: false; error: "unauthorized" | "invalid" | "generic" };
+  | { ok: false; error: "unauthorized" | "invalid" | "planExpired" | "generic" };
 
 /**
  * Owners and admins only. The model choice spends the workspace's money
@@ -126,6 +136,8 @@ export async function saveModelSettingsAction(input: unknown): Promise<SaveResul
 
   const parsed = SaveModelSettingsInput.safeParse(input);
   if (!parsed.success) return { ok: false, error: "invalid" };
+  // A workspace that may only be read changes no settings (docs/adr/0090).
+  if (await planExpired(ctx)) return { ok: false, error: "planExpired" };
 
   try {
     await saveModelSettings(ctx, parsed.data);
