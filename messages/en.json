@@ -2148,6 +2148,29 @@
       "planned": "Planned",
       "unplanned": "Unplanned"
     },
+    "deviation": {
+      "open": "{state}. See why",
+      "heading": {
+        "missed": "{sport, select, bike {Not ridden} other {Not done}}",
+        "shorter": "Shorter than planned",
+        "longer": "Longer than planned",
+        "easier": "Easier than planned",
+        "harder": "Harder than planned"
+      },
+      "fact": {
+        "missed": "Planned {planned}. Nothing has come in for the session.",
+        "time": "Planned {planned}. {sport, select, bike {Ridden} other {Trained}} {done}.",
+        "load": "Load {done} against {planned} planned.",
+        "intensityHard": "The session was built around zone {zone}, with {planned} min there or above. The ride had {done} min, mostly in zone {most}.",
+        "intensityEasy": "The session was an easy one in zone {zone}. {share} % of the ride was in the session's zones, mostly zone {most}.",
+        "noPlanDetail": "The session only had a duration, so there was nothing more to compare with."
+      },
+      "week": {
+        "inside": "With the rest of the week's sessions, the week ends inside {ref, select, dcu {DCU's range} other {the profile's range}}.",
+        "over": "With the rest of the week's sessions, the week ends above {ref, select, dcu {DCU's range} other {the profile's range}}.",
+        "under": "With the rest of the week's sessions, the week ends below {ref, select, dcu {DCU's range} other {the profile's range}}."
+      }
+    },
     "eventKind": {
       "race": "Race",
       "exam": "Exam",
@@ -3274,6 +3297,16 @@
       "accept": "{count, plural, =0 {Put the chosen in the calendar} one {Put the chosen session in the calendar} other {Put # chosen sessions in the calendar}}",
       "again": "Propose again",
       "added": "{count, plural, one {The session is in the calendar.} other {# sessions are in the calendar.}}"
+    },
+    "sessionComment": {
+      "ask": "Get a comment from the AI",
+      "thinking": "The AI is writing a comment …",
+      "title": "Proposed by the AI",
+      "body": "A comment on the session. It is only saved if you press Save as comment.",
+      "save": "Save as comment",
+      "close": "Close",
+      "saved": "The comment is saved under the session.",
+      "empty": "The AI had nothing to write about the session. Try again."
     },
     "brief": {
       "ask": "Write a summary",

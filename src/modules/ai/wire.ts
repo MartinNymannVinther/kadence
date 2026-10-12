@@ -25,3 +25,9 @@ export type AiFailure =
 export type ProposalResult<T> =
   | { ok: true; proposal: T; engine: string }
   | { ok: false; error: AiFailure | "unauthorized" | "invalid" | "notFound" };
+
+/**
+ * What a comment the AI proposed starts with once a person saves it
+ * (docs/adr/0095): comments carry no metadata, so the words say it.
+ */
+export const AI_COMMENT_PREFIX = "(AI) ";

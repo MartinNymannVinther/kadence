@@ -2,7 +2,8 @@
 
 import { MessageSquare, Repeat, Users } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { COLOUR_STYLE, ComplianceMark, colourOf } from "@/components/training/compliance-mark";
+import { COLOUR_STYLE, colourOf } from "@/components/training/compliance-mark";
+import { ExplainedMark } from "@/components/training/explained-mark";
 import { durationText } from "@/components/training/duration";
 import { SportIcon } from "@/components/training/sport-icon";
 import { Link } from "@/i18n/navigation";
@@ -14,7 +15,7 @@ import type { CalendarCard, RiderOption } from "./types";
 /**
  * A planned session in a day: its sport, title and length, when and where
  * it starts (ADR 0058), how it went against the plan (colour, icon and
- * word), and how many comments it has.
+ * word, and why when it went off, ADR 0095), and how many comments it has.
  * The card opens the session's panel; its menu moves, copies and deletes;
  * on a desktop it can be dragged to another day.
  */
@@ -45,7 +46,6 @@ export function SessionCard({
   const duration = useTranslations("training.duration");
   const locale = useLocale();
   const colour = colourOf(session, today);
-  const done = session.activity !== null;
   const when = timePlaceText(session, locale);
 
   return (
@@ -95,7 +95,7 @@ export function SessionCard({
         </span>
       </Link>
       <div className="flex min-h-8 items-center justify-between gap-1 pr-1 pb-1 pl-2.5">
-        <ComplianceMark colour={colour} done={done} isToday={session.onDate === today} />
+        <ExplainedMark session={session} today={today} />
         {canEdit && (
           <SessionMenu
             session={session}

@@ -98,12 +98,30 @@ export {
   type WeekTotal,
 } from "./fitness";
 export {
+  GREEN_HIGH_PCT,
+  GREEN_LOW_PCT,
+  YELLOW_HIGH_PCT,
+  YELLOW_LOW_PCT,
+  colourOfPct,
   compliance,
+  complianceRatio,
   matchActivity,
   type ComplianceColour,
+  type ComplianceRatio,
   type ComplianceSide,
   type MatchCandidate,
 } from "./compliance";
+export {
+  builtAround,
+  deviation,
+  plannedZoneSeconds,
+  type Deviation,
+  type DeviationDone,
+  type DeviationFact,
+  type DeviationHeading,
+  type DeviationPlanned,
+  type ZoneSecondsBySource,
+} from "./deviation";
 export {
   LOW_AVERAGE,
   SHORT_NIGHT_HOURS,

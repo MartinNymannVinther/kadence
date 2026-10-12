@@ -1,6 +1,7 @@
 import { Bike, Clock, MessageSquare } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { ComplianceMark, colourOf, COLOUR_STYLE } from "@/components/training/compliance-mark";
+import { colourOf, COLOUR_STYLE } from "@/components/training/compliance-mark";
+import { ExplainedMark } from "@/components/training/explained-mark";
 import { durationText } from "@/components/training/duration";
 import { SportIcon } from "@/components/training/sport-icon";
 import { buttonVariants } from "@/components/ui/button";
@@ -77,7 +78,7 @@ export function TodaySession({
               {t("comments", { count: session.commentCount })}
             </span>
           )}
-          <ComplianceMark colour={colour} done={done} isToday={session.onDate === today} />
+          <ExplainedMark session={session} today={today} />
         </p>
       </div>
       {session.description && (

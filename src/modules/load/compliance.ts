@@ -35,11 +35,36 @@ function positive(value: number | null | undefined): value is number {
   return typeof value === "number" && Number.isFinite(value) && value > 0;
 }
 
-function ratioPct(planned: ComplianceSide, done: ComplianceSide): number | null {
+/** The whole-percent bands the colour reads; see the file comment. The explanation reads the same ones. */
+export const GREEN_LOW_PCT = 80;
+export const GREEN_HIGH_PCT = 120;
+export const YELLOW_LOW_PCT = 50;
+export const YELLOW_HIGH_PCT = 150;
+
+/** What the colour was measured by, and done ÷ planned in whole percent. */
+export type ComplianceRatio = { by: "load" | "minutes"; pct: number };
+
+/**
+ * The ratio the colour is read from: by load when both sides have one,
+ * otherwise by minutes; null when the plan has neither. Exported so the
+ * explanation of a colour (deviation.ts) reads the very same number.
+ */
+export function complianceRatio(
+  planned: ComplianceSide,
+  done: ComplianceSide,
+): ComplianceRatio | null {
   if (positive(planned.load) && typeof done.load === "number" && Number.isFinite(done.load))
-    return Math.round((done.load / planned.load) * 100);
-  if (positive(planned.minutes)) return Math.round((done.minutes / planned.minutes) * 100);
+    return { by: "load", pct: Math.round((done.load / planned.load) * 100) };
+  if (positive(planned.minutes))
+    return { by: "minutes", pct: Math.round((done.minutes / planned.minutes) * 100) };
   return null;
+}
+
+/** The colour of a ratio in whole percent. */
+export function colourOfPct(pct: number): "green" | "yellow" | "red" {
+  if (pct >= GREEN_LOW_PCT && pct <= GREEN_HIGH_PCT) return "green";
+  if (pct >= YELLOW_LOW_PCT && pct <= YELLOW_HIGH_PCT) return "yellow";
+  return "red";
 }
 
 /** The colour of a day's planned session against what was done; see the file comment. */
@@ -51,11 +76,8 @@ export function compliance(
 ): ComplianceColour {
   if (!planned) return "none";
   if (!done) return dayIso < todayIso ? "red" : "grey";
-  const pct = ratioPct(planned, done);
-  if (pct === null) return "green";
-  if (pct >= 80 && pct <= 120) return "green";
-  if (pct >= 50 && pct <= 150) return "yellow";
-  return "red";
+  const ratio = complianceRatio(planned, done);
+  return ratio === null ? "green" : colourOfPct(ratio.pct);
 }
 
 export interface MatchCandidate {
