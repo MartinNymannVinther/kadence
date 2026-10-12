@@ -42,16 +42,36 @@ export function mailConfigured(): boolean {
 }
 
 /**
+ * A mail catcher on this machine while developing (Mailpit in
+ * docker-compose.dev.yml): nothing leaves the loopback interface, so
+ * there is nothing for TLS to protect. Only outside production, and only
+ * for a host that is the machine itself; a real provider is never
+ * spoken to in the clear.
+ */
+export function plainSmtpAllowed(host: string | undefined, nodeEnv: string): boolean {
+  return (
+    nodeEnv !== "production" && (host === "localhost" || host === "127.0.0.1" || host === "::1")
+  );
+}
+
+function loopbackCatcher(): boolean {
+  return plainSmtpAllowed(env.SMTP_HOST, env.NODE_ENV);
+}
+
+/**
  * The SMTP transport, made once per process. Port 465 speaks TLS from the
  * first byte; every other port must upgrade with STARTTLS or the
- * transport refuses, so a password never crosses in the clear.
+ * transport refuses, so a password never crosses in the clear. The one
+ * exception is the catcher on the developer's own machine.
  */
 function smtpTransport(): MailTransport {
+  const plain = loopbackCatcher();
   const mailer = createTransport({
     host: env.SMTP_HOST,
     port: env.SMTP_PORT,
     secure: env.SMTP_PORT === 465,
-    requireTLS: env.SMTP_PORT !== 465,
+    requireTLS: env.SMTP_PORT !== 465 && !plain,
+    ignoreTLS: plain,
     auth: { user: env.SMTP_USER, pass: env.SMTP_PASSWORD },
     connectionTimeout: TIMEOUT_MS,
     greetingTimeout: TIMEOUT_MS,

@@ -1,6 +1,6 @@
 # ADR 0086: Mail through an EU provider
 
-Status: accepted · Date: 2026-10-11 · Builds on 0004, 0032, 0060, 0064, 0065, 0080 · Replaces backlog P3-05 with S-07 (docs/plan-alene-og-som-tjeneste.md §5.1)
+Status: accepted · Date: 2026-10-11 · Builds on 0004, 0032, 0060, 0064, 0065, 0080 · Replaces backlog P3-05 with S-07 (docs/plan-alene-og-som-tjeneste.md §5.1) · Amended 2026-10-12 (one.com is the provider; a catcher while developing)
 
 ## Context
 
@@ -137,3 +137,24 @@ and left the provider to us (the plan's question 2).
 - **A week mail lost to a crash** is not sent twice, and is not retried
   either once its count is taken: the counters are unlogged (ADR 0083). The
   next Sunday comes.
+
+## Amended 2026-10-12: one.com, and a catcher while developing
+
+Martin had a mailbox provider already: one.com (one.com A/S, part of
+group.one, Copenhagen, EU-hosted), where `haij.dk`'s mail lives. On 12
+October 2026 he set up a mailbox for Kadence there, and it is the
+provider for kadence.haij.dk: `send.one.com`, port 587 with STARTTLS,
+the mailbox as user and as `MAIL_FROM`, since one.com sends as the
+mailbox and nobody else. Scaleway Transactional Email stays the
+alternative the day one.com's hourly and daily limits, or its spam
+reputation, get in the way; the row in `docs/subprocessors.md` names
+one.com now, and Scaleway would get its own row before a first mail.
+
+A development server must never send through a real provider: the
+seeded addresses do not exist, and every bounce counts against the
+sender. `docker-compose.dev.yml` runs Mailpit beside the database, a
+catcher on `localhost:1025` with a reader on `localhost:8025`, and the
+mailer speaks SMTP without TLS in that one case: outside production, to
+the machine itself. The test suite still refuses every real transport.
+The test server on a machine of its own, a production build, may use
+the real provider, for real addresses only.

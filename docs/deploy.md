@@ -336,51 +336,72 @@ a word about training or health:
 - for a parent who chose it under Indstillinger → Profil, "Der er nyt om
   ugen i Kadence" on Sunday evening, beside the push (6d).
 
-kadence.haij.dk uses **Scaleway Transactional Email** (TEM), which is on
-`docs/subprocessors.md`. Any SMTP server works for a self-hosted
-installation; put it on your own list.
+kadence.haij.dk sends through **one.com** (one.com A/S, part of group.one,
+Copenhagen; EU-hosted), the mailbox `kadence@haij.dk` on the domain that
+already lives there, which is on `docs/subprocessors.md`. Any SMTP server
+works for a self-hosted installation; put it on your own list. Scaleway
+Transactional Email (Paris) is the alternative the day one.com's hourly
+and daily limits, or its spam reputation, get in the way (ADR 0086).
 
-### Setting up Scaleway Transactional Email
+### Setting up one.com
 
-1. In the Scaleway console, open **Transactional Email**, choose the
-   region **Paris (fr-par)**, and add the domain the mail is sent from
-   (for kadence.haij.dk: `haij.dk`).
-2. Add the DNS records the console shows at the domain's registrar: the
-   **SPF** record (a TXT on the domain), the **DKIM** key (a TXT under
-   `._domainkey`), the **MX** record if the console asks for one, and a
-   **DMARC** policy (a TXT on `_dmarc`, for example
-   `v=DMARC1; p=quarantine; rua=mailto:postmaster@haij.dk`). Wait until
-   the console says the domain is verified. Without SPF and DKIM the mails
-   land in spam, or nowhere.
-3. Make the SMTP credentials: in **IAM**, an application with a policy
-   that lets it send mail in the project that holds the domain (the
-   Transactional Email permission set; check in the console which one is
-   send-only), and an **API key** for that application. Keep the secret
-   key: it is shown once.
-4. Put the five variables into Coolify and redeploy:
+1. In one.com's control panel, make a mailbox for Kadence alone, for
+   example `kadence@haij.dk`, so Kadence never holds the password of a
+   mailbox a person reads. If the domain's mail already lives at one.com,
+   SPF and DKIM are in place; if not, add one.com's SPF include to the
+   domain's TXT record, or the mails land in spam.
+2. Put the five variables into Coolify and redeploy:
 
    ```
-   SMTP_HOST=smtp.tem.scaleway.com
+   SMTP_HOST=send.one.com
    SMTP_PORT=587
-   SMTP_USER=<the project's id>
-   SMTP_PASSWORD=<the API key's secret key>
+   SMTP_USER=kadence@haij.dk
+   SMTP_PASSWORD=<the mailbox's password>
    MAIL_FROM=Kadence <kadence@haij.dk>
    ```
 
    Port 587 upgrades with STARTTLS and Kadence refuses to send without
-   it; 465 is TLS from the first byte (Scaleway also answers on 2587 and
-   2465). `MAIL_FROM` must be on the verified domain. All five or none:
-   the app refuses to start with some of them, and names what is missing.
+   it; 465 is TLS from the first byte. `MAIL_FROM` must be the mailbox
+   itself: one.com refuses to send as anybody else. All five or none: the
+   app refuses to start with some of them, and names what is missing.
    `SMTP_PASSWORD` is a secret: Coolify only, never in the repository.
 
-5. Check it: sign in, open Indstillinger → Sikkerhed and press "Send en
+3. Check it: sign in, open Indstillinger → Sikkerhed and press "Send en
    mail til bekræftelse". The mail should arrive within a minute, and the
    link should give the address its check mark. If it does not, the app's
    log says `mail: not sent` with the error's name (never the address).
 
-The console shows what was sent and what bounced. To leave Scaleway, set the five
-variables to another EU provider (Brevo is the reserve, ADR 0086), add its
-row to `docs/subprocessors.md` first, and redeploy.
+one.com caps what one mailbox may send per hour and per day; the number
+is in their help pages. Invitations, confirmations and the parents'
+Sunday mail stay far under it for a handful of clubs. To move to Scaleway
+(or another EU provider), add its row to `docs/subprocessors.md` first,
+set the five variables to its values — for Scaleway: `smtp.tem.scaleway.com`,
+port 587, the project's id as user and an API key's secret as password,
+after the domain is verified with SPF, DKIM and DMARC in its console — and
+redeploy.
+
+### Mail while developing
+
+`docker-compose.dev.yml` runs Mailpit beside the database: a catcher that
+takes every mail on `localhost:1025` and shows it at
+http://localhost:8025, and sends nothing on. Set in `.env`:
+
+```
+SMTP_HOST=localhost
+SMTP_PORT=1025
+SMTP_USER=dev
+SMTP_PASSWORD=dev
+MAIL_FROM=Kadence <kadence@localhost>
+```
+
+That is the one case Kadence speaks SMTP without TLS: outside production,
+and only to the machine itself. A development server must never send
+through a real provider: the seeded addresses do not exist, and every
+bounce counts against the installation's sender name. The test suite
+refuses every real transport whatever `.env` says.
+
+The test server on a machine of its own (a production build) may use the
+real provider, for real addresses only.
 
 ## 6c. The map behind routes
 
