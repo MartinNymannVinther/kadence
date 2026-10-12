@@ -739,6 +739,7 @@
     "me": {
       "title": "Profil",
       "subtitle": "Dine egne valg: hvad dine forældre kan se, dine tærskler og din sikkerhed.",
+      "subtitleNoParents": "Dine egne valg: dine tærskler, din profil og din sikkerhed.",
       "security": "Sikkerhed: passkeys og totrinsbekræftelse",
       "coachNote": "Du er træner på holdet. Holdets egne valg finder du under Holdet.",
       "memberNote": "Du er med på holdet, men er hverken rytter eller forælder her. Bed en træner om en invitation, hvis du skal være det.",
