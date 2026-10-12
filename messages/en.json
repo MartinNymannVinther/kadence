@@ -1551,9 +1551,12 @@
     "title": "Plan the week",
     "back": "Back to the team's week",
     "backRider": "Back to the rider's week",
+    "backCalendar": "Back to the calendar",
     "coachOnly": "Only coaches plan the team's week.",
     "open": "Plan the week",
     "applied": "{count, plural, one {# session laid in} other {# sessions laid in}} for {riders, plural, one {# rider} other {# riders}}.",
+    "appliedOwn": "{count, plural, one {# session laid} other {# sessions laid}} into your calendar.",
+    "appliedChild": "{count, plural, one {# session laid} other {# sessions laid}} into {owner} calendar.",
     "riders": {
       "title": "Who is the week for?",
       "quick": "Quick choice",
@@ -1564,12 +1567,15 @@
       "title": "The week",
       "body": "Put sessions on the days from the library, or build them here. Nothing reaches the calendar until you lay the week in.",
       "replaced": "The week was replaced.",
+      "moved": "{title} moved to {day}.",
       "undo": "Undo"
     },
     "days": {
       "add": "Add a session {day}",
       "edit": "Edit {title}",
       "remove": "Remove {title}",
+      "move": "Move {title} to another day",
+      "moveTo": "Move to",
       "rest": "Rest day"
     },
     "item": {
@@ -1614,13 +1620,22 @@
     "apply": {
       "title": "Lay the week in",
       "empty": "Choose riders, and put at least one session on the week.",
+      "emptyOne": "Put at least one session on the week.",
       "summary": "{sessions, plural, one {# session} other {# sessions}} for {riders, plural, one {# rider} other {# riders}}. Each session becomes a group session, so \"Edit all\" works afterwards.",
       "preview": "See what it gives against the season plan",
       "confirm": "{riders, plural, one {Lay the week in for # rider} other {Lay the week in for # riders}}",
       "repeat": "Lay the week into",
       "weeksOption": "{weeks, plural, one {This week only} other {# weeks in a row}}",
       "summaryWeeks": "{sessions, plural, one {# session} other {# sessions}} a week for {riders, plural, one {# rider} other {# riders}} over {weeks, plural, one {# week} other {# weeks in a row}}. Each session becomes a group session every week and a series over the weeks, so you can change them together afterwards.",
-      "confirmWeeks": "{riders, plural, one {Lay the weeks in for # rider} other {Lay the weeks in for # riders}}"
+      "confirmWeeks": "{riders, plural, one {Lay the weeks in for # rider} other {Lay the weeks in for # riders}}",
+      "summaryOwn": "{sessions, plural, one {# session} other {# sessions}} in your calendar.",
+      "summaryOwnWeeks": "{sessions, plural, one {# session} other {# sessions}} a week in your calendar over {weeks, plural, one {# week} other {# weeks in a row}}. Each session becomes a series over the weeks, so you can change them together afterwards.",
+      "confirmOwn": "Lay the week into your calendar",
+      "confirmOwnWeeks": "Lay the weeks into your calendar",
+      "summaryChild": "{sessions, plural, one {# session} other {# sessions}} in {owner} calendar.",
+      "summaryChildWeeks": "{sessions, plural, one {# session} other {# sessions}} a week in {owner} calendar over {weeks, plural, one {# week} other {# weeks in a row}}. Each session becomes a series over the weeks, so you can change them together afterwards.",
+      "confirmChild": "Lay the week into {owner} calendar",
+      "confirmChildWeeks": "Lay the weeks into {owner} calendar"
     },
     "save": {
       "open": "Save as block",
@@ -1633,6 +1648,7 @@
     },
     "draft": {
       "hint": "The draft is saved as you plan, so the team's other coaches can see and change it.",
+      "hintPersonal": "The draft is saved as you plan, so you can carry on from another device.",
       "saved": "Last saved by {name} {when}",
       "savedMine": "Last saved by you {when}",
       "savedGone": "Last saved {when}",

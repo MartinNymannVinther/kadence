@@ -38,6 +38,9 @@ export default defineConfig({
       // Which week plan the planner shows when this device and the shared draft differ
       // (docs/adr/0043, amended 2026-10-07); the draft's service and policies need the database.
       "tests/training/week-draft-merge.test.ts",
+      // Moving a session of the week plan to another day, its way through the shared draft with
+      // the server actions stood in for, and the planner's words by workspace (docs/adr/0059, 0080).
+      "tests/training/{week-plan-move,week-plan-draft-sync,week-plan-audience}.test.ts",
       // The shorter check-in's starting answers (backlog P2-11; docs/adr/0021, amended 2026-10-07).
       "tests/wellbeing/checkin-prefill.test.ts",
       // Søg's matching, its groups and the words its static places need; the index needs the database.

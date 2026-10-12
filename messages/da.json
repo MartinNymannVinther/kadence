@@ -1551,9 +1551,12 @@
     "title": "Planlæg ugen",
     "back": "Tilbage til holdets uge",
     "backRider": "Tilbage til rytterens uge",
+    "backCalendar": "Tilbage til kalenderen",
     "coachOnly": "Kun trænere planlægger holdets uge.",
     "open": "Planlæg ugen",
     "applied": "{count, plural, one {# pas er lagt ind} other {# pas er lagt ind}} hos {riders, plural, one {# rytter} other {# ryttere}}.",
+    "appliedOwn": "{count, plural, one {# pas er lagt ind} other {# pas er lagt ind}} i din kalender.",
+    "appliedChild": "{count, plural, one {# pas er lagt ind} other {# pas er lagt ind}} i {owner} kalender.",
     "riders": {
       "title": "Hvem er ugen for?",
       "quick": "Vælg hurtigt",
@@ -1564,12 +1567,15 @@
       "title": "Ugen",
       "body": "Læg pas på dagene fra biblioteket, eller byg dem her. Intet kommer i kalenderen, før du lægger ugen ind.",
       "replaced": "Ugen er skiftet ud.",
+      "moved": "{title} er flyttet til {day}.",
       "undo": "Fortryd"
     },
     "days": {
       "add": "Tilføj pas {day}",
       "edit": "Ret {title}",
       "remove": "Fjern {title}",
+      "move": "Flyt {title} til en anden dag",
+      "moveTo": "Flyt til",
       "rest": "Hviledag"
     },
     "item": {
@@ -1614,13 +1620,22 @@
     "apply": {
       "title": "Læg ugen ind",
       "empty": "Vælg ryttere, og læg mindst ét pas på ugen.",
+      "emptyOne": "Læg mindst ét pas på ugen.",
       "summary": "{sessions, plural, one {# pas} other {# pas}} til {riders, plural, one {# rytter} other {# ryttere}}. Hvert pas bliver et holdpas, så \"Ret alle\" virker bagefter.",
       "preview": "Se, hvad det giver mod sæsonplanen",
       "confirm": "{riders, plural, one {Læg ugen ind hos # rytter} other {Læg ugen ind hos # ryttere}}",
       "repeat": "Læg ugen ind i",
       "weeksOption": "{weeks, plural, one {Kun denne uge} other {# uger i træk}}",
       "summaryWeeks": "{sessions, plural, one {# pas} other {# pas}} om ugen til {riders, plural, one {# rytter} other {# ryttere}} i {weeks, plural, one {# uge} other {# uger i træk}}. Hvert pas bliver et holdpas hver uge og en serie over ugerne, så du kan rette dem samlet bagefter.",
-      "confirmWeeks": "{riders, plural, one {Læg ugerne ind hos # rytter} other {Læg ugerne ind hos # ryttere}}"
+      "confirmWeeks": "{riders, plural, one {Læg ugerne ind hos # rytter} other {Læg ugerne ind hos # ryttere}}",
+      "summaryOwn": "{sessions, plural, one {# pas} other {# pas}} i din kalender.",
+      "summaryOwnWeeks": "{sessions, plural, one {# pas} other {# pas}} om ugen i din kalender i {weeks, plural, one {# uge} other {# uger i træk}}. Hvert pas bliver en serie over ugerne, så du kan rette dem samlet bagefter.",
+      "confirmOwn": "Læg ugen ind i din kalender",
+      "confirmOwnWeeks": "Læg ugerne ind i din kalender",
+      "summaryChild": "{sessions, plural, one {# pas} other {# pas}} i {owner} kalender.",
+      "summaryChildWeeks": "{sessions, plural, one {# pas} other {# pas}} om ugen i {owner} kalender i {weeks, plural, one {# uge} other {# uger i træk}}. Hvert pas bliver en serie over ugerne, så du kan rette dem samlet bagefter.",
+      "confirmChild": "Læg ugen ind i {owner} kalender",
+      "confirmChildWeeks": "Læg ugerne ind i {owner} kalender"
     },
     "save": {
       "open": "Gem som forløb",
@@ -1633,6 +1648,7 @@
     },
     "draft": {
       "hint": "Kladden gemmes, mens du planlægger, så holdets andre trænere kan se og rette den.",
+      "hintPersonal": "Kladden gemmes, mens du planlægger, så du kan fortsætte på en anden enhed.",
       "saved": "Sidst gemt af {name} {when}",
       "savedMine": "Sidst gemt af dig {when}",
       "savedGone": "Sidst gemt {when}",

@@ -5,34 +5,48 @@ import { Undo2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 import type { TemplateOption } from "@/components/calendar/template-picker";
-import { dayMonth, weekdayShort } from "@/components/training/day-label";
+import { dayMonth, weekdayLong, weekdayShort } from "@/components/training/day-label";
 import { Button } from "@/components/ui/button";
 import { addDaysIso } from "@/core/dates";
 import { useRouter } from "@/i18n/navigation";
 import { isPlanBasis, isSeniorBasis } from "@/modules/paradigms";
 import type { SharedDraft } from "@/modules/training/week-plan-draft";
 import { ApplyPlan } from "./apply-plan";
+import { appliedWords, type PlanAudience } from "./audience";
 import { DraftStatus } from "./draft-status";
 import { ItemSheet } from "./item-sheet";
+import { moveItem, type Move } from "./move";
 import { PlanDays } from "./plan-days";
 import { RiderChoice } from "./rider-choice";
 import { SaveAsBlock } from "./save-as-block";
 import { StartFrom, type StartMode } from "./start-from";
-import type { PlanBlock, PlanItem, PlanRider } from "./types";
+import { itemTitle, type PlanBlock, type PlanItem, type PlanRider } from "./types";
 import { useSharedDraft } from "./use-shared-draft";
 
 /** As many sessions as one press may lay in (src/modules/training/week-plan.ts). */
 const MAX_ITEMS = 21;
 
 /**
+ * The last change that can be taken back with "Fortryd", while no other
+ * coach's draft has replaced the week since: a whole week put in by
+ * "Start fra", or one session moved to another day.
+ */
+type Undo = { replaced: number } & (
+  { kind: "week"; items: PlanItem[] } | { kind: "move"; move: Move }
+);
+
+/**
  * The one place to plan a week (ADR 0043, 0059): who the week is for —
  * the team, a class, or the one rider it was opened for — the week itself,
  * started empty, from last week, from a block or from the AI, what it does
  * to each rider's four numbers (ADR 0040), and one press that lays it into
- * every chosen rider's calendar, for as many weeks in a row as asked. The
- * week can be kept as a block. Until it is laid in, the plan is a draft
- * the team's coaches share, kept on the server and on this device (ADR
- * 0043, amended 2026-10-07).
+ * every chosen rider's calendar, for as many weeks in a row as asked. A
+ * session moves between days by dragging or "Flyt til" (ADR 0059, amended
+ * 2026-10-12). The week can be kept as a block. In a personal workspace
+ * the week is the person's own, or their child's: there is no one to
+ * choose, and the words say "din kalender" (ADR 0080). Until it is laid
+ * in, the plan is a draft the team's coaches share, kept on the server
+ * and on this device (ADR 0043, amended 2026-10-07).
  */
 export function WeekPlanner({
   monday,
@@ -45,6 +59,7 @@ export function WeekPlanner({
   backHref,
   preselect,
   start,
+  audience,
 }: {
   monday: string;
   today: string;
@@ -60,13 +75,14 @@ export function WeekPlanner({
   preselect?: string;
   /** Where the week starts; "ai" when a rider's "Foreslå ugen" led here. */
   start?: StartMode;
+  /** A team's riders, or the one person whose own week this is (audience.ts). */
+  audience: PlanAudience;
 }) {
   const t = useTranslations("weekPlan");
   const locale = useLocale();
   const router = useRouter();
   const [editing, setEditing] = useState<{ day: number; item?: PlanItem } | null>(null);
-  // The week before the last "Start fra", while no other coach's draft has replaced it since.
-  const [undo, setUndo] = useState<{ items: PlanItem[]; replaced: number } | null>(null);
+  const [undo, setUndo] = useState<Undo | null>(null);
   const { draft, state, setDraft, clear } = useSharedDraft({
     monday,
     scope,
@@ -75,7 +91,10 @@ export function WeekPlanner({
     templates,
     hold: editing !== null,
   });
-  const { riderIds, items } = draft;
+  const { items } = draft;
+  // In a personal workspace the week is the one rider's, whatever an older draft held.
+  const choose = audience.kind === "team";
+  const riderIds = choose ? draft.riderIds : riders.map((r) => r.id);
   const dayLabel = (day: number) => {
     const date = addDaysIso(monday, day);
     return `${weekdayShort(date, locale)} ${dayMonth(date, locale)}`;
@@ -90,23 +109,50 @@ export function WeekPlanner({
   const change = (next: Partial<typeof draft>) => setDraft({ ...draft, ...next });
   /** A whole new week in — empty, last week, a block or the AI — with the old one a press away. */
   const replace = (next: PlanItem[]) => {
-    setUndo({ items, replaced: state.replaced });
+    setUndo({ kind: "week", items, replaced: state.replaced });
     change({ items: next.slice(0, MAX_ITEMS) });
   };
+  /** One session to another day, dragged or by "Flyt til"; told, and a press away from back. */
+  const move = (key: string, day: number) => {
+    const item = items.find((i) => i.key === key);
+    const next = moveItem(items, key, day);
+    if (!item || next === items) return;
+    change({ items: next });
+    const moved = { key, title: itemTitle(item), from: item.day, to: day };
+    setUndo({ kind: "move", move: moved, replaced: state.replaced });
+  };
+  const undone = () => {
+    if (!undo) return;
+    change({
+      items: undo.kind === "week" ? undo.items : moveItem(items, undo.move.key, undo.move.from),
+    });
+    setUndo(null);
+  };
+  const shownUndo = undo?.replaced === state.replaced ? undo : null;
+  const undoText = !shownUndo
+    ? ""
+    : shownUndo.kind === "week"
+      ? t("week.replaced")
+      : t("week.moved", {
+          title: shownUndo.move.title,
+          day: weekdayLong(addDaysIso(monday, shownUndo.move.to), locale),
+        });
 
   return (
     <div className="flex min-w-0 flex-col gap-7">
-      <DraftStatus state={state} today={today} />
-      <section aria-labelledby="plan-riders" className="flex flex-col gap-3">
-        <h2 id="plan-riders" className="text-lg font-semibold">
-          {t("riders.title")}
-        </h2>
-        <RiderChoice
-          riders={riders}
-          selected={riderIds}
-          onChange={(ids) => change({ riderIds: ids })}
-        />
-      </section>
+      <DraftStatus state={state} today={today} personal={!choose} />
+      {choose && (
+        <section aria-labelledby="plan-riders" className="flex flex-col gap-3">
+          <h2 id="plan-riders" className="text-lg font-semibold">
+            {t("riders.title")}
+          </h2>
+          <RiderChoice
+            riders={riders}
+            selected={riderIds}
+            onChange={(ids) => change({ riderIds: ids })}
+          />
+        </section>
+      )}
 
       <section aria-labelledby="plan-week" className="flex flex-col gap-3">
         <div className="flex flex-col gap-1">
@@ -125,18 +171,19 @@ export function WeekPlanner({
           initial={start}
           onLoad={replace}
         />
-        {undo?.replaced === state.replaced && (
-          <p className="text-meta flex items-center gap-1 text-2sm" role="status">
-            {t("week.replaced")}
+        {/* Always there, so a screen reader hears a move or a new week as soon as it is made. */}
+        <p aria-live="polite" className="sr-only">
+          {undoText}
+        </p>
+        {shownUndo && (
+          <p className="text-meta flex flex-wrap items-center gap-1 text-2sm">
+            {undoText}
             <Button
               type="button"
               variant="ghost"
               size="sm"
               className="max-sm:h-11"
-              onClick={() => {
-                change({ items: undo.items });
-                setUndo(null);
-              }}
+              onClick={undone}
             >
               <Undo2 data-icon="inline-start" />
               {t("week.undo")}
@@ -148,6 +195,7 @@ export function WeekPlanner({
           items={items}
           onAdd={(day) => setEditing({ day })}
           onEdit={(item) => setEditing({ day: item.day, item })}
+          onMove={move}
           onRemove={(key) => change({ items: items.filter((i) => i.key !== key) })}
           full={items.length >= MAX_ITEMS}
         />
@@ -162,8 +210,14 @@ export function WeekPlanner({
           monday={monday}
           riderIds={riderIds}
           items={items}
+          audience={audience}
           onApplied={(sessions) => {
-            toast.success(t("applied", { count: sessions, riders: riderIds.length }));
+            const note = appliedWords(
+              audience,
+              { count: sessions, riders: riderIds.length },
+              locale === "en" ? "en" : "da",
+            );
+            toast.success(t(note.key, note.values));
             clear();
             router.push(backHref);
           }}
