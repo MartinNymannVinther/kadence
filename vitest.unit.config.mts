@@ -49,6 +49,9 @@ export default defineConfig({
       // (docs/adr/0090); the plans in the database, the job and the mails need it.
       "tests/billing/{which-plan,banner,allowlist,landing,price-page}.test.ts",
       "tests/llm/usage-fixtures.test.ts",
+      // The calendar's month and season: the grid, the addresses, the days and a month's standing
+      // (docs/adr/0093); what they read needs the database.
+      "tests/calendar/{grid,href,month-days,standing,team-days}.test.ts",
     ],
   },
 });

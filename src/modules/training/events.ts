@@ -42,30 +42,36 @@ export async function listEvents(
   ctx: OrgContext,
   range: { from: string; to: string; riderIds?: string[] },
 ): Promise<ListedEvent[]> {
-  return withOrgContext(ctx, (tx) => {
-    const riderScope = range.riderIds
-      ? or(
-          isNull(calendarEvents.riderId),
-          inArray(calendarEvents.riderId, range.riderIds.length ? range.riderIds : [""]),
-        )
-      : undefined;
-    // Read under the caller's RLS: a coach and the rider see the rider's parents, a parent their own link.
-    const fromParent = sql<boolean>`exists (
-      select 1 from ${guardians}
-      where ${guardians.riderId} = ${calendarEvents.riderId}
-        and ${guardians.userId} = ${calendarEvents.createdBy})`;
-    return tx
-      .select({ ...getTableColumns(calendarEvents), fromParent })
-      .from(calendarEvents)
-      .where(
-        and(
-          lte(calendarEvents.startsOn, range.to),
-          gte(calendarEvents.endsOn, range.from),
-          riderScope,
-        ),
+  return withOrgContext(ctx, (tx) => listEventsIn(tx, range));
+}
+
+/** The same, inside a transaction the caller already holds. */
+export async function listEventsIn(
+  tx: AppTransaction,
+  range: { from: string; to: string; riderIds?: string[] },
+): Promise<ListedEvent[]> {
+  const riderScope = range.riderIds
+    ? or(
+        isNull(calendarEvents.riderId),
+        inArray(calendarEvents.riderId, range.riderIds.length ? range.riderIds : [""]),
       )
-      .orderBy(asc(calendarEvents.startsOn));
-  });
+    : undefined;
+  // Read under the caller's RLS: a coach and the rider see the rider's parents, a parent their own link.
+  const fromParent = sql<boolean>`exists (
+    select 1 from ${guardians}
+    where ${guardians.riderId} = ${calendarEvents.riderId}
+      and ${guardians.userId} = ${calendarEvents.createdBy})`;
+  return tx
+    .select({ ...getTableColumns(calendarEvents), fromParent })
+    .from(calendarEvents)
+    .where(
+      and(
+        lte(calendarEvents.startsOn, range.to),
+        gte(calendarEvents.endsOn, range.from),
+        riderScope,
+      ),
+    )
+    .orderBy(asc(calendarEvents.startsOn));
 }
 
 async function check(ctx: OrgContext, riderId: string | null, tx: AppTransaction) {

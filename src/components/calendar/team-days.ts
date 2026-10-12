@@ -36,7 +36,7 @@ export function dayColour(colours: readonly ComplianceColour[]): ComplianceColou
 }
 
 /** How a planned session went against its plan, in the load model's colours. */
-function colourOf(session: CalendarCard, today: string): ComplianceColour {
+export function colourOf(session: CalendarCard, today: string): ComplianceColour {
   const done = session.activity
     ? { minutes: session.activity.movingSeconds / 60, load: session.activity.load }
     : null;
