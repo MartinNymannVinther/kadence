@@ -46,7 +46,13 @@ function session(over: Partial<CalendarCard>): CalendarCard {
   };
 }
 
-const ridden = (minutes: number) => ({ id: "a", movingSeconds: minutes * 60, load: null });
+const ridden = (minutes: number) => ({
+  id: "a",
+  movingSeconds: minutes * 60,
+  load: null,
+  loadMethod: "none",
+  rpe: null,
+});
 
 describe("a rider's days on the phone", () => {
   const sessions = [

@@ -6,6 +6,8 @@ import {
   complianceRatio,
   type ComplianceColour,
 } from "./compliance";
+import type { LoadMethod } from "./activity-load";
+import { deviationStory, type DeviationStory } from "./deviation-story";
 import { GOAL_SECONDS, stepZone } from "./intensity";
 
 /**
@@ -35,10 +37,19 @@ import { GOAL_SECONDS, stepZone } from "./intensity";
  * - **missed**: a day that passed with nothing done.
  *
  * Nothing is guessed: a fact stands only where both sides have its number.
+ *
+ * The facts keep their numbers for the session panel's "Sådan er det
+ * regnet" and for the AI comment; what a person reads first is the
+ * `story` (deviation-story.ts): the same deviation in words — the plan,
+ * the ride's effort, and the whole as "omkring 60 % hårdere" — with no
+ * load number in it (the amendment of 13 October).
+ *
  * Pure: imports nothing from the database.
  */
 
 export type DeviationPlanned = {
+  /** The session's sport; read from the structure, or the bike, when not given. */
+  sport?: "bike" | "strength" | "other";
   minutes: number;
   load?: number | null;
   structure?: Structure | null;
@@ -53,6 +64,10 @@ export type DeviationDone = {
   minutes: number;
   load?: number | null;
   zoneSeconds?: ZoneSecondsBySource;
+  /** Which model gave the load (activities.load_method); the words say how it was measured. */
+  method?: LoadMethod | null;
+  /** Session RPE, 1–10. */
+  rpe?: number | null;
 };
 
 export type DeviationFact =
@@ -79,6 +94,8 @@ export type Deviation = {
   /** Null when the session went as planned, is still ahead, or was not planned. */
   heading: DeviationHeading | null;
   facts: DeviationFact[];
+  /** The deviation in words; null when nothing was done. */
+  story: DeviationStory | null;
 };
 
 /** Seconds planned per zone (index 0 is zone 1) from a bike session's steps. */
@@ -169,8 +186,9 @@ export function deviation(
           measuredBy: null,
           heading: "missed",
           facts: [{ kind: "missed", plannedMinutes: Math.round(planned.minutes) }],
+          story: null,
         }
-      : { colour, measuredBy: null, heading: null, facts: [] };
+      : { colour, measuredBy: null, heading: null, facts: [], story: null };
   }
   const ratio = complianceRatio(planned, done);
   const time: DeviationFact | null =
@@ -215,5 +233,14 @@ export function deviation(
   if (intensity) facts.push(intensity);
   else if (onlyDuration(planned.structure) && facts.length > 0)
     facts.push({ kind: "noPlanDetail" });
-  return { colour, measuredBy: ratio?.by ?? null, heading, facts };
+  const plan = plannedZoneSeconds(planned.structure);
+  const story = deviationStory({
+    sport: planned.sport ?? (planned.structure?.kind as DeviationPlanned["sport"]) ?? "bike",
+    plannedZone: plan ? builtAround(plan) : null,
+    planned,
+    done,
+    ratio,
+    heading,
+  });
+  return { colour, measuredBy: ratio?.by ?? null, heading, facts, story };
 }

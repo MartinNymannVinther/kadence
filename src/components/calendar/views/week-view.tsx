@@ -8,6 +8,7 @@ import { mondayOf } from "@/core/dates";
 import { refreshStaleRaces } from "@/modules/results/refresh";
 import { listRaceResults } from "@/modules/results/service";
 import { volumesFor } from "@/modules/season/volumes";
+import { DeviationViewerProvider } from "@/components/training/deviation-viewer";
 import { WeekNoteProvider } from "@/components/training/week-note";
 import { getTeamName } from "@/modules/team/name";
 import { listUnplanned } from "@/modules/training/activities";
@@ -102,22 +103,26 @@ export async function WeekView({
         />
       ) : (
         <WeekNoteProvider volume={volume}>
-          <RiderWeek
-            riderId={rider.id}
-            days={days}
-            today={today}
-            sessions={sessions.map(toCard)}
-            activities={unplanned.map(toActivityCard)}
-            events={events}
-            canWrite={canWrite}
-            isCoach={me.isCoach}
-            riders={me.isCoach ? visible : [rider]}
-            templates={templateOptions}
-            query={query}
-            volume={volume}
-            basisLabel={volume?.basis ? basisText(volume.basis, (k, v) => seasonT(k, v)) : null}
-            teamName={teamName}
-          />
+          <DeviationViewerProvider
+            viewer={{ ownRiderId: me.rider?.id ?? null, isCoach: me.isCoach }}
+          >
+            <RiderWeek
+              riderId={rider.id}
+              days={days}
+              today={today}
+              sessions={sessions.map(toCard)}
+              activities={unplanned.map(toActivityCard)}
+              events={events}
+              canWrite={canWrite}
+              isCoach={me.isCoach}
+              riders={me.isCoach ? visible : [rider]}
+              templates={templateOptions}
+              query={query}
+              volume={volume}
+              basisLabel={volume?.basis ? basisText(volume.basis, (k, v) => seasonT(k, v)) : null}
+              teamName={teamName}
+            />
+          </DeviationViewerProvider>
         </WeekNoteProvider>
       )}
       {teamView && (

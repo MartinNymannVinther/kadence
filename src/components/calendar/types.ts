@@ -33,7 +33,14 @@ export type CalendarCard = {
   seriesKey: string | null;
   programmeSession: number | null;
   activityId: string | null;
-  activity: { id: string; movingSeconds: number; load: number | null } | null;
+  /** The ride done for it, with how its load was measured (for the explanation, ADR 0095). */
+  activity: {
+    id: string;
+    movingSeconds: number;
+    load: number | null;
+    loadMethod: string;
+    rpe: number | null;
+  } | null;
   commentCount: number;
 };
 

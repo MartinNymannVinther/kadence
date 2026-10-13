@@ -76,7 +76,7 @@ const input = {
       id: "done",
       onDate: "2026-11-02",
       activityId: "x",
-      activity: { id: "x", movingSeconds: 3600, load: null },
+      activity: { id: "x", movingSeconds: 3600, load: null, loadMethod: "none", rpe: null },
     }),
     session({ id: "missed", onDate: "2026-11-04" }),
     session({ id: "ahead-1", onDate: "2026-11-20" }),

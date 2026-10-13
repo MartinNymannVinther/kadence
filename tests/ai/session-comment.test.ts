@@ -314,6 +314,24 @@ describe("the prompt's persona and the sanitizer", () => {
     expect(adult).toContain("Write in plain English.");
   });
 
+  it("asks for time and effort, never a load number to the reader (ADR 0095, 13 October)", () => {
+    const prompt = text(base);
+    expect(prompt).toContain("never quote a load number to the reader");
+    expect(prompt).toContain("Speak in time and effort instead");
+    expect(prompt).not.toContain("Say load for the training load");
+    // The words-to-be travel with the numbers, so the model can say "about 111 % of FTP".
+    const withStory = text({
+      ...base,
+      story: {
+        plan: { character: "easy", minutes: 90 },
+        ride: { minutes: 50, method: "power", intensityPct: 111, rpe: null, effort: "muchHarder" },
+        whole: { direction: "more", pct: 60, times: null, time: "shorter" },
+        thresholdHint: "ftp",
+      },
+    });
+    expect(withStory).toContain('"intensityPct":111');
+  });
+
   it("strips links, markup, emoji and exclamation marks, and caps the length", () => {
     expect(
       sanitizeComment({

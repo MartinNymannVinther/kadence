@@ -123,6 +123,15 @@ export {
   type ZoneSecondsBySource,
 } from "./deviation";
 export {
+  HINT_MIN_MINUTES,
+  HINT_POWER_INTENSITY,
+  intensityOfLoad,
+  type DeviationStory,
+  type Effort,
+  type PlanCharacter,
+  type TimeDirection,
+} from "./deviation-story";
+export {
   LOW_AVERAGE,
   SHORT_NIGHT_HOURS,
   WELLBEING_WINDOW_DAYS,

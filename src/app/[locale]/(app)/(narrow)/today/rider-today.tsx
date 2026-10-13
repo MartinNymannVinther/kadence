@@ -4,6 +4,7 @@ import { CheckinSection } from "@/components/today/checkin-section";
 import { RiderChecklist } from "@/components/today/rider-checklist";
 import { RpePrompt } from "@/components/today/rpe-prompt";
 import { TodaySession } from "@/components/today/today-session";
+import { DeviationViewerProvider } from "@/components/training/deviation-viewer";
 import type { RiderDay } from "./rider-data";
 
 /**
@@ -50,8 +51,9 @@ export function RiderToday({
     );
   };
 
+  // The rider reads their own sessions: "Du kørte", and their own thresholds (ADR 0095).
   return (
-    <>
+    <DeviationViewerProvider viewer={{ ownRiderId: riderId, isCoach: false }}>
       <RiderChecklist facts={day.checklist} />
       {day.consent.off ? (
         <ConsentOffCard canGive={day.consent.canGive} />
@@ -66,6 +68,6 @@ export function RiderToday({
       {list("today")}
       {day.toRate && <RpePrompt ride={day.toRate} />}
       {list("tomorrow")}
-    </>
+    </DeviationViewerProvider>
   );
 }

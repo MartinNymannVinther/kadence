@@ -30,7 +30,13 @@ export function toCard(s: CalendarSession): CalendarCard {
     programmeSession: s.programmeSession,
     activityId: s.activityId,
     activity: s.activity
-      ? { id: s.activity.id, movingSeconds: s.activity.movingSeconds, load: s.activity.load }
+      ? {
+          id: s.activity.id,
+          movingSeconds: s.activity.movingSeconds,
+          load: s.activity.load,
+          loadMethod: s.activity.loadMethod,
+          rpe: s.activity.rpe,
+        }
       : null,
     commentCount: s.commentCount,
   };

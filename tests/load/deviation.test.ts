@@ -83,6 +83,7 @@ describe("the facts for each deviation", () => {
       measuredBy: null,
       heading: "missed",
       facts: [{ kind: "missed", plannedMinutes: 75 }],
+      story: null,
     });
   });
 
@@ -178,6 +179,46 @@ describe("agreement with the colour", () => {
         expect(["shorter", "easier"].includes(d.heading!)).toBe(
           (measured as { changePct: number }).changePct < 0,
         );
+    }
+  });
+
+  /**
+   * The words agree too (the amendment of 13 October): the whole says
+   * more exactly when the colour's ratio is over 100 %, and the ride's
+   * effort never points the other way than a heading of harder or easier.
+   */
+  const methods = ["power", "hr", "rpe", "none"] as const;
+  const worded: Array<[DeviationPlanned, Parameters<typeof deviation>[1]]> = [];
+  for (const minutes of plannedMinutes)
+    for (const load of plannedLoads)
+      for (const dm of doneMinutes)
+        for (const dl of doneLoads)
+          for (const method of methods)
+            worded.push([
+              { minutes, load },
+              { minutes: dm, load: dl, method },
+            ]);
+
+  it(`and its words agree in all ${worded.length} cases`, () => {
+    for (const [planned, done] of worded) {
+      const d = deviation(planned, done, PAST, TODAY);
+      const label = JSON.stringify({ planned, done });
+      expect(d.story, label).not.toBeNull();
+      const story = d.story!;
+      if (d.measuredBy === "load" && d.heading) {
+        expect(story.whole, label).not.toBeNull();
+        expect(story.whole!.direction === "less", label).toBe(
+          ["shorter", "easier"].includes(d.heading),
+        );
+      } else expect(story.whole, label).toBeNull();
+      // No effort word at all where either side has no load per hour to compare.
+      if (d.heading === "harder" && story.ride.effort)
+        expect(["harder", "muchHarder"], label).toContain(story.ride.effort);
+      if (d.heading === "easier" && story.ride.effort)
+        expect(["easier", "muchEasier"], label).toContain(story.ride.effort);
+      // A share of threshold only where the load was measured by it.
+      if (story.ride.intensityPct !== null) expect(["power", "hr"]).toContain(story.ride.method);
+      if (story.thresholdHint !== null) expect(done!.minutes).toBeGreaterThanOrEqual(20);
     }
   });
 
