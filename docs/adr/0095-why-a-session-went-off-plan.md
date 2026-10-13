@@ -93,3 +93,60 @@ and the legend fell through to the words for a youth rider with no class.
   holds for the season plan, which starts empty, and for the guardrails;
   only the week's reference number now shows the profile's hours, so the
   legend names a number instead of a missing DCU class.
+
+## Amendment, 12/13 October 2026: numbers replaced by words after Martin's reading
+
+Martin opened the popover on a ride of his own and read "Hårdere end
+planlagt / Belastning 84 mod planlagt 53. / Planlagt 1 t 15 min. Kørt 41
+min." and asked how it is counted: nobody understands load numbers or
+where they come from, so either explain them better and more
+motivatingly, or replace them. His FTP is 200 W; 41 minutes at load 84
+is about 111 % of FTP, which says more about an FTP set too low than
+about the ride.
+
+- **Words instead of load numbers.** The popover and the panel no
+  longer show a load number or the word "belastning". The facts keep
+  their numbers (the agreement with the colour is unchanged and still
+  tested), and a `story` beside them (`src/modules/load/deviation-story.ts`)
+  tells the same deviation in words: what the plan was ("en rolig tur",
+  "et pas om tærsklen", "et intervalpas", from the zones it was built
+  around, its load per hour, or "rolig" when it had only minutes); how
+  the ride went, with the average share of FTP by power or of threshold
+  pulse by heart rate, "og det føltes …" by RPE, or only the time; and
+  the whole, "Samlet var turen omkring 60 % hårdere for kroppen end
+  planlagt, selvom den var kortere", the colour's own ratio rounded to
+  tens ("omkring 2,5 gange så hård" from about twice, at most "90 %
+  lettere"). "selvom" or "og" follows the minutes against the same
+  green band. The headings are "Mere gas end planlagt", "Roligere end
+  planlagt", "Kortere …", "Længere …"; missed stays plain.
+- **The intensity is read back from the load.** The ride row keeps the
+  load and the moving time it was computed from, not the share of
+  threshold, so intensity = √(load ÷ (hours × 100)) — the number
+  `activity-load.ts` used, with the thresholds the rider had when the
+  ride came in, and in agreement with the colour. Today's thresholds are
+  not used; they may have changed since. Only the load's rounding to
+  whole units is lost. The effort word ("en del hårdere", "lidt
+  roligere") compares the ride's load per hour with the plan's, and
+  never points against a heading of harder or easier.
+- **A hint, not a verdict, about the threshold.** By power, 20 minutes or
+  more averaging over 105 % of FTP (two decimals, as the load model
+  rounds it); by heart rate, a load at the 1.05 cap: "Føltes turen ikke
+  så hård? Så er din FTP (tærskelpuls) måske sat for lavt." with
+  "Foreslå tærskler ud fra dine ture" to `/settings/me?forslag=1#thresholds`,
+  or the rider's page with the same anchor for a coach. A parent, who
+  cannot change thresholds, gets no hint.
+- **Who reads.** The rider reads "Du kørte … din FTP"; anybody else
+  "Rytteren kørte … sin FTP". The calendar's rider week and the rider's
+  Today pass the viewer through a small context; the panel knows it.
+- **"Sådan er det regnet"**, a closed `<details>` in the session's panel,
+  is now the only place the numbers stand: what load is in two sentences
+  ("En time præcis på FTP tæller 100.") and "Denne tur: 84. Planen: 53."
+- **The AI comment** still reads the load numbers, which the model needs,
+  and now also the words-to-be; its instruction says never to quote a
+  load number or talk about load to the reader, and to speak in time and
+  effort.
+
+Trade-offs accepted: a share of threshold rounded from a whole-unit load
+can be a point off on a short ride, so the heart-rate cap is tested in
+load units, not as a ratio; and "omkring 60 %" hides the difference
+between 55 and 64 %, which is the point.

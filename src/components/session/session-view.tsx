@@ -29,6 +29,7 @@ import { modelConfigured } from "@/modules/ai/service";
 import { getTeamSettings } from "@/modules/team/settings";
 import { AiComment } from "./ai-comment";
 import { CommentThread } from "./comment-thread";
+import { readerFor } from "@/components/training/deviation-text";
 import { DeviationInline } from "./deviation-inline";
 import { CompleteForm } from "./complete-form";
 import { DoneSummary } from "./done-summary";
@@ -153,7 +154,16 @@ export async function SessionView({
           />
           {card.groupKey && <Badge variant="outline">{t("group")}</Badge>}
         </div>
-        <DeviationInline ctx={ctx} session={session} activity={activity} today={today} />
+        <DeviationInline
+          ctx={ctx}
+          session={session}
+          activity={activity}
+          today={today}
+          reader={readerFor(
+            { ownRiderId: me.rider?.id ?? null, isCoach: me.isCoach },
+            session.riderId,
+          )}
+        />
       </header>
 
       {card.description && (

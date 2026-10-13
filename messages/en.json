@@ -2295,15 +2295,34 @@
         "shorter": "Shorter than planned",
         "longer": "Longer than planned",
         "easier": "Easier than planned",
-        "harder": "Harder than planned"
+        "harder": "More effort than planned"
       },
       "fact": {
         "missed": "Planned {planned}. Nothing has come in for the session.",
-        "time": "Planned {planned}. {sport, select, bike {Ridden} other {Trained}} {done}.",
-        "load": "Load {done} against {planned} planned.",
         "intensityHard": "The session was built around zone {zone}, with {planned} min there or above. The ride had {done} min, mostly in zone {most}.",
-        "intensityEasy": "The session was an easy one in zone {zone}. {share} % of the ride was in the session's zones, mostly zone {most}.",
-        "noPlanDetail": "The session only had a duration, so there was nothing more to compare with."
+        "intensityEasy": "The session was an easy one in zone {zone}. {share} % of the ride was in the session's zones, mostly zone {most}."
+      },
+      "plan": "The plan was {character, select, easy {an easy ride} tempo {a tempo ride} threshold {a threshold session} intervals {an interval session} strength {a strength session} other {a session}}{timed, select, yes { of {planned}} other {}}.",
+      "ride": {
+        "power": "{who, select, you {You} other {The rider}} rode {done}{effort, select, muchHarder { and quite a bit harder} harder { and a little harder} same { and about as hard as planned} easier { and a little easier} muchEasier { and quite a bit easier} other {}}, averaging about {pct} % of {who, select, you {your} other {their}} FTP.",
+        "hr": "{who, select, you {You} other {The rider}} {sport, select, bike {rode} other {trained}} {done}{effort, select, muchHarder { and quite a bit harder} harder { and a little harder} same { and about as hard as planned} easier { and a little easier} muchEasier { and quite a bit easier} other {}}, with an average heart rate about {pct} % of {who, select, you {your} other {their}} threshold heart rate.",
+        "rpe": "{who, select, you {You} other {The rider}} {sport, select, bike {rode} other {trained}} {done}, and it felt {effort, select, muchHarder {quite a bit harder than planned} harder {a little harder than planned} same {about as planned} easier {a little easier than planned} other {quite a bit easier than planned}}.",
+        "time": "{who, select, you {You} other {The rider}} {sport, select, bike {rode} other {trained}} {done}{effort, select, muchHarder { and quite a bit harder} harder { and a little harder} same { and about as hard as planned} easier { and a little easier} muchEasier { and quite a bit easier} other {}}."
+      },
+      "whole": {
+        "more": "All in all, the {sport, select, bike {ride} other {session}} was about {pct} % harder on the body than planned{time, select, shorter {, even though it was shorter} longer {, and it was longer too} other {}}.",
+        "less": "All in all, the {sport, select, bike {ride} other {session}} was about {pct} % easier on the body than planned{time, select, shorter {, and it was shorter too} longer {, even though it was longer} other {}}.",
+        "times": "All in all, the {sport, select, bike {ride} other {session}} was about {times} times as hard on the body as planned{time, select, shorter {, even though it was shorter} longer {, and it was longer too} other {}}."
+      },
+      "hint": {
+        "ftp": "{who, select, you {Did the ride not feel that hard? Then your FTP may be set too low.} other {Did the ride not feel that hard for the rider? Then the FTP may be set too low.}}",
+        "hr": "{who, select, you {Did the ride not feel that hard? Then your threshold heart rate may be set too low.} other {Did the ride not feel that hard for the rider? Then the threshold heart rate may be set too low.}}",
+        "link": "{who, select, you {Suggest thresholds from your rides} other {Suggest thresholds from the rider's rides}}"
+      },
+      "howCounted": {
+        "summary": "How it is counted",
+        "body": "Kadence estimates how much a ride draws on the body from its time and how hard you rode compared with your FTP (or heart rate, or how it felt). An hour exactly at FTP counts 100.",
+        "numbers": "This ride: {done}. The plan: {planned}."
       },
       "week": {
         "inside": "With the rest of the week's sessions, the week ends inside {ref, select, dcu {DCU's range} other {the profile's range}}.",

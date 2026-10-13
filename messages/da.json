@@ -2294,16 +2294,35 @@
         "missed": "{sport, select, bike {Ikke kørt} other {Ikke udført}}",
         "shorter": "Kortere end planlagt",
         "longer": "Længere end planlagt",
-        "easier": "Lettere end planlagt",
-        "harder": "Hårdere end planlagt"
+        "easier": "Roligere end planlagt",
+        "harder": "Mere gas end planlagt"
       },
       "fact": {
         "missed": "Planlagt {planned}. Der er ikke kommet noget ind for passet.",
-        "time": "Planlagt {planned}. {sport, select, bike {Kørt} other {Trænet}} {done}.",
-        "load": "Belastning {done} mod planlagt {planned}.",
         "intensityHard": "Passet var bygget om zone {zone} med {planned} min der eller over. Turen havde {done} min, mest i zone {most}.",
-        "intensityEasy": "Passet var et roligt pas i zone {zone}. {share} % af turen lå i passets zoner, mest i zone {most}.",
-        "noPlanDetail": "Passet havde kun en varighed, så der var ikke mere at sammenligne med."
+        "intensityEasy": "Passet var et roligt pas i zone {zone}. {share} % af turen lå i passets zoner, mest i zone {most}."
+      },
+      "plan": "Planen var {character, select, easy {en rolig tur} tempo {en tur i tempo} threshold {et pas om tærsklen} intervals {et intervalpas} strength {et styrkepas} other {et pas}}{timed, select, yes { på {planned}} other {}}.",
+      "ride": {
+        "power": "{who, select, you {Du} other {Rytteren}} kørte {done}{effort, select, muchHarder { og en del hårdere} harder { og lidt hårdere} same { og omtrent så hårdt som planlagt} easier { og lidt roligere} muchEasier { og en del roligere} other {}}, i gennemsnit omkring {pct} % af {who, select, you {din} other {sin}} FTP.",
+        "hr": "{who, select, you {Du} other {Rytteren}} {sport, select, bike {kørte} other {trænede}} {done}{effort, select, muchHarder { og en del hårdere} harder { og lidt hårdere} same { og omtrent så hårdt som planlagt} easier { og lidt roligere} muchEasier { og en del roligere} other {}}, med en gennemsnitspuls omkring {pct} % af {who, select, you {din} other {sin}} tærskelpuls.",
+        "rpe": "{who, select, you {Du} other {Rytteren}} {sport, select, bike {kørte} other {trænede}} {done}, og det føltes {effort, select, muchHarder {en del hårdere end planlagt} harder {lidt hårdere end planlagt} same {omtrent som planlagt} easier {lidt lettere end planlagt} other {en del lettere end planlagt}}.",
+        "time": "{who, select, you {Du} other {Rytteren}} {sport, select, bike {kørte} other {trænede}} {done}{effort, select, muchHarder { og en del hårdere} harder { og lidt hårdere} same { og omtrent så hårdt som planlagt} easier { og lidt roligere} muchEasier { og en del roligere} other {}}."
+      },
+      "whole": {
+        "more": "Samlet var {sport, select, bike {turen} other {passet}} omkring {pct} % hårdere for kroppen end planlagt{time, select, shorter {, selvom {sport, select, bike {den} other {det}} var kortere} longer {, og {sport, select, bike {den} other {det}} var også længere} other {}}.",
+        "less": "Samlet var {sport, select, bike {turen} other {passet}} omkring {pct} % lettere for kroppen end planlagt{time, select, shorter {, og {sport, select, bike {den} other {det}} var også kortere} longer {, selvom {sport, select, bike {den} other {det}} var længere} other {}}.",
+        "times": "Samlet var {sport, select, bike {turen omkring {times} gange så hård} other {passet omkring {times} gange så hårdt}} for kroppen som planlagt{time, select, shorter {, selvom {sport, select, bike {den} other {det}} var kortere} longer {, og {sport, select, bike {den} other {det}} var også længere} other {}}."
+      },
+      "hint": {
+        "ftp": "{who, select, you {Føltes turen ikke så hård? Så er din FTP måske sat for lavt.} other {Føltes turen ikke så hård for rytteren? Så er FTP'en måske sat for lavt.}}",
+        "hr": "{who, select, you {Føltes turen ikke så hård? Så er din tærskelpuls måske sat for lavt.} other {Føltes turen ikke så hård for rytteren? Så er tærskelpulsen måske sat for lavt.}}",
+        "link": "{who, select, you {Foreslå tærskler ud fra dine ture} other {Foreslå tærskler ud fra rytterens ture}}"
+      },
+      "howCounted": {
+        "summary": "Sådan er det regnet",
+        "body": "Kadence vurderer, hvor meget en tur trækker på kroppen, ud fra tiden og hvor hårdt du kørte i forhold til din FTP (eller puls eller hvordan det føltes). En time præcis på FTP tæller 100.",
+        "numbers": "Denne tur: {done}. Planen: {planned}."
       },
       "week": {
         "inside": "Med resten af ugens pas ender ugen inden for {ref, select, dcu {DCU's ramme} other {profilens ramme}}.",

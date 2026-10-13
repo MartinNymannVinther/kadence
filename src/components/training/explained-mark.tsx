@@ -2,28 +2,36 @@
 
 import { Popover } from "@base-ui/react/popover";
 import { useLocale, useTranslations } from "next-intl";
-import { deviation, type Deviation } from "@/modules/load";
+import { Link } from "@/i18n/navigation";
+import { deviation, type Deviation, type LoadMethod } from "@/modules/load";
 import { readStructure } from "@/modules/workouts/structure";
 import { ComplianceMark, stateKey, type PlannedLike } from "./compliance-mark";
-import { deviationWords, type DeviationT, type DurationT } from "./deviation-text";
+import { deviationWords, readerFor, type DeviationT, type DurationT } from "./deviation-text";
+import { useDeviationViewer } from "./deviation-viewer";
 import { useWeekNote } from "./week-note";
 
 /**
  * The compliance mark that explains itself (docs/adr/0095): on a yellow
  * or red session it is a button that opens a small popover with why — a
  * heading in plain words, two or three lines of facts, and the week's
- * sentence when the page knows the week. Anywhere else it is the plain
- * mark. Base UI's popover gives the button its aria-expanded and closes
+ * sentence when the page knows the week — in words, never load numbers
+ * (the amendment of 13 October). Anywhere else it is the plain mark. Base UI's popover gives the button its aria-expanded and closes
  * on Escape and on a click outside, as the calendar's month jump does.
  */
 
-export type ExplainableSession = PlannedLike & { sport: string; structure?: unknown };
+export type ExplainableSession = PlannedLike & {
+  riderId?: string;
+  sport: string;
+  structure?: unknown;
+  activity: (PlannedLike["activity"] & { loadMethod?: string; rpe?: number | null }) | null;
+};
 
-/** The deviation for a calendar card: time and load (zones are not on the card). */
+/** The deviation for a calendar card: time, load and how it was measured (zones are not on the card). */
 export function cardDeviation(session: ExplainableSession, today: string): Deviation {
   const sport = session.sport as "bike" | "strength" | "other";
   return deviation(
     {
+      sport: ["strength", "other"].includes(sport) ? sport : "bike",
       minutes: session.plannedMinutes,
       load: session.plannedLoad,
       structure:
@@ -32,7 +40,12 @@ export function cardDeviation(session: ExplainableSession, today: string): Devia
           : null,
     },
     session.activity
-      ? { minutes: session.activity.movingSeconds / 60, load: session.activity.load }
+      ? {
+          minutes: session.activity.movingSeconds / 60,
+          load: session.activity.load,
+          method: (session.activity.loadMethod ?? null) as LoadMethod | null,
+          rpe: session.activity.rpe ?? null,
+        }
       : null,
     session.onDate,
     today,
@@ -53,6 +66,7 @@ export function ExplainedMark({
   const duration = useTranslations("training.duration");
   const locale = useLocale();
   const week = useWeekNote();
+  const viewer = useDeviationViewer();
   const explained = cardDeviation(session, today);
   const done = session.activity !== null;
   const isToday = session.onDate === today;
@@ -63,6 +77,7 @@ export function ExplainedMark({
     duration as unknown as DurationT,
     locale,
     week,
+    readerFor(viewer, session.riderId ?? ""),
   );
   if (!words)
     return (
@@ -96,6 +111,17 @@ export function ExplainedMark({
                 {text}
               </p>
             ))}
+            {words.hint && (
+              <p className="text-meta leading-relaxed">
+                {words.hint.text}{" "}
+                <Link
+                  href={words.hint.href}
+                  className="focus-ring text-primary font-medium hover:underline"
+                >
+                  {words.hint.link}
+                </Link>
+              </p>
+            )}
           </Popover.Popup>
         </Popover.Positioner>
       </Popover.Portal>

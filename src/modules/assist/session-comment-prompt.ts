@@ -2,7 +2,7 @@ import type { LlmMessage } from "@/core/llm";
 import { DATA_RULE, fenceUntrusted, languageRule } from "@/modules/ai/prompting";
 import { asString, rec } from "@/modules/ai/sanitize-helpers";
 import type { Category } from "@/modules/dcu";
-import type { ComplianceColour, DeviationFact } from "@/modules/load";
+import type { ComplianceColour, DeviationFact, DeviationStory } from "@/modules/load";
 import type { SeniorProfile } from "@/modules/paradigms";
 
 /**
@@ -15,7 +15,13 @@ import type { SeniorProfile } from "@/modules/paradigms";
  * zones, RPE), the deviation's facts as Kadence computed them, the
  * rider's class or training profile and the season's phase. No name, no
  * check-ins, no note, no comment; the only words a person wrote are the
- * session's title, fenced as data. Pure: imports nothing from the database.
+ * session's title, fenced as data.
+ *
+ * The load numbers are there for the model to understand the session,
+ * not to repeat: nobody reads load numbers (the amendment of 13 October
+ * to ADR 0095), so the prompt asks it to speak in time and effort — how
+ * long, how hard against the plan, how it felt — as the popover does.
+ * Pure: imports nothing from the database.
  */
 
 export type CommentPersona =
@@ -37,6 +43,8 @@ export type SessionCommentContext = {
   };
   colour: ComplianceColour;
   facts: DeviationFact[];
+  /** The same deviation in words-to-be: the plan's character, the ride's effort and average share of threshold. */
+  story?: DeviationStory | null;
 };
 
 /** The longest comment shown, in characters: two or three sentences. */
@@ -60,7 +68,7 @@ export function sessionCommentPrompt(context: SessionCommentContext, locale: str
     "Start with something that went well, taken from the numbers. Then say plainly and kindly what differed from the plan. End with one concrete suggestion for next time, offered as a possibility the rider may take or leave.",
     "Never comment on weight, food, body or appearance. Give no medical advice and no diagnosis.",
     "No exclamation marks, no links, no lists, no headings and no emoji.",
-    "Use only numbers that are in the data. Say load for the training load and name zones by their number; use no other abbreviations for load, fitness or form.",
+    "Use only numbers that are in the data. The load numbers are for you to understand the session: never quote a load number to the reader and do not talk about load at all. Speak in time and effort instead — how long, how hard compared with the plan, how it felt, and the average share of FTP or threshold heart rate when the data has it. Name zones by their number; use no abbreviations for load, fitness or form.",
     "You do not know the rider's name; address them as you.",
     DATA_RULE,
     languageRule(locale),
@@ -73,6 +81,7 @@ export function sessionCommentPrompt(context: SessionCommentContext, locale: str
     done: context.done,
     outcome: context.colour,
     facts: context.facts,
+    words: context.story ?? null,
   };
   const user = [
     "The session's title, as a person wrote it:",
