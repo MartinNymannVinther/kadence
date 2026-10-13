@@ -134,7 +134,10 @@ export function deviationWords(
   const hint =
     kind && reader.thresholdsHref
       ? {
-          text: t(`hint.${kind}`, { who: reader.who }),
+          text: t(`hint.${kind}`, {
+            who: reader.who,
+            minutes: number(deviation.story!.ride.minutes),
+          }),
           link: t("hint.link", { who: reader.who }),
           href: reader.thresholdsHref,
         }

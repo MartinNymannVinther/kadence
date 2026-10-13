@@ -1,4 +1,4 @@
-import { compliance, type ComplianceColour } from "@/modules/load";
+import { compliance, type ComplianceColour, type LoadMethod } from "@/modules/load";
 import { calendarHref, type CalendarQuery } from "./href";
 import type { CalendarActivityCard, CalendarCard } from "./types";
 
@@ -38,7 +38,11 @@ export function dayColour(colours: readonly ComplianceColour[]): ComplianceColou
 /** How a planned session went against its plan, in the load model's colours. */
 export function colourOf(session: CalendarCard, today: string): ComplianceColour {
   const done = session.activity
-    ? { minutes: session.activity.movingSeconds / 60, load: session.activity.load }
+    ? {
+        minutes: session.activity.movingSeconds / 60,
+        load: session.activity.load,
+        method: session.activity.loadMethod as LoadMethod,
+      }
     : null;
   return compliance(
     { minutes: session.plannedMinutes, load: session.plannedLoad },

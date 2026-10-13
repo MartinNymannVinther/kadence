@@ -66,7 +66,7 @@ describe("the words of a deviation", () => {
         "Samlet var turen omkring 60 % hårdere for kroppen end planlagt, selvom den var kortere.",
       ],
       hint: {
-        text: "Føltes turen ikke så hård? Så er din FTP måske sat for lavt.",
+        text: "Over 41 minutter i gennemsnit over din FTP er mere, end de fleste kan holde. Din FTP er nok sat for lavt.",
         link: "Foreslå tærskler ud fra dine ture",
         href: "/settings/me?forslag=1#thresholds",
       },
@@ -79,7 +79,7 @@ describe("the words of a deviation", () => {
       "Rytteren kørte 41 min og en del hårdere, i gennemsnit omkring 111 % af sin FTP.",
     );
     expect(w?.hint).toEqual({
-      text: "Føltes turen ikke så hård for rytteren? Så er FTP'en måske sat for lavt.",
+      text: "Over 41 minutter i gennemsnit over rytterens FTP er mere, end de fleste kan holde. Rytterens FTP er nok sat for lavt.",
       link: "Foreslå tærskler ud fra rytterens ture",
       href: "/riders/r1?forslag=1#thresholds",
     });
@@ -100,26 +100,70 @@ describe("the words of a deviation", () => {
       "Du kørte 1 t og en del hårdere, med en gennemsnitspuls omkring 105 % af din tærskelpuls.",
     );
     expect(w?.hint?.text).toBe(
-      "Føltes turen ikke så hård? Så er din tærskelpuls måske sat for lavt.",
+      "Over 60 minutter i gennemsnit over din tærskelpuls er mere, end de fleste kan holde. Din tærskelpuls er nok sat for lavt.",
+    );
+    expect(words(d, "bike", "da", null, COACH)?.hint?.text).toBe(
+      "Over 60 minutter i gennemsnit over rytterens tærskelpuls er mere, end de fleste kan holde. Rytterens tærskelpuls er nok sat for lavt.",
+    );
+    expect(words(d, "bike", "en")?.hint?.text).toBe(
+      "60 minutes averaging above your threshold heart rate is more than most people can hold. Your threshold heart rate is probably set too low.",
+    );
+    expect(words(d, "bike", "en", null, COACH)?.hint?.text).toBe(
+      "60 minutes averaging above the rider's threshold heart rate is more than most people can hold. The rider's threshold heart rate is probably set too low.",
     );
   });
 
-  it("says how an RPE ride felt, and a strength session in its own words", () => {
-    const d = deviation(
+  it("says how an RPE session felt only when it was far off (13 October)", () => {
+    // Felt 38 % of the plan: far off, so the colour and the words read it.
+    const far = deviation(
       { sport: "strength", minutes: 45, load: 40 },
-      { minutes: 45, load: 20, method: "rpe", rpe: 4 },
+      { minutes: 45, load: 15, method: "rpe", rpe: 3 },
       PAST,
       TODAY,
     );
-    expect(words(d, "strength")).toEqual({
+    expect(words(far, "strength")).toEqual({
       heading: "Roligere end planlagt",
       lines: [
         "Planen var et styrkepas på 45 min.",
         "Du trænede 45 min, og det føltes en del lettere end planlagt.",
-        "Samlet var passet omkring 50 % lettere for kroppen end planlagt.",
+        "Samlet var passet omkring 60 % lettere for kroppen end planlagt.",
       ],
       hint: null,
     });
+    // Felt 62 % of the plan: near, so only the time is told, and the time decides.
+    const near = deviation(
+      { sport: "strength", minutes: 45, load: 40 },
+      { minutes: 30, load: 25, method: "rpe", rpe: 5 },
+      PAST,
+      TODAY,
+    );
+    expect(words(near, "strength")).toEqual({
+      heading: "Kortere end planlagt",
+      lines: ["Planen var et styrkepas på 45 min.", "Du trænede 30 min."],
+      hint: null,
+    });
+    // As long as planned and felt half as hard again: as planned, nothing to explain.
+    expect(
+      words(
+        deviation(
+          { minutes: 60, load: 40 },
+          { minutes: 60, load: 60, method: "rpe", rpe: 6 },
+          PAST,
+          TODAY,
+        ),
+      ),
+    ).toBeNull();
+    // Felt over twice the plan on a ride: the feeling is told, harder.
+    const high = words(
+      deviation(
+        { minutes: 60, load: 40 },
+        { minutes: 60, load: 100, method: "rpe", rpe: 8 },
+        PAST,
+        TODAY,
+      ),
+    );
+    expect(high?.heading).toBe("Mere gas end planlagt");
+    expect(high?.lines[1]).toBe("Du kørte 1 t, og det føltes en del hårdere end planlagt.");
   });
 
   it("says og when the time went the same way as the effort", () => {
@@ -200,7 +244,7 @@ describe("the words of a deviation", () => {
         "All in all, the ride was about 60 % harder on the body than planned, even though it was shorter.",
       ],
       hint: {
-        text: "Did the ride not feel that hard? Then your FTP may be set too low.",
+        text: "41 minutes averaging above your FTP is more than most people can hold. Your FTP is probably set too low.",
         link: "Suggest thresholds from your rides",
         href: "/settings/me?forslag=1#thresholds",
       },

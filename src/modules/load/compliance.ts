@@ -1,4 +1,4 @@
-import type { Sport } from "./activity-load";
+import type { LoadMethod, Sport } from "./activity-load";
 
 /**
  * How what was done compares to what was planned: the calendar's colours,
@@ -21,6 +21,18 @@ import type { Sport } from "./activity-load";
  * A planned session with neither minutes nor load is green once anything
  * is done — there was nothing to measure against.
  *
+ * **How it felt counts only when it is far off.** A load that came from
+ * RPE alone (`method: "rpe"`) is how the session felt, not what was
+ * measured, so the colour then reads minutes — unless the felt load is
+ * under 50 % or over 200 % of the plan's (`RPE_FAR_LOW_PCT`,
+ * `RPE_FAR_HIGH_PCT`), when the feeling says something the minutes do
+ * not. Martin, 13 October 2026: "Jeg tror ikke vi skal lægge for meget i
+ * hvad folk selv føler ift. feedback. Med mindre det er helt skævt."
+ * Strength sessions are RPE by nature (neither watts nor pulse describe a
+ * squat), so the same rule makes their colour read minutes unless the
+ * feeling is far off. Power and heart rate read load as before. A side
+ * with no `method` is read as before too: load wins.
+ *
  * Pure: imports nothing from the database.
  */
 
@@ -29,6 +41,8 @@ export type ComplianceColour = "green" | "yellow" | "red" | "grey" | "none";
 export interface ComplianceSide {
   minutes: number;
   load?: number | null;
+  /** How the done side's load was measured (activities.load_method); "rpe" reads minutes unless far off. */
+  method?: LoadMethod | null;
 }
 
 function positive(value: number | null | undefined): value is number {
@@ -41,20 +55,37 @@ export const GREEN_HIGH_PCT = 120;
 export const YELLOW_LOW_PCT = 50;
 export const YELLOW_HIGH_PCT = 150;
 
+/**
+ * A load from RPE alone counts only outside these, in whole percent of the
+ * planned load: "helt skævt", in Martin's words of 13 October 2026.
+ */
+export const RPE_FAR_LOW_PCT = 50;
+export const RPE_FAR_HIGH_PCT = 200;
+
+/** Whether a felt load at this whole percent of the plan's is far enough off to count. */
+export function feltFarOff(pct: number): boolean {
+  return pct < RPE_FAR_LOW_PCT || pct > RPE_FAR_HIGH_PCT;
+}
+
 /** What the colour was measured by, and done ÷ planned in whole percent. */
 export type ComplianceRatio = { by: "load" | "minutes"; pct: number };
 
 /**
- * The ratio the colour is read from: by load when both sides have one,
- * otherwise by minutes; null when the plan has neither. Exported so the
- * explanation of a colour (deviation.ts) reads the very same number.
+ * The ratio the colour is read from: by load when both sides have one —
+ * for a load from RPE alone only when it is far off, or when the plan has
+ * no minutes to read instead — otherwise by minutes; null when the plan
+ * has neither. Exported so the explanation of a colour (deviation.ts)
+ * reads the very same number.
  */
 export function complianceRatio(
   planned: ComplianceSide,
   done: ComplianceSide,
 ): ComplianceRatio | null {
-  if (positive(planned.load) && typeof done.load === "number" && Number.isFinite(done.load))
-    return { by: "load", pct: Math.round((done.load / planned.load) * 100) };
+  if (positive(planned.load) && typeof done.load === "number" && Number.isFinite(done.load)) {
+    const pct = Math.round((done.load / planned.load) * 100);
+    if (done.method !== "rpe" || feltFarOff(pct) || !positive(planned.minutes))
+      return { by: "load", pct };
+  }
   if (positive(planned.minutes))
     return { by: "minutes", pct: Math.round((done.minutes / planned.minutes) * 100) };
   return null;

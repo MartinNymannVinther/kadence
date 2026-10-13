@@ -66,22 +66,39 @@ describe("the story of a deviation", () => {
     expect(d.story?.thresholdHint).toBeNull();
   });
 
-  it("has no share of threshold by RPE, only how it felt against the plan", () => {
+  it("has no share of threshold by RPE, and how it felt only when far off", () => {
     const d = deviation(
       { minutes: 60, load: 60 },
-      { minutes: 60, load: 40, method: "rpe", rpe: 5 },
+      { minutes: 60, load: 25, method: "rpe", rpe: 4 },
       PAST,
       TODAY,
     );
+    // 25 of 60 is 42 %: far off, so the colour read the feeling.
+    expect(d.measuredBy).toBe("load");
     expect(d.heading).toBe("easier");
     expect(d.story?.ride).toEqual({
       minutes: 60,
       method: "rpe",
       intensityPct: null,
-      rpe: 5,
-      // Load per hour 40 against 60: √(40/60) ≈ 0.82 of the plan's intensity.
-      effort: "easier",
+      rpe: 4,
+      // Load per hour 25 against 60: √(25/60) ≈ 0.65 of the plan's intensity.
+      effort: "muchEasier",
     });
+  });
+
+  it("tells a near RPE ride by its time alone", () => {
+    const d = deviation(
+      { minutes: 60, load: 60 },
+      { minutes: 40, load: 40, method: "rpe", rpe: 6 },
+      PAST,
+      TODAY,
+    );
+    // 40 of 60 felt is near: minutes decide, 67 %, shorter.
+    expect(d.measuredBy).toBe("minutes");
+    expect(d.heading).toBe("shorter");
+    expect(d.story?.ride).toMatchObject({ method: "rpe", rpe: 6, effort: null });
+    expect(d.story?.whole).toBeNull();
+    expect(d.facts.map((f) => f.kind)).toEqual(["time", "noPlanDetail"]);
   });
 
   it("says only the time with nothing to measure effort by", () => {

@@ -9,6 +9,7 @@ import {
   type RiderRow,
 } from "@/core/db/schema";
 import type { AppTransaction } from "@/core/db/tenant";
+import type { LoadMethod } from "@/modules/load";
 
 /**
  * What the insight reads from the database, in one pass per team: the
@@ -26,6 +27,8 @@ export type InsightActivity = {
   seconds: number;
   distanceM: number | null;
   load: number | null;
+  /** How the load was measured; the colour counts one from RPE alone only when far off. */
+  loadMethod?: LoadMethod | null;
 };
 
 export type InsightSession = {
@@ -89,6 +92,7 @@ export async function gather(
       seconds: activities.movingSeconds,
       distanceM: activities.distanceM,
       load: activities.load,
+      loadMethod: activities.loadMethod,
     })
     .from(activities)
     .where(
@@ -147,7 +151,11 @@ export async function gather(
     : [];
   return {
     riders: riderRows,
-    activities: acts.map((a) => ({ ...a, sport: a.sport as InsightActivity["sport"] })),
+    activities: acts.map((a) => ({
+      ...a,
+      sport: a.sport as InsightActivity["sport"],
+      loadMethod: a.loadMethod as LoadMethod,
+    })),
     sessions,
     checkins: checks,
     races: races.map((r) => ({ ...r, priority: r.priority as "A" | "B" })),

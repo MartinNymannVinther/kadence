@@ -20,7 +20,8 @@ import { GOAL_SECONDS, stepZone } from "./intensity";
  * `compliance()` itself, and the heading and the first fact from the very
  * ratio the colour is read from (`complianceRatio`, compliance.ts): by
  * load when both sides have one, by minutes otherwise, against the same
- * bands. The explanation never weighs anything the colour did not.
+ * bands — and a load from RPE alone only when it is far off. The
+ * explanation never weighs anything the colour did not.
  *
  * The facts:
  * - **time**: planned and done minutes, and the change in whole percent;

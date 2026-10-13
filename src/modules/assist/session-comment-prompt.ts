@@ -20,7 +20,9 @@ import type { SeniorProfile } from "@/modules/paradigms";
  * The load numbers are there for the model to understand the session,
  * not to repeat: nobody reads load numbers (the amendment of 13 October
  * to ADR 0095), so the prompt asks it to speak in time and effort — how
- * long, how hard against the plan, how it felt — as the popover does.
+ * long, how hard against the plan — as the popover does. How the session
+ * felt (the RPE) is not dwelt on unless it is far from the plan
+ * (`feltFarOff`, the rule the colour follows since 13 October).
  * Pure: imports nothing from the database.
  */
 
@@ -45,6 +47,8 @@ export type SessionCommentContext = {
   facts: DeviationFact[];
   /** The same deviation in words-to-be: the plan's character, the ride's effort and average share of threshold. */
   story?: DeviationStory | null;
+  /** The load came from RPE alone and is far from the plan's, so the colour read how it felt (compliance.ts). */
+  feltFarOff?: boolean;
 };
 
 /** The longest comment shown, in characters: two or three sentences. */
@@ -68,7 +72,8 @@ export function sessionCommentPrompt(context: SessionCommentContext, locale: str
     "Start with something that went well, taken from the numbers. Then say plainly and kindly what differed from the plan. End with one concrete suggestion for next time, offered as a possibility the rider may take or leave.",
     "Never comment on weight, food, body or appearance. Give no medical advice and no diagnosis.",
     "No exclamation marks, no links, no lists, no headings and no emoji.",
-    "Use only numbers that are in the data. The load numbers are for you to understand the session: never quote a load number to the reader and do not talk about load at all. Speak in time and effort instead — how long, how hard compared with the plan, how it felt, and the average share of FTP or threshold heart rate when the data has it. Name zones by their number; use no abbreviations for load, fitness or form.",
+    "Use only numbers that are in the data. The load numbers are for you to understand the session: never quote a load number to the reader and do not talk about load at all. Speak in time and effort instead — how long, how hard compared with the plan, and the average share of FTP or threshold heart rate when the data has it. Name zones by their number; use no abbreviations for load, fitness or form.",
+    "Speak about time and effort from the measured data: minutes, power, heart rate and time in zones. Do not dwell on how the session felt (the RPE) unless the felt effort is far from the plan, which the data marks with feltFarOff true.",
     "You do not know the rider's name; address them as you.",
     DATA_RULE,
     languageRule(locale),
@@ -82,6 +87,7 @@ export function sessionCommentPrompt(context: SessionCommentContext, locale: str
     outcome: context.colour,
     facts: context.facts,
     words: context.story ?? null,
+    feltFarOff: context.feltFarOff ?? false,
   };
   const user = [
     "The session's title, as a person wrote it:",
