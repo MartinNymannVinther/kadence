@@ -2315,8 +2315,8 @@
         "times": "All in all, the {sport, select, bike {ride} other {session}} was about {times} times as hard on the body as planned{time, select, shorter {, even though it was shorter} longer {, and it was longer too} other {}}."
       },
       "hint": {
-        "ftp": "{who, select, you {Did the ride not feel that hard? Then your FTP may be set too low.} other {Did the ride not feel that hard for the rider? Then the FTP may be set too low.}}",
-        "hr": "{who, select, you {Did the ride not feel that hard? Then your threshold heart rate may be set too low.} other {Did the ride not feel that hard for the rider? Then the threshold heart rate may be set too low.}}",
+        "ftp": "{who, select, you {{minutes} minutes averaging above your FTP is more than most people can hold. Your FTP is probably set too low.} other {{minutes} minutes averaging above the rider's FTP is more than most people can hold. The rider's FTP is probably set too low.}}",
+        "hr": "{who, select, you {{minutes} minutes averaging above your threshold heart rate is more than most people can hold. Your threshold heart rate is probably set too low.} other {{minutes} minutes averaging above the rider's threshold heart rate is more than most people can hold. The rider's threshold heart rate is probably set too low.}}",
         "link": "{who, select, you {Suggest thresholds from your rides} other {Suggest thresholds from the rider's rides}}"
       },
       "howCounted": {

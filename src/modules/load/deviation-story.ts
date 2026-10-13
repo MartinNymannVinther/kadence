@@ -25,7 +25,10 @@ import { zoneForPower } from "./zones";
  *   1.05 by `activity-load.ts`; a load at the cap says the threshold was
  *   probably out of date;
  * - RPE: no share of anything; the effort word compares the ride's load
- *   per hour with the plan's, which is how it felt against the plan.
+ *   per hour with the plan's, which is how it felt against the plan. It
+ *   is said only when the colour was read from that load, i.e. when the
+ *   feeling was far off (compliance.ts, Martin's words of 13 October);
+ *   otherwise the ride is told by its time alone.
  *
  * The plan's intensity is its load per hour on the same scale, so the
  * effort word ("en del hårdere") compares like with like.
@@ -168,8 +171,10 @@ export function deviationStory(input: StoryInput): DeviationStory {
   const method: LoadMethod = done.method ?? "none";
   const doneIntensity = intensityOfLoad(done.load ?? 0, done.minutes);
   const plannedIntensity = intensityOfLoad(planned.load ?? 0, planned.minutes);
+  // How it felt is told only when the colour read it: far off (compliance.ts).
+  const felt = method !== "rpe" || input.ratio?.by === "load";
   const effort =
-    doneIntensity !== null && plannedIntensity !== null
+    felt && doneIntensity !== null && plannedIntensity !== null
       ? agreeing(effortOf(doneIntensity / plannedIntensity), input.heading)
       : null;
   return {

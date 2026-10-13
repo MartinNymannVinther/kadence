@@ -17,6 +17,7 @@ const ORG = "org_own_rides";
 const COACH = { orgId: ORG, userId: "user_own_rides_coach" };
 const ANNA = { orgId: ORG, userId: "user_own_rides_anna" };
 const BO = { orgId: ORG, userId: "user_own_rides_bo" };
+const CILLE = { orgId: ORG, userId: "user_own_rides_cille" };
 const FIRST = "2026-09-01";
 const TODAY = "2026-10-07";
 
@@ -43,7 +44,7 @@ const ride = (id: string, riderId: string, startedAt: string, values = {}) =>
 beforeAll(async () => {
   admin = adminPool();
   await seedPerson(admin, ORG, COACH.userId, "owner");
-  for (const p of [ANNA, BO]) await seedPerson(admin, ORG, p.userId, "member");
+  for (const p of [ANNA, BO, CILLE]) await seedPerson(admin, ORG, p.userId, "member");
   await insert("riders", { id: "or_anna", user_id: ANNA.userId, name: "Anna", birth_year: 2010 });
   await insert("riders", { id: "or_bo", user_id: BO.userId, name: "Bo", birth_year: 2010 });
 
@@ -67,6 +68,31 @@ beforeAll(async () => {
     activity_id: "or_planned",
   });
   await ride("or_bo1", "or_bo", "2026-10-02T09:00:00Z");
+
+  // Cille's hour planned at load 60 three times: felt as 36 and as 20, and measured as 36 by power.
+  await insert("riders", {
+    id: "or_cille",
+    user_id: CILLE.userId,
+    name: "Cille",
+    birth_year: 2010,
+  });
+  const cilles = [
+    ["or_c_near", "2026-10-02", 36, "rpe"],
+    ["or_c_far", "2026-10-03", 20, "rpe"],
+    ["or_c_power", "2026-10-04", 36, "power"],
+  ] as const;
+  for (const [id, day, load, method] of cilles) {
+    await ride(id, "or_cille", `${day}T09:00:00Z`, { load, load_method: method, rpe: 5 });
+    await insert("planned_sessions", {
+      rider_id: "or_cille",
+      on_date: day,
+      sport: "bike",
+      title: "Rolig tur",
+      planned_minutes: 60,
+      planned_load: 60,
+      activity_id: id,
+    });
+  }
 });
 
 afterAll(async () => {
@@ -101,6 +127,12 @@ describe("Dine ture", () => {
     const planned = rides.find((r) => r.id === "or_planned")!;
     expect(planned).toMatchObject({ title: "Intervaller", distanceM: 30000, colour: "green" });
     expect(rides.find((r) => r.id === "or_late_y")!.colour).toBe("none");
+  });
+
+  it("colours an RPE ride by its minutes unless the feeling is far off (13 October)", async () => {
+    const { rides } = await listOwnRides(CILLE, { today: TODAY });
+    const colour = Object.fromEntries(rides.map((r) => [r.id, r.colour]));
+    expect(colour).toEqual({ or_c_near: "green", or_c_far: "red", or_c_power: "yellow" });
   });
 
   it("gives a teammate their own rides and none of Anna's, even with Anna's cursor", async () => {

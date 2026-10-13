@@ -150,3 +150,49 @@ Trade-offs accepted: a share of threshold rounded from a whole-unit load
 can be a point off on a short ride, so the heart-rate cap is tested in
 load units, not as a ratio; and "omkring 60 %" hides the difference
 between 55 and 64 %, which is the point.
+
+## Amendment, 13 October 2026: how it felt counts only when it is far off
+
+After reading the popover, Martin wrote: "Jeg tror ikke vi skal lægge for
+meget i hvad folk selv føler ift. feedback. Med mindre det er helt
+skævt." How a rider says a session felt (RPE) should not drive the
+feedback, unless it is wildly off.
+
+- **The colour.** When the done side's load came from RPE alone
+  (`load_method = 'rpe'`), `complianceRatio` reads minutes, not load —
+  unless the felt load is under 50 % or over 200 % of the planned load
+  (`RPE_FAR_LOW_PCT`, `RPE_FAR_HIGH_PCT` in compliance.ts, beside
+  Martin's words). Power and heart rate read load as before. The method
+  travels on `ComplianceSide.method`; every caller passes it: the
+  calendar's and Today's marks (`colourOf` in compliance-mark.tsx and
+  team-days.ts, from the cards' `loadMethod`), the popover and the
+  panel (through `deviation()`), "Dine ture" (`own-rides.ts`), the
+  coach's insight and its compliance flag (`insight/gather.ts` selects
+  `load_method`), and the AI comment's context. A caller without the
+  method reads load, as before. A planned session with a load but no
+  minutes keeps reading the load, since there is nothing else to read.
+- **Strength.** A strength session is RPE by nature (neither watts nor
+  pulse describe a squat), so the same rule applies: its colour reads
+  minutes unless the feeling is far off.
+- **The words.** For an RPE session the feeling sentence ("… og det
+  føltes en del lettere end planlagt.") stands only when the colour was
+  read from the felt load because it was far off; otherwise the ride is
+  told by its time alone ("Du trænede 45 min."). The headings follow the
+  ratio the colour used, so they still agree by construction; a new grid
+  (tests/load/deviation-felt.test.ts) walks loads on both sides of both
+  bounds, on the bike and in the gym, beside the 1,152 and 4,608 cases.
+- **The threshold hint states the data** instead of asking about a
+  feeling: "Over 41 minutter i gennemsnit over din FTP er mere, end de
+  fleste kan holde. Din FTP er nok sat for lavt." (by heart rate "… over
+  din tærskelpuls …"; to a coach "… over rytterens FTP … Rytterens FTP er
+  nok sat for lavt."), with the same link and the same trigger.
+- **The AI comment** is told to speak about time and effort from the
+  measured data and not to dwell on how the session felt unless the
+  felt effort is far from the plan, which its numbers mark as
+  `feltFarOff`.
+
+Trade-off accepted: a rider without a power meter or a strap who rides
+the planned time but says it was much easier or harder than planned —
+within the factor of two — now gets green. The feeling is still saved,
+still counts toward fitness and fatigue, and still shows on the ride;
+it only no longer decides the colour on its own.

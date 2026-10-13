@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { cardDays, dayColour, weekMinutes } from "@/components/calendar/team-days";
+import { cardDays, colourOf, dayColour, weekMinutes } from "@/components/calendar/team-days";
+import { colourOf as markColourOf } from "@/components/training/compliance-mark";
 import type { CalendarActivityCard, CalendarCard } from "@/components/calendar/types";
 
 /**
@@ -96,6 +97,26 @@ describe("a rider's days on the phone", () => {
     expect(dayColour(["green", "grey"])).toBe("grey");
     expect(dayColour(["grey", "yellow", "green"])).toBe("yellow");
     expect(dayColour(["green", "red", "yellow"])).toBe("red");
+  });
+});
+
+describe("how the load was measured (13 October)", () => {
+  const done = (load: number, loadMethod: string) =>
+    session({
+      onDate: "2026-11-02",
+      plannedLoad: 60,
+      activityId: "a",
+      activity: { id: "a", movingSeconds: 3600, load, loadMethod, rpe: 5 },
+    });
+
+  it("reads an RPE ride by its minutes unless the feeling is far off, on the card and the mark", () => {
+    for (const colour of [colourOf, markColourOf]) {
+      expect(colour(done(36, "rpe"), TODAY)).toBe("green"); // felt 60 %, ridden the hour
+      expect(colour(done(24, "rpe"), TODAY)).toBe("red"); // felt 40 %: far off
+      expect(colour(done(130, "rpe"), TODAY)).toBe("red"); // felt 217 %: far off
+      expect(colour(done(36, "power"), TODAY)).toBe("yellow"); // measured: load counts
+      expect(colour(done(36, "hr"), TODAY)).toBe("yellow");
+    }
   });
 });
 

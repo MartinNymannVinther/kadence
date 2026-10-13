@@ -101,6 +101,8 @@ export function commentContext(loaded: Loaded, today: string): SessionCommentCon
     colour: explained.colour,
     facts: explained.facts,
     story: explained.story,
+    // The colour read the RPE load only because it was far off (compliance.ts).
+    feltFarOff: done.method === "rpe" && explained.measuredBy === "load",
   };
 }
 

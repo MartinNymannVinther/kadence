@@ -2315,8 +2315,8 @@
         "times": "Samlet var {sport, select, bike {turen omkring {times} gange så hård} other {passet omkring {times} gange så hårdt}} for kroppen som planlagt{time, select, shorter {, selvom {sport, select, bike {den} other {det}} var kortere} longer {, og {sport, select, bike {den} other {det}} var også længere} other {}}."
       },
       "hint": {
-        "ftp": "{who, select, you {Føltes turen ikke så hård? Så er din FTP måske sat for lavt.} other {Føltes turen ikke så hård for rytteren? Så er FTP'en måske sat for lavt.}}",
-        "hr": "{who, select, you {Føltes turen ikke så hård? Så er din tærskelpuls måske sat for lavt.} other {Føltes turen ikke så hård for rytteren? Så er tærskelpulsen måske sat for lavt.}}",
+        "ftp": "{who, select, you {Over {minutes} minutter i gennemsnit over din FTP er mere, end de fleste kan holde. Din FTP er nok sat for lavt.} other {Over {minutes} minutter i gennemsnit over rytterens FTP er mere, end de fleste kan holde. Rytterens FTP er nok sat for lavt.}}",
+        "hr": "{who, select, you {Over {minutes} minutter i gennemsnit over din tærskelpuls er mere, end de fleste kan holde. Din tærskelpuls er nok sat for lavt.} other {Over {minutes} minutter i gennemsnit over rytterens tærskelpuls er mere, end de fleste kan holde. Rytterens tærskelpuls er nok sat for lavt.}}",
         "link": "{who, select, you {Foreslå tærskler ud fra dine ture} other {Foreslå tærskler ud fra rytterens ture}}"
       },
       "howCounted": {

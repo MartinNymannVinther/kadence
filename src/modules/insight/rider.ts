@@ -146,7 +146,7 @@ export function riderInsight(
       if (done) actById.set(s.activityId!, done);
       return compliance(
         { minutes: s.plannedMinutes, load: s.plannedLoad },
-        done ? { minutes: done.seconds / 60, load: done.load } : null,
+        done ? { minutes: done.seconds / 60, load: done.load, method: done.loadMethod } : null,
         s.onDate,
         todayIso,
       );
