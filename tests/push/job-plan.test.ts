@@ -75,34 +75,49 @@ describe("a change to a session", () => {
 });
 
 describe("a deleted session", () => {
+  // A deletion is swept by the database's own clock once it is seven days
+  // old (drizzle/0037), so these runs are dated from today rather than from
+  // the fixed week the rest of the file uses: dated 6 October, they began
+  // to fail on 13 October, when the sweep took the rows before the run
+  // read them.
+  const TODAY = new Date().toISOString().slice(0, 10);
+  const day = (offset: number) => {
+    const d = new Date(`${TODAY}T00:00:00Z`);
+    d.setUTCDate(d.getUTCDate() + offset);
+    return d.toISOString().slice(0, 10);
+  };
+  const on = (offset: number, time: string) => at(`${day(offset)}T${time}Z`);
+
   it("is told when somebody else deleted it in the next seven days, and only then", async () => {
     const { RIDER, COACH } = team;
     const first = team.riders.first;
     await team.subscribe("rider", RIDER, PLAN);
-    await team.deletion(first, "2026-10-08", RIDER.userId, at("2026-10-06T09:00:00Z"));
-    await team.deletion(first, "2026-10-20", COACH.userId, at("2026-10-06T09:00:00Z"));
-    await team.deletion(team.riders.second, "2026-10-08", COACH.userId, at("2026-10-06T09:00:00Z"));
-    await runReminders(team.config, NOON);
+    await team.deletion(first, day(2), RIDER.userId, on(0, "09:00:00"));
+    await team.deletion(first, day(14), COACH.userId, on(0, "09:00:00"));
+    await team.deletion(team.riders.second, day(2), COACH.userId, on(0, "09:00:00"));
+    await runReminders(team.config, on(0, "10:00:00"));
     expect(team.pushed()).toEqual([]);
 
-    await team.deletion(first, "2026-10-12", COACH.userId, at("2026-10-06T10:05:00Z"));
-    await runReminders(team.config, at("2026-10-06T10:10:00Z"));
+    await team.deletion(first, day(6), COACH.userId, on(0, "10:05:00"));
+    await runReminders(team.config, on(0, "10:10:00"));
     expect(team.pushed()).toEqual(["rider"]);
     expect(await latestFor(RIDER.userId)).toEqual(NOTE);
 
     // Told once.
-    await runReminders(team.config, at("2026-10-06T10:20:00Z"));
+    await runReminders(team.config, on(0, "10:20:00"));
     expect(team.pushed()).toEqual(["rider"]);
   });
 
   it("waits through the quiet hours like any other change", async () => {
     const { RIDER, COACH } = team;
     await team.subscribe("rider", RIDER, PLAN);
-    // Deleted at 22.00 for the seventh day after; by the morning it is in the week.
-    await team.deletion(team.riders.first, "2026-10-13", COACH.userId, at("2026-10-06T20:00:00Z"));
-    await runReminders(team.config, at("2026-10-06T20:10:00Z"));
+    // Deleted late in the evening for the seventh day after; by the morning
+    // it is in the week. 21.00 and 06.10 UTC are inside and just outside the
+    // quiet hours (21.30–7.00 in Copenhagen) in summer and in winter time.
+    await team.deletion(team.riders.first, day(7), COACH.userId, on(0, "21:00:00"));
+    await runReminders(team.config, on(0, "21:10:00"));
     expect(team.pushed()).toEqual([]);
-    await runReminders(team.config, at("2026-10-07T05:10:00Z")); // 7.10
+    await runReminders(team.config, on(1, "06:10:00")); // 8.10 or 7.10
     expect(team.pushed()).toEqual(["rider"]);
   });
 
