@@ -11,8 +11,13 @@ import { flattenSteps, readStructure, type Structure } from "@/modules/workouts/
  *   the minutes alone (planned-load.ts), so a ride can be longer or
  *   shorter than it, never harder or easier.
  * - **set**: at least one step targets a zone, a share of FTP or an RPE.
- *   A strength session counts here too: its sets, reps and RM are how
- *   hard, and its colour follows the 13 October rule for how it felt.
+ *   A strength session with at least one exercise counts here too: its
+ *   sets, reps and RM are how hard, and its colour follows the 13 October
+ *   rule for how it felt. A strength session with no exercises
+ *   ("Styrketræning 1 t" and nothing in it) says only how long, so it is
+ *   **none** and judged by minutes (the amendment of 15 October). Every
+ *   exercise carries a dose — the schema requires sets and reps — so one
+ *   exercise is enough.
  * - **pulse**: as set, and at least one step targets a share of
  *   threshold heart rate — the one plan a heart-rate load from another
  *   sport than the bike may be compared with.
@@ -25,7 +30,7 @@ export type PlanIntensity = "none" | "set" | "pulse";
 /** What a structure says about how hard; see the file comment. */
 export function planIntensity(structure: Structure | null | undefined): PlanIntensity {
   if (!structure || structure.kind === "other") return "none";
-  if (structure.kind === "strength") return "set";
+  if (structure.kind === "strength") return structure.exercises.length > 0 ? "set" : "none";
   let set = false;
   for (const step of flattenSteps(structure)) {
     if (step.target.kind === "hr_pct") return "pulse";

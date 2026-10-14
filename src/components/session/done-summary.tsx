@@ -27,6 +27,11 @@ export type DoneActivity = {
 
 /**
  * What was done: time, distance, how hard and how it felt, and the note.
+ * No load number: it is Kadence's estimate, not something the rider did,
+ * and it read as a grade ("Belastning 17" against a plan of 60). The
+ * panel shows it behind "Sådan er det regnet" when the colour was read by
+ * it, and the activity's page with how it was measured (docs/adr/0095,
+ * the amendment of 15 October).
  * The rider or coach may change the feel afterwards — that is when a
  * rider knows — and undo a "done" entered by hand. A file's ride is not
  * undone here; it is the ride.
@@ -58,7 +63,6 @@ export function DoneSummary({
     facts.push([t("distance"), t("km", { km: Math.round(activity.distanceM / 100) / 10 })]);
   facts.push([t("rpe"), activity.rpe ? rpeText(activity.rpe, (k) => rpe(k as "1")) : t("notSaid")]);
   facts.push([t("feel"), activity.feel ? feel(String(activity.feel) as "1") : t("notSaid")]);
-  if (activity.load !== null) facts.push([t("load"), String(Math.round(activity.load))]);
 
   return (
     <div className="bg-success-tint/60 border-border flex flex-col gap-3 rounded-lg border p-4">

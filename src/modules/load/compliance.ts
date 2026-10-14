@@ -35,8 +35,9 @@ import type { PlanIntensity } from "./plan-intensity";
  * with no `method` is read as before too: load wins.
  *
  * **Only a plan that says how hard can be done harder.** A plan that says
- * only how long ("Løbetur 30 min": no steps, or only open ones; see
- * plan-intensity.ts) is judged by minutes, whatever measured the load —
+ * only how long ("Løbetur 30 min": no steps, or only open ones, or a
+ * strength session with no exercise — 15 October; see plan-intensity.ts)
+ * is judged by minutes, whatever measured the load —
  * its planned load is an estimate from the minutes, so a load against it
  * would call an easy run "twice as hard as planned". And a heart-rate
  * load from another sport than the bike is judged by minutes unless the
