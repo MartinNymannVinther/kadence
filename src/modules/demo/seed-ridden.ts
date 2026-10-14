@@ -45,7 +45,8 @@ export async function ridePast(
       await importFit(
         ctx,
         s.riderId,
-        `${pick(route.name, l)}.fit`,
+        // The first comes as Garmin's download names it, and goes by its session (ADR 0098).
+        rideNo === 1 ? `${24720018915 + rideNo}_ACTIVITY.fit` : `${pick(route.name, l)}.fit`,
         rideFit(
           {
             route,

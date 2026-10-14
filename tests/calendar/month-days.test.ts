@@ -46,7 +46,7 @@ const ride = (over: Partial<CalendarActivityCard>): CalendarActivityCard => ({
   riderId: "r1",
   onDate: "2026-11-03",
   sport: "bike",
-  title: "",
+  name: { word: "afternoonRide" },
   movingSeconds: 3600,
   rpe: null,
   commentCount: 0,

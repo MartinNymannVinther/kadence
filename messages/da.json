@@ -1250,7 +1250,6 @@
     },
     "rpe": {
       "named": "Hvor hårdt føltes {sport, select, bike {turen} other {passet}} “{title}”?",
-      "unnamed": "Hvor hårdt føltes {sport, select, bike {din tur} other {dit pas}}?",
       "today": "I dag",
       "yesterday": "I går",
       "scale": "Hvor hårdt, fra 1 til 10",
@@ -2931,6 +2930,22 @@
       "link": "Se forslaget"
     },
     "title": "Aktivitet",
+    "names": {
+      "morningRide": "Morgentur",
+      "morningWorkout": "Morgentræning",
+      "forenoonRide": "Formiddagstur",
+      "forenoonWorkout": "Formiddagstræning",
+      "afternoonRide": "Eftermiddagstur",
+      "afternoonWorkout": "Eftermiddagstræning",
+      "eveningRide": "Aftentur",
+      "eveningWorkout": "Aftentræning",
+      "nightRide": "Nattetur",
+      "nightWorkout": "Nattetræning",
+      "indoorRide": "Indendørs tur",
+      "strength": "Styrketræning",
+      "bikeRide": "Cykeltur",
+      "workout": "Træning"
+    },
     "back": "Tilbage til ugen",
     "missing": "Aktiviteten findes ikke",
     "missingHint": "Den er måske slettet, eller også har du ikke adgang til den.",

@@ -56,7 +56,7 @@ export async function riderDay(
   const toRate: RideToRate | null = ride
     ? {
         id: ride.id,
-        title: ride.title,
+        name: ride.name,
         sport: ride.sport,
         when: when(ride.onDate),
         movingSeconds: ride.movingSeconds,

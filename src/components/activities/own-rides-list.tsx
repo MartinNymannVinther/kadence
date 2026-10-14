@@ -11,19 +11,20 @@ import { durationText } from "@/components/training/duration";
 import { SportIcon } from "@/components/training/sport-icon";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
+import { rideNameText } from "@/modules/activities/ride-name";
 import { moreOwnRidesAction } from "@/modules/training/own-ride-actions";
 import type { OwnRide, OwnRidesPage } from "@/modules/training/own-rides";
 
 /**
  * "Dine ture": the rider's own rides, the newest first — the day, the
- * title, how long and how far, and how close it came to the plan in the
+ * ride's telling name (docs/adr/0098), how long and how far, and how close it came to the plan in the
  * calendar's colours with an icon and a word beside each. Every ride
  * links to its own page. "Vis flere" fetches the next twenty after the
  * last one shown (src/modules/training/own-rides.ts).
  */
 export function OwnRidesList({ first, today }: { first: OwnRidesPage; today: string }) {
   const t = useTranslations("me.rides");
-  const sports = useTranslations("training.sport");
+  const names = useTranslations("activities.names");
   const duration = useTranslations("training.duration");
   const locale = useLocale();
   const { run, pending } = useRun();
@@ -46,7 +47,7 @@ export function OwnRidesList({ first, today }: { first: OwnRidesPage; today: str
     <div className="flex flex-col gap-3">
       <ul className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-surface">
         {rides.map((ride) => {
-          const title = ride.title.trim() || sports(ride.sport as "bike");
+          const title = rideNameText(ride.name, names);
           const day =
             ride.onDate.slice(0, 4) === thisYear
               ? dayMonth(ride.onDate, locale)

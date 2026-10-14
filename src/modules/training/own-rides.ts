@@ -4,6 +4,8 @@ import { Refused } from "@/core/action";
 import { todayInCopenhagen } from "@/core/dates";
 import { activities, plannedSessions, riders } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
+import { nameRides } from "@/modules/activities/names";
+import type { RideName } from "@/modules/activities/ride-name";
 import {
   compliance,
   planIntensityOf,
@@ -38,8 +40,8 @@ export type OwnRide = {
   id: string;
   onDate: string;
   sport: string;
-  /** The ride's own title, or the session it was ridden for; may be empty. */
-  title: string;
+  /** What the ride is called on the page (docs/adr/0098). */
+  name: RideName;
   movingSeconds: number;
   distanceM: number | null;
   /** How close it came to its session; "none" for a ride nobody planned. */
@@ -55,7 +57,7 @@ export async function listOwnRides(
   options: { before?: RideCursorT; today?: string } = {},
 ): Promise<OwnRidesPage> {
   const today = options.today ?? todayInCopenhagen();
-  const rows = await withOrgContext(ctx, async (tx) => {
+  const { rows, names } = await withOrgContext(ctx, async (tx) => {
     const [rider] = await tx
       .select({ id: riders.id })
       .from(riders)
@@ -63,13 +65,14 @@ export async function listOwnRides(
       .limit(1);
     if (!rider) throw new Refused("forbidden");
     const before = options.before;
-    return tx
+    const rows = await tx
       .select({
         id: activities.id,
         onDate: activities.onDate,
         startedAt: activities.startedAt,
         sport: activities.sport,
         title: activities.title,
+        source: activities.source,
         movingSeconds: activities.movingSeconds,
         distanceM: activities.distanceM,
         load: activities.load,
@@ -93,6 +96,7 @@ export async function listOwnRides(
       )
       .orderBy(desc(startedMs), desc(activities.id))
       .limit(RIDES_PAGE + 1);
+    return { rows, names: await nameRides(tx, rows.slice(0, RIDES_PAGE)) };
   });
   const page = rows.slice(0, RIDES_PAGE);
   const last = page.at(-1);
@@ -101,7 +105,7 @@ export async function listOwnRides(
       id: r.id,
       onDate: r.onDate,
       sport: r.sport,
-      title: r.title || r.sessionTitle || "",
+      name: names.get(r.id)!,
       movingSeconds: r.movingSeconds,
       distanceM: r.distanceM,
       colour:

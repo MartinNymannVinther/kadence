@@ -183,7 +183,7 @@ export default async function RiderPage({ params, searchParams }: Props) {
           <h2 id="rider-records" className="text-lg font-semibold">
             {t("sections.records")}
           </h2>
-          <RecordsCard byPeriod={riderRecords.byPeriod} />
+          <RecordsCard byPeriod={riderRecords.byPeriod} names={riderRecords.names} />
         </section>
         <RiderBodyCards ctx={ctx} rider={rider} today={today} />
         <section aria-labelledby="rider-upload" className="flex flex-col gap-3">

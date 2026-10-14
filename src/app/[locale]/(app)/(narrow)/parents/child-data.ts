@@ -37,7 +37,7 @@ export async function childView(
   ]);
   const cards = events.map(toEventCard);
   const threads: ChildThread[] = [
-    ...sessions.map((s) => ({ kind: "session" as const, ...s })),
+    ...sessions.map((s) => ({ kind: "session" as const, ...s, name: { title: s.title } })),
     ...unplanned.map((a) => ({ kind: "activity" as const, ...a })),
   ]
     .filter((x) => x.commentCount > 0 && x.onDate <= week.today)
@@ -46,7 +46,7 @@ export async function childView(
     .map((x) => ({
       kind: x.kind,
       id: x.id,
-      title: x.title,
+      name: x.name,
       sport: x.sport,
       onDate: x.onDate,
       count: x.commentCount,

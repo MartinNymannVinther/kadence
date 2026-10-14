@@ -3,6 +3,7 @@ import { ComplianceMark } from "@/components/training/compliance-mark";
 import { durationText } from "@/components/training/duration";
 import { SportIcon } from "@/components/training/sport-icon";
 import { Link } from "@/i18n/navigation";
+import { rideNameText } from "@/modules/activities/ride-name";
 import type { CalendarActivityCard } from "./types";
 
 /**
@@ -11,7 +12,7 @@ import type { CalendarActivityCard } from "./types";
  * It opens the activity's own page.
  */
 export function ActivityChip({ activity }: { activity: CalendarActivityCard }) {
-  const sports = useTranslations("training.sport");
+  const names = useTranslations("activities.names");
   const duration = useTranslations("training.duration");
   return (
     <Link
@@ -20,7 +21,7 @@ export function ActivityChip({ activity }: { activity: CalendarActivityCard }) {
     >
       <span className="flex min-w-0 items-center gap-1.5 text-2sm font-medium">
         <SportIcon sport={activity.sport} className="size-3.5" />
-        <span className="truncate">{activity.title || sports(activity.sport as "bike")}</span>
+        <span className="truncate">{rideNameText(activity.name, names)}</span>
       </span>
       <span className="text-meta text-xs tabular-nums">
         {durationText(activity.movingSeconds / 60, duration)}

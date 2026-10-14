@@ -3,6 +3,8 @@ import { Refused } from "@/core/action";
 import { activities, riderMeasurements, riders } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
 import { addDaysIso, todayInCopenhagen } from "@/core/dates";
+import { rideNamesIn } from "@/modules/activities/names";
+import type { RideName } from "@/modules/activities/ride-name";
 import { ageIn, heartRateCeiling, summarizeHeartRate } from "@/modules/load/heart-rate-summary";
 import {
   estimateThresholds,
@@ -39,6 +41,8 @@ export type ThresholdProposal = {
   current: Current & { thresholdsOn: string | null };
   /** Bike rides in the last year, and how many of their pulse streams were read. */
   read: { rides: number; streams: number };
+  /** What each source ride is called on the pages, by its id (docs/adr/0098). */
+  rideNames: Record<string, RideName>;
 };
 
 async function mayReadTraining(tx: AppTransaction, riderId: string): Promise<boolean> {
@@ -150,10 +154,21 @@ export async function proposeThresholds(
       ...(pulse.has(r.id) ? { heartRate: pulse.get(r.id) ?? null } : {}),
     }));
     const { thresholdsOn, birthYear, ...current } = rider;
+    const estimates = estimateThresholds({
+      rides: estimateRides,
+      resting,
+      birthYear,
+      today,
+      current,
+    });
+    const sourceIds = Object.values(estimates).flatMap((e) =>
+      e.sources.flatMap((s) => (s.activityId ? [s.activityId] : [])),
+    );
     return {
-      estimates: estimateThresholds({ rides: estimateRides, resting, birthYear, today, current }),
+      estimates,
       current: { ...current, thresholdsOn },
       read: { rides: rides.length, streams: streams.length },
+      rideNames: Object.fromEntries(await rideNamesIn(tx, sourceIds)),
     };
   });
 }

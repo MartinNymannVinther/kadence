@@ -1,6 +1,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { dayMonth, weekdayShort } from "@/components/training/day-label";
 import { Link } from "@/i18n/navigation";
+import { rideNameText } from "@/modules/activities/ride-name";
 import type { RiderNews as News } from "@/modules/team/news";
 import { newsWhen } from "./news-when";
 
@@ -13,6 +14,7 @@ import { newsWhen } from "./news-when";
  */
 export function RiderNews({ items, today }: { items: News[]; today: string }) {
   const t = useTranslations("today.news");
+  const names = useTranslations("activities.names");
   const locale = useLocale();
   const words = {
     today: t("today"),
@@ -25,7 +27,8 @@ export function RiderNews({ items, today }: { items: News[]; today: string }) {
       return t("comment", {
         about: `${weekdayShort(item.about, locale)} ${dayMonth(item.about, locale)}`,
       });
-    if (item.on === "activity" && item.about === "") return t("commentRide");
+    if (item.on === "activity")
+      return item.ride ? t("comment", { about: rideNameText(item.ride, names) }) : t("commentRide");
     return t("comment", { about: item.about });
   };
 

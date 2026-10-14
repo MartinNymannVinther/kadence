@@ -48,7 +48,7 @@ export function toActivityCard(a: CalendarActivity): CalendarActivityCard {
     riderId: a.riderId,
     onDate: a.onDate,
     sport: a.sport,
-    title: a.title,
+    name: a.name,
     movingSeconds: a.movingSeconds,
     rpe: a.rpe,
     commentCount: a.commentCount,

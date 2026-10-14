@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { buttonVariants } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+import { rideNameText } from "@/modules/activities/ride-name";
 import type { Companion } from "@/modules/training/companions";
 
 /**
@@ -19,7 +20,7 @@ export async function TogetherSection({
   companions: Companion[];
 }) {
   const t = await getTranslations("activities.together");
-  const sports = await getTranslations("training.sport");
+  const names = await getTranslations("activities.names");
   if (companions.length === 0) return null;
   const ids = [activityId, ...companions.map((c) => c.activity.id)].join(",");
   return (
@@ -38,9 +39,7 @@ export async function TogetherSection({
               className="focus-ring border-border bg-card hover:border-primary flex min-h-11 items-center gap-2 rounded-md border px-3 text-2sm sm:min-h-9"
             >
               {c.riderName}
-              <span className="text-meta text-xs">
-                {c.activity.title || sports(c.activity.sport as "bike")}
-              </span>
+              <span className="text-meta text-xs">{rideNameText(c.name, names)}</span>
             </Link>
           </li>
         ))}
