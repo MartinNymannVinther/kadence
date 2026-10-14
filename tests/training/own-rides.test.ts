@@ -23,6 +23,12 @@ const TODAY = "2026-10-07";
 
 let admin: Pool;
 
+/** An hour in zone 2: a plan that says how hard. */
+const ZONE_2 = {
+  kind: "bike",
+  steps: [{ kind: "step", intent: "steady", seconds: 3600, target: { kind: "zone", zone: 2 } }],
+};
+
 async function insert(table: string, values: Record<string, unknown>) {
   const q = insertSql(table, { org_id: ORG, ...values });
   await admin.query(q.text, q.values);
@@ -90,9 +96,28 @@ beforeAll(async () => {
       title: "Rolig tur",
       planned_minutes: 60,
       planned_load: 60,
+      structure: ZONE_2,
       activity_id: id,
     });
   }
+  // Her easy 31-minute run on "Løbetur 30 min", which says only how long:
+  // twice the planned load by the bike's threshold pulse (14 October).
+  await ride("or_c_run", "or_cille", "2026-10-05T09:00:00Z", {
+    sport: "other",
+    moving_seconds: 31 * 60,
+    load: 42,
+    load_method: "hr",
+  });
+  await insert("planned_sessions", {
+    rider_id: "or_cille",
+    on_date: "2026-10-05",
+    sport: "other",
+    title: "Løbetur 30 min",
+    planned_minutes: 30,
+    planned_load: 21,
+    structure: { kind: "other", text: "", minutes: 30 },
+    activity_id: "or_c_run",
+  });
 });
 
 afterAll(async () => {
@@ -132,7 +157,12 @@ describe("Dine ture", () => {
   it("colours an RPE ride by its minutes unless the feeling is far off (13 October)", async () => {
     const { rides } = await listOwnRides(CILLE, { today: TODAY });
     const colour = Object.fromEntries(rides.map((r) => [r.id, r.colour]));
-    expect(colour).toEqual({ or_c_near: "green", or_c_far: "red", or_c_power: "yellow" });
+    expect(colour).toMatchObject({ or_c_near: "green", or_c_far: "red", or_c_power: "yellow" });
+  });
+
+  it("colours a run on a plan that says only how long by its minutes (14 October)", async () => {
+    const { rides } = await listOwnRides(CILLE, { today: TODAY });
+    expect(rides.find((r) => r.id === "or_c_run")!.colour).toBe("green");
   });
 
   it("gives a teammate their own rides and none of Anna's, even with Anna's cursor", async () => {

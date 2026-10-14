@@ -153,8 +153,15 @@ export function riderInsight(
         : undefined;
       if (done) actById.set(s.activityId!, done);
       return compliance(
-        { minutes: s.plannedMinutes, load: s.plannedLoad },
-        done ? { minutes: done.seconds / 60, load: done.load, method: done.loadMethod } : null,
+        { minutes: s.plannedMinutes, load: s.plannedLoad, intensity: s.intensity },
+        done
+          ? {
+              minutes: done.seconds / 60,
+              load: done.load,
+              method: done.loadMethod,
+              sport: done.sport,
+            }
+          : null,
         s.onDate,
         todayIso,
       );

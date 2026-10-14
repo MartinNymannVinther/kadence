@@ -97,6 +97,7 @@ describe("a rider's insight", () => {
         sport: "bike",
         plannedMinutes: 600,
         plannedLoad: 400,
+        intensity: "none",
         activityId: null,
       },
     ];
@@ -105,21 +106,27 @@ describe("a rider's insight", () => {
   });
 
   it("judges an RPE ride by its minutes unless the feeling is far off (13 October)", () => {
-    const planned = (onDate: string): InsightSession => ({
-      riderId: "r",
-      onDate,
-      sport: "bike",
-      plannedMinutes: 60,
-      plannedLoad: 60,
-      activityId: `a_${onDate}`,
-    });
+    const planned =
+      (intensity: InsightSession["intensity"]) =>
+      (onDate: string): InsightSession => ({
+        riderId: "r",
+        onDate,
+        sport: "bike",
+        plannedMinutes: 60,
+        plannedLoad: 60,
+        intensity,
+        activityId: `a_${onDate}`,
+      });
     // Monday and Tuesday of TODAY's week: 25 of 60 minutes, at half the planned load.
     const days = ["2026-12-07", "2026-12-08"];
-    const week = (loadMethod: InsightActivity["loadMethod"]) =>
+    const week = (
+      loadMethod: InsightActivity["loadMethod"],
+      intensity: InsightSession["intensity"] = "set",
+    ) =>
       riderInsight(
         rider,
         days.map((d) => ({ ...ride(d, 25 / 60, 30), id: `a_${d}`, loadMethod })),
-        days.map(planned),
+        days.map(planned(intensity)),
         [],
         TODAY,
         true,
@@ -130,6 +137,8 @@ describe("a rider's insight", () => {
     expect(week("power")).toBeUndefined();
     // A caller without the method reads load, as before.
     expect(week(undefined)).toBeUndefined();
+    // A plan that says only how long is judged by time, whatever measured the load (14 October).
+    expect(week("power", "none")?.values).toEqual({ red: 2, judged: 2 });
   });
 
   it("reads wellbeing and pain only when it may be seen", () => {

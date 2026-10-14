@@ -4,7 +4,13 @@ import { Refused } from "@/core/action";
 import { todayInCopenhagen } from "@/core/dates";
 import { activities, plannedSessions, riders } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
-import { compliance, type ComplianceColour, type LoadMethod } from "@/modules/load";
+import {
+  compliance,
+  planIntensityOf,
+  type ComplianceColour,
+  type LoadMethod,
+  type Sport,
+} from "@/modules/load";
 
 /**
  * "Dine ture" on Mig (docs/backlog.md P2-02): the rider's own rides, the
@@ -72,6 +78,8 @@ export async function listOwnRides(
         sessionDate: plannedSessions.onDate,
         plannedMinutes: plannedSessions.plannedMinutes,
         plannedLoad: plannedSessions.plannedLoad,
+        sessionSport: plannedSessions.sport,
+        sessionStructure: plannedSessions.structure,
       })
       .from(activities)
       .leftJoin(plannedSessions, eq(plannedSessions.activityId, activities.id))
@@ -100,11 +108,19 @@ export async function listOwnRides(
         r.sessionDate === null
           ? "none"
           : compliance(
-              { minutes: r.plannedMinutes ?? 0, load: r.plannedLoad },
+              {
+                minutes: r.plannedMinutes ?? 0,
+                load: r.plannedLoad,
+                intensity: planIntensityOf({
+                  sport: r.sessionSport ?? r.sport,
+                  structure: r.sessionStructure,
+                }),
+              },
               {
                 minutes: r.movingSeconds / 60,
                 load: r.load,
                 method: r.loadMethod as LoadMethod,
+                sport: r.sport as Sport,
               },
               r.sessionDate,
               today,

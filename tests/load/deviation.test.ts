@@ -152,16 +152,19 @@ describe("agreement with the colour", () => {
   const plannedLoads = [null, 0, 40, 80];
   const doneMinutes = [0, 10, 30, 45, 59, 60, 75, 100, 150];
   const doneLoads = [null, 0, 20, 31, 40, 64, 100, 121];
+  // What the plan says of how hard (14 October): not told, nothing, a target, a pulse target.
+  const intensities = [undefined, "none", "set", "pulse"] as const;
 
   const cases: Array<[DeviationPlanned, { minutes: number; load: number | null }]> = [];
   for (const minutes of plannedMinutes)
     for (const load of plannedLoads)
-      for (const dm of doneMinutes)
-        for (const dl of doneLoads)
-          cases.push([
-            { minutes, load },
-            { minutes: dm, load: dl },
-          ]);
+      for (const intensity of intensities)
+        for (const dm of doneMinutes)
+          for (const dl of doneLoads)
+            cases.push([
+              { minutes, load, intensity },
+              { minutes: dm, load: dl },
+            ]);
 
   it(`agrees in all ${cases.length} cases`, () => {
     for (const [planned, done] of cases) {
@@ -188,16 +191,19 @@ describe("agreement with the colour", () => {
    * effort never points the other way than a heading of harder or easier.
    */
   const methods = ["power", "hr", "rpe", "none"] as const;
-  const worded: Array<[DeviationPlanned, Parameters<typeof deviation>[1]]> = [];
+  const sports = ["bike", "other"] as const;
+  const worded: Array<[DeviationPlanned, NonNullable<Parameters<typeof deviation>[1]>]> = [];
   for (const minutes of plannedMinutes)
     for (const load of plannedLoads)
-      for (const dm of doneMinutes)
-        for (const dl of doneLoads)
-          for (const method of methods)
-            worded.push([
-              { minutes, load },
-              { minutes: dm, load: dl, method },
-            ]);
+      for (const intensity of intensities)
+        for (const dm of doneMinutes)
+          for (const dl of doneLoads)
+            for (const method of methods)
+              for (const sport of sports)
+                worded.push([
+                  { minutes, load, intensity },
+                  { minutes: dm, load: dl, method, sport },
+                ]);
 
   it(`and its words agree in all ${worded.length} cases`, () => {
     for (const [planned, done] of worded) {
@@ -218,7 +224,22 @@ describe("agreement with the colour", () => {
         expect(["easier", "muchEasier"], label).toContain(story.ride.effort);
       // A share of threshold only where the load was measured by it.
       if (story.ride.intensityPct !== null) expect(["power", "hr"]).toContain(story.ride.method);
-      if (story.thresholdHint !== null) expect(done!.minutes).toBeGreaterThanOrEqual(20);
+      if (story.thresholdHint !== null) expect(done.minutes).toBeGreaterThanOrEqual(20);
+      // Read by time because no load could be weighed against the plan: time alone (14 October).
+      const offPlan =
+        planned.intensity === "none" ||
+        (planned.intensity === "set" && done.method === "hr" && done.sport !== "bike");
+      if (offPlan && planned.minutes > 0) {
+        expect(d.measuredBy, label).toBe("minutes");
+        expect(story.ride.effort, label).toBeNull();
+        expect(story.ride.intensityPct, label).toBeNull();
+        expect(
+          d.facts.some((f) => f.kind === "load" || f.kind === "intensity"),
+          label,
+        ).toBe(false);
+      }
+      // The thresholds are the bike's: no hint off the bike.
+      if (done.sport !== "bike") expect(story.thresholdHint, label).toBeNull();
     }
   });
 

@@ -40,21 +40,24 @@ const doneMinutes = [0, 10, 30, 45, 59, 60, 75, 100, 150];
 const doneLoads = [0, 10, 19, 20, 21, 39, 40, 41, 60, 79, 80, 81, 120, 159, 160, 161, 200];
 const sports = ["bike", "strength"] as const;
 const methods: LoadMethod[] = ["rpe", "power"];
+// What the plan says of how hard (14 October): a strength plan always says it.
+const intensities = { bike: [undefined, "none", "set"], strength: [undefined, "set"] } as const;
 
 type Case = [DeviationPlanned, { minutes: number; load: number; method: LoadMethod; rpe: number }];
 const cases: Case[] = [];
 for (const sport of sports)
-  for (const minutes of plannedMinutes)
-    for (const load of plannedLoads)
-      for (const dm of doneMinutes)
-        for (const dl of doneLoads)
-          for (const method of methods)
-            // Strength has neither watts nor pulse: it is RPE by nature.
-            if (sport === "bike" || method === "rpe")
-              cases.push([
-                { sport, minutes, load },
-                { minutes: dm, load: dl, method, rpe: 5 },
-              ]);
+  for (const intensity of intensities[sport])
+    for (const minutes of plannedMinutes)
+      for (const load of plannedLoads)
+        for (const dm of doneMinutes)
+          for (const dl of doneLoads)
+            for (const method of methods)
+              // Strength has neither watts nor pulse: it is RPE by nature.
+              if (sport === "bike" || method === "rpe")
+                cases.push([
+                  { sport, minutes, load, intensity },
+                  { minutes: dm, load: dl, method, rpe: 5 },
+                ]);
 
 describe("the feeling, near and far", () => {
   it(`agrees with the colour in all ${cases.length} cases`, () => {
@@ -69,8 +72,10 @@ describe("the feeling, near and far", () => {
       const hasMinutes = planned.minutes > 0;
       if (hasLoad) {
         const pct = Math.round((done.load / planned.load!) * 100);
-        // Power always by load; RPE by load only far off, or with no minutes to read instead.
-        const byLoad = done.method !== "rpe" || feltFarOff(pct) || !hasMinutes;
+        // Power always by load; RPE by load only far off, or with no minutes to read instead;
+        // against a plan that says only how long, by load only with no minutes (14 October).
+        const counts = planned.intensity !== "none" && (done.method !== "rpe" || feltFarOff(pct));
+        const byLoad = counts || !hasMinutes;
         expect(d.measuredBy, label).toBe(byLoad ? "load" : "minutes");
       } else expect(d.measuredBy, label).toBe(hasMinutes ? "minutes" : null);
 

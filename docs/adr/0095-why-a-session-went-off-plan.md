@@ -196,3 +196,55 @@ the planned time but says it was much easier or harder than planned —
 within the factor of two — now gets green. The feeling is still saved,
 still counts toward fitness and fatigue, and still shows on the ride;
 it only no longer decides the colour on its own.
+
+## Amendment, 14 October 2026: a plan without intensity and a pulse off the bike are judged by time
+
+Martin ran an easy, conversational 31 minutes on a session planned as
+"Løbetur 30 min" (sport "other", only a duration). The mark was red,
+"Langt fra planen", and the popover said "Mere gas end planlagt … med en
+gennemsnitspuls omkring 90 % af din tærskelpuls … omkring 2 gange så
+hårdt for kroppen som planlagt". Both halves were wrong. The plan said
+nothing of how hard, so nothing could be harder than planned: its load,
+21, was only an estimate from 30 minutes at RPE 5 (planned-load.ts). And
+the run's pulse was weighed against the bike's threshold pulse (ADR
+0016), where a runner sits 5–10 beats higher, which roughly doubled its
+heart-rate load, to 42.
+
+- **What a plan says of how hard** (`planIntensity`, plan-intensity.ts):
+  `none` when it says only how long — no structure, a bike session with
+  no steps or only open steps, or an "other" session, which is words and
+  minutes; `set` when a step targets a zone, a share of FTP or an RPE;
+  `pulse` when a step targets a share of threshold heart rate. A
+  strength session is `set`: its sets, reps and RM say how hard, and the
+  rule of 13 October for how it felt governs its colour unchanged.
+- **The colour** (`loadOffPlan`, compliance.ts) reads minutes, whatever
+  measured the load, when the plan is `none`; and when the done side is
+  another sport than the bike with a load from heart rate and the plan
+  has no heart-rate target (a run planned as "30 min at 70–80 % of
+  threshold pulse" can still be judged by its pulse). The plan's intensity
+  travels on `ComplianceSide.intensity`, the activity's sport on
+  `ComplianceSide.sport`. Every caller passes both, read from the
+  session's structure by one helper, `planIntensityOf`: the calendar's
+  and Today's marks (`colourOf` in compliance-mark.tsx and team-days.ts,
+  from the cards' `structure`), the popover and the panel (through
+  `deviation()`), "Dine ture" (own-rides.ts selects the session's sport
+  and structure), the coach's insight and its compliance flag
+  (insight/gather.ts reads the structure and passes on only the
+  intensity), and the AI comment's context. A ride is only ever matched
+  to a session of its own sport, so the session's sport stands in for the
+  activity's where the card does not carry it. A caller without the
+  intensity reads as before. A plan with a load but no minutes keeps
+  reading the load, since there is nothing else to read.
+- **The words.** Read by minutes for these reasons (`timeOnly` on the
+  ratio), the story tells time alone: no effort word ("og en del
+  hårdere"), no share of threshold ("% af din tærskelpuls"), no whole
+  ("gange så hårdt"), no zones' line. An on-time run is green and its
+  mark offers no popover. The threshold hint is for bike rides only,
+  since the thresholds are the bike's. No new message keys.
+
+Trade-off accepted: a run that really was much harder than intended is
+no longer called so when the plan gave it no intensity — the coach who
+wants it judged can give the session a target. Its load still counts in
+full toward fitness and fatigue, slightly overstated by the bike's
+threshold pulse, as ADR 0016 accepts. And an old bike session whose plan
+is only open steps is now judged by time, where it was by load.

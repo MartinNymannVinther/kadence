@@ -3,7 +3,7 @@
 import { Popover } from "@base-ui/react/popover";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { deviation, type Deviation, type LoadMethod } from "@/modules/load";
+import { deviation, planIntensityOf, type Deviation, type LoadMethod } from "@/modules/load";
 import { readStructure } from "@/modules/workouts/structure";
 import { ComplianceMark, stateKey, type PlannedLike } from "./compliance-mark";
 import { deviationWords, readerFor, type DeviationT, type DurationT } from "./deviation-text";
@@ -21,8 +21,6 @@ import { useWeekNote } from "./week-note";
 
 export type ExplainableSession = PlannedLike & {
   riderId?: string;
-  sport: string;
-  structure?: unknown;
   activity: (PlannedLike["activity"] & { loadMethod?: string; rpe?: number | null }) | null;
 };
 
@@ -38,6 +36,7 @@ export function cardDeviation(session: ExplainableSession, today: string): Devia
         session.structure !== undefined && ["bike", "strength", "other"].includes(sport)
           ? readStructure(session.structure, sport)
           : null,
+      intensity: planIntensityOf(session),
     },
     session.activity
       ? {
@@ -45,6 +44,7 @@ export function cardDeviation(session: ExplainableSession, today: string): Devia
           load: session.activity.load,
           method: (session.activity.loadMethod ?? null) as LoadMethod | null,
           rpe: session.activity.rpe ?? null,
+          sport: ["bike", "strength", "other"].includes(sport) ? sport : null,
         }
       : null,
     session.onDate,

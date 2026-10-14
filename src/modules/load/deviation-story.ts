@@ -30,6 +30,13 @@ import { zoneForPower } from "./zones";
  *   feeling was far off (compliance.ts, Martin's words of 13 October);
  *   otherwise the ride is told by its time alone.
  *
+ * **Time alone.** When the colour could weigh no load against the plan —
+ * a plan that says only how long, or a pulse off the bike against a plan
+ * without heart-rate targets (`timeOnly`, compliance.ts; the amendment of
+ * 14 October) — the ride is told by its time alone: no effort word, no
+ * share of threshold. The threshold hint is for bike rides only, since
+ * the thresholds are the bike's (ADR 0016).
+ *
  * The plan's intensity is its load per hour on the same scale, so the
  * effort word ("en del hårdere") compares like with like.
  *
@@ -161,7 +168,13 @@ export type StoryInput = {
   sport: "bike" | "strength" | "other";
   plannedZone: Zone | null;
   planned: { minutes: number; load?: number | null };
-  done: { minutes: number; load?: number | null; method?: LoadMethod | null; rpe?: number | null };
+  done: {
+    minutes: number;
+    load?: number | null;
+    method?: LoadMethod | null;
+    rpe?: number | null;
+    sport?: "bike" | "strength" | "other" | null;
+  };
   ratio: ComplianceRatio | null;
   heading: string | null;
 };
@@ -173,8 +186,10 @@ export function deviationStory(input: StoryInput): DeviationStory {
   const plannedIntensity = intensityOfLoad(planned.load ?? 0, planned.minutes);
   // How it felt is told only when the colour read it: far off (compliance.ts).
   const felt = method !== "rpe" || input.ratio?.by === "load";
+  const timeOnly = input.ratio?.timeOnly === true;
+  const bike = (done.sport ?? input.sport) === "bike";
   const effort =
-    felt && doneIntensity !== null && plannedIntensity !== null
+    felt && !timeOnly && doneIntensity !== null && plannedIntensity !== null
       ? agreeing(effortOf(doneIntensity / plannedIntensity), input.heading)
       : null;
   return {
@@ -186,13 +201,13 @@ export function deviationStory(input: StoryInput): DeviationStory {
       minutes: Math.round(done.minutes),
       method,
       intensityPct:
-        (method === "power" || method === "hr") && doneIntensity !== null
+        (method === "power" || method === "hr") && !timeOnly && doneIntensity !== null
           ? Math.round(doneIntensity * 100)
           : null,
       rpe: positive(done.rpe) ? done.rpe : null,
       effort,
     },
     whole: input.heading ? wholeOf(input.ratio, planned.minutes, done.minutes) : null,
-    thresholdHint: thresholdHint(method, done.load, done.minutes),
+    thresholdHint: bike ? thresholdHint(method, done.load, done.minutes) : null,
   };
 }
