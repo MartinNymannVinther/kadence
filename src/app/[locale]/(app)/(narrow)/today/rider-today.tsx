@@ -63,6 +63,8 @@ export function RiderToday({
           today={today}
           initial={day.checkin}
           start={day.checkinStart}
+          knownPains={day.knownPains}
+          club={day.club}
         />
       )}
       {list("today")}

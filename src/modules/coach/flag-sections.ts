@@ -10,6 +10,7 @@ export const FLAG_SECTION: Record<string, GuideSectionId> = {
   wellbeing_talk: "wellbeing",
   wellbeing_help: "wellbeing",
   pain: "injury",
+  known_pain_lasting: "injury",
   sleep_short: "sleepFood",
   sleep_below_minimum: "sleepFood",
   compliance: "role",

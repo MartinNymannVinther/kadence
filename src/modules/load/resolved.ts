@@ -88,6 +88,9 @@ export function worseThan(flag: Flag, seen: Flag["values"]): boolean {
       return more("red", 1);
     case "mid_zone":
       return more("mid", MATERIAL_STEP.midShare);
+    case "known_pain_lasting":
+      // The coach has seen it; a pain getting worse is the pain flag's.
+      return false;
   }
 }
 

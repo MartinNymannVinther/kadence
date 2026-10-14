@@ -112,6 +112,7 @@ async function seedHistory() {
   });
   await seed("comments", { rider_id: FROM, author_id: RIDER, activity_id: "hm_act", body: "Godt" });
   await seed("checkins", { rider_id: FROM, on_date: DAY, energy: 4 });
+  await seed("known_pains", { rider_id: FROM, place: "Ryg", usual_level: 2 });
   await seed("rider_measurements", {
     rider_id: FROM,
     measured_on: DAY,
@@ -319,6 +320,7 @@ describe("the rider moves their own history", () => {
       activity_files: 1,
       comments: 1,
       checkins: 1,
+      known_pains: 1,
       rider_measurements: 1,
       rider_goals: 1,
       flag_resolutions: 1,

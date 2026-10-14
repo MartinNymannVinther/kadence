@@ -3,6 +3,7 @@ import {
   check,
   date,
   index,
+  jsonb,
   numeric,
   pgTable,
   smallint,
@@ -10,9 +11,18 @@ import {
   timestamp,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
-import { domainId } from "./foundation";
+import { domainId, users } from "./foundation";
 import { riders } from "./team";
 import { tenant, timestamps } from "./shared";
+
+/**
+ * A known pain ticked "som det plejer" on a check-in, as it stood that day
+ * (docs/adr/0097): its id, its place and its usual level on the ladder. A
+ * snapshot rather than a reference, so the day's zone is worked out from
+ * the check-in row alone and does not change when the known pain is
+ * changed or removed later.
+ */
+export type UsualPain = { id: string; place: string; level: number };
 
 /**
  * How the rider is: one short check-in a day. Scales run 1–5 with 5 the
@@ -38,6 +48,8 @@ export const checkins = pgTable(
     pain: smallint("pain").notNull().default(0),
     painWhere: text("pain_where").notNull().default(""),
     ill: smallint("ill").notNull().default(0),
+    /** The known pains the rider said hurt as usual today (docs/adr/0097). */
+    usualPains: jsonb("usual_pains").$type<UsualPain[]>().notNull().default([]),
     note: text("note").notNull().default(""),
     /**
      * When the check-in last turned red (`isRedCheckin`), kept while it
@@ -60,7 +72,42 @@ export const checkins = pgTable(
     check("checkins_pain", sql`${t.pain} between 0 and 3`),
     check("checkins_ill", sql`${t.ill} between 0 and 1`),
     check("checkins_sleep", sql`${t.sleepHours} is null or ${t.sleepHours} between 0 and 24`),
+    check(
+      "checkins_usual_pains",
+      sql`jsonb_typeof(${t.usualPains}) = 'array' and jsonb_array_length(${t.usualPains}) <= 5`,
+    ),
   ],
 );
 
 export type CheckinRow = typeof checkins.$inferSelect;
+
+/**
+ * Something that always hurts a little, and how much it usually does
+ * (docs/adr/0097): a place in the rider's own words and a usual level on
+ * ATK's ladder, 1 or 2 — pain 3 is never usual. Health data, read as the
+ * check-ins are (the 'wellbeing' scope) and written by the rider or a
+ * coach. At most five a rider, and one per place, in the service: a
+ * unique index would make a history's move (drizzle/0046) collide when
+ * both rider rows know the same pain.
+ */
+export const knownPains = pgTable(
+  "known_pains",
+  {
+    id: domainId("id"),
+    orgId: tenant(),
+    riderId: text("rider_id")
+      .notNull()
+      .references(() => riders.id, { onDelete: "cascade" }),
+    place: text("place").notNull(),
+    usualLevel: smallint("usual_level").notNull(),
+    createdBy: text("created_by").references(() => users.id, { onDelete: "set null" }),
+    ...timestamps,
+  },
+  (t) => [
+    index("known_pains_rider_idx").on(t.orgId, t.riderId),
+    check("known_pains_place", sql`char_length(${t.place}) between 1 and 40`),
+    check("known_pains_usual_level", sql`${t.usualLevel} between 1 and 2`),
+  ],
+);
+
+export type KnownPainRow = typeof knownPains.$inferSelect;

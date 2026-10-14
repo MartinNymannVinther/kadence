@@ -71,7 +71,12 @@ export const EXPORT_TABLES: ExportTable[] = [
     sheet: "Check-ins",
     orderBy: "rider_id, on_date",
     columns:
-      "id, org_id, rider_id, on_date, sleep_hours, sleep_quality, energy, mood, soreness, stress, pain, pain_where, ill, note, created_at, updated_at, red_since",
+      "id, org_id, rider_id, on_date, sleep_hours, sleep_quality, energy, mood, soreness, stress, pain, pain_where, ill, note, created_at, updated_at, red_since, usual_pains",
+  },
+  {
+    table: "known_pains",
+    sheet: "Kendte smerter",
+    columns: "id, org_id, rider_id, place, usual_level, created_by, created_at, updated_at",
   },
   {
     table: "rider_measurements",

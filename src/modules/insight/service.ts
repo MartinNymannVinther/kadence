@@ -2,7 +2,7 @@ import { addDaysIso, mondayOf, todayInCopenhagen } from "@/core/dates";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { whoAmIIn } from "@/modules/team/access";
 import { FORECAST_MAX_DAYS, type FlagKind, type Severity } from "@/modules/load";
-import { gather } from "./gather";
+import { gather, isClubWorkspace } from "./gather";
 import { resolutionsFor } from "./resolutions";
 import { riderInsight, SERIES_DAYS, WARMUP_DAYS, type RiderInsight } from "./rider";
 import { flagWindow, forRider, readIntensity } from "@/modules/season/intensity";
@@ -39,6 +39,7 @@ export async function getInsights(
       aheadTo: addDaysIso(today, FORECAST_MAX_DAYS),
     });
     const { paradigm, lowIntensityFirst } = await teamPlanning(tx, ctx.orgId);
+    const club = await isClubWorkspace(tx, ctx.orgId);
     const window = flagWindow(today);
     const intensity = lowIntensityFirst
       ? await readIntensity(
@@ -77,6 +78,7 @@ export async function getInsights(
           })),
         paradigm,
         intensity && forRider(intensity, rider.id),
+        club,
       );
     });
     return insights.sort(

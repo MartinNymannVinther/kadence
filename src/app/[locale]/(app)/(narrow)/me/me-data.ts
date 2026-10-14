@@ -12,12 +12,14 @@ import { getRiderRecords } from "@/modules/training/records";
 import { listSessions } from "@/modules/training/sessions";
 import { weekDates, weekFrom } from "@/modules/training/week";
 import { listCheckins } from "@/modules/wellbeing/checkins";
+import { knownPainView, listKnownPains } from "@/modules/wellbeing/known-pains";
 import { readStructure } from "@/modules/workouts/structure";
 
 /**
  * What a rider's own page holds (docs/adr/0063): this week, the next
  * week's bike sessions a bike computer can ride (ADR 0031), the latest
- * rides, the form, two weeks of check-ins, goals and records. Read under
+ * rides, the form, two weeks of check-ins and the known pains (ADR 0097),
+ * goals and records. Read under
  * the rider's own RLS, as Today read them before.
  */
 export async function meData(ctx: OrgContext, riderId: string, today: string) {
@@ -25,16 +27,18 @@ export async function meData(ctx: OrgContext, riderId: string, today: string) {
   const days = weekDates(monday);
   const sunday = days[6] ?? today;
   const lastDay = addDaysIso(today, 6);
-  const [sessions, events, checkins, insights, records, goals, rider, rides] = await Promise.all([
-    listSessions(ctx, { from: monday, to: maxIso([sunday, lastDay]), riderIds: [riderId] }),
-    listEvents(ctx, { from: monday, to: sunday, riderIds: [riderId] }),
-    listCheckins(ctx, { from: addDaysIso(today, -13), to: today, riderIds: [riderId] }),
-    getInsights(ctx, { riderIds: [riderId], today }),
-    getRiderRecords(ctx, riderId, { today }),
-    listGoals(ctx, riderId, today),
-    getRider(ctx, riderId),
-    listOwnRides(ctx, { today }),
-  ]);
+  const [sessions, events, checkins, insights, records, goals, rider, rides, pains] =
+    await Promise.all([
+      listSessions(ctx, { from: monday, to: maxIso([sunday, lastDay]), riderIds: [riderId] }),
+      listEvents(ctx, { from: monday, to: sunday, riderIds: [riderId] }),
+      listCheckins(ctx, { from: addDaysIso(today, -13), to: today, riderIds: [riderId] }),
+      getInsights(ctx, { riderIds: [riderId], today }),
+      getRiderRecords(ctx, riderId, { today }),
+      listGoals(ctx, riderId, today),
+      getRider(ctx, riderId),
+      listOwnRides(ctx, { today }),
+      listKnownPains(ctx, riderId),
+    ]);
   // The next seven days' bike sessions with steps: what a bike computer can ride.
   const toDevice = sessions
     .filter((s) => s.onDate >= today && s.onDate <= lastDay && s.sport === "bike")
@@ -50,6 +54,7 @@ export async function meData(ctx: OrgContext, riderId: string, today: string) {
     toDevice,
     rides,
     zones: zoneDays(checkins, today),
+    knownPains: pains.map(knownPainView),
     insight: insights[0] ?? null,
     records,
     goals,

@@ -13,13 +13,16 @@ import { hasAnyRide, recentRides } from "@/modules/today/recent-rides";
 import { listGuardians } from "@/modules/team/guardians";
 import { getRider } from "@/modules/team/riders";
 import { listSessions } from "@/modules/training/sessions";
+import { workspaceKind } from "@/modules/team/workspace-kind";
 import { getCheckin, getLastCheckin } from "@/modules/wellbeing/checkins";
+import { knownPainView, listKnownPains } from "@/modules/wellbeing/known-pains";
 import { checkinStart } from "@/modules/wellbeing/prefill";
 
 /**
  * What a rider's Today shows (docs/adr/0063): today's and tomorrow's
  * sessions, today's check-in — and, for a new one, the answers behind
- * "Mere" from the last (backlog P2-11) — the ride to say "how hard" about,
+ * "Mere" from the last (backlog P2-11), with the rider's known pains and
+ * whether a coach reads it (docs/adr/0097) — the ride to say "how hard" about,
  * and what the first steps need to know. The rest of the rider's picture is on Mig.
  */
 export async function riderDay(
@@ -29,16 +32,19 @@ export async function riderDay(
   words: { today: string; yesterday: string; locale: string },
 ) {
   const tomorrow = addDaysIso(today, 1);
-  const [sessions, checkin, last, rides, rider, guardians, links, consentOff] = await Promise.all([
-    listSessions(ctx, { from: today, to: tomorrow, riderIds: [riderId] }),
-    getCheckin(ctx, riderId, today),
-    getLastCheckin(ctx, riderId, today),
-    recentRides(ctx, riderId, { from: addDaysIso(today, -(RPE_WINDOW_DAYS - 1)), to: today }),
-    getRider(ctx, riderId),
-    listGuardians(ctx, riderId),
-    listDeviceLinks(ctx),
-    isHealthConsentWithdrawn(ctx),
-  ]);
+  const [sessions, checkin, last, rides, rider, guardians, links, consentOff, pains, kind] =
+    await Promise.all([
+      listSessions(ctx, { from: today, to: tomorrow, riderIds: [riderId] }),
+      getCheckin(ctx, riderId, today),
+      getLastCheckin(ctx, riderId, today),
+      recentRides(ctx, riderId, { from: addDaysIso(today, -(RPE_WINDOW_DAYS - 1)), to: today }),
+      getRider(ctx, riderId),
+      listGuardians(ctx, riderId),
+      listDeviceLinks(ctx),
+      isHealthConsentWithdrawn(ctx),
+      listKnownPains(ctx, riderId),
+      workspaceKind(ctx.orgId, ctx.userId),
+    ]);
   const cards = sessions.map(toTodayCard);
   const ride = rideToRate(rides, today);
   const when = (date: string) =>
@@ -81,6 +87,8 @@ export async function riderDay(
       last ? { onDate: last.onDate, answers: checkinValues(last)! } : null,
       today,
     ),
+    knownPains: pains.map(knownPainView),
+    club: kind !== "personal",
     toRate,
     checklist,
     // Check-in is off once the consent to health data is withdrawn (ADR

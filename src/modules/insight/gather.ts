@@ -3,6 +3,7 @@ import {
   activities,
   calendarEvents,
   checkins,
+  organizations,
   plannedSessions,
   riders,
   type CheckinRow,
@@ -166,4 +167,17 @@ export async function gather(
     checkins: checks,
     races: races.map((r) => ({ ...r, priority: r.priority as "A" | "B" })),
   };
+}
+
+/**
+ * Whether the workspace is a club, where a coach reads the attention list;
+ * a personal workspace is one person's own (docs/adr/0080), with no coach
+ * to see a known pain that lasts (docs/adr/0097).
+ */
+export async function isClubWorkspace(tx: AppTransaction, orgId: string): Promise<boolean> {
+  const [org] = await tx
+    .select({ kind: organizations.kind })
+    .from(organizations)
+    .where(eq(organizations.id, orgId));
+  return org?.kind !== "personal";
 }

@@ -1,4 +1,5 @@
 import { diffDays } from "@/core/dates";
+import { countedPain, type UsualPainLike } from "./usual-pain";
 
 /**
  * The daily check-in's zones, and what the last three weeks of them ask
@@ -26,6 +27,10 @@ import { diffDays } from "@/core/dates";
  *   (at least three answered); under 6 hours of sleep (Team Danmark links
  *   around 6 hours to a markedly higher injury risk, §2 "Søvn").
  * - **green** otherwise.
+ *
+ * A known pain at its usual level counts as no pain here (usual-pain.ts,
+ * docs/adr/0097): stored with the check-in, never colouring it. Pain 3 is
+ * never usual.
  *
  * **The status.** The model has four zones; a single day's answers cannot
  * tell "challenged" from "serious", so Kadence judges the pattern by the
@@ -72,6 +77,10 @@ export interface Checkin {
    * during and after training or in everyday life (ATK's steps 3 and 4).
    */
   pain: number;
+  /** Where it hurts, in the rider's words. */
+  painWhere?: string | null;
+  /** The known pains ticked "som det plejer" today (usual-pain.ts). */
+  usualPains?: readonly UsualPainLike[] | null;
   /** 1 when ill. */
   ill: number;
 }
@@ -112,28 +121,38 @@ function ordered(signs: Iterable<WellbeingSign>): WellbeingSign[] {
   return SIGN_ORDER.filter((sign) => set.has(sign));
 }
 
+/** The 1–5 answers of a check-in, by name, the ones given. */
+export const SCALE_KEYS = ["sleepQuality", "energy", "mood", "soreness", "stress"] as const;
+export type ScaleKey = (typeof SCALE_KEYS)[number];
+
+export function scaleAnswers(checkin: Checkin): [ScaleKey, number][] {
+  return SCALE_KEYS.flatMap((key) => {
+    const value = checkin[key];
+    return answered(value) ? [[key, value] as [ScaleKey, number]] : [];
+  });
+}
+
+/** The answers' average, when enough of them were given to mean anything. */
+export function answersAverage(checkin: Checkin): number | null {
+  const scales = scaleAnswers(checkin);
+  if (scales.length < MIN_ANSWERS_FOR_AVERAGE) return null;
+  return scales.reduce((sum, [, value]) => sum + value, 0) / scales.length;
+}
+
 /** One check-in's zone and the signs behind it; see the file comment. */
 export function checkinZone(checkin: Checkin): CheckinZone {
+  const pain = countedPain(checkin);
   const red: WellbeingSign[] = [];
-  if (checkin.pain >= 3) red.push("pain");
+  if (pain >= 3) red.push("pain");
   if (checkin.ill >= 1) red.push("ill");
   if (answered(checkin.mood) && checkin.mood <= 1) red.push("mood");
   if (red.length > 0) return { zone: "red", signs: ordered(red) };
 
   const yellow: WellbeingSign[] = [];
-  if (checkin.pain === 2) yellow.push("pain");
-  const scales = [
-    checkin.sleepQuality,
-    checkin.energy,
-    checkin.mood,
-    checkin.soreness,
-    checkin.stress,
-  ].filter(answered);
-  if (scales.some((value) => value <= 1)) yellow.push("low_answer");
-  if (scales.length >= MIN_ANSWERS_FOR_AVERAGE) {
-    const average = scales.reduce((sum, value) => sum + value, 0) / scales.length;
-    if (average <= LOW_AVERAGE) yellow.push("low_average");
-  }
+  if (pain === 2) yellow.push("pain");
+  if (scaleAnswers(checkin).some(([, value]) => value <= 1)) yellow.push("low_answer");
+  const average = answersAverage(checkin);
+  if (average !== null && average <= LOW_AVERAGE) yellow.push("low_average");
   if (answered(checkin.sleepHours) && checkin.sleepHours < SHORT_NIGHT_HOURS)
     yellow.push("short_sleep");
   return yellow.length > 0

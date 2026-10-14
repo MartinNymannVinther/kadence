@@ -1,4 +1,5 @@
 import { diffDays } from "@/core/dates";
+import type { TickedPain } from "@/modules/load/usual-pain";
 import { WELLBEING_WINDOW_DAYS } from "@/modules/load/wellbeing";
 
 /**
@@ -12,8 +13,8 @@ import { WELLBEING_WINDOW_DAYS } from "@/modules/load/wellbeing";
  * row stays complete when the rider answers only the three and presses
  * "Gem".
  *
- * - The three asked first start blank (pain at none), every day: they are
- *   today's.
+ * - The three asked first start blank (pain at none, no known pain
+ *   ticked), every day: they are today's.
  * - Behind "Mere", the scales and "syg" start as the rider last answered
  *   them, if that was within the model's three weeks; otherwise, or
  *   for a scale left unanswered then, in the middle of the scale and not
@@ -36,6 +37,8 @@ export type CheckinAnswers = {
   stress: number | null;
   pain: number;
   painWhere: string;
+  /** The known pains ticked "som det plejer", as they stood (docs/adr/0097). */
+  usualPains: TickedPain[];
   ill: number;
   note: string;
 };
@@ -69,6 +72,7 @@ export function checkinStart(
       energy: null,
       pain: 0,
       painWhere: "",
+      usualPains: [],
       sleepQuality: scale("sleepQuality"),
       mood: scale("mood"),
       soreness: scale("soreness"),

@@ -4,6 +4,8 @@ import { navRole } from "@/app/[locale]/(app)/nav-items";
 import { seasonStartYear } from "@/modules/dcu";
 import { SENIOR_BIKE_SESSIONS, SENIOR_WEEKS, seasonOfMonth, seniorWeek } from "@/modules/paradigms";
 import { cleanupExpiredDemos, createDemoWorkspace, isDemoWorkspace } from "@/modules/demo/service";
+import { ADULT_BACK_DAYS } from "@/modules/demo/seed-known-pain";
+import { checkinZone } from "@/modules/load/wellbeing";
 import { getSeasonPlan } from "@/modules/season/plans";
 import { whoAmI } from "@/modules/team/access";
 import { workspaceKind } from "@/modules/team/workspace-kind";
@@ -121,6 +123,33 @@ describe("a demo of an adult alone", () => {
       [orgId],
     );
     expect(strength.rows.map((r) => r.source_key)).toEqual(["kadence-strength-super-motionist"]);
+  });
+
+  it("has a back that always hurts a little, ticked as usual on a few green days (ADR 0097)", async () => {
+    const pains = await admin.query(
+      `select id, place, usual_level from known_pains where org_id = $1`,
+      [orgId],
+    );
+    expect(pains.rows.map((r) => [r.place, r.usual_level])).toEqual([["Ryg", 2]]);
+    const ticked = await admin.query(
+      `select on_date::text as on_date, pain, pain_where, usual_pains, sleep_hours::float as sleep_hours,
+              sleep_quality, energy, mood, soreness, stress, ill
+       from checkins where org_id = $1 and jsonb_array_length(usual_pains) > 0 order by on_date`,
+      [orgId],
+    );
+    expect(ticked.rows).toHaveLength(ADULT_BACK_DAYS.length);
+    for (const row of ticked.rows) {
+      expect(row.pain).toBe(2);
+      expect(row.usual_pains).toEqual([{ id: pains.rows[0].id, place: "Ryg", level: 2 }]);
+      const zone = checkinZone({
+        ...row,
+        sleepHours: row.sleep_hours,
+        sleepQuality: row.sleep_quality,
+        painWhere: row.pain_where,
+        usualPains: row.usual_pains,
+      });
+      expect(zone.signs).not.toContain("pain");
+    }
   });
 
   it("goes whole when its time is up", async () => {

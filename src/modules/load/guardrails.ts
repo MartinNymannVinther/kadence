@@ -1,6 +1,7 @@
 import { diffDays } from "@/core/dates";
 import type { ComplianceColour } from "./compliance";
 import { midZoneFlag, type MidZoneInput } from "./intensity-flag";
+import { lastingPainFlag, type LastingPainCheckin } from "./known-pain-flag";
 import type { WellbeingStatus } from "./wellbeing";
 
 /**
@@ -43,6 +44,7 @@ export const WELLBEING_KINDS = [
   "pain",
   "sleep_short",
   "sleep_below_minimum",
+  "known_pain_lasting",
 ] as const;
 /** Every kind, the partition above made total by construction. */
 export const FLAG_KINDS = [...TRAINING_KINDS, ...WELLBEING_KINDS] as const;
@@ -81,8 +83,13 @@ export interface GuardrailInput {
   /** ISO dates of the week's strength sessions, and the days around it. */
   strengthDates?: readonly string[];
   wellbeing?: WellbeingStatus | null;
-  /** The latest check-in's pain, 0–3. */
+  /** The latest check-in's pain, 0–3, none when it was a known pain at its usual level. */
   latestPain?: number | null;
+  /**
+   * The last three weeks' check-ins with their known pains, for a rider
+   * under 18 in a club only (known-pain-flag.ts); null leaves the flag out.
+   */
+  knownPains?: { checkins: readonly LastingPainCheckin[]; today: string } | null;
   /** Hours slept each night of the last 7 days; null for a night not reported. */
   sleepHours?: readonly (number | null)[];
   /** The rider's minimum by age: 8 h for 14–17-year-olds. */
@@ -280,6 +287,7 @@ export function guardrails(input: GuardrailInput): Flag[] {
     ...strengthSpacingFlags(input.strengthDates ?? []),
     wellbeingFlag(input.wellbeing),
     painFlag(input.latestPain),
+    input.knownPains ? lastingPainFlag(input.knownPains.checkins, input.knownPains.today) : null,
     sleepFlag(input.sleepHours ?? [], input.sleepMinimum),
     complianceFlag(input.compliance ?? []),
     midZoneFlag(input.intensity),

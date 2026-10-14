@@ -129,7 +129,7 @@ describe("the migration", () => {
       readFileSync(join(process.cwd(), "drizzle", "meta", "_journal.json"), "utf8"),
     ) as { entries: { tag: string; when: number }[] };
     const at = journal.entries.findIndex((e) => e.tag === MIGRATION);
-    expect(at).toBe(journal.entries.length - 1);
+    expect(at).toBeGreaterThan(0);
     expect(journal.entries[at]!.when).toBeGreaterThan(journal.entries[at - 1]!.when);
   });
 

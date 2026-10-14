@@ -6,10 +6,12 @@ import { useRun } from "@/components/common/use-run";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { checkinZone } from "@/modules/load/wellbeing";
+import type { KnownPainView } from "@/modules/wellbeing/known-pains";
 import { lowBehindMore, type CheckinAnswers, type CheckinStart } from "@/modules/wellbeing/prefill";
 import { saveCheckinAction } from "@/modules/wellbeing/actions";
 import { CheckinMore, useMoreOpen } from "./checkin-more";
 import { CheckinResult } from "./checkin-result";
+import { KnownPainTicks } from "./known-pain-ticks";
 import { PainChoice } from "./pain-choice";
 import { ScaleChoice } from "./scale-choice";
 import { SleepHours } from "./sleep-hours";
@@ -27,6 +29,11 @@ export type CheckinValues = CheckinAnswers;
  * shows the day's zone and, for yellow and red, what happens next — a
  * conversation, never an alarm.
  *
+ * The pain question asks what is different (docs/adr/0097): under it the
+ * rider's known pains, each "Ryg som det plejer", and a pain ticked so does
+ * not colour the day. The result names why a day is yellow or red, and
+ * says the coach sees it only in a club.
+ *
  * Compact on a phone, so the three answers and "Gem" stand on one screen
  * (the check-in on Today approved with docs/mockups/navigation): the
  * sleep on one line, the pain steps two by two. "Gem" comes straight
@@ -39,6 +46,8 @@ export function CheckinCard({
   today,
   initial,
   start,
+  knownPains,
+  club,
 }: {
   riderId: string;
   today: string;
@@ -46,6 +55,10 @@ export function CheckinCard({
   initial: CheckinValues | null;
   /** Where a new one starts. */
   start: CheckinStart;
+  /** The rider's known pains, offered under the pain question. */
+  knownPains: KnownPainView[];
+  /** A club, where a coach reads the check-in; not a personal workspace. */
+  club: boolean;
 }) {
   const t = useTranslations("checkin");
   const { run, pending } = useRun();
@@ -60,10 +73,19 @@ export function CheckinCard({
 
   async function save(event: React.FormEvent) {
     event.preventDefault();
-    const input = { ...value, painWhere: value.pain > 0 ? value.painWhere.trim() : "" };
-    const done = await run(() => saveCheckinAction({ riderId, onDate: today, ...input }), {
-      success: t("saved"),
-    });
+    // A known pain removed since it was ticked is no longer offered, nor sent.
+    const usualPains = value.usualPains.filter((p) => knownPains.some((k) => k.id === p.id));
+    const input = {
+      ...value,
+      painWhere: value.pain > 0 ? value.painWhere.trim() : "",
+      usualPains,
+    };
+    const { usualPains: ticked, ...answers } = input;
+    const knownPainIds = ticked.map((p) => p.id);
+    const done = await run(
+      () => saveCheckinAction({ riderId, onDate: today, ...answers, knownPainIds }),
+      { success: t("saved") },
+    );
     if (done !== null) {
       setSaved(input);
       setEditing(false);
@@ -75,6 +97,7 @@ export function CheckinCard({
       <CheckinResult
         zone={checkinZone(saved).zone}
         values={saved}
+        club={club}
         onEdit={() => {
           setValue(saved);
           setEditing(true);
@@ -138,6 +161,12 @@ export function CheckinCard({
           />
         </div>
       )}
+      <KnownPainTicks
+        pains={knownPains}
+        value={value.usualPains}
+        pain={value.pain}
+        onChange={(v) => set("usualPains", v)}
+      />
 
       {/* "Gem" stands before a closed "Mere" and after an open one's
           answers. "Mere" itself never moves in the page's order, so it

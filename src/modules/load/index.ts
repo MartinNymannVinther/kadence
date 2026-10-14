@@ -141,6 +141,8 @@ export {
   type PlanCharacter,
   type TimeDirection,
 } from "./deviation-story";
+export { countedPain, painIsUsual, type UsualPainLike } from "./usual-pain";
+export { checkinReasons, usualPainPlaces, type CheckinReason } from "./checkin-reasons";
 export {
   LOW_AVERAGE,
   SHORT_NIGHT_HOURS,
@@ -202,6 +204,7 @@ export {
   midZoneFlag,
   type MidZoneInput,
 } from "./intensity-flag";
+export { LASTING_PAIN_WEEKS, lastingPainFlag, type LastingPainCheckin } from "./known-pain-flag";
 export {
   MATERIAL_STEP,
   splitResolved,

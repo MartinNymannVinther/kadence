@@ -27,11 +27,12 @@ const yesterday: CheckinAnswers = {
   stress: 4,
   pain: 2,
   painWhere: "Højre knæ",
+  usualPains: [{ id: "kp_back", place: "Ryg", level: 2 }],
   ill: 0,
   note: "Eksamen i morgen",
 };
 
-const blankFirst = { sleepHours: null, energy: null, pain: 0, painWhere: "" };
+const blankFirst = { sleepHours: null, energy: null, pain: 0, painWhere: "", usualPains: [] };
 
 describe("checkinStart", () => {
   it("starts in the middle of every scale, not ill and without a note, when there is no check-in", () => {
