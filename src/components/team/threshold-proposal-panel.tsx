@@ -5,6 +5,7 @@ import { TrendingUp } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRun } from "@/components/common/use-run";
 import { Button } from "@/components/ui/button";
+import type { RideName } from "@/modules/activities/ride-name";
 import { proposedKeys } from "@/modules/load/threshold-apply";
 import {
   THRESHOLD_KEYS,
@@ -41,6 +42,7 @@ export function ThresholdProposalPanel({
   const t = useTranslations("riders.thresholds.propose");
   const { run, pending } = useRun();
   const [estimates, setEstimates] = useState<ThresholdEstimates | null>(null);
+  const [rideNames, setRideNames] = useState<Record<string, RideName>>({});
   const [ticked, setTicked] = useState<Set<ThresholdKey>>(new Set());
   const asked = useRef(false);
 
@@ -48,6 +50,7 @@ export function ThresholdProposalPanel({
     const result = await run(() => proposeThresholdsAction({ riderId }), { refresh: false });
     if (!result) return;
     setEstimates(result.estimates);
+    setRideNames(result.rideNames);
     setTicked(new Set(proposedKeys(result.estimates)));
   }
 
@@ -94,6 +97,7 @@ export function ThresholdProposalPanel({
             unit={units[key]}
             current={current[key]}
             estimate={estimates[key]}
+            rideNames={rideNames}
             ticked={ticked.has(key)}
             onTick={(on) =>
               setTicked((was) => {

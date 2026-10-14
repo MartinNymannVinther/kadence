@@ -9,7 +9,8 @@ import { durationText } from "./duration";
  * how the ride went, how much more or less it asked of the body — the
  * same in the calendar's popover and inline in the session's panel. No
  * load number appears here (docs/adr/0095, the amendment of 13 October);
- * the panel keeps them behind "Sådan er det regnet". Kept apart from the
+ * the panel keeps them behind "Sådan er det regnet", told by what measured
+ * the session (the amendment of 15 October). Kept apart from the
  * components so it can be read and tested on its own.
  */
 
@@ -160,4 +161,39 @@ export function countedNumbers(
   const number = (n: number) =>
     new Intl.NumberFormat(locale === "en" ? "en-GB" : "da-DK").format(n);
   return { done: number(load.done), planned: number(load.planned) };
+}
+
+/**
+ * What "Sådan er det regnet" says the load was read from: how hard it
+ * felt for a strength session or a load from RPE; the pulse for another
+ * sport than the bike by heart rate (the thresholds are the bike's, ADR
+ * 0016, so the words say pulse, not FTP); otherwise the bike's sentence
+ * of FTP. The amendment of 15 October to docs/adr/0095.
+ */
+export type CountedBasis = "ftp" | "pulse" | "felt";
+
+export function countedBasis(sport: string, method: string | null | undefined): CountedBasis {
+  if (sport === "strength" || method === "rpe") return "felt";
+  if (sport !== "bike" && method === "hr") return "pulse";
+  return "ftp";
+}
+
+/** "Sådan er det regnet", whole: the summary, what load is for this session, and the two loads. */
+export function countedWords(
+  deviation: Deviation,
+  sport: string,
+  t: DeviationT,
+  locale: string,
+): { summary: string; body: string; numbers: string } | null {
+  const numbers = countedNumbers(deviation, locale);
+  if (!numbers) return null;
+  const kind = sportOf(sport);
+  return {
+    summary: t("howCounted.summary"),
+    body: t("howCounted.body", {
+      basis: countedBasis(sport, deviation.story?.ride.method),
+      sport: kind,
+    }),
+    numbers: t("howCounted.numbers", { ...numbers, sport: kind }),
+  };
 }

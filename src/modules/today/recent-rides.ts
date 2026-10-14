@@ -1,6 +1,8 @@
 import { and, desc, eq, gte, lte, sql } from "drizzle-orm";
 import { activities, plannedSessions } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
+import { nameRides } from "@/modules/activities/names";
+import type { RideName } from "@/modules/activities/ride-name";
 
 /**
  * What a rider's Today asks about their own rides (docs/adr/0063): the
@@ -15,8 +17,8 @@ export type RecentRide = {
   onDate: string;
   startedAt: Date;
   sport: string;
-  /** The ride's own title, or the session it was ridden for; may be empty. */
-  title: string;
+  /** What the ride is called on the page (docs/adr/0098). */
+  name: RideName;
   movingSeconds: number;
   distanceM: number | null;
   rpe: number | null;
@@ -31,8 +33,8 @@ export async function recentRides(
   riderId: string,
   range: { from: string; to: string },
 ): Promise<RecentRide[]> {
-  const rows = await withOrgContext(ctx, (tx) =>
-    tx
+  return withOrgContext(ctx, async (tx) => {
+    const rows = await tx
       .select({
         id: activities.id,
         onDate: activities.onDate,
@@ -58,12 +60,13 @@ export async function recentRides(
         ),
       )
       .orderBy(desc(activities.startedAt))
-      .limit(20),
-  );
-  return rows.map(({ sessionTitle, ...r }) => ({
-    ...r,
-    title: r.title || sessionTitle || "",
-  }));
+      .limit(20);
+    const names = await nameRides(tx, rows);
+    return rows.map(({ sessionTitle: _session, title: _title, ...r }) => ({
+      ...r,
+      name: names.get(r.id)!,
+    }));
+  });
 }
 
 /** Whether the rider has any ride in Kadence yet. */

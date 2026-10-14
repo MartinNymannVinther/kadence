@@ -147,11 +147,24 @@ describe("Dine ture", () => {
     expect(second.rides[0]!.id).toBe("or_late_x");
   });
 
-  it("carries the title, the distance and how close the ride came to its session", async () => {
+  it("carries the name, the distance and how close the ride came to its session", async () => {
     const { rides } = await listOwnRides(ANNA, { today: TODAY });
     const planned = rides.find((r) => r.id === "or_planned")!;
-    expect(planned).toMatchObject({ title: "Intervaller", distanceM: 30000, colour: "green" });
+    expect(planned).toMatchObject({
+      name: { title: "Intervaller" },
+      distanceM: 30000,
+      colour: "green",
+    });
     expect(rides.find((r) => r.id === "or_late_y")!.colour).toBe("none");
+  });
+
+  it("names a ride without a name of its own by its session, or by the evening (docs/adr/0098)", async () => {
+    const { rides } = await listOwnRides(ANNA, { today: TODAY });
+    expect(rides.find((r) => r.id === "or_late_y")!.name).toEqual({ word: "eveningRide" });
+    const cille = await listOwnRides(CILLE, { today: TODAY });
+    expect(cille.rides.find((r) => r.id === "or_c_run")!.name).toEqual({
+      title: "Løbetur 30 min",
+    });
   });
 
   it("colours an RPE ride by its minutes unless the feeling is far off (13 October)", async () => {

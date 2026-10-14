@@ -1,5 +1,6 @@
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
 import { mondayOf } from "@/core/dates";
+import { rideNamesIn } from "@/modules/activities/names";
 import { whoAmIIn } from "@/modules/team/access";
 import { copenhagenClock, lastTold, mayBeWellbeing } from "./due";
 import { newestComment, newestPlanChange, visibleChildren } from "./facts";
@@ -56,6 +57,17 @@ function commentPath(c: {
   return week ? `/calendar?week=${week}&rider=${c.riderId}` : "/calendar";
 }
 
+/**
+ * A ride's name for the lock screen: its own or its session's, never a
+ * file's (docs/adr/0098). A ride named only by the time of day goes
+ * without, and the note says "a comment" plainly.
+ */
+async function rideTitle(tx: AppTransaction, activityId: string | null): Promise<string | null> {
+  if (!activityId) return null;
+  const name = (await rideNamesIn(tx, [activityId])).get(activityId);
+  return name && "title" in name ? name.title : null;
+}
+
 async function news(tx: AppTransaction, ctx: OrgContext, row: ToldOnce): Promise<Note | null> {
   const me = await whoAmIIn(tx, ctx);
   if (!me) return null;
@@ -69,7 +81,7 @@ async function news(tx: AppTransaction, ctx: OrgContext, row: ToldOnce): Promise
   if (!comment) return null;
   return {
     kind: "comment",
-    title: comment.sessionTitle || comment.activityTitle || null,
+    title: comment.sessionTitle || (await rideTitle(tx, comment.activityId)),
     author: comment.authorName || null,
     path: commentPath(comment),
   };

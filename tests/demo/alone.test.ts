@@ -7,6 +7,8 @@ import { cleanupExpiredDemos, createDemoWorkspace, isDemoWorkspace } from "@/mod
 import { whoAmI } from "@/modules/team/access";
 import { getTeamSettings } from "@/modules/team/settings";
 import { workspaceKind } from "@/modules/team/workspace-kind";
+import { withOrgContext } from "@/core/db/tenant";
+import { rideNamesIn } from "@/modules/activities/names";
 import { adminPool } from "../helpers/db";
 
 /**
@@ -75,6 +77,18 @@ describe("a demo of one rider alone", () => {
     expect(s.team_events).toBe(0);
     expect(s.dcu).toBe(3);
     expect(await getTeamSettings({ orgId, userId })).toMatchObject({ clubChampionship: false });
+  });
+
+  it("has a ride named by its file that goes by its session's name (ADR 0098)", async () => {
+    const row = await admin.query(
+      `select a.id, s.title from activities a join planned_sessions s on s.activity_id = a.id
+        where a.org_id = $1 and a.title like '%\\_ACTIVITY'`,
+      [orgId],
+    );
+    expect(row.rows).toHaveLength(1);
+    const { id, title } = row.rows[0] as { id: string; title: string };
+    const names = await withOrgContext({ orgId, userId }, (tx) => rideNamesIn(tx, [id]));
+    expect(names.get(id)).toEqual({ title });
   });
 
   it("has nobody to switch to, so the stripe shows no switch", async () => {

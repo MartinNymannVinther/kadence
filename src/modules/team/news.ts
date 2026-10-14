@@ -1,7 +1,9 @@
 import { and, desc, eq, gte, lt, lte, sql } from "drizzle-orm";
-import { activities, checkins, comments, plannedSessions, riders } from "@/core/db/schema";
+import { checkins, comments, plannedSessions, riders } from "@/core/db/schema";
 import { addDaysIso } from "@/core/dates";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
+import { rideNamesIn } from "@/modules/activities/names";
+import type { RideName } from "@/modules/activities/ride-name";
 
 /**
  * "Nyt fra rytterne" on a coach's Overblik: what the riders themselves
@@ -35,8 +37,10 @@ export type RiderNews = {
   /** When it was written: a comment when it was posted, a check-in when it was last saved. */
   at: Date;
   text: string;
-  /** The session's or the ride's title ("" for a ride without one), or the day (yyyy-mm-dd). */
+  /** The session's title, or the day (yyyy-mm-dd); "" for a ride, which goes by `ride`. */
   about: string;
+  /** What the ride is called on the pages (docs/adr/0098); absent when it is not a ride's. */
+  ride?: RideName;
   /** Where the coach reads more and answers. */
   href: string;
 };
@@ -65,14 +69,12 @@ export async function listRiderNews(
         sessionId: comments.plannedSessionId,
         sessionTitle: plannedSessions.title,
         activityId: comments.activityId,
-        activityTitle: activities.title,
         onDate: comments.onDate,
       })
       .from(comments)
       // The rider the comment is about wrote it: the riders' own words, nobody else's.
       .innerJoin(riders, and(eq(riders.id, comments.riderId), eq(riders.userId, comments.authorId)))
       .leftJoin(plannedSessions, eq(plannedSessions.id, comments.plannedSessionId))
-      .leftJoin(activities, eq(activities.id, comments.activityId))
       .where(
         and(
           eq(riders.archived, false),
@@ -104,6 +106,10 @@ export async function listRiderNews(
       )
       .orderBy(desc(checkins.updatedAt))
       .limit(limit);
+    const rideNames = await rideNamesIn(
+      tx,
+      said.flatMap((c) => (c.activityId ? [c.activityId] : [])),
+    );
 
     const items: RiderNews[] = [
       ...said.map((c): RiderNews => {
@@ -126,7 +132,8 @@ export async function listRiderNews(
           return {
             ...base,
             on: "activity",
-            about: c.activityTitle ?? "",
+            about: "",
+            ...(rideNames.has(c.activityId) ? { ride: rideNames.get(c.activityId)! } : {}),
             href: `/activities/${encodeURIComponent(c.activityId)}`,
           };
         return { ...base, on: "day", about: c.onDate ?? "", href: riderHref(c.riderId) };

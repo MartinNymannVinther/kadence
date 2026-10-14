@@ -192,14 +192,14 @@ describe("the words of a deviation", () => {
     });
   });
 
-  it("says a missed session as not ridden, or not done off the bike", () => {
+  it("says a missed session as not reached, in every sport (15 October)", () => {
     const missed = deviation({ minutes: 60 }, null, PAST, TODAY);
     expect(words(missed)).toEqual({
-      heading: "Ikke kørt",
+      heading: "Ikke nået",
       lines: ["Planlagt 1 t. Der er ikke kommet noget ind for passet."],
       hint: null,
     });
-    expect(words(missed, "strength")?.heading).toBe("Ikke udført");
+    expect(words(missed, "strength")?.heading).toBe("Ikke nået");
   });
 
   it("names the zone a session was built around, and closes with the week", () => {
@@ -273,10 +273,10 @@ describe("the catalogue's words", () => {
   it("put the numbers only behind Sådan er det regnet", () => {
     const t = createTranslator({ locale: "da", messages: da, namespace: "training.deviation" });
     expect(t("howCounted.summary")).toBe("Sådan er det regnet");
-    expect(t("howCounted.body")).toBe(
+    expect(t("howCounted.body", { basis: "ftp", sport: "bike" })).toBe(
       "Kadence vurderer, hvor meget en tur trækker på kroppen, ud fra tiden og hvor hårdt du kørte i forhold til din FTP (eller puls eller hvordan det føltes). En time præcis på FTP tæller 100.",
     );
-    expect(t("howCounted.numbers", countedNumbers(martin, "da")!)).toBe(
+    expect(t("howCounted.numbers", { ...countedNumbers(martin, "da")!, sport: "bike" })).toBe(
       "Denne tur: 84. Planen: 53.",
     );
     // Read by minutes there is no load to show.

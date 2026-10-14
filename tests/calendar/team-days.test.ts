@@ -169,7 +169,7 @@ describe("a rider's week in minutes", () => {
         riderId: "r1",
         onDate: "2026-11-07",
         sport: "bike",
-        title: "Tur",
+        name: { title: "Tur" },
         movingSeconds: 30 * 60,
         rpe: null,
         commentCount: 0,

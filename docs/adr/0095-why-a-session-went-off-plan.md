@@ -248,3 +248,54 @@ wants it judged can give the session a target. Its load still counts in
 full toward fitness and fatigue, slightly overstated by the bike's
 threshold pulse, as ADR 0016 accepts. And an old bike session whose plan
 is only open steps is now judged by time, where it was by load.
+
+## Amendment, 15 October 2026: words that motivate, empty strength plans, the explanation by sport
+
+Martin opened a strength session, "Styrketræning", planned as one hour
+with nothing in "Passet" and done in one hour at RPE 3. The mark was
+red, "Langt fra planen"; the box said "Roligere end planlagt … det
+føltes en del lettere end planlagt … omkring 70 % lettere", "Sådan er
+det regnet" spoke of "hvor hårdt du kørte i forhold til din FTP", and
+the "Udført" block said "Belastning 17". His words: "Det lyder stadig
+forkert med 'langt fra planen', find på noget mere motiverende."
+
+- **The marks' words** (`training.state`), colours and icons unchanged:
+  green "Som planlagt"; yellow "Tæt på planen" (was "Afveg fra
+  planen"); red with something done "Din egen version" (was "Langt fra
+  planen"); red with nothing done "Ikke nået" (was "Ikke udført"). The
+  box's heading for a missed session is "Ikke nået" in every sport (was
+  "Ikke kørt" on the bike, "Ikke udført" off it); its fact, "Planlagt 1
+  t. Der er ikke kommet noget ind for passet.", stays. English: "As
+  planned", "Close to the plan", "Your own version", "Not reached". The
+  keys are the same, so every place the words show — the calendar's
+  cards and chips, the team's week and month, Today, the popover's
+  aria-label — follows; the help texts and the manual
+  (public/brugervejledning/index.html) say the same, and the coach's
+  attention point reads "pas der gik helt anderledes end planlagt". The
+  PDF of the manual is not rendered again here.
+- **A strength plan with nothing in it says only how long**
+  (`planIntensity`): `none` without an exercise, `set` with one. Every
+  exercise carries sets and reps by the schema, so one is enough. An
+  empty "Styrketræning 1 t" is then judged by its minutes like
+  "Løbetur 30 min" (14 October): Martin's 60 of 60 minutes is green,
+  and its mark opens no box. A strength session with exercises keeps
+  the rule of 13 October: how it felt counts only when far off.
+- **"Sådan er det regnet" by sport** (`countedWords`,
+  deviation-text.ts): on the bike the FTP sentence as before; another
+  sport by heart rate "… ud fra tiden og din puls i forhold til din
+  tærskelpuls …"; strength, or any load from RPE, "Kadence vurderer,
+  hvor meget et pas trækker på kroppen, ud fra tiden og hvor hårdt det
+  føltes. En time på hårdt (8 af 10) tæller 100." (the anchor of
+  calibration.ts). The numbers say "Denne tur" for a ride and "Dette
+  pas" otherwise.
+- **No load row in "Udført".** The number read as a grade ("17" against
+  a plan of 60) and is Kadence's estimate, not something the rider
+  did. It is shown in the panel only behind "Sådan er det regnet",
+  where the colour was read by it, and on the activity's page with how
+  it was measured. The row named no method, so there was nothing to
+  move into the sentence.
+
+Trade-off accepted: an empty strength plan can no longer be called
+much harder or easier than planned — a coach who wants that puts the
+exercises in. And a session whose colour was read by time shows no load
+number in the panel at all; a coach finds it on the activity's page.

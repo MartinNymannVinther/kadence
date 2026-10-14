@@ -1,6 +1,6 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import {
-  countedNumbers,
+  countedWords,
   deviationWords,
   type DeviationReader,
   type DeviationT,
@@ -24,10 +24,12 @@ import { readStructure } from "@/modules/workouts/structure";
  * session's panel (docs/adr/0095): the same heading and sentences the
  * calendar's popover shows, here with the ride's time in zones too, and
  * the week's sentence from the four numbers of the session's week. Under
- * them, closed, "Sådan er det regnet": what load is, in two sentences,
- * and this ride's and the plan's — the only place the numbers appear
- * (the amendment of 13 October). Nothing at all when the session went as
- * planned or is still ahead.
+ * them, closed, "Sådan er det regnet": what load is, in two sentences
+ * told by what measured the session (FTP on the bike, the pulse off it,
+ * how it felt in the gym or by RPE), and this session's and the plan's —
+ * the only place the numbers appear in the panel (the amendments of 13
+ * and 15 October). Nothing at all when the session went as planned or is
+ * still ahead.
  */
 export async function DeviationInline({
   ctx,
@@ -99,7 +101,7 @@ export async function DeviationInline({
     reader,
   );
   if (!words) return null;
-  const numbers = countedNumbers(explained, locale);
+  const counted = countedWords(explained, session.sport, t as unknown as DeviationT, locale);
   return (
     <div className="border-border flex flex-col gap-1 border-l-2 pl-3 text-2sm">
       <p className="font-semibold">{words.heading}</p>
@@ -119,13 +121,13 @@ export async function DeviationInline({
           </Link>
         </p>
       )}
-      {numbers && (
+      {counted && (
         <details className="text-meta mt-1">
           <summary className="focus-ring w-fit cursor-pointer rounded-sm font-medium">
-            {t("howCounted.summary")}
+            {counted.summary}
           </summary>
-          <p className="mt-1 leading-relaxed">{t("howCounted.body")}</p>
-          <p className="leading-relaxed">{t("howCounted.numbers", numbers)}</p>
+          <p className="mt-1 leading-relaxed">{counted.body}</p>
+          <p className="leading-relaxed">{counted.numbers}</p>
         </details>
       )}
     </div>
