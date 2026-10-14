@@ -568,6 +568,14 @@ describe("rls coverage (guards future tables)", () => {
     // owner, and the daily job with nobody signed in; refused to a rider or
     // a parent and to another workspace's coach. tests/billing/price.test.ts.
     "workspace_price",
+    // Which workspaces have stored ride files, and one coach of each, for
+    // the one-off job that reads them again with the corrected moving time
+    // (drizzle/0057, docs/adr/0096) with nobody signed in. The workspace's
+    // id and the coach's user id, and nothing else — no rider, no file, no
+    // name; everything after it runs as that coach, under the ordinary
+    // policies, as dcu_teams_due()'s job does. Refused from a workspace.
+    // tests/jobs/retime.test.ts proves both.
+    "workspaces_with_files",
   ];
 
   it("only the named definer functions can be called by a runtime role", async () => {

@@ -2,6 +2,7 @@ import { registry, type Handler } from "@/core/jobs/registry";
 import { sweepHandler } from "@/core/jobs/sweep";
 import { billingExpireHandler } from "@/modules/billing/jobs";
 import { demoCleanupHandler } from "@/modules/demo/job";
+import { retimeHandler } from "@/modules/devices/retime-job";
 import { deviceFetchHandler } from "@/modules/devices/webhooks";
 import { remindersHandler } from "@/modules/push/jobs";
 import { dcuRacesHandler, dcuReadHandler } from "@/modules/results/jobs";
@@ -30,6 +31,7 @@ export const HANDLERS: readonly Handler[] = [
   fileTombstonesHandler,
   filesMoveHandler,
   filesMigrateHandler,
+  retimeHandler,
 ];
 
 export function jobHandlers(): Map<string, Handler> {
