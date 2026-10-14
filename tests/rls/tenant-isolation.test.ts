@@ -570,7 +570,7 @@ describe("rls coverage (guards future tables)", () => {
     "workspace_price",
     // Which workspaces have stored ride files, and one coach of each, for
     // the one-off job that reads them again with the corrected moving time
-    // (drizzle/0057, docs/adr/0096) with nobody signed in. The workspace's
+    // (drizzle/0056, docs/adr/0096) with nobody signed in. The workspace's
     // id and the coach's user id, and nothing else — no rider, no file, no
     // name; everything after it runs as that coach, under the ordinary
     // policies, as dcu_teams_due()'s job does. Refused from a workspace.

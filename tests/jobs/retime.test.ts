@@ -25,7 +25,7 @@ const NO_FILES = "org_jobs_retime_none";
 const OWNER = { orgId: ORG, userId: "user_jobs_retime_owner" };
 const ADMIN = { orgId: ORG, userId: "user_jobs_retime_admin" };
 const RIDER = { orgId: ORG, userId: "user_jobs_retime_rider" };
-const MIGRATION = "0057_retime_stored_rides";
+const MIGRATION = "0056_retime_stored_rides";
 
 let admin: Pool;
 let rideId: string;

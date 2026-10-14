@@ -8,12 +8,12 @@ import { retimeActivities, type RetimeCount } from "./retime";
 /**
  * The one-off correction of the rides stored before smart recording was
  * read right (docs/adr/0096). Put in the queue once by its migration
- * (drizzle/0057), so the first deploy runs it with nobody running a
+ * (drizzle/0056), so the first deploy runs it with nobody running a
  * script: the worker container where there is one, the app's own worker
  * where there is not.
  *
  * Every workspace with stored files is read as one of its coaches
- * (workspaces_with_files(), drizzle/0057: two ids, nothing else), under
+ * (workspaces_with_files(), drizzle/0056: two ids, nothing else), under
  * the ordinary policies. The log gets counts only. A coach who is no
  * longer one by the time the run reaches the workspace is skipped and
  * counted; the next run, if there is one, finds another. Running it again
