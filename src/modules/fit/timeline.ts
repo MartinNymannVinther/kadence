@@ -11,8 +11,14 @@ import type { FitRecord } from "./types";
  *   one's values winning.
  * - A record holds for the seconds until the next one when that comes
  *   within `MAX_HOLD_SECONDS` — devices that record every few seconds
- *   ("smart recording") still give a full timeline. A longer silence is a
- *   pause: its seconds are null in every channel and not moving.
+ *   ("smart recording") still give a full timeline. A longer silence holds
+ *   too when the rider kept going through it: up to `MAX_TRAVEL_GAP_SECONDS`
+ *   apart, with the distance (or, without one, the position) advancing at
+ *   least at `MOVING_SPEED` across it. A Garmin watch on smart recording
+ *   writes a run every one to nine seconds; reading every silence over five
+ *   seconds as a pause turned a 31-minute run into 20 minutes moving
+ *   (14 October 2026). Any other silence is a pause: its seconds are null
+ *   in every channel and not moving.
  * - Values no rider produces are sensor noise and become null before
  *   anything is summed (`PLAUSIBLE`), so one garbage sample of 65,000 W
  *   cannot dominate a week's load.
@@ -26,6 +32,8 @@ import type { FitRecord } from "./types";
  */
 
 export const MAX_HOLD_SECONDS = 5;
+/** A longer silence still holds when the distance shows the rider kept going; beyond this it is a pause. */
+export const MAX_TRAVEL_GAP_SECONDS = 60;
 export const MAX_TIMELINE_SECONDS = 48 * 3600;
 /** m/s, 1.8 km/h: below this a bike is standing still with a drifting GPS. */
 export const MOVING_SPEED = 0.5;
@@ -99,6 +107,34 @@ export function isMoving(sample: Sample): boolean {
   return (speed ?? 0) > MOVING_SPEED || (power ?? 0) > 0 || (cadence ?? 0) > 0;
 }
 
+const EARTH_RADIUS_M = 6_371_000;
+
+/** Metres between two positions, by the haversine formula. */
+function metresBetween(a: Sample, b: Sample): number | null {
+  if (a.lat === null || a.lon === null || b.lat === null || b.lon === null) return null;
+  const rad = Math.PI / 180;
+  const dLat = (b.lat - a.lat) * rad;
+  const dLon = (b.lon - a.lon) * rad;
+  const h =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLon / 2) ** 2;
+  return 2 * EARTH_RADIUS_M * Math.asin(Math.min(1, Math.sqrt(h)));
+}
+
+/**
+ * Whether the rider kept going through a silence of `gap` seconds between
+ * two records: the device's distance advanced at least at walking pace,
+ * or, without a distance, the position did.
+ */
+export function travelledThrough(from: Sample, to: Sample, gap: number): boolean {
+  if (gap <= 0 || gap > MAX_TRAVEL_GAP_SECONDS) return false;
+  const metres =
+    from.distance !== null && to.distance !== null
+      ? to.distance - from.distance
+      : metresBetween(from, to);
+  return metres !== null && metres / gap >= MOVING_SPEED;
+}
+
 export function buildTimeline(records: readonly FitRecord[]): Timeline {
   const seconds: number[] = [];
   const samples: Sample[] = [];
@@ -140,7 +176,11 @@ export function buildTimeline(records: readonly FitRecord[]): Timeline {
   samples.forEach((sample, i) => {
     const at = seconds[i] ?? 0;
     const next = seconds[i + 1] ?? at + 1;
-    const until = next - at <= MAX_HOLD_SECONDS ? next : at + 1;
+    const following = samples[i + 1];
+    const holds =
+      next - at <= MAX_HOLD_SECONDS ||
+      (following !== undefined && travelledThrough(sample, following, next - at));
+    const until = holds ? next : at + 1;
     const moving = isMoving(sample);
     for (let s = at; s < until; s++) {
       for (const channel of CHANNELS) timeline[channel][s] = sample[channel];
