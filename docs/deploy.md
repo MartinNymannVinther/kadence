@@ -1020,6 +1020,10 @@ new app container starts, so migrations are always applied first. Keep
 migrations backwards compatible with the previous app version (expand →
 migrate → contract) once real users are on the installation.
 
+The first deploy with migration 0057 corrects the moving time of rides
+already stored from devices on smart recording by itself: the migration
+queues one job, and the worker runs it (ADR 0096). Nothing to run by hand.
+
 A migration that builds an index on `audit_log` (drizzle/0042 builds
 three) holds writes to it while it builds, and every write in Kadence
 writes to it. At a pilot's size that is seconds. On a trail of many

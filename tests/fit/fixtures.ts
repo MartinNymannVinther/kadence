@@ -150,3 +150,16 @@ export function fitErrorCode(fn: () => unknown): string | undefined {
   }
   return undefined;
 }
+
+/**
+ * About an hour on a device on smart recording (docs/adr/0096): the same
+ * ride as `steadyHour`, but a record only every one to nine seconds, the
+ * distance growing all the way. Read before the fix, every silence over
+ * five seconds was a pause.
+ */
+export function smartRecordedHour(): RideSample[] {
+  const ride: RideSample[] = [];
+  for (let i = 0, s = 0; s < 3600; i++, s += (i % 9) + 1)
+    ride.push({ ...steadyHour()[0]!, s, distance: s * 10, lat: 55.6761 + s * 1e-5 });
+  return ride;
+}
