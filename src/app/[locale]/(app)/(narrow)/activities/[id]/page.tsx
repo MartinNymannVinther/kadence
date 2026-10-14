@@ -15,7 +15,7 @@ import { dayLong } from "@/components/training/day-label";
 import { SportIcon } from "@/components/training/sport-icon";
 import { EmptyState } from "@/components/ui/empty-state";
 import { getOrgContext } from "@/core/auth/session";
-import { mapAvailable } from "@/core/map/file";
+import { mapVersions } from "@/core/map/installed";
 import { addDaysIso, mondayOf, todayInCopenhagen } from "@/core/dates";
 import { Link, redirect } from "@/i18n/navigation";
 import { indoorFromStreams, rideName, rideNameText } from "@/modules/activities/ride-name";
@@ -72,19 +72,17 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
       </div>
     );
   }
-  const [rider, session, comments, fileName, withMap, riderRecords, companions] = await Promise.all(
-    [
-      getRider(ctx, activity.riderId),
-      getActivitySession(ctx, activity.id),
-      listComments(ctx, { activityId: activity.id }),
-      activity.source === "fit" ? getActivityFileName(ctx, activity.id) : null,
-      mapAvailable(),
-      activity.avgPower !== null && activity.avgPower > 0
-        ? getRiderRecords(ctx, activity.riderId, { activityId: activity.id })
-        : null,
-      activity.sport === "bike" ? listCompanions(ctx, activity) : [],
-    ],
-  );
+  const [rider, session, comments, fileName, map, riderRecords, companions] = await Promise.all([
+    getRider(ctx, activity.riderId),
+    getActivitySession(ctx, activity.id),
+    listComments(ctx, { activityId: activity.id }),
+    activity.source === "fit" ? getActivityFileName(ctx, activity.id) : null,
+    mapVersions(),
+    activity.avgPower !== null && activity.avgPower > 0
+      ? getRiderRecords(ctx, activity.riderId, { activityId: activity.id })
+      : null,
+    activity.sport === "bike" ? listCompanions(ctx, activity) : [],
+  ]);
   // The planned side, for how close the ride came to it.
   const planned = session ? await getSession(ctx, session.id) : null;
   const format = fileName ? formatOfName(fileName) : null;
@@ -197,7 +195,7 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
           plan={fit}
           planResult={planResult}
           sessionTitle={session?.title ?? null}
-          withMap={withMap}
+          map={map}
           riderRecords={riderRecords}
         />
       </MoreData>

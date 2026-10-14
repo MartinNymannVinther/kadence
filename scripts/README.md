@@ -127,6 +127,20 @@ nothing from this repository, so it can be copied out on its own.
 KADENCE_URL=https://kadence.example sh scripts/send-rides.sh /Volumes/GARMIN
 ```
 
+## fetch-map.sh
+
+Fetches the map behind routes (ADR 0023, 0099) from Protomaps' daily
+OpenStreetMap build: the world to zoom 8 and the regions in
+`map-regions.geojson` (Denmark and the training camps) to zoom 14, about
+1.2 GB together.
+
+```
+scripts/fetch-map.sh            # into ./data/map, for pnpm dev
+scripts/fetch-map.sh compose    # into the kadence-map volume
+```
+
+Production without the repository on the server: docs/deploy.md 6c.
+
 ## backup-kadence.sh
 
 Nightly encrypted dump of the database to EU object storage. Runs on the

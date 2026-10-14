@@ -5,7 +5,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { GeoJSONSource, Map as MapLibreMap } from "maplibre-gl";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
-import { DARK, LIGHT, mapStyle, routeBounds, routeLines } from "./map-style";
+import type { MapVersions } from "@/core/map/paths";
+import { DARK, LIGHT, mapSources, mapStyle, routeBounds, routeLines } from "./map-style";
 import { RouteMap } from "./route-map";
 
 const HEIGHT = 360;
@@ -19,20 +20,24 @@ export type MapStop = { lat: number; lon: number; kind: string; label: string };
 let protocolAdded = false;
 
 /**
- * The route on a map of Denmark that Kadence serves itself (ADR 0023):
- * OpenStreetMap data from /api/map/tiles, drawn by MapLibre in the
- * browser — no tile, and so no position, is fetched from anyone else. The
- * dot follows the curves being read, as on the plain drawing. Scrolling
- * the page passes over the map; zooming takes two fingers or a modifier
- * key. Without WebGL, or if the map fails, the plain drawing stands in.
+ * The route on a map that Kadence serves itself (ADR 0023, 0099):
+ * OpenStreetMap data from /api/map/tiles (Denmark and the training camps
+ * in detail) over /api/map/world (everywhere, coarsely), drawn by
+ * MapLibre in the browser — no tile, and so no position, is fetched from
+ * anyone else. The dot follows the curves being read, as on the plain
+ * drawing. Scrolling the page passes over the map; zooming takes two
+ * fingers or a modifier key. Without WebGL, or if the map fails, the
+ * plain drawing stands in.
  */
 export function RouteMapGl({
+  map: files,
   lat,
   lon,
   at,
   km,
   stops = [],
 }: {
+  map: MapVersions;
   lat: (number | null)[];
   lon: (number | null)[];
   at: number | null;
@@ -46,6 +51,7 @@ export function RouteMapGl({
   const mapRef = useRef<MapLibreMap | null>(null);
   const [failed, setFailed] = useState(false);
   const lines = useMemo(() => routeLines(lat, lon), [lat, lon]);
+  const { detail, world } = files;
 
   useEffect(() => {
     const element = container.current;
@@ -68,7 +74,7 @@ export function RouteMapGl({
       const colour = dark ? ROUTE.dark : ROUTE.light;
       const created = new maplibregl.Map({
         container: element,
-        style: mapStyle(`pmtiles://${window.location.origin}/api/map/tiles`, dark ? DARK : LIGHT),
+        style: mapStyle(mapSources(window.location.origin, { detail, world }), dark ? DARK : LIGHT),
         bounds,
         fitBoundsOptions: { padding: 28 },
         maxZoom: 16,
@@ -176,7 +182,7 @@ export function RouteMapGl({
       map?.remove();
       mapRef.current = null;
     };
-  }, [lines, dark, t, stops]);
+  }, [lines, dark, t, stops, detail, world]);
 
   useEffect(() => {
     const source = mapRef.current?.getSource("here") as GeoJSONSource | undefined;

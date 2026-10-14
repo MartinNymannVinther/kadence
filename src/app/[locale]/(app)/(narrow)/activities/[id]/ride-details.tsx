@@ -10,6 +10,7 @@ import type { Streams } from "@/components/activities/streams-chart";
 import { ZoneTime } from "@/components/activities/zone-time";
 import { num } from "@/components/charts/format";
 import type { ActivityRow } from "@/core/db/schema";
+import type { MapVersions } from "@/core/map/paths";
 import type { ClimbSummary, LapSummary } from "@/modules/fit";
 import type { PlanVsRide } from "@/modules/load";
 import type { getRiderRecords } from "@/modules/training/records";
@@ -30,14 +31,14 @@ export function RideDetails({
   plan,
   planResult,
   sessionTitle,
-  withMap,
+  map,
   riderRecords,
 }: {
   activity: ActivityRow;
   plan: PlanFit | null;
   planResult: PlanVsRide | null;
   sessionTitle: string | null;
-  withMap: boolean;
+  map: MapVersions | null;
   riderRecords: Awaited<ReturnType<typeof getRiderRecords>> | null;
 }) {
   const t = useTranslations("activities");
@@ -60,7 +61,7 @@ export function RideDetails({
             streams={streams}
             titles={{ route: t("routeTitle"), streams: t("streamsTitle") }}
             km={num((activity.distanceM ?? 0) / 1000, locale, 1)}
-            withMap={withMap}
+            map={map}
           />
         ) : (
           <section aria-labelledby="activity-streams" className="flex flex-col gap-3">
