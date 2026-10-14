@@ -6,9 +6,10 @@ import {
   complianceRatio,
   type ComplianceColour,
 } from "./compliance";
-import type { LoadMethod } from "./activity-load";
+import type { LoadMethod, Sport } from "./activity-load";
 import { deviationStory, type DeviationStory } from "./deviation-story";
 import { GOAL_SECONDS, stepZone } from "./intensity";
+import { planCarriesIntensity, type PlanIntensity } from "./plan-intensity";
 
 /**
  * Why a session went off its plan, in facts with numbers (docs/adr/0095):
@@ -20,8 +21,12 @@ import { GOAL_SECONDS, stepZone } from "./intensity";
  * `compliance()` itself, and the heading and the first fact from the very
  * ratio the colour is read from (`complianceRatio`, compliance.ts): by
  * load when both sides have one, by minutes otherwise, against the same
- * bands — and a load from RPE alone only when it is far off. The
- * explanation never weighs anything the colour did not.
+ * bands — a load from RPE alone only when it is far off, and no load at
+ * all against a plan that says only how long, or a pulse off the bike
+ * against a plan without heart-rate targets (the amendment of 14
+ * October). The explanation never weighs anything the colour did not:
+ * read by time alone, it tells time alone — no zones, no share of
+ * threshold, no "harder".
  *
  * The facts:
  * - **time**: planned and done minutes, and the change in whole percent;
@@ -54,6 +59,8 @@ export type DeviationPlanned = {
   minutes: number;
   load?: number | null;
   structure?: Structure | null;
+  /** What the plan says of how hard (`planIntensityOf`); undefined reads as before the 14 October amendment. */
+  intensity?: PlanIntensity | null;
 };
 
 export type ZoneSecondsBySource = {
@@ -69,6 +76,8 @@ export type DeviationDone = {
   method?: LoadMethod | null;
   /** Session RPE, 1–10. */
   rpe?: number | null;
+  /** The activity's sport: the same as the session's, which a ride is only ever matched to. */
+  sport?: Sport | null;
 };
 
 export type DeviationFact =
@@ -160,12 +169,9 @@ function intensityFact(
   };
 }
 
-/** The plan says only how long: no structure, or one with no zone to read. */
+/** The plan says only how long: no structure, or one with no target but open steps. */
 function onlyDuration(structure: Structure | null | undefined): boolean {
-  if (!structure) return true;
-  if (structure.kind === "strength") return false;
-  if (structure.kind === "other") return true;
-  return plannedZoneSeconds(structure) === null;
+  return !planCarriesIntensity(structure);
 }
 
 function change(planned: number, done: number): number {
@@ -230,7 +236,7 @@ export function deviation(
   const byTime = heading === "shorter" || heading === "longer" || ratio?.by === "minutes";
   const facts: DeviationFact[] = [];
   for (const fact of byTime ? [time, load] : [load, time]) if (fact) facts.push(fact);
-  const intensity = intensityFact(planned, done);
+  const intensity = ratio?.timeOnly ? null : intensityFact(planned, done);
   if (intensity) facts.push(intensity);
   else if (onlyDuration(planned.structure) && facts.length > 0)
     facts.push({ kind: "noPlanDetail" });

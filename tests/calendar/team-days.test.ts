@@ -100,10 +100,17 @@ describe("a rider's days on the phone", () => {
   });
 });
 
+/** An hour in zone 2: a plan that says how hard. */
+const ZONE_2 = {
+  kind: "bike",
+  steps: [{ kind: "step", intent: "steady", seconds: 3600, target: { kind: "zone", zone: 2 } }],
+};
+
 describe("how the load was measured (13 October)", () => {
   const done = (load: number, loadMethod: string) =>
     session({
       onDate: "2026-11-02",
+      structure: ZONE_2,
       plannedLoad: 60,
       activityId: "a",
       activity: { id: "a", movingSeconds: 3600, load, loadMethod, rpe: 5 },
@@ -117,6 +124,35 @@ describe("how the load was measured (13 October)", () => {
       expect(colour(done(36, "power"), TODAY)).toBe("yellow"); // measured: load counts
       expect(colour(done(36, "hr"), TODAY)).toBe("yellow");
     }
+  });
+});
+
+describe("a plan that says only how long (14 October)", () => {
+  it("is judged by time on the card and the mark, whatever measured the load", () => {
+    const bike = (load: number, loadMethod: string) =>
+      session({
+        plannedLoad: 42,
+        activityId: "a",
+        activity: { id: "a", movingSeconds: 3600, load, loadMethod, rpe: 5 },
+      });
+    for (const colour of [colourOf, markColourOf]) {
+      expect(colour(bike(100, "power"), TODAY)).toBe("green");
+      expect(colour(bike(100, "hr"), TODAY)).toBe("green");
+      expect(colour(bike(10, "rpe"), TODAY)).toBe("green");
+    }
+  });
+
+  it("calls Martin's easy 31-minute run on a 30-minute plan as planned", () => {
+    const run = session({
+      sport: "other",
+      title: "Løbetur 30 min",
+      structure: { kind: "other", text: "", minutes: 30 },
+      plannedMinutes: 30,
+      plannedLoad: 21,
+      activityId: "a",
+      activity: { id: "a", movingSeconds: 31 * 60, load: 42, loadMethod: "hr", rpe: null },
+    });
+    for (const colour of [colourOf, markColourOf]) expect(colour(run, TODAY)).toBe("green");
   });
 });
 

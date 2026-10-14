@@ -9,7 +9,7 @@ import {
   type RiderRow,
 } from "@/core/db/schema";
 import type { AppTransaction } from "@/core/db/tenant";
-import type { LoadMethod } from "@/modules/load";
+import { planIntensityOf, type LoadMethod, type PlanIntensity } from "@/modules/load";
 
 /**
  * What the insight reads from the database, in one pass per team: the
@@ -37,6 +37,8 @@ export type InsightSession = {
   sport: string;
   plannedMinutes: number;
   plannedLoad: number | null;
+  /** What the plan says of how hard (plan-intensity.ts); the colour reads time when it says nothing. */
+  intensity: PlanIntensity;
   activityId: string | null;
 };
 
@@ -109,6 +111,7 @@ export async function gather(
       sport: plannedSessions.sport,
       plannedMinutes: plannedSessions.plannedMinutes,
       plannedLoad: plannedSessions.plannedLoad,
+      structure: plannedSessions.structure,
       activityId: plannedSessions.activityId,
     })
     .from(plannedSessions)
@@ -156,7 +159,10 @@ export async function gather(
       sport: a.sport as InsightActivity["sport"],
       loadMethod: a.loadMethod as LoadMethod,
     })),
-    sessions,
+    sessions: sessions.map(({ structure, ...s }) => ({
+      ...s,
+      intensity: planIntensityOf({ sport: s.sport, structure }) ?? "none",
+    })),
     checkins: checks,
     races: races.map((r) => ({ ...r, priority: r.priority as "A" | "B" })),
   };

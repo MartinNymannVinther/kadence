@@ -10,7 +10,12 @@ import { weekNoteOf } from "@/components/training/week-note-of";
 import { addDaysIso, mondayOf } from "@/core/dates";
 import type { OrgContext } from "@/core/db/tenant";
 import { Link } from "@/i18n/navigation";
-import { deviation, type LoadMethod, type ZoneSecondsBySource } from "@/modules/load";
+import {
+  deviation,
+  planIntensityOf,
+  type LoadMethod,
+  type ZoneSecondsBySource,
+} from "@/modules/load";
 import { volumesFor } from "@/modules/season/volumes";
 import { readStructure } from "@/modules/workouts/structure";
 
@@ -57,6 +62,7 @@ export async function DeviationInline({
       minutes: session.plannedMinutes,
       load: session.plannedLoad,
       structure: readStructure(session.structure, sport),
+      intensity: planIntensityOf(session),
     },
     activity
       ? {
@@ -65,6 +71,8 @@ export async function DeviationInline({
           zoneSeconds: (activity.zoneSeconds ?? null) as ZoneSecondsBySource,
           method: activity.loadMethod as LoadMethod,
           rpe: activity.rpe,
+          // A ride is only ever matched to a session of its own sport.
+          sport,
         }
       : null,
     session.onDate,
