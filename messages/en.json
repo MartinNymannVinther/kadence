@@ -1012,7 +1012,7 @@
       },
       "calendar": {
         "title": "The calendar",
-        "body": "The calendar shows one week at a time. On a computer the days stand side by side, on a phone one below the other, and the team's week is one card per rider. The coach can drag a session to another day; on a phone you use \"Move\" in the session's menu. Races, exams, school, camps, holidays and illness sit in the calendar as small labels. The colours show how it went: green is as planned, yellow is a little off, red is not done or far from the plan, and grey is not ridden yet. There is always a word beside the colour. A session can have a time and a meeting place, say \"17:30 from the clubhouse\". A whole week is laid in under \"Plan the week\": choose riders, a whole class with one tap if you like, and start from an empty week, last week, a block or a proposal from the AI. You see what the week gives against the season plan before you lay it in, and you can repeat it over several weeks or save it as a block. If one session should come back, say strength every Tuesday and Thursday, turn on \"Repeat on set weekdays\" when you add it; \"Edit\" and \"Delete\" can also take the rest of the series. \"Copy the week before\" lays each rider's own sessions from another week on the same weekdays. \"Share the week\" makes a text with the week's sessions, times and places for the team's chat, with nothing about the riders' wellbeing."
+        "body": "The calendar shows one week at a time. On a computer the days stand side by side, on a phone one below the other, and the team's week is one card per rider. The coach can drag a session to another day; on a phone you use \"Move\" in the session's menu. Races, exams, school, camps, holidays and illness sit in the calendar as small labels. The colours show how it went: green is as planned, yellow is close to the plan, red is your own version or not reached, and grey is not ridden yet. There is always a word beside the colour. A session can have a time and a meeting place, say \"17:30 from the clubhouse\". A whole week is laid in under \"Plan the week\": choose riders, a whole class with one tap if you like, and start from an empty week, last week, a block or a proposal from the AI. You see what the week gives against the season plan before you lay it in, and you can repeat it over several weeks or save it as a block. If one session should come back, say strength every Tuesday and Thursday, turn on \"Repeat on set weekdays\" when you add it; \"Edit\" and \"Delete\" can also take the rest of the series. \"Copy the week before\" lays each rider's own sessions from another week on the same weekdays. \"Share the week\" makes a text with the week's sessions, times and places for the team's chat, with nothing about the riders' wellbeing."
       },
       "search": {
         "title": "Search",
@@ -1048,7 +1048,7 @@
       },
       "warnings": {
         "title": "Points of attention",
-        "body": "Kadence shows the coach when a week goes past the limits, and the coach decides what happens. The points of attention are under Calendar → The whole team: as badges beside each rider and as a list under the week, where \"See the week\" opens the rider's week. Overview shows the three riders most worth a look, with the way to the whole list. The points are: hours on the bike above or below DCU's range for the week (October is DCU's break and has no range), more than 15 % more hours than the last weeks, a ride longer than DCU's limit (U17 at most 4 hours or 120 km, U19 at most 5 hours or 150 km), strength sessions less than 48 hours apart, sessions far from the plan, much time in the middle zone when the team uses \"Low intensity first\", too little sleep, pain on ATK's pain ladder, and check-ins in the yellow or red zone. Each point has a word for how much it matters: \"Important now\", \"Worth a look\" or \"Good to know\". Once you have talked a point through, you can mark it resolved."
+        "body": "Kadence shows the coach when a week goes past the limits, and the coach decides what happens. The points of attention are under Calendar → The whole team: as badges beside each rider and as a list under the week, where \"See the week\" opens the rider's week. Overview shows the three riders most worth a look, with the way to the whole list. The points are: hours on the bike above or below DCU's range for the week (October is DCU's break and has no range), more than 15 % more hours than the last weeks, a ride longer than DCU's limit (U17 at most 4 hours or 120 km, U19 at most 5 hours or 150 km), strength sessions less than 48 hours apart, sessions that went quite differently from the plan, much time in the middle zone when the team uses \"Low intensity first\", too little sleep, pain on ATK's pain ladder, and check-ins in the yellow or red zone. Each point has a word for how much it matters: \"Important now\", \"Worth a look\" or \"Good to know\". Once you have talked a point through, you can mark it resolved."
       },
       "checkin": {
         "title": "Check-in and wellbeing zones",
@@ -2180,7 +2180,6 @@
       "km": "{km} km",
       "rpe": "How hard",
       "feel": "Feel",
-      "load": "Load",
       "notSaid": "Not said",
       "fromFile": "From a file or a device.",
       "editFeedback": "Change the rating",
@@ -2282,9 +2281,9 @@
     },
     "state": {
       "asPlanned": "As planned",
-      "offPlan": "Off the plan",
-      "farOff": "Far from the plan",
-      "missed": "Not done",
+      "offPlan": "Close to the plan",
+      "farOff": "Your own version",
+      "missed": "Not reached",
       "today": "Today",
       "planned": "Planned",
       "unplanned": "Unplanned"
@@ -2292,7 +2291,7 @@
     "deviation": {
       "open": "{state}. See why",
       "heading": {
-        "missed": "{sport, select, bike {Not ridden} other {Not done}}",
+        "missed": "Not reached",
         "shorter": "Shorter than planned",
         "longer": "Longer than planned",
         "easier": "Easier than planned",
@@ -2322,8 +2321,8 @@
       },
       "howCounted": {
         "summary": "How it is counted",
-        "body": "Kadence estimates how much a ride draws on the body from its time and how hard you rode compared with your FTP (or heart rate, or how it felt). An hour exactly at FTP counts 100.",
-        "numbers": "This ride: {done}. The plan: {planned}."
+        "body": "{basis, select, pulse {Kadence estimates how much a session draws on the body from its time and your heart rate compared with your threshold heart rate. An hour exactly at threshold heart rate counts 100.} felt {Kadence estimates how much {sport, select, bike {a ride} other {a session}} draws on the body from its time and how hard it felt. An hour at hard (8 out of 10) counts 100.} other {Kadence estimates how much {sport, select, bike {a ride} other {a session}} draws on the body from its time and how hard you rode compared with your FTP (or heart rate, or how it felt). An hour exactly at FTP counts 100.}}",
+        "numbers": "{sport, select, bike {This ride} other {This session}}: {done}. The plan: {planned}."
       },
       "week": {
         "inside": "With the rest of the week's sessions, the week ends inside {ref, select, dcu {DCU's range} other {the profile's range}}.",

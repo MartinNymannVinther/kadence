@@ -136,14 +136,18 @@ describe("the facts for each deviation", () => {
     expect(kinds(none.facts)).toEqual(["time"]);
   });
 
-  it("never says a strength session had only a duration", () => {
-    const d = deviation(
-      { minutes: 45, structure: { kind: "strength", minutes: 45, exercises: [] } as never },
-      { minutes: 20 },
-      PAST,
-      TODAY,
-    );
-    expect(kinds(d.facts)).toEqual(["time"]);
+  it("says a strength session had only a duration only when it holds no exercise (15 October)", () => {
+    const gym = (exercises: unknown[]) =>
+      deviation(
+        { minutes: 45, structure: { kind: "strength", minutes: 45, exercises } as never },
+        { minutes: 20 },
+        PAST,
+        TODAY,
+      );
+    expect(kinds(gym([]).facts)).toEqual(["time", "noPlanDetail"]);
+    expect(kinds(gym([{ name: "Squat", group: "legs", sets: 3, reps: "12" }]).facts)).toEqual([
+      "time",
+    ]);
   });
 });
 

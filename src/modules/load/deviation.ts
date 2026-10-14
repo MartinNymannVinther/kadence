@@ -13,9 +13,9 @@ import { planCarriesIntensity, type PlanIntensity } from "./plan-intensity";
 
 /**
  * Why a session went off its plan, in facts with numbers (docs/adr/0095):
- * what the yellow "Afveg fra planen" and the red "Langt fra planen" or
- * "Ikke udført" stand for, so a rider or coach can read it instead of
- * guessing.
+ * what the yellow "Tæt på planen" and the red "Din egen version" or
+ * "Ikke nået" stand for (the words of 15 October), so a rider or coach
+ * can read it instead of guessing.
  *
  * **It agrees with the colour by construction.** The colour comes from
  * `compliance()` itself, and the heading and the first fact from the very

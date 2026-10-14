@@ -94,9 +94,18 @@ describe("whether a plan says how hard", () => {
       expect(planCarriesIntensity(bike(target))).toBe(true);
   });
 
-  it("counts a strength session as saying how hard, so its feeling rule stands", () => {
+  it("counts a strength session with an exercise as saying how hard, an empty one as time only", () => {
     expect(
       planIntensity({ kind: "strength", warmup: "", exercises: [], progression: [], minutes: 45 }),
+    ).toBe("none");
+    expect(
+      planIntensity({
+        kind: "strength",
+        warmup: "",
+        exercises: [{ name: "Squat", group: "legs", sets: 3, reps: "12", load: "", note: "" }],
+        progression: [],
+        minutes: 45,
+      }),
     ).toBe("set");
   });
 
