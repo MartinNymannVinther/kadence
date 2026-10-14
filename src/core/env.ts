@@ -119,11 +119,15 @@ export const EnvShape = z.object({
   POLAR_CLIENT_ID: z.string().min(1).optional(),
   POLAR_CLIENT_SECRET: z.string().min(1).optional(),
   POLAR_WEBHOOK_SECRET: z.string().min(1).optional(),
-  // The map behind a ride's route: a PMTiles file of OpenStreetMap data
-  // on this server (scripts/fetch-map.sh, ADR 0023). Served by Kadence
-  // itself, so no rider's position reaches a map service. Without it the
-  // route is drawn on plain paper, as before.
+  // The map behind a ride's route: PMTiles files of OpenStreetMap data
+  // on this server (scripts/fetch-map.sh, ADR 0023, 0099). Served by
+  // Kadence itself, so no rider's position reaches a map service.
+  // MAP_FILE is the detail file (Denmark and the training camps at full
+  // zoom; an older denmark.pmtiles beside it stands in until it is
+  // fetched), MAP_WORLD_FILE the world at low zoom drawn under it.
+  // Without either the route is drawn on plain paper, as before.
   MAP_FILE: z.string().min(1).optional(),
+  MAP_WORLD_FILE: z.string().min(1).optional(),
   // A rider's races and results from Cykling Danmark's member portal
   // (src/modules/results, ADR 0039), read from the rider's public page
   // by the UCI ID a coach entered. An external service, and one that has

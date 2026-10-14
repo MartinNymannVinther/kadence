@@ -35,6 +35,8 @@ export default defineConfig({
       "tests/exercises/{builtin,contract,figure,view,compose,download-html,html-escape,library-paths,pose-edit,pose-props,program-draft,program-session}.test.ts",
       // The menu and the settings tabs by role and group (docs/adr/0068).
       "tests/core/{nav-items,settings-items,log,new-version}.test.ts",
+      // The map's files: which one is read, its byte ranges and the regions in detail (docs/adr/0099).
+      "tests/core/{map-range,map-files,map-regions}.test.ts",
       // A server module never calls a function from a "use client" module.
       "tests/meta/client-boundary.test.ts",
       // Which week plan the planner shows when this device and the shared draft differ

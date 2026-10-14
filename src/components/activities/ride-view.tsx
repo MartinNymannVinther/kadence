@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { clockText } from "@/components/training/duration";
+import type { MapVersions } from "@/core/map/paths";
 import type { PauseMark } from "./pause-marks";
 import { findPauses, hasSymbol, withoutPauses } from "./pauses";
 import { RouteMap } from "./route-map";
@@ -18,13 +19,13 @@ export function RideView({
   streams,
   titles,
   km,
-  withMap,
+  map,
 }: {
   streams: Streams;
   titles: { route: string; streams: string };
   km: string;
-  /** The installation has a map file (ADR 0023): the route goes on a map. */
-  withMap: boolean;
+  /** The installation's map files (ADR 0023, 0099); with either, the route goes on a map. */
+  map: MapVersions | null;
 }) {
   const t = useTranslations("activities.pauses");
   const [at, setAt] = useState<number | null>(null);
@@ -91,8 +92,9 @@ export function RideView({
           <h2 id="activity-route" className="text-lg font-semibold">
             {titles.route}
           </h2>
-          {withMap ? (
+          {map ? (
             <RouteMapGl
+              map={map}
               lat={streams.lat ?? []}
               lon={streams.lon ?? []}
               at={at}

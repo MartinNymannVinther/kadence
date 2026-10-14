@@ -407,23 +407,74 @@ real provider, for real addresses only.
 
 ## 6c. The map behind routes
 
-A ride's route is drawn on a map of Denmark that Kadence serves itself
-(ADR 0023): OpenStreetMap data in one PMTiles file, read by the browser in
-small byte ranges from `/api/map/tiles`. No rider's position reaches a map
-service. Without the file, routes are drawn on plain paper and nothing
-else changes.
+A ride's route is drawn on a map that Kadence serves itself (ADR 0023,
+0099): OpenStreetMap data in two PMTiles files in the `kadence-map`
+volume, read by the browser in small byte ranges. No rider's position
+reaches a map service. Without the files, routes are drawn on plain
+paper and nothing else changes.
 
-Fetch it once, on the server, into the `kadence-map` volume (about
-500 MB; only Denmark is downloaded, from Protomaps' daily build):
+| File             | What                                                             | Size (Oct 2026) | Served at        |
+| ---------------- | ---------------------------------------------------------------- | --------------- | ---------------- |
+| `detail.pmtiles` | Denmark and the training camps, to zoom 14 (every road and path) | 640 MB          | `/api/map/tiles` |
+| `world.pmtiles`  | Every country, to zoom 8 (coast, water, woods, the bigger roads) | 560 MB          | `/api/map/world` |
+
+The camps are Mallorca, Girona with the Costa Brava and the Pyrenees
+foothills, Calpe and the Costa Blanca, Gran Canaria, Tenerife and
+Lanzarote, as rectangles in `scripts/map-regions.geojson`. The world lies
+under the detail, so a ride anywhere has a map: in full detail inside the
+regions, coarse but whole outside them.
+
+**Fetching them on the production server.** The app, db and worker
+containers cannot write the volume (the app mounts it read-only), so use
+the server's own shell: Coolify → Servers → the server → Terminal. Paste
+the block once ADR 0099 is on `main`, since the regions are read from
+there. It takes a few minutes and needs 1.2 GB free (twice that when
+refreshing, while the old and new files lie side by side):
 
 ```
-scripts/fetch-map.sh compose
+docker volume ls | grep kadence-map
+V=cvgkoftbx4bvhwimmxbhzyfv_kadence-map
+B=$(curl -fsS https://build-metadata.protomaps.dev/builds.json | grep -o '[0-9]\{8\}\.pmtiles' | tail -1); echo $B
+docker run --rm -v $V:/data/map alpine:3 wget -qO /data/map/regions.geojson https://raw.githubusercontent.com/MartinNymannVinther/kadence/main/scripts/map-regions.geojson
+docker run --rm -v $V:/data/map protomaps/go-pmtiles:latest extract https://build.protomaps.com/$B /data/map/world.next.pmtiles --maxzoom=8
+docker run --rm -v $V:/data/map protomaps/go-pmtiles:latest extract https://build.protomaps.com/$B /data/map/detail.next.pmtiles --region=/data/map/regions.geojson --maxzoom=14
+docker run --rm -v $V:/data/map -w /data/map alpine:3 sh -c 'mv world.next.pmtiles world.pmtiles && mv detail.next.pmtiles detail.pmtiles && ls -lh'
 ```
 
-Run it again now and then to bring roads up to date; the app reads the
-new file on the next request. For `pnpm dev`, `scripts/fetch-map.sh`
-without an argument puts the file in `./data/map` and names the
-`MAP_FILE` line for `.env`.
+`V` is the name the first line prints; Coolify names a volume after the
+resource's id. Each file is written under a `.next` name and moved into
+place only when it is whole, so the running app never reads half a file,
+and a dropped terminal only means pasting the block again. The app reads
+the new files on the next request; no restart.
+
+**Before the fetch, nothing changes.** An installation that fetched
+Denmark alone has `denmark.pmtiles` in the volume. Until `detail.pmtiles`
+is there, Kadence reads `denmark.pmtiles` in its place (it is looked for
+beside `MAP_FILE`), and without `world.pmtiles` it draws the detail alone,
+as before. Once the new files are there and the map shows Mallorca, the
+old file can go:
+
+```
+docker run --rm -v $V:/data/map alpine:3 rm /data/map/denmark.pmtiles
+```
+
+**With the repository checked out** and the compose CLI beside it,
+`scripts/fetch-map.sh compose` does the same through the compose file's
+`map` services. For `pnpm dev`, `scripts/fetch-map.sh` without an
+argument puts both files in `./data/map` and names the `MAP_FILE` and
+`MAP_WORLD_FILE` lines for `.env`.
+
+Run the fetch again now and then to bring roads up to date.
+
+**Adding a region.** Add a rectangle to `scripts/map-regions.geojson` (a
+closed, counterclockwise ring of `[lon, lat]`, generous rather than
+tight) and its name to the list of `regions` beside it, add a place
+inside it to `tests/core/map-regions.test.ts`, and fetch again once it
+is on `main`. Measure first with go-pmtiles' `--dry-run`. Denmark is 480 MB of the detail file; Mallorca adds 16 MB,
+the Costa Blanca 30, Girona with its hinterland 93 and the three Canary
+Islands 21 together. A finer world costs more: zoom 6 is 45 MB, zoom 7
+190, zoom 8 560, and every level after that about three times the one
+before.
 
 The map shows © OpenStreetMap contributors, as the data's licence (ODbL)
 asks.
