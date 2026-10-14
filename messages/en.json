@@ -1250,7 +1250,6 @@
     },
     "rpe": {
       "named": "How hard did {sport, select, bike {the ride} other {the session}} “{title}” feel?",
-      "unnamed": "How hard did {sport, select, bike {your ride} other {your session}} feel?",
       "today": "Today",
       "yesterday": "Yesterday",
       "scale": "How hard, from 1 to 10",
@@ -2930,6 +2929,22 @@
       "link": "See the proposal"
     },
     "title": "Activity",
+    "names": {
+      "morningRide": "Morning ride",
+      "morningWorkout": "Morning workout",
+      "forenoonRide": "Late morning ride",
+      "forenoonWorkout": "Late morning workout",
+      "afternoonRide": "Afternoon ride",
+      "afternoonWorkout": "Afternoon workout",
+      "eveningRide": "Evening ride",
+      "eveningWorkout": "Evening workout",
+      "nightRide": "Night ride",
+      "nightWorkout": "Night workout",
+      "indoorRide": "Indoor ride",
+      "strength": "Strength session",
+      "bikeRide": "Bike ride",
+      "workout": "Workout"
+    },
     "back": "Back to the week",
     "missing": "The activity does not exist",
     "missingHint": "It may have been deleted, or you may not have access to it.",

@@ -18,6 +18,7 @@ import { getOrgContext } from "@/core/auth/session";
 import { mapAvailable } from "@/core/map/file";
 import { addDaysIso, mondayOf, todayInCopenhagen } from "@/core/dates";
 import { Link, redirect } from "@/i18n/navigation";
+import { indoorFromStreams, rideName, rideNameText } from "@/modules/activities/ride-name";
 import { planVsRide } from "@/modules/load";
 import { ftpLooksRaised } from "@/modules/load/threshold-estimate";
 import { bikeStructureSchema } from "@/modules/workouts/structure";
@@ -61,7 +62,7 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
     return null;
   }
   const t = await getTranslations("activities");
-  const sports = await getTranslations("training.sport");
+  const names = await getTranslations("activities.names");
   const { id } = await params;
   const [me, activity] = await Promise.all([whoAmI(ctx.orgId, ctx.userId), getActivity(ctx, id)]);
   if (!me || !activity) {
@@ -105,6 +106,14 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
     timeZone: "Europe/Copenhagen",
   }).format(activity.startedAt);
   const fromFile = activity.source !== "manual";
+  const name = rideNameText(
+    rideName({
+      ...activity,
+      sessionTitle: session?.title,
+      indoor: indoorFromStreams(activity.streams),
+    }),
+    names,
+  );
   const plan = session?.sport === "bike" ? bikeStructureSchema.safeParse(session.structure) : null;
   const planResult =
     plan?.success && streams && rider
@@ -138,7 +147,7 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
         </p>
         <h1 className="flex items-center gap-2 text-title-section leading-tight font-semibold tracking-[-0.02em]">
           <SportIcon sport={activity.sport} className="size-5" />
-          {activity.title || sports(activity.sport as "bike")}
+          {name}
         </h1>
         <p className="text-meta text-2sm">
           {format === "fit" || format === "tcx" || format === "gpx"

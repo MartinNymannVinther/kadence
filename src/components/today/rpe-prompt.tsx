@@ -8,11 +8,13 @@ import { useStored } from "@/components/common/use-stored";
 import { durationText } from "@/components/training/duration";
 import { RPE_VALUES, rpeText } from "@/components/training/rpe";
 import { Button } from "@/components/ui/button";
+import { rideNameText, type RideName } from "@/modules/activities/ride-name";
 import { setFeedbackAction } from "@/modules/training/actions";
 
 export type RideToRate = {
   id: string;
-  title: string;
+  /** What the ride is called on the pages (docs/adr/0098). */
+  name: RideName;
   sport: string;
   /** "I dag", "I går", or the day in words. */
   when: string;
@@ -44,6 +46,7 @@ function putOff(raw: string | null | undefined): string[] {
 export function RpePrompt({ ride }: { ride: RideToRate }) {
   const t = useTranslations("today.rpe");
   const words = useTranslations("training.rpe");
+  const names = useTranslations("activities.names");
   const duration = useTranslations("training.duration");
   const { run, pending } = useRun();
   const name = useId();
@@ -62,9 +65,10 @@ export function RpePrompt({ ride }: { ride: RideToRate }) {
     );
   }
 
-  const title = ride.title
-    ? t("named", { sport: ride.sport === "bike" ? "bike" : "other", title: ride.title })
-    : t("unnamed", { sport: ride.sport === "bike" ? "bike" : "other" });
+  const title = t("named", {
+    sport: ride.sport === "bike" ? "bike" : "other",
+    title: rideNameText(ride.name, names),
+  });
 
   return (
     <section

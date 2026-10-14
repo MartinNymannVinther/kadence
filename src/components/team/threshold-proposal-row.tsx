@@ -3,6 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { dayMonthYear } from "@/components/training/day-label";
 import { Link } from "@/i18n/navigation";
+import { rideNameText, type RideName } from "@/modules/activities/ride-name";
 import type { Estimate } from "@/modules/load/threshold-shared";
 
 /**
@@ -15,6 +16,7 @@ export function ThresholdProposalRow({
   unit,
   current,
   estimate,
+  rideNames,
   ticked,
   onTick,
 }: {
@@ -22,11 +24,18 @@ export function ThresholdProposalRow({
   unit: string;
   current: number | null;
   estimate: Estimate;
+  /** The source rides' telling names, by id (docs/adr/0098). */
+  rideNames: Record<string, RideName>;
   ticked: boolean;
   onTick: (ticked: boolean) => void;
 }) {
   const t = useTranslations("riders.thresholds.propose");
   const locale = useLocale();
+  const words = useTranslations("activities.names");
+  const rideTitle = (s: { activityId: string | null; title: string }) => {
+    const known = s.activityId ? rideNames[s.activityId] : undefined;
+    return known ? rideNameText(known, words) : s.title;
+  };
   const now = t("now", { value: current === null ? t("nothing") : `${current} ${unit}` });
 
   if (estimate.value === null) {
@@ -85,8 +94,8 @@ export function ThresholdProposalRow({
                     href={`/activities/${s.activityId}`}
                     className="focus-ring text-primary font-medium hover:underline"
                   >
-                    {s.title || dayMonthYear(s.onDate, locale)}
-                    {s.title ? ` (${dayMonthYear(s.onDate, locale)})` : ""}
+                    {rideTitle(s) || dayMonthYear(s.onDate, locale)}
+                    {rideTitle(s) ? ` (${dayMonthYear(s.onDate, locale)})` : ""}
                   </Link>
                 ) : (
                   <span key={s.onDate}>

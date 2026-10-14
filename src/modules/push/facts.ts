@@ -1,6 +1,5 @@
 import { and, desc, eq, gt, isNotNull, isNull, lte, ne, or, sql, type SQL } from "drizzle-orm";
 import {
-  activities,
   checkins,
   comments,
   plannedSessionDeletions,
@@ -60,7 +59,6 @@ export type CommentNews = {
   activityId: string | null;
   onDate: string | null;
   sessionTitle: string | null;
-  activityTitle: string | null;
   authorName: string | null;
 };
 
@@ -79,12 +77,10 @@ export async function newestComment(
       activityId: comments.activityId,
       onDate: comments.onDate,
       sessionTitle: plannedSessions.title,
-      activityTitle: activities.title,
       authorName: users.name,
     })
     .from(comments)
     .leftJoin(plannedSessions, eq(plannedSessions.id, comments.plannedSessionId))
-    .leftJoin(activities, eq(activities.id, comments.activityId))
     .leftJoin(users, eq(users.id, comments.authorId))
     .where(commentConditions(ctx, me, range))
     .orderBy(desc(comments.createdAt))

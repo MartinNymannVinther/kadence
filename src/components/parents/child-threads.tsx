@@ -3,12 +3,14 @@ import { useLocale, useTranslations } from "next-intl";
 import { dayMonth, weekdayShort } from "@/components/training/day-label";
 import { SportIcon } from "@/components/training/sport-icon";
 import { Link } from "@/i18n/navigation";
+import { rideNameText, type RideName } from "@/modules/activities/ride-name";
 
 export type ChildThread = {
   /** A planned session's conversation, or a ride's that nobody planned. */
   kind: "session" | "activity";
   id: string;
-  title: string;
+  /** The session's title, or the ride's telling name (docs/adr/0098). */
+  name: RideName;
   sport: string;
   onDate: string;
   count: number;
@@ -28,6 +30,7 @@ export function ChildThreads({
 }) {
   const t = useTranslations("parents.child");
   const sports = useTranslations("training.sport");
+  const names = useTranslations("activities.names");
   const locale = useLocale();
   if (threads.length === 0) return <p className="text-meta text-2sm">{t("noThreads")}</p>;
   return (
@@ -44,7 +47,7 @@ export function ChildThreads({
               {weekdayShort(thread.onDate, locale)} {dayMonth(thread.onDate, locale)}
             </span>
             <span className="min-w-0 flex-1 truncate font-medium">
-              {thread.title || sports(thread.sport as "bike")}
+              {rideNameText(thread.name, names) || sports(thread.sport as "bike")}
             </span>
             <span className="text-meta flex shrink-0 items-center gap-1 text-xs">
               <MessageSquare aria-hidden className="size-3.5" />

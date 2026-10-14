@@ -140,7 +140,7 @@ export default async function MePage({
       </Section>
 
       <Section id="records" title={t("records")}>
-        <RecordsCard byPeriod={data.records.byPeriod} />
+        <RecordsCard byPeriod={data.records.byPeriod} names={data.records.names} />
       </Section>
 
       <Section id="upload" title={t("upload")} body={t("uploadBody")}>

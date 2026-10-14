@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { num } from "@/components/charts/format";
 import { dayMonthYear } from "@/components/training/day-label";
 import { Link } from "@/i18n/navigation";
+import { rideNameText, type RideName } from "@/modules/activities/ride-name";
 import type { Period, Records } from "@/modules/load";
 import { PeriodSelect } from "./period-select";
 
@@ -15,10 +16,18 @@ import { PeriodSelect } from "./period-select";
  * longest time, for the last month, half year, year or ever — each a link
  * to the ride it was set on. No W/kg, no one else's numbers.
  */
-export function RecordsCard({ byPeriod }: { byPeriod: Record<Period, Records> }) {
+export function RecordsCard({
+  byPeriod,
+  names,
+}: {
+  byPeriod: Record<Period, Records>;
+  /** Each record's ride by its telling name (docs/adr/0098). */
+  names: Record<string, RideName>;
+}) {
   const t = useTranslations("records");
   const best = useTranslations("activities.best");
   const sports = useTranslations("training.sport");
+  const words = useTranslations("activities.names");
   const locale = useLocale();
   const [period, setPeriod] = useState<Period>("year");
   const r = byPeriod[period];
@@ -48,6 +57,11 @@ export function RecordsCard({ byPeriod }: { byPeriod: Record<Period, Records> })
       holder: r.longestHours,
     },
   ].filter((row) => row.holder);
+  // A ride the names missed goes by its own title, or its sport; records are rides on the bike.
+  const holderName = (h: { activityId: string; title: string }) => {
+    const name = names[h.activityId];
+    return name ? rideNameText(name, words) : h.title || sports("bike");
+  };
 
   return (
     <div className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-surface sm:p-5">
@@ -65,8 +79,7 @@ export function RecordsCard({ byPeriod }: { byPeriod: Record<Period, Records> })
                 href={`/activities/${row.holder!.activityId}`}
                 className="focus-ring text-primary ml-auto min-w-0 truncate text-right text-xs font-medium hover:underline"
               >
-                {/* A ride that came without a name goes by its sport; records are rides on the bike. */}
-                {dayMonthYear(row.holder!.onDate, locale)} · {row.holder!.title || sports("bike")}
+                {dayMonthYear(row.holder!.onDate, locale)} · {holderName(row.holder!)}
               </Link>
             </li>
           ))}

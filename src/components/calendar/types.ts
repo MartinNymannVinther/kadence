@@ -4,6 +4,7 @@
  * server side of the line.
  */
 
+import type { RideName } from "@/modules/activities/ride-name";
 import type { PlanBasis } from "@/modules/paradigms";
 
 /**
@@ -49,7 +50,8 @@ export type CalendarActivityCard = {
   riderId: string;
   onDate: string;
   sport: string;
-  title: string;
+  /** What the ride is called (docs/adr/0098). */
+  name: RideName;
   movingSeconds: number;
   rpe: number | null;
   commentCount: number;

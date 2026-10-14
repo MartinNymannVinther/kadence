@@ -39,19 +39,35 @@ beforeAll(async () => {
     name: "Bo",
     birth_year: 2010,
   });
-  const ride = (id: string, riderId: string, onDate: string, hour: number, title = "") => ({
+  const ride = (
+    id: string,
+    riderId: string,
+    onDate: string,
+    hour: number,
+    title = "",
+    streams: unknown = null,
+  ) => ({
     org_id: ORG,
     id,
     rider_id: riderId,
-    started_at: new Date(`${onDate}T${hour}:00:00Z`),
+    started_at: new Date(`${onDate}T${String(hour).padStart(2, "0")}:00:00Z`),
     on_date: onDate,
     sport: "bike",
     title,
     moving_seconds: 3600,
     source: "fit",
+    streams: streams === null ? null : JSON.stringify(streams),
   });
   await insert("activities", ride("tr_a1", "tr_anna", "2026-10-04", 10, "Morgentur"));
   await insert("activities", ride("tr_a2", "tr_anna", "2026-10-05", 16));
+  // Two rides named by their files (docs/adr/0098): one out on the road, one on a trainer.
+  const road = { t: [0, 5], lat: [null, 55.70001], lon: [null, 9.53] };
+  const trainer = { t: [0, 5], power: [200, 210], lat: [null, null], lon: [null, null] };
+  await insert("activities", ride("tr_a3", "tr_anna", "2026-10-03", 5, "24720018915", road));
+  await insert(
+    "activities",
+    ride("tr_a4", "tr_anna", "2026-10-03", 15, "2026-10-03-17-00-00", trainer),
+  );
   await insert("planned_sessions", {
     org_id: ORG,
     id: "tr_s2",
@@ -70,11 +86,19 @@ afterAll(async () => {
 describe("the last rides on Today", () => {
   it("are the rider's own, newest first, named after the session when the ride is not", async () => {
     const rides = await recentRides(ANNA, "tr_anna", { from: "2026-10-04", to: "2026-10-06" });
-    expect(rides.map((r) => [r.id, r.title, r.rpe])).toEqual([
-      ["tr_a2", "Grundtur", null],
-      ["tr_a1", "Morgentur", null],
+    expect(rides.map((r) => [r.id, r.name, r.rpe])).toEqual([
+      ["tr_a2", { title: "Grundtur" }, null],
+      ["tr_a1", { title: "Morgentur" }, null],
     ]);
     expect(await hasAnyRide(ANNA, "tr_anna")).toBe(true);
+  });
+
+  it("are named by the part of the day, or as indoors, when the title is a file's name", async () => {
+    const rides = await recentRides(ANNA, "tr_anna", { from: "2026-10-03", to: "2026-10-03" });
+    expect(rides.map((r) => [r.id, r.name])).toEqual([
+      ["tr_a4", { word: "indoorRide" }],
+      ["tr_a3", { word: "morningRide" }],
+    ]);
   });
 
   it("keep to the days asked for", async () => {
