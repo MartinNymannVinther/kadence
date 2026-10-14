@@ -84,6 +84,37 @@ describe("pauses", () => {
     expect(summary.power1hz.every((p) => p === 200)).toBe(true);
   });
 
+  it("holds a record through gaps of up to nine seconds while the distance keeps growing", () => {
+    // A Garmin watch on smart recording: a record every one to nine
+    // seconds (Martin's run, 14 October 2026). Every second is moving.
+    const steps = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    const ride: RideSample[] = [];
+    let s = 0;
+    for (let i = 0; s < 1800; i++) {
+      ride.push({ s, hr: 140, speed: 2.4, distance: s * 2.4, cadence: 80 });
+      s += steps[i % steps.length]!;
+    }
+    const summary = summarize(ride);
+    expect(summary.movingSeconds).toBeGreaterThanOrEqual(ride.at(-1)!.s);
+    expect(summary.elapsedSeconds).toBe(ride.at(-1)!.s + 1);
+  });
+
+  it("still finds a pause in a long silence, and in a short one where the distance stood still", () => {
+    const standing: RideSample[] = [
+      ...Array.from({ length: 60 }, (_, s) => ({ s, speed: 3, distance: s * 3 })),
+      // Eight seconds of silence with the distance unchanged: stopped.
+      { s: 68, speed: 3, distance: 177 },
+      ...Array.from({ length: 30 }, (_, i) => ({ s: 69 + i, speed: 3, distance: 180 + i * 3 })),
+    ];
+    expect(summarize(standing).movingSeconds).toBe(60 + 1 + 30);
+    const long: RideSample[] = [
+      { s: 0, speed: 3, distance: 0 },
+      // Ninety seconds apart: longer than any device records, a pause even though it moved.
+      { s: 90, speed: 3, distance: 270 },
+    ];
+    expect(summarize(long).movingSeconds).toBe(2);
+  });
+
   it("counts a heart-rate-only ride as moving where there is a heart rate", () => {
     const ride = steadyHour().map(({ s, hr }) => ({ s, hr }));
     const summary = summarize(ride);
