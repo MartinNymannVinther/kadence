@@ -40,8 +40,12 @@ const doneMinutes = [0, 10, 30, 45, 59, 60, 75, 100, 150];
 const doneLoads = [0, 10, 19, 20, 21, 39, 40, 41, 60, 79, 80, 81, 120, 159, 160, 161, 200];
 const sports = ["bike", "strength"] as const;
 const methods: LoadMethod[] = ["rpe", "power"];
-// What the plan says of how hard (14 October): a strength plan always says it.
-const intensities = { bike: [undefined, "none", "set"], strength: [undefined, "set"] } as const;
+// What the plan says of how hard (14 October): a strength plan says it with an exercise in
+// it, and says only how long without one (15 October).
+const intensities = {
+  bike: [undefined, "none", "set"],
+  strength: [undefined, "none", "set"],
+} as const;
 
 type Case = [DeviationPlanned, { minutes: number; load: number; method: LoadMethod; rpe: number }];
 const cases: Case[] = [];

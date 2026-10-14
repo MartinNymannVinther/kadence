@@ -1012,7 +1012,7 @@
       },
       "calendar": {
         "title": "Kalenderen",
-        "body": "Kalenderen viser en uge ad gangen. På en computer står dagene side om side, på telefonen under hinanden, og holdets uge er et kort pr. rytter. Træneren kan trække et pas til en anden dag; på telefonen bruger du \"Flyt\" i passets menu. Løb, eksamen, skole, lejr, ferie og sygdom står som små mærker. Farverne viser, hvordan det gik: grøn er som planlagt, gul er lidt ved siden af, rød er ikke udført eller langt fra planen, og grå er ikke kørt endnu. Der står altid et ord ved farven. Et pas kan have et tidspunkt og et mødested, fx \"17.30 fra klubhuset\". En hel uge lægges ind under \"Planlæg ugen\": vælg ryttere, eventuelt en hel årgang med ét tryk, og start fra en tom uge, sidste uge, et forløb eller et forslag fra AI'en. Du ser, hvad ugen giver mod sæsonplanen, før du lægger den ind, og du kan gentage den i flere uger eller gemme den som forløb. Skal ét pas gå igen, fx styrke hver tirsdag og torsdag, slår du \"Gentag på faste ugedage\" til, når du lægger det ind; \"Ret\" og \"Slet\" kan også tage resten af serien. \"Kopiér ugen før\" lægger hver rytters egne pas fra en anden uge ind på de samme ugedage. \"Del ugen\" laver en tekst med ugens pas, tider og steder til holdets chat, uden noget om rytternes trivsel."
+        "body": "Kalenderen viser en uge ad gangen. På en computer står dagene side om side, på telefonen under hinanden, og holdets uge er et kort pr. rytter. Træneren kan trække et pas til en anden dag; på telefonen bruger du \"Flyt\" i passets menu. Løb, eksamen, skole, lejr, ferie og sygdom står som små mærker. Farverne viser, hvordan det gik: grøn er som planlagt, gul er tæt på planen, rød er din egen version eller ikke nået, og grå er ikke kørt endnu. Der står altid et ord ved farven. Et pas kan have et tidspunkt og et mødested, fx \"17.30 fra klubhuset\". En hel uge lægges ind under \"Planlæg ugen\": vælg ryttere, eventuelt en hel årgang med ét tryk, og start fra en tom uge, sidste uge, et forløb eller et forslag fra AI'en. Du ser, hvad ugen giver mod sæsonplanen, før du lægger den ind, og du kan gentage den i flere uger eller gemme den som forløb. Skal ét pas gå igen, fx styrke hver tirsdag og torsdag, slår du \"Gentag på faste ugedage\" til, når du lægger det ind; \"Ret\" og \"Slet\" kan også tage resten af serien. \"Kopiér ugen før\" lægger hver rytters egne pas fra en anden uge ind på de samme ugedage. \"Del ugen\" laver en tekst med ugens pas, tider og steder til holdets chat, uden noget om rytternes trivsel."
       },
       "search": {
         "title": "Søg",
@@ -1048,7 +1048,7 @@
       },
       "warnings": {
         "title": "Opmærksomhedspunkter",
-        "body": "Kadence viser træneren, når en uge går ud over rammerne, og træneren beslutter, hvad der skal ske. Opmærksomhedspunkterne står under Kalender → Hele holdet: som mærker ved hver rytter og som en liste under ugen, hvor \"Se ugen\" åbner rytterens uge. På Overblik står de tre ryttere, der er mest værd at se på, med vejen til hele listen. Punkterne er: timer på cyklen over eller under DCU's ramme for ugen (oktober er DCU's pause og har ingen ramme), mere end 15 % flere timer end de seneste uger, en tur længere end DCU's grænse (U17 højst 4 timer eller 120 km, U19 højst 5 timer eller 150 km), styrkepas med under 48 timer imellem, pas langt fra planen, meget tid i mellemzonen når holdet bruger \"Lav intensitet først\", for lidt søvn, smerter efter ATK's smertetrappe og check-ins i gul eller rød zone. Hvert punkt har et ord for, hvor meget det betyder: \"Vigtigt nu\", \"Værd at se på\" eller \"Godt at vide\". Når I har talt om et punkt, kan du markere det som afklaret."
+        "body": "Kadence viser træneren, når en uge går ud over rammerne, og træneren beslutter, hvad der skal ske. Opmærksomhedspunkterne står under Kalender → Hele holdet: som mærker ved hver rytter og som en liste under ugen, hvor \"Se ugen\" åbner rytterens uge. På Overblik står de tre ryttere, der er mest værd at se på, med vejen til hele listen. Punkterne er: timer på cyklen over eller under DCU's ramme for ugen (oktober er DCU's pause og har ingen ramme), mere end 15 % flere timer end de seneste uger, en tur længere end DCU's grænse (U17 højst 4 timer eller 120 km, U19 højst 5 timer eller 150 km), styrkepas med under 48 timer imellem, pas der gik helt anderledes end planlagt, meget tid i mellemzonen når holdet bruger \"Lav intensitet først\", for lidt søvn, smerter efter ATK's smertetrappe og check-ins i gul eller rød zone. Hvert punkt har et ord for, hvor meget det betyder: \"Vigtigt nu\", \"Værd at se på\" eller \"Godt at vide\". Når I har talt om et punkt, kan du markere det som afklaret."
       },
       "checkin": {
         "title": "Check-in og trivselszoner",
@@ -2181,7 +2181,6 @@
       "km": "{km} km",
       "rpe": "Hvor hårdt",
       "feel": "Følelse",
-      "load": "Belastning",
       "notSaid": "Ikke sagt",
       "fromFile": "Fra en fil eller en enhed.",
       "editFeedback": "Ret vurdering",
@@ -2283,9 +2282,9 @@
     },
     "state": {
       "asPlanned": "Som planlagt",
-      "offPlan": "Afveg fra planen",
-      "farOff": "Langt fra planen",
-      "missed": "Ikke udført",
+      "offPlan": "Tæt på planen",
+      "farOff": "Din egen version",
+      "missed": "Ikke nået",
       "today": "I dag",
       "planned": "Planlagt",
       "unplanned": "Uden plan"
@@ -2293,7 +2292,7 @@
     "deviation": {
       "open": "{state}. Se hvorfor",
       "heading": {
-        "missed": "{sport, select, bike {Ikke kørt} other {Ikke udført}}",
+        "missed": "Ikke nået",
         "shorter": "Kortere end planlagt",
         "longer": "Længere end planlagt",
         "easier": "Roligere end planlagt",
@@ -2323,8 +2322,8 @@
       },
       "howCounted": {
         "summary": "Sådan er det regnet",
-        "body": "Kadence vurderer, hvor meget en tur trækker på kroppen, ud fra tiden og hvor hårdt du kørte i forhold til din FTP (eller puls eller hvordan det føltes). En time præcis på FTP tæller 100.",
-        "numbers": "Denne tur: {done}. Planen: {planned}."
+        "body": "{basis, select, pulse {Kadence vurderer, hvor meget et pas trækker på kroppen, ud fra tiden og din puls i forhold til din tærskelpuls. En time præcis på tærskelpulsen tæller 100.} felt {Kadence vurderer, hvor meget {sport, select, bike {en tur} other {et pas}} trækker på kroppen, ud fra tiden og hvor hårdt det føltes. En time på hårdt (8 af 10) tæller 100.} other {Kadence vurderer, hvor meget {sport, select, bike {en tur} other {et pas}} trækker på kroppen, ud fra tiden og hvor hårdt du kørte i forhold til din FTP (eller puls eller hvordan det føltes). En time præcis på FTP tæller 100.}}",
+        "numbers": "{sport, select, bike {Denne tur} other {Dette pas}}: {done}. Planen: {planned}."
       },
       "week": {
         "inside": "Med resten af ugens pas ender ugen inden for {ref, select, dcu {DCU's ramme} other {profilens ramme}}.",
