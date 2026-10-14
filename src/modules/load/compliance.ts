@@ -1,4 +1,5 @@
 import type { LoadMethod, Sport } from "./activity-load";
+import type { PlanIntensity } from "./plan-intensity";
 
 /**
  * How what was done compares to what was planned: the calendar's colours,
@@ -33,6 +34,17 @@ import type { LoadMethod, Sport } from "./activity-load";
  * feeling is far off. Power and heart rate read load as before. A side
  * with no `method` is read as before too: load wins.
  *
+ * **Only a plan that says how hard can be done harder.** A plan that says
+ * only how long ("Løbetur 30 min": no steps, or only open ones; see
+ * plan-intensity.ts) is judged by minutes, whatever measured the load —
+ * its planned load is an estimate from the minutes, so a load against it
+ * would call an easy run "twice as hard as planned". And a heart-rate
+ * load from another sport than the bike is judged by minutes unless the
+ * plan has heart-rate targets: the thresholds are the bike's (ADR 0016),
+ * and a run's pulse sits 5–10 beats higher, so its load is overstated
+ * against a plan's intensity. The amendment of 14 October to ADR 0095. A
+ * planned side with no `intensity` reads as before.
+ *
  * Pure: imports nothing from the database.
  */
 
@@ -43,6 +55,10 @@ export interface ComplianceSide {
   load?: number | null;
   /** How the done side's load was measured (activities.load_method); "rpe" reads minutes unless far off. */
   method?: LoadMethod | null;
+  /** The planned side: what the plan says of how hard (`planIntensityOf`); undefined reads as before. */
+  intensity?: PlanIntensity | null;
+  /** The done side: the activity's sport; a pulse off the bike is not weighed against a plan's intensity. */
+  sport?: Sport | null;
 }
 
 function positive(value: number | null | undefined): value is number {
@@ -67,27 +83,53 @@ export function feltFarOff(pct: number): boolean {
   return pct < RPE_FAR_LOW_PCT || pct > RPE_FAR_HIGH_PCT;
 }
 
-/** What the colour was measured by, and done ÷ planned in whole percent. */
-export type ComplianceRatio = { by: "load" | "minutes"; pct: number };
+/**
+ * What the colour was measured by, and done ÷ planned in whole percent.
+ * `timeOnly` when the load could not be compared with this plan at all
+ * (`loadOffPlan`): the words then speak of time alone.
+ */
+export type ComplianceRatio = { by: "load" | "minutes"; pct: number; timeOnly?: true };
+
+/**
+ * Whether the done load cannot be weighed against this plan, so only time
+ * can: the plan says nothing of how hard, or a pulse off the bike meets a
+ * plan without heart-rate targets. See the file comment.
+ */
+export function loadOffPlan(planned: ComplianceSide, done: ComplianceSide): boolean {
+  if (planned.intensity == null) return false;
+  if (planned.intensity === "none") return true;
+  // The thresholds are the bike's (ADR 0016) and a run's pulse sits higher,
+  // so its heart-rate load is compared only with a plan in pulse.
+  return (
+    done.method === "hr" &&
+    done.sport != null &&
+    done.sport !== "bike" &&
+    planned.intensity !== "pulse"
+  );
+}
 
 /**
  * The ratio the colour is read from: by load when both sides have one —
- * for a load from RPE alone only when it is far off, or when the plan has
- * no minutes to read instead — otherwise by minutes; null when the plan
- * has neither. Exported so the explanation of a colour (deviation.ts)
+ * for a load from RPE alone only when it is far off, never when the load
+ * is off the plan's scale (`loadOffPlan`), and either way also when the
+ * plan has no minutes to read instead — otherwise by minutes; null when
+ * the plan has neither. Exported so the explanation of a colour (deviation.ts)
  * reads the very same number.
  */
 export function complianceRatio(
   planned: ComplianceSide,
   done: ComplianceSide,
 ): ComplianceRatio | null {
+  const offPlan = loadOffPlan(planned, done);
   if (positive(planned.load) && typeof done.load === "number" && Number.isFinite(done.load)) {
     const pct = Math.round((done.load / planned.load) * 100);
-    if (done.method !== "rpe" || feltFarOff(pct) || !positive(planned.minutes))
-      return { by: "load", pct };
+    const counts = !offPlan && (done.method !== "rpe" || feltFarOff(pct));
+    if (counts || !positive(planned.minutes)) return { by: "load", pct };
   }
-  if (positive(planned.minutes))
-    return { by: "minutes", pct: Math.round((done.minutes / planned.minutes) * 100) };
+  if (positive(planned.minutes)) {
+    const pct = Math.round((done.minutes / planned.minutes) * 100);
+    return offPlan ? { by: "minutes", pct, timeOnly: true } : { by: "minutes", pct };
+  }
   return null;
 }
 

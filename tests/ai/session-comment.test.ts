@@ -351,7 +351,12 @@ describe("the prompt's persona and the sanitizer", () => {
       ({
         session: {
           sport: "bike",
-          structure: null,
+          structure: {
+            kind: "bike",
+            steps: [
+              { kind: "step", intent: "steady", seconds: 3600, target: { kind: "zone", zone: 2 } },
+            ],
+          },
           plannedMinutes: 60,
           plannedLoad: 60,
           onDate: "2026-10-08",
@@ -376,6 +381,34 @@ describe("the prompt's persona and the sanitizer", () => {
     expect(commentContext(loaded(40, "power"), today)).toMatchObject({
       colour: "yellow",
       feltFarOff: false,
+    });
+  });
+
+  it("reads a run on a plan that says only how long by its time (14 October)", () => {
+    const run = {
+      session: {
+        sport: "other",
+        structure: { kind: "other", text: "", minutes: 30 },
+        plannedMinutes: 30,
+        plannedLoad: 21,
+        onDate: "2026-10-13",
+        title: "Løbetur 30 min",
+      },
+      activity: {
+        sport: "other",
+        movingSeconds: 31 * 60,
+        load: 42,
+        loadMethod: "hr",
+        rpe: null,
+        zoneSeconds: null,
+      },
+      rider: { birthYear: 2009, categoryOverride: null, trainingProfile: null },
+    } as unknown as Parameters<typeof commentContext>[0];
+    const context = commentContext(run, "2026-10-14");
+    expect(context.colour).toBe("green");
+    expect(context.story).toMatchObject({
+      ride: { effort: null, intensityPct: null },
+      whole: null,
     });
   });
 

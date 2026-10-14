@@ -5,7 +5,13 @@ import type { ActivityRow, PlannedSessionRow, RiderRow } from "@/core/db/schema"
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { askForJson, NotAllowed } from "@/modules/ai/service";
 import { phaseOf, seasonStartYear } from "@/modules/dcu";
-import { deviation, plannedZoneSeconds, type LoadMethod } from "@/modules/load";
+import {
+  deviation,
+  planIntensity,
+  plannedZoneSeconds,
+  type LoadMethod,
+  type Sport,
+} from "@/modules/load";
 import { isSeniorBasis, profileOf, seasonOfMonth } from "@/modules/paradigms";
 import { riderClass } from "@/modules/season/class";
 import { requireWriteFor } from "@/modules/team/access";
@@ -70,9 +76,16 @@ export function commentContext(loaded: Loaded, today: string): SessionCommentCon
     zoneSeconds: zones,
     method: activity.loadMethod as LoadMethod,
     rpe: activity.rpe,
+    sport: activity.sport as Sport,
   };
   const explained = deviation(
-    { sport, minutes: session.plannedMinutes, load: session.plannedLoad, structure },
+    {
+      sport,
+      minutes: session.plannedMinutes,
+      load: session.plannedLoad,
+      structure,
+      intensity: planIntensity(structure),
+    },
     done,
     session.onDate,
     today,

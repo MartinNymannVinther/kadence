@@ -108,12 +108,19 @@ export {
   compliance,
   complianceRatio,
   feltFarOff,
+  loadOffPlan,
   matchActivity,
   type ComplianceColour,
   type ComplianceRatio,
   type ComplianceSide,
   type MatchCandidate,
 } from "./compliance";
+export {
+  planCarriesIntensity,
+  planIntensity,
+  planIntensityOf,
+  type PlanIntensity,
+} from "./plan-intensity";
 export {
   builtAround,
   deviation,

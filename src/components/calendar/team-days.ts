@@ -1,4 +1,10 @@
-import { compliance, type ComplianceColour, type LoadMethod } from "@/modules/load";
+import {
+  compliance,
+  planIntensityOf,
+  type ComplianceColour,
+  type LoadMethod,
+  type Sport,
+} from "@/modules/load";
 import { calendarHref, type CalendarQuery } from "./href";
 import type { CalendarActivityCard, CalendarCard } from "./types";
 
@@ -42,10 +48,16 @@ export function colourOf(session: CalendarCard, today: string): ComplianceColour
         minutes: session.activity.movingSeconds / 60,
         load: session.activity.load,
         method: session.activity.loadMethod as LoadMethod,
+        // A ride is only ever matched to a session of its own sport.
+        sport: session.sport as Sport,
       }
     : null;
   return compliance(
-    { minutes: session.plannedMinutes, load: session.plannedLoad },
+    {
+      minutes: session.plannedMinutes,
+      load: session.plannedLoad,
+      intensity: planIntensityOf(session),
+    },
     done,
     session.onDate,
     today,
