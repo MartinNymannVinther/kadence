@@ -13,6 +13,7 @@ import { SessionView } from "@/components/session/session-view";
 import { WeekGlance } from "@/components/today/week-glance";
 import { meElsewhere } from "@/components/today/where";
 import { PageHeader } from "@/components/ui/page-header";
+import { KnownPainsCard } from "@/components/wellbeing/known-pains-card";
 import { ZoneStrip } from "@/components/wellbeing/zone-strip";
 import { getOrgContext } from "@/core/auth/session";
 import { todayInCopenhagen } from "@/core/dates";
@@ -56,7 +57,8 @@ function Section({
  * Mig: the rider's own page (docs/adr/0063). Everything about the rider
  * that is not today — the week, the latest rides (docs/backlog.md P2-02),
  * the form with the words that explain it,
- * the last two weeks of check-ins, goals, records, and the upload and the
+ * the last two weeks of check-ins and the known pains (ADR 0097), goals,
+ * records, and the upload and the
  * way to a bike computer. Today keeps today. A coach or a parent who opens
  * it goes back to their own front page.
  */
@@ -124,6 +126,7 @@ export default async function MePage({
 
       <Section id="checkins" title={t("checkins")} body={t("checkinsBody")}>
         <ZoneStrip days={data.zones} today={today} />
+        <KnownPainsCard riderId={riderId} pains={data.knownPains} own />
       </Section>
 
       <Section id="goals" title={t("goals")}>

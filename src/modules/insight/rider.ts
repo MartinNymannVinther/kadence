@@ -11,8 +11,10 @@ import {
 } from "@/modules/paradigms";
 import {
   MID_ZONE_WEEKS,
+  LASTING_PAIN_WEEKS,
   compliance,
   countIntensity,
+  countedPain,
   forecastForm,
   guardrails,
   loadSeries,
@@ -94,6 +96,12 @@ export function riderInsight(
    * team uses "Lav intensitet først" (ADR 0053); null leaves its flag out.
    */
   intensity: { sessions: IntensitySession[]; races: IntensityRace[] } | null = null,
+  /**
+   * Whether the workspace is a club, where a coach reads the attention
+   * list; a personal workspace has no coach, and no known-pain point
+   * (docs/adr/0097).
+   */
+  club = true,
 ): RiderInsight {
   const monday = mondayOf(todayIso);
   const sunday = addDaysIso(monday, 6);
@@ -180,7 +188,17 @@ export function riderInsight(
           : null,
     strengthDates,
     wellbeing,
-    latestPain: wellbeingVisible ? (latest?.pain ?? null) : null,
+    latestPain: wellbeingVisible && latest ? countedPain(latest) : null,
+    // A known pain three weeks running, for a rider under 18 in a club (ADR 0097).
+    knownPains:
+      wellbeingVisible && club && age < 18
+        ? {
+            checkins: checks
+              .filter((c) => c.onDate > addDaysIso(todayIso, -7 * LASTING_PAIN_WEEKS))
+              .map((c) => ({ date: c.onDate, usualPains: c.usualPains })),
+            today: todayIso,
+          }
+        : null,
     sleepHours: wellbeingVisible ? lastSeven : [],
     sleepMinimum: age < 18 ? 8 : null,
     compliance: colours,

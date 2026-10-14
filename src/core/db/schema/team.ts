@@ -291,7 +291,7 @@ export const flagResolutions = pgTable(
     index("flag_resolutions_org_week_idx").on(t.orgId, t.weekMonday),
     check(
       "flag_resolutions_kind",
-      sql`${t.kind} in ('hours_above_corridor','hours_below_corridor','ramp','longest_ride','strength_spacing','compliance','wellbeing_talk','wellbeing_help','pain','sleep_short','sleep_below_minimum','mid_zone')`,
+      sql`${t.kind} in ('hours_above_corridor','hours_below_corridor','ramp','longest_ride','strength_spacing','compliance','wellbeing_talk','wellbeing_help','pain','sleep_short','sleep_below_minimum','mid_zone','known_pain_lasting')`,
     ),
     check("flag_resolutions_severity", sql`${t.severity} in ('info','warn','alert')`),
     check("flag_resolutions_monday", sql`extract(isodow from ${t.weekMonday}) = 1`),

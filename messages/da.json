@@ -1309,6 +1309,8 @@
     "alreadyParent": "Personen er allerede forælder til rytteren.",
     "parentIsRider": "En rytter kan ikke være sin egen forælder.",
     "youthWeight": "Vægt er slået fra for ryttere under 19. En træner kan slå det til under Indstillinger → Holdet.",
+    "knownPainsFull": "Der kan højst være 5 kendte smerter. Fjern en, før du tilføjer en ny.",
+    "knownPainTwice": "Den smerte står der allerede. Ret den i stedet.",
     "not_connected": "Der er ingen forbindelse at afbryde. Genindlæs siden.",
     "not_a_rider": "Kun en rytter kan forbinde sin egen enhed.",
     "too_many_keys": "Du har allerede så mange nøgler, som du kan have. Fjern en, før du opretter en ny.",
@@ -2679,6 +2681,7 @@
       "sleep_below_minimum": "Søvnen har i snit været {average} timer de seneste {nights, plural, one {# nat} other {# nætter}}. 14–17-årige har brug for mindst {minimum} timer.",
       "compliance": "{red} af {judged} pas i denne uge gik anderledes end planlagt. Måske kan planen tilpasses ugen.",
       "mid_zone": "Mellemzonen fylder {mid} % af de {sessions} pas og løbsdage de sidste fire uger. \"Lav intensitet først\" lægger højst {limit} % der fra november til februar.",
+      "known_pain_lasting": "Kendt smerte ({place}) i check-ins tre uger i træk. ATK anbefaler, at smerter, der bliver ved hos unge, bliver set af en voksen, gerne en fysioterapeut. Måske er det en snak værd.",
       "signs": "Tegn: {signs}"
     },
     "sign": {
@@ -2707,7 +2710,8 @@
       "wellbeing_help": "Hjælp fra fagfolk",
       "pain": "Smerte",
       "sleep_short": "Kort søvn",
-      "sleep_below_minimum": "For lidt søvn"
+      "sleep_below_minimum": "For lidt søvn",
+      "known_pain_lasting": "Kendt smerte i tre uger"
     },
     "resolve": {
       "button": "Afklaret",
@@ -2807,7 +2811,7 @@
       }
     },
     "pain": {
-      "label": "Gør noget ondt?",
+      "label": "Gør noget ondt, som ikke plejer, eller mere end det plejer?",
       "hint": "Smertetrappen fra Team Danmarks ATK.",
       "0": {
         "title": "Nej",
@@ -2828,6 +2832,13 @@
     },
     "painWhere": "Hvor gør det ondt?",
     "painWherePlaceholder": "Fx højre knæ",
+    "known": {
+      "title": "Dine kendte smerter",
+      "hint": "Sæt kryds, hvis det gør ondt, som det plejer. Så farver det ikke dagen.",
+      "usual": "{place} som det plejer",
+      "none": "Gør noget altid lidt ondt, fx ryggen?",
+      "noneLink": "Skriv det under Kendte smerter på Mig, så farver det ikke dagen."
+    },
     "ill": "Jeg er syg",
     "illHint": "Fx feber, forkølelse eller ondt i maven.",
     "note": "Noget, du vil fortælle?",
@@ -2852,7 +2863,46 @@
     "next": "Din træner kan se det og tager en snak med dig.",
     "illAdvice": "Træn ikke, når du er syg. Kroppen skal bruge kræfterne på at blive rask.",
     "pain2Advice": "Skær træningen mindst til det halve, og spring løb over, til en behandler har set på det.",
-    "pain3Advice": "Hold pause fra det, der gør ondt, til en fysioterapeut eller læge har set på det."
+    "pain3Advice": "Hold pause fra det, der gør ondt, til en fysioterapeut eller læge har set på det.",
+    "why": {
+      "ill": "Du svarede, at du er syg.",
+      "mood": "Du svarede, at humøret er helt i bund.",
+      "pain2": "Du svarede, at noget gør mere ondt end det plejer, når du starter og dagen efter.",
+      "pain2Place": "Du svarede, at noget gør mere ondt end det plejer, når du starter og dagen efter ({place}).",
+      "pain3": "Du svarede, at noget gør ondt under træning eller i hverdagen.",
+      "pain3Place": "Du svarede, at noget gør ondt under træning eller i hverdagen ({place}).",
+      "lowAnswer": "Du svarede helt i bund på {answers}.",
+      "lowAverage": "Dine svar ligger i snit på {average}.",
+      "shortSleep": "Du sov under {limit, plural, one {# time} other {# timer}} i nat.",
+      "usual": "{places} som det plejer. Det farver ikke dagen.",
+      "answer": {
+        "sleepQuality": "søvnen",
+        "energy": "energien",
+        "mood": "humøret",
+        "soreness": "benene",
+        "stress": "roen"
+      }
+    }
+  },
+  "knownPains": {
+    "title": "Kendte smerter",
+    "body": "Noget, der altid gør lidt ondt, fx ryggen. Er det som det plejer, farver det ikke dagen.",
+    "bodyCoach": "Noget, der altid gør lidt ondt for rytteren, fx ryggen. Er det som det plejer, farver det ikke dagen i check-in.",
+    "empty": "Ingen kendte smerter.",
+    "place": "Hvor",
+    "placePlaceholder": "Fx ryg",
+    "usual": "Plejer",
+    "level": {
+      "1": "Lidt ømhed",
+      "2": "Smerte ved start"
+    },
+    "levelLabel": "Hvor ondt plejer {place} at gøre?",
+    "add": "Tilføj",
+    "remove": "Fjern {place}",
+    "removeTitle": "Fjern {place}?",
+    "removeBody": "Check-ins, hvor den var sat kryds ved, bliver stående.",
+    "full": "Der er 5 kendte smerter, og det er det højeste antal.",
+    "note": "Sker der noget nyt, eller gør det mere ondt end det plejer, svarer du på smertetrappen som altid."
   },
   "measurements": {
     "title": "Højde og vækst",

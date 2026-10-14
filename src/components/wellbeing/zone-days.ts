@@ -17,6 +17,9 @@ type CheckinLike = {
   soreness: number | null;
   stress: number | null;
   pain: number;
+  painWhere?: string | null;
+  /** Known pains ticked "som det plejer" (docs/adr/0097): they do not colour the day. */
+  usualPains?: readonly { place: string; level: number }[] | null;
   ill: number;
 };
 

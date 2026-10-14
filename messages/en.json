@@ -1309,6 +1309,8 @@
     "alreadyParent": "That person is already the rider's parent.",
     "parentIsRider": "A rider cannot be their own parent.",
     "youthWeight": "Weight is turned off for riders under 19. A coach can turn it on under Settings → Team.",
+    "knownPainsFull": "There can be at most 5 known pains. Remove one before you add another.",
+    "knownPainTwice": "That pain is already there. Change it instead.",
     "not_connected": "There is no connection to end. Reload the page.",
     "not_a_rider": "Only a rider can connect their own device.",
     "too_many_keys": "You already have as many keys as you can have. Remove one before you create a new one.",
@@ -2679,6 +2681,7 @@
       "sleep_below_minimum": "{nights, plural, one {Sleep has averaged {average} h over the last night. 14–17-year-olds need at least {minimum} h.} other {Sleep has averaged {average} h over the last # nights. 14–17-year-olds need at least {minimum} h.}}",
       "compliance": "{red} of {judged} sessions this week went differently from the plan. Perhaps the plan can be fitted to the week.",
       "mid_zone": "The middle zone holds {mid} % of the {sessions} sessions and race days over the last four weeks. \"Low intensity first\" puts at most {limit} % there from November to February.",
+      "known_pain_lasting": "A known pain ({place}) in the check-ins three weeks running. ATK recommends that pain which lasts in young people is seen by an adult, ideally a physiotherapist. It may be worth a talk.",
       "signs": "Signs: {signs}"
     },
     "sign": {
@@ -2707,7 +2710,8 @@
       "wellbeing_help": "Professional help",
       "pain": "Pain",
       "sleep_short": "Short sleep",
-      "sleep_below_minimum": "Too little sleep"
+      "sleep_below_minimum": "Too little sleep",
+      "known_pain_lasting": "Known pain for three weeks"
     },
     "resolve": {
       "button": "Resolved",
@@ -2807,7 +2811,7 @@
       }
     },
     "pain": {
-      "label": "Does anything hurt?",
+      "label": "Does anything hurt that usually doesn't, or more than usual?",
       "hint": "The pain ladder from Team Danmark's ATK.",
       "0": {
         "title": "No",
@@ -2828,6 +2832,13 @@
     },
     "painWhere": "Where does it hurt?",
     "painWherePlaceholder": "E.g. right knee",
+    "known": {
+      "title": "Your known pains",
+      "hint": "Tick it if it hurts as usual. Then it does not colour the day.",
+      "usual": "{place} as usual",
+      "none": "Does something always hurt a little, like your back?",
+      "noneLink": "Write it under Known pains on Me, and it will not colour the day."
+    },
     "ill": "I am ill",
     "illHint": "E.g. a fever, a cold or an upset stomach.",
     "note": "Anything you want to say?",
@@ -2852,7 +2863,46 @@
     "next": "Your coach can see it and will have a talk with you.",
     "illAdvice": "Do not train when you are ill. Your body needs its strength to get well.",
     "pain2Advice": "Cut training by at least half, and skip races, until a therapist has looked at it.",
-    "pain3Advice": "Pause what hurts until a physiotherapist or doctor has looked at it."
+    "pain3Advice": "Pause what hurts until a physiotherapist or doctor has looked at it.",
+    "why": {
+      "ill": "You said you are ill.",
+      "mood": "You said your mood is at rock bottom.",
+      "pain2": "You said something hurts more than usual when you start and the day after.",
+      "pain2Place": "You said something hurts more than usual when you start and the day after ({place}).",
+      "pain3": "You said something hurts during training or in everyday life.",
+      "pain3Place": "You said something hurts during training or in everyday life ({place}).",
+      "lowAnswer": "You answered at the very bottom for {answers}.",
+      "lowAverage": "Your answers average {average}.",
+      "shortSleep": "You slept less than {limit, plural, one {# hour} other {# hours}} last night.",
+      "usual": "{places} as usual. It does not colour the day.",
+      "answer": {
+        "sleepQuality": "your sleep",
+        "energy": "your energy",
+        "mood": "your mood",
+        "soreness": "your legs",
+        "stress": "your calm"
+      }
+    }
+  },
+  "knownPains": {
+    "title": "Known pains",
+    "body": "Something that always hurts a little, like your back. If it is as usual, it does not colour the day.",
+    "bodyCoach": "Something that always hurts the rider a little, like the back. If it is as usual, it does not colour the day in the check-in.",
+    "empty": "No known pains.",
+    "place": "Where",
+    "placePlaceholder": "E.g. back",
+    "usual": "Usually",
+    "level": {
+      "1": "A little soreness",
+      "2": "Pain at the start"
+    },
+    "levelLabel": "How much does {place} usually hurt?",
+    "add": "Add",
+    "remove": "Remove {place}",
+    "removeTitle": "Remove {place}?",
+    "removeBody": "Check-ins where it was ticked stay as they are.",
+    "full": "There are 5 known pains, which is the most there can be.",
+    "note": "If something new happens, or it hurts more than usual, answer the pain ladder as always."
   },
   "measurements": {
     "title": "Height and growth",

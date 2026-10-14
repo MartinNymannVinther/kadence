@@ -12,6 +12,7 @@ import { listBlocks } from "@/modules/training/blocks";
 import { installKadenceContent } from "@/modules/training/kadence-library";
 import { listTemplates } from "@/modules/training/templates";
 import { random, seedEvents, seedLibrary } from "./seed-parts";
+import { seedKnownPain } from "./seed-known-pain";
 import { ridePast, seedCheckins } from "./seed-ridden";
 import { scheduleWeeks } from "./seed-weeks";
 import type { L, Text } from "./seed-data";
@@ -39,7 +40,8 @@ export const ADULT_NAME: Text = { da: "Lars' træning", en: "Lars's training" };
  * is U17's and U19's. His library holds Kadence's sessions, programmes
  * and ready weeks for adults (ADR 0092); his strength is the
  * Supermotionist programme, and next week is the profile's ready week for
- * the time of year, laid in as a forløb.
+ * the time of year, laid in as a forløb. His back always hurts a little,
+ * a known pain ticked on a few check-ins, which stay green (ADR 0097).
  */
 export async function seedDemoAdult(ctx: OrgContext, l: L, now = new Date()): Promise<string> {
   const today = todayInCopenhagen(now);
@@ -89,6 +91,7 @@ export async function seedDemoAdult(ctx: OrgContext, l: L, now = new Date()): Pr
   if (block) await applyBlock(ctx, { blockId: block.id, riderIds, startMonday: nextMonday });
   await ridePast(ctx, l, { riderIds, firstMonday, today, rnd });
   await seedCheckins(ctx, l, riderIds, today, rnd);
+  await seedKnownPain(ctx, l, id, today);
   await seedEvents(ctx, l, today, raceYear, id);
   await recordSignupConsents(ctx, { riderId: id, locale: l });
   return id;

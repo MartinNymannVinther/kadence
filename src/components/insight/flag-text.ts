@@ -83,6 +83,8 @@ export function flagSentence(flag: Flag, t: Translate, { locale, klass }: FlagCo
       return t("compliance", { red: n(v.red), judged: n(v.judged) });
     case "mid_zone":
       return t("mid_zone", { mid: n(v.mid), sessions: n(v.sessions), limit: n(v.limit) });
+    case "known_pain_lasting":
+      return t("known_pain_lasting", { place: String(v.place ?? ""), days: n(v.days) });
   }
 }
 

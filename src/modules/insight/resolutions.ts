@@ -6,7 +6,7 @@ import { flagResolutions, type FlagResolutionRow } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
 import { FLAG_KINDS } from "@/modules/load";
 import { requireCoach } from "@/modules/team/access";
-import { gather } from "./gather";
+import { gather, isClubWorkspace } from "./gather";
 import { riderInsight, SERIES_DAYS, WARMUP_DAYS } from "./rider";
 import { flagWindow, readIntensity } from "@/modules/season/intensity";
 import { teamPlanning } from "@/modules/team/settings";
@@ -61,6 +61,7 @@ export async function resolveFlag(
       [],
       paradigm,
       lowIntensityFirst ? await readIntensity(tx, [rider.id], window.from, window.to) : null,
+      await isClubWorkspace(tx, ctx.orgId),
     );
     const firing = insight.flags.filter((f) => f.kind === input.kind);
     if (firing.length === 0) throw new Refused("notFound", "flagGone");
