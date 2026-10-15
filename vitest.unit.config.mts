@@ -52,6 +52,9 @@ export default defineConfig({
       // What a model call costs, and the providers' token counts it is priced from
       // (docs/adr/0089); recording it and the budget need the database.
       "tests/ai/prices.test.ts",
+      // A week around a race: the prompts' rules, whose calendar a group's week reads, and the
+      // guard that keeps a session off a race day (docs/adr/0101); what is read needs the database.
+      "tests/ai/race-week.test.ts",
       // Which price plan applies, what it costs, and what the pages say about a plan
       // (docs/adr/0090); the plans in the database, the job and the mails need it.
       "tests/billing/{which-plan,banner,allowlist,landing,price-page}.test.ts",

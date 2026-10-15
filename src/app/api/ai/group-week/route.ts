@@ -11,7 +11,8 @@ export const dynamic = "force-dynamic";
  * A week for a group of riders, from DCU's hours for the class-year the
  * coach chose — or an adult training profile's (docs/adr/0092) — and the
  * team's own library (docs/adr/0043). No rider's data is read, so the
- * team's switch for it is not asked.
+ * team's switch for it is not asked; in a personal workspace the person's
+ * own calendar days go along as kind, dates and priority (docs/adr/0101).
  */
 const Body = z.object({
   monday: z.iso.date(),

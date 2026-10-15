@@ -15,7 +15,9 @@ import { parseWorkoutText } from "@/modules/workouts/parse-text";
  * notes are byte for byte what they were before Kadence's content for
  * adults arrived. The hashes were taken from main at aa312a0 with the
  * same inputs; a change here is a change for young riders and needs a
- * reason of its own.
+ * reason of its own. The three week drafts changed on purpose with
+ * docs/adr/0101: a race week is planned as a coach plans it, for young
+ * riders as for adults.
  */
 
 const h = (v: unknown) => createHash("sha256").update(JSON.stringify(v)).digest("hex");
@@ -108,7 +110,7 @@ describe("a youth rider's prompts and picker", () => {
   });
 });
 
-/** Taken on main at aa312a0, before this change. */
+/** Taken on main at aa312a0, before this change; the week drafts with docs/adr/0101. */
 const BEFORE = {
   rulleDa: "2f384b485a6d45ea44d244af70fab31b095140a919760b1ca056ff4d5e30cee7",
   rulleEn: "ccb456ae1d21c9f2fbdc3cef4c086c2ada0f2afbc19be3b763e38cf244ef8848",
@@ -117,8 +119,8 @@ const BEFORE = {
   buildBikeUnguided: "d96b81621478df3e989b695850c784ce55e1d1e2fddf8e121124cb1699e45cc3",
   classLines: "435bf43a5917c1502e428707766c47d5068fabaffcc4194372fcf6948a6da85e",
   notes: "af0100329cf587bf17553fb295afb350a859750e9bc9181d718b1e75e9e49d12",
-  group: "d85a2b7dd57ddce1fe36cd8b468ed21025d7972b47756e2a576eaf8ce965340e",
-  groupUnguided: "eb3da0aa7d96c08cea2018870e696ac37fee8333490c774f0c112e1d1979c75b",
-  weekDraft: "75465578a273ccd043dc1e5bb4a0bbb2a552843e12f481763ee65660e6044a4f",
+  group: "4deaeeb091585e61dbd8cccae0463ff64faf4fb0baf3a01bbcfcd99d769d1dd9",
+  groupUnguided: "f2e744c7517a8b8c08b5ef01b032d9203a917a4b6e2f070b68bedbd6faf26c36",
+  weekDraft: "da19830fa87161e47bf4b9408f944e78d0a1710342d5d7da5d791cef3b980b42",
   strength: "998300967b25c6a0552aa26e0d2b6c3c9d38441438def904371b869535023b75",
 };
