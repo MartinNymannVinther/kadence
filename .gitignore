@@ -47,5 +47,7 @@ next-env.d.ts
 
 # the map behind routes: fetched, never committed (scripts/fetch-map.sh)
 /data/map/
-# What the teams page last read from the UCI and Cykling Danmark (ADR 0072).
+# What the teams page last read from the UCI and Cykling Danmark (ADR 0072),
+# and anything else read into data/: never committed.
 /data/teams/
+/data/

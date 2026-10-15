@@ -6,7 +6,7 @@ import { isBirthYear } from "./birth-year";
  * before anything is created (docs/adr/0064). One rider a line, then
  * their parents after semicolons:
  *
- *     Emma Holm, 2010, emma@holm.dk; Anne Holm, anne@holm.dk; Peter Holm
+ *     Emma Holm, 2010, emma@holm.example; Anne Holm, anne@holm.example; Peter Holm
  *
  * Within a person, commas (or a spreadsheet's tabs) separate the name,
  * the birth year and the address, in any order; a four-digit number is

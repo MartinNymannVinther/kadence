@@ -13,7 +13,7 @@ describe("a rider's page at Cykling Danmark", () => {
       discipline: "Landevej",
       raceClass: "U17",
       racedOn: "2026-09-13",
-      place: 11,
+      place: 14,
       placeNote: "",
       resultUrl: "https://www.sportstiming.dk/event/17626/results?round=101613",
     });
@@ -85,7 +85,7 @@ describe("a rider's page at Cykling Danmark", () => {
   });
 
   it("reads a result listed twice once", () => {
-    const twice = row("Greve CC 2026", 17614, 101512, "6. september 2026", "3");
+    const twice = row("Greve CC 2026", 17614, 101512, "6. september 2026", "6");
     const page = profilePage(heading("Landevej - U17 (2026)") + twice + twice);
     expect(parseDcuProfile(page, UCI).results).toHaveLength(1);
   });

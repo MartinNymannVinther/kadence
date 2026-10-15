@@ -1901,7 +1901,7 @@
       "title": "Invite the whole team",
       "body": "Type or paste the team with one rider per line. You see the list before anything is created.",
       "listLabel": "The team",
-      "placeholder": "Emma Holm, 2010, emma@holm.dk; Anne Holm, anne@holm.dk\nOskar Lund, 2009, oskar@lund.dk\nIda Berg, 2011; Peter Berg, peter@berg.dk",
+      "placeholder": "Emma Holm, 2010, emma@holm.example; Anne Holm, anne@holm.example\nOskar Lund, 2009, oskar@lund.example\nIda Berg, 2011; Peter Berg, peter@berg.example",
       "formatTitle": "How to write a line",
       "formatRider": "First the rider: name, birth year and e-mail, separated by commas.",
       "formatParents": "Then the parents, each after a semicolon: name and e-mail. At most two per rider.",

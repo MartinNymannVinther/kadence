@@ -65,26 +65,25 @@ slipstream that makes it easier behind him.
   turned up 20° about the stem. His hands go with the bars, and his
   shoulders and head as far down, and a third as far forward in the
   saddle and most of the way out of it (`Kit.bars`, `poseOf`). Where the
-  road would have him in the saddle he rides a posture of his own, as in
-  the photo: forward on the saddle's nose, the upper arms straight down,
+  road would have him in the saddle he rides a posture of his own:
+  forward on the saddle's nose, the upper arms straight down,
   the forearms along the top of the bar and the hands on the hoods, a
   little ahead of his face, his head down between his shoulders. From
   500 W to 700 W he has his hands in the drops, flat in the saddle; over
   700 W — his first seconds and his sprint — he is out of the saddle,
   low over the bars, his hands in the drops (`challengerEffort`).
-- **A cheat code, JOHAN**, calls him up at once on a free ride, and does
-  nothing in a session. The H in it is the code's while it is typed, not
-  the ride's speed. Under `next dev`, G brings an offer from him or the
+- **A cheat code, RIVAL**, calls him up at once on a free ride, and does
+  nothing in a session. The I in it is the code's while it is typed, not
+  the ride screen's. Under `next dev`, G brings an offer from him or the
   sprinter, session or not.
 
 ## Trade-offs accepted
 
-- **A real rider's look, and a first name.** He is drawn from a photo of
-  a real young rider, so he has no face and no maker's logo, and his
-  number has no digits: a rider in red and white, in a white aero helmet,
-  on a black bike with a yellow fork. The screen calls him a rider
-  in red and white; only the code that calls him is a first name, which
-  is in the open source. The photo is not in the repository.
+- **A figure, not a person.** He has no face, no maker's logo and no
+  digits in his number: a rider in red and white, in a white aero helmet,
+  on a black bike with a yellow fork. The screen calls him a rider in red
+  and white, and the code that calls him names his role. (Amended
+  2026-10-15: the cheat codes are now RIVAL and TURBO.)
 - **A race is a ranking of one.** ADR 0013 keeps leaderboards out of
   Kadence. This is a rider against a figure in the landscape: nothing is
   kept, counted or shown to anyone else.
@@ -94,13 +93,13 @@ slipstream that makes it easier behind him.
   sprint well over his 800 W — or by the cheat codes, which race only the
   landscape too.
 - **Not in a session.** A rider in a planned session never meets him,
-  and JOHAN does nothing there; the coach's session goes first.
+  and RIVAL does nothing there; the coach's session goes first.
 - **His posture is a look, not his air.** His drag in the physics is
   the rider's own; the flat back is drawn, not counted, so the same
   watts at the same weight still go as fast as the rider's.
 - **A position the rules no longer allow.** Resting the forearms on the
-  bar has been banned in UCI road races since April 2021. He rides as the
-  photo shows him, as a figure in the landscape; nothing in Kadence
+  bar has been banned in UCI road races since April 2021. He rides so as a
+  figure in the landscape; nothing in Kadence
   suggests a rider should.
 - **Indoor speed only.** The slipstream moves the rider on the screen,
   not on the record: an indoor ride's distance stays the physics' answer

@@ -148,11 +148,11 @@ describe("a ride with a key", () => {
 
   it("comes as a form with one file as well", async () => {
     const response = await sendForm(team.idaKey, [
-      { name: "Hørsholm.gpx", bytes: bytesOf(gpx(900)) },
+      { name: "Østerbro.gpx", bytes: bytesOf(gpx(900)) },
     ]);
     expect(response.status).toBe(201);
     const { rows } = await activitiesOf(team.idaRider);
-    expect(rows.map((r) => r.title)).toContain("Hørsholm & omegn");
+    expect(rows.map((r) => r.title)).toContain("Østerbro rundt");
   });
 
   it("is one ride a request", async () => {

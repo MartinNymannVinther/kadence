@@ -42,7 +42,7 @@ function race(km: number, grade: number, watts: number, seconds: number) {
 }
 
 describe("the sprinter's race (ADR 0075)", () => {
-  it("comes only when called by HYLDTOFT on a free ride, never into a session", () => {
+  it("comes only when called by TURBO on a free ride, never into a session", () => {
     const session = new Race(road(5, 0));
     session.advance(100, 10, 250, 0.1, false);
     session.call("sprinter");

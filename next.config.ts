@@ -158,13 +158,11 @@ const nextConfig: NextConfig = {
   output: "standalone",
   poweredByHeader: false,
   // Dev only: `next dev` refuses to serve its own assets to any host but
-  // localhost, and a dev server reached from another machine (motor.local,
-  // or over Tailscale) otherwise renders as script-less HTML. More hosts
-  // come from KADENCE_DEV_HOSTS in .env, so no machine's tailnet name is
+  // localhost, and a dev server reached from another machine (by its
+  // .local name, or over Tailscale) otherwise renders as script-less HTML.
+  // The hosts come from KADENCE_DEV_HOSTS in .env, so no machine's name is
   // written into the repository. Ignored by `next build`.
   allowedDevOrigins: [
-    "motor.local",
-    "motor",
     ...(process.env.KADENCE_DEV_HOSTS ?? "")
       .split(",")
       .map((h) => h.trim())

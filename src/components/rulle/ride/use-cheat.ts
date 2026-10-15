@@ -11,19 +11,19 @@ import type { CheatMode, Push } from "./cheat";
  * fanfare; then W/S or ↑/↓ for the speed, or on WATT for the watts, and
  * A/D or ←/→ to steer, held down, while the arrows leave the session
  * alone. The same code again, or five more taps, and it is off; the other
- * code goes over to it. JOHAN calls the challenger up at once, on a free
- * ride, and HYLDTOFT the sprinter (ADR 0075); in a session they do nothing.
+ * code goes over to it. RIVAL calls the challenger up at once, on a free
+ * ride, and TURBO the sprinter (ADR 0075); in a session they do nothing.
  *
- * A letter that carries on a code being typed is the code's: the H in
- * JOHAN does not show the speed. This hook's keys are heard before the
+ * A letter that carries on a code being typed is the code's: the I in
+ * RIVAL does not change the screen. This hook's keys are heard before the
  * ride's (`useRideKeys`), being called first on the ride screen.
  */
 
 const CODES: Record<string, CheatMode | Rival> = {
   spurt: "speed",
   watt: "watts",
-  johan: "challenger",
-  hyldtoft: "sprinter",
+  rival: "challenger",
+  turbo: "sprinter",
 };
 
 /** Whether `letters` end two letters or more into a code, and short of its end. */

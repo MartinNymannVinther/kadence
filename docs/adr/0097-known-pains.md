@@ -4,19 +4,16 @@ Status: accepted · Date: 2026-10-14 · Amends ADR 0021 (the check-in and its zo
 
 ## Context
 
-Martin answered a check-in with pain 2 on ATK's ladder ("Smerte ved
-start", place "Ryg"), because his back always hurts a little. The day
-turned yellow and told him "Skær træningen mindst til det halve, og spring
-løb over, til en behandler har set på det." His words:
-
-> Hvis man nu som mig har lidt ondt i ryggen altid, så giver det jo ikke
-> mening at jeg skal skrue ned for træningen. Så vi skal vejlede lidt
-> bedre. Det skal nok nærmere være hvis noget er anderledes end det
-> plejer.
+A rider whose back always hurts a little answered a check-in with pain 2
+on ATK's ladder ("Smerte ved start", place "Ryg"). The day turned yellow
+and said "Skær træningen mindst til det halve, og spring løb over, til en
+behandler har set på det." For a pain that is always there, cutting
+training makes no sense; the advice should come when something is
+different from usual.
 
 Two more things on the same card: a yellow day said only "Det er helt
 normalt at have en hård dag en gang imellem", not why it was yellow; and
-"Din træner kan se det og tager en snak med dig" stood there in his own
+"Din træner kan se det og tager en snak med dig" stood there in their own
 personal workspace, where there is no coach.
 
 ## Decision

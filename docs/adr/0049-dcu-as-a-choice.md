@@ -55,5 +55,5 @@ that other training paradigms can later be chosen instead
   rider's activities, the strength note in the repeat dialog, and the
   phases' names in the season plan. They read as suggestions, not as a
   frame the week is measured against.
-- **Paradigms other than DCU wait** for the permissions Martin asked for
-  (BDR, SCF) and for "Lav intensitet først" (wave G).
+- **Paradigms other than DCU wait** for permission from BDR and SCF and
+  for "Lav intensitet først" (wave G).

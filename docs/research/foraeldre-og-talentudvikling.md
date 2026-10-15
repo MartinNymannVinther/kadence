@@ -2,7 +2,7 @@
 
 Researchnotat, september 2026. Formålet er at samle de danske anbefalinger om forældrerollen og om talentudvikling for 15-22-årige, som Kadence skal bygge på, og at omsætte dem til konkrete produktbeslutninger.
 
-**Om rettigheder.** Team Danmarks forældreguide og undervisningsmateriale må kun gengives med kildeangivelse af Team Danmark og Kolding Talent, og materialet må ikke bruges kommercielt. Alt nedenfor er derfor vores egne sammenfatninger, ikke uddrag. I appen linker vi til originalerne (se [Kilder](#kilder)) i stedet for at gengive dem. Hvis vi en dag vil vise Team Danmarks tekst, modeller eller illustrationer direkte i Kadence, skal vi først have en skriftlig aftale med Team Danmark (kontakten til forældreguiden er deres dual career-konsulent).
+**Om rettigheder.** Team Danmarks forældreguide og undervisningsmateriale må kun gengives med kildeangivelse af Team Danmark og Kolding Talent, og materialet må ikke bruges kommercielt. Alt nedenfor er derfor vores egne sammenfatninger, ikke uddrag. I appen linker vi til originalerne (se [Kilder](#kilder)) i stedet for at gengive dem. Hvis vi en dag vil vise Team Danmarks tekst, modeller eller illustrationer direkte i Kadence, skal vi først have en skriftlig aftale med Team Danmark.
 
 **Metode.** Forældreguiden (80 sider), plakaten med gode råd, Talenthuset (16 sider) og ATK 2.0 digital (366 sider) er hentet som PDF og læst i fuld tekst. Cykling Danmarks træningsanbefalinger for 2025 og deres talent- og elitestrategi for 2025-2028 er hentet som supplement, fordi Kadence primært henvender sig til cykelryttere.
 
@@ -275,7 +275,7 @@ Nedenfor omsætter vi anbefalingerne til konkrete funktioner i Kadence. Henvisni
 
 **Konklusion: "HAIJ-principper" betyder med stor sandsynlighed Haijs egne syv dogmer og tjeklisten "Klar til vinduet", ikke en sportsmodel.**
 
-**Grundlag.** Søgninger på nettet efter "HAIJ", "H.A.I.J.", "HAIJ-model" og "HAIJ principper" i forbindelse med idræt, talentudvikling, cykling, DIF, Team Danmark og designprincipper gav intet relevant. Men i din udviklingsmappe findes Haij-familien af open source-værktøjer (`haij`, `haij-site` og søsterværktøjerne `ajour`, `tavle`, `domino` og `makker`). Kadence ligger i samme mappe og er efter alt at dømme tænkt som et nyt værktøj i Haij-vinduet.
+**Grundlag.** Søgninger på nettet efter "HAIJ", "H.A.I.J.", "HAIJ-model" og "HAIJ principper" i forbindelse med idræt, talentudvikling, cykling, DIF, Team Danmark og designprincipper gav intet relevant. Men Haij er en familie af open source-værktøjer (`haij`, `haij-site` og søsterværktøjerne `ajour`, `tavle`, `domino` og `makker`), og Kadence er et af dem (README.md).
 
 **De syv dogmer** (dansk tekst i `haij-site/src/content/dogmas.ts` er den gældende; her kun titler og vores korte opsummering):
 
@@ -304,7 +304,7 @@ Nedenfor omsætter vi anbefalingerne til konkrete funktioner i Kadence. Henvisni
 2. **HAI (Human-AI Interaction)**, designprincipper for AI i brugerflader (gennemsigtighed, brugerkontrol, at fejl håndteres pænt). De overlapper dogme 5.
 3. En slåfejl eller en intern forkortelse, som ikke findes offentligt.
 
-Vi anbefaler at få bekræftet hos Martin, at det er Haij-dogmerne, der er ment.
+README.md bekræfter det: Kadence er et værktøj i Haij-familien og følger de syv dogmer.
 
 ---
 
@@ -360,9 +360,7 @@ Vi anbefaler at få bekræftet hos Martin, at det er Haij-dogmerne, der er ment.
 - ATK-øvelser: https://www.cyklingdanmark.dk/uddannelse/atk-oevelser
 - Talent- og elitestrategi 2025-2028 "Vejen frem" (PDF): https://dcu2023.idefadev.dk/fileadmin/PDF/VEJEN_FREM_DCU_Talent-_og_Elitestrategi_2025-2028.pdf
 
-**Haij (lokalt)**
+**Haij**
 
-- `/Users/martinvinther/udvikling/haij-site/src/content/dogmas.ts`
-- `/Users/martinvinther/udvikling/haij-site/src/content/checklist.ts`
-- `/Users/martinvinther/udvikling/haij-site/README.md`
-- `/Users/martinvinther/udvikling/haij/CLAUDE.md`
+- https://github.com/MartinNymannVinther/haij-site: `src/content/dogmas.ts`, `src/content/checklist.ts` og `README.md`
+- https://github.com/MartinNymannVinther/haij: `CLAUDE.md`
