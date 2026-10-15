@@ -205,7 +205,7 @@ URL: https://www.cyklingdanmark.dk/fileadmin/files/PDFer/Sporstlige_regler_2026_
 
 **B9. "Sportslig godkendelse" and the federations' criteria** (https://www.teamdanmark.dk/til-atleter/uddannelse/gymnasial-ungdomsuddannelse **[web page]**; criteria PDF https://uu.teamdanmark.dk/organizationCriteria/pdf/file, generated on request, read).
 
-- DCU's criterion: "U17-, U19- og U23-landsholdstrupperne på landevej, talenttruppen på bane eller MTB. Herudover individuel vurdering." DCU contact: Thomas Dalsted.
+- DCU's criterion: "U17-, U19- og U23-landsholdstrupperne på landevej, talenttruppen på bane eller MTB. Herudover individuel vurdering."
 - Benefits: an extended upper-secondary programme, moved hand-ins and exams, supplementary teaching, flexibility for morning training.
 - Deadline for 2027 entry: 11 January 2027 (answer by 2 February 2027).
 

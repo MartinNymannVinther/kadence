@@ -48,7 +48,7 @@ export const CHALLENGE = {
  */
 export type ChallengerEffort = "steady" | "drops" | "sprint" | "throw";
 
-/** Who races the rider: the challenger (ADR 0074), or the sprinter HYLDTOFT calls (ADR 0075). */
+/** Who races the rider: the challenger (ADR 0074), or the sprinter TURBO calls (ADR 0075). */
 export type Rival = "challenger" | "sprinter";
 
 /** Where he is for the landscape: on the road, how fast, and his legs; and the line. */

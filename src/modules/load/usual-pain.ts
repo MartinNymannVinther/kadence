@@ -1,7 +1,7 @@
 /**
- * Known pains on the check-in (docs/adr/0097). Martin, who always has a
- * little pain in his back: "Det skal nok nærmere være, hvis noget er
- * anderledes end det plejer." A rider records what always hurts a little
+ * Known pains on the check-in (docs/adr/0097). Some riders always have a
+ * little pain somewhere, and what matters is a day when it is different.
+ * A rider records what always hurts a little
  * and how much it usually does, 1 or 2 on ATK's ladder; on the day's
  * check-in they tick "Ryg som det plejer". A pain answered so is stored,
  * so the pattern stays visible, but it does not colour the day, nor raise

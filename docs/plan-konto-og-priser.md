@@ -59,12 +59,12 @@ Grunden til at låse alligevel: en adresse, der ikke findes, kan ikke få
 
 `organizations.plan` og to datoer:
 
-| Tilstand  | Hvornår                                                                                      | Hvad virker                                                                                                                                                                                                                      |
-| --------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `free`    | `BILLING=off`, eller `TRIAL_DAYS=0`, eller ejeren har sat rummet gratis (pilot, DCU, venner) | Alt.                                                                                                                                                                                                                             |
-| `trial`   | Nyt rum med `BILLING=on` og `TRIAL_DAYS>0`; `trial_ends_at` er sat                           | Alt. En linje under Indstillinger siger, hvor mange dage der er tilbage; mail 7 dage og 1 dag før.                                                                                                                               |
-| `paid`    | Ejeren har registreret en betaling; `paid_until` er sat                                      | Alt. Mail 14 dage før `paid_until`.                                                                                                                                                                                              |
-| `expired` | `trial_ends_at` eller `paid_until` er passeret, og rummet ikke er `free`                     | **Læs og hent ud.** Kalender, ture, check-ins og eksport kan ses og hentes; intet nyt kan lægges ind, ingen AI, ingen upload. En plain besked siger det og viser prisen og kontonummeret. Intet slettes nogensinde af den grund. |
+| Tilstand  | Hvornår                                                                                          | Hvad virker                                                                                                                                                                                                                      |
+| --------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `free`    | `BILLING=off`, eller `TRIAL_DAYS=0`, eller ejeren har sat rummet gratis (fx pilot eller partner) | Alt.                                                                                                                                                                                                                             |
+| `trial`   | Nyt rum med `BILLING=on` og `TRIAL_DAYS>0`; `trial_ends_at` er sat                               | Alt. En linje under Indstillinger siger, hvor mange dage der er tilbage; mail 7 dage og 1 dag før.                                                                                                                               |
+| `paid`    | Ejeren har registreret en betaling; `paid_until` er sat                                          | Alt. Mail 14 dage før `paid_until`.                                                                                                                                                                                              |
+| `expired` | `trial_ends_at` eller `paid_until` er passeret, og rummet ikke er `free`                         | **Læs og hent ud.** Kalender, ture, check-ins og eksport kan ses og hentes; intet nyt kan lægges ind, ingen AI, ingen upload. En plain besked siger det og viser prisen og kontonummeret. Intet slettes nogensinde af den grund. |
 
 Overgangen til `expired` sker i et dagligt job, aldrig midt i en
 request. Et rum, der er `expired`, kan altid eksporteres og slettes af
@@ -96,7 +96,7 @@ efter `organizations.kind`, medmindre ejeren sætter en anden.
 
 ### 2.5 Faktura ved hånden, registreret i Kadence
 
-Til at begynde med laver Martin fakturaen i sit eget regnskabsprogram
+Til at begynde med laves fakturaen i operatørens eget regnskabsprogram
 (nummerering, moms og bogføring hører til der). Kadence hjælper med
 tre ting:
 
@@ -158,7 +158,7 @@ Skøn for det første år med op til 10 klubber og 100 personer:
 | Mistral ved AI-budgettet (5 € pr. rum pr. måned er loftet; forbruget er typisk en tiendedel) | 2.000–4.000          |
 | Mail (one.com), domæne, overvågning                                                          | 0–300                |
 | **Drift i alt**                                                                              | **3.500–5.500**      |
-| Martins tid: support, opdateringer, fakturaer (2–4 timer om måneden)                         | det, der skal dækkes |
+| Operatørens tid: support, opdateringer, fakturaer                                            | det, der skal dækkes |
 
 Infrastrukturen er lille; det, en pris skal dække, er tiden. Ved 20
 klubber vokser kun lageret og AI'en mærkbart.
@@ -189,7 +189,7 @@ Eksempler: en klub med 12 ryttere betaler 1.200 kr. om året, 100 kr. om
 måneden. En klub med 40 ryttere betaler 2.200 kr. om året, 55 kr. pr.
 rytter pr. år, mod ca. 1.700 kr. pr. rytter hos TrainingPeaks. Ti
 klubber af den størrelse og 50 voksne alene giver omkring 36.000 kr. om
-året: driften er dækket, og der er 30 timer til Martin til 1.000 kr.
+året: driften er dækket, og resten går til operatørens tid.
 
 Hvorfor unge alene er gratis: det er dem, Kadence er til, og en
 16-årig uden klub skal ikke stoppes af 290 kr. Deres AI-budget er
@@ -276,8 +276,8 @@ S-12a først; S-12b oven på den. Begge på `feat/konto-og-priser`.
 
 - Kontonummer og reference til bankoverførsel (står på Abonnement og i
   mails).
-- Fakturaerne laves i dit regnskabsprogram; Kadence registrerer kun, at
-  de er betalt.
+- Fakturaerne laves i operatørens regnskabsprogram; Kadence registrerer
+  kun, at de er betalt.
 - Vilkårene får et afsnit om priser, prøveperiode og hvad der sker ved
   udløb (læs og hent ud, intet slettes); rådgiveren læser det med
   (docs/jura).

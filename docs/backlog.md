@@ -25,7 +25,7 @@ P1 er i gang på grenen `feat/p1-foer-piloten`, bygget på `main` a814c6c (efter
 
 - **15. okt., eftermiddag.** Kortet bag en tur viser navne på steder og veje på `feat/map-labels` (ADR 0100, ingen migrering), efter Martins spørgsmål om, hvordan bynavne og vejnavne kommer på kortet. Navnene lå allerede i kortfilerne; det, der manglede, var skrifttegnene. Noto Sans ligger nu i Kadence selv (public/map/fonts, ca. 1 MB, SIL OFL), kun for latinsk skrift, og hentes fra samme adresse som kortet, så ingen skrift hentes udefra. Lande og regioner groft, byer tidligt, mindre byer senere og landsbyer først tæt på; vejnavne langs vejen fra zoom 12 og 13 og vejnumre (21, E 45, Ma-10) som lille tekst uden skilte. Stille grå tekst under ruten, i lys og mørk. Hvor verdenskortet og detaljekortet overlapper, står hvert navn kun én gang. Navne i andre skrifter (Москва) vises på engelsk (Moscow).
 - **15. okt.** Mærkerne siger det mere motiverende på `feat/motivating-marks` (ændring til ADR 0095, ingen migrering), efter Martins "Det lyder stadig forkert med 'langt fra planen', find på noget mere motiverende." om et tomt styrkepas på 1 t, udført på 1 t til RPE 3: gul hedder nu "Tæt på planen", rød "Din egen version", og et pas uden noget ind "Ikke nået" (også overskriften i boksen, for alle sportsgrene); farver og ikoner er de samme, og hjælpeteksterne og brugervejledningens side følger med (PDF'en er ikke lavet igen). Et styrkepas uden øvelser siger kun, hvor længe, og bedømmes på minutterne, så Martins pas er grønt; med øvelser gælder reglen fra 13. oktober. "Sådan er det regnet" siger FTP på cyklen, puls i andre sportsgrene og "hvor hårdt det føltes" i styrke og ved RPE, og "turen" kun om ture. Rækken "Belastning" er taget ud af "Udført"; tallet står bag "Sådan er det regnet" og på aktivitetens side.
-- **14. okt., sen eftermiddag.** Ture får sigende navne på `feat/ride-names` (ADR 0098, ingen migrering) efter Martins "Giv gerne ture sigende navne. Filnavnet giver ikke så meget.": en titel, der er et filnavn ("24720018915", "24698066483_ACTIVITY", "2026-09-20-11-16-25", "Polar" m.fl.), vises som passets navn, ellers som "Morgentur", "Eftermiddagstur", "Indendørs tur", "Styrketræning" eller "…træning" efter tidspunktet i København og sporten. Navnet regnes ud, når det vises, så alle gemte ture har det med det samme; den gemte titel og eksporten er uændrede. Et løb kan ikke kendes fra anden træning, før filens sport gemmes på turen. Bruges i Mine ture, på turens side, i kalenderen, på I dag, i Kørt sammen, rekorder, tærskelforslaget, forældrenes samtaler, Nyt fra rytterne og påmindelser.
+- **14. okt., sen eftermiddag.** Ture får sigende navne på `feat/ride-names` (ADR 0098, ingen migrering) efter Martins "Giv gerne ture sigende navne. Filnavnet giver ikke så meget.": en titel, der er et filnavn ("23456789012", "23456700001_ACTIVITY", "2026-09-20-11-16-25", "Polar" m.fl.), vises som passets navn, ellers som "Morgentur", "Eftermiddagstur", "Indendørs tur", "Styrketræning" eller "…træning" efter tidspunktet i København og sporten. Navnet regnes ud, når det vises, så alle gemte ture har det med det samme; den gemte titel og eksporten er uændrede. Et løb kan ikke kendes fra anden træning, før filens sport gemmes på turen. Bruges i Mine ture, på turens side, i kalenderen, på I dag, i Kørt sammen, rekorder, tærskelforslaget, forældrenes samtaler, Nyt fra rytterne og påmindelser.
 - **14. okt., eftermiddag.** Kendte smerter er bygget på `feat/known-pains` (ADR 0097, migrering 0057) efter Martins "Det skal nok nærmere være hvis noget er anderledes end det plejer": smertespørgsmålet spørger nu "Gør noget ondt, som ikke plejer, eller mere end det plejer?" (ATK's trappe uændret); en rytter (eller træneren) skriver kendte smerter på Mig eller rytterens side (sted og hvor ondt det plejer, 1 eller 2, højst fem); check-in viser hver som "Ryg som det plejer", og en smerte på sit sædvanlige niveau gemmes, men farver ikke dagen og giver ingen råd om at skære ned. Over det sædvanlige, et nyt sted eller trin 3 følger trappen som før. Kortet siger nu, hvorfor dagen er gul eller rød, og nævner kun træneren i en klub. En kendt smerte tre uger i træk hos en rytter under 18 i en klub er et stille punkt på trænerens liste. Lars i voksendemoen har en kendt rygsmerte.
 - **14. okt.** En plan uden intensitet bedømmes på tiden på `fix/plan-without-intensity` (ændring til ADR 0095, ingen migrering), efter Martins rolige løbetur på 31 min til "Løbetur 30 min", der blev rød med "Mere gas end planlagt … omkring 2 gange så hårdt". Et pas, der kun siger hvor længe (intet indhold, kun åbne trin eller et andet pas end cykel og styrke), får nu sin farve fra minutterne, uanset hvordan belastningen er målt. En løbetur eller anden sport målt på puls bedømmes også på tiden, medmindre planen har pulsmål, fordi tærsklerne er cyklens, og pulsen ved løb ligger højere. Ordene taler så kun om tiden, og hintet om tærsklen gælder kun cykelture. Styrkepas følger reglen fra 13. oktober som før.
 - **14. okt.** Bevægelsestiden fra et ur på smart recording er rettet på `fix/smart-recording-gaps` (PR #73), og de ture, der allerede er gemt, rettes af sig selv på `fix/retime-stored-rides` (ADR 0096, migrering 0057): migreringen lægger ét job `activities.retime` i køen, som workeren kører ved første deploy. Det læser hver gemt fil igen som en træner i arbejdsrummet og retter de ture, hvis bevægelsestid er skæv med mere end 30 sekunder og 1 %, med gennemsnit, zoner, arbejde og belastning. En belastning fra RPE regnes igen ud fra de nye minutter; titel, RPE, noter og det matchede pas røres ikke. Belastningen regnes ved rytterens nuværende tærskler.
@@ -532,7 +532,8 @@ til polleren (tilføjes allow-listen i tests/rls/tenant-isolation.test.ts),
 en poller i processen hvert 15. minut med højst 2 filer i sekundet (start
 den fra instrumentation-node.ts som påmindelserne), 401 vist som et
 sovende link, og ture gennem importFit. Ture uden fil (extendedSummary)
-kun hvis Felix har bekræftet det. Tjek Tredicts vilkår igen før du
+kun hvis Tredict har bekræftet, at listen svarer uden fuld adgang. Tjek
+Tredicts vilkår igen før du
 bygger. Ingen uofficiel Garmin-login i nogen form. Tests med mocket
 fetch; ingen netværk i testene. ADR og en række i docs/subprocessors.md.
 ```
@@ -1317,7 +1318,7 @@ der, **så** vejen videre er til at få øje på.
 > dem, og UCI-/DCU-point og placering for U19 og U23 (Martins beslutning 8. oktober; ADR 0013 gælder stadig for rytterens egne resultater i
 > appen). Kilder: UCI dataride (holdregister og ranglister pr.
 > nationalitet) dagligt, DCU's holdliste og rangliste bag flaget
-> `TEAMS_DCU` (slået til, så Martin kan vise det for DCU i uge 42;
+> `TEAMS_DCU` (slået til som standard, `TEAMS_DCU=off` slår det fra;
 > DCU's ja er stadig udestående), holdenes egne hjemmesider ugentligt.
 > Kadence har ingen planlagt job (ADR 0039): hent, når siden åbnes og
 > øjebliksbilledet er over et døgn gammelt, én ad gangen med lås, og
@@ -1638,9 +1639,8 @@ Læs src/modules/guides/guides.ts (FOOD_GUIDE), messages/da.json under
 guides.food og docs/research/ernaering.md. Lav et læsesæt til en
 sportsdiætist som docs/review/madguide-til-diaetist.md: hver tekst, som
 forældre og ryttere ser den, med kilderne under og et felt til
-bemærkninger. Skriv et kort følgebrev på dansk som udkast i Martins
-Gmail (aldrig send; brug htmlBody og del adresser i spans, se memory om
-Gmail-udkast). Ingen kodeændringer.
+bemærkninger. Skriv et kort følgebrev på dansk, som ejeren selv sender.
+Ingen kodeændringer.
 ```
 
 ### A-02 Tilladelse til Rulles ruter og navne
@@ -1653,9 +1653,8 @@ ruter Rulle bruger, **så** `RULLE_WORLD` kan slås til uden tvivl.
 ```text
 Find i messages/da.json under rulle.credits og i public/rulle, hvilke
 ruter der kommer fra hvem (Vejle CK, Odder CK, DCU Distrikt Sjælland og
-VM-ruten i Montréal). Skriv et kort udkast pr. klub i Martins Gmail, der
-beskriver brugen og beder om skriftligt ja (aldrig send; htmlBody,
-adresser delt i spans). Foreslå i docs/adr/0057 et neutralt navn til
+VM-ruten i Montréal). Skriv et kort brev pr. klub, der beskriver brugen
+og beder om skriftligt ja; ejeren sender dem selv. Foreslå i docs/adr/0057 et neutralt navn til
 VM-ruten, hvis UCI's navn bør undgås, og skriv OpenStreetMaps
 ODbL-kreditering ind, hvor landet vises.
 ```
@@ -1665,11 +1664,9 @@ ODbL-kreditering ind, hvor landet vises.
 **Tokens:** ca. 40–80k · **Model:** Sonnet 5 (`claude-sonnet-5`), et kort dansk udkast med den rigtige tone.
 
 ```text
-Læs memory om DCU-kontakter og docs/plan-fokus-vinter.md. Tjek navne og
-titler på cyklingdanmark.dk/om-dcu/administrationen. Skriv et udkast i
-Martins Gmail til elitechefen med cc til udviklingskonsulenten for børn
-og unge: en invitation til at følge pilotens vinter, de tre tal, der
-måles, og spørgsmålet om DCU_RESULTS. Aldrig send.
+Læs docs/plan-fokus-vinter.md. Skriv en kort invitation til DCU om at
+følge pilotens vinter: de tre tal, der måles, og spørgsmålet om
+DCU_RESULTS. Ejeren vælger modtager og sender den selv.
 ```
 
 ### A-04 Wahoo: produktionsadgang og puls under 16
@@ -1677,10 +1674,10 @@ måles, og spørgsmålet om DCU_RESULTS. Aldrig send.
 **Tokens:** ca. 30–60k · **Model:** Haiku 4.5 (`claude-haiku-4-5`), et kort, faktuelt udkast på engelsk.
 
 ```text
-Læs docs/devices-setup.md og TECH-DEBT.md (Wahoo). Skriv et udkast i
-Martins Gmail til Wahoos developer-support: ansøgning om
-produktionsadgang til Cloud API for Kadence og spørgsmålet, om puls
-sendes videre for ryttere under 16. Aldrig send.
+Læs docs/devices-setup.md og TECH-DEBT.md (Wahoo). Skriv en ansøgning
+til Wahoos developer-support om produktionsadgang til Cloud API for
+Kadence og spørgsmålet, om puls sendes videre for ryttere under 16.
+Ejeren sender den selv.
 ```
 
 ### A-05 Aftale med pilotholdet
@@ -1705,8 +1702,8 @@ Læs src/modules/load/wellbeing.ts, ADR 0021 og
 docs/research/foraeldre-og-talentudvikling.md. Skriv en side til en
 fagperson (fx fra Team Danmarks eller Kolding Talents miljø), der viser
 den nuværende check-in, forslaget i P2-11 og spørgsmålet: kan zonerne
-regnes forsvarligt på søvn, overskud og smerte alene? Udkast i Martins
-Gmail; aldrig send.
+regnes forsvarligt på søvn, overskud og smerte alene? Ejeren sender den
+selv.
 ```
 
 ### A-07 Ja eller nej til Tredict og Connect IQ
@@ -1714,7 +1711,7 @@ Gmail; aldrig send.
 **Tokens:** ca. 60–120k · **Model:** Opus 5.5 (`claude-opus-5-5`), en afvejning af pris, risiko og vilkår, hvor anbefalingen betyder noget.
 
 ```text
-Læs memory om Garmin-research, docs/research/garmin-without-partner-access.md
+Læs docs/research/garmin-without-partner-access.md
 og docs/research/rides-in-options.md (§1.2, §4 punkt 6 og 9). Skriv på én
 side, hvad Martin skal tage stilling til, på tre akser: (a) tal først
 (gratis og automatisk fra Tredicts liste, filen betalt eller med kabel)
@@ -1723,7 +1720,7 @@ eller fil først, med kodens liste over hvad tursiden mister uden fil;
 kræver fuld adgang, Tredicts egen anbefaling) eller en OAuth-klient pr.
 installation (ingen søvn på papiret, ikke tildelt, filens krav
 ubekræftet); (c) hvad Tredict dækker indendørs (Zwift og Rouvy, ikke
-MyWhoosh og TPV). Dertil Connect IQ-appen (developer-konto i hans navn,
+MyWhoosh og TPV). Dertil Connect IQ-appen (en Garmin-udviklerkonto,
 SDK, en Edge 530 eller nyere, licens). Anbefal én vej til vinteren.
 Ingen kode. P2-01's prompt forudsætter et ja her; ret den, hvis svaret
 bliver nej eller en anden variant.
@@ -1736,8 +1733,8 @@ bliver nej eller en anden variant.
 **Tokens:** ca. 150–250k · **Model:** Opus 5.5 (`claude-opus-5-5`), jura om helbredsoplysninger og mindreårige.
 
 ```text
-Læs docs/plan-alene-og-som-tjeneste.md §6. Skriv som udkast til
-Martins rådgiver: docs/databehandleraftale.md ud fra Datatilsynets
+Læs docs/plan-alene-og-som-tjeneste.md §6. Skriv som udkast til en
+juridisk gennemlæsning: docs/databehandleraftale.md ud fra Datatilsynets
 standardkontraktsbestemmelser med Kadences bilag (hvad, hvor, hvordan
 klubben henter og sletter); et forslag til at dele /terms i vilkår og
 privatlivspolitik, der navngiver den dataansvarlige for klubber og for

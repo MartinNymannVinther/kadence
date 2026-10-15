@@ -63,7 +63,7 @@ beforeAll(async () => {
   // Two rides named by their files (docs/adr/0098): one out on the road, one on a trainer.
   const road = { t: [0, 5], lat: [null, 55.70001], lon: [null, 9.53] };
   const trainer = { t: [0, 5], power: [200, 210], lat: [null, null], lon: [null, null] };
-  await insert("activities", ride("tr_a3", "tr_anna", "2026-10-03", 5, "24720018915", road));
+  await insert("activities", ride("tr_a3", "tr_anna", "2026-10-03", 5, "23456789012", road));
   await insert(
     "activities",
     ride("tr_a4", "tr_anna", "2026-10-03", 15, "2026-10-03-17-00-00", trainer),

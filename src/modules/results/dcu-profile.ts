@@ -142,7 +142,7 @@ export function parseDcuProfile(html: string, uciId: string): DcuProfile {
   const id = /UCI ID ([0-9 ]{11,20})/.exec(page);
   if (!id) throw new DcuPageError("not_profile");
   if (id[1]!.replace(/ /g, "") !== uciId) throw new DcuPageError("wrong_rider");
-  // "Benjamin Hove Vinther" in the heading, "M, 2011" just before the UCI ID.
+  // The rider's name in the heading, "M, 2011" just before the UCI ID.
   const born = /(?:^|\s)(?:[A-ZÆØÅ]{1,2}, )?((?:19|20)[0-9]{2}) UCI ID /.exec(page);
   const heading = /<h1\b[^>]*>([\s\S]*?)<\/h1>/i.exec(html);
   const person = {

@@ -33,7 +33,7 @@ beforeAll(async () => {
   await seedPerson(admin, ORG, COACH.userId, "owner");
   await seedPerson(admin, ORG, RIDER.userId, "member");
   for (const [id, uid] of [
-    ["ri_benja", RIDER.userId],
+    ["ri_rider", RIDER.userId],
     ["ri_other", null],
   ] as const) {
     const q = insertSql("riders", { org_id: ORG, id, user_id: uid, name: id, birth_year: 2011 });
@@ -66,14 +66,14 @@ const events = () =>
   admin
     .query(
       `select title, starts_on::text as on, source from calendar_events
-       where org_id = $1 and rider_id = 'ri_benja' order by starts_on`,
+       where org_id = $1 and rider_id = 'ri_rider' order by starts_on`,
       [ORG],
     )
     .then((r) => r.rows);
 
 describe("the UCI ID", () => {
   it("is set by a coach, as the licence prints it", async () => {
-    expect(await setUciId(COACH, { riderId: "ri_benja", uciId: "100 123 456 78" })).toEqual({
+    expect(await setUciId(COACH, { riderId: "ri_rider", uciId: "100 123 456 78" })).toEqual({
       uciId: UCI,
       byCoach: true,
       profile: null,
@@ -93,7 +93,7 @@ describe("the UCI ID", () => {
     await expect(setUciId(RIDER, { riderId: "ri_other", uciId: UCI })).rejects.toMatchObject({
       code: "forbidden",
     });
-    expect(await setUciId(RIDER, { riderId: "ri_benja", uciId: UCI })).toMatchObject({
+    expect(await setUciId(RIDER, { riderId: "ri_rider", uciId: UCI })).toMatchObject({
       uciId: UCI,
       byCoach: false,
     });
@@ -104,16 +104,16 @@ describe("reading the races", () => {
   it("reads nothing while the installation does not read races", async () => {
     Object.assign(env, { DCU_RESULTS: "off" });
     const calls = fakeFetch({ [PORTAL]: () => html(PAGE) });
-    expect(await refreshRaces(COACH, "ri_benja", { today: TODAY })).toEqual({ state: "off" });
+    expect(await refreshRaces(COACH, "ri_rider", { today: TODAY })).toEqual({ state: "off" });
     Object.assign(env, { DCU_RESULTS: "10099999999" });
-    expect(await refreshRaces(COACH, "ri_benja", { today: TODAY })).toEqual({ state: "off" });
+    expect(await refreshRaces(COACH, "ri_rider", { today: TODAY })).toEqual({ state: "off" });
     expect(calls).toHaveLength(0);
   });
 
   it("puts the races in the calendar, and the results on them for the coach", async () => {
     Object.assign(env, { DCU_RESULTS: UCI });
     const calls = fakeFetch({ [PORTAL]: () => html(PAGE) });
-    const outcome = await refreshRaces(COACH, "ri_benja", { today: TODAY });
+    const outcome = await refreshRaces(COACH, "ri_rider", { today: TODAY });
     expect(outcome).toEqual({ state: "read", newRaces: 5, results: 7 });
     expect(calls).toHaveLength(1);
     expect(calls[0]!.headers.get("user-agent")).toMatch(/^Kadence\//);
@@ -129,26 +129,26 @@ describe("reading the races", () => {
     const greve = await listRaceResults(COACH, {
       from: "2026-09-06",
       to: "2026-09-06",
-      riderIds: ["ri_benja"],
+      riderIds: ["ri_rider"],
     });
-    expect(greve).toMatchObject([{ eventId: "ev_greve", place: 3, raceClass: "U17" }]);
+    expect(greve).toMatchObject([{ eventId: "ev_greve", place: 6, raceClass: "U17" }]);
   });
 
   it("does not read again within ten minutes, even when asked", async () => {
     Object.assign(env, { DCU_RESULTS: "on" });
     const calls = fakeFetch({ [PORTAL]: () => html(PAGE) });
-    expect(await refreshRaces(COACH, "ri_benja", { force: true, today: TODAY })).toEqual({
+    expect(await refreshRaces(COACH, "ri_rider", { force: true, today: TODAY })).toEqual({
       state: "fresh",
     });
-    await refreshStaleRaces(COACH, ["ri_benja", "ri_other"]);
+    await refreshStaleRaces(COACH, ["ri_rider", "ri_other"]);
     expect(calls).toHaveLength(0);
   });
 
   it("reads the same page twice into the same calendar, with a corrected place", async () => {
     Object.assign(env, { DCU_RESULTS: "on" });
     await due();
-    fakeFetch({ [PORTAL]: () => html(PAGE.replace(">11</a>", ">10</a>")) });
-    expect(await refreshRaces(COACH, "ri_benja", { today: TODAY })).toMatchObject({
+    fakeFetch({ [PORTAL]: () => html(PAGE.replace(">14</a>", ">13</a>")) });
+    expect(await refreshRaces(COACH, "ri_rider", { today: TODAY })).toMatchObject({
       state: "read",
       newRaces: 0,
     });
@@ -156,20 +156,20 @@ describe("reading the races", () => {
     const demin = await listRaceResults(COACH, {
       from: "2026-09-13",
       to: "2026-09-13",
-      riderIds: ["ri_benja"],
+      riderIds: ["ri_rider"],
     });
-    expect(demin.map((r) => r.place)).toEqual([10]);
+    expect(demin.map((r) => r.place)).toEqual([13]);
   });
 
   it("notes a page that is not the rider's, and changes nothing", async () => {
     Object.assign(env, { DCU_RESULTS: "on" });
     await due();
     fakeFetch({ [PORTAL]: () => html(profilePage("", "10099999999")) });
-    expect(await refreshRaces(COACH, "ri_benja", { today: TODAY })).toEqual({
+    expect(await refreshRaces(COACH, "ri_rider", { today: TODAY })).toEqual({
       state: "failed",
       error: "wrong_rider",
     });
-    const status = await raceStatus(COACH, "ri_benja");
+    const status = await raceStatus(COACH, "ri_rider");
     expect(status.error).toBe("wrong_rider");
     expect(status.latest).toHaveLength(5);
     expect(await events()).toHaveLength(5);
@@ -179,21 +179,21 @@ describe("reading the races", () => {
     Object.assign(env, { DCU_RESULTS: "on" });
     await due();
     fakeFetch({ [PORTAL]: () => new Response("Not Found", { status: 404 }) });
-    expect(await refreshRaces(COACH, "ri_benja", { today: TODAY })).toEqual({
+    expect(await refreshRaces(COACH, "ri_rider", { today: TODAY })).toEqual({
       state: "failed",
       error: "unknown",
     });
   });
 
   it("is a coach's to ask for, and a coach's to read", async () => {
-    await expect(refreshRaces(RIDER, "ri_benja")).rejects.toMatchObject({ code: "forbidden" });
+    await expect(refreshRaces(RIDER, "ri_rider")).rejects.toMatchObject({ code: "forbidden" });
     await expect(
-      listRaceResults(RIDER, { from: TODAY, to: TODAY, riderIds: ["ri_benja"] }),
+      listRaceResults(RIDER, { from: TODAY, to: TODAY, riderIds: ["ri_rider"] }),
     ).rejects.toMatchObject({ code: "forbidden" });
   });
 
   it("drops what was read when the UCI ID is removed, and keeps the coach's race", async () => {
-    await setUciId(COACH, { riderId: "ri_benja", uciId: "" });
+    await setUciId(COACH, { riderId: "ri_rider", uciId: "" });
     expect(await events()).toEqual([]);
     const greve = await admin.query(`select id from calendar_events where id = 'ev_greve'`);
     expect(greve.rowCount).toBe(1);

@@ -1,20 +1,19 @@
-# ADR 0075: Rulle — the sprinter, called by HYLDTOFT
+# ADR 0075: Rulle — the sprinter, called by TURBO
 
 Status: accepted · Date: 2026-10-05 · Builds on 0013, 0045, 0074
 
 ## Context
 
 The challenger (ADR 0074) races on a plan of his own. The wish was a
-second rider, drawn from photos of a real young rider: a small one,
-called by his own cheat code, who does nothing but sit on your wheel
+second rider: a small one, called by his own cheat code, who does nothing but sit on your wheel
 until the sprint, and then wins it with a jump over the line — unless
-you have ridden him tired first. What he can ride was told as two
+you have ridden him tired first. What he can ride is set as two
 efforts: 360 W for five minutes and 600 W for one, at 52 kg. The rest
 was left to be worked out.
 
 ## Decision
 
-- **Called by HYLDTOFT, on a free ride only**, as JOHAN calls the
+- **Called by TURBO, on a free ride only**, as RIVAL calls the
   challenger: in a session it does nothing. Of himself he turns up where
   the challenger would, sharing his chance half and half, and offers a
   race the rider can say yes or no to (ADR 0074). The race is the
@@ -60,22 +59,17 @@ was left to be worked out.
 
 ## Trade-offs accepted
 
-- **A real rider's surname, weight and watts in the open source.**
-  HYLDTOFT names a real young rider, and the code is public, so the name
-  is too — far more findable than JOHAN's first name — and beside it his
-  weight and what he can ride. ADR 0013 keeps young riders' weight out
-  of Kadence; here a weight is tied to a name in public. It is there
-  because the one who asked for it knows him; he — and, if he is under
-  18, his parents — should say yes to the name and the numbers before
-  this is merged, or the numbers should be made up. The photos are not
-  in the repository, and he has no face and no team's name.
-- **Told numbers, a model's rest.** Two efforts fix only two numbers.
+- **A figure, not a person.** His weight and watts are set for the
+  game and belong to no one; ADR 0013 keeps riders' weight out of
+  Kadence, and this is a figure's. He has no face and no team's name.
+  (Amended 2026-10-15: the cheat codes are now RIVAL and TURBO.)
+- **Two numbers, a model's rest.** Two efforts fix only two numbers.
   His sprint, his size in the air and his recovery are the models'
   answers, not measurements, and he is a figure in the landscape, not a
   rider anyone is compared with (ADR 0013).
-- **The first H.** H shows the speed on the ride screen; typing
-  HYLDTOFT turns it on or off with its first letter, before the code is
-  known. The letters after it are the code's.
+- **A code's first letter.** RIVAL and TURBO begin with letters the
+  ride screen does not use, so typing them changes nothing before the
+  code is known. The letters after the first are the code's.
 - **A throw seen from behind.** He usually wins by tens of metres, so
   the rider sees the jump small, under the arch ahead. Close enough to
   see it well, they are close to beating him.
