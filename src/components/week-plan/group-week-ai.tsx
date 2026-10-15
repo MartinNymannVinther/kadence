@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
-import { Check, Sparkles } from "lucide-react";
+import { CalendarDays, Check, Sparkles } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { AiFailureText } from "@/components/assist/ai-failure";
 import { ProposalFrame } from "@/components/assist/proposal-frame";
@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { diffDays } from "@/core/dates";
 import { askAi } from "@/modules/ai/read-client";
 import type { AiFailure } from "@/modules/ai/wire";
+import type { GroupWeekProposal } from "@/modules/assist/group-week";
 import type { WeekDraft } from "@/modules/assist/week-draft";
 import { CLASS_BASES, DCU_TOTALS_2025, isClassBasis } from "@/modules/dcu";
 import {
@@ -34,8 +35,11 @@ import { newKey, type PlanItem } from "./types";
  * The class-year starts as the selected riders' lightest, the safe side
  * for a mixed group. Where the team has adults, their training profiles
  * are offered too (ADR 0092), and a group of only adults starts from the
- * lightest profile. No rider's data goes in. The proposal fills the
- * planner, where every session can be changed before anything is laid in.
+ * lightest profile. No rider's data goes in; in a personal workspace the
+ * person's own calendar days do, as dates only (docs/adr/0101). The
+ * proposal shows the calendar days the AI read beside its sessions, and
+ * fills the planner, where every session can be changed before anything
+ * is laid in.
  */
 
 /** The season's hours a basis plans from, to find the lightest. */
@@ -73,6 +77,7 @@ export function GroupWeekAi({
   const plan = useTranslations("weekPlan");
   const season = useTranslations("season");
   const duration = useTranslations("training.duration");
+  const kinds = useTranslations("training.eventKind");
   const locale = useLocale();
   const said = startWords(audience, locale === "en" ? "en" : "da");
   const id = useId();
@@ -83,7 +88,7 @@ export function GroupWeekAi({
   const hint = said.aiHint(isSeniorBasis(basis));
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
-  const [result, setResult] = useState<{ draft: WeekDraft; engine: string } | null>(null);
+  const [result, setResult] = useState<{ draft: GroupWeekProposal; engine: string } | null>(null);
   const [error, setError] = useState<AiFailure | "invalid" | "unauthorized" | null>(null);
   const abort = useRef<AbortController | null>(null);
 
@@ -94,7 +99,7 @@ export function GroupWeekAi({
     setBusy(true);
     setError(null);
     setResult(null);
-    const answer = await askAi<WeekDraft>(
+    const answer = await askAi<GroupWeekProposal>(
       "group-week",
       { monday, basis, text: text.trim() },
       { locale, signal: controller.signal },
@@ -221,6 +226,26 @@ export function GroupWeekAi({
           body={t("body")}
           onClose={() => setResult(null)}
         >
+          {(result.draft.events ?? []).length > 0 && (
+            <ul className="flex flex-col gap-1">
+              {(result.draft.events ?? []).map((e, i) => {
+                const day = e.from < monday ? monday : e.from;
+                return (
+                  <li key={i} className="text-meta flex items-start gap-2 text-2sm">
+                    <CalendarDays aria-hidden className="mt-0.5 size-3.5 shrink-0" />
+                    <span>
+                      <span className="first-letter:uppercase">
+                        {weekdayShort(day, locale)} {dayMonth(day, locale)}
+                      </span>
+                      {" · "}
+                      {kinds(e.kind as "race")}
+                      {e.title && e.title !== kinds(e.kind as "race") ? ` · ${e.title}` : ""}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
           {result.draft.sessions.length === 0 ? (
             <p className="text-2sm">{t("empty")}</p>
           ) : (
