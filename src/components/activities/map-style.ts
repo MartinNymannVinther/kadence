@@ -1,13 +1,14 @@
 import type { ExpressionSpecification, LayerSpecification, StyleSpecification } from "maplibre-gl";
 import type { MapVersions } from "@/core/map/paths";
+import { labelLayers } from "./map-labels";
+import { glyphsUrl, type LabelPalette } from "./map-text";
 
 /**
  * The map behind a ride's route, as a MapLibre style over the Protomaps
  * basemap schema (v4: earth, landcover, landuse, water, roads, buildings).
- * Quiet by design — warm paper, soft green, grey-blue water, white roads —
- * so the route is what the eye finds. No labels: labels need font files,
- * and the route needs roads and water around it, not names. Pure, so it
- * is tested alone.
+ * Quiet by design — warm paper, soft green, grey-blue water, white roads,
+ * names in soft grey (map-labels.ts, ADR 0100) — so the route is what the
+ * eye finds. Pure, so it is tested alone.
  */
 
 export type MapPalette = {
@@ -21,6 +22,7 @@ export type MapPalette = {
   roadCasing: string;
   highway: string;
   path: string;
+  label: LabelPalette;
 };
 
 export const LIGHT: MapPalette = {
@@ -34,6 +36,7 @@ export const LIGHT: MapPalette = {
   roadCasing: "#d9d2c4",
   highway: "#e6d6b3",
   path: "#c9bfae",
+  label: { place: "#6b665d", area: "#8f897d", road: "#7d776c", halo: "#f4f1ea" },
 };
 
 export const DARK: MapPalette = {
@@ -47,6 +50,7 @@ export const DARK: MapPalette = {
   roadCasing: "#1b1a18",
   highway: "#4a4436",
   path: "#45423c",
+  label: { place: "#aaa497", area: "#858074", road: "#948e82", halo: "#23221f" },
 };
 
 const width = (base: number): ExpressionSpecification => [
@@ -61,13 +65,18 @@ const width = (base: number): ExpressionSpecification => [
   base * 4,
 ];
 
-/** Where the map's files are, as pmtiles:// addresses: the detail file, the world, or both. */
-export type MapSources = { detail?: string | null; world?: string | null };
+/**
+ * Where the map's files are, as pmtiles:// addresses: the detail file, the
+ * world, or both; and where the glyphs for the names are. Without glyphs
+ * the map has no names.
+ */
+export type MapSources = { detail?: string | null; world?: string | null; glyphs?: string | null };
 
 /**
  * The pmtiles:// addresses of the files the page says are there. Each
  * carries its file's version, so a newly fetched file gets a new address
- * and the browser never mixes ranges it cached from the old one.
+ * and the browser never mixes ranges it cached from the old one. The
+ * glyphs are on the same origin, in public/map/fonts.
  */
 export function mapSources(origin: string, versions: MapVersions): MapSources {
   const at = (path: string, version: string | null) =>
@@ -75,6 +84,7 @@ export function mapSources(origin: string, versions: MapVersions): MapSources {
   return {
     detail: at("/api/map/tiles", versions.detail),
     world: at("/api/map/world", versions.world),
+    glyphs: glyphsUrl(origin),
   };
 }
 
@@ -86,6 +96,7 @@ const ATTRIBUTION =
  * it lies under the detail; where both are drawn, the detail's land
  * covers the world's coarser shapes and the detail is what shows. Outside
  * the detail file's regions only the world is there, coarse but whole.
+ * The names lie over both, and under the route (map-labels.ts).
  */
 export function mapStyle(sources: MapSources, palette: MapPalette): StyleSpecification {
   const p = palette;
@@ -110,6 +121,12 @@ export function mapStyle(sources: MapSources, palette: MapPalette): StyleSpecifi
         paint: { "fill-color": p.earth },
       });
     style.layers.push(...basemapLayers("basemap", "", p));
+  }
+  if (sources.glyphs && (sources.world || sources.detail)) {
+    style.glyphs = sources.glyphs;
+    style.layers.push(
+      ...labelLayers({ world: Boolean(sources.world), detail: Boolean(sources.detail) }, p.label),
+    );
   }
   return style;
 }

@@ -1,6 +1,6 @@
 # ADR 0023: The map behind a route is served by Kadence itself
 
-Status: accepted · Date: 2026-09-28 · Builds on 0022 · Amended by ADR 0099 (the world at low zoom and the training camps in detail)
+Status: accepted · Date: 2026-09-28 · Builds on 0022 · Amended by ADR 0099 (the world at low zoom and the training camps in detail) and ADR 0100 (place and road names, in glyphs Kadence serves itself)
 
 ## Context
 

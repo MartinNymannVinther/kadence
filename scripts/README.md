@@ -141,6 +141,19 @@ scripts/fetch-map.sh compose    # into the kadence-map volume
 
 Production without the repository on the server: docs/deploy.md 6c.
 
+## fetch-map-fonts.sh
+
+Fetches the glyphs the map's place and road names are drawn with (ADR
+0100): Noto Sans Regular and Medium from Protomaps' basemaps-assets, the
+Latin ranges only, with the SIL Open Font License, into
+`public/map/fonts`. The files are checked in, so run it only to refresh
+or widen them; `public/map/fonts/README.md` says how.
+
+```
+scripts/fetch-map-fonts.sh                 # the pinned commit
+FONTS_REF=main scripts/fetch-map-fonts.sh  # the newest
+```
+
 ## backup-kadence.sh
 
 Nightly encrypted dump of the database to EU object storage. Runs on the

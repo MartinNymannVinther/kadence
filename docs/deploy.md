@@ -479,6 +479,10 @@ before.
 The map shows © OpenStreetMap contributors, as the data's licence (ODbL)
 asks.
 
+**Names on the map** (ADR 0100) need no server step: the names of places
+and roads are already in these files, and the glyphs they are drawn with
+ship in the image (`public/map/fonts`).
+
 ## 6c½. The teams page's cache
 
 The open page of Danish U19 and U23 teams (ADR 0072) reads the UCI and
