@@ -1,6 +1,6 @@
 # ADR 0099: The map reaches the training camps
 
-Status: accepted · Date: 2026-10-14 · Amends ADR 0023 (the map behind a route is served by Kadence itself)
+Status: accepted · Date: 2026-10-14 · Amends ADR 0023 (the map behind a route is served by Kadence itself) · Amended by ADR 0100 (the map names places and roads, once where the two files overlap)
 
 ## Context
 
