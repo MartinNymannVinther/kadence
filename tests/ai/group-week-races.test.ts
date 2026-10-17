@@ -9,10 +9,10 @@ import { seedWorkspace } from "../helpers/workspace";
 /**
  * "Foreslå ugen" around a race (docs/adr/0101), read from the database.
  * In a personal workspace the person's own race reaches the model as
- * kind, dates and priority — no title, no sick days — and the proposal
- * shows it back; in a club a rider's event stays out, as before. No
- * session lands on a race day, whatever the model answers. No test calls
- * a real model: a fake one answers.
+ * kind, dates, priority and its title (docs/adr/0102) — no sick days —
+ * and the proposal shows it back; in a club a rider's event stays out, as
+ * before. No session lands on a race day, whatever the model answers. No
+ * test calls a real model: a fake one answers.
  */
 
 const spy = vi.hoisted(() => ({
@@ -136,9 +136,11 @@ afterAll(async () => {
 });
 
 describe("the calendar a group's week reads", () => {
-  it("in a personal workspace: the person's own race, without its title or the sick days", async () => {
+  it("in a personal workspace: the person's own race with its title, and no sick days", async () => {
     const { events } = await readGroupWeek(ALONE, MONDAY);
-    expect(events.prompt).toEqual([{ kind: "race", from: SATURDAY, to: SATURDAY, priority: null }]);
+    expect(events.prompt).toEqual([
+      { kind: "race", title: "Løb i Hillerød", from: SATURDAY, to: SATURDAY, priority: null },
+    ]);
     expect(events.shown).toEqual([
       { kind: "race", title: "Løb i Hillerød", from: SATURDAY, to: SATURDAY },
     ]);
@@ -162,11 +164,12 @@ describe("the proposal around a race", () => {
     );
     const sent = spy.asked[0]!.map((m) => m.content).join("\n");
     expect(sent).toContain(
-      `{"kind":"race","from":"${SATURDAY}","to":"${SATURDAY}","priority":null}`,
+      `{"kind":"race","title":"Løb i Hillerød","from":"${SATURDAY}","to":"${SATURDAY}","priority":null}`,
     );
     expect(sent).toContain("A race or event day is the race or event itself");
-    expect(sent).not.toContain("Hillerød");
-    expect(sent).not.toContain("ill");
+    expect(sent).toContain("the race or event is still the week's hard effort");
+    expect(sent).not.toContain("Forkølet");
+    expect(sent).not.toContain('"ill"');
     expect(proposal.sessions.map((s) => s.date)).toEqual(["2026-10-19", "2026-10-23"]);
     expect(proposal.events.map((e) => e.title)).toEqual(["Løb i Hillerød"]);
     expect(proposal.note).toBe("Lørdagens løb er prioriteret.");

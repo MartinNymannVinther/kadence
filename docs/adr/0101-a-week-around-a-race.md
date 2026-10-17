@@ -1,6 +1,6 @@
 # ADR 0101: A week around a race — the person's own race reaches the AI, and no session lands on it
 
-Status: accepted · Date: 2026-10-15 · Amends ADR 0043 (the team's week plan, an AI week without rider data) · Builds on 0017 (AI proposals and the team's yes to riders' data), 0080 (a person alone), 0092 (weeks for a motionist)
+Status: accepted · Date: 2026-10-15 · Amends ADR 0043 (the team's week plan, an AI week without rider data) · Builds on 0017 (AI proposals and the team's yes to riders' data), 0080 (a person alone), 0092 (weeks for a motionist) · Amended by 0102 (a race is hard whatever the month; a person's own race goes with its title)
 
 ## Context
 
