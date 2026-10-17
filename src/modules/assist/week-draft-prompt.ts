@@ -47,7 +47,7 @@ export function weekDraftPrompt(c: WeekDraftContext, locale: string) {
       : c.guided
         ? "Aim the week's bike hours at DCU's target and stay inside its corridor. Follow the phase. Keep strength sessions at least 48 hours apart. Give at least one rest day. Lighten exam days."
         : "The team plans without a federation's hour model (ADR 0049): keep the week's bike hours close to the last weeks' and rise at most 15 % from week to week. Keep strength sessions at least 48 hours apart. Give at least one rest day. Lighten exam days.",
-    raceWeekRules(senior ? "adult" : "youth"),
+    raceWeekRules(senior ? "adult" : "youth", locale),
     "Never mention the rider's weight, body or food portions.",
     "Do not repeat sessions already planned. Respect the guardrails: if the rider shows signs of fatigue, pain or poor wellbeing, plan less and say so in the note.",
     senior

@@ -24,7 +24,7 @@ describe("the race-week rules in the prompts", () => {
         "da",
       ),
     );
-    expect(prompt).toContain(raceWeekRules("youth"));
+    expect(prompt).toContain(raceWeekRules("youth", "da"));
     expect(prompt).toContain("DCU race rules for U19");
     expect(prompt).not.toContain("race or event");
   });
@@ -44,7 +44,7 @@ describe("the race-week rules in the prompts", () => {
           "da",
         ),
       );
-      expect(prompt).toContain(raceWeekRules("adult"));
+      expect(prompt).toContain(raceWeekRules("adult", "da"));
       expect(prompt).not.toContain("DCU race rules");
       expect(prompt).toContain("<data>\nJeg kører løb lørdag d. 24\n</data>");
     }
@@ -66,7 +66,7 @@ describe("the race-week rules in the prompts", () => {
       flags: [],
       templates: [],
     };
-    expect(text(weekDraftPrompt(base, "da"))).toContain(raceWeekRules("youth"));
+    expect(text(weekDraftPrompt(base, "da"))).toContain(raceWeekRules("youth", "da"));
     const senior = text(
       weekDraftPrompt(
         {
@@ -78,7 +78,7 @@ describe("the race-week rules in the prompts", () => {
         "da",
       ),
     );
-    expect(senior).toContain(raceWeekRules("adult"));
+    expect(senior).toContain(raceWeekRules("adult", "da"));
   });
 
   it("carry a personal workspace's own race into the prompt, with its title", () => {

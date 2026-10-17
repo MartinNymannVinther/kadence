@@ -49,7 +49,7 @@ function classGroupWeekPrompt(c: GroupWeekContext & { basis: ClassBasis }, local
     c.guided
       ? "Aim the week's bike hours at DCU's target and stay inside its corridor. Follow the phase. Keep strength sessions at least 48 hours apart. Give at least one rest day."
       : "The team plans without a federation's hour model (ADR 0049): plan the hours the coach asks for, rising at most 15 % from last week. Keep strength sessions at least 48 hours apart. Give at least one rest day.",
-    raceWeekRules("youth"),
+    raceWeekRules("youth", locale),
     c.guided
       ? "Follow the coach's wishes for the week where they fit DCU's frame; where they do not, follow DCU and say so in the note."
       : "Follow the coach's wishes for the week.",
