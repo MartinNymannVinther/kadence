@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { monthLong } from "@/components/charts/format";
 import { Input } from "@/components/ui/input";
 import { NativeSelect } from "@/components/ui/native-select";
+import { NumberInput } from "@/components/ui/number-input";
 import { PHASES } from "@/modules/dcu/phases";
 import type { Reference } from "@/modules/paradigms";
 import { DeviationChip } from "./deviation-chip";
@@ -40,19 +41,15 @@ export function MonthEditor({
           <label htmlFor={ids.hours} className="text-label text-xs font-medium">
             {t("hoursLabel")}
           </label>
-          <Input
+          <NumberInput
             id={ids.hours}
-            type="number"
-            inputMode="decimal"
+            decimals
             min={0}
             max={200}
-            step="any"
             value={month.hours}
             aria-describedby={dcu === null ? undefined : `${ids.hours}-dcu`}
             className="max-sm:h-11 tabular-nums"
-            onChange={(e) =>
-              onChange({ ...month, hours: Math.max(0, Number(e.target.value) || 0) })
-            }
+            onChange={(hours) => onChange({ ...month, hours })}
           />
           {dcu !== null && (
             <span id={`${ids.hours}-dcu`} className="flex flex-col gap-1 pt-0.5">
