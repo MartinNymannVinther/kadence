@@ -55,7 +55,7 @@ export function seniorGroupWeekPrompt(c: SeniorGroupContext, locale: string) {
     c.guided
       ? `Aim the week's bike hours at the profile's target and stay inside its corridor. Mostly easy rides in zone 1–2, at most ${hard} hard ${hard === 1 ? "session" : "sessions"}, and a long ride at the weekend. Keep strength sessions at least 48 hours apart. Give at least one rest day.`
       : `The team plans without an hour model: plan the hours the coach asks for, rising at most 15 % from last week. Mostly easy rides, at most ${hard} hard ${hard === 1 ? "session" : "sessions"}. Keep strength sessions at least 48 hours apart. Give at least one rest day.`,
-    raceWeekRules("adult"),
+    raceWeekRules("adult", locale),
     c.guided
       ? "Follow the coach's wishes for the week where they fit the profile; where they do not, follow the profile and say so in the note."
       : "Follow the coach's wishes for the week.",
