@@ -9,13 +9,14 @@ import {
 import type { DraftSession } from "@/modules/assist/week-draft";
 
 /**
- * A week around a race (docs/adr/0101). Martin's own week, on the
+ * A week around a race (docs/adr/0101, 0102). Martin's own week, on the
  * Motionist profile in his personal workspace: a race on Saturday 24
  * October in his calendar, and a draft that put a recovery ride on the
  * race day, no opener on Friday, and never saw the race. Now the race
- * reaches the model as kind, dates and priority, the prompts plan around
- * it as a coach would, and no session lands on the race day whatever the
- * model answers. A club's rider events still stay out of the group's week.
+ * reaches the model as kind, dates, priority and its title, the prompts
+ * plan around it as a coach would — as the week's hard effort, even in a
+ * free month — and no session lands on the race day whatever the model
+ * answers. A club's rider events still stay out of the group's week.
  */
 
 const RACE: EventRow = {
@@ -64,20 +65,32 @@ describe("the race-week rules", () => {
     );
     expect(rules).toContain("The day after a race: rest or a short, easy ride.");
     expect(rules).toContain("counts as the week's hard session or sessions");
+    // A cross race in October, the Motionist's free month, came back as "a light activity".
+    expect(rules).toContain(
+      "A race is ridden hard whatever the season, phase or month says: in an easy or free month the training around it stays easy, and the race is still the week's hard effort, never an easy ride.",
+    );
+    expect(rules).toContain("Count the race's riding time in the week's bike hours");
+    expect(rules).toContain("read its kind and length from its title");
     expect(rules).toContain("A race without a priority counts as B.");
     expect(rules).toContain(
       "A race named in the wishes for the week counts as one in the calendar",
     );
-    expect(rules).toContain("say in the note");
+    expect(rules).toContain("say in the note that it is the week's hard effort");
     expect(raceWeekRules("adult")).toContain("A race or event day is the race or event itself");
   });
 });
 
 describe("the calendar a group's week reads", () => {
-  it("in a personal workspace: the person's own race, as kind, dates and priority", () => {
+  it("in a personal workspace: the person's own race with its title, the other days as dates", () => {
     const { prompt, shown } = groupWeekEvents([RACE, TEAM_CAMP], true);
     expect(prompt).toEqual([
-      { kind: "race", from: "2026-10-24", to: "2026-10-24", priority: null },
+      {
+        kind: "race",
+        title: "Løb i Hillerød",
+        from: "2026-10-24",
+        to: "2026-10-24",
+        priority: null,
+      },
       { kind: "camp", from: "2026-10-25", to: "2026-10-25", priority: null },
     ]);
     // Shown back to the person, with their own words.

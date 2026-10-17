@@ -7,7 +7,7 @@ import { weekDraftPrompt, type WeekDraftContext } from "@/modules/assist/week-dr
  * The race-week rules in the words each week draft sends the model
  * (docs/adr/0101): the youth group's beside DCU's race rules, an adult
  * group's in the adult wording, and the per-rider draft's for both; and a
- * person's own race reaching the prompt as kind, dates and priority. The
+ * person's own race reaching the prompt with its title (docs/adr/0102). The
  * prompts read the environment through the AI's limits, so this runs with
  * `pnpm test`; the rules, the calendar and the guard alone are in
  * race-week.test.ts.
@@ -81,7 +81,7 @@ describe("the race-week rules in the prompts", () => {
     expect(senior).toContain(raceWeekRules("adult"));
   });
 
-  it("carry a personal workspace's own race into the prompt, without its title", () => {
+  it("carry a personal workspace's own race into the prompt, with its title", () => {
     const { prompt } = groupWeekEvents(
       [
         {
@@ -108,7 +108,8 @@ describe("the race-week rules in the prompts", () => {
         "da",
       ),
     );
-    expect(user).toContain('{"kind":"race","from":"2026-10-24","to":"2026-10-24","priority":null}');
-    expect(user).not.toContain("Hillerød");
+    expect(user).toContain(
+      '{"kind":"race","title":"Løb i Hillerød","from":"2026-10-24","to":"2026-10-24","priority":null}',
+    );
   });
 });

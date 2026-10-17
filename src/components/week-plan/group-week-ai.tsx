@@ -36,10 +36,10 @@ import { newKey, type PlanItem } from "./types";
  * for a mixed group. Where the team has adults, their training profiles
  * are offered too (ADR 0092), and a group of only adults starts from the
  * lightest profile. No rider's data goes in; in a personal workspace the
- * person's own calendar days do, as dates only (docs/adr/0101). The
- * proposal shows the calendar days the AI read beside its sessions, and
- * fills the planner, where every session can be changed before anything
- * is laid in.
+ * person's own calendar days do, as dates, and a race with its name
+ * (docs/adr/0101, 0102). The proposal shows the calendar days the AI
+ * read beside its sessions, and fills the planner, where every session
+ * can be changed before anything is laid in.
  */
 
 /** The season's hours a basis plans from, to find the lightest. */

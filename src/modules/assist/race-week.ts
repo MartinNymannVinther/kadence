@@ -2,12 +2,12 @@ import { addDaysIso } from "@/core/dates";
 import type { WeekDraft } from "./week-draft";
 
 /**
- * A week around a race (docs/adr/0101): what the week drafts tell the
- * model about races, which calendar days a group's week reads, and the
- * guard that keeps a proposed session off a race day. Pure.
+ * A week around a race (docs/adr/0101, 0102): what the week drafts tell
+ * the model about races, which calendar days a group's week reads, and
+ * the guard that keeps a proposed session off a race day. Pure.
  */
 
-/** A calendar day as the model reads it. A person's own carries no title. */
+/** A calendar day as the model reads it. A person's own carries a title only when it is a race. */
 export type PromptEvent = {
   kind: string;
   title?: string;
@@ -42,9 +42,11 @@ export function raceWeekRules(audience: "youth" | "adult"): string {
     `In the two days before an A or B ${race}: nothing hard and nothing long.`,
     `The day after a ${race}: rest or a short, easy ride.`,
     `The ${race} counts as the week's hard session or sessions, not as extra on top of them.`,
+    `A ${race} is ridden hard whatever the season, phase or month says: in an easy or free month the training around it stays easy, and the ${race} is still the week's hard effort, never an easy ride.`,
+    `Count the ${race}'s riding time in the week's bike hours, and read its kind and length from its title when the calendar gives one: a cyclocross race, for one, is short and ridden flat out.`,
     `A ${race} without a priority counts as B.`,
     `A ${race} named in the wishes for the week counts as one in the calendar, on the day named.`,
-    `When the week holds a ${race}, say in the note how the week is laid around it.`,
+    `When the week holds a ${race}, say in the note that it is the week's hard effort and how the week is laid around it.`,
   ].join(" ");
 }
 
@@ -53,8 +55,10 @@ export function raceWeekRules(audience: "youth" | "adult"): string {
  * proposal. A club reads its team's own events with their titles; a
  * rider's event there is that rider's data and stays out. A personal
  * workspace (docs/adr/0080) is one person's training, so its rider's
- * events count too, but the model gets only kind, dates and priority:
- * no title, and no sick days, which are health data.
+ * events count too, as kind, dates and priority. A race also goes with
+ * its title, the name of a public event that says what kind of race it
+ * is (docs/adr/0102); the person's other days go without theirs, and sick
+ * days, which are health data, not at all.
  */
 export function groupWeekEvents(
   rows: EventRow[],
@@ -67,7 +71,7 @@ export function groupWeekEvents(
   return {
     prompt: sorted.map((e) => ({
       kind: e.kind,
-      ...(personal ? {} : { title: e.title }),
+      ...(!personal || e.kind === "race" ? { title: e.title } : {}),
       from: e.startsOn,
       to: e.endsOn,
       priority: e.priority,

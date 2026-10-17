@@ -12,7 +12,8 @@ export const dynamic = "force-dynamic";
  * coach chose — or an adult training profile's (docs/adr/0092) — and the
  * team's own library (docs/adr/0043). No rider's data is read, so the
  * team's switch for it is not asked; in a personal workspace the person's
- * own calendar days go along as kind, dates and priority (docs/adr/0101).
+ * own calendar days go along as kind, dates and priority, a race with its
+ * title (docs/adr/0101, 0102).
  */
 const Body = z.object({
   monday: z.iso.date(),

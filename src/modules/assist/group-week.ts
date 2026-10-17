@@ -23,8 +23,9 @@ import { teamParadigm } from "@/modules/team/settings";
  * A group of adults is drafted from their training profile instead, in
  * words of its own (group-week-senior.ts, ADR 0092). In a personal
  * workspace the calendar is the person's own, so their races and other
- * days go along as kind, dates and priority only (docs/adr/0101), and no
- * session is proposed on a race day, whatever the model says.
+ * days go along as kind, dates and priority, a race with its title
+ * (docs/adr/0101, 0102), and no session is proposed on a race day,
+ * whatever the model says.
  */
 
 export { groupWeekPrompt, type GroupWeekContext } from "./group-week-prompt";
