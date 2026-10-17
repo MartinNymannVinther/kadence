@@ -236,6 +236,36 @@ describe("doing a session", () => {
     expect((await listSessions(BO, { from: DAY, to: DAY }))[0]!.activity).toBeNull();
   });
 
+  it("lets the plan of a done session be put right, with the ride kept on it", async () => {
+    const day = "2026-11-24";
+    const twoMinutes = {
+      kind: "bike" as const,
+      steps: [{ ...bike.steps[0]!, seconds: 120 }],
+    };
+    const { ids } = await createGroupSessions(BO, ["t_bo"], {
+      ...input("Rolig tur"),
+      onDate: day,
+      structure: twoMinutes,
+    });
+    const activity = await completeSession(BO, ids[0]!, {
+      minutes: 160,
+      distanceKm: 60,
+      rpe: 3,
+      feel: 4,
+      note: "",
+    });
+    expect(
+      await updateSession(
+        BO,
+        ids[0]!,
+        { ...input("Rolig tur"), riderId: undefined } as never,
+        "one",
+      ),
+    ).toBe(1);
+    const [fixed] = await listSessions(BO, { from: day, to: day });
+    expect(fixed).toMatchObject({ plannedMinutes: 90, activity: { id: activity.id } });
+  });
+
   it("lets a parent read and not tick off", async () => {
     const s = (await listSessions(MOR, { from: "2026-11-01", to: "2026-11-30" }))[0]!;
     await expect(
