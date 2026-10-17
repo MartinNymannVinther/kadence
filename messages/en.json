@@ -1489,6 +1489,7 @@
     },
     "edit": {
       "title": "Edit the session",
+      "done": "This session is done. If you change the plan, what was done is compared with the new plan.",
       "scope": "What should the change apply to?",
       "scopes": {
         "group": "The whole group (those who have not done it)",
