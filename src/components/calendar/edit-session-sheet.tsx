@@ -21,7 +21,9 @@ const ORDER: Record<Scope, number> = { group: 0, series: 1, one: 2 };
  * A coach changing a group's session chooses this rider's copy or every
  * copy nobody has done yet — write once, and it applies to them all; a
  * session in a series can take the coming copies with it (ADR 0041). The
- * time and the place go as far as the rest of the change (ADR 0058).
+ * time and the place go as far as the rest of the change (ADR 0058). A
+ * done session's plan can be put right too, and the sheet says what was
+ * done is then compared with the new plan.
  */
 export function EditSessionSheet({
   open,
@@ -29,6 +31,7 @@ export function EditSessionSheet({
   session,
   scopes,
   isCoach,
+  done = false,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -37,6 +40,8 @@ export function EditSessionSheet({
   scopes: Scope[];
   /** "Byg med AI" is a coach's (ADR 0038). */
   isCoach: boolean;
+  /** The session is done: an activity is on it. */
+  done?: boolean;
 }) {
   const t = useTranslations("calendar.edit");
   const problems = useTranslations("workouts.problem");
@@ -76,6 +81,7 @@ export function EditSessionSheet({
       <SheetContent side="right" className="w-full max-w-full overflow-y-auto sm:max-w-2xl">
         <form onSubmit={save} className="flex flex-col gap-5 p-5 pt-12 sm:p-6">
           <SheetTitle className="text-lg font-semibold">{t("title")}</SheetTitle>
+          {done && <p className="text-muted-foreground -mt-3 text-sm">{t("done")}</p>}
           <TimePlaceFields value={at} onChange={setAt} />
           <SessionFields draft={draft} onChange={setDraft} showKm assist={isCoach} />
           {scopes.length > 1 && (

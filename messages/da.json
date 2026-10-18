@@ -1489,6 +1489,7 @@
     },
     "edit": {
       "title": "Ret passet",
+      "done": "Passet er udført. Retter du planen, sammenlignes det udførte med den nye plan.",
       "scope": "Hvad skal ændringen gælde for?",
       "scopes": {
         "group": "Hele gruppen (dem, der ikke har udført det)",
