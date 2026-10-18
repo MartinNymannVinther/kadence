@@ -5,8 +5,9 @@ import { defineConfig } from "vitest/config";
  * The pure logic on its own: DCU's numbers, age classes, load, zones,
  * guardrails, the FIT decoder, the workout files, the coach guide, a
  * rider's page at Cykling Danmark, Rulle's routes, physics, timeline and
- * Bluetooth, the open calculators and guides, and what Today and a
- * ride's page decide (docs/adr/0063). No database, no global
+ * Bluetooth, the open calculators and guides, what Today and a
+ * ride's page decide (docs/adr/0063), and what a number field keeps
+ * while it is typed (tests/ui). No database, no global
  * setup, no network — `pnpm test:unit` runs anywhere, in a second.
  * `pnpm test` runs these too, with everything else.
  */
@@ -19,7 +20,7 @@ export default defineConfig({
   test: {
     environment: "node",
     include: [
-      "tests/{dcu,load,fit,workouts,charts,coach,files,rulle,results,paradigms,calc,guides,today,activities}/**/*.test.ts",
+      "tests/{dcu,load,fit,workouts,charts,coach,files,rulle,results,paradigms,calc,guides,today,activities,ui}/**/*.test.ts",
       // The championship's arithmetic only; tests/club/championship.test.ts needs the database.
       "tests/club/standings.test.ts",
       // Reminders' keys, timing and words; the job and the policies need the database.

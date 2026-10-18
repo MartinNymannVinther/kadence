@@ -2,8 +2,8 @@
 
 import { useId } from "react";
 import { useTranslations } from "next-intl";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { NumberInput } from "@/components/ui/number-input";
 import { SegmentedChoice } from "@/components/ui/segmented";
 import { Switch } from "@/components/ui/switch";
 import type { Dose } from "@/modules/exercises/types";
@@ -62,27 +62,23 @@ export function ComposerDoseEditor({
       />
       <div className="flex flex-col gap-1">
         <Label htmlFor={amountId}>{dose.kind === "time" ? t("seconds") : t("reps")}</Label>
-        <Input
+        <NumberInput
           id={amountId}
-          type="number"
-          inputMode="numeric"
           min={dose.kind === "time" ? 5 : 1}
           max={dose.kind === "time" ? 600 : 100}
           value={amount}
-          onChange={(e) => setAmount(Number(e.target.value))}
+          onChange={setAmount}
           className="w-20"
         />
       </div>
       <div className="flex flex-col gap-1">
         <Label htmlFor={setsId}>{t("sets")}</Label>
-        <Input
+        <NumberInput
           id={setsId}
-          type="number"
-          inputMode="numeric"
           min={1}
           max={10}
           value={sets}
-          onChange={(e) => onChange({ ...dose, sets: clamp(Number(e.target.value), 1, 10) })}
+          onChange={(n) => onChange({ ...dose, sets: clamp(n, 1, 10) })}
           className="w-16"
         />
       </div>

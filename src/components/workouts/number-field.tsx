@@ -1,17 +1,17 @@
 "use client";
 
 import { useId, type ReactNode } from "react";
+import { NumberInput } from "@/components/ui/number-input";
 import { cn } from "@/lib/utils";
 
 /**
  * A small labelled number input for the builder. It keeps what is typed
  * while it is typed and hands a whole number on (an empty field is the
  * floor), so a coach can clear a field and write a new number without the
- * field fighting back. An optional number — a cadence — is cleared
- * through `onClear`.
+ * field fighting back (NumberInput). An optional number — a cadence — is
+ * cleared through `onClear`.
  *
- * With a unit inside the field the browser's spinner is hidden, so the
- * unit never sits on top of its arrows; the keyboard's arrows still step.
+ * A unit sits inside the field, at its right; the keyboard's arrows step.
  * `labelAddon` sits beside the label — an explanation's button.
  */
 export function NumberField({
@@ -58,23 +58,14 @@ export function NumberField({
         </label>
       )}
       <div className="relative">
-        <input
+        <NumberInput
           id={id}
-          type="number"
-          inputMode="numeric"
           min={min}
           max={max}
-          value={value !== null && Number.isFinite(value) ? value : ""}
-          onChange={(e) => {
-            if (e.target.value === "" && onClear) return onClear();
-            const n = e.target.value === "" ? min : Math.round(Number(e.target.value));
-            if (Number.isFinite(n)) onChange(max === undefined ? n : Math.min(max, n));
-          }}
-          className={cn(
-            "border-input bg-card focus-visible:border-ring focus-visible:ring-ring/18 h-11 w-full min-w-0 rounded-md border px-2.5 text-base tabular-nums outline-none focus-visible:ring-3 sm:h-9 sm:text-sm",
-            suffix &&
-              "[appearance:textfield] pr-16 [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none",
-          )}
+          value={value}
+          onChange={onChange}
+          onClear={onClear}
+          className={cn("h-11 px-2.5 py-0 tabular-nums sm:h-9 sm:text-sm", suffix && "pr-16")}
         />
         {suffix && (
           <span className="text-meta pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 text-xs">
