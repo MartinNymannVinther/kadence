@@ -110,7 +110,7 @@ describe("a youth rider's prompts and picker", () => {
   });
 });
 
-/** Taken on main at aa312a0, before this change; the week drafts with docs/adr/0101 and 0102. */
+/** Taken on main at aa312a0, before this change; the week drafts with docs/adr/0101–0103. */
 const BEFORE = {
   rulleDa: "2f384b485a6d45ea44d244af70fab31b095140a919760b1ca056ff4d5e30cee7",
   rulleEn: "ccb456ae1d21c9f2fbdc3cef4c086c2ada0f2afbc19be3b763e38cf244ef8848",
@@ -119,8 +119,8 @@ const BEFORE = {
   buildBikeUnguided: "d96b81621478df3e989b695850c784ce55e1d1e2fddf8e121124cb1699e45cc3",
   classLines: "435bf43a5917c1502e428707766c47d5068fabaffcc4194372fcf6948a6da85e",
   notes: "af0100329cf587bf17553fb295afb350a859750e9bc9181d718b1e75e9e49d12",
-  group: "92d3e5fcc21207a7b80c7a788ef95748bf53f7d343ceaf78dc08c7aca8e057b5",
-  groupUnguided: "29fcc9c33c6ecdcdea2c513a8133e08ee9530499643a30b66a1715ab788bfda8",
-  weekDraft: "2a3d264cda812d154a74ab1573149f35e527be47da1f69884677b2dce58914e8",
+  group: "0cda07a833d1b7f697e22e65f242dfbefb565e8ef3172693902da5af8cb11f71",
+  groupUnguided: "2d4f83f750ac682e22215dc5f8b7ec06aa3197012b089ff52025756944d8be58",
+  weekDraft: "4d37328665ecac5d9d075959151be4bf30efbe4f083185b9139be162be27414a",
   strength: "998300967b25c6a0552aa26e0d2b6c3c9d38441438def904371b869535023b75",
 };

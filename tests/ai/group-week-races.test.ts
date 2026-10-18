@@ -11,7 +11,8 @@ import { seedWorkspace } from "../helpers/workspace";
  * In a personal workspace the person's own race reaches the model as
  * kind, dates, priority and its title (docs/adr/0102) — no sick days —
  * and the proposal shows it back; in a club a rider's event stays out, as
- * before. No session lands on a race day, whatever the model answers. No
+ * before. The race day holds the race itself, named as the calendar names
+ * it, and nothing else, whatever the model answers (docs/adr/0103). No
  * test calls a real model: a fake one answers.
  */
 
@@ -49,20 +50,31 @@ function fakeModel() {
 const MONDAY = "2026-10-19";
 const SATURDAY = "2026-10-24";
 
-/** What the model answered Martin: a recovery ride on the race day itself. */
+/**
+ * What the model might answer: an opener on Friday, and on the race day
+ * the race, a warm-up as a session of its own and a strength session.
+ */
 const ANSWER = JSON.stringify({
   sessions: [
     { date: "2026-10-19", sport: "bike", title: "Let grundtur", minutes: 60, workout: "1 t Z2" },
-    { date: "2026-10-23", sport: "bike", title: "Åbner", minutes: 50, workout: "50 min Z2" },
+    {
+      date: "2026-10-23",
+      sport: "bike",
+      title: "Kort tur med ryk",
+      minutes: 54,
+      workout: "40 min Z2, 3x1 min Z5 / 2 min pause, 5 min Z1",
+    },
+    { date: SATURDAY, sport: "bike", title: "Opvarmning", minutes: 15, workout: "15 min Z2" },
     {
       date: SATURDAY,
       sport: "bike",
-      title: "Kort restitutionstur",
-      minutes: 45,
-      workout: "45 min Z1",
+      title: "Cross",
+      minutes: 70,
+      workout: "15 min opvarmning, 45 min RPE 9, 10 min nedkørsel",
     },
+    { date: SATURDAY, sport: "strength", title: "Styrke", minutes: 30, workout: "" },
   ],
-  note: "Lørdagens løb er prioriteret.",
+  note: "Lørdagens cross er ugens hårde indsats.",
 });
 
 let admin: Pool;
@@ -155,7 +167,7 @@ describe("the calendar a group's week reads", () => {
 });
 
 describe("the proposal around a race", () => {
-  it("sends the race, drops the race-day session and shows the race", async () => {
+  it("sends the race, keeps the race as the race day's one session and shows it", async () => {
     fakeModel();
     const { proposal } = await proposeGroupWeek(
       ALONE,
@@ -166,13 +178,18 @@ describe("the proposal around a race", () => {
     expect(sent).toContain(
       `{"kind":"race","title":"Løb i Hillerød","from":"${SATURDAY}","to":"${SATURDAY}","priority":null}`,
     );
-    expect(sent).toContain("A race or event day is the race or event itself");
+    expect(sent).toContain("A race or event day holds one session, the race or event itself");
+    expect(sent).toContain('Title the opener "Kort tur med ryk".');
     expect(sent).toContain("the race or event is still the week's hard effort");
     expect(sent).not.toContain("Forkølet");
     expect(sent).not.toContain('"ill"');
-    expect(proposal.sessions.map((s) => s.date)).toEqual(["2026-10-19", "2026-10-23"]);
+    expect(proposal.sessions.map((s) => [s.date, s.title, s.minutes])).toEqual([
+      ["2026-10-19", "Let grundtur", 60],
+      ["2026-10-23", "Kort tur med ryk", 54],
+      [SATURDAY, "Løb i Hillerød", 70],
+    ]);
     expect(proposal.events.map((e) => e.title)).toEqual(["Løb i Hillerød"]);
-    expect(proposal.note).toBe("Lørdagens løb er prioriteret.");
+    expect(proposal.note).toBe("Lørdagens cross er ugens hårde indsats.");
   });
 
   it("keeps a club's rider's exam out of what the model reads", async () => {
@@ -185,6 +202,8 @@ describe("the proposal around a race", () => {
     const sent = spy.asked[0]!.map((m) => m.content).join("\n");
     expect(sent).toContain("Holdets løb");
     expect(sent).not.toContain("Emmas eksamen");
-    expect(proposal.sessions.map((s) => s.date)).not.toContain(SATURDAY);
+    expect(proposal.sessions.filter((s) => s.date === SATURDAY).map((s) => s.title)).toEqual([
+      "Holdets løb",
+    ]);
   });
 });

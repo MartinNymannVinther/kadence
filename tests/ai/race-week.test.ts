@@ -1,21 +1,23 @@
 import { describe, expect, it } from "vitest";
 import {
-  dropRaceDaySessions,
   groupWeekEvents,
   raceDays,
   raceWeekRules,
+  settleRaceDays,
   type EventRow,
 } from "@/modules/assist/race-week";
 import type { DraftSession } from "@/modules/assist/week-draft";
+import { parseWorkoutText } from "@/modules/workouts/parse-text";
+import { flattenSteps, readStructure, type Structure } from "@/modules/workouts/structure";
 
 /**
- * A week around a race (docs/adr/0101, 0102). Martin's own week, on the
- * Motionist profile in his personal workspace: a race on Saturday 24
- * October in his calendar, and a draft that put a recovery ride on the
- * race day, no opener on Friday, and never saw the race. Now the race
- * reaches the model as kind, dates, priority and its title, the prompts
- * plan around it as a coach would — as the week's hard effort, even in a
- * free month — and no session lands on the race day whatever the model
+ * A week around a race (docs/adr/0101, 0102, 0103). Martin's own week,
+ * on the Motionist profile in his personal workspace: a race on Saturday
+ * 24 October in his calendar. The race reaches the model as kind, dates,
+ * priority and its title; the prompts plan around it as a coach would —
+ * as the week's hard effort, even in a free month, with an opener in
+ * plain Danish the day before — and the race day holds the race itself
+ * as its one session, named as the calendar names it, whatever the model
  * answers. A club's rider events still stay out of the group's week.
  */
 
@@ -43,23 +45,26 @@ const SICK: EventRow = {
   endsOn: "2026-10-20",
 };
 
-const session = (date: string, title: string): DraftSession => ({
-  date,
-  sport: "bike",
-  title,
-  minutes: 45,
-  templateId: null,
-  structure: { kind: "bike", steps: [] },
-  why: "",
-});
+const easy: Structure = parseWorkoutText("45 min Z1")!;
+const race: Structure = parseWorkoutText("15 min opvarmning, 45 min RPE 9, 10 min nedkørsel")!;
+
+const session = (
+  date: string,
+  title: string,
+  structure: Structure = easy,
+  minutes = 45,
+  sport: DraftSession["sport"] = "bike",
+): DraftSession => ({ date, sport, title, minutes, templateId: null, structure, why: "" });
 
 describe("the race-week rules", () => {
   it("plan around the race as a coach would", () => {
-    const rules = raceWeekRules("youth");
+    const rules = raceWeekRules("youth", "da");
     expect(rules).toContain("The calendar's events are fixed");
-    expect(rules).toContain("A race day is the race itself: plan no training session on that day.");
-    expect(rules).toContain("The day before a race: a short opener");
-    expect(rules).toContain("3–4 × 1 min in zone 5");
+    expect(rules).toContain(
+      'A race day holds one session, the race itself: sport "bike", the race\'s name from the calendar as its title',
+    );
+    expect(rules).toContain("Plan nothing else on that day.");
+    expect(rules).toContain("The day before a race: rest, or a short opener");
     expect(rules).toContain(
       "In the two days before an A or B race: nothing hard and nothing long.",
     );
@@ -69,14 +74,39 @@ describe("the race-week rules", () => {
     expect(rules).toContain(
       "A race is ridden hard whatever the season, phase or month says: in an easy or free month the training around it stays easy, and the race is still the week's hard effort, never an easy ride.",
     );
-    expect(rules).toContain("Count the race's riding time in the week's bike hours");
-    expect(rules).toContain("read its kind and length from its title");
+    expect(rules).toContain("Read the race's kind and length from its title");
+    expect(rules).toContain("Its session counts in the week's bike hours.");
     expect(rules).toContain("A race without a priority counts as B.");
     expect(rules).toContain(
-      "A race named in the wishes for the week counts as one in the calendar",
+      "A race named in the wishes for the week counts as one in the calendar, on the day named, with a session of its own.",
     );
-    expect(rules).toContain("say in the note that it is the week's hard effort");
-    expect(raceWeekRules("adult")).toContain("A race or event day is the race or event itself");
+    expect(rules).toContain("say in the note, by its name, that it is the week's hard effort");
+    expect(raceWeekRules("adult", "da")).toContain(
+      "A race or event day holds one session, the race or event itself",
+    );
+  });
+
+  it("give the day before its Danish words, so an opener is not called a warm-up", () => {
+    // The model called Friday's opener "Opvarmning til cross … med lidt spidse".
+    const da = raceWeekRules("adult", "da");
+    expect(da).toContain('Title the opener "Kort tur med ryk".');
+    expect(da).toContain('"Opvarmning" is ridden before the start on the race or event day');
+    expect(da).toContain('Short, hard efforts are "ryk" or "spurter" in Danish.');
+    const en = raceWeekRules("adult", "en");
+    expect(en).toContain('Title the opener "Opener".');
+    expect(en).not.toContain("Kort tur med ryk");
+  });
+
+  it("give examples the shorthand reader understands", () => {
+    const rules = raceWeekRules("youth", "da");
+    const examples = [...rules.matchAll(/e\.g\. '([^']+)'/g)].map((m) => m[1]!);
+    expect(examples).toEqual([
+      "15 min opvarmning, 45 min RPE 9, 10 min nedkørsel",
+      "40 min Z2, 3x1 min Z5 / 2 min pause, 5 min Z1",
+    ]);
+    for (const text of examples) expect(parseWorkoutText(text)).not.toBeNull();
+    const steps = flattenSteps(parseWorkoutText(examples[0]!)!);
+    expect(steps.map((st) => st.target)).toContainEqual({ kind: "rpe", value: 9 });
   });
 });
 
@@ -118,23 +148,46 @@ describe("the calendar a group's week reads", () => {
   });
 });
 
-describe("the guard", () => {
+describe("the race day", () => {
   const draft = {
     sessions: [
       session("2026-10-19", "Let grundtur"),
-      session("2026-10-23", "Åbner"),
-      session("2026-10-24", "Kort restitutionstur"),
+      session("2026-10-23", "Kort tur med ryk"),
+      session("2026-10-24", "Opvarmning", parseWorkoutText("15 min Z2")!, 15),
+      session("2026-10-24", "Cross", race, 70),
+      session("2026-10-24", "Styrke", readStructure({}, "strength"), 30, "strength"),
       session("2026-10-25", "Rolig tur"),
     ],
-    note: "Lørdagens løb er prioriteret.",
+    note: "Lørdagens cross er ugens hårde indsats.",
   };
+  const RACE_DAY = [
+    { kind: "race", title: "Cross i Hillerød", from: "2026-10-24", to: "2026-10-24" },
+  ];
 
-  it("drops a session the model put on the race day", () => {
-    const kept = dropRaceDaySessions(draft, [
-      { kind: "race", from: "2026-10-24", to: "2026-10-24" },
+  it("holds the race itself as its one session, named as the calendar names it", () => {
+    const settled = settleRaceDays(draft, RACE_DAY);
+    expect(settled.sessions.map((s) => [s.date, s.title, s.minutes])).toEqual([
+      ["2026-10-19", "Let grundtur", 45],
+      ["2026-10-23", "Kort tur med ryk", 45],
+      ["2026-10-24", "Cross i Hillerød", 70],
+      ["2026-10-25", "Rolig tur", 45],
     ]);
-    expect(kept.sessions.map((s) => s.title)).toEqual(["Let grundtur", "Åbner", "Rolig tur"]);
-    expect(kept.note).toBe(draft.note);
+    expect(settled.sessions[2]!.structure).toEqual(race);
+    expect(settled.note).toBe(draft.note);
+  });
+
+  it("is left empty when the model put only an easy ride on it", () => {
+    // What the model once answered: a recovery ride on the race day itself.
+    const settled = settleRaceDays(
+      { sessions: [session("2026-10-24", "Kort restitutionstur")], note: "" },
+      RACE_DAY,
+    );
+    expect(settled.sessions).toEqual([]);
+  });
+
+  it("keeps the model's title when the calendar gives the race none", () => {
+    const settled = settleRaceDays(draft, [{ kind: "race", from: "2026-10-24", to: "2026-10-24" }]);
+    expect(settled.sessions.find((s) => s.date === "2026-10-24")?.title).toBe("Cross");
   });
 
   it("covers every day of a stage race, and only races", () => {
@@ -143,17 +196,15 @@ describe("the guard", () => {
       "2026-10-24",
       "2026-10-25",
     ]);
-    const kept = dropRaceDaySessions(draft, [
-      { kind: "camp", from: "2026-10-19", to: "2026-10-25" },
-      { kind: "exam", from: "2026-10-24", to: "2026-10-24" },
+    const settled = settleRaceDays(draft, [
+      { kind: "camp", title: "Lejr", from: "2026-10-19", to: "2026-10-25" },
+      { kind: "exam", title: "Eksamen", from: "2026-10-24", to: "2026-10-24" },
     ]);
-    expect(kept.sessions).toHaveLength(4);
+    expect(settled.sessions).toHaveLength(6);
   });
 
   it("keeps what the proposal carries beside its sessions", () => {
-    const kept = dropRaceDaySessions({ ...draft, events: [{ kind: "race" }] }, [
-      { kind: "race", from: "2026-10-24", to: "2026-10-24" },
-    ]);
-    expect(kept.events).toEqual([{ kind: "race" }]);
+    const settled = settleRaceDays({ ...draft, events: [{ kind: "race" }] }, RACE_DAY);
+    expect(settled.events).toEqual([{ kind: "race" }]);
   });
 });

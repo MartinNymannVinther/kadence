@@ -17,7 +17,7 @@ import { getInsights } from "@/modules/insight/service";
 import { riderClass } from "@/modules/season/class";
 import { requireCoach } from "@/modules/team/access";
 import { parseWorkoutText } from "@/modules/workouts/parse-text";
-import { dropRaceDaySessions } from "./race-week";
+import { settleRaceDays } from "./race-week";
 import { weekDraftPrompt, type WeekDraftContext } from "./week-draft-prompt";
 import { readStructure, structureMinutes, type Structure } from "@/modules/workouts/structure";
 
@@ -219,6 +219,6 @@ export async function proposeWeek(
       minutes: t.plannedMinutes,
     })),
   );
-  // No session on a race day, whatever the model said (docs/adr/0101).
-  return { proposal: dropRaceDaySessions(draft, context.events), engine };
+  // A race day holds the race and nothing else, whatever the model said (docs/adr/0103).
+  return { proposal: settleRaceDays(draft, context.events), engine };
 }

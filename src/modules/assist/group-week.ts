@@ -7,7 +7,7 @@ import { isClubWorkspace } from "@/modules/insight/gather";
 import type { PlanBasis } from "@/modules/paradigms";
 import { requireCoach } from "@/modules/team/access";
 import { groupWeekPrompt, type GroupWeekContext } from "./group-week-prompt";
-import { dropRaceDaySessions, groupWeekEvents, type ShownEvent } from "./race-week";
+import { groupWeekEvents, settleRaceDays, type ShownEvent } from "./race-week";
 import { sanitizeWeekDraft, type WeekDraft } from "./week-draft";
 import { teamParadigm } from "@/modules/team/settings";
 
@@ -24,8 +24,8 @@ import { teamParadigm } from "@/modules/team/settings";
  * words of its own (group-week-senior.ts, ADR 0092). In a personal
  * workspace the calendar is the person's own, so their races and other
  * days go along as kind, dates and priority, a race with its title
- * (docs/adr/0101, 0102), and no session is proposed on a race day,
- * whatever the model says.
+ * (docs/adr/0101, 0102). A race day holds one session, the race itself,
+ * named as the calendar names it, whatever the model says (docs/adr/0103).
  */
 
 export { groupWeekPrompt, type GroupWeekContext } from "./group-week-prompt";
@@ -96,6 +96,6 @@ export async function proposeGroupWeek(
       minutes: t.plannedMinutes,
     })),
   );
-  const proposal = { ...dropRaceDaySessions(draft, events.prompt), events: events.shown };
+  const proposal = { ...settleRaceDays(draft, events.prompt), events: events.shown };
   return { proposal, engine };
 }
