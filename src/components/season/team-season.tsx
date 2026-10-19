@@ -47,7 +47,7 @@ export function TeamSeason({ rows, month }: { rows: TeamSeasonRow[]; month: numb
               <span className="text-meta text-xs first-letter:uppercase">
                 {monthLong(month, locale)}
               </span>
-              <VolumeBar compact volume={row.month} />
+              <VolumeBar volume={row.month} />
             </div>
             <div className="flex min-w-0 flex-col gap-1">
               <span className="text-meta text-xs">{t("toDate")}</span>

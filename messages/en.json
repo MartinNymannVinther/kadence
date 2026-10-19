@@ -1427,10 +1427,24 @@
       "movedTo": "{title} moved to {day}."
     },
     "totals": {
-      "all": "Hours in total",
-      "bike": "On the bike against the season plan",
-      "bikeFor": "On the bike against the season plan, {basis}",
-      "of": "{done} of {planned} h",
+      "all": "The whole week, every sport",
+      "planned": "Scheduled",
+      "done": "Done",
+      "hours": "{hours} h",
+      "bike": "On the bike",
+      "bikeFor": "On the bike, {basis}",
+      "explain": {
+        "title": "What do the numbers mean?",
+        "plannedTerm": "Scheduled",
+        "planned": "The sessions in the calendar, done or not. For the whole week every sport counts, on the bike only the bike sessions.",
+        "doneTerm": "Done and ridden",
+        "done": "What was actually done. Done counts every sport, ridden only the bike.",
+        "goalTerm": "Season plan",
+        "goal": "The hours on the bike the season plan sets aside for the week.",
+        "frame": "{ref, select, dcu {DCU's recommended hours for the class this week, with 20 % either side. October is a break with free riding, without set hours.} other {The training profile's hours for the week, with 20 % either side. October is a break with free riding, without set hours.}}",
+        "expectedTerm": "Expected",
+        "expected": "What was ridden, plus the bike sessions still scheduled for the rest of the week."
+      },
       "strength": "Strength: {done} of {planned, plural, one {# session} other {# sessions}} done. {ref, select, dcu {DCU recommends} motionist {Motionist suggests} other {Supermotionist suggests}} {dcu} a week.",
       "strengthOwn": "Strength: {done} of {planned, plural, one {# session} other {# sessions}} done."
     },
@@ -3434,6 +3448,9 @@
     "planned": "Scheduled",
     "goal": "Season plan",
     "dcu": "{ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}}",
+    "frame": "{ref, select, dcu {DCU's range} other {The profile's range}}",
+    "breakRow": "break and free riding in October, no set hours",
+    "noGoalRow": "no season plan for the week",
     "hours": "{hours} h",
     "range": "{low}–{high} h",
     "noGoal": "none",

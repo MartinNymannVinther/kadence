@@ -1427,10 +1427,24 @@
       "movedTo": "{title} er flyttet til {day}."
     },
     "totals": {
-      "all": "Timer i alt",
-      "bike": "På cyklen mod sæsonplanen",
-      "bikeFor": "På cyklen mod sæsonplanen, {basis}",
-      "of": "{done} af {planned} t",
+      "all": "Hele ugen, alle sportsgrene",
+      "planned": "Lagt ind",
+      "done": "Udført",
+      "hours": "{hours} t",
+      "bike": "På cyklen",
+      "bikeFor": "På cyklen, {basis}",
+      "explain": {
+        "title": "Hvad betyder tallene?",
+        "plannedTerm": "Lagt ind",
+        "planned": "De pas, der ligger i kalenderen, udført eller ej. Under hele ugen tæller alle sportsgrene, på cyklen kun cykelpassene.",
+        "doneTerm": "Udført og kørt",
+        "done": "Det, der faktisk er lavet. Udført tæller alle sportsgrene, kørt kun cyklen.",
+        "goalTerm": "Sæsonplan",
+        "goal": "De timer på cyklen, sæsonplanen sætter af til ugen.",
+        "frame": "{ref, select, dcu {DCU's anbefalede timer for årgangen i ugen, med 20 % til hver side. I oktober er der pause og frit, uden faste timer.} other {Træningsprofilens timer for ugen, med 20 % til hver side. I oktober er der pause og frit, uden faste timer.}}",
+        "expectedTerm": "Forventet",
+        "expected": "Det, der er kørt, plus de cykelpas, der stadig ligger resten af ugen."
+      },
       "strength": "Styrke: {done} af {planned} pas udført. {ref, select, dcu {DCU anbefaler} motionist {Motionist foreslår} other {Supermotionist foreslår}} {dcu} om ugen.",
       "strengthOwn": "Styrke: {done} af {planned} pas udført."
     },
@@ -3434,6 +3448,9 @@
     "planned": "Lagt ind",
     "goal": "Sæsonplan",
     "dcu": "{ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}}",
+    "frame": "{ref, select, dcu {DCU's ramme} other {Profilens ramme}}",
+    "breakRow": "pause og frit i oktober, ingen faste timer",
+    "noGoalRow": "ingen sæsonplan for ugen",
     "hours": "{hours} t",
     "range": "{low}–{high} t",
     "noGoal": "ingen",
