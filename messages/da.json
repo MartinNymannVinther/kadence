@@ -66,6 +66,12 @@
       "cta": "Åbn en demo",
       "ctaAlone": "Prøv som rytter alene"
     },
+    "demoWait": {
+      "title": "Vi gør din demo klar",
+      "team": "Du får et U19-hold med ryttere, en sæsonplan efter DCU, pas, ture og check-ins. Det tager som regel et par sekunder, og så starter du som træner.",
+      "alone": "Du er Emma, U19-rytter på egen hånd, med en sæsonplan efter DCU, seks ugers ture og check-ins og næste uge lagt ind. Det tager som regel et par sekunder.",
+      "slow": "Det tager lidt længere end det plejer. Siden går videre af sig selv, når demoen er klar."
+    },
     "featuresLabel": "Det du får",
     "features": {
       "calendar": "Kalender med pas på cykel, i styrkerummet og andet",
