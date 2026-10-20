@@ -26,12 +26,12 @@ import { keepConnected, type LinkState } from "./reconnect";
 
 /**
  * The trainer, over Bluetooth. A smart trainer speaks the Fitness Machine
- * Service: Rulle takes control, sets the watts of each block (ERG) and a
- * flat road for the free ones, and reads the watts, cadence and — when
- * the trainer passes one on — the pulse. A trainer or power meter that
- * only speaks Cycling Power is read and not steered: the session is then
- * ridden in free mode. A device with both is steered through the one and
- * read through whichever reports the watts.
+ * Service: Rulle takes control, sets the watts of each block (ERG) or the
+ * road's grade where Rulle is not holding the watts (ADR 0107), and reads
+ * the watts, cadence and — when the trainer passes one on — the pulse. A
+ * trainer or power meter that only speaks Cycling Power is read and not
+ * steered: the session is then ridden in free mode. A device with both is
+ * steered through the one and read through whichever reports the watts.
  *
  * Every Control Point command waits for the trainer's answer before the
  * next is written (`ControlPointQueue`: one GATT operation at a time, and
@@ -59,7 +59,7 @@ export type TrainerInfo = {
   name: string;
   /** Holds the watts it is given: ERG. */
   erg: boolean;
-  /** Rides a simulated flat road in the free blocks. */
+  /** Rides a simulated road: the route's grade where Rulle is not holding the watts. */
   simulation: boolean;
 };
 
@@ -73,8 +73,8 @@ export class TrainerLink {
   private range: PowerRange | null = null;
   private readonly controlQueue: ControlPointQueue;
   private hasControl = false;
-  /** Watts to hold, null for free, undefined before anything was asked. */
-  private wanted: number | null | undefined = undefined;
+  /** Watts to hold, or null and the road's grade; undefined before anything was asked. */
+  private wanted: { watts: number | null; grade: number } | undefined = undefined;
   private sent: string | null = null;
   private ftmsPowerAt = 0;
   private ftmsCadenceAt = 0;
@@ -130,9 +130,9 @@ export class TrainerLink {
     return this.device.id;
   }
 
-  /** Watts to hold (ERG), or null: a flat road, ridden on the rider's own gears. */
-  async target(watts: number | null): Promise<void> {
-    this.wanted = watts;
+  /** Watts to hold (ERG), or null and a road of `grade` (rise over run), ridden on the rider's own gears. */
+  async target(watts: number | null, grade = 0): Promise<void> {
+    this.wanted = { watts, grade };
     await this.apply();
   }
 
@@ -225,12 +225,13 @@ export class TrainerLink {
       if (!this.hasControl) return;
     }
     let bytes: Uint8Array;
-    if (wanted !== null && this.info.erg) bytes = control.setTargetPower(wanted, this.range);
-    else if (this.info.simulation) bytes = control.setSimulation(0);
+    if (wanted.watts !== null && this.info.erg)
+      bytes = control.setTargetPower(wanted.watts, this.range);
+    else if (this.info.simulation) bytes = control.setSimulation(wanted.grade);
     else {
       // A trainer that can hold watts and nothing else: let go of it for the free block.
       await this.release();
-      this.wanted = null;
+      this.wanted = { watts: null, grade: 0 };
       return;
     }
     const key = bytes.join(",");

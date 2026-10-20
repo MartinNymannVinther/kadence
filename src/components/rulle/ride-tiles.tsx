@@ -66,6 +66,7 @@ export function WattTile({ live, rider }: { live: Live; rider: Thresholds | null
   const aim = block ? ergWatts(block, live.intensity) : null;
   const Icon = live.standing === "under" ? ArrowUp : live.standing === "over" ? ArrowDown : Check;
   const said = live.standing === "on" || live.standing === "under" || live.standing === "over";
+  const pct = Math.round(live.intensity * 100);
   // A block without watts says what it asks for instead: a pulse, an RPE, or nothing at all.
   const free = (b: Block) =>
     b.bpm
@@ -92,10 +93,12 @@ export function WattTile({ live, rider }: { live: Live; rider: Thresholds | null
               <span className="text-ride-value font-semibold tabular-nums">{chunks}</span>
             ),
           })}
+          {pct !== 100 && <span className="opacity-80"> · {t("atIntensity", { pct })}</span>}
         </p>
       ) : (
         <Sub>{block ? free(block) : t("free")}</Sub>
       )}
+      {live.eased && <p className="text-2sm leading-tight font-medium">{t("eased")}</p>}
     </Tile>
   );
 }

@@ -27,6 +27,10 @@ export type Live = SensorsNow & {
   race: RaceLive;
   intensity: number;
   erg: boolean;
+  /** ERG let go a little because the cadence collapsed (`ErgEase`); the target on the screen stays the block's. */
+  eased: boolean;
+  /** The grade the trainer rides when Rulle is not holding the watts: the route's, at half strength. */
+  road: number;
   /** The watts ridden, one average per TRACE_SECONDS of the plan. */
   trace: readonly (number | null)[];
 };

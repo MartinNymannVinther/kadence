@@ -81,6 +81,8 @@ export function RulleApp({
   const trial = session ? session.riderId !== start.riderId : start.riderId === null;
   const keepFor = trial ? null : start.riderId;
 
+  // The trainer holds the watts (ERG) unless the rider chooses the route's resistance (ADR 0107).
+  const [erg, setErg] = useState(true);
   const [sensors] = useState(() => new Sensors());
   const [beeps] = useState(() => new Beeps());
   const [log] = useState(() => (bleLog ? new BleLog() : null));
@@ -123,6 +125,7 @@ export function RulleApp({
     trainer: devices.trainer?.link ?? null,
     beeps,
     meta,
+    erg,
     keepFor,
     onFinished: (engine) => {
       const recording = engine.recording;
@@ -130,8 +133,10 @@ export function RulleApp({
       void devices.trainer?.link.release().catch(() => undefined);
       const seen = ride.seen();
       const onTarget = engine.allOnTarget();
-      if (keepFor) keepRide(keepFor, { meta, recording, state: "finished", seen, onTarget });
-      setFinished({ recording, meta, trial, seen, onTarget });
+      const { low, high } = engine.used;
+      const rode: RideMeta = { ...meta, intensity: { low, high } };
+      if (keepFor) keepRide(keepFor, { meta: rode, recording, state: "finished", seen, onTarget });
+      setFinished({ recording, meta: rode, trial, seen, onTarget });
       setPhase("done");
     },
   });
@@ -198,6 +203,8 @@ export function RulleApp({
         course={course}
         world={world}
         kept={kept}
+        erg={erg}
+        onErg={setErg}
         onChoose={setChosenId}
         onStart={() => {
           beeps.unlock();

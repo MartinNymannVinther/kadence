@@ -34,10 +34,12 @@ export function ReadyScreen({
   course,
   world,
   kept,
+  erg,
   onChoose,
   onStart,
   onSaveKept,
   onDiscardKept,
+  onErg,
 }: {
   picked: Picked | null;
   choices: { today: Picked[]; team: Picked[]; kadence: Picked[]; dcu: Picked[] };
@@ -51,7 +53,10 @@ export function ReadyScreen({
   /** The installation has Rulle's world on, and so a route to choose. */
   world: boolean;
   kept: KeptRide | null;
+  /** The trainer holds the watts (ERG), or the route sets the resistance (ADR 0107). */
+  erg: boolean;
   onChoose: (id: string | null) => void;
+  onErg: (on: boolean) => void;
   onStart: () => void;
   onSaveKept: () => void;
   onDiscardKept: () => void;
@@ -90,7 +95,7 @@ export function ReadyScreen({
           onChoose={onChoose}
         />
         <div className="flex flex-col gap-6">
-          <DeviceCard devices={devices} />
+          <DeviceCard devices={devices} erg={erg} onErg={onErg} />
           {world && (
             <RouteCard
               state={course.state}

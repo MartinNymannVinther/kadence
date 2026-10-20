@@ -59,6 +59,7 @@ export {
   type RouteKey,
 } from "./route/routes";
 export { nextSpeed, PHYSICS, resistance, steadySpeed, swayAt } from "./physics";
+export { ROAD, roadGrade } from "./road";
 export {
   CHALLENGE,
   challengeIn,

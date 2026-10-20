@@ -96,6 +96,111 @@ describe("a session on the trainer", () => {
   });
 });
 
+describe("the road under the wheel (docs/adr/0107)", () => {
+  /** Two kilometres up at 6 %, then two down, out and back: 24 m per 400 m. */
+  const hilly: RoutePoint[] = Array.from({ length: 41 }, (_, i) => ({
+    lat: 55.7 + (4 / 111.2) * (i / 40),
+    lon: 9.5,
+    ele: 10 + (i <= 20 ? i * 6 : (40 - i) * 6),
+  }));
+
+  function climb(structure: BikeStructure | null) {
+    const sensors = new Sensors();
+    const asked: [number | null, number][] = [];
+    const engine = new RideEngine(
+      structure ? buildTimeline(structure, { ftp: 250, thresholdHr: 170 }) : null,
+      buildCourse({ name: "Bakket", points: hilly }),
+      sensors,
+      { target: (watts, grade) => asked.push([watts, grade]), cue: () => {}, finished: () => {} },
+    );
+    const ride = (from: number, to: number, watts = 300, cadence = 90) => {
+      for (let s = from; s < to; s++)
+        for (const q of [0, 250, 500, 750]) {
+          const at = T0 + s * 1000 + q;
+          sensors.fromTrainer({ power: watts, cadence }, at);
+          engine.tick(at);
+        }
+    };
+    return { engine, asked, ride };
+  }
+
+  it("gives the trainer the route's grade at half strength on a free ride, as it changes", () => {
+    const { engine, asked, ride } = climb(null);
+    engine.start(T0);
+    ride(0, 240);
+    // The road from the first second: no watts held, the grade where the rider starts.
+    expect(asked[0]![0]).toBeNull();
+    const grades = asked.map(([, g]) => g);
+    expect(Math.max(...grades)).toBeGreaterThan(0.02);
+    expect(Math.max(...grades)).toBeLessThanOrEqual(0.03);
+    // Each is a change from the one before, in half-per-cent steps.
+    for (let i = 1; i < grades.length; i++) {
+      expect(grades[i]).not.toBe(grades[i - 1]);
+      expect(Math.round(grades[i]! * 1000) % 5).toBe(0);
+    }
+    expect(engine.live(T0 + 240_000).road).toBe(grades.at(-1));
+  });
+
+  it("holds the watts whatever the road does in ERG, and gives the road when ERG is turned off", () => {
+    const { engine, asked, ride } = climb(short);
+    engine.start(T0);
+    ride(0, 30);
+    expect(asked.map(([w]) => w)).toEqual([163]);
+    engine.setErg(false);
+    ride(30, 50);
+    const road = asked.slice(1);
+    expect(road.every(([w]) => w === null)).toBe(true);
+    expect(road.at(-1)![1]).toBeGreaterThan(0);
+    engine.setErg(true);
+    expect(asked.at(-1)).toEqual([163, road.at(-1)![1]]);
+  });
+
+  it("starts in the mode the rider chose, and a pause is a flat road", () => {
+    const { engine, asked, ride } = climb(short);
+    engine.erg = false;
+    engine.start(T0);
+    ride(0, 20);
+    expect(asked.every(([w]) => w === null)).toBe(true);
+    expect(engine.live(T0 + 20_000).erg).toBe(false);
+    engine.pause(T0 + 20_000);
+    expect(asked.at(-1)).toEqual([null, 0]);
+  });
+});
+
+describe("ERG eased when the cadence collapses (docs/adr/0107)", () => {
+  it("lets go to 60 % after three slow seconds, and holds the block's watts again once the legs are back", () => {
+    const { engine, targets, ride } = setup();
+    engine.start(T0);
+    ride(0, 5);
+    ride(5, 8, 200, 40);
+    expect(targets).toEqual([163, 98]);
+    expect(engine.live(T0 + 8000).eased).toBe(true);
+    // The screen's target stays the block's; the trainer's hold is what eased.
+    expect(engine.live(T0 + 8000).target).toBe(98);
+    ride(8, 10, 200, 90);
+    expect(targets).toEqual([163, 98, 163]);
+    expect(engine.live(T0 + 10_000).eased).toBe(false);
+  });
+
+  it("does not ease a free block, nor when nothing measures the cadence", () => {
+    const { engine, targets, ride } = setup();
+    engine.start(T0);
+    ride(0, 95, 200, 40);
+    // Zone 2 eased at second 3 and never held again (still slow); zone 4 begins eased, at 60 % of
+    // 245; then the free block, which is never eased.
+    expect(targets).toEqual([163, 98, 147, null]);
+    const silent = setup();
+    silent.engine.start(T0);
+    for (let s = 0; s < 10; s++)
+      for (const q of [0, 250, 500, 750]) {
+        const at = T0 + s * 1000 + q;
+        silent.sensors.fromTrainer({ power: 200 }, at);
+        silent.engine.tick(at);
+      }
+    expect(silent.targets).toEqual([163]);
+  });
+});
+
 describe("the rider in charge", () => {
   it("pauses by itself when the legs stop, and goes on when they start", () => {
     const { engine, targets, ride } = setup();
@@ -145,6 +250,9 @@ describe("the rider in charge", () => {
     engine.setErg(true);
     expect(targets).toEqual([163, 147, 82, null, 82]);
     expect(engine.intensity).toBe(0.5);
+    engine.setIntensity(1.1);
+    // The least and the most it was turned to, for the ride's note.
+    expect(engine.used).toMatchObject({ low: 0.5, high: 1.1 });
   });
 });
 

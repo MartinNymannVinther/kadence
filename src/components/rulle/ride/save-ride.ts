@@ -36,6 +36,10 @@ export async function saveRide(recording: Recording, meta: RideMeta): Promise<Sa
   const params = new URLSearchParams();
   if (meta.sessionId) params.set("session", meta.sessionId);
   else params.set("name", meta.title);
+  if (meta.intensity) {
+    params.set("low", String(Math.round(meta.intensity.low * 100)));
+    params.set("high", String(Math.round(meta.intensity.high * 100)));
+  }
   const body = rideFile(ended(recording), meta);
   let response: Response;
   try {

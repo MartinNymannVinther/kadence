@@ -7,18 +7,23 @@
  * 47 km/h — what a rider expects of an indoor ride, a little quicker than
  * the same watts on the hoods outside.
  *
- * The mass is a fixed standard, 70 kg of rider and 8 of bike, and it is
- * never shown: Rulle reads no body data (ADR 0013, 0031). A light rider
- * climbs a little slower on the screen than on the road; the watts, which
- * are what is recorded and what the load is computed from, are the
- * rider's own. Only the WATT cheat code's avatar rides another mass, the
- * weight chosen for it on the screen and kept nowhere (ADR 0073).
+ * The mass is a fixed standard, 68 kg of rider and 8 of bike — one
+ * average for every class, chosen by the product owner (ADR 0107) — and
+ * it is never shown: Rulle reads no body data (ADR 0013, 0031). A light
+ * rider climbs a little slower on the screen than on the road, a heavy
+ * one a little faster; the watts, which are what is recorded and what the
+ * load is computed from, are the rider's own. Only the WATT cheat code's
+ * avatar rides another mass, the weight chosen for it on the screen and
+ * kept nowhere (ADR 0073). The trainer's own resistance on the route
+ * (`road.ts`) reckons with the trainer's weight, not this one: FTMS
+ * carries none.
  *
  * Pure: no browser, no database.
  */
 
 export const PHYSICS = {
-  massKg: 78,
+  /** Rider and bike, kg: 68 and 8. */
+  massKg: 76,
   /** The bike's share of it, kg. */
   bikeKg: 8,
   /** Drag area, m²: a rider low on the drops (on the hoods it is nearer 0.35). */

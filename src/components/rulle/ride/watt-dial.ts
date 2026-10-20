@@ -25,8 +25,8 @@ export const WATT_DIAL = {
   /** Seconds a key is held before it steps on, and between the steps after. */
   delay: 0.4,
   every: 0.1,
-  /** The avatar's weight, kg: where it starts, and how light and how heavy it may be. */
-  kg: { start: 70, least: 30, most: 120 },
+  /** The avatar's weight, kg: where it starts (Rulle's own, `PHYSICS`), and how light and how heavy it may be. */
+  kg: { start: PHYSICS.massKg - PHYSICS.bikeKg, least: 30, most: 120 },
 } as const;
 
 const clamp = (value: number, least: number, most: number) =>
