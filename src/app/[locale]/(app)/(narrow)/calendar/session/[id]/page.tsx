@@ -17,9 +17,17 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /**
  * A session on its own page, for a link sent on — the same view as the
- * calendar's panel, with the way back to the week it belongs to.
+ * calendar's panel, with the way back to the week it belongs to. It is
+ * also where a session is printed; `?print=1`, from the panel's print
+ * button, prints it as soon as it opens.
  */
-export default async function SessionPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function SessionPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const ctx = await getOrgContext();
   const locale = await getLocale();
   if (!ctx) {
@@ -27,6 +35,7 @@ export default async function SessionPage({ params }: { params: Promise<{ id: st
     return null;
   }
   const { id } = await params;
+  const { print } = await searchParams;
   const t = await getTranslations("calendar");
   const me = await whoAmI(ctx.orgId, ctx.userId);
   const session = me ? await getPlannedSession(ctx, id) : null;
@@ -41,13 +50,21 @@ export default async function SessionPage({ params }: { params: Promise<{ id: st
     <div className="flex max-w-2xl flex-col gap-5">
       <Link
         href={back}
-        className="focus-ring text-meta hover:text-foreground flex min-h-11 w-fit items-center gap-1 text-2sm"
+        className="focus-ring text-meta hover:text-foreground flex min-h-11 w-fit items-center gap-1 text-2sm print:hidden"
       >
         <ChevronLeft aria-hidden className="size-4" />
         {t("backToWeek")}
       </Link>
       {me && session ? (
-        <SessionView ctx={ctx} me={me} sessionId={id} closeHref={back} heading="h1" />
+        <SessionView
+          ctx={ctx}
+          me={me}
+          sessionId={id}
+          closeHref={back}
+          heading="h1"
+          place="page"
+          autoPrint={print === "1"}
+        />
       ) : (
         <EmptyState title={t("sessionMissing")} hint={t("sessionMissingHint")} />
       )}

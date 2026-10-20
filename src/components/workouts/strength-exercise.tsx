@@ -2,15 +2,19 @@
 
 import { useTranslations } from "next-intl";
 import { ExerciseFigure } from "@/components/exercises/exercise-figure";
+import { Link } from "@/i18n/navigation";
+import { exerciseHref } from "@/modules/exercises/library-paths";
 import type { ExerciseView } from "@/modules/exercises/types";
 import type { Exercise } from "@/modules/workouts/structure";
+import { StrengthLog } from "./strength-log";
 
 /**
  * One exercise of a strength session: its name, group, rest and note
- * beside the sets and reps — and, when it came from a programme in the
- * library and the reader may see that exercise, its figure and how to do
- * it below (docs/plan-ovelser-og-programmer.md). The name stays the one
- * the session was planned with.
+ * beside the sets and reps — and, when it is one of the library's and the
+ * reader may see that exercise, its figure and how to do it below, with
+ * the way to the whole exercise in the library (docs/plan-ovelser-og-
+ * programmer.md). The name stays the one the session was planned with.
+ * On paper the link gives way to a box for every set (strength-log.tsx).
  */
 export function StrengthExercise({
   exercise,
@@ -41,16 +45,25 @@ export function StrengthExercise({
         </span>
       </div>
       {view && (
-        <div className="grid min-w-0 gap-3 pb-1 sm:grid-cols-[minmax(0,12rem)_minmax(0,1fr)] sm:items-start">
-          <div className="bg-secondary max-w-xs rounded-md px-2 pt-1">
+        <div className="grid min-w-0 gap-3 pb-1 sm:grid-cols-[minmax(0,12rem)_minmax(0,1fr)] sm:items-start print:grid-cols-[9rem_minmax(0,1fr)] print:pb-0">
+          <div className="bg-secondary max-w-xs rounded-md px-2 pt-1 print:max-w-36">
             <ExerciseFigure
               pose={view.pose}
               label={figures("figure.label", { name: exercise.name })}
             />
           </div>
-          <p className="text-2sm min-w-0 leading-relaxed">{view.how}</p>
+          <div className="flex min-w-0 flex-col items-start gap-1.5">
+            <p className="text-2sm leading-relaxed">{view.how}</p>
+            <Link
+              href={exerciseHref(view.ref)}
+              className="focus-ring text-primary text-2sm font-medium underline-offset-4 hover:underline print:hidden"
+            >
+              {t("openInLibrary")}
+            </Link>
+          </div>
         </div>
       )}
+      <StrengthLog exercise={exercise} />
     </li>
   );
 }
