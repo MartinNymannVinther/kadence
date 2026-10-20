@@ -24,6 +24,12 @@ const metaSchema = z.object({
     .int()
     .min(-15 * 3600)
     .max(15 * 3600),
+  /**
+   * The least and the most the session was turned to on the way, as shares
+   * of what was written (ADR 0106): told to Kadence with the ride, so the
+   * coach sees a day ridden at 90 %. Absent on a ride kept from before.
+   */
+  intensity: z.object({ low: z.number(), high: z.number() }).optional().catch(undefined),
 });
 
 export type RideMeta = z.infer<typeof metaSchema>;

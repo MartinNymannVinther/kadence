@@ -44,6 +44,8 @@ export type RideOptions = {
   trainer: TrainerLink | null;
   beeps: Beeps;
   meta: RideMeta;
+  /** How the ride starts: the trainer holding the watts (ERG), or the route setting the resistance (ADR 0106). */
+  erg: boolean;
   /** Whose ride it is, for keeping it on this device; null for a trial, which is never kept. */
   keepFor: string | null;
   onFinished: (engine: RideEngine) => void;
@@ -106,16 +108,18 @@ export function useRide(options: RideOptions) {
   }, []);
 
   const start = useCallback(() => {
-    const { timeline, course, sensors } = latest.current;
+    const { timeline, course, sensors, erg } = latest.current;
     if (!course || engine.current) return;
     const ride: RideEngine = new RideEngine(timeline, course, sensors, {
-      target: (watts) => void latest.current.trainer?.target(watts).catch(() => undefined),
+      target: (watts, grade) =>
+        void latest.current.trainer?.target(watts, grade).catch(() => undefined),
       cue: (kind) => latest.current.beeps.play(kind),
       finished: () => {
         setRunning(false);
         latest.current.onFinished(ride);
       },
     });
+    ride.erg = erg;
     engine.current = ride;
     ride.start(Date.now());
     setRunning(ride.status !== "finished");
@@ -143,8 +147,10 @@ export function useRide(options: RideOptions) {
   const trainer = options.trainer;
   useEffect(() => {
     const ride = engine.current;
-    if (ride && trainer && ride.status === "riding")
-      void trainer.target(ride.live(Date.now()).target).catch(() => undefined);
+    if (ride && trainer && ride.status === "riding") {
+      const { target, road } = ride.live(Date.now());
+      void trainer.target(target, road).catch(() => undefined);
+    }
   }, [trainer]);
 
   const act = useCallback(

@@ -23,6 +23,14 @@ import { insertSql, seedPerson } from "../helpers/rows";
 
 const auth = vi.hoisted(() => ({ session: null as { orgId: string; userId: string } | null }));
 vi.mock("@/core/auth/guard", () => ({ requireOrgContext: async () => auth.session }));
+// The rider's language, for the note a ride turned down or up arrives with (docs/adr/0106).
+const locale = vi.hoisted(() => ({ value: "da" }));
+vi.mock("next/headers", () => ({
+  headers: async () => new Headers(),
+  cookies: async () => ({
+    get: (name: string) => (name === "NEXT_LOCALE" ? { value: locale.value } : undefined),
+  }),
+}));
 
 const { POST } = await import("@/app/api/rulle/ride/route");
 
@@ -206,6 +214,32 @@ describe("the rider's own ride", () => {
     expect(body.sessionId).toBe("rl_ole_a");
     const activity = await row("select title from activities where id = $1", [body.activityId]);
     expect(activity.title).toBe("Vejle: Fjorden, Munkebjerg og Kiddesvej");
+  });
+
+  it("turned down on the way, says so in a note in the rider's language (docs/adr/0106)", async () => {
+    auth.session = IDA;
+    const at90 = await post("?session=rl_ida_a&low=90&high=90", ride(60));
+    expect(at90.status).toBe(201);
+    const { activityId } = await at90.json();
+    expect((await row("select note from activities where id = $1", [activityId])).note).toBe(
+      "Kørt i Rulle på 90 % af passet.",
+    );
+    locale.value = "en";
+    const between = await post("?name=Hilly&low=80&high=110", ride(120));
+    expect(between.status).toBe(201);
+    const second = (await between.json()).activityId;
+    expect((await row("select note from activities where id = $1", [second])).note).toBe(
+      "Ridden in Rulle at 80–110 % of the session.",
+    );
+    locale.value = "da";
+    // At 100 % there is nothing to say, and shares outside the dial's reach are ignored.
+    const whole = await post("?name=Flat&low=100&high=100", ride(180));
+    const odd = await post("?name=Odd&low=10&high=90", ride(240));
+    for (const response of [whole, odd]) {
+      expect(response.status).toBe(201);
+      const id = (await response.json()).activityId;
+      expect((await row("select note from activities where id = $1", [id])).note).toBe("");
+    }
   });
 });
 

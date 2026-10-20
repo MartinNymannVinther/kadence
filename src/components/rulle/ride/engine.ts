@@ -1,14 +1,13 @@
 import {
   blockAt,
   closeLap,
-  courseAt,
   endRecording,
   ergWatts,
   isHard,
-  nextSpeed,
   pauseRecording,
   record,
   resumeRecording,
+  roadGrade,
   scaledBand,
   standing,
   startRecording,
@@ -25,50 +24,38 @@ import {
   startClock,
   type Clock,
 } from "./clock";
+import { AUTO_PAUSE_SECONDS, ErgEase, Idle, INTENSITY, IntensityUsed } from "./hold";
 import type { Live } from "./live";
+import { DRAWN_WATTS, Motion } from "./motion";
 import type { Sensors, SensorsNow } from "./sensors";
 import { OnTarget } from "./on-target";
-import { Shown, type ShownAt } from "./shown";
+import type { Shown, ShownAt } from "./shown";
 import { PowerTrace } from "./trace";
 
 /**
  * A ride while it is ridden (ADR 0033): the session's clock and blocks,
- * the trainer's target, the rider's place on the course, and the
- * recording. No React and no browser in it; the page calls `tick` a few
- * times a second and draws what `live` says.
- *
- * - Each new block closes a lap and sets the trainer to the block's watts
- *   (ERG), or lets it be a flat road when the block is free, ERG is off,
- *   or the ride is paused — so a rider starting again never starts
- *   against 300 W at a standstill.
- * - With neither watts nor a turning crank for `AUTO_PAUSE_SECONDS` the
- *   ride pauses, and it goes on by itself when the legs do.
- * - The last seconds of a hard block get a cowbell (ADR 0034), and every
- *   second of a block with watts to hold counts toward whether the session
- *   was ridden on target.
- * - The speed along the course is the physics' answer to the measured
- *   watts. Without anything that measures them, the landscape still moves
- *   at the block's watts, but nothing about speed or distance is recorded:
- *   a ride is what was measured.
- * - Where the rider is shown can run ahead of where they have ridden — the
- *   warp, the cheat codes, the challenger's slipstream (`shown.ts`) — but
- *   what is recorded is what was ridden.
+ * the trainer's target, the rider's place on the course (`Motion`), and
+ * the recording. No React and no browser in it; the page calls `tick` a
+ * few times a second and draws what `live` says. Each new block closes a
+ * lap and sets the trainer to the block's watts (ERG); where Rulle is not
+ * holding them — a free block, ERG off, the rider riding the route (ADR
+ * 0106) — the trainer gets the route's grade at half strength
+ * (`roadGrade`) and the rider gears. A pause is a flat road, so a rider
+ * starting again never starts against 300 W or a hill. A collapsed
+ * cadence eases ERG (`ErgEase`); legs that stop pause the ride (`Idle`);
+ * a hard block's last seconds get a cowbell (ADR 0034), and every second
+ * with watts to hold counts toward the on-target verdict (`OnTarget`).
  */
 
-/** Watts the landscape moves at when nothing measures them and the block names none. */
-export const DRAWN_WATTS = 150;
-export const AUTO_PAUSE_SECONDS = 3;
-const RESUME_WATTS = 30;
-const RESUME_CADENCE = 20;
-export const INTENSITY = { min: 0.5, max: 1.2, step: 0.05 } as const;
+export { AUTO_PAUSE_SECONDS, DRAWN_WATTS, INTENSITY };
 /** Seconds before a hard block ends when the cowbell rings, before the three beeps. */
 const CHEER_AT = [10, 8, 6];
 
 export type Status = "ready" | "riding" | "paused" | "finished";
 
 export type EngineEvents = {
-  /** What the trainer should hold now: watts, or null for the rider's own gears. */
-  target: (watts: number | null) => void;
+  /** What the trainer should hold now: watts, or null and a road of `grade` for the rider's own gears. */
+  target: (watts: number | null, grade: number) => void;
   /** 3, 2, 1 before a block ends, the change of block, the end, and a cowbell near a hard block's end. */
   cue: (kind: "count" | "change" | "end" | "cheer") => void;
   finished: () => void;
@@ -80,35 +67,39 @@ export class RideEngine {
   status: Status = "ready";
   autoPaused = false;
   intensity = 1;
+  /** The trainer holds each block's watts; off, the route sets the resistance and the rider gears. */
   erg = true;
   recording: Recording | null = null;
   /** Where the rider is shown: the warp, the cheat codes, the challenger (`shown.ts`). */
   readonly shown: Shown;
+  /** The least and the most the session was turned to on the way. */
+  readonly used = new IntensityUsed();
+  private readonly ease = new ErgEase();
   private readonly trace = new PowerTrace();
+  private readonly motion: Motion;
+  private readonly idle = new Idle();
   private clock: Clock | null = null;
-  private speed = 0;
-  private distance = 0;
-  private movedAt = 0;
+  private road = 0;
   private lastSecond = -1;
   private blockIndex = -1;
-  private idleSince: number | null = null;
   private readonly onTarget: OnTarget;
 
   constructor(
     private readonly timeline: SessionTimeline | null,
-    private readonly course: Course,
+    course: Course,
     private readonly sensors: Sensors,
     private readonly events: EngineEvents,
   ) {
     this.onTarget = new OnTarget(timeline);
-    this.shown = new Shown(course);
+    this.motion = new Motion(course);
+    this.shown = this.motion.shown;
   }
 
   start(now: number): void {
     if (this.status !== "ready") return;
     this.recording = startRecording(now);
     this.clock = startClock(now);
-    this.movedAt = now;
+    this.motion.from(now);
     this.status = "riding";
     this.tick(now);
   }
@@ -118,8 +109,7 @@ export class RideEngine {
     this.move(now);
     const live = this.sensors.now(now);
     if (this.status === "paused") {
-      const moving = (live.power ?? 0) >= RESUME_WATTS || (live.cadence ?? 0) >= RESUME_CADENCE;
-      if (this.autoPaused && moving) this.resume(now);
+      if (this.autoPaused && this.idle.moving(live)) this.resume(now);
       return;
     }
     const second = Math.floor(planSecond(this.clock, now));
@@ -134,9 +124,10 @@ export class RideEngine {
     pauseRecording(this.recording, now);
     this.status = "paused";
     this.autoPaused = auto;
-    this.speed = 0;
-    this.idleSince = null;
-    this.events.target(null);
+    this.motion.stop();
+    this.idle.reset();
+    this.ease.reset();
+    this.events.target(null, 0);
   }
 
   resume(now: number): void {
@@ -145,9 +136,9 @@ export class RideEngine {
     resumeRecording(this.recording, now);
     this.status = "riding";
     this.autoPaused = false;
-    this.movedAt = now;
-    this.idleSince = null;
-    this.events.target(this.target());
+    this.motion.from(now);
+    this.idle.reset();
+    this.hold();
   }
 
   /** On to the next block: the rest of this one is left out, and its lap closes. */
@@ -165,12 +156,14 @@ export class RideEngine {
     const stepped = Math.round(value / INTENSITY.step) * INTENSITY.step;
     this.intensity =
       Math.round(Math.min(INTENSITY.max, Math.max(INTENSITY.min, stepped)) * 100) / 100;
-    this.events.target(this.target());
+    this.used.note(this.intensity);
+    this.hold();
   }
 
   setErg(on: boolean): void {
     this.erg = on;
-    this.events.target(this.target());
+    if (!on) this.ease.reset();
+    this.hold();
   }
 
   finish(now: number): void {
@@ -178,9 +171,9 @@ export class RideEngine {
     const block = this.timeline?.blocks[this.blockIndex];
     endRecording(this.recording, now, block?.intent ?? "steady");
     this.status = "finished";
-    this.speed = 0;
+    this.motion.stop();
     this.events.cue("end");
-    this.events.target(null);
+    this.events.target(null, 0);
     this.events.finished();
   }
 
@@ -191,15 +184,7 @@ export class RideEngine {
 
   /** Where the rider is shown now, between ticks too: the scene asks every frame. */
   positionAt(now: number): ShownAt {
-    const riding = this.status === "riding";
-    const since = riding ? Math.min(1, Math.max(0, now - this.movedAt) / 1000) : 0;
-    return this.shown.at(
-      this.course,
-      this.distance + this.speed * since,
-      this.speed,
-      since,
-      riding,
-    );
+    return this.motion.positionAt(now, this.status === "riding");
   }
 
   live(now: number): Live {
@@ -222,12 +207,14 @@ export class RideEngine {
         block && this.status === "riding"
           ? standing(block.block, sensors.power3s, this.intensity)
           : "free",
-      speed: this.shown.speed(this.speed),
-      distance: this.shown.place(this.distance, this.speed),
+      speed: this.shown.speed(this.motion.speed),
+      distance: this.shown.place(this.motion.distance, this.motion.speed),
       cheat: this.shown.cheat.state(),
       race: this.shown.race.live(),
       intensity: this.intensity,
       erg: this.erg,
+      eased: this.ease.eased,
+      road: this.road,
       trace: this.trace.values,
     };
   }
@@ -245,14 +232,20 @@ export class RideEngine {
       power: live.power,
       cadence: live.cadence,
       hr: live.heartRate,
-      speed: measured ? this.speed : null,
-      distance: measured ? this.distance : null,
-      altitude: measured ? courseAt(this.course, this.distance).ele : null,
+      speed: measured ? this.motion.speed : null,
+      distance: measured ? this.motion.distance : null,
+      altitude: measured ? this.motion.here().ele : null,
     });
     this.trace.add(second, live.power);
-    this.watchIdle(now, live);
-    if (!this.timeline || !current || this.status !== "riding") return;
+    if (this.idle.stopped(now, live, this.sensors.seen)) this.pause(now, true);
+    if (this.status !== "riding") return;
+    if (!this.timeline || !current) {
+      this.followRoad();
+      return;
+    }
     this.onTarget.second(current.index, current.block, live.power3s, this.intensity);
+    const holding = this.erg && current.block.watts !== null && this.sensors.seen.cadence;
+    const eased = this.ease.second(live.cadence, holding);
     if (current.index !== this.blockIndex) {
       const left = this.timeline.blocks[this.blockIndex];
       if (left) {
@@ -260,33 +253,37 @@ export class RideEngine {
         this.events.cue("change");
       }
       this.blockIndex = current.index;
-      this.events.target(this.target());
-    } else if (current.remaining <= 3) this.events.cue("count");
+      this.hold();
+    } else if (eased) this.hold();
+    else this.followRoad();
+    if (current.remaining <= 3) this.events.cue("count");
     else if (isHard(current.block) && CHEER_AT.includes(current.remaining))
       this.events.cue("cheer");
   }
 
-  private watchIdle(now: number, live: SensorsNow): void {
-    if (!this.sensors.seen.power && !this.sensors.seen.cadence) return;
-    const idle = (live.power ?? 0) <= 0 && (live.cadence ?? 0) <= 0;
-    if (!idle) this.idleSince = null;
-    else if (this.idleSince === null) this.idleSince = now;
-    else if (now - this.idleSince >= AUTO_PAUSE_SECONDS * 1000) this.pause(now, true);
+  /** The road's grade where the rider is, given to the trainer when it changes and nothing is held. */
+  private followRoad(): void {
+    const grade = roadGrade(this.motion.here().grade);
+    if (grade === this.road) return;
+    this.road = grade;
+    if (this.target() === null) this.events.target(null, grade);
+  }
+
+  /** The trainer set to what it should hold now. */
+  private hold(): void {
+    this.road = roadGrade(this.motion.here().grade);
+    this.events.target(this.target(), this.status === "riding" ? this.road : 0);
   }
 
   private move(now: number): void {
-    const dt = Math.min(1, Math.max(0, (now - this.movedAt) / 1000));
-    this.movedAt = now;
     if (this.status !== "riding") {
-      this.speed = 0;
+      this.motion.stop();
       return;
     }
     const watts = this.sensors.seen.power
       ? (this.sensors.now(now).power ?? 0)
       : (this.blockWatts() ?? DRAWN_WATTS);
-    this.speed = nextSpeed(this.speed, watts, courseAt(this.course, this.distance).grade, dt);
-    this.distance += this.speed * dt;
-    this.shown.advance(this.distance, this.speed, dt, watts, this.timeline === null);
+    this.motion.step(now, watts, this.timeline === null);
   }
 
   private blockWatts(): number | null {
@@ -295,6 +292,6 @@ export class RideEngine {
   }
 
   private target(): number | null {
-    return this.erg && this.status === "riding" ? this.blockWatts() : null;
+    return this.erg && this.status === "riding" ? this.ease.hold(this.blockWatts()) : null;
   }
 }

@@ -39,8 +39,8 @@ export const SPRINTER = {
   wPrime,
   /**
    * The share of the air he pushes against the rider the physics is for,
-   * 70 kg: for a body of the same shape the area goes as the mass to the
-   * two thirds — about 0.82.
+   * 68 kg: for a body of the same shape the area goes as the mass to the
+   * two thirds — about 0.84.
    */
   air: Math.pow(RIDER_KG / (PHYSICS.massKg - PHYSICS.bikeKg), 2 / 3),
   /** Metres behind the rider he rides, middle to middle: his front wheel just off their back one. */

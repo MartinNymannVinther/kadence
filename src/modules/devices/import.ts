@@ -75,6 +75,8 @@ export type ImportSource = {
    * day; otherwise the usual match decides, as for any file.
    */
   sessionId?: string;
+  /** A note the ride arrives with: Rulle's word on how hard the session was turned to (ADR 0106). */
+  note?: string;
 };
 
 export async function importFitIn(
@@ -138,6 +140,7 @@ export async function importFitIn(
       ...row,
       title: (origin.title || title || (origin.unnamed ? "" : baseName(fileName))).slice(0, 120),
       source: origin.source,
+      note: origin.note ?? "",
       externalId: origin.externalId ?? null,
       uploadKeyId: origin.uploadKeyId ?? null,
       createdBy: ctx.userId,

@@ -1,4 +1,6 @@
 import { createHash } from "node:crypto";
+import { createTranslator } from "next-intl";
+import { cookies } from "next/headers";
 import { Refused } from "@/core/action";
 import { requireOrgContext } from "@/core/auth/guard";
 import { peekRateLimit, rateLimit } from "@/core/rate-limit";
@@ -10,6 +12,8 @@ import { readWithin } from "@/modules/devices/ingest-request";
 import { rideByHash } from "@/modules/rulle/service";
 import { whoAmI } from "@/modules/team/access";
 import { getSession } from "@/modules/training/sessions";
+import da from "../../../../../messages/da.json";
+import en from "../../../../../messages/en.json";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -21,6 +25,24 @@ const NO_STORE = { "Cache-Control": "no-store" };
 
 const answer = (body: object, status: number) => Response.json(body, { status, headers: NO_STORE });
 
+/** A share of the session as sent, per cent, within the dial's reach; null for anything else. */
+function share(raw: string | null): number | null {
+  const n = Number(raw);
+  return raw !== null && Number.isInteger(n) && n >= 50 && n <= 120 ? n : null;
+}
+
+async function intensityNote(params: URLSearchParams): Promise<string | undefined> {
+  const low = share(params.get("low"));
+  const high = share(params.get("high"));
+  if (low === null || high === null || low > high || (low === 100 && high === 100))
+    return undefined;
+  // Without a page's request, the translator is built from the message files, as a mail's is.
+  const locale = (await cookies()).get("NEXT_LOCALE")?.value === "en" ? "en" : "da";
+  const messages = locale === "en" ? en : da;
+  const t = createTranslator({ locale, messages, namespace: "rulle.note" });
+  return low === high ? t("at", { pct: low }) : t("between", { low, high });
+}
+
 /**
  * A ride from Rulle (ADR 0033): the FIT file the browser wrote, as the
  * request's body, for the rider who rode it. It goes through the same
@@ -28,6 +50,10 @@ const answer = (body: object, status: number) => Response.json(body, { status, h
  * given its load — and lands on the session it was ridden for
  * (`?session=`) when that is still open on the ride's day. A ride without
  * a session is named for its route (`?name=`).
+ *
+ * The least and the most the session was turned to on the way (`?low=`
+ * and `?high=`, per cent, ADR 0106) become the ride's note in the rider's
+ * language, so the coach sees a day ridden at 90 %; at 100 % there is none.
  *
  * Only the rider saves their ride: a coach who tries a session on the
  * trainer is not the rider, and a session must be the rider's own. It is
@@ -76,6 +102,7 @@ export async function POST(request: Request) {
       source: "fit",
       title: session?.title ?? (name || undefined),
       sessionId: session?.id,
+      note: await intensityNote(params),
     });
     await rateLimit(stored, STORED_FILES_PER_HOUR, HOUR);
     return answer({ ...imported, duplicate: false }, 201);

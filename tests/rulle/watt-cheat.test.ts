@@ -79,14 +79,15 @@ describe("the WATT dial", () => {
 
   it("keeps the W/kg as the avatar's weight changes, or the watts in watts, within its bounds", () => {
     const dial = new WattDial();
-    dial.watts = 280;
+    // 4 W/kg of Rulle's own 68 kg (docs/adr/0106); a kilo more at 4 W/kg is four watts more.
+    dial.watts = 272;
     dial.toggleUnit();
     dial.weigh(1);
-    expect(dial.kg).toBe(71);
-    expect(dial.watts).toBeCloseTo(284, 9);
+    expect(dial.kg).toBe(69);
+    expect(dial.watts).toBeCloseTo(276, 9);
     dial.toggleUnit();
     dial.weigh(-1);
-    expect(dial.watts).toBeCloseTo(284, 9);
+    expect(dial.watts).toBeCloseTo(276, 9);
     for (let i = 0; i < 200; i++) dial.weigh(-1);
     expect(dial.kg).toBe(WATT_DIAL.kg.least);
     for (let i = 0; i < 200; i++) dial.weigh(1);
@@ -140,7 +141,7 @@ describe("the WATT cheat code's bike", () => {
     const before = cheat.dial.watts;
     cheat.hold(1, 0);
     expect(cheat.dial.watts).toBe(before + 5);
-    expect(cheat.state()).toEqual({ mode: "watts", watts: before + 5, kg: 70, unit: "w" });
+    expect(cheat.state()).toEqual({ mode: "watts", watts: before + 5, kg: 68, unit: "w" });
   });
 });
 
