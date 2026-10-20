@@ -12,7 +12,7 @@ import type { Devices } from "../use-devices";
  * without Web Bluetooth (Safari, Firefox) is told so plainly, with where
  * it does work, and with the way to ride anyway: on the clock, saying
  * afterwards how hard it was. A trainer that can both hold watts and ride
- * a road is asked which it should do (ADR 0106): hold each block's watts
+ * a road is asked which it should do (ADR 0107): hold each block's watts
  * (ERG), or give the route's slope and leave the gears to the rider. E
  * switches between the two on the way.
  */

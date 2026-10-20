@@ -81,7 +81,7 @@ export function RulleApp({
   const trial = session ? session.riderId !== start.riderId : start.riderId === null;
   const keepFor = trial ? null : start.riderId;
 
-  // The trainer holds the watts (ERG) unless the rider chooses the route's resistance (ADR 0106).
+  // The trainer holds the watts (ERG) unless the rider chooses the route's resistance (ADR 0107).
   const [erg, setErg] = useState(true);
   const [sensors] = useState(() => new Sensors());
   const [beeps] = useState(() => new Beeps());

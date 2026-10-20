@@ -1613,6 +1613,11 @@
       "transport": "Kørsel",
       "transportPlaceholder": "Fx Annes bil fra klubhuset kl. 7.30",
       "fromParent": "En forælder har lagt den ind. Rytteren og trænerne kan rette og slette den.",
+      "racePrep": {
+        "title": "Dagen før løbet",
+        "body": "Opladning før løbet: en time roligt med 5 minutter ved tærskel, så benene er vågne og friske til start. Passet åbner, så du kan rette det, før det lægges ind.",
+        "add": "Læg opladning ind {day}"
+      },
       "results": {
         "source": "Hentet fra Cykling Danmark.",
         "label": "Resultater",

@@ -7,7 +7,7 @@ import {
   IntensityUsed,
 } from "@/components/rulle/ride/hold";
 
-describe("ERG eased when the cadence collapses (docs/adr/0106)", () => {
+describe("ERG eased when the cadence collapses (docs/adr/0107)", () => {
   it("lets go to a share of the watts after three slow seconds, and holds the block's watts until then", () => {
     const ease = new ErgEase();
     expect(ease.second(40, true)).toBe(false);

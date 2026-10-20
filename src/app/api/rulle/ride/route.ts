@@ -52,7 +52,7 @@ async function intensityNote(params: URLSearchParams): Promise<string | undefine
  * a session is named for its route (`?name=`).
  *
  * The least and the most the session was turned to on the way (`?low=`
- * and `?high=`, per cent, ADR 0106) become the ride's note in the rider's
+ * and `?high=`, per cent, ADR 0107) become the ride's note in the rider's
  * language, so the coach sees a day ridden at 90 %; at 100 % there is none.
  *
  * Only the rider saves their ride: a coach who tries a session on the

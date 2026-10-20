@@ -1,4 +1,4 @@
-# ADR 0106: Rulle gives the trainer the road, eases ERG, and says how hard the session was turned
+# ADR 0107: Rulle gives the trainer the road, eases ERG, and says how hard the session was turned
 
 Status: accepted · Date: 2026-10-20 · Amends ADR 0033 (Rulle: the session on the trainer); touches ADR 0073 (the WATT cheat code's avatar) and 0075 (the sprinter)
 

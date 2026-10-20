@@ -44,7 +44,7 @@ export type RideOptions = {
   trainer: TrainerLink | null;
   beeps: Beeps;
   meta: RideMeta;
-  /** How the ride starts: the trainer holding the watts (ERG), or the route setting the resistance (ADR 0106). */
+  /** How the ride starts: the trainer holding the watts (ERG), or the route setting the resistance (ADR 0107). */
   erg: boolean;
   /** Whose ride it is, for keeping it on this device; null for a trial, which is never kept. */
   keepFor: string | null;

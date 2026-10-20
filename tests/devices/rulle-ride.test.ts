@@ -23,7 +23,7 @@ import { insertSql, seedPerson } from "../helpers/rows";
 
 const auth = vi.hoisted(() => ({ session: null as { orgId: string; userId: string } | null }));
 vi.mock("@/core/auth/guard", () => ({ requireOrgContext: async () => auth.session }));
-// The rider's language, for the note a ride turned down or up arrives with (docs/adr/0106).
+// The rider's language, for the note a ride turned down or up arrives with (docs/adr/0107).
 const locale = vi.hoisted(() => ({ value: "da" }));
 vi.mock("next/headers", () => ({
   headers: async () => new Headers(),
@@ -216,7 +216,7 @@ describe("the rider's own ride", () => {
     expect(activity.title).toBe("Vejle: Fjorden, Munkebjerg og Kiddesvej");
   });
 
-  it("turned down on the way, says so in a note in the rider's language (docs/adr/0106)", async () => {
+  it("turned down on the way, says so in a note in the rider's language (docs/adr/0107)", async () => {
     auth.session = IDA;
     const at90 = await post("?session=rl_ida_a&low=90&high=90", ride(60));
     expect(at90.status).toBe(201);

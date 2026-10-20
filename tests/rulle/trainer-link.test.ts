@@ -55,7 +55,7 @@ describe("a smart trainer (FTMS)", () => {
     ]);
   });
 
-  it("gives the road's grade where it is not holding the watts (docs/adr/0106), once per change", async () => {
+  it("gives the road's grade where it is not holding the watts (docs/adr/0107), once per change", async () => {
     const trainer = fakeTrainer();
     const link = await TrainerLink.connect(trainer.bluetooth, listen().events);
     await link.target(null, 0.04);

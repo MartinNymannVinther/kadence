@@ -1613,6 +1613,11 @@
       "transport": "Driving",
       "transportPlaceholder": "E.g. Anne drives from the clubhouse at 7:30",
       "fromParent": "A parent put this in. The rider and the coaches can change and delete it.",
+      "racePrep": {
+        "title": "The day before the race",
+        "body": "Opener before the race: an easy hour with 5 minutes at threshold, so the legs are awake and fresh for the start. The session opens so you can change it before it goes in.",
+        "add": "Add the opener on {day}"
+      },
       "results": {
         "source": "Read from Cykling Danmark.",
         "label": "Results",

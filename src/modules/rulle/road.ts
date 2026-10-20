@@ -1,5 +1,5 @@
 /**
- * The road under the trainer's wheel (ADR 0106). When Rulle is not holding
+ * The road under the trainer's wheel (ADR 0107). When Rulle is not holding
  * the watts — the rider chose to ride the route, turned ERG off, or the
  * block is a free one — the trainer is given the route's slope where the
  * rider is, so that a climb is felt in the pedals and the rider shifts

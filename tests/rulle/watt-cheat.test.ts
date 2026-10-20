@@ -79,7 +79,7 @@ describe("the WATT dial", () => {
 
   it("keeps the W/kg as the avatar's weight changes, or the watts in watts, within its bounds", () => {
     const dial = new WattDial();
-    // 4 W/kg of Rulle's own 68 kg (docs/adr/0106); a kilo more at 4 W/kg is four watts more.
+    // 4 W/kg of Rulle's own 68 kg (docs/adr/0107); a kilo more at 4 W/kg is four watts more.
     dial.watts = 272;
     dial.toggleUnit();
     dial.weigh(1);

@@ -75,7 +75,7 @@ export type ImportSource = {
    * day; otherwise the usual match decides, as for any file.
    */
   sessionId?: string;
-  /** A note the ride arrives with: Rulle's word on how hard the session was turned to (ADR 0106). */
+  /** A note the ride arrives with: Rulle's word on how hard the session was turned to (ADR 0107). */
   note?: string;
 };
 

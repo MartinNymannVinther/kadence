@@ -1,6 +1,6 @@
 # ADR 0103: The race is a session on its day, and the day before has Danish words
 
-Status: accepted · Date: 2026-10-17 · Amends ADR 0101 (a week around a race) · Builds on 0102 (a race is hard and has a name)
+Status: accepted · Date: 2026-10-17 · Amends ADR 0101 (a week around a race) · Builds on 0102 (a race is hard and has a name) · Amended by 0106 (the day before holds DCU's opladning)
 
 ## Context
 

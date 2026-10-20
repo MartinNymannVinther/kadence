@@ -53,7 +53,7 @@ export function ReadyScreen({
   /** The installation has Rulle's world on, and so a route to choose. */
   world: boolean;
   kept: KeptRide | null;
-  /** The trainer holds the watts (ERG), or the route sets the resistance (ADR 0106). */
+  /** The trainer holds the watts (ERG), or the route sets the resistance (ADR 0107). */
   erg: boolean;
   onChoose: (id: string | null) => void;
   onErg: (on: boolean) => void;

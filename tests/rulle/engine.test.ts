@@ -96,7 +96,7 @@ describe("a session on the trainer", () => {
   });
 });
 
-describe("the road under the wheel (docs/adr/0106)", () => {
+describe("the road under the wheel (docs/adr/0107)", () => {
   /** Two kilometres up at 6 %, then two down, out and back: 24 m per 400 m. */
   const hilly: RoutePoint[] = Array.from({ length: 41 }, (_, i) => ({
     lat: 55.7 + (4 / 111.2) * (i / 40),
@@ -167,7 +167,7 @@ describe("the road under the wheel (docs/adr/0106)", () => {
   });
 });
 
-describe("ERG eased when the cadence collapses (docs/adr/0106)", () => {
+describe("ERG eased when the cadence collapses (docs/adr/0107)", () => {
   it("lets go to 60 % after three slow seconds, and holds the block's watts again once the legs are back", () => {
     const { engine, targets, ride } = setup();
     engine.start(T0);

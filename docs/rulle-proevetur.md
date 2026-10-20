@@ -43,12 +43,12 @@ karakteristikker, og det første skriv til dens control point.
   gear. Loggen viser hver måling fra traineren undervejs.
 - **Blokskift**: watt-målet ændrer sig selv ved næste blok, uden at du
   gør noget.
-- **Ruten styrer modstanden** (ADR 0106): vælg det på klar-skærmen, hvis
+- **Ruten styrer modstanden** (ADR 0107): vælg det på klar-skærmen, hvis
   traineren tilbyder valget, eller tryk E undervejs. Modstanden skal
   stige op ad bakke og falde ned ad, på halv styrke; loggen viser
   skrivninger med op-koden 0x11 og stigningen i hundrededele procent. Du
   skal selv geare for at ramme blokkens watt.
-- **ERG letter ved lav kadence** (ADR 0106): træd under 50 i tre
+- **ERG letter ved lav kadence** (ADR 0107): træd under 50 i tre
   sekunder under et mål. Skærmen siger "ERG lettet", traineren går til
   60 % af blokkens watt, og den holder igen, når du har været over 60 i
   to sekunder.

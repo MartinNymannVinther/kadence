@@ -27,7 +27,7 @@ import { keepConnected, type LinkState } from "./reconnect";
 /**
  * The trainer, over Bluetooth. A smart trainer speaks the Fitness Machine
  * Service: Rulle takes control, sets the watts of each block (ERG) or the
- * road's grade where Rulle is not holding the watts (ADR 0106), and reads
+ * road's grade where Rulle is not holding the watts (ADR 0107), and reads
  * the watts, cadence and — when the trainer passes one on — the pulse. A
  * trainer or power meter that only speaks Cycling Power is read and not
  * steered: the session is then ridden in free mode. A device with both is

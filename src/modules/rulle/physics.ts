@@ -8,7 +8,7 @@
  * the same watts on the hoods outside.
  *
  * The mass is a fixed standard, 68 kg of rider and 8 of bike — one
- * average for every class, chosen by the product owner (ADR 0106) — and
+ * average for every class, chosen by the product owner (ADR 0107) — and
  * it is never shown: Rulle reads no body data (ADR 0013, 0031). A light
  * rider climbs a little slower on the screen than on the road, a heavy
  * one a little faster; the watts, which are what is recorded and what the

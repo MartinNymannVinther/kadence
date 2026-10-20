@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { ROAD, roadGrade } from "@/modules/rulle";
 
-describe("the road given to the trainer (docs/adr/0106)", () => {
+describe("the road given to the trainer (docs/adr/0107)", () => {
   it("is the route's slope at half strength, as the riding apps default to", () => {
     expect(ROAD.difficulty).toBe(0.5);
     expect(roadGrade(0.1)).toBe(0.05);

@@ -39,7 +39,7 @@ import { PowerTrace } from "./trace";
  * few times a second and draws what `live` says. Each new block closes a
  * lap and sets the trainer to the block's watts (ERG); where Rulle is not
  * holding them — a free block, ERG off, the rider riding the route (ADR
- * 0106) — the trainer gets the route's grade at half strength
+ * 0107) — the trainer gets the route's grade at half strength
  * (`roadGrade`) and the rider gears. A pause is a flat road, so a rider
  * starting again never starts against 300 W or a hill. A collapsed
  * cadence eases ERG (`ErgEase`); legs that stop pause the ride (`Idle`);

@@ -1,6 +1,6 @@
 /**
  * What the trainer is asked to hold, how hard the session is ridden, and
- * when legs that stop pause it (ADR 0033, 0106). No React and no browser
+ * when legs that stop pause it (ADR 0033, 0107). No React and no browser
  * in it; the engine uses these.
  *
  * - `INTENSITY` is the rider's own dial on the session: the block's watts
