@@ -263,6 +263,17 @@
       opacity: 1;
     }
   }
+  /* The Haij mark keeping time while a demo is built (landing/demo-waiting.tsx). */
+  --animate-cadence: cadence 1.2s ease-in-out infinite;
+  @keyframes cadence {
+    0%,
+    100% {
+      transform: scaleX(1);
+    }
+    50% {
+      transform: scaleX(0.55);
+    }
+  }
   @keyframes rulle-drop {
     0% {
       opacity: 0;

@@ -38,10 +38,11 @@ ARG KADENCE_COMMIT=""
 ARG KADENCE_BUILT_AT=""
 ENV KADENCE_COMMIT=$KADENCE_COMMIT KADENCE_BUILT_AT=$KADENCE_BUILT_AT
 # Dummy values so importing env-validated modules never fails at build time;
-# real values come from the environment at runtime.
+# real values come from the environment at runtime. The secret is long and
+# varied enough that Better Auth does not warn about it once per worker.
 ENV APP_DATABASE_URL=postgres://build:build@localhost:5432/build \
     AUTH_DATABASE_URL=postgres://build:build@localhost:5432/build \
-    BETTER_AUTH_SECRET=build-time-placeholder \
+    BETTER_AUTH_SECRET=build-time-placeholder-not-a-real-secret \
     BETTER_AUTH_URL=http://localhost:3000
 RUN pnpm build
 

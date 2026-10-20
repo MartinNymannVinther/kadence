@@ -15,9 +15,12 @@ import { EMPTY_SNAPSHOT, type TeamsSnapshot } from "./types";
 
 const FILE = "snapshot.json";
 
+// The directory lives outside the build (a volume in production), so the
+// path is marked turbopackIgnore: without it the build cannot tell which
+// files are meant and traces the whole project into the server.
 export function teamsDir(): string {
   const dir = env.TEAMS_DIR ?? "./data/teams";
-  return isAbsolute(dir) ? dir : resolve(process.cwd(), dir);
+  return isAbsolute(dir) ? dir : resolve(/* turbopackIgnore: true */ process.cwd(), dir);
 }
 
 export async function readSnapshot(dir = teamsDir()): Promise<TeamsSnapshot> {
