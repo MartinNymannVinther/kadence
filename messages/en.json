@@ -66,6 +66,12 @@
       "cta": "Open a demo",
       "ctaAlone": "Try it as a rider on your own"
     },
+    "demoWait": {
+      "title": "Getting your demo ready",
+      "team": "You get a U19 team with riders, a season plan after DCU, sessions, rides and check-ins. It usually takes a few seconds, and then you start as the coach.",
+      "alone": "You are Emma, a U19 rider on her own, with a season plan after DCU, six weeks of rides and check-ins, and next week laid in. It usually takes a few seconds.",
+      "slow": "This is taking a little longer than usual. The page moves on by itself when the demo is ready."
+    },
     "featuresLabel": "What you get",
     "features": {
       "calendar": "A calendar of sessions on the bike, in the gym and beyond",
@@ -1020,7 +1026,7 @@
       },
       "sessions": {
         "title": "Sessions and templates",
-        "body": "A session is built in steps: warm-up, work, rest and cool-down, each with a length and a target in zones, percent of FTP or threshold heart rate, or by feel. Repeats gather steps that are ridden several times. Once the rider's thresholds are set, the targets read in watts and pulse. Strength sessions have exercises, and a programme has a progression, so sets and reps follow along from session to session. A coach can also press \"Build with AI\" and write the session in their own words, e.g. \"5x4 min VO2max\" or \"strength 45 min, legs and core\", or what to change in the session as it stands. The proposal is shown first, and nothing is saved until the coach saves the session. Bike sessions can be built from building blocks with one tap, say a warm-up, threshold intervals or sprints, and strength exercises are suggested as you type the name, DCU's exercises and ones without machines. Save a session as a template in the library and it can be given to one rider or the whole team at once. Several weeks of sessions can be gathered in a block and laid in from a Monday."
+        "body": "A session is built in steps: warm-up, work, rest and cool-down, each with a length and a target in zones, percent of FTP or threshold heart rate, or by feel. Repeats gather steps that are ridden several times. Once the rider's thresholds are set, the targets read in watts and pulse. Strength sessions have exercises, and a programme has a progression, so sets and reps follow along from session to session. A coach can also press \"Build with AI\" and write the session in their own words, e.g. \"5x4 min VO2max\" or \"strength 45 min, legs and core\", or what to change in the session as it stands. The proposal is shown first, and nothing is saved until the coach saves the session. Bike sessions can be built from building blocks with one tap, say a warm-up, threshold intervals or sprints, and strength exercises are suggested as you type the name, DCU's exercises and ones without machines. Save a session as a template in the library and it can be given to one rider or the whole team at once. Several weeks of sessions can be gathered in a block and laid in from a Monday. Choose an exercise from the library and the session shows its drawing and how-to with a link to the exercise. A session can be printed or saved as a PDF from the session; a strength session gets a box for every set to write the weight and reps in."
       },
       "exercises": {
         "title": "Exercises and programmes",
@@ -1489,6 +1495,7 @@
     },
     "edit": {
       "title": "Edit the session",
+      "done": "This session is done. If you change the plan, what was done is compared with the new plan.",
       "scope": "What should the change apply to?",
       "scopes": {
         "group": "The whole group (those who have not done it)",
@@ -1675,10 +1682,10 @@
       "wishPlaceholder": "E.g. an easy week before Sunday's race, or two short interval sessions and one strength session",
       "hint": "The AI gets DCU's hours for the class, the team's own events and the library. It gets no rider data. The proposal lands in the plan, where you can change it.",
       "hintSenior": "The AI gets the hours of the training profile, the team's own events and the library. It gets no rider data. The proposal lands in the plan, where you can change it.",
-      "hintOwn": "The AI gets DCU's hours for the class and the library. It gets no data about you. The proposal lands in the plan, where you can change it.",
-      "hintSeniorOwn": "The AI gets the hours of the training profile and the library. It gets no data about you. The proposal lands in the plan, where you can change it.",
-      "hintChild": "The AI gets DCU's hours for the class and the library. It gets no data about {name}. The proposal lands in the plan, where you can change it.",
-      "hintSeniorChild": "The AI gets the hours of the training profile and the library. It gets no data about {name}. The proposal lands in the plan, where you can change it.",
+      "hintOwn": "The AI gets DCU's hours for the class, the library, the names and dates of your races and the dates of other days in the calendar. It gets nothing else about you. The proposal lands in the plan, where you can change it.",
+      "hintSeniorOwn": "The AI gets the hours of the training profile, the library, the names and dates of your races and the dates of other days in the calendar. It gets nothing else about you. The proposal lands in the plan, where you can change it.",
+      "hintChild": "The AI gets DCU's hours for the class, the library, the names and dates of {owner} races and the dates of other days in the calendar. It gets nothing else about {name}. The proposal lands in the plan, where you can change it.",
+      "hintSeniorChild": "The AI gets the hours of the training profile, the library, the names and dates of {owner} races and the dates of other days in the calendar. It gets nothing else about {name}. The proposal lands in the plan, where you can change it.",
       "basisOrProfile": "Class or profile",
       "ask": "Propose the week",
       "close": "Close",
@@ -2167,6 +2174,7 @@
     }
   },
   "session": {
+    "print": "Print or save as PDF",
     "notFound": "The session does not exist",
     "indoors": "Ride indoors in Rulle",
     "tryIndoors": "Try the session in Rulle",
@@ -2455,7 +2463,10 @@
       "rest": "Rest",
       "secondsShort": "sec",
       "note": "Note",
-      "notePlaceholder": "E.g. keep the back straight"
+      "notePlaceholder": "E.g. keep the back straight",
+      "linked": "From the library: {name}. The session shows its drawing and how-to.",
+      "linkedUnnamed": "From the library. The session shows its drawing and how-to.",
+      "unlink": "Remove the link"
     },
     "progression": {
       "group": "Group",
@@ -2546,6 +2557,13 @@
       "warmup": "Warm-up:",
       "rest": "{seconds} sec rest",
       "setsReps": "{sets} × {reps}",
+      "openInLibrary": "See the exercise in the library",
+      "log": {
+        "set": "Set {n}",
+        "kg": "kg",
+        "reps": "Reps",
+        "done": "Done"
+      },
       "progression": "Progression",
       "rule": "{open, select, yes {{group}, from session {from}} other {{group}, sessions {from}–{to}}}: {sets} × {reps}"
     },

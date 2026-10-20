@@ -137,8 +137,9 @@ export const exerciseSchema = z.object({
   note: z.string().max(300).default(""),
   /**
    * The exercise in the library this one is, when it came from a
-   * programme ("Læg i kalenderen"): its figure and how-to are shown
-   * beside it to whoever may read that exercise. Optional, so every
+   * programme ("Læg i kalenderen") or the coach chose it from the
+   * library's suggestions: its figure and how-to are shown beside it,
+   * with a link to it, to whoever may read that exercise. Optional, so every
    * session written before it still reads as it was; one that does not
    * read as a reference is dropped rather than failing the whole session.
    */

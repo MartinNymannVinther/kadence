@@ -1,11 +1,13 @@
 import { DATA_RULE, fenceUntrusted, languageRule } from "@/modules/ai/prompting";
 import { RACE_RULES, raceRulesFor } from "@/modules/dcu";
+import { raceWeekRules, type PromptEvent } from "./race-week";
 
 /**
  * The words "Foreslå ugen" sends the model (week-draft.ts, ADR 0017):
  * DCU's hours and phase for a rider in U17–U23, a senior's training
  * profile (docs/adr/0091), or the team's own hours when it plans without
- * a paradigm (ADR 0049). Pure.
+ * a paradigm (ADR 0049). A race week is planned as a coach plans it
+ * (race-week.ts, docs/adr/0101). Pure.
  */
 
 export type WeekDraftContext = {
@@ -20,7 +22,7 @@ export type WeekDraftContext = {
   senior: { profile: "motionist" | "super-motionist"; monthHours: number } | null;
   strength: { min: number; max: number };
   planned: Array<{ date: string; sport: string; title: string; minutes: number }>;
-  events: Array<{ kind: string; title: string; from: string; to: string; priority: string | null }>;
+  events: PromptEvent[];
   recentWeeks: number[];
   flags: string[];
   templates: Array<{ id: string; name: string; sport: string; minutes: number }>;
@@ -41,10 +43,11 @@ export function weekDraftPrompt(c: WeekDraftContext, locale: string) {
       ? `For a session from the library, use its templateId when one fits: Kadence's sessions and strength programmes for adults may be there, and the strength programme for this rider is "${profileName} styrke". Otherwise leave it empty.`
       : "For a strength session, use a templateId from the library when one fits (DCU's strength programmes are there); otherwise leave it empty.",
     senior
-      ? "Aim the week's bike hours at the profile's target and stay inside its corridor. Mostly easy rides and a few hard sessions. Keep strength sessions at least 48 hours apart. Give at least one rest day. Keep the day before an A race easy."
+      ? "Aim the week's bike hours at the profile's target and stay inside its corridor. Mostly easy rides and a few hard sessions. Keep strength sessions at least 48 hours apart. Give at least one rest day."
       : c.guided
-        ? "Aim the week's bike hours at DCU's target and stay inside its corridor. Follow the phase. Keep strength sessions at least 48 hours apart. Give at least one rest day. Keep the day before an A race easy, and lighten exam days."
-        : "The team plans without a federation's hour model (ADR 0049): keep the week's bike hours close to the last weeks' and rise at most 15 % from week to week. Keep strength sessions at least 48 hours apart. Give at least one rest day. Keep the day before an A race easy, and lighten exam days.",
+        ? "Aim the week's bike hours at DCU's target and stay inside its corridor. Follow the phase. Keep strength sessions at least 48 hours apart. Give at least one rest day. Lighten exam days."
+        : "The team plans without a federation's hour model (ADR 0049): keep the week's bike hours close to the last weeks' and rise at most 15 % from week to week. Keep strength sessions at least 48 hours apart. Give at least one rest day. Lighten exam days.",
+    raceWeekRules(senior ? "adult" : "youth", locale),
     "Never mention the rider's weight, body or food portions.",
     "Do not repeat sessions already planned. Respect the guardrails: if the rider shows signs of fatigue, pain or poor wellbeing, plan less and say so in the note.",
     senior

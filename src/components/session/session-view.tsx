@@ -36,6 +36,7 @@ import { DoneSummary } from "./done-summary";
 import { ExportMenu } from "./export-menu";
 import { PushButtons } from "./push-buttons";
 import { SendToDeviceButton } from "./send-to-device-button";
+import { SessionPrint } from "./session-print";
 
 /**
  * One planned session, whole: what it is, how to ride it for this rider,
@@ -47,7 +48,9 @@ import { SendToDeviceButton } from "./send-to-device-button";
  * rider's connected Wahoo or Garmin by the rider or a coach; the rider can
  * ride it indoors in Rulle, and a coach try it there (ADR 0033). When it
  * went off its plan, why stands under its mark; once done, the rider or a
- * coach may ask the AI for a short comment on it (ADR 0095).
+ * coach may ask the AI for a short comment on it (ADR 0095). Any session
+ * prints, or saves as a PDF, as what to do: the rest of the page is for
+ * the screen (session-print.tsx).
  */
 export async function SessionView({
   ctx,
@@ -55,6 +58,8 @@ export async function SessionView({
   sessionId,
   closeHref,
   heading = "h2",
+  place = "sheet",
+  autoPrint = false,
 }: {
   ctx: OrgContext;
   me: Me;
@@ -62,6 +67,10 @@ export async function SessionView({
   /** Where the page goes once the session is deleted. */
   closeHref: string;
   heading?: "h1" | "h2";
+  /** In the calendar's panel, or on the session's own page, which can print itself. */
+  place?: "sheet" | "page";
+  /** Print once the page is ready: it was opened from the panel to be printed. */
+  autoPrint?: boolean;
 }) {
   const t = await getTranslations("session");
   const sports = await getTranslations("training.sport");
@@ -119,12 +128,14 @@ export async function SessionView({
             {card.title}
           </Heading>
           {canWrite && (
-            <SessionMenu
-              session={card}
-              riders={team.map((r) => ({ id: r.id, name: r.name }))}
-              isCoach={me.isCoach}
-              afterDeleteHref={closeHref}
-            />
+            <div className="print:hidden">
+              <SessionMenu
+                session={card}
+                riders={team.map((r) => ({ id: r.id, name: r.name }))}
+                isCoach={me.isCoach}
+                afterDeleteHref={closeHref}
+              />
+            </div>
           )}
         </div>
         <div className="text-meta flex flex-wrap items-center gap-x-3 gap-y-1.5 text-2sm">
@@ -147,23 +158,27 @@ export async function SessionView({
               <span className="min-w-0 break-words">{card.meetingPlace}</span>
             </span>
           )}
-          <ComplianceMark
-            colour={colourOf(card, today)}
-            done={card.activity !== null}
-            isToday={card.onDate === today}
-          />
+          <span className="print:hidden">
+            <ComplianceMark
+              colour={colourOf(card, today)}
+              done={card.activity !== null}
+              isToday={card.onDate === today}
+            />
+          </span>
           {card.groupKey && <Badge variant="outline">{t("group")}</Badge>}
         </div>
-        <DeviationInline
-          ctx={ctx}
-          session={session}
-          activity={activity}
-          today={today}
-          reader={readerFor(
-            { ownRiderId: me.rider?.id ?? null, isCoach: me.isCoach },
-            session.riderId,
-          )}
-        />
+        <div className="print:hidden">
+          <DeviationInline
+            ctx={ctx}
+            session={session}
+            activity={activity}
+            today={today}
+            reader={readerFor(
+              { ownRiderId: me.rider?.id ?? null, isCoach: me.isCoach },
+              session.riderId,
+            )}
+          />
+        </div>
       </header>
 
       {card.description && (
@@ -181,7 +196,7 @@ export async function SessionView({
           exercises={exercises}
         />
         {exportable && (
-          <div className="flex flex-col items-start gap-2">
+          <div className="flex flex-col items-start gap-2 print:hidden">
             {(ownSession || me.isCoach) && !card.activity && (
               <Link
                 href={withQuery("/rulle", { session: card.id })}
@@ -198,9 +213,17 @@ export async function SessionView({
             {pushTo.length > 0 && <PushButtons sessionId={card.id} providers={pushTo} />}
           </div>
         )}
+        <div className="print:hidden">
+          <SessionPrint
+            sessionId={card.id}
+            title={[rider?.name, card.title, card.onDate].filter(Boolean).join(" – ")}
+            place={place}
+            auto={autoPrint}
+          />
+        </div>
       </section>
 
-      <section aria-labelledby="session-done" className="flex flex-col gap-3">
+      <section aria-labelledby="session-done" className="flex flex-col gap-3 print:hidden">
         <h3 id="session-done" className="text-base font-semibold">
           {t("doneTitle")}
         </h3>
@@ -227,7 +250,7 @@ export async function SessionView({
         {aiComment && <AiComment sessionId={card.id} />}
       </section>
 
-      <section aria-labelledby="session-comments" className="flex flex-col gap-3">
+      <section aria-labelledby="session-comments" className="flex flex-col gap-3 print:hidden">
         <h3 id="session-comments" className="text-base font-semibold">
           {t("commentsTitle", { count: comments.length })}
         </h3>

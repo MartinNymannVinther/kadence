@@ -1,6 +1,6 @@
 # ADR 0043: The team's week plan — built in one place, laid in at once
 
-Status: accepted · Date: 2026-10-01 · Builds on 0017, 0025, 0038, 0040, 0042 · Amended 2026-10-07 (the draft is kept on the server and shared by the team's coaches)
+Status: accepted · Date: 2026-10-01 · Builds on 0017, 0025, 0038, 0040, 0042 · Amended 2026-10-07 (the draft is kept on the server and shared by the team's coaches) · Amended by 0101 (a personal workspace's own calendar days reach the AI; race-week rules and a guard)
 
 ## Context
 

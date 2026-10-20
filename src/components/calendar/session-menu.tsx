@@ -23,7 +23,9 @@ import type { CalendarCard, RiderOption } from "./types";
  * What can be done to a planned session, behind one button: open it,
  * change it, move it to another day, copy it, delete it. Moving has a
  * date field here so it works on a phone, where dragging does not; a
- * session already done stays on its day.
+ * session already done stays on its day. Its plan can still be put right
+ * — a ride of two hours planned as two minutes by a slip of the finger —
+ * so what was done is compared with what was meant.
  */
 export function SessionMenu({
   session,
@@ -55,6 +57,9 @@ export function SessionMenu({
     ...(session.seriesKey !== null ? (["series"] as const) : []),
   ];
   const done = session.activityId !== null;
+  // A group's or a series' change reaches only the copies nobody has done,
+  // so a done session's plan is put right on its own.
+  const editScopes: Scope[] = done ? ["one"] : scopes;
 
   return (
     <>
@@ -79,12 +84,10 @@ export function SessionMenu({
               {t("open")}
             </DropdownMenuItem>
           )}
-          {!done && (
-            <DropdownMenuItem onClick={() => setDialog("edit")}>
-              <Pencil />
-              {t("edit")}
-            </DropdownMenuItem>
-          )}
+          <DropdownMenuItem onClick={() => setDialog("edit")}>
+            <Pencil />
+            {t("edit")}
+          </DropdownMenuItem>
           {!done && (
             <DropdownMenuItem onClick={() => setDialog("move")}>
               <CalendarClock />
@@ -129,8 +132,9 @@ export function SessionMenu({
           open
           onOpenChange={close}
           session={session}
-          scopes={scopes}
+          scopes={editScopes}
           isCoach={isCoach}
+          done={done}
         />
       )}
     </>

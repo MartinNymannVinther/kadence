@@ -151,7 +151,7 @@ describe("startWords", () => {
     expect(say("da", self.lastOne)).toBe("Henter dine pas fra ugen før.");
     expect(say("da", self.aiTitle)).toBe("Forslag til din uge");
     expect(say("da", self.aiHint(false))).toBe(
-      "AI'en får DCU's timer for årgangen og biblioteket. Den får ingen data om dig. Forslaget lander i planen, hvor du kan rette det.",
+      "AI'en får DCU's timer for årgangen, biblioteket, navn og dato på dine løb og datoerne for andre dage i kalenderen. Den får ikke andet om dig. Forslaget lander i planen, hvor du kan rette det.",
     );
     expect(say("en", startWords({ kind: "self" }, "en").aiTitle)).toBe("Proposed week for you");
   });
@@ -159,7 +159,9 @@ describe("startWords", () => {
   it("speaks of the child's week by first name, for a parent", () => {
     expect(say("da", child.lastOne)).toBe("Henter Emmas pas fra ugen før.");
     expect(say("da", child.aiTitle)).toBe("Forslag til Emmas uge");
-    expect(say("da", child.aiHint(true))).toContain("Den får ingen data om Emma.");
+    expect(say("da", child.aiHint(true))).toContain(
+      "navn og dato på Emmas løb og datoerne for andre dage i kalenderen. Den får ikke andet om Emma.",
+    );
     const en = startWords({ kind: "child", name: "Emma Holm" }, "en");
     expect(say("en", en.lastOne)).toBe("Fetches Emma's sessions from the week before.");
     expect(say("en", en.aiTitle)).toBe("Proposed week for Emma");

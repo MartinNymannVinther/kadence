@@ -5,8 +5,9 @@ import { defineConfig } from "vitest/config";
  * The pure logic on its own: DCU's numbers, age classes, load, zones,
  * guardrails, the FIT decoder, the workout files, the coach guide, a
  * rider's page at Cykling Danmark, Rulle's routes, physics, timeline and
- * Bluetooth, the open calculators and guides, and what Today and a
- * ride's page decide (docs/adr/0063). No database, no global
+ * Bluetooth, the open calculators and guides, what Today and a
+ * ride's page decide (docs/adr/0063), and what a number field keeps
+ * while it is typed (tests/ui). No database, no global
  * setup, no network — `pnpm test:unit` runs anywhere, in a second.
  * `pnpm test` runs these too, with everything else.
  */
@@ -19,7 +20,7 @@ export default defineConfig({
   test: {
     environment: "node",
     include: [
-      "tests/{dcu,load,fit,workouts,charts,coach,files,rulle,results,paradigms,calc,guides,today,activities}/**/*.test.ts",
+      "tests/{dcu,load,fit,workouts,charts,coach,files,rulle,results,paradigms,calc,guides,today,activities,ui}/**/*.test.ts",
       // The championship's arithmetic only; tests/club/championship.test.ts needs the database.
       "tests/club/standings.test.ts",
       // Reminders' keys, timing and words; the job and the policies need the database.
@@ -52,6 +53,9 @@ export default defineConfig({
       // What a model call costs, and the providers' token counts it is priced from
       // (docs/adr/0089); recording it and the budget need the database.
       "tests/ai/prices.test.ts",
+      // A week around a race: the prompts' rules, whose calendar a group's week reads, and the
+      // guard that keeps a session off a race day (docs/adr/0101); what is read needs the database.
+      "tests/ai/race-week.test.ts",
       // Which price plan applies, what it costs, and what the pages say about a plan
       // (docs/adr/0090); the plans in the database, the job and the mails need it.
       "tests/billing/{which-plan,banner,allowlist,landing,price-page}.test.ts",
