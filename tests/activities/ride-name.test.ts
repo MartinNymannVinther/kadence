@@ -22,12 +22,12 @@ describe("looksLikeFileName", () => {
   it.each([
     "",
     "   ",
-    "24720018915",
-    "24720018915 (1)",
-    "24698066483_ACTIVITY",
-    "24698066483_activity",
-    "activity_24698066483",
-    "rytter@example.com_24698066483",
+    "23456789012",
+    "23456789012 (1)",
+    "23456700001_ACTIVITY",
+    "23456700001_activity",
+    "activity_23456700001",
+    "rytter@example.com_23456700001",
     "2026-09-20-11-16-25",
     "2026-09-20 11.16.25",
     "2026-09-20_11-16-25",
@@ -36,10 +36,10 @@ describe("looksLikeFileName", () => {
     "20260920_111625",
     "20260920-111625",
     "2026-09-20-111625-ELEMNT BOLT A1B2-12-0",
-    "Martin_Vinther_2026-09-20_11-16-25",
+    "Ida_Berg_2026-09-20_11-16-25",
     "B9K91234",
     "tur.fit",
-    "24720018915.fit.gz",
+    "23456789012.fit.gz",
     "Morgentur.FIT",
     "eksport.zip",
     "ride.gpx",
@@ -111,7 +111,7 @@ describe("partOfDay, Copenhagen time", () => {
 });
 
 const ride = (over: Partial<RideNameInput> = {}): RideNameInput => ({
-  title: "24720018915",
+  title: "23456789012",
   sport: "bike",
   // 11:16 in Copenhagen, summer time.
   startedAt: "2026-09-20T09:16:25Z",
@@ -206,12 +206,12 @@ describe("the words", () => {
     }
   });
 
-  it("reads Martin's three rides as telling names", () => {
+  it("reads three downloaded rides as telling names", () => {
     const t = (word: string) => names.da[word]!;
-    expect(rideNameText(rideName(ride({ title: "24720018915" })), t)).toBe("Formiddagstur");
+    expect(rideNameText(rideName(ride({ title: "23456789012" })), t)).toBe("Formiddagstur");
     expect(
       rideNameText(
-        rideName(ride({ title: "24698066483_ACTIVITY", startedAt: "2026-09-20T13:00:00Z" })),
+        rideName(ride({ title: "23456700001_ACTIVITY", startedAt: "2026-09-20T13:00:00Z" })),
         t,
       ),
     ).toBe("Eftermiddagstur");

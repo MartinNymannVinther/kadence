@@ -226,9 +226,6 @@ Det, Kadence allerede giver DCU:
 - Deres styrkeprogrammer ligger i biblioteket.
 - Deres klasseregler, distancer og udveksling er bygget ind.
 
-DCU har ingen direktør før tidligst 2027. Den rigtige første kontakt er
-stadig Morten Bennekou (elitechef).
-
 Det, vi kan tilbyde, sorteret efter hvor meningsfuldt det er, og hvor lidt
 det koster rytternes privatliv:
 
@@ -267,11 +264,9 @@ det koster rytternes privatliv:
 eget valg. Det ville bryde princippet om, at rytteren ejer sine data, og
 det ville gøre trænere og forældre utrygge ved værktøjet.
 
-**Forslag:** Vi tager punkt 1–4 med til den første snak med DCU. Punkt 5
-nævnes som en mulighed. Punkt 6 og 7 nævnes som noget, vi tænker over,
-efter den første vinter. Der skrives ingen kode, før DCU har svaret. Et
-kort oplæg til Bennekou kan ligge klar som kladde (aldrig sendt), hvis
-Martin vil.
+**Forslag:** Punkt 1–4 er det, Kadence tilbyder DCU først. Punkt 5 er en
+mulighed. Punkt 6 og 7 hører til efter den første vinter. Der skrives
+ingen kode, før DCU har svaret.
 
 ---
 
@@ -831,8 +826,8 @@ rettelse var punkt 8.
    alene, men sammen med en junior-kassette, fx 50 × 16 = 6,58 m i U15.
    Magene står i gearingberegnerens produktliste og i udstyrsguiden under
    træningsværktøjer.
-9. **Spørgsmålene til DCU** tager Martin med til den første snak.
-   Indtil da er beregneren forsigtig:
+9. **Spørgsmålene til DCU** er åbne. Indtil DCU har svaret, er
+   beregneren forsigtig:
    - Den behandler det som forbudt at låse gear med stopskruen.
    - Den viser U17's grænse for U17-ryttere uanset løb.
    - Den forklarer målemetoden med en note om, at DCU ikke har beskrevet
@@ -841,6 +836,5 @@ rettelse var punkt 8.
     mavetræning er godkendt. Beregneren kan gå live med det samme.
     Mad-guiden går først live, når en sportsdiætist har læst afsnittet om
     REDs igennem. Derfor ligger den i sin egen PR.
-11. **Rettigheder:** Claude skriver kladder til BDR og SCF på engelsk, som
-    Martin sender. Indtil de svarer, linker Kadence kun til deres
-    materiale.
+11. **Rettigheder:** Kadence venter på tilladelse fra BDR og SCF. Indtil
+    de svarer, linker Kadence kun til deres materiale.

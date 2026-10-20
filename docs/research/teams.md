@@ -25,7 +25,7 @@ What the teams page reads, in this order, every id looked up on the way:
 | `GET /iframe/GetDisciplineSeasons/?disciplineId=10` | The road seasons with their dates; 2026 is id 464 and runs 20 Oct 2025 – 18 Oct 2026.                                                                                                                                                                                                                |
 | `GET /iframe/GetCountries/`                         | Every nation with its IOC code; Denmark (`DEN`) is id 56.                                                                                                                                                                                                                                            |
 | `POST /iframe/RankingsDiscipline/`                  | The rankings a category has in a season, as Kendo grid form fields (`take`, `skip`, `filter[filters][n][field]`…). Category 26 (Men Under 23) has the UCI World Ranking (U23), individual (type 1) and by nation (type 3); 24 and 25 (Men and Women Junior) have **only the Nations' Cup** (type 3). |
-| `POST /iframe/ObjectRankings/`                      | One page of 40 rows of a ranking, filtered by `CountryId`: rank, "LANDBO Mads", team name, nation, birth date, points, computation date.                                                                                                                                                             |
+| `POST /iframe/ObjectRankings/`                      | One page of 40 rows of a ranking, filtered by `CountryId`: rank, "EKSEMPEL Mads", team name, nation, birth date, points, computation date.                                                                                                                                                           |
 
 Found: **the UCI has no individual ranking for juniors on the road.**
 Junior points exist only as a nation's Nations' Cup standing. Denmark's
@@ -62,7 +62,7 @@ The member portal has no robots.txt and no terms of its own, and does not
 withhold its pages from software, where www.sportstiming.dk does
 (docs/research/dcu-results.md). Cykling Danmark has not yet said yes to
 being read (ADR 0039); the teams page reads it only while `TEAMS_DCU` is
-on, and Martin meets DCU in the week of 12 October 2026.
+on, which is the default; `TEAMS_DCU=off` turns it off.
 
 ## What no source lists
 

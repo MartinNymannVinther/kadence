@@ -11,9 +11,9 @@ import da from "../../messages/da.json";
 import en from "../../messages/en.json";
 
 /**
- * Known pains (docs/adr/0097): Martin's back always hurts a little, so a
- * check-in that says "Ryg som det plejer" must not turn his day yellow
- * and tell him to cut training in half. A pain above the usual level, or
+ * Known pains (docs/adr/0097): when a rider's back always hurts a little,
+ * a check-in that says "Ryg som det plejer" must not turn the day yellow
+ * and tell them to cut training in half. A pain above the usual level, or
  * in a new place, follows ATK's ladder as before; pain 3 is always red.
  * The card says why a day is yellow or red, and names a coach only in a
  * club. A young rider's known pain three weeks running is a quiet point

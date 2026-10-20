@@ -1,6 +1,6 @@
 /**
  * The UCI ID on a rider's licence: eleven digits, printed in groups
- * ("101 585 903 34") on the card and on Cykling Danmark's pages, stored
+ * ("100 111 222 33") on the card and on Cykling Danmark's pages, stored
  * without the spaces. Every rider with a DCU licence has one; it is the
  * key Cykling Danmark's member portal files a rider's results under
  * (docs/research/dcu-results.md).

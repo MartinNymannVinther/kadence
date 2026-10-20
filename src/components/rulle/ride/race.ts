@@ -27,7 +27,7 @@ import { Warp } from "./warp";
  * behind the rider, so does he. Under the developer's warp he runs on as
  * the rider does, faster or backwards, from his own speed (`warp.ts`). He
  * only comes on a free ride, never into a session — of himself, or called
- * by JOHAN or HYLDTOFT. No React and no browser in it.
+ * by RIVAL or TURBO. No React and no browser in it.
  */
 
 /** What the screen shows of a race: counted down; on, with what is left and the gap; or over, and who won. */
@@ -124,7 +124,7 @@ export class Race {
     };
   }
 
-  /** Called by name (JOHAN, HYLDTOFT): he comes now, on a free ride, with no offer; into a session, not at all. */
+  /** Called by code (RIVAL, TURBO): he comes now, on a free ride, with no offer; into a session, not at all. */
   call(who: Who = "challenger"): void {
     if (this.free) this.begin(this.rider, this.speedNow, false, rivalOf(who));
   }

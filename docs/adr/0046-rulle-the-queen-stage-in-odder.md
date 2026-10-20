@@ -45,7 +45,7 @@ on the road is raced (ADR 0013).
   before the line, are from the organiser's map, laid on the route by its
   kilometre marks (within 30 m).
 - It has its finish (ADR 0035), and it is listed second, after B&U DM:
-  both are races the riders ride.
+  both are youth road races.
 - The chalk climb (ADR 0034) falls on Pederstrup by itself: its steepest
   400 m, at 8 %, are the lap's.
 

@@ -38,7 +38,7 @@ export function PlanPreview({
                     ? monthLong(Number(p.from.slice(5, 7)), locale)
                     : t("week", { n: weekNumber(p.from) })}
                 </span>
-                <VolumeBar compact volume={p.after} />
+                <VolumeBar volume={p.after} />
                 <span className="text-2sm tabular-nums">
                   {t("planned", { before: h(p.before.planned), after: h(p.after.planned) })}
                 </span>

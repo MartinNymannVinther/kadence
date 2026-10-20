@@ -433,7 +433,7 @@ refreshing, while the old and new files lie side by side):
 
 ```
 docker volume ls | grep kadence-map
-V=cvgkoftbx4bvhwimmxbhzyfv_kadence-map
+V=<project>_kadence-map   # the name the line above prints
 B=$(curl -fsS https://build-metadata.protomaps.dev/builds.json | grep -o '[0-9]\{8\}\.pmtiles' | tail -1); echo $B
 docker run --rm -v $V:/data/map alpine:3 wget -qO /data/map/regions.geojson https://raw.githubusercontent.com/MartinNymannVinther/kadence/main/scripts/map-regions.geojson
 docker run --rm -v $V:/data/map protomaps/go-pmtiles:latest extract https://build.protomaps.com/$B /data/map/world.next.pmtiles --maxzoom=8

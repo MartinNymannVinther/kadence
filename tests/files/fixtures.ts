@@ -10,7 +10,7 @@ export function gpx(seconds = 600, opts: { type?: string; power?: boolean } = {}
   const points = Array.from(
     { length: seconds },
     (_, s) => `
-      <trkpt lat="${(55.87 + s * 0.00009).toFixed(8)}" lon="12.5077">
+      <trkpt lat="${(55.68 + s * 0.00009).toFixed(8)}" lon="12.5683">
         <ele>${40 + s * 0.05}</ele>
         <time>${iso(s)}</time>
         <extensions><ns3:TrackPointExtension>
@@ -22,7 +22,7 @@ export function gpx(seconds = 600, opts: { type?: string; power?: boolean } = {}
 <gpx creator="Garmin Connect" version="1.1" xmlns="http://www.topografix.com/GPX/1/1"
   xmlns:ns3="http://www.garmin.com/xmlschemas/TrackPointExtension/v1">
   <!-- exported -->
-  <trk><name>Hørsholm &amp; omegn</name><type>${opts.type ?? "road_biking"}</type><trkseg>${points}
+  <trk><name>Østerbro rundt</name><type>${opts.type ?? "road_biking"}</type><trkseg>${points}
   </trkseg></trk>
 </gpx>`;
 }

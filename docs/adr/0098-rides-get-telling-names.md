@@ -4,14 +4,13 @@ Status: accepted · Date: 2026-10-14 · Builds on 0029–0032 (rides in from Gar
 
 ## Context
 
-Martin opened "Mine ture" and read "24720018915", "24698066483_ACTIVITY"
+A rider opened "Mine ture" and read "23456789012", "23456700001_ACTIVITY"
 and "2026-09-20-11-16-25". The import keeps a file's own name as the
 ride's title when nothing better came with it (`importFit`), and Garmin's
 download, Strava's archive and an Edge's own files are named by an id or
 a time stamp. A ride from Polar's API is always "Polar", and one from
 Wahoo or Garmin without a workout name "Wahoo" or "Garmin" — Kadence's
-own stand-ins. His words: "Giv gerne ture sigende navne. Filnavnet giver
-ikke så meget."
+own stand-ins. A file's name says little to a rider.
 
 ## Decision
 
@@ -23,7 +22,7 @@ ikke så meget."
 - **What counts as a file's name** (`file-name-title.ts`), conservatively —
   shapes a person would not type: empty; Kadence's stand-ins "Wahoo",
   "Garmin", "Polar"; a file ending (.fit, .tcx, .gpx, .gz, .zip, also
-  .fit.gz); six or more digits ("24720018915"), also with Garmin's
+  .fit.gz); six or more digits ("23456789012"), also with Garmin's
   `_ACTIVITY` or `activity_` and Garmin's full-export `mail_id`; a date,
   alone or with the time, in the ways devices write it
   ("2026-09-20-11-16-25", "2026-09-20 11.16.25", "20260920_111625",

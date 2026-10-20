@@ -25,7 +25,7 @@ export const LOOK: Record<Rival, { kit: typeof CHALLENGER_KIT; scale: number }> 
  * rider, in their wheel or ahead of them — flat and aero where the road
  * would have him in the saddle; in the drops from 500 W, and out of the
  * saddle in them over 700 W, in his first seconds and in the sprint. Or
- * the sprinter HYLDTOFT calls (ADR 0075), small, in red and black, as the
+ * the sprinter TURBO calls (ADR 0075), small, in red and black, as the
  * road has him on the rider's wheel, sprinting in the drops, and up in
  * the air as he throws his bike at the line. And the line where the race
  * ends (`ChallengeLine`). Each figure is made the first time he comes,

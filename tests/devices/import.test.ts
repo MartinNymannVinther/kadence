@@ -122,14 +122,14 @@ describe("importing a FIT file", () => {
   });
 
   it("takes a GPX file, and a zip, through the same import, keeping the original", async () => {
-    const result = await importFit(IDA, "i_ida", "Hørsholm.gpx", bytesOf(gpx(900)));
+    const result = await importFit(IDA, "i_ida", "Østerbro.gpx", bytesOf(gpx(900)));
     const row = await admin.query(
       "select title, source, distance_m from activities where id = $1",
       [result.activityId],
     );
-    expect(row.rows[0]).toMatchObject({ title: "Hørsholm & omegn", source: "fit" });
+    expect(row.rows[0]).toMatchObject({ title: "Østerbro rundt", source: "fit" });
     expect(row.rows[0].distance_m).toBeGreaterThan(8500);
-    expect((await getActivityFile(IDA, result.activityId))!.fileName).toBe("Hørsholm.gpx");
+    expect((await getActivityFile(IDA, result.activityId))!.fileName).toBe("Østerbro.gpx");
     // The same ride again, zipped: the same start by the same rider.
     await expect(
       importFit(IDA, "i_ida", "again.zip", zip([{ name: "a.gpx", bytes: bytesOf(gpx(900)) }])),
