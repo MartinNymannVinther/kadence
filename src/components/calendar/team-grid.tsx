@@ -262,7 +262,7 @@ export function TeamGrid({
                   ))}
                   <td className="py-2 pr-3 pl-1 align-top">
                     {volumes[rider.id] ? (
-                      <VolumeBar compact volume={volumes[rider.id]!} />
+                      <VolumeBar volume={volumes[rider.id]!} />
                     ) : (
                       <span className="block text-right text-xs font-medium whitespace-nowrap tabular-nums">
                         {t("hours", {

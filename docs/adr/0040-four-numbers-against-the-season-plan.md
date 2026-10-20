@@ -1,6 +1,6 @@
 # ADR 0040: Four numbers against the season plan — DCU, goal, planned, done
 
-Status: accepted · Date: 2026-10-01 · Builds on 0014, 0015, 0025
+Status: accepted · Date: 2026-10-01 · Builds on 0014, 0015, 0025 · Amended by 0104 (the calendar's week shows the numbers as labelled rows)
 
 ## Context
 

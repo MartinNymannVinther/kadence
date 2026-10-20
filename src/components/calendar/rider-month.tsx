@@ -71,7 +71,7 @@ export function RiderMonth({
                   {nav("week", { n })}
                 </Link>
                 {volume ? (
-                  <VolumeBar compact volume={volume} />
+                  <VolumeBar volume={volume} />
                 ) : (
                   <span className="text-meta text-xs">{t("noHours")}</span>
                 )}

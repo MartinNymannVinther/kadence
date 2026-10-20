@@ -104,7 +104,7 @@ export function TeamCards({
                 </div>
               )}
               {volume ? (
-                <VolumeBar compact volume={volume} />
+                <VolumeBar volume={volume} />
               ) : (
                 <p className="text-xs font-medium tabular-nums">
                   {t("hours", {
