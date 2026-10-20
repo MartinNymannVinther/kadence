@@ -66,6 +66,12 @@
       "cta": "Open a demo",
       "ctaAlone": "Try it as a rider on your own"
     },
+    "demoWait": {
+      "title": "Getting your demo ready",
+      "team": "You get a U19 team with riders, a season plan after DCU, sessions, rides and check-ins. It usually takes a few seconds, and then you start as the coach.",
+      "alone": "You are Emma, a U19 rider on her own, with a season plan after DCU, six weeks of rides and check-ins, and next week laid in. It usually takes a few seconds.",
+      "slow": "This is taking a little longer than usual. The page moves on by itself when the demo is ready."
+    },
     "featuresLabel": "What you get",
     "features": {
       "calendar": "A calendar of sessions on the bike, in the gym and beyond",

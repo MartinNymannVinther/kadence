@@ -2,6 +2,7 @@ import { CalendarRange, Database, ShieldCheck } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { buttonVariants } from "@/components/ui/button";
 import { Wordmark } from "@/components/wordmark";
+import { DemoLink } from "@/components/landing/demo-link";
 import { HeroLines } from "@/components/landing/hero-lines";
 import { LandingWays } from "@/components/landing/ways";
 import { getSession } from "@/core/auth/session";
@@ -109,12 +110,13 @@ export default async function HomePage() {
                 {t(`hero.${copy.heroKey}`)}
               </Link>
               {demo && (
-                <a
+                <DemoLink
                   href={demoPath}
+                  variant="team"
                   className={cn(buttonVariants({ variant: "outline", size: "lg" }), "px-4")}
                 >
                   {t("hero.ctaDemo")}
-                </a>
+                </DemoLink>
               )}
               <Link
                 href="/login"
@@ -160,16 +162,17 @@ export default async function HomePage() {
               <p className="mt-1.5 text-sm">{t("demo.body", { hours: DEMO_TTL_HOURS })}</p>
               <p className="text-meta mt-1.5 text-sm">{t("demo.privacy")}</p>
               <div className="mt-3 flex flex-wrap gap-2">
-                <a href={demoPath} className={buttonVariants({ size: "sm" })}>
+                <DemoLink href={demoPath} variant="team" className={buttonVariants({ size: "sm" })}>
                   {t("demo.cta")}
-                </a>
+                </DemoLink>
                 {/* One rider alone, in a workspace of their own (ADR 0080). */}
-                <a
+                <DemoLink
                   href={`${demoPath}?alene=1`}
+                  variant="alone"
                   className={buttonVariants({ size: "sm", variant: "outline" })}
                 >
                   {t("demo.ctaAlone")}
-                </a>
+                </DemoLink>
               </div>
             </div>
           </section>

@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { buttonVariants } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import type { LandingCopy } from "@/modules/billing/landing";
+import { DemoLink } from "./demo-link";
 
 /**
  * "To måder at bruge Kadence" on the front page (docs/adr/0080, 0081): a
@@ -56,9 +57,13 @@ export async function LandingWays({
               {t(copy.aloneKey)}
             </Link>
             {demoHref && (
-              <a href={demoHref} className={buttonVariants({ size: "sm", variant: "outline" })}>
+              <DemoLink
+                href={demoHref}
+                variant="alone"
+                className={buttonVariants({ size: "sm", variant: "outline" })}
+              >
                 {t("aloneDemo")}
-              </a>
+              </DemoLink>
             )}
           </div>
         </div>
