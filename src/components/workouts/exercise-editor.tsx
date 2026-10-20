@@ -1,6 +1,8 @@
 "use client";
 
+import { BookOpen } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { renamed, untied } from "@/modules/workouts/exercise-choice";
 import type { Exercise } from "@/modules/workouts/structure";
 import { GroupSelect } from "./group-select";
 import { NumberField } from "./number-field";
@@ -12,8 +14,11 @@ import type { CatalogueOption } from "./use-catalogue";
  * way a coach writes it ("RM", "20 kg", "kropsvægt"), the rest between
  * sets and a note. The progression below may change sets, reps and load
  * by where the rider is in the programme. Typing a name offers the
- * catalogue's exercises (ADR 0044); choosing one fills its group, sets,
- * reps and load while those are still the new exercise's defaults.
+ * library's exercises and the catalogue's (ADR 0044); choosing one fills
+ * its group, sets, reps and load while those are still the new exercise's
+ * defaults, and one of the library's ties the exercise to it, so the
+ * session shows its figure and how-to. The tie is said below the name,
+ * with the way to undo it (src/modules/workouts/exercise-choice.ts).
  */
 export function ExerciseEditor({
   exercise,
@@ -34,6 +39,9 @@ export function ExerciseEditor({
   const t = useTranslations("workouts.exercise");
   const set = <K extends keyof Exercise>(key: K, value: Exercise[K]) =>
     onChange({ ...exercise, [key]: value });
+  // The library's name for the exercise this one is tied to, once the
+  // library's suggestions have arrived.
+  const linked = exercise.ref ? catalogue.find((e) => e.ref === exercise.ref)?.name : undefined;
 
   return (
     <div className="border-border bg-card flex min-w-0 flex-col gap-3 rounded-lg border p-3">
@@ -50,26 +58,7 @@ export function ExerciseEditor({
           required
           className="col-span-2 sm:col-span-1"
           list={listId}
-          onChange={(name) => {
-            const known = catalogue.find((e) => e.name === name);
-            const untouched =
-              exercise.group === "legs" &&
-              exercise.sets === 3 &&
-              exercise.reps === "12" &&
-              exercise.load === "";
-            onChange(
-              known && untouched
-                ? {
-                    ...exercise,
-                    name,
-                    group: known.group,
-                    sets: known.sets,
-                    reps: known.reps,
-                    load: known.load,
-                  }
-                : { ...exercise, name },
-            );
-          }}
+          onChange={(name) => onChange(renamed(exercise, name, catalogue))}
         />
         <GroupSelect
           label={t("group")}
@@ -78,6 +67,19 @@ export function ExerciseEditor({
           onChange={(v) => set("group", v)}
         />
       </div>
+      {exercise.ref && (
+        <p className="text-meta flex flex-wrap items-center gap-x-2 text-xs">
+          <BookOpen aria-hidden className="size-3.5" />
+          <span>{linked ? t("linked", { name: linked }) : t("linkedUnnamed")}</span>
+          <button
+            type="button"
+            className="focus-ring text-foreground underline-offset-4 hover:underline"
+            onClick={() => onChange(untied(exercise))}
+          >
+            {t("unlink")}
+          </button>
+        </p>
+      )}
       <div className="grid min-w-0 grid-cols-2 gap-2 sm:grid-cols-4">
         <NumberField
           label={t("sets")}
