@@ -66,6 +66,12 @@
       "cta": "Åbn en demo",
       "ctaAlone": "Prøv som rytter alene"
     },
+    "demoWait": {
+      "title": "Vi gør din demo klar",
+      "team": "Du får et U19-hold med ryttere, en sæsonplan efter DCU, pas, ture og check-ins. Det tager som regel et par sekunder, og så starter du som træner.",
+      "alone": "Du er Emma, U19-rytter på egen hånd, med en sæsonplan efter DCU, seks ugers ture og check-ins og næste uge lagt ind. Det tager som regel et par sekunder.",
+      "slow": "Det tager lidt længere end det plejer. Siden går videre af sig selv, når demoen er klar."
+    },
     "featuresLabel": "Det du får",
     "features": {
       "calendar": "Kalender med pas på cykel, i styrkerummet og andet",
@@ -1020,7 +1026,7 @@
       },
       "sessions": {
         "title": "Pas og skabeloner",
-        "body": "Et pas bygges i trin: opvarmning, arbejde, pause og nedkørsel, med en længde og et mål i zoner, procent af FTP eller tærskelpuls, eller efter følelse. Gentagelser samler trin, der køres flere gange. Når rytterens tærskler er sat, står målene i watt og puls. Styrkepas har øvelser, og et program har en progression, så sæt og gentagelser følger med fra pas til pas. Træneren kan også trykke \"Byg med AI\" og skrive passet med sine egne ord, fx \"5x4 min VO2max\" eller \"styrke 45 min, ben og core\", eller hvad der skal ændres i det pas, der står. Forslaget vises først, og intet gemmes, før træneren gemmer passet. Cykelpas kan bygges med byggeklodser med ét tryk, fx opvarmning, tærskelintervaller eller sprint, og styrkeøvelser foreslås, mens du skriver navnet, med DCU's øvelser og øvelser uden maskiner. Gem et pas som skabelon i biblioteket, så kan det lægges til én rytter eller hele holdet på én gang. Flere ugers pas kan samles i et forløb og lægges ind fra en mandag."
+        "body": "Et pas bygges i trin: opvarmning, arbejde, pause og nedkørsel, med en længde og et mål i zoner, procent af FTP eller tærskelpuls, eller efter følelse. Gentagelser samler trin, der køres flere gange. Når rytterens tærskler er sat, står målene i watt og puls. Styrkepas har øvelser, og et program har en progression, så sæt og gentagelser følger med fra pas til pas. Træneren kan også trykke \"Byg med AI\" og skrive passet med sine egne ord, fx \"5x4 min VO2max\" eller \"styrke 45 min, ben og core\", eller hvad der skal ændres i det pas, der står. Forslaget vises først, og intet gemmes, før træneren gemmer passet. Cykelpas kan bygges med byggeklodser med ét tryk, fx opvarmning, tærskelintervaller eller sprint, og styrkeøvelser foreslås, mens du skriver navnet, med DCU's øvelser og øvelser uden maskiner. Gem et pas som skabelon i biblioteket, så kan det lægges til én rytter eller hele holdet på én gang. Flere ugers pas kan samles i et forløb og lægges ind fra en mandag. Vælger du en øvelse fra biblioteket, viser passet dens tegning og vejledning med et link til øvelsen. Et pas kan udskrives eller gemmes som PDF fra passet; et styrkepas får et felt til hvert sæt, som du kan skrive vægt og gentagelser i."
       },
       "exercises": {
         "title": "Øvelser og programmer",
@@ -2168,6 +2174,7 @@
     }
   },
   "session": {
+    "print": "Udskriv eller gem som PDF",
     "notFound": "Passet findes ikke",
     "indoors": "Kør indendørs i Rulle",
     "tryIndoors": "Prøv passet i Rulle",
@@ -2456,7 +2463,10 @@
       "rest": "Pause",
       "secondsShort": "sek",
       "note": "Note",
-      "notePlaceholder": "Fx hold ryggen rank"
+      "notePlaceholder": "Fx hold ryggen rank",
+      "linked": "Fra biblioteket: {name}. Passet viser tegning og vejledning.",
+      "linkedUnnamed": "Fra biblioteket. Passet viser tegning og vejledning.",
+      "unlink": "Fjern koblingen"
     },
     "progression": {
       "group": "Gruppe",
@@ -2547,6 +2557,13 @@
       "warmup": "Opvarmning:",
       "rest": "{seconds} sek pause",
       "setsReps": "{sets} × {reps}",
+      "openInLibrary": "Se øvelsen i biblioteket",
+      "log": {
+        "set": "Sæt {n}",
+        "kg": "kg",
+        "reps": "Gentagelser",
+        "done": "Udført"
+      },
       "progression": "Progression",
       "rule": "{open, select, yes {{group}, fra pas {from}} other {{group}, pas {from}–{to}}}: {sets} × {reps}"
     },
