@@ -40,7 +40,7 @@ export function LoadPanel({
   const raceDay = forecast?.race ? ahead.find((d) => d.date === forecast.race!.date) : undefined;
   return (
     <div className="flex flex-col gap-6">
-      <div className="border-border bg-card flex flex-col gap-4 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5">
+      <div className="border-border bg-card flex flex-col gap-4 rounded-xl border p-4 shadow-surface sm:p-5">
         {trained ? (
           <>
             <LoadChart days={days} ahead={ahead} race={forecast?.race ?? null} />
@@ -63,7 +63,7 @@ export function LoadPanel({
         )}
         <LoadExplainer />
       </div>
-      <div className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5">
+      <div className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-surface sm:p-5">
         <h4 className="text-sm font-semibold">{t("weeks.title")}</h4>
         <WeeklyHoursChart weeks={weekBars(insight)} />
       </div>

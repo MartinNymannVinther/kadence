@@ -10,6 +10,7 @@ import { StructureView } from "@/components/workouts/structure-view";
 import { getOrgContext } from "@/core/auth/session";
 import { todayInCopenhagen } from "@/core/dates";
 import { Link, redirect } from "@/i18n/navigation";
+import { hasSeniorRider } from "@/modules/season/seniors";
 import { whoAmI } from "@/modules/team/access";
 import { getTemplate } from "@/modules/training/templates";
 import { readStructure } from "@/modules/workouts/structure";
@@ -27,7 +28,7 @@ export async function generateMetadata({
 }
 
 /**
- * One template: a coach's own opens in the builder; DCU's and, for
+ * One template: a coach's own opens in the builder; DCU's, Kadence's and, for
  * everyone else, any template reads as the session it describes, with the
  * way to plan it and — for a coach — to copy it and adapt the copy.
  */
@@ -47,6 +48,8 @@ export default async function TemplatePage({ params }: { params: Promise<{ id: s
   const own = template.riderId !== null;
   const editable = own ? me?.rider?.id === template.riderId : isCoach && template.source === "own";
   const allRiders = await ridersToPlanFor(ctx, me);
+  // "Byg med AI" offers an adult's training profiles where there is one (ADR 0092).
+  const seniors = editable && !own ? await hasSeniorRider(ctx) : false;
   const riders = own ? allRiders.filter((r) => r.id === template.riderId) : allRiders;
   const sport = template.sport as "bike" | "strength" | "other";
   const card = {
@@ -72,9 +75,21 @@ export default async function TemplatePage({ params }: { params: Promise<{ id: s
         size="detail"
         title={template.name}
         subtitle={
-          template.source === "dcu" ? t("dcuSubtitle") : own ? t("own.detailSubtitle") : undefined
+          template.source === "dcu"
+            ? t("dcuSubtitle")
+            : template.source === "kadence"
+              ? t("kadenceSubtitle")
+              : own
+                ? t("own.detailSubtitle")
+                : undefined
         }
-        kicker={template.source === "dcu" ? <Badge variant="secondary">DCU</Badge> : undefined}
+        kicker={
+          template.source === "dcu" ? (
+            <Badge variant="secondary">DCU</Badge>
+          ) : template.source === "kadence" ? (
+            <Badge variant="secondary">Kadence</Badge>
+          ) : undefined
+        }
       />
       {!own && (
         <TemplateActions
@@ -88,6 +103,7 @@ export default async function TemplatePage({ params }: { params: Promise<{ id: s
       {editable ? (
         <TemplateEditor
           assist={!own}
+          seniors={seniors}
           template={{
             id: template.id,
             name: template.name,

@@ -1,4 +1,5 @@
 import { deflateRawSync } from "node:zlib";
+import { crc32 } from "./crc32";
 
 /**
  * A minimal .xlsx writer: flat tables, one or many sheets.
@@ -176,22 +177,6 @@ function uniqueSheetNames(sheets: Sheet[]): string[] {
  * entries, no directories, no zip64. Reports stay far below the 4 GB and
  * 65535-entry points where zip64 becomes necessary.
  */
-
-const CRC_TABLE = (() => {
-  const table = new Uint32Array(256);
-  for (let i = 0; i < 256; i += 1) {
-    let c = i;
-    for (let k = 0; k < 8; k += 1) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
-    table[i] = c >>> 0;
-  }
-  return table;
-})();
-
-function crc32(buffer: Buffer): number {
-  let crc = 0xffffffff;
-  for (const byte of buffer) crc = CRC_TABLE[(crc ^ byte) & 0xff]! ^ (crc >>> 8);
-  return (crc ^ 0xffffffff) >>> 0;
-}
 
 type ZipEntry = { name: string; data: Buffer };
 

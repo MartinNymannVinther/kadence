@@ -32,7 +32,7 @@ export async function POST(request: Request) {
   if (fromAnotherSite(request)) return Response.json({ error: "forbidden" }, { status: 403 });
   const ctx = await requireOrgContext();
   if (!ctx) return Response.json({ error: "unauthorized" }, { status: 401 });
-  if (!rateLimit(`upload-known:${ctx.userId}`, 60, HOUR).allowed)
+  if (!(await rateLimit(`upload-known:${ctx.userId}`, 60, HOUR)).allowed)
     return Response.json({ error: "rateLimited" }, { status: 429 });
 
   // Counted as it arrives: a body without a length has none to trust.

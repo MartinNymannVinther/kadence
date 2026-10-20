@@ -270,6 +270,21 @@ describe("rls coverage (guards future tables)", () => {
     "sessions",
     "verifications",
     "rate_limits",
+    // The installation's own counters (drizzle/0043, docs/adr/0083): rate
+    // limits, places held while a ride is read, and moments to remember,
+    // written on every limited request. The same kind of row as
+    // Better Auth's rate_limits beside it, and as little anybody's.
+    "app_rate_limits",
+    // The background jobs (drizzle/0047, docs/adr/0085): machinery the
+    // worker writes on every run, holding ids, days, counts and short words
+    // only (src/core/jobs/payload.ts, tests/jobs/payload.test.ts). What a
+    // job does to a team's rows is audited where it lands.
+    "jobs",
+    // Objects whose row is gone (drizzle/0051, docs/adr/0087): keys a
+    // trigger writes when a file's row is deleted and a job clears a
+    // little later, and a key written before an upload. Two ids and a
+    // hash, nobody's to keep; the row's deletion is in the trail already.
+    "file_tombstones",
     // Admission, which happens before a workspace exists to own it.
     "access_requests",
     "access_invitations",
@@ -278,6 +293,20 @@ describe("rls coverage (guards future tables)", () => {
     // Where a coach last read a thread in Trænerrummet (ADR 0052): their
     // own marker, rewritten on every visit, not something anybody owns.
     "community_reads",
+    // What the reminder run has told a browser (drizzle/0038, docs/adr/0060):
+    // technical timestamps the job writes on every reminder, how far the
+    // news it told reached and the day of the last check-in or week
+    // reminder. No personal data beyond whose subscription it is, which the
+    // audited push_subscriptions already says, and no person changes them;
+    // audited, they filled the trail with a row per reminder. Turning
+    // reminders on, changing them and turning them off stay audited, and
+    // tests/push/isolation.test.ts proves both.
+    "push_runs",
+    // The installation's price list for model calls (drizzle/0049,
+    // docs/adr/0089): nobody owns it, the application role only reads it,
+    // and only a migration writes it, so its history is the migration's
+    // history in git. tests/ai/prices-table.test.ts proves both.
+    "ai_prices",
   ];
 
   it("every domain table has an audit trigger", async () => {
@@ -335,6 +364,16 @@ describe("rls coverage (guards future tables)", () => {
    * policies already decided to allow.
    */
   const CALLABLE_DEFINER_FUNCTIONS = [
+    // Moving the files already in the database out to the object store
+    // (drizzle/0051, docs/adr/0087), for the job that runs with nobody
+    // signed in: the one update that points a row at its object, the rows
+    // that still hold bytes (the only definer that hands bytes over, to the
+    // worker alone), and two counts for scripts/migrate-files.ts. All three
+    // refuse a caller with a workspace in its context, so no request can
+    // reach them; tests/storage/migrate.test.ts proves it.
+    "activity_file_moved_out",
+    "activity_files_in_rows",
+    "activity_files_places",
     // Returns the installation's model-call count for the last day, across
     // every workspace (docs/adr/0035). A number crosses the boundary; no
     // row does, and it takes no arguments, so it can answer one question
@@ -350,6 +389,13 @@ describe("rls coverage (guards future tables)", () => {
     // when it is one, else null, read from installation state the
     // application role cannot read itself.
     "app_demo_room",
+    // Whether the active workspace's consent to health data is withdrawn,
+    // for the wellbeing services (drizzle/0050, docs/adr/0088): true or
+    // false about the caller's own active workspace, for a member of it,
+    // and nothing else — no row, no date, nobody's name. A child riding in
+    // a parent's workspace is answered too, without reading the parent's
+    // row. tests/access/consents.test.ts proves it.
+    "app_health_consent_withdrawn",
     "app_is_coach",
     // Whether the caller coaches a team anywhere on the installation, for
     // Trænerrummet (drizzle/0023, docs/adr/0052): true or false about the
@@ -360,9 +406,39 @@ describe("rls coverage (guards future tables)", () => {
     // moderation: true or false about the caller, and nothing else.
     "app_is_platform_owner",
     "app_is_rider_self",
+    // What a workspace pays (drizzle/0052, docs/adr/0090), for the daily
+    // billing.expire job with nobody signed in: which owner of which
+    // workspace is due a mail, of which kind, about which moment — two ids,
+    // a word and a date, no address and no name; the job reads those as
+    // the owner, as mail_week_due's run does. Refused from a workspace.
+    "billing_notices_due",
+    // Installation → Betaling (drizzle/0052, docs/adr/0090): every
+    // workspace but the demos with its plan, its dates, its rider count and
+    // its price, a personal one without its name. Refuses everyone whose
+    // app.user_id is not the installation's owner. tests/billing/admin.test.ts.
+    "billing_overview",
     // Links a new member to the rider or guardian row a coach prepared,
     // for an invitation the caller accepted to their own address.
     "claim_invitation_links",
+    // Which teams have riders with a UCI ID, and one coach of each, for the
+    // hourly job that reads races from Cykling Danmark with nobody signed in
+    // (drizzle/0047, docs/adr/0085). The team's id and the coach's user id,
+    // and nothing else — no rider, no UCI ID, no name. Everything after it
+    // runs as that coach, under the ordinary policies, as the coach's own
+    // visit does; tests/jobs/dcu-teams-due.test.ts proves what it answers.
+    "dcu_teams_due",
+    // Deletes a demo whose time is up, its throwaway accounts and every
+    // audit row about either, for the clean-up on the auth role
+    // (drizzle/0042, docs/adr/0084). Refuses, by doing nothing, anything
+    // that is not a demo past its time, so no real club can be reached.
+    "delete_expired_demo",
+    // Deletes an account door 2 made and nobody confirmed in seven days,
+    // its own workspace and every audit row about either, for the daily
+    // sweep on the auth role (drizzle/0050, docs/adr/0088), leaving one
+    // line with the account's id. Refuses, by doing nothing, anything else:
+    // a confirmed account, the owner, a younger one, one on a team.
+    // tests/access/signup-sweep.test.ts proves each refusal.
+    "delete_unverified_signup",
     // Deletes a workspace the caller owns, audit rows included, which is
     // dogma 3 and which RLS and the append-only guard would otherwise
     // forbid (docs/adr/0003). Checks the caller's role itself.
@@ -382,12 +458,95 @@ describe("rls coverage (guards future tables)", () => {
     // append-only guard would otherwise keep forever. Checks itself that
     // the caller coaches the team, like delete_workspace.
     "erase_rider",
+    // The daily job's one write across workspaces (drizzle/0052, docs/adr/
+    // 0090): a trial or a payment past its end becomes 'expired', a free
+    // workspace past its date a trial; never a demo, never a deletion. It
+    // answers the ids it moved and refuses a caller with a workspace in its
+    // context. tests/billing/expire.test.ts proves which rows move.
+    "expire_workspaces",
+    // The keys of objects whose row is gone and whose tombstone is older
+    // than the grace (drizzle/0051, docs/adr/0087), locked for the job's
+    // transaction; keys only, never a row, and refused from inside a
+    // workspace like the migration's. tests/storage/tombstones.test.ts.
+    "file_tombstones_due",
+    // Whom an invitation is for, for the join page before anybody is
+    // signed in (drizzle/0030, docs/adr/0065), and the only definer the
+    // auth role may call. For an invitation that is still pending and in
+    // date it answers 'rider', or 'guardian' with the rider's first name,
+    // from a row joining would link — no id, no team, no surname, nothing
+    // for a used, withdrawn or expired invitation — and it cannot
+    // enumerate without the invitation's id, which is the key in the link.
+    // tests/team/invitation-kind.test.ts proves it, and that the
+    // application role cannot call it.
+    "invitation_kind",
+    // Who has chosen the parents' week by mail, for the weekly run that
+    // starts with nobody signed in (drizzle/0048, docs/adr/0086): the team
+    // and the person, for people still on the team, and nothing else — no
+    // address, no language, nothing about a child. The run reads all of
+    // that as the person, as push_subscriptions_due's job does.
+    // tests/mail/week.test.ts proves it.
+    "mail_week_due",
+    // Moves one rider's history from their rider row in one workspace onto
+    // their rider row in another (drizzle/0042, docs/adr/0081): the first
+    // function that writes across two workspaces. It moves only when the
+    // caller's account is on both rows and a member of both workspaces,
+    // and only onto a row with no history yet; it answers table names and
+    // counts, writes one counted line per table in both trails and never a
+    // row, and tests/rls/history-move.test.ts proves each refusal and that
+    // it is all or nothing.
+    "move_rider_history",
+    // Removes the deleted sessions past their seven days, for the reminder
+    // job that runs with nobody signed in (drizzle/0037, docs/adr/0060).
+    // It takes no arguments, removes only rows older than seven days, and
+    // answers how many; nothing is read out. tests/rls/session-deletions
+    // proves it keeps the rest.
+    "planned_session_deletions_sweep",
     // The installation's overview for its owner (drizzle/0019, docs/adr/0048):
     // one row per workspace with counts only — no name of a person, no
-    // training, no check-in. It takes no arguments and refuses everyone
-    // whose app.user_id is not the installation's owner; tests/core/
-    // platform-overview.test.ts proves both.
+    // training, no check-in. The pilot's three numbers (drizzle/0031,
+    // docs/adr/0066) are counts too, of the last full week's riders,
+    // check-ins, sessions and coaches' audit rows. It takes no arguments
+    // and refuses everyone whose app.user_id is not the installation's
+    // owner; tests/core/platform-overview.test.ts proves both and pins its
+    // columns.
     "platform_overview",
+    // Which reminders exist, for the reminder job that runs with nobody
+    // signed in (drizzle/0028, docs/adr/0060): the subscription's id, team
+    // and owner, for owners still on the team, and nothing else — no push
+    // address, no kinds, nothing about what a reminder would say. The job
+    // reads all of that as the owner, under the ordinary policies, so what
+    // crosses the boundary is that a person has said yes to reminders.
+    "push_subscriptions_due",
+    // A workspace's monthly AI budget, set by the installation's owner
+    // (drizzle/0049, docs/adr/0089). It refuses everyone whose app.user_id
+    // is not the owner, writes one column of one team_settings row — which
+    // a guard trigger keeps every other writer away from — and answers
+    // nothing; the audit trigger on team_settings records the change.
+    // tests/ai/budget.test.ts proves the refusal and the guard.
+    "set_ai_budget",
+    // The installation's owner gives a workspace its own file quota
+    // (drizzle/0051, docs/adr/0087), the way set_ai_budget gives a budget:
+    // the same guard trigger refuses the application role, and the function
+    // refuses anyone but the owner. tests/storage/quota.test.ts proves both.
+    "set_file_quota",
+    // The installation's owner registers a payment, makes a workspace
+    // free, or sets a price (drizzle/0052, docs/adr/0090), as set_ai_budget
+    // sets a budget: each refuses everyone whose app.user_id is not the
+    // owner, and none touches a demo. The audit triggers on payments,
+    // organizations and price_plans record each change.
+    // tests/billing/admin.test.ts proves the refusals.
+    "set_payment",
+    "set_plan_free",
+    "set_price_plan",
+    // The addresses the caller may read (drizzle/0034, docs/adr/0070),
+    // now that the application role has no SELECT on users.email: the
+    // caller's own, the whole team's to a coach of the active team, and
+    // to a rider those of the people holding a guardian link to them —
+    // the rider confirms a person and sees who that is first (docs/adr/
+    // 0019). It takes no arguments and answers from the context alone;
+    // tests/rls/member-addresses.test.ts proves each answer and that no
+    // other way to the column is open.
+    "team_member_addresses",
     // Whose upload key a hash is, for a ride file that arrives with a key
     // and nobody signed in (drizzle/0014, docs/adr/0029). It is
     // device_link_owner's question asked of a key: the key's id, the team,
@@ -397,6 +556,26 @@ describe("rls coverage (guards future tables)", () => {
     // the key, which only its holder has. Everything after it runs as the
     // rider, under the ordinary policies.
     "upload_key_owner",
+    // How much file the active workspace holds and may hold (drizzle/0051,
+    // docs/adr/0087), for any member of it: a rider sees only their own
+    // rows under RLS and the quota is the workspace's. Two numbers and the
+    // workspace's kind, nothing about any file; refused outside a
+    // workspace and to a non-member. tests/storage/quota.test.ts.
+    "workspace_file_usage",
+    // What a workspace costs (drizzle/0052, docs/adr/0090): its plan's key,
+    // the yearly price for the riders it has, the rider count and the
+    // plan's terms. For a coach of the active workspace, the installation's
+    // owner, and the daily job with nobody signed in; refused to a rider or
+    // a parent and to another workspace's coach. tests/billing/price.test.ts.
+    "workspace_price",
+    // Which workspaces have stored ride files, and one coach of each, for
+    // the one-off job that reads them again with the corrected moving time
+    // (drizzle/0056, docs/adr/0096) with nobody signed in. The workspace's
+    // id and the coach's user id, and nothing else — no rider, no file, no
+    // name; everything after it runs as that coach, under the ordinary
+    // policies, as dcu_teams_due()'s job does. Refused from a workspace.
+    // tests/jobs/retime.test.ts proves both.
+    "workspaces_with_files",
   ];
 
   it("only the named definer functions can be called by a runtime role", async () => {

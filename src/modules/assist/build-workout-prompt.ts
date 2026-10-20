@@ -1,8 +1,19 @@
 import type { LlmMessage } from "@/core/llm";
-import { LONGEST_RIDE, STRENGTH_PROGRAMMES, type DcuCategory } from "@/modules/dcu";
+import { LONGEST_RIDE, STRENGTH_PROGRAMMES } from "@/modules/dcu";
 import { DATA_RULE, fenceUntrusted, languageRule } from "@/modules/ai/prompting";
-import type { BikeStructure, StrengthStructure } from "@/modules/workouts/structure";
-import type { BuildSport } from "./build-workout-answer";
+import {
+  SENIOR_LONGEST_RIDE,
+  isSeniorBasis,
+  profileOf,
+  strengthProgrammeFor,
+  type SeniorBasis,
+} from "@/modules/paradigms";
+import type {
+  BikeStructure,
+  ProgressionRule,
+  StrengthStructure,
+} from "@/modules/workouts/structure";
+import type { BuildCategory, BuildSport } from "./build-workout-answer";
 import { BIKE_GRAMMAR } from "./parse-workout";
 
 /**
@@ -11,7 +22,11 @@ import { BIKE_GRAMMAR } from "./parse-workout";
  * the longest ride (src/modules/dcu/rules.ts) and the strength
  * programmes' progressions (src/modules/dcu/strength.ts) — never typed
  * twice. The coach's words and the session already in the builder go in
- * fenced as data. No rider's data goes in at all.
+ * fenced as data. No rider's data goes in at all. For an adult's training
+ * profile (ADR 0092) the words are an adult's — no youth reader, no DCU —
+ * and the frame is Kadence's own: the profile's longest ride
+ * (src/modules/paradigms/senior.ts) and its strength programme
+ * (senior-strength.ts).
  *
  * Pure: imports nothing from the database.
  */
@@ -38,6 +53,51 @@ const STRENGTH = [
   "Use only the equipment the coach mentions; when none is mentioned, choose exercises an ordinary fitness centre has. Write exercise names in the language of the answer.",
 ];
 
+const SENIOR_COMMON = [
+  "Keep exactly what the coach specifies: durations, repetitions, intensities, exercises and equipment. Fill in only what the coach leaves open, with sensible choices for an adult recreational rider.",
+  "title: a short name for the session, at most 60 characters. description: two or three sentences to the rider on what the session is for and how it should feel, in plain words.",
+  COMMON[2]!,
+];
+
+const SENIOR_BIKE = [
+  "You are an experienced Danish cycling coach building one bike training session in Kadence for an adult recreational rider, from the coach's request.",
+  // The same grammar, without naming DCU's word for the threshold zone.
+  ...BIKE.slice(1).map((line) => line.replace("threshold (DCU's AT)", "threshold")),
+];
+
+const SENIOR_STRENGTH = [
+  "You are an experienced Danish cycling coach building one strength session for an adult recreational road cyclist in Kadence from the coach's request.",
+  STRENGTH[1]!,
+  STRENGTH[2]!,
+  STRENGTH[3]!,
+  "Follow Kadence's strength programmes for adults: a warm-up of 5 to 10 minutes, the legs and the trunk first, technique before load, two or three sets, a few jumps for the bones when the rider tolerates them, and start light.",
+  STRENGTH[5]!,
+];
+
+const progressionText = (rules: ProgressionRule[]) =>
+  rules
+    .map((r) =>
+      r.to === null
+        ? `from session ${r.from}: ${r.sets} × ${r.reps} ${r.load}`
+        : `sessions ${r.from}-${r.to}: ${r.sets} × ${r.reps} ${r.load}`,
+    )
+    .join("; ");
+
+/** Kadence's frame for an adult's training profile (ADR 0091, 0092). */
+function profileLine(sport: BuildSport, basis: SeniorBasis, guided: boolean): string {
+  const profile = profileOf(basis);
+  const name = profile === "super-motionist" ? "Supermotionist" : "Motionist";
+  const who = `The rider is an adult on Kadence's ${name} training profile.`;
+  if (sport === "bike") {
+    const limit = SENIOR_LONGEST_RIDE[basis];
+    return guided
+      ? `${who} Kadence suggests a longest training ride of ${limit.hours} hours or ${limit.km} km for the profile.`
+      : who;
+  }
+  const programme = strengthProgrammeFor(profile);
+  return `${who} Kadence's "${programme.name.en}" programme does the legs ${progressionText(programme.structure.progression.filter((r) => r.group === "legs"))}.`;
+}
+
 /**
  * DCU's frame for the class, from Kadence's own copy of DCU's numbers. A
  * team that plans without DCU (ADR 0049) is told the class and not DCU's
@@ -45,10 +105,11 @@ const STRENGTH = [
  */
 export function classLine(
   sport: BuildSport,
-  category: DcuCategory | null,
+  category: BuildCategory | null,
   guided = true,
 ): string | null {
   if (!category) return null;
+  if (isSeniorBasis(category)) return profileLine(sport, category, guided);
   if (sport === "bike") {
     const limit = guided ? LONGEST_RIDE[category] : null;
     return limit
@@ -69,15 +130,16 @@ export function classLine(
 export function buildWorkoutPrompt(input: {
   sport: BuildSport;
   text: string;
-  category: DcuCategory | null;
+  category: BuildCategory | null;
   current: BikeStructure | StrengthStructure | null;
   locale: string;
   /** Whether the team plans by DCU (ADR 0049); true unless said otherwise. */
   guided?: boolean;
 }): LlmMessage[] {
+  const adult = isSeniorBasis(input.category);
   const system = [
-    ...(input.sport === "bike" ? BIKE : STRENGTH),
-    ...COMMON,
+    ...(input.sport === "bike" ? (adult ? SENIOR_BIKE : BIKE) : adult ? SENIOR_STRENGTH : STRENGTH),
+    ...(adult ? SENIOR_COMMON : COMMON),
     classLine(input.sport, input.category, input.guided ?? true),
     input.current
       ? "The session the coach has built so far is given as JSON. Change it as the coach asks and answer with the whole session, keeping what the coach did not ask to change."

@@ -1,16 +1,9 @@
 "use server";
 
 import { z } from "zod";
-import { runAction } from "@/core/action";
-import {
-  ApplyInput,
-  applyBlock,
-  archiveBlock,
-  BlockInput,
-  createBlock,
-  previewBlock,
-  updateBlock,
-} from "./blocks";
+import { runAction, STILL_ALLOWED } from "@/core/action";
+import { ApplyInput, applyBlock, previewBlock } from "./block-apply";
+import { archiveBlock, BlockInput, createBlock, updateBlock } from "./blocks";
 
 /** The blocks' server actions: keep a block, preview it for riders, put it in their calendars. */
 
@@ -40,7 +33,7 @@ export async function archiveBlockAction(raw: unknown) {
 }
 
 export async function previewBlockAction(raw: unknown) {
-  return runAction(raw, ApplyInput, previewBlock, []);
+  return runAction(raw, ApplyInput, previewBlock, [], STILL_ALLOWED);
 }
 
 export async function applyBlockAction(raw: unknown) {

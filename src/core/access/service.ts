@@ -1,11 +1,33 @@
-import { and, count, desc, eq, gt, isNull, sql } from "drizzle-orm";
-import { z } from "zod";
+import { and, desc, eq, isNull, sql } from "drizzle-orm";
 import { recordAuthEvent } from "@/core/audit/events";
+import { todayInCopenhagen } from "@/core/dates";
 import { authDb } from "@/core/db/client";
-import { accessInvitations, accessRequests, users } from "@/core/db/schema";
-import { hashInvitationToken, invitationExpiry, invitationUrl, newInvitationToken } from "./tokens";
+import { accessInvitations, accessRequests } from "@/core/db/schema";
+import { requirePlatformOwner } from "./owner";
+import { personalColumns, personalProblem, personalSpecOf, type PersonalSpec } from "./personal";
+import { invitationExpiry, invitationUrl, newInvitationToken } from "./tokens";
 
 export { invitationState } from "./state";
+export {
+  installationHasOwner,
+  isPlatformOwner,
+  pendingAccessRequestCount,
+  platformRoleForNewUser,
+} from "./owner";
+export {
+  AccessRequestSchema,
+  personalFrom,
+  submitAccessRequest,
+  type AccessRequestInput,
+  type AccessRequestResult,
+  type RequestMeta,
+} from "./apply";
+export {
+  consumeInvitation,
+  findValidInvitation,
+  invitationAdmits,
+  type ValidInvitation,
+} from "./admit";
 
 /**
  * Admission: how a stranger becomes an organization on a closed installation.
@@ -20,117 +42,14 @@ export { invitationState } from "./state";
  * Everything here runs on the auth role: these tables belong to the
  * installation, not to a tenant, and the application role cannot see them
  * at all (drizzle/0025). Framework-free, so the whole flow is testable
- * without a request.
+ * without a request. An application is for a club, or for one person's
+ * own training (docs/adr/0080, personal.ts); the approval carries which
+ * into the invitation, and the registration makes the right workspace.
  */
 
-/* ------------------------------ Applying ------------------------------ */
-
-export const AccessRequestSchema = z.object({
-  name: z.string().trim().min(1).max(200),
-  email: z.email().max(320),
-  organizationName: z.string().trim().min(1).max(200),
-  message: z.string().trim().max(1000).optional().or(z.literal("")),
-  /** Honeypot. Humans never see it; anything in it is a bot. */
-  website: z.string().max(200).optional().or(z.literal("")),
-});
-
-export type AccessRequestInput = z.infer<typeof AccessRequestSchema>;
-
-export type RequestMeta = { ipAddress: string | null; userAgent: string | null };
-
-export type AccessRequestResult = { ok: true } | { ok: false; error: "invalid" | "tooMany" };
-
-/** Applications per address per hour before the form stops listening. */
-const MAX_REQUESTS_PER_IP_PER_HOUR = 5;
-
-export async function submitAccessRequest(
-  input: unknown,
-  meta: RequestMeta,
-): Promise<AccessRequestResult> {
-  const parsed = AccessRequestSchema.safeParse(input);
-  if (!parsed.success) return { ok: false, error: "invalid" };
-  const { name, email, organizationName, message, website } = parsed.data;
-
-  // A filled honeypot gets the same answer as a real application and
-  // leaves no trace: the point is to waste the bot's time, not ours.
-  if (website) return { ok: true };
-
-  if (meta.ipAddress) {
-    const [recent] = await authDb
-      .select({ total: count() })
-      .from(accessRequests)
-      .where(
-        and(
-          eq(accessRequests.ipAddress, meta.ipAddress),
-          gt(accessRequests.createdAt, sql`now() - interval '1 hour'`),
-        ),
-      );
-    if (Number(recent?.total ?? 0) >= MAX_REQUESTS_PER_IP_PER_HOUR) {
-      return { ok: false, error: "tooMany" };
-    }
-  }
-
-  // One pending application per address, enforced by a partial unique
-  // index. A second one is answered exactly like the first: the person
-  // already did the right thing, and the answer must not reveal anything
-  // about who has applied before.
-  const [row] = await authDb
-    .insert(accessRequests)
-    .values({
-      name,
-      email: email.toLowerCase(),
-      organizationName,
-      message: message || null,
-      ipAddress: meta.ipAddress,
-      userAgent: meta.userAgent,
-    })
-    .onConflictDoNothing()
-    .returning({ id: accessRequests.id });
-
-  if (row) {
-    await recordAuthEvent({
-      action: "access.requested",
-      entityType: "access_requests",
-      entityId: row.id,
-      ipAddress: meta.ipAddress,
-      userAgent: meta.userAgent,
-    });
-  }
-  return { ok: true };
-}
+const thisYear = () => Number(todayInCopenhagen().slice(0, 4));
 
 /* ------------------------------ The owner ------------------------------ */
-
-/**
- * The first account on an empty installation is its owner. Everyone after
- * that is an ordinary user until someone with database access says
- * otherwise; the role is never granted from a request.
- */
-export function platformRoleForNewUser(existingUsers: number): "owner" | null {
-  return existingUsers === 0 ? "owner" : null;
-}
-
-export async function isPlatformOwner(userId: string): Promise<boolean> {
-  const [row] = await authDb
-    .select({ role: users.platformRole })
-    .from(users)
-    .where(eq(users.id, userId))
-    .limit(1);
-  return row?.role === "owner";
-}
-
-/** Throws unless the user owns the installation. */
-async function requirePlatformOwner(userId: string): Promise<void> {
-  if (!(await isPlatformOwner(userId))) throw new Error("NOT_PLATFORM_OWNER");
-}
-
-export async function pendingAccessRequestCount(): Promise<number> {
-  const [row] = await authDb
-    .select({ total: count() })
-    .from(accessRequests)
-    .where(eq(accessRequests.status, "pending"));
-  return Number(row?.total ?? 0);
-}
 
 export type AccessRequestRow = typeof accessRequests.$inferSelect;
 
@@ -164,12 +83,20 @@ export type IssuedInvitation = { id: string; email: string; url: string; expires
  */
 export async function createInvitation(
   actorUserId: string,
-  input: { email: string; organizationName: string; accessRequestId?: string | null },
+  input: {
+    email: string;
+    organizationName: string;
+    accessRequestId?: string | null;
+    /** A personal workspace (docs/adr/0080); a club when absent. */
+    personal?: PersonalSpec | null;
+  },
 ): Promise<IssuedInvitation> {
   await requirePlatformOwner(actorUserId);
   const email = input.email.trim().toLowerCase();
   const organizationName = input.organizationName.trim();
   if (!email || !organizationName) throw new Error("INVALID");
+  const personal = input.personal ?? null;
+  if (personal && personalProblem(personal, thisYear())) throw new Error("INVALID");
 
   const { token, hash } = newInvitationToken();
   const expiresAt = invitationExpiry();
@@ -190,6 +117,7 @@ export async function createInvitation(
       .values({
         email,
         organizationName,
+        ...personalColumns(personal),
         tokenHash: hash,
         invitedBy: actorUserId,
         accessRequestId: input.accessRequestId ?? null,
@@ -226,6 +154,7 @@ export async function approveAccessRequest(
     email: request.email,
     organizationName: request.organizationName,
     accessRequestId: request.id,
+    personal: personalSpecOf(request),
   });
 
   if (request.status === "pending") {
@@ -243,6 +172,30 @@ export async function approveAccessRequest(
   return invitation;
 }
 
+/**
+ * "Ny link" for an invitation already made: the same address, workspace
+ * and, for a personal workspace, the same person (docs/adr/0080), so a
+ * renewed link makes what the first one would have made.
+ */
+export async function renewInvitation(
+  actorUserId: string,
+  invitationId: string,
+): Promise<IssuedInvitation> {
+  await requirePlatformOwner(actorUserId);
+  const [row] = await authDb
+    .select()
+    .from(accessInvitations)
+    .where(eq(accessInvitations.id, invitationId))
+    .limit(1);
+  if (!row) throw new Error("NOT_FOUND");
+  return createInvitation(actorUserId, {
+    email: row.email,
+    organizationName: row.organizationName,
+    accessRequestId: row.accessRequestId,
+    personal: personalSpecOf(row),
+  });
+}
+
 export async function declineAccessRequest(actorUserId: string, requestId: string): Promise<void> {
   await requirePlatformOwner(actorUserId);
   const [row] = await authDb
@@ -255,64 +208,6 @@ export async function declineAccessRequest(actorUserId: string, requestId: strin
     action: "access.declined",
     actorUserId,
     entityType: "access_requests",
-    entityId: row.id,
-  });
-}
-
-/* ------------------------------ Admitting ------------------------------ */
-
-export type ValidInvitation = { id: string; email: string; organizationName: string };
-
-/** The invitation behind a token, if it can still be used. */
-export async function findValidInvitation(token: string): Promise<ValidInvitation | null> {
-  if (!token) return null;
-  const [row] = await authDb
-    .select({
-      id: accessInvitations.id,
-      email: accessInvitations.email,
-      organizationName: accessInvitations.organizationName,
-    })
-    .from(accessInvitations)
-    .where(
-      and(
-        eq(accessInvitations.tokenHash, hashInvitationToken(token)),
-        isNull(accessInvitations.usedAt),
-        isNull(accessInvitations.revokedAt),
-        gt(accessInvitations.expiresAt, new Date()),
-      ),
-    )
-    .limit(1);
-  return row ?? null;
-}
-
-/**
- * Does this token admit this address? The address is part of the check
- * on purpose: a key is for one person, and a leaked link must not let
- * someone else register under a different e-mail.
- */
-export async function invitationAdmits(token: string | null | undefined, email: string) {
-  if (!token) return false;
-  const invitation = await findValidInvitation(token);
-  return invitation !== null && invitation.email === email.trim().toLowerCase();
-}
-
-/** Burns the key the moment the account exists. */
-export async function consumeInvitation(token: string, userId: string): Promise<void> {
-  const [row] = await authDb
-    .update(accessInvitations)
-    .set({ usedAt: new Date(), usedByUserId: userId })
-    .where(
-      and(
-        eq(accessInvitations.tokenHash, hashInvitationToken(token)),
-        isNull(accessInvitations.usedAt),
-      ),
-    )
-    .returning({ id: accessInvitations.id });
-  if (!row) return;
-  await recordAuthEvent({
-    action: "invitation.used",
-    actorUserId: userId,
-    entityType: "access_invitations",
     entityId: row.id,
   });
 }

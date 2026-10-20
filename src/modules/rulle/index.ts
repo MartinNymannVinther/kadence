@@ -9,7 +9,9 @@
  * - the ride as it is recorded, and as the FIT file it is saved as;
  * - what a trainer, a power meter and a heart-rate strap say over
  *   Bluetooth, and what Rulle says back (`ble/`);
- * - the small things on the way and what they came to (ADR 0034).
+ * - the small things on the way and what they came to (ADR 0034);
+ * - the challenger who now and then races the rider (ADR 0074), and the
+ *   sprinter HYLDTOFT calls (ADR 0075).
  *
  * The browser's half — Bluetooth, the landscape, the screen — is in
  * src/components/rulle.
@@ -30,6 +32,7 @@ export {
   type Course,
   type CoursePoint,
 } from "./route/course";
+export { FLAT_LAP_M, flatCourse } from "./route/flat";
 export {
   BANK,
   COVER_CELL,
@@ -56,6 +59,18 @@ export {
   type RouteKey,
 } from "./route/routes";
 export { nextSpeed, PHYSICS, resistance, steadySpeed, swayAt } from "./physics";
+export {
+  CHALLENGE,
+  challengeIn,
+  challengerEffort,
+  challengerWatts,
+  draft,
+  type ChallengeStart,
+  type ChallengerAt,
+  type ChallengerEffort,
+  type Rival,
+} from "./challenge";
+export { criticalPower, jumpAt, reserveAfter, SPRINTER, wattsFor, type Effort } from "./sprinter";
 export {
   blockAt,
   buildTimeline,

@@ -1,9 +1,15 @@
 import { APIError } from "better-auth";
 import { z } from "zod";
+import { personalProblem, type PersonalSpec } from "@/core/access/personal";
 import { consumeInvitation, findValidInvitation } from "@/core/access/service";
+import { todayInCopenhagen } from "@/core/dates";
+import { errorName, log, requestIdFrom } from "@/core/log";
 import { organizationSlug } from "@/lib/slug";
+import { startPlanQuietly } from "@/modules/billing/start";
 import { auth } from "./auth";
-import { DEMO_HEADER, INVITATION_HEADER, signupAllowed, TEAM_INVITATION_HEADER } from "./signup";
+import { cookieHeaderFrom } from "./cookies";
+import { setUpPersonalWorkspace } from "./register-personal";
+import { INVITATION_HEADER, signupAllowed, withoutOurHeaders } from "./signup";
 
 export const RegisterSchema = z.object({
   name: z.string().trim().min(1).max(200),
@@ -18,17 +24,10 @@ export type RegisterInput = z.infer<typeof RegisterSchema>;
 
 export type RegisterResult =
   | { ok: true }
-  | { ok: false; error: "invalid" | "emailExists" | "closed" | "invitationInvalid" | "generic" };
-
-/** Turns the set-cookie headers of an API response into a cookie header. */
-function cookieHeaderFrom(responseHeaders: Headers): Headers {
-  const cookie = responseHeaders
-    .getSetCookie()
-    .map((c) => c.split(";")[0])
-    .filter(Boolean)
-    .join("; ");
-  return new Headers({ cookie });
-}
+  | {
+      ok: false;
+      error: "invalid" | "emailExists" | "closed" | "invitationInvalid" | "tooYoung" | "generic";
+    };
 
 /**
  * Registration: creates the user, signs them in, creates their organization
@@ -46,6 +45,9 @@ export async function registerUserWithOrganization(
   }
   const { name, password, invitationToken } = parsed.data;
   let { email, organizationName } = parsed.data;
+  // A personal workspace comes only through an invitation that says so
+  // (docs/adr/0080); the form cannot ask for one.
+  let personal: PersonalSpec | null = null;
 
   // An invited registration is for the address and the organization the
   // owner approved, whatever the form says: the invitation is the source,
@@ -57,6 +59,14 @@ export async function registerUserWithOrganization(
     if (!invitation) return { ok: false, error: "invitationInvalid" };
     email = invitation.email;
     organizationName = invitation.organizationName;
+    personal = invitation.personal;
+  }
+
+  // Asked again here, before an account exists: the rule may have been
+  // met when the link was made and must still hold when it is used.
+  if (personal) {
+    const problem = personalProblem(personal, Number(todayInCopenhagen().slice(0, 4)));
+    if (problem) return { ok: false, error: problem === "tooYoung" ? "tooYoung" : "invalid" };
   }
 
   // Checked here as well as in the Better Auth hook, so the form can say
@@ -67,12 +77,9 @@ export async function registerUserWithOrganization(
 
   // The key reaches the gate inside Better Auth as a request header: the
   // sign-up body is Better Auth's, and a header is what its hook can read.
-  const signUpHeaders = new Headers(requestHeaders);
   // Whatever the caller sent under the names this flow gives meaning to is
   // dropped first: only what this function decides may reach the gate.
-  signUpHeaders.delete(INVITATION_HEADER);
-  signUpHeaders.delete(TEAM_INVITATION_HEADER);
-  signUpHeaders.delete(DEMO_HEADER);
+  const signUpHeaders = withoutOurHeaders(requestHeaders);
   if (invitationToken) signUpHeaders.set(INVITATION_HEADER, invitationToken);
 
   let sessionHeaders: Headers;
@@ -89,7 +96,10 @@ export async function registerUserWithOrganization(
     if (error instanceof APIError && error.body?.code === "USER_ALREADY_EXISTS") {
       return { ok: false, error: "emailExists" };
     }
-    console.error("register: sign-up failed", error);
+    await log.error("register: sign-up failed", {
+      requestId: requestIdFrom(requestHeaders),
+      error: errorName(error),
+    });
     return { ok: false, error: "generic" };
   }
 
@@ -108,11 +118,33 @@ export async function registerUserWithOrganization(
         body: { organizationId: organization.id },
         headers: sessionHeaders,
       });
+      if (personal && userId) {
+        await setUpPersonalWorkspace({
+          orgId: organization.id,
+          userId,
+          userName: name,
+          sessionHeaders,
+          spec: personal,
+        });
+      }
+      // What it pays (docs/adr/0090): a person's trial, or a club the owner
+      // admitted free for its first season. The very first account, which
+      // came in without a key, is the installation's own and stays free.
+      if (invitationToken)
+        await startPlanQuietly(
+          organization.id,
+          personal
+            ? { kind: "personal", birthYear: personal.birthYear }
+            : { kind: "club", admitted: true },
+        );
     }
   } catch (error) {
     // The user exists and is signed in; the app falls back to
     // onboarding when no organization is present.
-    console.error("register: organization creation failed", error);
+    await log.error("register: organization creation failed", {
+      requestId: requestIdFrom(requestHeaders),
+      error: errorName(error),
+    });
   }
 
   return { ok: true };

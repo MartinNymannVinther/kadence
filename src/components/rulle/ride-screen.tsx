@@ -5,13 +5,14 @@ import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { clockText } from "@/components/training/duration";
 import type { Thresholds } from "@/modules/load";
-import type { City, Course, Land, SessionTimeline } from "@/modules/rulle";
+import type { City, Course, Land, Rival, SessionTimeline } from "@/modules/rulle";
 import { CheatOverlay } from "./cheat-overlay";
 import { EndDialog } from "./end-dialog";
 import { IntervalBar } from "./interval-bar";
 import { RideControls } from "./ride-controls";
 import { RouteMap } from "./route-map";
-import { BlockTile, BodyTile, WattTile } from "./ride-tiles";
+import { RaceBanner } from "./race-banner";
+import { RideNumbers } from "./ride-numbers";
 import { RouteProfile } from "./route-profile";
 import type { Beeps } from "./ride/beeps";
 import { INTENSITY } from "./ride/engine";
@@ -21,6 +22,7 @@ import { useMapShown, useSpeedShown } from "./ride/use-map-shown";
 import { useRideKeys } from "./ride/use-ride-keys";
 import { DevWarp } from "./dev-warp";
 import { RoadCard } from "./road-card";
+import { StartCurtain } from "./start-curtain";
 import type { Ride } from "./ride/use-ride";
 import { useFullscreen, useWakeLock } from "./ride/use-screen";
 import { Sky } from "./scene/sky";
@@ -38,8 +40,9 @@ const RideScene = dynamic(() => import("./scene/ride-scene"), {
  * The ride, on a screen two metres from the saddle (ADR 0033): the
  * landscape behind everything, the strip of controls on top, and across
  * the bottom the three numbers and the session's bar — the part a rider
- * reads, and so the part that is large. A countdown before the first
- * pedal stroke; a question before the end; the screen kept awake. On
+ * reads, and so the part that is large. Before the first pedal stroke the
+ * route and one of the two riders turning for ten seconds, then a
+ * countdown (`StartCurtain`); a question before the end; the screen kept awake. On
  * request nothing but the rider and the land (ADR 0045): every number
  * gone, the little map only if it is shown; a tap or I brings them back,
  * and so does a trainer that drops out. And the cheat code (`useCheat`),
@@ -54,6 +57,8 @@ export function RideScreen({
   ride,
   devices,
   beeps,
+  loading,
+  onLoaded,
   counting,
   onGo,
   moment,
@@ -70,6 +75,9 @@ export function RideScreen({
   ride: Ride;
   devices: Devices;
   beeps: Beeps;
+  /** Rulle gets ready, ten seconds before the countdown (ADR 0076); then `onLoaded`. */
+  loading: boolean;
+  onLoaded: () => void;
   /** The countdown runs, and then `onGo` starts the ride. */
   counting: boolean;
   onGo: () => void;
@@ -91,6 +99,8 @@ export function RideScreen({
   // Nothing but the rider and the land: never remembered, a ride starts with its numbers.
   const [bare, setBare] = useState(false);
   const count = useCountdown(counting, beeps, onGo);
+  // Which of the two riders turns at the start while Rulle gets ready: either, by chance.
+  const [showcase] = useState<Rival>(() => (Math.random() < 0.5 ? "challenger" : "sprinter"));
   const fullscreen = useFullscreen();
   const [mapShown, toggleMap] = useMapShown();
   const [speedShown, toggleSpeed] = useSpeedShown();
@@ -125,8 +135,9 @@ export function RideScreen({
     return () => observer.disconnect();
   }, [shown, bare]);
 
-  const cheating = live?.cheat ?? false;
-  const cheat = useCheat(live !== null && !ending, cheating, ride, beeps);
+  const cheatState = live?.cheat ?? null;
+  const cheating = cheatState !== null;
+  const cheat = useCheat(live !== null && !ending, cheatState?.mode ?? null, ride, beeps);
   useRideKeys(live !== null && !ending, {
     " ": () => (live?.status === "paused" ? ride.resume() : ride.pause()),
     // While the cheat is on, the arrows steer the bike and leave the session alone.
@@ -157,7 +168,7 @@ export function RideScreen({
       <div className="absolute inset-0">
         <RideScene
           course={course}
-          moment={moment}
+          moment={loading ? (now) => ({ ...moment(now), showcase }) : moment}
           top={bare ? 0 : cover.top}
           bottom={bare ? 0 : cover.bottom}
           words={words}
@@ -196,13 +207,14 @@ export function RideScreen({
               onFullscreen={fullscreen.toggle}
               onEnd={() => setEnding(true)}
             />
-            <div className="grid grid-cols-2 gap-3 p-3 sm:px-4 lg:grid-cols-3 lg:gap-4 lg:px-6">
-              <WattTile live={live} rider={rider} />
-              <BlockTile live={live} />
-              <div className="col-span-2 lg:col-span-1">
-                <BodyTile live={live} />
-              </div>
-            </div>
+            <RideNumbers
+              live={live}
+              rider={rider}
+              onCheatOff={() => cheat.toggle()}
+              onCheatMode={cheat.toggle}
+              onCheatTune={ride.tuneCheat}
+              onCheatPush={ride.pushCheat}
+            />
           </div>
         )}
         {/* The road, between the numbers above and the bar below: its percent and speed in one corner, the little map in the other. */}
@@ -225,21 +237,20 @@ export function RideScreen({
             />
           )}
           {live && mapShown && (
-            <div className="bg-card/85 border-border pointer-events-none absolute right-3 bottom-3 w-[min(30vmin,15rem)] rounded-xl border p-1.5 shadow-[var(--surface-shadow)] sm:right-4 lg:right-6">
+            <div className="bg-card/85 border-border pointer-events-none absolute right-3 bottom-3 w-[min(30vmin,15rem)] rounded-xl border p-1.5 shadow-surface sm:right-4 lg:right-6">
               <RouteMap course={course} distance={live.distance} finish={finish} />
             </div>
           )}
           {/* Only under `next dev`: the way along the route run faster, or backwards. */}
-          {live && cheating && !bare && (
-            <CheatOverlay
-              banner={cheat.banner}
-              kmh={live.speed * 3.6}
-              onOff={cheat.toggle}
-              onSteer={ride.steerCheat}
-            />
+          {live && cheatState && !bare && (
+            <CheatOverlay banner={cheat.banner} state={cheatState} onSteer={ride.steerCheat} />
+          )}
+          {/* An offer waits for an answer, so it shows even with the numbers away. */}
+          {live?.race && (!bare || live.race.phase === "offer") && (
+            <RaceBanner race={live.race} beeps={beeps} onAnswer={ride.answerRace} />
           )}
           {process.env.NODE_ENV === "development" && live && (
-            <DevWarp onWarp={ride.setWarp} hidden={bare} />
+            <DevWarp onWarp={ride.setWarp} onChallenge={ride.summon} hidden={bare} />
           )}
         </div>
         {live && !bare && (
@@ -275,17 +286,7 @@ export function RideScreen({
         )}
       </div>
 
-      {count > 0 && (
-        <div
-          role="status"
-          className="absolute inset-0 z-20 grid place-items-center bg-[var(--scrim)]"
-        >
-          <div className="bg-card flex flex-col items-center gap-2 rounded-2xl px-16 py-10 shadow-[var(--dialog-shadow)]">
-            <p className="text-ride-label font-medium">{t("countdown")}</p>
-            <p className="text-ride-hero leading-none font-semibold tabular-nums">{count}</p>
-          </div>
-        </div>
-      )}
+      <StartCurtain loading={loading} count={count} route={course.name} onLoaded={onLoaded} />
 
       <EndDialog open={ending} trial={trial} onOpenChange={setEnding} onEnd={ride.finish} />
     </div>

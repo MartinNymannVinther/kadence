@@ -88,7 +88,7 @@ export function WorkoutSummary({ structure }: { structure: Structure }) {
   return (
     <aside
       aria-label={t("title")}
-      className="border-border bg-card flex flex-col gap-4 rounded-xl border p-4 shadow-[var(--surface-shadow)]"
+      className="border-border bg-card flex flex-col gap-4 rounded-xl border p-4 shadow-surface"
     >
       <h2 className="text-sm font-semibold">{t("title")}</h2>
       <dl className="grid grid-cols-2 gap-3 text-2sm">

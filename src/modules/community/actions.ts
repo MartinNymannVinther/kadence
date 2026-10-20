@@ -1,18 +1,23 @@
 "use server";
 
 import { z } from "zod";
-import { runAction } from "@/core/action";
+import { runFeatureAction } from "@/core/feature-gate";
 import { handleReport, report, setHidden, setLocked } from "./moderation";
 import { CATEGORIES, createThread, reply, takeWorkout } from "./service";
 
-/** Trænerrummet's actions (docs/adr/0052): each resolves the session and team first. */
+/**
+ * Trænerrummet's actions (docs/adr/0052): each resolves the session and
+ * team first, and each is refused while the installation has the room off
+ * (docs/adr/0057).
+ */
 
 const ROOM = ["/coaches"];
 const id = z.string().min(1).max(100);
 const target = z.enum(["thread", "post"]);
 
 export async function createThreadAction(raw: unknown) {
-  return runAction(
+  return runFeatureAction(
+    "coachesRoom",
     raw,
     z.object({
       category: z.enum(CATEGORIES),
@@ -26,7 +31,8 @@ export async function createThreadAction(raw: unknown) {
 }
 
 export async function replyAction(raw: unknown) {
-  return runAction(
+  return runFeatureAction(
+    "coachesRoom",
     raw,
     z.object({ threadId: id, body: z.string().trim().min(1).max(8000) }),
     (ctx, input) => reply(ctx, input.threadId, input.body),
@@ -35,7 +41,8 @@ export async function replyAction(raw: unknown) {
 }
 
 export async function takeWorkoutAction(raw: unknown) {
-  return runAction(
+  return runFeatureAction(
+    "coachesRoom",
     raw,
     z.object({ threadId: id }),
     (ctx, input) => takeWorkout(ctx, input.threadId),
@@ -44,7 +51,8 @@ export async function takeWorkoutAction(raw: unknown) {
 }
 
 export async function reportAction(raw: unknown) {
-  return runAction(
+  return runFeatureAction(
+    "coachesRoom",
     raw,
     z.object({ targetKind: target, targetId: id, reason: z.string().trim().max(500).default("") }),
     report,
@@ -53,7 +61,8 @@ export async function reportAction(raw: unknown) {
 }
 
 export async function setHiddenAction(raw: unknown) {
-  return runAction(
+  return runFeatureAction(
+    "coachesRoom",
     raw,
     z.object({ targetKind: target, targetId: id, hidden: z.boolean() }),
     setHidden,
@@ -62,7 +71,8 @@ export async function setHiddenAction(raw: unknown) {
 }
 
 export async function setLockedAction(raw: unknown) {
-  return runAction(
+  return runFeatureAction(
+    "coachesRoom",
     raw,
     z.object({ threadId: id, locked: z.boolean() }),
     (ctx, input) => setLocked(ctx, input.threadId, input.locked),
@@ -71,7 +81,8 @@ export async function setLockedAction(raw: unknown) {
 }
 
 export async function handleReportAction(raw: unknown) {
-  return runAction(
+  return runFeatureAction(
+    "coachesRoom",
     raw,
     z.object({ reportId: id }),
     (ctx, input) => handleReport(ctx, input.reportId),

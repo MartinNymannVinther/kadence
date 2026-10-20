@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl";
 import { FlagList } from "@/components/insight/flag-item";
+import { flagWeekHref } from "@/components/insight/signals";
 import { ResolvedFlags } from "@/components/insight/resolved-flags";
 import { resolvedGroups } from "@/components/insight/resolved-groups";
 import { WellbeingAction } from "@/components/insight/wellbeing-action";
@@ -27,7 +28,7 @@ export function RiderInsightCard({
   const wellbeing = useTranslations("wellbeing");
   const klass = basisText(insight?.basis, (k, v) => t(k, v));
   return (
-    <div className="border-border bg-card flex flex-col gap-5 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5">
+    <div className="border-border bg-card flex flex-col gap-5 rounded-xl border p-4 shadow-surface sm:p-5">
       <div className="flex flex-col gap-2.5">
         <h3 className="text-sm font-semibold">{t("riderTitle")}</h3>
         <WellbeingAction status={insight?.wellbeing ?? null} />
@@ -35,6 +36,7 @@ export function RiderInsightCard({
           flags={insight?.flags ?? []}
           klass={klass}
           resolve={insight ? { riderId: insight.riderId } : undefined}
+          weekHref={insight ? flagWeekHref(insight) : undefined}
         />
         <ResolvedFlags
           groups={insight ? resolvedGroups([insight], () => klass, { named: false }) : []}

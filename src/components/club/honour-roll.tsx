@@ -48,7 +48,7 @@ export function HonourRoll({
       {champions.length === 0 ? (
         <p className="text-meta text-2sm">{t("empty")}</p>
       ) : (
-        <ol className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-[var(--surface-shadow)]">
+        <ol className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-surface">
           {years.map((y) => (
             <li key={y} className="grid gap-2 px-4 py-3 sm:grid-cols-[4rem_minmax(0,1fr)]">
               <span className="text-base font-semibold tabular-nums">{y}</span>

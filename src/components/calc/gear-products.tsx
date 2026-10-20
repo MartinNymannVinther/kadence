@@ -47,7 +47,7 @@ export function GearProducts({
     limit === null ? 0 : Math.round((rolloutM(ring, cog, circumferenceMm) - limit) * 100);
 
   return (
-    <section className="border-border bg-card flex flex-col gap-5 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5">
+    <section className="border-border bg-card flex flex-col gap-5 rounded-xl border p-4 shadow-surface sm:p-5">
       <div className="flex flex-col gap-1">
         <h2 className="text-lg font-semibold">{t("title")}</h2>
         <p className="text-meta text-2sm leading-relaxed">{t("intro")}</p>

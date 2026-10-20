@@ -1,0 +1,107 @@
+# Danish U19 and U23 teams: where the facts are
+
+Researched 8 October 2026, for ADR 0072. Martin's question: can Kadence
+show which teams there are in Denmark for U19 and U23, which foreign
+teams Danish juniors ride for, who rides where, with jerseys, official
+contacts and points — kept up to date by the system rather than by hand?
+
+The short answer: the teams, the riders and the points, yes, from two
+public sources that answer software; the jerseys and the websites, no,
+those are Kadence's own notes.
+
+## The UCI: DataRide
+
+uci.org's ranking pages are iframes of **dataride.uci.org** (also
+dataride.uci.ch), a Sitefinity site whose grids load their rows from
+JSON endpoints under `/iframe/`. There is no documentation and no terms
+page of its own; uci.org's terms say nothing about these endpoints. The
+endpoints answer a plain request that says who is asking
+(`Kadence/<version> (+<origin>)`), without a cookie or a token.
+
+What the teams page reads, in this order, every id looked up on the way:
+
+| Call                                                | Gives                                                                                                                                                                                                                                                                                                |
+| --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET /iframe/GetDisciplineSeasons/?disciplineId=10` | The road seasons with their dates; 2026 is id 464 and runs 20 Oct 2025 – 18 Oct 2026.                                                                                                                                                                                                                |
+| `GET /iframe/GetCountries/`                         | Every nation with its IOC code; Denmark (`DEN`) is id 56.                                                                                                                                                                                                                                            |
+| `POST /iframe/RankingsDiscipline/`                  | The rankings a category has in a season, as Kendo grid form fields (`take`, `skip`, `filter[filters][n][field]`…). Category 26 (Men Under 23) has the UCI World Ranking (U23), individual (type 1) and by nation (type 3); 24 and 25 (Men and Women Junior) have **only the Nations' Cup** (type 3). |
+| `POST /iframe/ObjectRankings/`                      | One page of 40 rows of a ranking, filtered by `CountryId`: rank, "LANDBO Mads", team name, nation, birth date, points, computation date.                                                                                                                                                             |
+
+Found: **the UCI has no individual ranking for juniors on the road.**
+Junior points exist only as a nation's Nations' Cup standing. Denmark's
+U23 riders in the world ranking (19 on 6 October 2026) carry their team,
+which is how the foreign teams Danish U23 riders ride for are found
+without anyone keeping a list.
+
+`X-Requested-With: XMLHttpRequest` is sent with the POSTs, as the site's
+own grids send it; without it one endpoint answered the page's HTML.
+
+## Cykling Danmark
+
+Two pages, both answering a plain request that says who is asking:
+
+- **The team list**, `cyklingdanmark.dk/klubber-teams/om-teams`: prose
+  with headings — "UCI Continental Teams", "DCU eliteherrer - landevej",
+  "DCU elitekvinder - landevej", "U19-herrer - landevej", "U19-kvinder -
+  landevej", then track and gravel — and under each a run of teams as
+  three lines: the name, "Moderklub: …", "Team Manager: … // address".
+  On 8 October 2026: 4 Continental, 5 elite men, 4 elite women, 7 U19
+  men, 1 U19 women. The address is the one DCU publishes for the team;
+  for most teams it is the manager's own mailbox.
+- **The points lists**, `dcumedlem.sportstiming.dk/points`: the member
+  portal's form (`EventType`, `ClassId`, `SeasonId`, `OrganisationId`)
+  and a table — place, UCI ID, name, club or team, birth year, points.
+  The form lists every discipline's classes in one select, the road's
+  first; U19 is 961, U19P 962, A 952 in 2026. Danish road racing has no
+  U23 class (docs/research/dcu-results.md): U23 riders race in A, told
+  apart by birth year. The team column shows the foreign teams Danish
+  juniors are licensed with — JEGG-SKIL-DJR, Cannibal B Victorious,
+  Team Grenke–Auto Eder, Watersley R+D — which is how those are found.
+
+The member portal has no robots.txt and no terms of its own, and does not
+withhold its pages from software, where www.sportstiming.dk does
+(docs/research/dcu-results.md). Cykling Danmark has not yet said yes to
+being read (ADR 0039); the teams page reads it only while `TEAMS_DCU` is
+on, and Martin meets DCU in the week of 12 October 2026.
+
+## What no source lists
+
+- **Jerseys.** No source has a team's colours in a form a machine can
+  read, but Cykling Danmark publishes the **approved kit designs of
+  every registered Danish team** as one PDF a season
+  (`cyklingdanmark.dk/fileadmin/files/PDFer/Godkendt_Toejdesign/Danske_Teams_godkendte_toej_design_2026.pdf`,
+  17 pages, front, back and side of each jersey; Martin pointed to it
+  on 8 October 2026). Kadence draws one jersey from colours and a
+  pattern noted in `src/modules/teams/registry/teams.json`, and on 8
+  October 2026 every Danish team's colours were read from that PDF —
+  Airtox–Carl Ras navy, ColoQuick black with white vertical stripes,
+  Give Steel aubergine with a white band, Aalborg red, Kvickly Odder
+  black with a red band, Uno-X Roskilde blue, and so on — with the
+  foreign teams' from Commons photographs (below) or their sponsors'
+  well-known kits. The designs themselves are the teams' and DCU's; the
+  page draws from their colours and shows none of them. Five foreign
+  teams still wear neutral jerseys.
+- **Photographs.** Wikimedia Commons has team photographs under
+  licences that allow a copy with credit — CC BY-SA 4.0 and CC0, most by
+  Danish photographers at Fyen Rundt and Danmark Rundt, some from 2026
+  — found through its API (`action=query&list=search&srnamespace=6`,
+  then `prop=imageinfo` with `iiurlwidth` for a rendering and
+  `extmetadata` for the photographer and licence). ProCyclingStats and
+  FirstCycling, which show kits, answer software with a challenge page;
+  those doors are closed and stay closed. Kadence names a file per team
+  in the registry, copies the 640-pixel rendering to the installation on
+  refresh (`photos.ts`) and serves it itself with the credit line the
+  licence asks for; a licence outside CC0, public domain and CC BY(-SA)
+  is refused. Nothing is loaded from Commons by a reader's browser.
+- **Websites and home towns.** Noted in the registry from the teams'
+  own pages and from Wikidata (which has `official website`, the UCI team
+  code and a Commons photo for most UCI teams: Airtox–Carl Ras is
+  Q102352846). Reading Wikidata daily would add websites for every UCI
+  team; not done yet.
+
+## Manners
+
+One read a day, one source at a time, no redirect followed, the answer
+capped at 2 MB, the request saying who is asking. A visitor cannot start
+a read; the page's age does. A source that fails keeps its last answer
+and the page says when it was read and that the latest read failed.

@@ -1,12 +1,16 @@
 "use server";
 
 import { z } from "zod";
-import { runAction } from "@/core/action";
+import { runFeatureAction } from "@/core/feature-gate";
 import { addChampion, crownChampions, removeChampion } from "./champions";
 import { addRound, createChampionship, removeRound, saveRoundEntries } from "./service";
 import { CLUB_CLASSES, ROUND_KINDS, type ClubClass } from "./standings";
 
-/** The club championship's actions (docs/adr/0051): each resolves the team and the role first. */
+/**
+ * The club championship's actions (docs/adr/0051): each resolves the team
+ * and the role first, and each is refused while the installation has the
+ * championship off (docs/adr/0057).
+ */
 
 const CLUB = ["/club"];
 const id = z.string().min(1).max(100);
@@ -14,7 +18,8 @@ const classes = z.enum(CLUB_CLASSES as [ClubClass, ...ClubClass[]]);
 const day = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 
 export async function createChampionshipAction(raw: unknown) {
-  return runAction(
+  return runFeatureAction(
+    "clubChampionship",
     raw,
     z.object({
       season: z.coerce.number().int().min(1900).max(2200),
@@ -26,7 +31,8 @@ export async function createChampionshipAction(raw: unknown) {
 }
 
 export async function addRoundAction(raw: unknown) {
-  return runAction(
+  return runFeatureAction(
+    "clubChampionship",
     raw,
     z.object({
       championshipId: id,
@@ -41,7 +47,8 @@ export async function addRoundAction(raw: unknown) {
 }
 
 export async function removeRoundAction(raw: unknown) {
-  return runAction(
+  return runFeatureAction(
+    "clubChampionship",
     raw,
     z.object({ roundId: id }),
     (ctx, input) => removeRound(ctx, input.roundId),
@@ -59,7 +66,8 @@ const entry = z.object({
 });
 
 export async function saveRoundEntriesAction(raw: unknown) {
-  return runAction(
+  return runFeatureAction(
+    "clubChampionship",
     raw,
     z.object({ roundId: id, entries: z.array(entry).max(300) }),
     (ctx, input) => saveRoundEntries(ctx, input.roundId, input.entries),
@@ -68,7 +76,8 @@ export async function saveRoundEntriesAction(raw: unknown) {
 }
 
 export async function crownChampionsAction(raw: unknown) {
-  return runAction(
+  return runFeatureAction(
+    "clubChampionship",
     raw,
     z.object({ championshipId: id, title: z.string().trim().min(1).max(80) }),
     (ctx, input) => crownChampions(ctx, input.championshipId, input.title),
@@ -77,7 +86,8 @@ export async function crownChampionsAction(raw: unknown) {
 }
 
 export async function addChampionAction(raw: unknown) {
-  return runAction(
+  return runFeatureAction(
+    "clubChampionship",
     raw,
     z.object({
       year: z.coerce.number().int().min(1900).max(2200),
@@ -93,7 +103,8 @@ export async function addChampionAction(raw: unknown) {
 }
 
 export async function removeChampionAction(raw: unknown) {
-  return runAction(
+  return runFeatureAction(
+    "clubChampionship",
     raw,
     z.object({ championId: id }),
     (ctx, input) => removeChampion(ctx, input.championId),

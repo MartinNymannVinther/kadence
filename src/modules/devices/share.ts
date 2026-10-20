@@ -43,7 +43,7 @@ export async function importShared(ctx: OrgContext, files: SharedFile[]): Promis
   const refusals: string[] = [];
   let limited = false;
   for (const file of files.slice(0, MAX_SHARED_FILES)) {
-    if (!peekRateLimit(stored, STORED_FILES_PER_HOUR).allowed) {
+    if (!(await peekRateLimit(stored, STORED_FILES_PER_HOUR)).allowed) {
       limited = true;
       continue;
     }
@@ -53,7 +53,7 @@ export async function importShared(ctx: OrgContext, files: SharedFile[]): Promis
         source: "fit",
         unnamed: !own,
       });
-      rateLimit(stored, STORED_FILES_PER_HOUR, HOUR);
+      await rateLimit(stored, STORED_FILES_PER_HOUR, HOUR);
       activityIds.push(imported.activityId);
     } catch (error) {
       if (!(error instanceof Refused)) throw error;

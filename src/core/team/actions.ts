@@ -2,10 +2,17 @@
 
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
+import { getTranslations } from "next-intl/server";
 import { z } from "zod";
+import { firstName, workspaceNameKey } from "@/core/access/personal";
+import { runAction, STILL_ALLOWED } from "@/core/action";
 import { requireOrgContext } from "@/core/auth/guard";
 import { getSession } from "@/core/auth/session";
 import { fail, ok, type Result } from "@/core/result";
+import { acceptWithHistory, type JoinHistoryOutcome } from "@/modules/team/history-join";
+import { leaveWithHistory, type LeaveHistoryOutcome } from "@/modules/team/history-leave";
+import { PLAN_EXPIRED, planExpired } from "@/modules/billing/state";
+import { forgetReminders } from "./leave";
 import { registerInvited, type JoinRegisterResult } from "./register";
 import { createResetLink } from "./reset-link";
 import {
@@ -34,6 +41,8 @@ export async function inviteMemberAction(
 ): Promise<Result<IssuedTeamInvitation> | { ok: false; error: InviteError }> {
   const ctx = await requireOrgContext();
   if (!ctx) return fail("unauthorized");
+  // Nobody new joins a workspace that may only be read (docs/adr/0090).
+  if (await planExpired(ctx)) return fail("forbidden", PLAN_EXPIRED);
   const result = await inviteMember(await headers(), raw);
   if (!result.ok) return result;
   revalidatePath(MEMBERS_PATH);
@@ -67,6 +76,7 @@ export async function updateMemberRoleAction(raw: unknown): Promise<Result<boole
     .object({ memberId: z.string().min(1).max(200), role: z.enum(["admin", "member"]) })
     .safeParse(raw);
   if (!parsed.success) return fail("invalid");
+  if (await planExpired(ctx)) return fail("forbidden", PLAN_EXPIRED);
   const done = await updateMemberRole(await headers(), parsed.data.memberId, parsed.data.role);
   revalidatePath(MEMBERS_PATH);
   return done ? ok(true) : fail("generic");
@@ -90,7 +100,46 @@ export async function leaveWorkspaceAction(): Promise<Result<boolean>> {
   const ctx = await requireOrgContext();
   if (!ctx) return fail("unauthorized");
   const done = await leaveWorkspace(await headers(), ctx.orgId);
-  return done ? ok(true) : fail("generic");
+  if (!done) return fail("generic");
+  await forgetReminders(ctx);
+  return ok(true);
+}
+
+/**
+ * A rider leaving the team with their training (docs/adr/0081): a personal
+ * workspace named after them, as the registration names one ("Emmas
+ * træning"), in the reader's language; the service does the rest.
+ */
+export async function leaveWithHistoryAction(): Promise<Result<LeaveHistoryOutcome>> {
+  return runAction(
+    {},
+    z.object({}),
+    async (ctx) => {
+      const session = await getSession();
+      const first = firstName(session?.user.name ?? "");
+      const t = await getTranslations("auth.apply");
+      const workspaceName = first ? t(workspaceNameKey(first), { name: first }) : "Kadence";
+      return leaveWithHistory(await headers(), ctx, { workspaceName: workspaceName.slice(0, 200) });
+    },
+    [],
+    STILL_ALLOWED,
+  );
+}
+
+/**
+ * The signed-in person accepting the invitation they were sent, with the
+ * answer to "Tag din træning med over på holdet?" (docs/adr/0081). The
+ * person must be in some workspace already — the personal one that holds
+ * the training to move — which is what makes this an ordinary action.
+ */
+export async function acceptWithHistoryAction(raw: unknown): Promise<Result<JoinHistoryOutcome>> {
+  return runAction(
+    raw,
+    z.object({ invitationId: z.string().min(1).max(200), takeHistory: z.boolean() }),
+    async (ctx, input) => acceptWithHistory(await headers(), { ...input, userId: ctx.userId }),
+    [],
+    STILL_ALLOWED,
+  );
 }
 
 /** A signed-in person accepting the invitation they were sent. */

@@ -1,25 +1,27 @@
 "use client";
 
-import { Check, Copy, Loader2, RefreshCw, X } from "lucide-react";
+import { Check, Loader2, RefreshCw, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { formatDay } from "@/core/dates";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   approveAccessRequestAction,
-  createInvitationAction,
   declineAccessRequestAction,
+  renewInvitationAction,
   type IssuedLink,
 } from "@/core/access/actions";
 import { invitationState } from "@/core/access/state";
 import { useRouter } from "@/i18n/navigation";
+import { FreshLink } from "./fresh-link";
+import { InviteForm } from "./invite-form";
+import { DecidedRequests } from "./decided-requests";
+import { KindNote, type KindInfo } from "./kind-note";
 
-export type RequestItem = {
+export type RequestItem = KindInfo & {
   id: string;
   name: string;
   email: string;
@@ -30,7 +32,7 @@ export type RequestItem = {
   decidedAt: Date | null;
 };
 
-export type InvitationItem = {
+export type InvitationItem = KindInfo & {
   id: string;
   email: string;
   organizationName: string;
@@ -42,22 +44,24 @@ export type InvitationItem = {
 
 /**
  * Approve, decline, invite, and the one thing that cannot be looked up
- * later: the link. It is shown once, right after it is minted, because
+ * later: the link (fresh-link.tsx), to copy or, with mail, to send. It is shown once, right after it is minted, because
  * only its hash is stored. "New link" mints another and retires the old.
  */
 export function AccessAdmin({
   requests,
   invitations,
+  mailOn,
 }: {
   requests: RequestItem[];
   invitations: InvitationItem[];
+  /** Whether the installation sends mail, so the link can be sent (docs/adr/0086). */
+  mailOn: boolean;
 }) {
   const t = useTranslations("settings.access");
   const tCommon = useTranslations("common");
   const locale = useLocale();
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
-  const [inviting, setInviting] = useState(false);
   const [fresh, setFresh] = useState<IssuedLink | null>(null);
 
   const formatDate = (value: Date | string) => formatDay(new Date(value), locale);
@@ -97,37 +101,18 @@ export function AccessAdmin({
     }
   }
 
-  async function invite(email: string, organizationName: string) {
-    const result = await createInvitationAction({ email, organizationName });
-    if (!result.ok) {
-      toast.error(result.error === "invalid" ? t("errorInvalid") : tCommon("error"));
-      return false;
-    }
-    setFresh(result.data);
-    router.refresh();
-    return true;
-  }
-
-  async function handleInvite(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const formElement = event.currentTarget;
-    const form = new FormData(formElement);
-    setInviting(true);
-    const ok = await invite(
-      String(form.get("email") ?? ""),
-      String(form.get("organizationName") ?? ""),
-    );
-    setInviting(false);
-    if (ok) formElement.reset();
-  }
-
-  async function copyFresh() {
-    if (!fresh) return;
+  async function renew(id: string) {
+    setBusy(id);
     try {
-      await navigator.clipboard.writeText(fresh.url);
-      toast.success(t("copiedToast"));
-    } catch {
+      const result = await renewInvitationAction(id);
+      if (!result.ok) return void toast.error(tCommon("error"));
+      setFresh(result.data);
+      router.refresh();
+    } catch (error) {
+      console.error("access: renew failed", error);
       toast.error(tCommon("error"));
+    } finally {
+      setBusy(null);
     }
   }
 
@@ -140,19 +125,7 @@ export function AccessAdmin({
 
   return (
     <div className="flex flex-col gap-5">
-      {fresh ? (
-        <div className="border-primary/40 bg-accent rounded-lg border p-4">
-          <p className="text-sm font-semibold">{t("linkTitle", { email: fresh.email })}</p>
-          <p className="text-meta mt-1 text-2sm leading-relaxed">{t("linkBody")}</p>
-          <div className="mt-3 flex gap-2">
-            <Input readOnly value={fresh.url} className="min-w-0 flex-1 font-mono text-xs" />
-            <Button type="button" size="sm" onClick={copyFresh}>
-              <Copy data-slot="icon" />
-              {t("copy")}
-            </Button>
-          </div>
-        </div>
-      ) : null}
+      {fresh ? <FreshLink key={fresh.url} fresh={fresh} mailOn={mailOn} /> : null}
 
       <Card>
         <CardHeader>
@@ -176,6 +149,7 @@ export function AccessAdmin({
                       </span>
                     </p>
                     <p className="text-muted-foreground">{request.email}</p>
+                    <KindNote info={request} />
                     {request.message ? (
                       <p className="mt-1.5 leading-relaxed whitespace-pre-line">
                         {request.message}
@@ -216,30 +190,12 @@ export function AccessAdmin({
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("inviteTitle")}</CardTitle>
-          <CardDescription>{t("inviteBody")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleInvite} className="flex flex-col gap-3">
-            <FieldGroup className="sm:flex-row sm:gap-3">
-              <Field className="flex-1">
-                <FieldLabel htmlFor="invite-email">{t("inviteEmail")}</FieldLabel>
-                <Input id="invite-email" name="email" type="email" required />
-              </Field>
-              <Field className="flex-1">
-                <FieldLabel htmlFor="invite-organization">{t("inviteOrganization")}</FieldLabel>
-                <Input id="invite-organization" name="organizationName" required maxLength={200} />
-              </Field>
-            </FieldGroup>
-            <Button type="submit" variant="outline" className="w-fit" disabled={inviting}>
-              {inviting ? <Loader2 data-slot="icon" className="animate-spin" /> : null}
-              {t("inviteSubmit")}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+      <InviteForm
+        onIssued={(link) => {
+          setFresh(link);
+          router.refresh();
+        }}
+      />
 
       <Card>
         <CardHeader>
@@ -264,6 +220,7 @@ export function AccessAdmin({
                           · {invitation.organizationName}
                         </span>
                       </p>
+                      <KindNote info={invitation} />
                       <p className="text-meta text-xs">
                         {state === "used" && invitation.usedAt
                           ? t("used", { date: formatDate(invitation.usedAt) })
@@ -277,7 +234,8 @@ export function AccessAdmin({
                       <Button
                         size="sm"
                         variant="ghost"
-                        onClick={() => invite(invitation.email, invitation.organizationName)}
+                        disabled={busy === invitation.id}
+                        onClick={() => renew(invitation.id)}
                       >
                         <RefreshCw data-slot="icon" />
                         {t("renew")}
@@ -291,42 +249,7 @@ export function AccessAdmin({
         </CardContent>
       </Card>
 
-      {decided.length > 0 ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("historyTitle")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="flex flex-col">
-              {decided.map((request) => (
-                <li
-                  key={request.id}
-                  className="border-border flex items-center gap-3 border-b py-2.5 text-sm first:pt-0 last:border-b-0 last:pb-0"
-                >
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate font-medium">
-                      {request.name}{" "}
-                      <span className="text-muted-foreground font-normal">
-                        · {request.organizationName}
-                      </span>
-                    </p>
-                    <p className="text-muted-foreground truncate">{request.email}</p>
-                  </div>
-                  <Badge variant="outline">
-                    {request.status === "approved"
-                      ? t("decidedApproved", {
-                          date: formatDate(request.decidedAt ?? request.createdAt),
-                        })
-                      : t("decidedDeclined", {
-                          date: formatDate(request.decidedAt ?? request.createdAt),
-                        })}
-                  </Badge>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-      ) : null}
+      <DecidedRequests requests={decided} />
     </div>
   );
 }

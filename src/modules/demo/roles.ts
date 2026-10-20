@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { auth } from "@/core/auth/auth";
 import { openSecret, sealSecret } from "@/core/crypto/secret-box";
+import { addDaysIso, todayInCopenhagen } from "@/core/dates";
 import { authDb } from "@/core/db/client";
 import { demoWorkspaces, users } from "@/core/db/schema";
 import { registerInvited } from "@/core/team/register";
@@ -10,7 +11,12 @@ import { inviteMember } from "@/core/team/service";
 import { claimPendingLinks } from "@/modules/team/claim";
 import { addGuardian, attachGuardianInvitation, confirmGuardian } from "@/modules/team/guardians";
 import { attachRiderInvitation, getRiders, setSharing } from "@/modules/team/riders";
-import { pick, type L } from "./seed-data";
+import { scheduleProgram } from "@/modules/exercises/schedule";
+import { addComment } from "@/modules/training/comments";
+import { addFamilyEvent } from "@/modules/training/family-events";
+import { listSessions } from "@/modules/training/sessions";
+import { translatorFor } from "./exercises";
+import { FAMILY_HOLIDAY, pick, RIDER_COMMENT, type L } from "./seed-data";
 
 /**
  * The demo's three people. Kadence is three roles (ADR 0010), and a demo
@@ -19,7 +25,11 @@ import { pick, type L } from "./seed-data";
  * rider shares. So a demo has a rider and the rider's parent too, created
  * the way real people join — the coach's invitation, the rider's yes to
  * the parent — and the visitor can switch between them from the demo
- * stripe. Every account is thrown away with the demo.
+ * stripe. The rider has said a word about a ride she has done, so the
+ * coach's "Nyt fra rytterne" holds a comment beside the check-in notes,
+ * and has laid one of Kadence's programmes into her own calendar (ADR
+ * 0078); the parent has put a holiday into the rider's calendar. Every
+ * account is thrown away with the demo.
  */
 
 export const DEMO_ROLES = ["coach", "rider", "parent"] as const;
@@ -81,7 +91,8 @@ export async function createDemoRoles(input: {
       password: person.password,
     });
     if (!result.ok) throw new Error(`demo: ${person.email} could not join (${result.error})`);
-    // The auth role reads users by address; the application role cannot yet.
+    // The auth role reads users by address; the application role has no
+    // read on the column at all (docs/adr/0070).
     const [row] = await authDb
       .select({ id: users.id })
       .from(users)
@@ -99,6 +110,24 @@ export async function createDemoRoles(input: {
   // In the demo the rider shares everything, so the parent's view is full;
   // the visitor can switch to Emma and turn it off to see what changes.
   await setSharing(riderCtx, { shareTraining: true, shareWellbeing: true });
+  // Written as Emma on her latest ride of the last days, so it is a rider's own words.
+  const today = todayInCopenhagen();
+  const rides = (
+    await listSessions(riderCtx, {
+      from: addDaysIso(today, -6),
+      to: addDaysIso(today, -1),
+      riderIds: [rider.id],
+    })
+  ).filter((s) => s.sport === "bike");
+  const ridden = rides.findLast((s) => s.activity !== null) ?? rides.at(-1);
+  if (ridden)
+    await addComment(riderCtx, { plannedSessionId: ridden.id }, pick(RIDER_COMMENT, locale));
+  // Her own choice for the day after tomorrow: a rider lays a programme into her own week.
+  await scheduleProgram(
+    riderCtx,
+    { program: "builtin:mobilityDay", riderIds: [rider.id], onDate: addDaysIso(today, 2) },
+    translatorFor(locale),
+  );
   accounts.push({
     role: "rider",
     userId: riderCtx.userId,
@@ -116,6 +145,15 @@ export async function createDemoRoles(input: {
   await attachGuardianInvitation(coachCtx, guardian.id, parentPerson.invitationId);
   const parentCtx = await register(parentPerson);
   await confirmGuardian(riderCtx, guardian.id);
+  // The parent's own line in Emma's calendar, three weeks on (ADR 0069).
+  const holiday = addDaysIso(today, 21);
+  await addFamilyEvent(parentCtx, {
+    riderId: rider.id,
+    kind: "holiday",
+    title: pick(FAMILY_HOLIDAY, locale),
+    startsOn: holiday,
+    endsOn: addDaysIso(holiday, 4),
+  });
   accounts.push({
     role: "parent",
     userId: parentCtx.userId,

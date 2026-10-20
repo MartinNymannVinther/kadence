@@ -1,108 +1,126 @@
 "use client";
 
+import { Settings } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useId } from "react";
 import { CountPill } from "@/components/ui/count-pill";
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+import { NAV_ICONS } from "./nav-icons";
+import { activeHref, labelKey, type NavItem, type NavMenu } from "./nav-items";
 
 /**
- * The app navigation. Text only, per the 2a handoff, in the rhythm a
- * week is lived in: today, the calendar and the workout library a week
- * is planned from, Rulle for the days indoors (riders and coaches, ADR
- * 0033), the season, the team (coaches only), the parents' page, the
- * open guides and calculators (ADR 0047), and help. Rendered in the
- * desktop sidebar and inside the mobile sheet, where `onNavigate` lets
- * the sheet close itself.
+ * The app navigation in two tiers (docs/adr/0077; the lists in
+ * ./nav-items.ts): the role's primary places large, with their icons, and
+ * "Mere" under them, smaller, closed by Indstillinger. Rendered in the
+ * desktop sidebar and inside the phone's "Mere" sheet, where `onNavigate`
+ * lets the sheet close itself.
+ *
+ * "Mere" is a list named by its header, so a screen reader hears "Mere,
+ * list, 5 items" and can skip past it; the header is quiet text, not a
+ * heading, so the page's own outline stays the page's.
  */
-const ITEMS = [
-  { href: "/today", key: "today", coach: false, rides: false, club: false },
-  { href: "/calendar", key: "calendar", coach: false, rides: false, club: false },
-  { href: "/library", key: "library", coach: false, rides: false, club: false },
-  { href: "/rulle", key: "rulle", coach: false, rides: true, club: false },
-  { href: "/season", key: "season", coach: false, rides: false, club: false },
-  { href: "/club", key: "club", coach: false, rides: false, club: true },
-  { href: "/riders", key: "riders", coach: true, rides: false, club: false },
-  { href: "/coaches", key: "coaches", coach: true, rides: false, club: false },
-  { href: "/parents", key: "parents", coach: false, rides: false, club: false },
-  { href: "/guides", key: "guides", coach: false, rides: false, club: false },
-  { href: "/help", key: "help", coach: false, rides: false, club: false },
-] as const;
 
-export function navItemClass(active: boolean): string {
+export type NavTier = "primary" | "more";
+
+export function navItemClass(active: boolean, tier: NavTier): string {
   return cn(
-    "block rounded-[9px] px-3 py-2.5 text-sm transition-colors duration-[120ms] ease-out max-lg:py-3",
+    "focus-ring flex items-center gap-2.5 rounded-[10px] px-2.5 transition-colors duration-[120ms] ease-out max-lg:min-h-11",
+    tier === "primary" ? "h-10 text-[15px]" : "h-8 text-2sm",
     active
       ? "bg-sidebar-accent text-sidebar-accent-foreground font-semibold"
       : "text-sidebar-foreground hover:bg-sidebar-hover",
   );
 }
 
-export function SidebarNav({
-  onNavigate,
-  isCoach = false,
-  rides = false,
-  club = false,
-  counts = {},
-}: {
-  onNavigate?: () => void;
-  /** The team's list of riders is the coaches' page (ADR 0010). */
-  isCoach?: boolean;
-  /** Rulle is for those who ride, and for coaches trying a session. */
-  rides?: boolean;
-  /** The club keeps a club championship (ADR 0051). */
-  club?: boolean;
-  /** Something new behind an item, e.g. unread threads in Trænerrummet (ADR 0052). */
-  counts?: Partial<Record<string, number>>;
-}) {
-  const t = useTranslations("app.nav");
-  const pathname = usePathname();
-
-  return (
-    <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-2">
-      {ITEMS.filter(
-        (item) => (isCoach || !item.coach) && (rides || !item.rides) && (club || !item.club),
-      ).map((item) => {
-        const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
-        return (
-          <Link
-            key={item.href}
-            href={item.href}
-            onClick={onNavigate}
-            aria-current={active ? "page" : undefined}
-            className={cn(navItemClass(active), counts[item.key] ? "flex items-center" : "")}
-          >
-            {t(item.key)}
-            {counts[item.key] ? <CountPill count={counts[item.key]!} /> : null}
-          </Link>
-        );
-      })}
-    </nav>
+const iconClass = (active: boolean, tier: NavTier) =>
+  cn(
+    "shrink-0",
+    tier === "primary" ? "size-5" : "size-4",
+    active ? "text-sidebar-accent-foreground" : "text-meta",
   );
+
+/** Where Indstillinger leads: the door, while people wait at it for the owner; the person's own page otherwise. */
+export function settingsHref(attention: number): string {
+  return attention > 0 ? "/settings/access" : "/settings/me";
 }
 
-/**
- * Settings sits apart at the foot of the sidebar, above the user card. The
- * count is the installation owner's: applications waiting for a decision.
- */
-export function SidebarSettingsLink({
-  onNavigate,
+export function SidebarNav({
+  menu,
   attention = 0,
+  onNavigate,
+  counts = {},
+  className,
 }: {
-  onNavigate?: () => void;
+  /** The role's two tiers, decided on the server (menuFor in ./nav-items.ts). */
+  menu: NavMenu;
+  /** Items waiting for the installation's owner; zero for everyone else. */
   attention?: number;
+  onNavigate?: () => void;
+  /** Something new behind an item, e.g. unread threads in Trænerrummet (ADR 0052). */
+  counts?: Partial<Record<string, number>>;
+  className?: string;
 }) {
   const t = useTranslations("app.nav");
   const pathname = usePathname();
-  const active = pathname.startsWith("/settings");
+  // The sidebar and the sheet can both be in the page; their headers'
+  // ids must not meet.
+  const moreId = useId();
+  const lit = activeHref(
+    pathname,
+    [...menu.primary, ...menu.more].map((item) => item.href),
+  );
+  const settingsActive = pathname.startsWith("/settings");
+
+  const place = (item: NavItem, tier: NavTier) => {
+    const active = item.href === lit;
+    const Icon = NAV_ICONS[item.key];
+    const count = counts[item.key] ?? 0;
+    return (
+      <li key={item.key}>
+        <Link
+          href={item.href}
+          onClick={onNavigate}
+          aria-current={active ? "page" : undefined}
+          className={navItemClass(active, tier)}
+        >
+          <Icon aria-hidden className={iconClass(active, tier)} />
+          <span className="min-w-0 truncate">{item.text ?? t(labelKey(item))}</span>
+          <CountPill count={count} />
+        </Link>
+      </li>
+    );
+  };
+
   return (
-    <Link
-      href={attention > 0 ? "/settings/access" : "/settings/me"}
-      onClick={onNavigate}
-      aria-current={active ? "page" : undefined}
-      className={cn(navItemClass(active), "flex items-center")}
+    <nav
+      aria-label={t("menuTitle")}
+      className={cn("flex flex-1 flex-col overflow-y-auto px-3 py-1.5", className)}
     >
-      {t("settings")}
-      <CountPill count={attention} />
-    </Link>
+      <ul className="flex flex-col gap-0.5">
+        {menu.primary.map((item) => place(item, "primary"))}
+      </ul>
+      <p
+        id={moreId}
+        className="text-label px-2.5 pt-5 pb-1 text-2xs font-medium tracking-[0.04em] uppercase max-lg:pt-6"
+      >
+        {t("more")}
+      </p>
+      <ul aria-labelledby={moreId} className="flex flex-col gap-px">
+        {menu.more.map((item) => place(item, "more"))}
+        <li>
+          <Link
+            href={settingsHref(attention)}
+            onClick={onNavigate}
+            aria-current={settingsActive ? "page" : undefined}
+            className={navItemClass(settingsActive, "more")}
+          >
+            <Settings aria-hidden className={iconClass(settingsActive, "more")} />
+            <span className="min-w-0 truncate">{t("settings")}</span>
+            <CountPill count={attention} />
+          </Link>
+        </li>
+      </ul>
+    </nav>
   );
 }

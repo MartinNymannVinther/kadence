@@ -9,6 +9,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { getOrgContext } from "@/core/auth/session";
 import { todayInCopenhagen } from "@/core/dates";
+import { notFoundWithout } from "@/core/feature-gate";
 import { Link, redirect } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { getChampionship, listChampions, listChampionships } from "@/modules/club/service";
@@ -19,6 +20,7 @@ import { whoAmI } from "@/modules/team/access";
 import { getRiders } from "@/modules/team/riders";
 
 export async function generateMetadata(): Promise<Metadata> {
+  notFoundWithout("clubChampionship");
   const t = await getTranslations("club");
   return { title: t("title") };
 }
@@ -28,12 +30,15 @@ export async function generateMetadata(): Promise<Metadata> {
  * standings per class, the rounds and their results, the year's biggest
  * improvement and the roll of honour. The one page in Kadence where
  * riders and parents see placings. A coach keeps it on the same page.
+ * While the installation has the championship off, the page is not there
+ * for anyone, whatever the team chose (ADR 0057).
  */
 export default async function ClubPage({
   searchParams,
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  notFoundWithout("clubChampionship");
   const ctx = await getOrgContext();
   const locale = await getLocale();
   if (!ctx) {
@@ -50,7 +55,7 @@ export default async function ClubPage({
       <div className="flex max-w-3xl flex-col gap-5">
         <PageHeader title={t("title")} subtitle={t("subtitle")} />
         <EmptyState title={t("off.title")} hint={t("off.body")} />
-        <Link href="/settings/team" className="text-primary text-2sm hover:underline">
+        <Link href="/settings/team" className="focus-ring text-primary text-2sm hover:underline">
           {t("off.link")}
         </Link>
       </div>
@@ -86,7 +91,7 @@ export default async function ClubPage({
               href={`/club?c=${c.id}`}
               aria-current={c.id === selected?.id ? "page" : undefined}
               className={cn(
-                "rounded-md border px-3 py-1.5 text-2sm",
+                "focus-ring rounded-md border px-3 py-1.5 text-2sm",
                 c.id === selected?.id ? "border-primary font-semibold" : "border-border",
               )}
             >

@@ -41,10 +41,32 @@ Wahoo, Garmin and Polar behind keys; an upload key per rider, a bike
 computer read as a folder, a share from the phone and a Strava archive in
 one move; sessions onto a Garmin by cable; Rulle, the session on the
 trainer indoors; the parents' page;
-three AI proposals; the
+four AI proposals; the
 demo; export and erasure. Nothing here has run a real team yet. Dogma
 seven is what 1.0 waits for — one real winter — and
 [docs/launch.md](docs/launch.md) is the road to it.
+
+The focus wave before that winter
+([docs/plan-fokus-vinter.md](docs/plan-fokus-vinter.md)) made the core
+smaller and sharper: a menu per role with a bottom bar on the phone, a
+Today that shows today, the team's week as the place to see who needs a
+talk, one place to plan a week, time and place on a session, reminders
+by web push without content, and a rider's first-run checklist. Five
+parts sit behind installation flags, on by default, so an installation
+can park them until a real team has used the rest (ADR 0057): Rulle's
+land and towns, Trænerrummet, the club championship, the energy
+calculator and the food guide. An installation that runs Kadence as a
+service can turn on a price page, a trial and invoices registered by
+hand (ADR 0090); it is off by default, and then everything is free. What
+is left is in [docs/backlog.md](docs/backlog.md).
+
+The navigation was laid in two tiers on 9 October 2026 (ADR 0077): at
+most four primary places per role, the same in the sidebar and in the
+phone's bar, and the rest under Mere; a coach's front page is Overblik —
+next week, who is worth a look, what the riders wrote — and a search
+finds a rider, a session or a page from anywhere.
+A user manual in Danish, with pictures of every role's screens, lives
+under `public/brugervejledning` as a page and a PDF (ADR 0079).
 
 Much of the code is written together with Claude Code, under the rules
 in [CLAUDE.md](CLAUDE.md). Every change is reviewed, tested and deployed
@@ -67,6 +89,14 @@ U19 and U23 sit in the library with their progression, so session seven
 of the programme says 3 × 12. The coach can change anything; DCU's number
 is always beside it.
 
+**Exercises and programmes, drawn.** A stretch or a strength exercise
+comes with its own stick-figure drawing, a dose and a short "how" and
+"why", in a library of Kadence's own beside what a coach draws for the
+team. Anyone composes a programme on the open guide and downloads it as
+one file that works on a phone offline, or prints it; inside the app a
+coach lays a finished one straight into the calendar, with the drawings
+on the session.
+
 **Load without a power meter.** Power when there is power, pulse when
 there is pulse, how hard it felt when there is neither — on one scale,
 so fitness, fatigue and form mean something for every rider.
@@ -75,8 +105,8 @@ so fitness, fatigue and form mean something for every rider.
 the rider opens today's session in Rulle, connects the trainer over
 Bluetooth, and pedals: a smart trainer holds each block's watts. The
 session is a bar the rider rides across, the numbers are sized to be
-read from the saddle, and a quiet low-poly landscape rolls past behind
-them: five real roads through their real land — Vejle's hills and the
+read from the saddle, and where the installation has turned Rulle's
+world on (ADR 0057), a quiet low-poly landscape rolls past behind them: six real roads through their real land — Vejle's hills and the
 fjord to Munkebjerg, Himmelbjerget, the B&U DM lap, and Copenhagen and
 Montréal on race day — or a GPX of the rider's own. The ride lands on
 the session as an ordinary FIT file. Company on the road and a crowd on

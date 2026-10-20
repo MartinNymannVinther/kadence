@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { TemplateEditor } from "@/components/library/template-editor";
 import { getOrgContext } from "@/core/auth/session";
 import { Link, redirect } from "@/i18n/navigation";
+import { hasSeniorRider } from "@/modules/season/seniors";
 import { whoAmI } from "@/modules/team/access";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -38,6 +39,8 @@ export default async function NewTemplatePage({
   const asked = search.sport;
   const sport = asked === "bike" || asked === "strength" ? asked : undefined;
   const mine = search.mine === "1" && me?.rider ? me.rider : null;
+  // "Byg med AI" offers an adult's training profiles where there is one (ADR 0092).
+  const seniors = me?.isCoach && !mine ? await hasSeniorRider(ctx) : false;
 
   return (
     <div className="flex min-w-0 flex-col gap-5">
@@ -56,7 +59,7 @@ export default async function NewTemplatePage({
       {mine ? (
         <TemplateEditor sport={sport} riderId={mine.id} assist={false} />
       ) : me?.isCoach ? (
-        <TemplateEditor sport={sport} assistOpen={search.ai === "1"} />
+        <TemplateEditor sport={sport} assistOpen={search.ai === "1"} seniors={seniors} />
       ) : (
         <EmptyState title={t("coachOnlyTitle")} hint={t("coachOnlyBody")} />
       )}

@@ -1,6 +1,7 @@
 import type { CalendarEventRow, RaceResultRow } from "@/core/db/schema";
 import type { CalendarActivity } from "@/modules/training/activities";
 import type { CalendarSession } from "@/modules/training/sessions";
+import { clockOf } from "@/modules/training/time-place";
 import type { CalendarActivityCard, CalendarCard, CalendarEventCard, EventResult } from "./types";
 
 /**
@@ -22,12 +23,20 @@ export function toCard(s: CalendarSession): CalendarCard {
     plannedLoad: s.plannedLoad,
     plannedKm: s.plannedKm,
     templateId: s.templateId,
+    startTime: clockOf(s.startTime),
+    meetingPlace: s.meetingPlace,
     groupKey: s.groupKey,
     seriesKey: s.seriesKey,
     programmeSession: s.programmeSession,
     activityId: s.activityId,
     activity: s.activity
-      ? { id: s.activity.id, movingSeconds: s.activity.movingSeconds, load: s.activity.load }
+      ? {
+          id: s.activity.id,
+          movingSeconds: s.activity.movingSeconds,
+          load: s.activity.load,
+          loadMethod: s.activity.loadMethod,
+          rpe: s.activity.rpe,
+        }
       : null,
     commentCount: s.commentCount,
   };
@@ -39,14 +48,14 @@ export function toActivityCard(a: CalendarActivity): CalendarActivityCard {
     riderId: a.riderId,
     onDate: a.onDate,
     sport: a.sport,
-    title: a.title,
+    name: a.name,
     movingSeconds: a.movingSeconds,
     rpe: a.rpe,
     commentCount: a.commentCount,
   };
 }
 
-export function toEventCard(e: CalendarEventRow): CalendarEventCard {
+export function toEventCard(e: CalendarEventRow & { fromParent?: boolean }): CalendarEventCard {
   return {
     id: e.id,
     riderId: e.riderId,
@@ -56,7 +65,11 @@ export function toEventCard(e: CalendarEventRow): CalendarEventCard {
     endsOn: e.endsOn,
     priority: e.priority,
     note: e.note,
+    startTime: clockOf(e.startTime),
+    meetingPlace: e.meetingPlace,
+    transportNote: e.transportNote,
     source: e.source,
+    fromParent: e.fromParent ?? false,
   };
 }
 

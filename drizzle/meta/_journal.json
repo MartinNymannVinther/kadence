@@ -183,6 +183,230 @@
       "when": 1791104184698,
       "tag": "0025_demo_rooms",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1791262148252,
+      "tag": "0026_session_time_place",
+      "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1791262173226,
+      "tag": "0027_block_inline_sessions",
+      "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1791262206206,
+      "tag": "0028_push_subscriptions",
+      "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1791279167119,
+      "tag": "0029_push_wellbeing",
+      "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1791279168334,
+      "tag": "0030_invitation_kind",
+      "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1791279169540,
+      "tag": "0031_pilot_numbers",
+      "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1791317875004,
+      "tag": "0032_team_exercises",
+      "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1791369512974,
+      "tag": "0033_equipment_strength_room",
+      "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1791368727170,
+      "tag": "0034_users_addresses",
+      "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "7",
+      "when": 1791368681990,
+      "tag": "0035_week_plan_drafts",
+      "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1791368808987,
+      "tag": "0036_checkin_red_since",
+      "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "7",
+      "when": 1791369880323,
+      "tag": "0037_plan_change_sender",
+      "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "7",
+      "when": 1791370839348,
+      "tag": "0038_push_runs",
+      "breakpoints": true
+    },
+    {
+      "idx": 39,
+      "version": "7",
+      "when": 1791368883370,
+      "tag": "0039_event_time_place",
+      "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "7",
+      "when": 1791369559488,
+      "tag": "0040_family_events",
+      "breakpoints": true
+    },
+    {
+      "idx": 41,
+      "version": "7",
+      "when": 1791732449045,
+      "tag": "0041_personal_workspaces",
+      "breakpoints": true
+    },
+    {
+      "idx": 42,
+      "version": "7",
+      "when": 1791732549045,
+      "tag": "0042_audit_without_files",
+      "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "7",
+      "when": 1791732584318,
+      "tag": "0043_counters_and_timeouts",
+      "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "7",
+      "when": 1791732585801,
+      "tag": "0044_indexes",
+      "breakpoints": true
+    },
+    {
+      "idx": 45,
+      "version": "7",
+      "when": 1791732587072,
+      "tag": "0045_policies_once_per_query",
+      "breakpoints": true
+    },
+    {
+      "idx": 46,
+      "version": "7",
+      "when": 1791750000000,
+      "tag": "0046_move_rider_history",
+      "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "7",
+      "when": 1791750050000,
+      "tag": "0047_jobs",
+      "breakpoints": true
+    },
+    {
+      "idx": 48,
+      "version": "7",
+      "when": 1791750100000,
+      "tag": "0048_mail_preferences",
+      "breakpoints": true
+    },
+    {
+      "idx": 49,
+      "version": "7",
+      "when": 1791750200000,
+      "tag": "0049_ai_cost",
+      "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "7",
+      "when": 1791750300000,
+      "tag": "0050_consents",
+      "breakpoints": true
+    },
+    {
+      "idx": 51,
+      "version": "7",
+      "when": 1791750400000,
+      "tag": "0051_files_storage",
+      "breakpoints": true
+    },
+    {
+      "idx": 52,
+      "version": "7",
+      "when": 1791750500000,
+      "tag": "0052_plans_and_payments",
+      "breakpoints": true
+    },
+    {
+      "idx": 53,
+      "version": "7",
+      "when": 1791750600000,
+      "tag": "0053_price_history_and_grace",
+      "breakpoints": true
+    },
+    {
+      "idx": 54,
+      "version": "7",
+      "when": 1791750700000,
+      "tag": "0054_senior_profile",
+      "breakpoints": true
+    },
+    {
+      "idx": 55,
+      "version": "7",
+      "when": 1791750800000,
+      "tag": "0055_kadence_sessions",
+      "breakpoints": true
+    },
+    {
+      "idx": 56,
+      "version": "7",
+      "when": 1791750900000,
+      "tag": "0056_retime_stored_rides",
+      "breakpoints": true
+    },
+    {
+      "idx": 57,
+      "version": "7",
+      "when": 1791751000000,
+      "tag": "0057_known_pains",
+      "breakpoints": true
     }
   ]
 }

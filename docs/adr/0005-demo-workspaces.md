@@ -1,6 +1,6 @@
 # ADR 0005: A demo workspace per visitor
 
-Status: accepted · Date: 2026-09-18 (inherited from Ajour and Tavle; the seed is Kadence's own)
+Status: accepted · Date: 2026-09-18 (inherited from Ajour and Tavle; the seed is Kadence's own) · Amended 2026-10-07 (a demo is never the first account nor the owner)
 
 > Inherited with the foundation from Plot, which took it from Makker and Domino (ADR 0001). The reasoning is the family's and holds here; where an example names a flow, a brick, a run, a conversation or an initiative, that is a sibling's example, not a feature of Kadence.
 
@@ -74,3 +74,21 @@ before they click, including that we ask for no email. The terms page asks
 them not to put real personal data in a demo, which is the honest request:
 the data is deleted, but it passes through a database and a language model
 on the way.
+
+## Amended 2026-10-07: a demo is never the first account, nor the owner
+
+On an empty installation with `DEMO=on`, the first person to open the demo
+became the installation's owner, and the door for the first real account
+closed behind them, because the owner and the door were both decided by
+counting every account (backlog P1-09). Now:
+
+- every account the demo makes is at `@demo.invalid`, a reserved domain no
+  person's real address uses, and `countUsers()` leaves those out, so the
+  door stays open for the first real person;
+- `platformRoleForNewUser` never gives a demo account the owner's role,
+  however early it comes;
+- `/demo` answers 404 and the front page offers no demo until somebody owns
+  the installation (`demoReady()`).
+
+Trade-off: a demo cannot be tried on a fresh installation before its owner
+has registered, which is the order docs/launch.md already asks for.

@@ -14,9 +14,12 @@ import type { AiFailure } from "@/modules/ai/wire";
 import type { BuiltWorkout } from "@/modules/assist/build-workout-answer";
 import { AiFailureText } from "./ai-failure";
 import { ProposalFrame } from "./proposal-frame";
+import { Thinking } from "./thinking";
 
 const CATEGORIES = ["U17", "U19", "U23"] as const;
-type Category = (typeof CATEGORIES)[number];
+/** An adult's training profiles, offered where the workspace has one (ADR 0092). */
+const PROFILES = ["senior-motionist", "senior-super-motionist"] as const;
+type Category = (typeof CATEGORIES)[number] | (typeof PROFILES)[number];
 const EXAMPLES = [1, 2, 3] as const;
 
 /**
@@ -25,18 +28,24 @@ const EXAMPLES = [1, 2, 3] as const;
  * gets a proposal to look at first. "Brug forslaget" puts it in the
  * builder, where every number can still be changed, and "Fortryd" puts
  * back what was there. Nothing is saved until the session is (dogma 5).
- * A coach's tool: the route refuses anyone else.
+ * A coach's tool: the route refuses anyone else. Where the workspace has
+ * an adult, Motionist and Supermotionist stand beside DCU's classes, and
+ * the frame is Kadence's for the profile (ADR 0092).
  */
 export function BuildWithAi({
   draft,
   onChange,
   defaultOpen = false,
+  seniors = false,
 }: {
   draft: SessionDraft;
   onChange: (draft: SessionDraft) => void;
   defaultOpen?: boolean;
+  /** The workspace has an adult: offer the training profiles. */
+  seniors?: boolean;
 }) {
   const t = useTranslations("assist.build");
+  const season = useTranslations("season");
   const locale = useLocale();
   const id = useId();
   const [open, setOpen] = useState(defaultOpen);
@@ -174,7 +183,7 @@ export function BuildWithAi({
         <div className="flex flex-wrap items-end gap-3">
           <div className="flex flex-col gap-1">
             <label htmlFor={`${id}-class`} className="text-label text-xs font-medium">
-              {t("category")}
+              {t(seniors ? "categoryOrProfile" : "category")}
             </label>
             <NativeSelect
               id={`${id}-class`}
@@ -189,6 +198,14 @@ export function BuildWithAi({
                   {c}
                 </option>
               ))}
+              {seniors &&
+                PROFILES.map((p) => (
+                  <option key={p} value={p}>
+                    {season("basisSenior", {
+                      profile: p === "senior-motionist" ? "motionist" : "super-motionist",
+                    })}
+                  </option>
+                ))}
             </NativeSelect>
           </div>
           {built && (
@@ -231,11 +248,7 @@ export function BuildWithAi({
             {t("close")}
           </Button>
         </div>
-        {busy && (
-          <p className="text-meta text-2sm" role="status">
-            {t("building")}
-          </p>
-        )}
+        {busy && <Thinking>{t("building")}</Thinking>}
       </div>
       {error && <AiFailureText error={error} />}
       {result && (
@@ -262,7 +275,9 @@ export function BuildWithAi({
               className="bg-sticky text-sticky-ink flex gap-2 rounded-md px-3 py-2 text-2sm leading-relaxed"
             >
               <CircleAlert aria-hidden className="mt-0.5 size-4 shrink-0" />
-              {t("longestRide", { category: note.category, hours: note.hours })}
+              {note.kind === "longestRide"
+                ? t("longestRide", { category: note.category, hours: note.hours })
+                : t("longestRideProfile", { profile: note.profile, hours: note.hours })}
             </p>
           ))}
           <Button

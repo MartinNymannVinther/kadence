@@ -22,34 +22,32 @@ function External({ href, children }: { href: string; children: React.ReactNode 
  * "Forældreguiden": the ten themes and nine pieces of advice in Kadence's
  * own short words, each theme linked to Team Danmark's original — never
  * their text (they forbid commercial reproduction) — with the credit.
+ * Its page under Viden og hjælp (/help/parents) carries the guide's name
+ * and what it is; the themes and the advice are that page's sections.
  */
 export function ParentGuide() {
   const t = useTranslations("parents.guide");
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-1.5">
-        <h2 id="parent-guide" className="text-lg font-semibold">
-          {t("title")}
-        </h2>
-        <p className="text-meta text-2sm leading-relaxed">{t("body")}</p>
         <p className="text-2sm font-medium">{t("credit")}</p>
         <External href={GUIDE_URL}>{t("guideLink")}</External>
       </div>
 
       <section aria-labelledby="guide-themes" className="flex flex-col gap-3">
-        <h3 id="guide-themes" className="text-base font-semibold">
+        <h2 id="guide-themes" className="text-lg font-semibold">
           {t("themesTitle")}
-        </h3>
+        </h2>
         <ol className="grid gap-3 @2xl:grid-cols-2">
           {THEMES.map((theme) => (
             <li
               key={theme.n}
-              className="border-border bg-card flex flex-col gap-1.5 rounded-xl border p-4 shadow-[var(--surface-shadow)]"
+              className="border-border bg-card flex flex-col gap-1.5 rounded-xl border p-4 shadow-surface"
             >
               <p className="text-meta text-xs font-medium">{t("themeNumber", { n: theme.n })}</p>
-              <h4 className="text-sm font-semibold">
+              <h3 className="text-sm font-semibold">
                 {t(`themes.${theme.n}.title` as "themes.1.title")}
-              </h4>
+              </h3>
               <p className="text-2sm leading-relaxed">
                 {t(`themes.${theme.n}.body` as "themes.1.body")}
               </p>
@@ -61,12 +59,12 @@ export function ParentGuide() {
 
       <section aria-labelledby="guide-advice" className="flex flex-col gap-3">
         <div className="flex flex-col gap-1">
-          <h3 id="guide-advice" className="text-base font-semibold">
+          <h2 id="guide-advice" className="text-lg font-semibold">
             {t("adviceTitle")}
-          </h3>
+          </h2>
           <External href={ADVICE_URL}>{t("adviceLink")}</External>
         </div>
-        <ol className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-[var(--surface-shadow)]">
+        <ol className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-surface">
           {ADVICE.map((n) => (
             <li key={n} className="flex gap-3 px-4 py-3">
               <span className="bg-accent text-accent-foreground flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold">

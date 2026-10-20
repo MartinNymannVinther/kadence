@@ -18,10 +18,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { LeaveTeamButton } from "@/components/team/leave-team-button";
 import {
   cancelInvitationAction,
   inviteMemberAction,
-  leaveWorkspaceAction,
   removeMemberAction,
   updateMemberRoleAction,
 } from "@/core/team/actions";
@@ -42,6 +42,7 @@ export function MembersAdmin({
   invitations,
   currentUserId,
   role,
+  rider = false,
 }: {
   members: Member[];
   /** Membership row id per user, which is what the role and remove calls take. */
@@ -49,6 +50,8 @@ export function MembersAdmin({
   invitations: PendingInvitation[];
   currentUserId: string;
   role: string;
+  /** Whether the caller also rides on this team, so leaving can take their training (ADR 0081). */
+  rider?: boolean;
 }) {
   const t = useTranslations("settings.members");
   const roles = useTranslations("settings.workspace.roles");
@@ -170,22 +173,7 @@ export function MembersAdmin({
           </Table>
           {role !== "owner" && (
             <div className="border-hairline mt-4 border-t pt-4">
-              <ConfirmButton
-                title={t("leaveTitle")}
-                body={t("leaveBody")}
-                confirmLabel={t("leaveConfirm")}
-                onConfirm={async () => {
-                  const result = await leaveWorkspaceAction();
-                  if (result.ok) {
-                    router.push("/onboarding");
-                    router.refresh();
-                  } else toast.error(t("errors.generic"));
-                }}
-                variant="outline"
-                size="sm"
-              >
-                {t("leave")}
-              </ConfirmButton>
+              <LeaveTeamButton place="workspace" history={rider} />
             </div>
           )}
         </CardContent>

@@ -8,6 +8,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { getOrgContext } from "@/core/auth/session";
 import { formatDay } from "@/core/dates";
+import { notFoundWithout } from "@/core/feature-gate";
 import { Link, redirect } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { openReports } from "@/modules/community/moderation";
@@ -16,6 +17,7 @@ import { whoAmI } from "@/modules/team/access";
 import { listTemplates } from "@/modules/training/templates";
 
 export async function generateMetadata(): Promise<Metadata> {
+  notFoundWithout("coachesRoom");
   const t = await getTranslations("community");
   return { title: t("title") };
 }
@@ -25,13 +27,15 @@ export async function generateMetadata(): Promise<Metadata> {
  * sharing what they know. Threads newest-active first, narrowed by
  * category, with a new thread at the top; the owner's open reports above
  * all. Riders and parents never get here. A demo has a room of its own,
- * with example threads, and says so (ADR 0054).
+ * with example threads, and says so (ADR 0054). While the installation
+ * has the room off, the page is not there (ADR 0057).
  */
 export default async function CoachesRoomPage({
   searchParams,
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  notFoundWithout("coachesRoom");
   const ctx = await getOrgContext();
   const locale = await getLocale();
   if (!ctx) {
@@ -70,7 +74,10 @@ export default async function CoachesRoomPage({
               <li key={r.id} className="flex flex-wrap items-center justify-between gap-2 text-2sm">
                 <span>
                   {r.threadId ? (
-                    <Link href={`/coaches/${r.threadId}`} className="text-primary hover:underline">
+                    <Link
+                      href={`/coaches/${r.threadId}`}
+                      className="focus-ring text-primary hover:underline"
+                    >
                       {t(r.targetKind === "thread" ? "reports.thread" : "reports.post")}
                     </Link>
                   ) : (
@@ -98,7 +105,7 @@ export default async function CoachesRoomPage({
             href={c ? `/coaches?category=${c}` : "/coaches"}
             aria-current={c === category ? "page" : undefined}
             className={cn(
-              "rounded-md border px-3 py-1.5 text-2sm",
+              "focus-ring rounded-md border px-3 py-1.5 text-2sm",
               c === category ? "border-primary font-semibold" : "border-border",
             )}
           >
@@ -110,7 +117,7 @@ export default async function CoachesRoomPage({
       {threads.length === 0 ? (
         <EmptyState title={t("empty.title")} hint={t("empty.body")} />
       ) : (
-        <ul className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-[var(--surface-shadow)]">
+        <ul className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-surface">
           {threads.map((th) => (
             <li
               key={th.id}

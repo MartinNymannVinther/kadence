@@ -1,20 +1,26 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import type { ExerciseView } from "@/modules/exercises/types";
 import { resolveStrengthSession, type StrengthStructure } from "@/modules/workouts/structure";
+import { StrengthExercise } from "./strength-exercise";
 
 /**
  * A strength session to do: the warm-up, and the exercises as they are
  * done at this point in the programme — the progression resolved for the
  * session's number, "Session 7 af programmet: 3 × 12". A template, which
- * has no number, shows the progression itself.
+ * has no number, shows the progression itself. An exercise laid in from a
+ * programme shows its figure and how-to when `exercises` has it.
  */
 export function StrengthView({
   structure,
   programmeSession,
+  exercises: views = {},
 }: {
   structure: StrengthStructure;
   programmeSession: number | null;
+  /** The library's exercises the session names, by reference. */
+  exercises?: Readonly<Record<string, ExerciseView>>;
 }) {
   const t = useTranslations("workouts.view");
   const groups = useTranslations("workouts.group");
@@ -36,25 +42,11 @@ export function StrengthView({
       )}
       <ol className="border-border divide-hairline bg-card flex flex-col divide-y rounded-lg border">
         {exercises.map((exercise, i) => (
-          <li
+          <StrengthExercise
             key={i}
-            className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 px-3 py-2"
-          >
-            <span className="flex min-w-0 flex-col">
-              <span className="text-2sm font-medium">{exercise.name}</span>
-              <span className="text-meta text-xs">
-                {groups(exercise.group)}
-                {exercise.restSeconds ? ` · ${t("rest", { seconds: exercise.restSeconds })}` : ""}
-                {exercise.note ? ` · ${exercise.note}` : ""}
-              </span>
-            </span>
-            <span className="text-2sm font-semibold tabular-nums">
-              {t("setsReps", { sets: exercise.sets, reps: exercise.reps })}
-              {exercise.load ? (
-                <span className="text-meta font-normal"> · {exercise.load}</span>
-              ) : null}
-            </span>
-          </li>
+            exercise={exercise}
+            view={exercise.ref ? views[exercise.ref] : undefined}
+          />
         ))}
       </ol>
       {!programmeSession && structure.progression.length > 0 && (

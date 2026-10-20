@@ -1,6 +1,9 @@
 import { and, eq } from "drizzle-orm";
 import { activityFiles, plannedSessions } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
+import { seasonStartYear } from "@/modules/dcu";
+import { isSeniorBasis, profileOf, type SeniorProfile } from "@/modules/paradigms";
+import { riderClass } from "@/modules/season/class";
 import type { Me } from "@/modules/team/access";
 import { getRider } from "@/modules/team/riders";
 import { getSession, listSessions, type CalendarSession } from "@/modules/training/sessions";
@@ -24,7 +27,9 @@ import { rideableStructure } from "./rideable";
  *
  * With no session planned, a rider may choose one (ADR 0035): the team's
  * own bike sessions from the library, read as any member reads it, or
- * DCU's (`DCU_BIKE_SESSIONS`, which need nothing from the server).
+ * DCU's (`DCU_BIKE_SESSIONS`, which need nothing from the server). A
+ * rider past U23 is offered Kadence's own for their training profile
+ * first (`SENIOR_BIKE_SESSIONS`, ADR 0092); the server says which profile.
  */
 
 export type RulleSession = {
@@ -61,6 +66,8 @@ export type RulleStart = {
   missing: boolean;
   /** The team's own bike sessions from the library, to choose when none is planned. */
   library: RulleTemplate[];
+  /** The viewer's training profile when they are a senior this season (ADR 0091, 0092); else null. */
+  profile: SeniorProfile | null;
 };
 
 function toRulleSession(session: CalendarSession): RulleSession | null {
@@ -96,9 +103,15 @@ export async function rulleStart(
   const askedRideable = allowed ? toRulleSession(allowed) : null;
   const chosen = askedRideable ?? own.find((s) => !s.done) ?? own[0] ?? null;
   const thresholds: Record<string, RiderThresholds> = {};
+  let profile: SeniorProfile | null = null;
   for (const id of new Set([riderId, chosen?.riderId].filter((x): x is string => Boolean(x)))) {
     const rider = await getRider(ctx, id);
-    if (rider) thresholds[id] = { ftp: rider.ftpWatts, thresholdHr: rider.thresholdHr };
+    if (!rider) continue;
+    thresholds[id] = { ftp: rider.ftpWatts, thresholdHr: rider.thresholdHr };
+    if (id === riderId) {
+      const basis = riderClass(rider, seasonStartYear(today)).basis;
+      profile = isSeniorBasis(basis) ? profileOf(basis) : null;
+    }
   }
   // The library every member of the team reads (ADR 0035): its bike sessions with steps.
   const library = (await listTemplates(ctx)).flatMap((t): RulleTemplate[] => {
@@ -122,6 +135,7 @@ export async function rulleStart(
     thresholds,
     missing: askedId !== null && askedRideable === null,
     library,
+    profile,
   };
 }
 

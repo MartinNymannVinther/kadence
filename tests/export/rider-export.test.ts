@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { Pool } from "pg";
-import { buildOrgExport } from "@/modules/export/service";
+import { buildOrgExport, readNewestAudit } from "@/modules/export/service";
 import { MEMBERS_SHEET } from "@/modules/export/tables";
 import { adminPool } from "../helpers/db";
 import { insertSql, seedPerson } from "../helpers/rows";
@@ -53,7 +53,9 @@ describe("a rider's export", () => {
     expect(riders.rows.map((r) => r[riders.columns.indexOf("id")])).toEqual(["re_alma"]);
     const checkins = sheet("Check-ins");
     expect(checkins.rows.map((r) => r[checkins.columns.indexOf("rider_id")])).toEqual(["re_alma"]);
-    expect(sheet("Revisionsspor").rows).toEqual([]);
+    // The trail is a coach's (drizzle/0003): a rider's export reads none of it.
+    expect(data.auditUpTo).toBe(0);
+    expect((await readNewestAudit(ALMA, data.auditUpTo, 100)).rows).toEqual([]);
   });
 
   it("gives a coach the whole team", async () => {

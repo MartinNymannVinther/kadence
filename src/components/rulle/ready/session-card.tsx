@@ -16,7 +16,8 @@ import { SessionPicker } from "./session-picker";
  * What will be ridden: the session with its profile, or a ride without
  * one. Today's planned sessions come first; with none planned, or another
  * wanted, the rider chooses from the team's library or DCU's sessions
- * (ADR 0035). Every note that changes what happens is said before the
+ * (ADR 0035), and an adult from Kadence's own for their profile first
+ * (ADR 0092). Every note that changes what happens is said before the
  * start — a session already done, one on another day, a rider without an
  * FTP (the session is ridden freely then), a coach's trial that is never
  * saved, and for DCU's, when DCU puts it in a season.
@@ -25,6 +26,7 @@ export function SessionCard({
   picked,
   today,
   team,
+  kadence,
   dcu,
   timeline,
   todayDate,
@@ -36,6 +38,7 @@ export function SessionCard({
   picked: Picked | null;
   today: Picked[];
   team: Picked[];
+  kadence: Picked[];
   dcu: Picked[];
   timeline: SessionTimeline | null;
   /** Today, the day in Copenhagen. */
@@ -59,7 +62,9 @@ export function SessionCard({
             ? t("fromTeam")
             : picked?.kind === "dcu"
               ? t("fromDcu")
-              : t("heading")}
+              : picked?.kind === "kadence"
+                ? t("fromKadence")
+                : t("heading")}
         </CardDescription>
         <CardTitle className="text-xl leading-snug">
           {picked ? picked.title : t("freeTitle")}
@@ -83,7 +88,11 @@ export function SessionCard({
           <p className="text-reading leading-relaxed">{t("freeBody")}</p>
         )}
 
-        {picked?.when && <Note>{t("whenNote", { when: picked.when })}</Note>}
+        {picked?.when && (
+          <Note>
+            {t(picked.kind === "kadence" ? "kadenceWhenNote" : "whenNote", { when: picked.when })}
+          </Note>
+        )}
         {missing && <Note>{t("missing")}</Note>}
         {!picked && today.length === 0 && !missing && <Note>{t("none")}</Note>}
         {session?.done && <Note>{t("done")}</Note>}
@@ -94,7 +103,7 @@ export function SessionCard({
         {trial && <Note>{t("trial")}</Note>}
         {picked?.source && (
           <p className="text-meta text-xs leading-relaxed">
-            {t("source", { source: picked.source })}
+            {t(picked.kind === "kadence" ? "kadenceSource" : "source", { source: picked.source })}
           </p>
         )}
 
@@ -111,6 +120,7 @@ export function SessionCard({
           onOpenChange={setPicking}
           today={today}
           team={team}
+          kadence={kadence}
           dcu={dcu}
           chosen={picked?.id ?? null}
           onChoose={onChoose}

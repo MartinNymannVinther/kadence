@@ -1,13 +1,17 @@
 import { createHash } from "node:crypto";
 import { eq } from "drizzle-orm";
 import { Refused } from "@/core/action";
+import { env } from "@/core/env";
 import { uploadKeys } from "@/core/db/schema";
 import { withOrgContext } from "@/core/db/tenant";
+import { log } from "@/core/log";
 import { callerKey, peekRateLimit, rateLimit } from "@/core/rate-limit";
 import { loggable } from "./http";
 import { inFlight } from "./in-flight";
 import { importFitIn, knownFileHashes } from "./import";
 import { receive, storedName, type Received } from "./ingest-request";
+import { isPlanRefusal } from "@/modules/billing/plan";
+import { isQuotaRefusal } from "@/modules/storage/quota";
 import { noteKeyUse, uploadKeyOwner, type KeyOwner } from "./upload-keys";
 
 /**
@@ -21,6 +25,8 @@ import { noteKeyUse, uploadKeyOwner, type KeyOwner } from "./upload-keys";
  *   401 no key Kadence knows · 408 the file did not arrive in time
  *   413 too large · 422 not a ride Kadence can read
  *   429 wait (Retry-After) · 500 try again later
+ *   402 the workspace's trial or payment has run out: it is read only (docs/adr/0090)
+ *   507 the workspace's room for files is used up (docs/adr/0087)
  *
  * The key is looked at before the body is read, so a stranger cannot make
  * Kadence hold a file in memory. `upload_key_owner` finds whose key it
@@ -47,10 +53,10 @@ const PER_ADDRESS = { count: 600, windowMs: 10 * MINUTE };
 const STRANGERS_PER_ADDRESS = { count: 20, windowMs: 10 * MINUTE };
 /** Requests for one person, rides Kadence already has included. */
 const PER_PERSON = { count: 600, windowMs: HOUR };
-/** Files read for one person in an hour, whatever they turned out to be: reading is the work. */
-export const FILES_READ_PER_HOUR = 120;
-/** Files kept for one person in an hour, whichever door they came in by (ADR 0019). */
-export const STORED_FILES_PER_HOUR = 60;
+/** Files kept for one person in an hour, whichever door they came in by (ADR 0019); `UPLOAD_FILES_PER_HOUR`. */
+export const STORED_FILES_PER_HOUR = env.UPLOAD_FILES_PER_HOUR;
+/** Files read for one person in an hour, whatever they turned out to be: reading is the work. Twice what is kept. */
+export const FILES_READ_PER_HOUR = 2 * STORED_FILES_PER_HOUR;
 /** Files being read for one person at the same moment. */
 const IN_FLIGHT = 2;
 
@@ -90,7 +96,7 @@ function bearerOf(headers: Headers): string {
  * guess; the limit keeps a loop from filling the log.
  */
 async function admit(request: Request): Promise<KeyOwner | Response> {
-  const address = rateLimit(
+  const address = await rateLimit(
     callerKey(request.headers, "ingest"),
     PER_ADDRESS.count,
     PER_ADDRESS.windowMs,
@@ -99,7 +105,7 @@ async function admit(request: Request): Promise<KeyOwner | Response> {
 
   const owner = await uploadKeyOwner(bearerOf(request.headers));
   if (!owner) {
-    const tried = rateLimit(
+    const tried = await rateLimit(
       callerKey(request.headers, "ingest-strangers"),
       STRANGERS_PER_ADDRESS.count,
       STRANGERS_PER_ADDRESS.windowMs,
@@ -108,7 +114,7 @@ async function admit(request: Request): Promise<KeyOwner | Response> {
       ? refuse(401, "unauthorized")
       : refuse(429, "rate_limited", tried.retryAfterSeconds);
   }
-  const person = rateLimit(
+  const person = await rateLimit(
     `ingest-person:${owner.riderUserId}`,
     PER_PERSON.count,
     PER_PERSON.windowMs,
@@ -125,15 +131,15 @@ export async function handleIngestCheck(request: Request): Promise<Response> {
     await noteKeyUse(owner);
     return answer(200, { status: "ok" });
   } catch (error) {
-    console.error("ingest: check failed", loggable(error));
+    await log.error("ingest: check failed", { error: loggable(error) });
     return refuse(500, "generic");
   }
 }
 
-const reading = inFlight(IN_FLIGHT);
+const reading = inFlight("ingest", IN_FLIGHT);
 
 /** Only for tests: how many files are being read for a person right now. */
-export function readingNow(userId: string): number {
+export function readingNow(userId: string): Promise<number> {
   return reading.count(userId);
 }
 
@@ -142,11 +148,11 @@ export async function handleIngest(request: Request): Promise<Response> {
   try {
     owner = await admit(request);
   } catch (error) {
-    console.error("ingest: failed", loggable(error));
+    await log.error("ingest: failed", { error: loggable(error) });
     return refuse(500, "generic");
   }
   if (owner instanceof Response) return owner;
-  if (!reading.enter(owner.riderUserId)) return refuse(429, "busy", 5);
+  if (!(await reading.enter(owner.riderUserId))) return refuse(429, "busy", 5);
   try {
     const received = await receive(request);
     if ("status" in received) return refuse(received.status, received.reason);
@@ -154,10 +160,10 @@ export async function handleIngest(request: Request): Promise<Response> {
   } catch (error) {
     // The rider left, or the key was removed, while the file was on its way.
     if (error instanceof Refused) return refuse(401, "unauthorized");
-    console.error("ingest: failed", loggable(error));
+    await log.error("ingest: failed", { error: loggable(error) });
     return refuse(500, "generic");
   } finally {
-    reading.leave(owner.riderUserId);
+    await reading.leave(owner.riderUserId);
   }
 }
 
@@ -172,11 +178,11 @@ async function keep(owner: KeyOwner, received: Received): Promise<Response> {
     return answer(200, { status: "duplicate" });
   }
   const stored = storedFilesKey(owner.riderUserId);
-  const room = peekRateLimit(stored, STORED_FILES_PER_HOUR);
+  const room = await peekRateLimit(stored, STORED_FILES_PER_HOUR);
   if (!room.allowed) return refuse(429, "rate_limited", room.retryAfterSeconds);
   // Counted before the file is read, not after: a file that turns out to
   // be the ride of another file, or no ride at all, was read all the same.
-  const read = rateLimit(readFilesKey(owner.riderUserId), FILES_READ_PER_HOUR, HOUR);
+  const read = await rateLimit(readFilesKey(owner.riderUserId), FILES_READ_PER_HOUR, HOUR);
   if (!read.allowed) return refuse(429, "rate_limited", read.retryAfterSeconds);
 
   const { name, own } = storedName(received.name, received.bytes);
@@ -195,7 +201,7 @@ async function keep(owner: KeyOwner, received: Received): Promise<Response> {
         uploadKeyId: owner.keyId,
       });
     });
-    rateLimit(stored, STORED_FILES_PER_HOUR, HOUR);
+    await rateLimit(stored, STORED_FILES_PER_HOUR, HOUR);
     await noteKeyUse(owner, "");
     return answer(201, { status: "imported" });
   } catch (error) {
@@ -203,6 +209,14 @@ async function keep(owner: KeyOwner, received: Received): Promise<Response> {
     if (error.detail === "duplicate") {
       await noteKeyUse(owner, "");
       return answer(200, { status: "duplicate" });
+    }
+    if (isQuotaRefusal(error)) {
+      await noteKeyUse(owner, "quota");
+      return refuse(507, "quota");
+    }
+    if (isPlanRefusal(error)) {
+      await noteKeyUse(owner, "planExpired");
+      return refuse(402, "planExpired");
     }
     if (error.code === "invalid") {
       await noteKeyUse(owner, "invalid_file");

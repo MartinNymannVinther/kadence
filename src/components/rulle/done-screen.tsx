@@ -29,7 +29,8 @@ const RETRY_MS = 30_000;
  * knows. A ride with nothing measured is no file: the session is ticked
  * off by hand instead, with the minutes already filled in. A coach's
  * trial is saved nowhere; the file can always be taken along. Below the
- * numbers, the ride's little things (ADR 0034).
+ * numbers, the ride's little things (ADR 0034); without Rulle's world
+ * only the one that is about the session, every block on target (ADR 0057).
  */
 export function DoneScreen({
   recording,
@@ -38,6 +39,7 @@ export function DoneScreen({
   keepFor,
   seen,
   onTarget,
+  world = true,
 }: {
   recording: Recording;
   meta: RideMeta;
@@ -46,14 +48,16 @@ export function DoneScreen({
   /** What the landscape showed on the way; null where it showed nothing. */
   seen: Seen | null;
   onTarget: boolean | null;
+  /** The installation has Rulle's world on: the landscape's little things are told. */
+  world?: boolean;
 }) {
   const t = useTranslations("rulle.done");
   const final = useMemo(() => ended(recording), [recording]);
   const sum = useMemo(() => totals(final), [final]);
-  const little = useMemo(
-    () => littleThings({ rec: final, ascentM: sum.ascentM, seen, allOnTarget: onTarget }),
-    [final, sum, seen, onTarget],
-  );
+  const little = useMemo(() => {
+    const things = littleThings({ rec: final, ascentM: sum.ascentM, seen, allOnTarget: onTarget });
+    return world ? things : things.filter((thing) => thing.key === "onTarget");
+  }, [final, sum, seen, onTarget, world]);
   const saves = !trial && sum.measured && keepFor !== null;
   const [status, setStatus] = useState<Status>(saves ? "saving" : "none");
   const [result, setResult] = useState<SaveResult | null>(null);
@@ -226,6 +230,15 @@ export function DoneScreen({
 
 function failure(result: SaveResult | null, t: (key: string) => string): string {
   const code = result && !result.ok ? result.error : "generic";
-  const known = ["invalid", "duplicate", "rateLimited", "not_rider", "notFound", "too_large"];
+  const known = [
+    "invalid",
+    "duplicate",
+    "rateLimited",
+    "not_rider",
+    "notFound",
+    "too_large",
+    "quota",
+    "planExpired",
+  ];
   return known.includes(code) ? t(`error.${code}`) : t("failed");
 }

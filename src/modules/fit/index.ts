@@ -33,7 +33,13 @@ export {
 } from "./summarize";
 export { findClimbs, MAX_CLIMBS, type ClimbSummary } from "./climbs";
 export { MAX_LAPS, summarizeLaps, type LapSummary } from "./laps";
-export { MAX_HOLD_SECONDS, MAX_TIMELINE_SECONDS, MOVING_SPEED, PLAUSIBLE } from "./timeline";
+export {
+  MAX_HOLD_SECONDS,
+  MAX_TIMELINE_SECONDS,
+  MAX_TRAVEL_GAP_SECONDS,
+  MOVING_SPEED,
+  PLAUSIBLE,
+} from "./timeline";
 export type {
   FitActivity,
   FitEvent,

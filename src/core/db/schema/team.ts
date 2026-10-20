@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
+  bigint,
   boolean,
   check,
   date,
@@ -10,6 +11,7 @@ import {
   pgTable,
   smallint,
   text,
+  time,
   timestamp,
   uniqueIndex,
   type AnyPgColumn,
@@ -53,12 +55,27 @@ export const teamSettings = pgTable(
      * "Lav intensitet først" on top of its hours (docs/adr/0053). Off by default.
      */
     lowIntensityFirst: boolean("low_intensity_first").notNull().default(false),
+    /**
+     * The workspace's monthly AI budget in micro-euro, set by the
+     * installation's owner only (docs/adr/0089, drizzle/0049); null is the
+     * installation's default, AI_MONTHLY_BUDGET_MICRO.
+     */
+    aiBudgetMicro: bigint("ai_budget_micro", { mode: "number" }),
+    /**
+     * How much file the workspace may hold, in bytes, set by the
+     * installation's owner only (docs/adr/0087, drizzle/0051); null is the
+     * installation's default for the workspace's kind, FILES_QUOTA_CLUB_BYTES
+     * or FILES_QUOTA_PERSONAL_BYTES.
+     */
+    fileQuotaBytes: bigint("file_quota_bytes", { mode: "number" }),
     updatedBy: text("updated_by").references(() => users.id, { onDelete: "set null" }),
     ...timestamps,
   },
   (t) => [
     check("team_settings_kind", sql`${t.teamKind} in ('U17','U19','U23','mixed')`),
     check("team_settings_guidance", sql`${t.guidance} in ('dcu-2025','none')`),
+    check("team_settings_ai_budget", sql`${t.aiBudgetMicro} >= 0`),
+    check("team_settings_file_quota", sql`${t.fileQuotaBytes} >= 0`),
   ],
 );
 
@@ -81,6 +98,13 @@ export const riders = pgTable(
     sex: text("sex"),
     /** A coach's override of the class and year the birth year gives ("U19-1"), e.g. a rider moved up. */
     categoryOverride: text("category_override"),
+    /**
+     * A senior's training profile, "motionist" or "super-motionist"
+     * (docs/adr/0091): Kadence's own numbers where DCU has none. Read only
+     * when the rider's class in the season is senior; null is the default,
+     * motionist. The rider may set their own (drizzle/0054).
+     */
+    trainingProfile: text("training_profile"),
     ftpWatts: smallint("ftp_watts"),
     thresholdHr: smallint("threshold_hr"),
     maxHr: smallint("max_hr"),
@@ -114,6 +138,10 @@ export const riders = pgTable(
     check(
       "riders_category",
       sql`${t.categoryOverride} is null or ${t.categoryOverride} in ('U17-1','U17-2','U19-1','U19-2','U23-1','U23-2','U23-3','U23-4','senior')`,
+    ),
+    check(
+      "riders_training_profile",
+      sql`${t.trainingProfile} is null or ${t.trainingProfile} in ('motionist','super-motionist')`,
     ),
   ],
 );
@@ -263,7 +291,7 @@ export const flagResolutions = pgTable(
     index("flag_resolutions_org_week_idx").on(t.orgId, t.weekMonday),
     check(
       "flag_resolutions_kind",
-      sql`${t.kind} in ('hours_above_corridor','hours_below_corridor','ramp','longest_ride','strength_spacing','compliance','wellbeing_talk','wellbeing_help','pain','sleep_short','sleep_below_minimum','mid_zone')`,
+      sql`${t.kind} in ('hours_above_corridor','hours_below_corridor','ramp','longest_ride','strength_spacing','compliance','wellbeing_talk','wellbeing_help','pain','sleep_short','sleep_below_minimum','mid_zone','known_pain_lasting')`,
     ),
     check("flag_resolutions_severity", sql`${t.severity} in ('info','warn','alert')`),
     check("flag_resolutions_monday", sql`extract(isodow from ${t.weekMonday}) = 1`),
@@ -288,14 +316,23 @@ export const seasonPlans = pgTable(
       .references(() => riders.id, { onDelete: "cascade" }),
     /** The calendar year the season starts in (October). */
     seasonStartYear: integer("season_start_year").notNull(),
-    /** The DCU class and year the plan was filled from, e.g. "U19-1". */
+    /**
+     * The DCU class and year the plan was filled from, e.g. "U19-1", or a
+     * senior's profile, "senior-motionist" (docs/adr/0091).
+     */
     basis: text("basis").notNull(),
     /** [{ month: 10, hours: 0, phase: "break", note: "" }, … ] — twelve entries from October. */
     months: jsonb("months").notNull(),
     note: text("note").notNull().default(""),
     ...timestamps,
   },
-  (t) => [uniqueIndex("season_plans_rider_season_uq").on(t.riderId, t.seasonStartYear)],
+  (t) => [
+    uniqueIndex("season_plans_rider_season_uq").on(t.riderId, t.seasonStartYear),
+    check(
+      "season_plans_basis",
+      sql`${t.basis} in ('U17-1','U17-2','U19-1','U19-2','U23-1','U23-2','U23-3','U23-4','senior-motionist','senior-super-motionist')`,
+    ),
+  ],
 );
 
 /**
@@ -315,9 +352,9 @@ export const workoutTemplates = pgTable(
     /** The steps, or the exercises and progression — src/modules/workouts/structure.ts. */
     structure: jsonb("structure").notNull(),
     plannedMinutes: smallint("planned_minutes").notNull().default(0),
-    /** dcu | own */
+    /** dcu | own | kadence — Kadence's own sessions for a senior (docs/adr/0092). */
     source: text("source").notNull().default("own"),
-    /** Stable key for a DCU template, so a newer edition can replace it. */
+    /** Stable key for a DCU or Kadence template, so a newer edition can replace it. */
     sourceKey: text("source_key"),
     archived: boolean("archived").notNull().default(false),
     createdBy: text("created_by").references(() => users.id, { onDelete: "set null" }),
@@ -340,7 +377,7 @@ export const workoutTemplates = pgTable(
       .on(t.orgId, t.sourceKey)
       .where(sql`${t.sourceKey} is not null`),
     check("workout_templates_sport", sql`${t.sport} in ('bike','strength','other')`),
-    check("workout_templates_source", sql`${t.source} in ('dcu','own')`),
+    check("workout_templates_source", sql`${t.source} in ('dcu','own','kadence')`),
     check("workout_templates_minutes", sql`${t.plannedMinutes} between 0 and 1440`),
   ],
 );
@@ -359,16 +396,29 @@ export const trainingBlocks = pgTable(
     description: text("description").notNull().default(""),
     weeks: smallint("weeks").notNull(),
     archived: boolean("archived").notNull().default(false),
+    /**
+     * Stable key for one of Kadence's ready weeks (docs/adr/0092), so
+     * fetching them again updates the block rather than adding another;
+     * null for a coach's own, and cleared when a coach changes one.
+     */
+    sourceKey: text("source_key"),
     createdBy: text("created_by").references(() => users.id, { onDelete: "set null" }),
     ...timestamps,
   },
   (t) => [
     index("training_blocks_org_idx").on(t.orgId, t.archived),
+    uniqueIndex("training_blocks_source_key_uq")
+      .on(t.orgId, t.sourceKey)
+      .where(sql`${t.sourceKey} is not null`),
     check("training_blocks_weeks", sql`${t.weeks} between 1 and 12`),
   ],
 );
 
-/** One session of a block: a template on a day (0 is the first Monday). */
+/**
+ * One session of a block on a day (0 is the first Monday): a template from
+ * the library, or a session built in the week planner and kept in the block
+ * itself (docs/adr/0059), which carries its own sport, title and steps.
+ */
 export const trainingBlockItems = pgTable(
   "training_block_items",
   {
@@ -377,15 +427,28 @@ export const trainingBlockItems = pgTable(
     blockId: text("block_id")
       .notNull()
       .references(() => trainingBlocks.id, { onDelete: "cascade" }),
-    templateId: text("template_id")
-      .notNull()
-      .references(() => workoutTemplates.id, { onDelete: "cascade" }),
+    templateId: text("template_id").references(() => workoutTemplates.id, {
+      onDelete: "cascade",
+    }),
+    /** bike | strength | other, for a session kept in the block. */
+    sport: text("sport"),
+    title: text("title"),
+    description: text("description").notNull().default(""),
+    structure: jsonb("structure"),
+    plannedMinutes: smallint("planned_minutes"),
+    startTime: time("start_time"),
+    meetingPlace: text("meeting_place").notNull().default(""),
     day: smallint("day").notNull(),
     sort: smallint("sort").notNull().default(0),
   },
   (t) => [
     index("training_block_items_block_idx").on(t.orgId, t.blockId, t.day),
     check("training_block_items_day", sql`${t.day} between 0 and 83`),
+    check(
+      "training_block_items_session",
+      sql`${t.templateId} is not null or (${t.sport} is not null and ${t.title} is not null and ${t.structure} is not null)`,
+    ),
+    check("training_block_items_meeting_place", sql`char_length(${t.meetingPlace}) <= 120`),
   ],
 );
 

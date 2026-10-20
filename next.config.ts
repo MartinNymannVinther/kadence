@@ -65,7 +65,8 @@ const migration = journal.entries.at(-1)?.tag ?? "unknown";
  *
  * worker-src is 'self', named for the map behind a ride's route
  * (ADR 0023): MapLibre's tile worker is a file Kadence serves itself from
- * public/maplibre, and the tiles come from its own /api/map/tiles.
+ * public/maplibre, and the tiles come from its own /api/map/tiles. The
+ * reminders' service worker (ADR 0060) is /sw.js, Kadence's own as well.
  *
  * Three directives are relaxed outside production, and all three are
  * about `next dev` on http://localhost rather than about the policy:
@@ -190,6 +191,9 @@ const nextConfig: NextConfig = {
         source: "/fonts/:path*",
         headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
       },
+      // The reminders' service worker (docs/adr/0060): always asked for
+      // again, so a changed worker reaches every browser on its next visit.
+      { source: "/sw.js", headers: [{ key: "Cache-Control", value: "no-cache" }] },
     ];
   },
 };

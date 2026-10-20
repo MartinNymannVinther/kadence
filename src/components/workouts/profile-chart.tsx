@@ -28,6 +28,8 @@ export function ProfileChart({
   const t = useTranslations("workouts.profile");
   const intents = useTranslations("workouts.intent");
   const duration = useTranslations("training.duration");
+  const view = useTranslations("workouts.view");
+  const zones = useTranslations("training.zone");
   const steps = flattenSteps(structure);
   const total = steps.reduce((sum, s) => sum + s.seconds, 0);
 
@@ -55,13 +57,18 @@ export function ProfileChart({
   );
   const bars = steps.map((step, i) => {
     const pct = Math.min(ceiling, Math.max(20, pcts[i] ?? 0));
+    const zone = zoneOfTarget(step.target, step.intent);
+    // The bar's colour is never the only way to tell a zone: the title
+    // (a pointer's tooltip, a screen reader's announcement) names it too.
+    const zoneLabel =
+      zone === null ? null : view("zone", { zone, name: zones(String(zone) as "1") });
     return {
       key: i,
       x: starts[i] ?? 0,
       width: (step.seconds / total) * 1000,
       height: (pct / ceiling) * HEIGHT,
-      fill: zoneFill(zoneOfTarget(step.target, step.intent)),
-      title: `${intents(step.intent)} · ${clockText(step.seconds)}`,
+      fill: zoneFill(zone),
+      title: [zoneLabel, intents(step.intent), clockText(step.seconds)].filter(Boolean).join(" · "),
     };
   });
   const threshold = HEIGHT - (100 / ceiling) * HEIGHT;

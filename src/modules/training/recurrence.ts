@@ -1,6 +1,13 @@
 import { z } from "zod";
 import { addDaysIso, diffDays, mondayOf } from "@/core/dates";
-import { MIN_HOURS_BETWEEN_STRENGTH, strengthFrequency } from "@/modules/dcu";
+import { MIN_HOURS_BETWEEN_STRENGTH } from "@/modules/dcu";
+import {
+  DCU_2025,
+  isSeniorBasis,
+  profileOf,
+  type PlanBasis,
+  type SeniorProfile,
+} from "@/modules/paradigms";
 
 /**
  * "Gentag" (ADR 0041): the same session on chosen weekdays from a first
@@ -54,21 +61,31 @@ export function repeatDates(start: string, repeat: Repeat): string[] {
   return out;
 }
 
+/** An adult's profile, when the note is measured against it rather than DCU (ADR 0092). */
+type ForProfile = { profile?: SeniorProfile };
+
 export type StrengthNote =
   /** Two of the chosen weekdays are less than DCU's 48 hours apart. */
-  | { kind: "close"; first: number; second: number }
+  | ({ kind: "close"; first: number; second: number } & ForProfile)
   /** From a week on, the series holds more strength sessions a week than DCU recommends. */
-  | { kind: "tooMany"; from: string; perWeek: number; max: number };
+  | ({ kind: "tooMany"; from: string; perWeek: number; max: number } & ForProfile);
 
 /**
  * What the guardrails would say about a strength series, before it is
  * made — shown, never enforced. Only full weeks inside the series count,
  * so its first and last weeks are not read as thin; too few a week is not
  * said, since a coach may make Tuesday's and Thursday's sessions as two
- * series of one each.
+ * series of one each. For riders on an adult's training profile the
+ * weekly number is the profile's (`strengthFrequency` of the paradigm,
+ * ADR 0092) and the note names it; for everyone else it is DCU's.
  */
-export function strengthNotes(start: string, repeat: Repeat): StrengthNote[] {
+export function strengthNotes(
+  start: string,
+  repeat: Repeat,
+  basis: PlanBasis | null = null,
+): StrengthNote[] {
   const notes: StrengthNote[] = [];
+  const whose: ForProfile = isSeniorBasis(basis) ? { profile: profileOf(basis) } : {};
   const days = repeat.weekdays;
   const minDays = MIN_HOURS_BETWEEN_STRENGTH / 24;
   for (let i = 0; i < days.length && days.length > 1; i++) {
@@ -76,7 +93,7 @@ export function strengthNotes(start: string, repeat: Repeat): StrengthNote[] {
     const b = days[(i + 1) % days.length]!;
     const gap = i + 1 < days.length ? b - a : b + 7 - a;
     if (gap < minDays) {
-      notes.push({ kind: "close", first: a, second: b });
+      notes.push({ kind: "close", first: a, second: b, ...whose });
       break;
     }
   }
@@ -85,9 +102,9 @@ export function strengthNotes(start: string, repeat: Repeat): StrengthNote[] {
     const sunday = addDaysIso(monday, 6);
     if (monday < start || sunday > repeat.until) continue;
     const perWeek = dates.filter((d) => d >= monday && d <= sunday).length;
-    const { perWeekMax } = strengthFrequency(monday);
+    const { perWeekMax } = DCU_2025.strengthFrequency(basis, monday);
     if (perWeek > perWeekMax) {
-      notes.push({ kind: "tooMany", from: monday, perWeek, max: perWeekMax });
+      notes.push({ kind: "tooMany", from: monday, perWeek, max: perWeekMax, ...whose });
       break;
     }
   }

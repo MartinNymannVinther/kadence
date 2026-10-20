@@ -1,5 +1,17 @@
 import { describe, expect, it } from "vitest";
-import { compliance, matchActivity, type MatchCandidate } from "@/modules/load/compliance";
+import {
+  RPE_FAR_HIGH_PCT,
+  RPE_FAR_LOW_PCT,
+  compliance,
+  complianceRatio,
+  feltFarOff,
+  loadOffPlan,
+  matchActivity,
+  type ComplianceSide,
+  type MatchCandidate,
+} from "@/modules/load/compliance";
+import type { LoadMethod, Sport } from "@/modules/load/activity-load";
+import type { PlanIntensity } from "@/modules/load/plan-intensity";
 
 const TODAY = "2026-09-27";
 const YESTERDAY = "2026-09-26";
@@ -47,6 +59,177 @@ describe("the calendar's colour", () => {
 
   it("is green for anything done against a plan with nothing to measure", () => {
     expect(compliance({ minutes: 0 }, { minutes: 30 }, YESTERDAY, TODAY)).toBe("green");
+  });
+});
+
+describe("how it felt counts only when it is far off (Martin, 13 October 2026)", () => {
+  const plan = { minutes: 60, load: 100 };
+  const colour = (load: number, method: "power" | "hr" | "rpe" | null | undefined, minutes = 60) =>
+    compliance(plan, { minutes, load, method }, YESTERDAY, TODAY);
+
+  it("sets the far bounds at under 50 % and over 200 % of the planned load", () => {
+    expect([RPE_FAR_LOW_PCT, RPE_FAR_HIGH_PCT]).toEqual([50, 200]);
+    expect([49, 50, 100, 200, 201].map(feltFarOff)).toEqual([true, false, false, false, true]);
+  });
+
+  it("reads load by power and heart rate, as before", () => {
+    for (const method of ["power", "hr"] as const) {
+      expect(colour(60, method)).toBe("yellow");
+      expect(colour(160, method)).toBe("red");
+      expect(complianceRatio(plan, { minutes: 60, load: 60, method })).toEqual({
+        by: "load",
+        pct: 60,
+      });
+    }
+  });
+
+  it("reads minutes when an RPE load is near the plan", () => {
+    // Felt 60 % or 190 % of the plan, ridden the planned hour: green by minutes.
+    expect(colour(60, "rpe")).toBe("green");
+    expect(colour(190, "rpe")).toBe("green");
+    expect(colour(50, "rpe")).toBe("green");
+    expect(colour(200, "rpe")).toBe("green");
+    expect(complianceRatio(plan, { minutes: 45, load: 60, method: "rpe" })).toEqual({
+      by: "minutes",
+      pct: 75,
+    });
+    // Off by minutes stays off by minutes.
+    expect(colour(100, "rpe", 25)).toBe("red");
+  });
+
+  it("reads load when an RPE load is far off, low or high", () => {
+    expect(complianceRatio(plan, { minutes: 60, load: 49, method: "rpe" })).toEqual({
+      by: "load",
+      pct: 49,
+    });
+    expect(colour(49, "rpe")).toBe("red");
+    expect(colour(201, "rpe")).toBe("red");
+    expect(colour(10, "rpe")).toBe("red");
+  });
+
+  it("reads a strength session the same way: it is RPE by nature", () => {
+    const strength = { minutes: 45, load: 40 };
+    const done = (load: number) => ({ minutes: 45, load, method: "rpe" as const });
+    expect(compliance(strength, done(25), YESTERDAY, TODAY)).toBe("green");
+    expect(compliance(strength, done(15), YESTERDAY, TODAY)).toBe("red");
+    expect(compliance(strength, done(90), YESTERDAY, TODAY)).toBe("red");
+  });
+
+  it("keeps the load for an RPE ride when the plan has no minutes to read instead", () => {
+    expect(
+      complianceRatio({ minutes: 0, load: 100 }, { minutes: 60, load: 60, method: "rpe" }),
+    ).toEqual({ by: "load", pct: 60 });
+  });
+
+  it("reads load as before for a side with no method", () => {
+    expect(colour(60, undefined)).toBe("yellow");
+    expect(colour(60, null)).toBe("yellow");
+  });
+});
+
+describe("only a plan that says how hard can be done harder (14 October 2026)", () => {
+  const plan = (intensity?: PlanIntensity) => ({ minutes: 30, load: 21, intensity });
+  const done = (method: LoadMethod, sport: Sport, load = 42, minutes = 31): ComplianceSide => ({
+    minutes,
+    load,
+    method,
+    sport,
+  });
+
+  it("reads minutes for a plan without intensity, whatever measured the load", () => {
+    for (const method of ["power", "hr", "rpe", "none"] as const)
+      for (const sport of ["bike", "other"] as const) {
+        expect(complianceRatio(plan("none"), done(method, sport))).toEqual({
+          by: "minutes",
+          pct: 103,
+          timeOnly: true,
+        });
+        // Twice the load, or a tenth, on time: green.
+        expect(compliance(plan("none"), done(method, sport, 84), YESTERDAY, TODAY)).toBe("green");
+        expect(compliance(plan("none"), done(method, sport, 2), YESTERDAY, TODAY)).toBe("green");
+        // Off by minutes stays off by minutes.
+        expect(compliance(plan("none"), done(method, sport, 21, 12), YESTERDAY, TODAY)).toBe("red");
+      }
+  });
+
+  it("reads a run's pulse by minutes unless the plan has heart-rate targets", () => {
+    expect(complianceRatio(plan("set"), done("hr", "other"))).toEqual({
+      by: "minutes",
+      pct: 103,
+      timeOnly: true,
+    });
+    expect(complianceRatio(plan("pulse"), done("hr", "other"))).toEqual({ by: "load", pct: 200 });
+    // A run by power or by feeling is not a pulse: the plan's intensity stands.
+    expect(complianceRatio(plan("set"), done("power", "other"))).toEqual({ by: "load", pct: 200 });
+    expect(loadOffPlan(plan("set"), done("rpe", "other"))).toBe(false);
+  });
+
+  it("reads a bike ride by power and pulse as before against a plan that says how hard", () => {
+    for (const intensity of ["set", "pulse"] as const)
+      for (const method of ["power", "hr"] as const) {
+        expect(complianceRatio(plan(intensity), done(method, "bike"))).toEqual({
+          by: "load",
+          pct: 200,
+        });
+        expect(compliance(plan(intensity), done(method, "bike"), YESTERDAY, TODAY)).toBe("red");
+      }
+  });
+
+  it("keeps the strength rule: its plan says how hard, and the feeling counts only far off", () => {
+    const strength = { minutes: 45, load: 40, intensity: "set" as const };
+    const felt = (load: number) => ({
+      minutes: 45,
+      load,
+      method: "rpe" as const,
+      sport: "strength" as const,
+    });
+    expect(compliance(strength, felt(25), YESTERDAY, TODAY)).toBe("green");
+    expect(compliance(strength, felt(15), YESTERDAY, TODAY)).toBe("red");
+    expect(compliance(strength, felt(90), YESTERDAY, TODAY)).toBe("red");
+  });
+
+  it("reads as before when the caller does not say what the plan holds", () => {
+    expect(complianceRatio(plan(), done("hr", "other"))).toEqual({ by: "load", pct: 200 });
+    expect(complianceRatio(plan(), done("power", "bike"))).toEqual({ by: "load", pct: 200 });
+  });
+
+  it("keeps the load when the plan has no minutes to read instead", () => {
+    expect(
+      complianceRatio({ minutes: 0, load: 20, intensity: "none" }, done("hr", "other")),
+    ).toEqual({ by: "load", pct: 210 });
+  });
+
+  it("agrees with the rule across every plan, method, sport and load", () => {
+    const intensities = [undefined, "none", "set", "pulse"] as const;
+    const methods = ["power", "hr", "rpe", "none", undefined] as const;
+    const sports = ["bike", "strength", "other", undefined] as const;
+    const loads = [0, 10, 20, 21, 30, 42, 43, 60];
+    let count = 0;
+    for (const intensity of intensities)
+      for (const method of methods)
+        for (const sport of sports)
+          for (const load of loads)
+            for (const minutes of [0, 30])
+              for (const doneMinutes of [10, 31, 50]) {
+                const planned = { minutes, load: 21, intensity };
+                const side = { minutes: doneMinutes, load, method, sport };
+                const pct = Math.round((load / 21) * 100);
+                const offPlan =
+                  intensity === "none" ||
+                  (intensity !== undefined &&
+                    intensity !== "pulse" &&
+                    method === "hr" &&
+                    sport !== undefined &&
+                    sport !== "bike");
+                const byLoad = minutes === 0 || (!offPlan && (method !== "rpe" || feltFarOff(pct)));
+                const ratio = complianceRatio(planned, side);
+                expect(ratio?.by, JSON.stringify({ planned, side })).toBe(
+                  byLoad ? "load" : "minutes",
+                );
+                expect(ratio?.timeOnly === true).toBe(!byLoad && offPlan);
+                count++;
+              }
+    expect(count).toBe(4 * 5 * 4 * 8 * 2 * 3);
   });
 });
 

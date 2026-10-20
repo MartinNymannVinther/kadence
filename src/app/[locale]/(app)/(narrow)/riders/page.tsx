@@ -4,14 +4,23 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { accountState } from "@/components/team/account-badge";
 import { AddRiderDialog } from "@/components/team/add-rider-dialog";
-import { classText } from "@/components/team/class-text";
-import { RiderList } from "@/components/team/rider-list";
+import { BulkInviteDialog } from "@/components/team/bulk-invite-dialog";
+import { classKey, classText } from "@/components/team/class-text";
+import { waitingRecipients } from "@/components/team/invitation-recipients";
+import { RiderListFilter } from "@/components/team/rider-list-filter";
+import { WaitingInvitations } from "@/components/team/waiting-invitations";
+import { calendarHref } from "@/components/calendar/href";
+import { teamSignals } from "@/components/insight/signals";
 import { getOrgContext } from "@/core/auth/session";
 import { todayInCopenhagen } from "@/core/dates";
+import { mailConfigured } from "@/core/mail/mailer";
 import { listPendingInvitations } from "@/core/team/service";
 import { Link, redirect } from "@/i18n/navigation";
+import { getInsights } from "@/modules/insight/service";
 import { whoAmI } from "@/modules/team/access";
+import { workspaceKind } from "@/modules/team/workspace-kind";
 import { listTeamGuardians } from "@/modules/team/guardians";
+import { getTeamName } from "@/modules/team/name";
 import { getRiders } from "@/modules/team/riders";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -22,7 +31,11 @@ export async function generateMetadata(): Promise<Metadata> {
 /**
  * The team's riders, for the coaches: who is on it, their class, whether
  * they have an account, and how many parents are linked. `?archived=1`
- * shows the riders who have left as well.
+ * shows the riders who have left as well. A rider is added one at a time
+ * or the whole team at once (ADR 0064), and the links not used yet wait
+ * above the list. Each row carries the rider's open flags for the week in
+ * progress (ADR 0062), so a coach looking for someone sees at once who
+ * needs a word; the list is found by name and narrowed by class.
  */
 export default async function RidersPage({
   searchParams,
@@ -48,29 +61,57 @@ export default async function RidersPage({
   }
 
   const showArchived = (await searchParams).archived === "1";
-  const [riders, guardians, invitations] = await Promise.all([
+  const today = todayInCopenhagen();
+  const [riders, guardians, invitations, team, insights, kind] = await Promise.all([
     getRiders(ctx, showArchived),
     listTeamGuardians(ctx),
     listPendingInvitations(ctx.orgId),
+    getTeamName(ctx),
+    getInsights(ctx, { today }),
+    workspaceKind(ctx.orgId, ctx.userId),
   ]);
   const pending = new Set(invitations.map((i) => i.id));
-  const today = todayInCopenhagen();
+  // The badges lead to the rider's entry in the attention list under the team's week.
+  const signals = teamSignals(insights);
+  const teamWeek = calendarHref({ view: "team" });
+  // "Send på mail" beside "Del", where the installation sends mail (docs/adr/0086).
+  const mailOn = mailConfigured();
 
   return (
     <div className="flex min-w-0 flex-col gap-6">
-      <PageHeader title={t("title")} subtitle={t("subtitle")} actions={<AddRiderDialog />} />
+      <PageHeader
+        title={t("title")}
+        subtitle={t("subtitle")}
+        actions={
+          <>
+            {/* A whole team at once is a club's (ADR 0064); one person's own
+                workspace adds a rider at a time (ADR 0080). */}
+            {kind !== "personal" && <BulkInviteDialog team={team} today={today} mailOn={mailOn} />}
+            <AddRiderDialog />
+          </>
+        }
+      />
+      <WaitingInvitations
+        team={team}
+        mailOn={mailOn}
+        recipients={waitingRecipients({ riders, guardians, pending: invitations })}
+      />
       {riders.length === 0 ? (
         <EmptyState title={t("emptyTitle")} hint={t("emptyBody")} />
       ) : (
-        <RiderList
+        <RiderListFilter
           riders={riders.map((r) => ({
             id: r.id,
             name: r.name,
             birthYear: r.birthYear,
             classLabel: classText(r, today, classes),
+            classKey: classKey(r, today, classes),
             account: accountState(r, pending),
             parents: guardians.filter((g) => g.riderId === r.id).length,
             archived: r.archived,
+            signals: signals[r.id]
+              ? { ...signals[r.id]!, anchor: `${teamWeek}${signals[r.id]!.anchor}` }
+              : null,
           }))}
         />
       )}

@@ -1,9 +1,12 @@
 "use server";
 
 import { headers } from "next/headers";
+import { getLocale } from "next-intl/server";
 import { z } from "zod";
-import { Refused, runAction } from "@/core/action";
+import { Refused, runAction, STILL_ALLOWED } from "@/core/action";
+import { mailLocale } from "@/core/mail/words";
 import { inviteMember, type IssuedTeamInvitation } from "@/core/team/service";
+import { bulkInvite, BulkInviteInput } from "./bulk-invite";
 import {
   addGuardian,
   attachGuardianInvitation,
@@ -11,6 +14,8 @@ import {
   GuardianInput,
   removeGuardian,
 } from "./guardians";
+import { mailInvitation, MailInvitationInput } from "./mail-invitation";
+import { linkMemberAsGuardian, MemberGuardianInput } from "./member-guardians";
 import {
   archiveRider,
   attachRiderInvitation,
@@ -23,6 +28,7 @@ import {
   ThresholdsInput,
   updateRider,
 } from "./riders";
+import { setTrainingProfile, TrainingProfileInput } from "./training-profile";
 import { saveTeamSettings, TeamSettingsInput } from "./settings";
 
 /**
@@ -32,8 +38,8 @@ import { saveTeamSettings, TeamSettingsInput } from "./settings";
  * the team are refreshed after.
  *
  * An invitation is Better Auth's (src/core/team): only coaches may send
- * one, it binds one address, and no mail is sent — the coach copies the
- * link. The rider or parent row it was sent for is linked when the person
+ * one, and it binds one address. The coach shares the link, or, where the
+ * installation sends mail, sends it to that address (docs/adr/0086). The rider or parent row it was sent for is linked when the person
  * joins (src/modules/team/claim.ts).
  */
 
@@ -78,6 +84,16 @@ export async function inviteRiderAction(raw: unknown) {
   );
 }
 
+/** "Inviter hele holdet": a pasted list, all or nothing (bulk-invite.ts, ADR 0064). */
+export async function bulkInviteAction(raw: unknown) {
+  return runAction(
+    raw,
+    BulkInviteInput,
+    async (ctx, input) => bulkInvite(ctx, await headers(), input),
+    PATHS,
+  );
+}
+
 export async function updateRiderAction(raw: unknown) {
   return runAction(
     raw,
@@ -94,6 +110,15 @@ export async function setThresholdsAction(raw: unknown) {
     (ctx, { riderId, ...input }) => setThresholds(ctx, riderId, input),
     PATHS,
   );
+}
+
+/** A senior's Motionist or Supermotionist (docs/adr/0091): the coach's, or the rider's own. */
+export async function setTrainingProfileAction(raw: unknown) {
+  return runAction(raw, TrainingProfileInput, setTrainingProfile, [
+    ...PATHS,
+    "/season",
+    "/calendar",
+  ]);
 }
 
 export async function setSharingAction(raw: unknown) {
@@ -124,6 +149,11 @@ export async function addGuardianAction(raw: unknown) {
   );
 }
 
+/** A member already on the team as one more child's parent (P2-16): no invitation, the rider still confirms. */
+export async function linkMemberAsGuardianAction(raw: unknown) {
+  return runAction(raw, MemberGuardianInput, linkMemberAsGuardian, PATHS);
+}
+
 export async function confirmGuardianAction(raw: unknown) {
   return runAction(
     raw,
@@ -139,6 +169,7 @@ export async function removeGuardianAction(raw: unknown) {
     z.object({ guardianId: id }),
     (ctx, input) => removeGuardian(ctx, input.guardianId),
     PATHS,
+    STILL_ALLOWED,
   );
 }
 
@@ -152,5 +183,14 @@ export async function eraseRiderAction(raw: unknown) {
     z.object({ riderId: id, confirm: z.literal(true) }),
     (ctx, input) => eraseRider(ctx, input.riderId),
     PATHS,
+    STILL_ALLOWED,
+  );
+}
+
+/** "Send på mail": an open invitation's link to its own address, in the coach's language. */
+export async function mailInvitationAction(raw: unknown) {
+  const locale = mailLocale(await getLocale());
+  return runAction(raw, MailInvitationInput, (ctx, input) =>
+    mailInvitation(ctx, input.invitationId, locale),
   );
 }

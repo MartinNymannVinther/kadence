@@ -89,7 +89,11 @@ base64.
 
 `SIGNUP` stays unset: it defaults to `closed`, which is what an
 installation on the open internet should be. `DEMO` stays unset for now
-— step 7 turns it on deliberately, after you have your own account.
+— step 7 turns it on deliberately, after you have your own account. The
+order is no longer the only guard: until somebody owns the installation,
+`/demo` answers 404 and the front page offers no demo, demo accounts do
+not count as the first account, and none of them can become the owner
+(backlog P1-09).
 
 `BETTER_AUTH_URL` is the one that hurts to get wrong: passkeys bind to
 the origin they were created for, so changing it later locks out anyone

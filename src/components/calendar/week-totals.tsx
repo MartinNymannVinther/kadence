@@ -4,7 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { VolumeBar } from "@/components/season/volume-bar";
 import { hoursText } from "@/components/training/duration";
 import { addDaysIso } from "@/core/dates";
-import { strengthFrequency } from "@/modules/dcu";
+import { DCU_2025, referenceOf } from "@/modules/paradigms";
 import { weeklyTotals, type WeekActivity } from "@/modules/load";
 import type { Volume } from "@/modules/season/volume";
 import type { CalendarActivityCard, CalendarCard } from "./types";
@@ -14,7 +14,8 @@ import type { CalendarActivityCard, CalendarCard } from "./types";
  * hours against the season plan in the four numbers every planning view
  * shares (ADR 0040) — DCU, the coach's goal, planned and done; and the
  * strength sessions against DCU's two or three a week, or one after
- * mid-March. The done side is the load model's weekly total
+ * mid-March — a senior's against their training profile's rhythm
+ * (docs/adr/0091), read through the paradigm from the week's basis. The done side is the load model's weekly total
  * (src/modules/load/fitness.ts); the four numbers come from the server.
  */
 export function WeekTotals({
@@ -62,7 +63,7 @@ export function WeekTotals({
   const strengthDone =
     strength.filter((s) => s.activity).length +
     activities.filter((a) => a.sport === "strength").length;
-  const frequency = strengthFrequency(monday);
+  const frequency = DCU_2025.strengthFrequency(volume?.basis ?? null, monday);
 
   return (
     <div className="flex w-full max-w-xl flex-col gap-3 text-2sm">
@@ -93,6 +94,7 @@ export function WeekTotals({
             : t("strength", {
                 done: strengthDone,
                 planned: strength.length,
+                ref: referenceOf(volume?.basis),
                 dcu:
                   frequency.perWeekMin === frequency.perWeekMax
                     ? String(frequency.perWeekMin)

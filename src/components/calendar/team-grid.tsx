@@ -6,13 +6,18 @@ import { useLocale, useTranslations } from "next-intl";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { dayMonth, weekdayShort } from "@/components/training/day-label";
 import { hoursText } from "@/components/training/duration";
+import { SignalBadges } from "@/components/insight/signal-badges";
+import type { RiderSignals } from "@/components/insight/signals";
 import { VolumeBar } from "@/components/season/volume-bar";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { CalendarDialogs, type DialogState } from "./calendar-dialogs";
 import { EventChip } from "./event-chip";
 import { calendarHref, type CalendarQuery } from "./href";
+import { TeamCards } from "./team-cards";
+import { ShareWeekButton } from "./share-week-button";
 import { TeamChip } from "./team-chip";
+import { weekMinutes } from "./team-days";
 import type { Volume } from "@/modules/season/volume";
 import type { TemplateOption } from "./template-picker";
 import type { CalendarActivityCard, CalendarCard, CalendarEventCard, RiderOption } from "./types";
@@ -22,11 +27,13 @@ import { useWeekSessions } from "./use-week-sessions";
 /**
  * The coach's week for the whole team: a row per rider, a column per day,
  * each session a small chip in its colour — what TrainingPeaks does not
- * show on one screen. It scrolls sideways on a phone with the names held
- * in place, and a chip can be dragged to another day in its own row. Each
- * rider's week on the bike against the season plan, in the four numbers
- * every planning view shares (ADR 0040), is the last column — and on a
- * phone, where that column is a long way off, it sits under the name.
+ * show on one screen. The names are held in place when it scrolls
+ * sideways, and a chip can be dragged to another day in its own row. Each
+ * rider's open flags sit under the name as badges that lead to the
+ * attention list below (ADR 0062), and each rider's week on the bike
+ * against the season plan, in the four numbers every planning view
+ * shares (ADR 0040), is the last column. Below md the grid gives way to
+ * one card per rider (team-cards.tsx).
  */
 export function TeamGrid({
   riders,
@@ -38,6 +45,8 @@ export function TeamGrid({
   templates,
   query,
   volumes,
+  signals,
+  teamName,
 }: {
   riders: RiderOption[];
   days: string[];
@@ -49,6 +58,10 @@ export function TeamGrid({
   query: CalendarQuery;
   /** Each rider's four numbers for the week (ADR 0040), by rider id. */
   volumes: Record<string, Volume>;
+  /** Each rider's open flags this week, by rider id (ADR 0062); empty in another week. */
+  signals: Record<string, RiderSignals>;
+  /** For "Del ugen". */
+  teamName: string;
 }) {
   const t = useTranslations("calendar.team");
   const actions = useTranslations("calendar.actions");
@@ -64,8 +77,11 @@ export function TeamGrid({
   const teamEvents = events.filter((e) => e.riderId === null);
   const openEvent = (event: CalendarEventCard, date: string) => () =>
     setDialog({ kind: "event", date, riderId: event.riderId, event });
+  const chip = (e: CalendarEventCard, date: string) => (
+    <EventChip key={e.id} event={e} onOpen={openEvent(e, date)} day={date} />
+  );
 
-  // On a phone the grid is wider than the screen: start it at today, not at Monday.
+  // When the grid is wider than the screen, start it at today, not at Monday.
   useEffect(() => {
     const box = scroller.current;
     if (!box || box.scrollWidth <= box.clientWidth) return;
@@ -114,31 +130,37 @@ export function TeamGrid({
           <CopyPlus data-icon="inline-start" />
           {copy("open")}
         </Button>
+        <ShareWeekButton team={teamName} monday={days[0] ?? today} {...{ sessions, events }} />
       </div>
       <p aria-live="polite" className="sr-only">
         {announcement}
       </p>
+      <TeamCards
+        {...{ riders, days, today, sessions, activities, events, query, volumes, signals }}
+        onOpenEvent={openEvent}
+        className="md:hidden"
+      />
       <div
         ref={scroller}
-        className="border-border bg-card overflow-x-auto overscroll-x-contain rounded-xl border shadow-[var(--surface-shadow)]"
+        className="border-border bg-card overflow-x-auto overscroll-x-contain rounded-xl border shadow-surface max-md:hidden"
       >
         {/* Fixed layout: the columns come from <colgroup>, never from a chip's text.
-            The floor is names (8rem) + 7 × 6.5rem + the week (9rem); below it the grid scrolls
-            sideways. On a phone the week moves under the name, and its column goes. */}
-        <table className="w-full table-fixed min-w-[53.5rem] border-collapse text-sm sm:min-w-[62.5rem]">
+            The floor is names with their badges (10rem) + 7 × 6.5rem + the week (9rem);
+            below it the grid scrolls sideways. */}
+        <table className="w-full table-fixed min-w-[64.5rem] border-collapse text-sm">
           <caption className="sr-only">{t("caption")}</caption>
           <colgroup>
-            <col className="w-28 sm:w-32" />
+            <col className="w-40" />
             {days.map((date) => (
               <col key={date} />
             ))}
-            <col className="w-0 sm:w-36" />
+            <col className="w-36" />
           </colgroup>
           <thead>
             <tr className="border-border border-b">
               <th
                 scope="col"
-                className="bg-card text-label sticky left-0 z-10 px-2 py-2 text-left align-top text-xs font-medium shadow-[inset_-1px_0_0_var(--border)] sm:px-3"
+                className="bg-card text-label sticky left-0 z-10 px-3 py-2 text-left align-top text-xs font-medium shadow-[inset_-1px_0_0_var(--border)]"
               >
                 {t("rider")}
               </th>
@@ -170,17 +192,13 @@ export function TeamGrid({
                     )}
                   </span>
                   <span className="mt-1 flex flex-col gap-1">
-                    {teamEvents
-                      .filter((e) => on(date, e))
-                      .map((e) => (
-                        <EventChip key={e.id} event={e} onOpen={openEvent(e, date)} />
-                      ))}
+                    {teamEvents.filter((e) => on(date, e)).map((e) => chip(e, date))}
                   </span>
                 </th>
               ))}
               <th
                 scope="col"
-                className="text-label py-2 pr-3 pl-1 text-left align-top text-xs font-medium whitespace-nowrap max-sm:hidden"
+                className="text-label py-2 pr-3 pl-1 text-left align-top text-xs font-medium whitespace-nowrap"
               >
                 {t("week")}
               </th>
@@ -189,27 +207,26 @@ export function TeamGrid({
           <tbody>
             {riders.map((rider) => {
               const mine = sessions.filter((s) => s.riderId === rider.id);
-              const planned = mine.reduce((sum, s) => sum + s.plannedMinutes, 0);
-              const done =
-                mine.reduce((sum, s) => sum + (s.activity?.movingSeconds ?? 0), 0) / 60 +
-                activities
-                  .filter((a) => a.riderId === rider.id)
-                  .reduce((sum, a) => sum + a.movingSeconds / 60, 0);
+              const { planned, done } = weekMinutes(rider.id, sessions, activities);
               return (
                 <tr key={rider.id} className="border-hairline border-b last:border-b-0">
                   <th
                     scope="row"
-                    className="bg-card sticky left-0 z-10 px-2 py-2 text-left align-top font-medium shadow-[inset_-1px_0_0_var(--border)] sm:px-3"
+                    className="bg-card sticky left-0 z-10 px-3 py-2 text-left align-top font-medium shadow-[inset_-1px_0_0_var(--border)]"
                   >
                     <Link
                       href={calendarHref({ week: query.week, rider: rider.id })}
                       title={rider.name}
-                      className="focus-ring hover:text-primary line-clamp-2 text-2sm break-words max-sm:min-h-11"
+                      className="focus-ring hover:text-primary line-clamp-2 text-2sm break-words"
                     >
                       {rider.name}
                     </Link>
-                    {volumes[rider.id] && (
-                      <VolumeBar compact volume={volumes[rider.id]!} className="mt-2 sm:hidden" />
+                    {signals[rider.id] && (
+                      <SignalBadges
+                        name={rider.name}
+                        signals={signals[rider.id]!}
+                        className="mt-1.5"
+                      />
                     )}
                   </th>
                   {days.map((date) => (
@@ -226,9 +243,7 @@ export function TeamGrid({
                       <div className="flex flex-col gap-1">
                         {events
                           .filter((e) => e.riderId === rider.id && on(date, e))
-                          .map((e) => (
-                            <EventChip key={e.id} event={e} onOpen={openEvent(e, date)} />
-                          ))}
+                          .map((e) => chip(e, date))}
                         {mine
                           .filter((s) => s.onDate === date)
                           .map((s) => (
@@ -245,7 +260,7 @@ export function TeamGrid({
                       </div>
                     </td>
                   ))}
-                  <td className="py-2 pr-3 pl-1 align-top max-sm:hidden">
+                  <td className="py-2 pr-3 pl-1 align-top">
                     {volumes[rider.id] ? (
                       <VolumeBar compact volume={volumes[rider.id]!} />
                     ) : (

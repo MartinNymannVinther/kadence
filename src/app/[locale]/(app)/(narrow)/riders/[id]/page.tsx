@@ -15,6 +15,7 @@ import { calendarHref } from "@/components/calendar/href";
 import { accountState } from "@/components/team/account-badge";
 import { ArchiveRider } from "@/components/team/archive-rider";
 import { classText } from "@/components/team/class-text";
+import { SeniorProfile } from "@/components/team/senior-profile";
 import { EraseRider } from "@/components/team/erase-rider";
 import { GuardianList } from "@/components/team/guardian-list";
 import { RaceCard } from "@/components/team/race-card";
@@ -22,8 +23,9 @@ import { guardianState } from "@/components/team/guardian-state";
 import { RiderAccount } from "@/components/team/rider-account";
 import { RiderInsightCard } from "@/components/team/rider-insight-card";
 import { RiderProfileForm } from "@/components/team/rider-profile-form";
-import { ThresholdsForm } from "@/components/team/thresholds-form";
-import { MeasurementsCard, type MeasurementRow } from "@/components/wellbeing/measurements-card";
+import { RiderSectionNav } from "@/components/team/rider-section-nav";
+import { RiderThresholds } from "@/components/team/rider-thresholds";
+import { RiderBodyCards } from "@/components/wellbeing/rider-body-cards";
 import { zoneDays } from "@/components/wellbeing/zone-days";
 import { getOrgContext } from "@/core/auth/session";
 import { addDaysIso, todayInCopenhagen } from "@/core/dates";
@@ -38,12 +40,11 @@ import { raceStatus } from "@/modules/results/service";
 import { dcuProfileUrl, formatUciId } from "@/modules/results/uci-id";
 import { whoAmI } from "@/modules/team/access";
 import { listGuardians } from "@/modules/team/guardians";
+import { listLinkableMembers } from "@/modules/team/member-guardians";
 import { getRider } from "@/modules/team/riders";
-import { getTeamSettings } from "@/modules/team/settings";
 import { dcuProposalFor, listGoals } from "@/modules/training/goals";
 import { getRiderRecords } from "@/modules/training/records";
 import { listCheckins } from "@/modules/wellbeing/checkins";
-import { isYouth, listMeasurements } from "@/modules/wellbeing/measurements";
 
 export async function generateMetadata({
   params,
@@ -57,16 +58,17 @@ export async function generateMetadata({
 }
 
 /**
- * One rider, for a coach: the week's warnings and the last two weeks of
- * check-ins, the load chart and the weeks' hours against DCU, height
- * through the growth spurt, a ride uploaded on the rider's behalf and the
- * rider's upload keys, if they have any; then the profile, the thresholds
- * the zones are worked out from, the UCI ID and the races read from
- * Cykling Danmark, the rider's own account and invitation, the parents
- * and where their links stand, the way to archive the rider — and,
- * apart, to erase them.
+ * One rider, for a coach: the week's warnings and two weeks of check-ins, the load chart
+ * and the weeks' hours against DCU, height through the growth spurt, the known pains
+ * (ADR 0097), a ride uploaded on
+ * the rider's behalf and their upload keys; then the profile, a senior's training profile
+ * (ADR 0091), the thresholds, the UCI ID and the races read from Cykling Danmark, the
+ * rider's account and invitation, the parents and their links, the way to archive the
+ * rider — and, apart, to erase them.
  */
-export default async function RiderPage({ params }: { params: Promise<{ id: string }> }) {
+type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ forslag?: string }> };
+
+export default async function RiderPage({ params, searchParams }: Props) {
   const ctx = await getOrgContext();
   const locale = await getLocale();
   if (!ctx) {
@@ -88,31 +90,25 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
     invitations,
     insights,
     checkins,
-    measurements,
-    settings,
     riderRecords,
     goals,
     uploadKeys,
     races,
+    members,
   ] = await Promise.all([
     listGuardians(ctx, rider.id),
     listPendingInvitations(ctx.orgId),
     getInsights(ctx, { riderIds: [rider.id], today }),
     listCheckins(ctx, { from: addDaysIso(today, -13), to: today, riderIds: [rider.id] }),
-    listMeasurements(ctx, rider.id),
-    getTeamSettings(ctx),
     getRiderRecords(ctx, rider.id, { today }),
     listGoals(ctx, rider.id, today),
     listUploadKeys(ctx, rider.id),
     raceStatus(ctx, rider.id),
+    listLinkableMembers(ctx, rider.id),
   ]);
+  // Stale races into the queue (ADR 0085); if lost, the hourly dcu.races job queues them.
   after(() => refreshStaleRaces(ctx, [rider.id]));
   const insight = insights[0] ?? null;
-  const shownMeasurements: MeasurementRow[] = measurements.flatMap((m) =>
-    m.kind === "height_cm" || m.kind === "weight_kg"
-      ? [{ id: m.id, measuredOn: m.measuredOn, kind: m.kind, value: Number(m.value) }]
-      : [],
-  );
   const pending = new Set(invitations.map((i) => i.id));
   const invitationFor = (invitationId: string | null) => {
     const found = invitations.find((i) => i.id === invitationId);
@@ -155,6 +151,7 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
           </>
         }
       />
+      <RiderSectionNav hasForm={insight !== null} />
       <div className="grid max-w-3xl gap-8 [&>*]:min-w-0">
         <section aria-labelledby="rider-week" className="flex flex-col gap-3">
           <h2 id="rider-week" className="text-lg font-semibold">
@@ -186,14 +183,9 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
           <h2 id="rider-records" className="text-lg font-semibold">
             {t("sections.records")}
           </h2>
-          <RecordsCard byPeriod={riderRecords.byPeriod} />
+          <RecordsCard byPeriod={riderRecords.byPeriod} names={riderRecords.names} />
         </section>
-        <MeasurementsCard
-          riderId={rider.id}
-          today={today}
-          rows={shownMeasurements}
-          weightAllowed={settings.allowYouthWeight || !isYouth(rider.birthYear, today)}
-        />
+        <RiderBodyCards ctx={ctx} rider={rider} today={today} />
         <section aria-labelledby="rider-upload" className="flex flex-col gap-3">
           <div className="flex flex-col gap-1">
             <h2 id="rider-upload" className="text-lg font-semibold">
@@ -216,7 +208,9 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
           />
         )}
       </div>
-      <h2 className="mt-3 text-lg font-semibold">{t("sections.profile")}</h2>
+      <h2 id="rider-profile" className="mt-3 scroll-mt-6 text-lg font-semibold">
+        {t("sections.profile")}
+      </h2>
       <div className="grid max-w-3xl gap-5">
         <RiderProfileForm
           rider={{
@@ -228,16 +222,13 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
           }}
           classByYear={classText({ ...rider, categoryOverride: null }, today, classes)}
         />
-        <ThresholdsForm
-          riderId={rider.id}
+        <SeniorProfile rider={rider} today={today} />
+        <RiderThresholds
+          ctx={ctx}
+          rider={rider}
           today={today}
-          initial={{
-            ftpWatts: rider.ftpWatts,
-            thresholdHr: rider.thresholdHr,
-            maxHr: rider.maxHr,
-            restingHr: rider.restingHr,
-            thresholdsOn: rider.thresholdsOn,
-          }}
+          own={false}
+          ask={(await searchParams).forslag}
         />
         <RaceCard
           riderId={rider.id}
@@ -267,6 +258,7 @@ export default async function RiderPage({ params }: { params: Promise<{ id: stri
         <GuardianList
           riderId={rider.id}
           riderName={rider.name}
+          members={members}
           guardians={guardians.map((g) => {
             const state = guardianState(g, rider.birthYear, pending);
             return {

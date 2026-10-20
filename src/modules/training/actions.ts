@@ -14,6 +14,7 @@ import {
 import { createEvent, deleteEvent, EventInput, updateEvent } from "./events";
 import { createGroupSessions, scheduleTemplate } from "./group";
 import { RepeatInput } from "./recurrence";
+import { TimePlaceFields } from "./time-place";
 import { deleteSession, moveSession, updateSession } from "./sessions";
 import {
   adoptTemplate,
@@ -89,9 +90,10 @@ export async function scheduleTemplateAction(raw: unknown) {
       riderIds: z.array(id).min(1).max(60),
       onDate: isoDate,
       repeat: RepeatInput.optional(),
+      ...TimePlaceFields,
     }),
-    (ctx, input) =>
-      scheduleTemplate(ctx, input.templateId, input.riderIds, input.onDate, input.repeat),
+    (ctx, { templateId, riderIds, onDate, repeat, ...at }) =>
+      scheduleTemplate(ctx, templateId, riderIds, onDate, repeat, at),
     PATHS,
   );
 }

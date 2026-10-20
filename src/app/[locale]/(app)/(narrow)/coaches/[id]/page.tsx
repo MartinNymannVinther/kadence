@@ -11,6 +11,7 @@ import {
 import { StructureView } from "@/components/workouts/structure-view";
 import { getOrgContext } from "@/core/auth/session";
 import { formatDay } from "@/core/dates";
+import { notFoundWithout } from "@/core/feature-gate";
 import { Link, redirect } from "@/i18n/navigation";
 import { canModerate } from "@/modules/community/moderation";
 import { getThread, roomKind } from "@/modules/community/service";
@@ -22,14 +23,20 @@ export async function generateMetadata({
 }: {
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
+  // Opening a thread marks it read: not even the title is asked for while the room is off.
+  notFoundWithout("coachesRoom");
   const ctx = await getOrgContext();
   const t = await getTranslations("community");
   const thread = ctx ? await getThread(ctx, (await params).id) : null;
   return { title: thread?.title ?? t("title") };
 }
 
-/** One thread in Trænerrummet: the first post, a session if one came along, the replies, and a reply. */
+/**
+ * One thread in Trænerrummet: the first post, a session if one came along,
+ * the replies, and a reply. Not there while the room is off (ADR 0057).
+ */
 export default async function ThreadPage({ params }: { params: Promise<{ id: string }> }) {
+  notFoundWithout("coachesRoom");
   const ctx = await getOrgContext();
   const locale = await getLocale();
   if (!ctx) {
@@ -60,7 +67,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
         <ChevronLeft aria-hidden className="size-4" />
         {t("title")}
       </Link>
-      <article className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-[var(--surface-shadow)]">
+      <article className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-surface">
         <p className="text-meta text-xs">{t(`category.${thread.category}`)}</p>
         <h1 className="flex items-center gap-2 text-xl font-semibold">
           {thread.title}

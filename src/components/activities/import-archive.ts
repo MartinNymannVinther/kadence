@@ -39,7 +39,8 @@ export type ArchivePlan = {
   named: boolean;
 };
 
-export type ArchiveOutcome = "done" | "limit" | "signedOut" | "failed" | "cancelled";
+export type ArchiveOutcome =
+  "done" | "limit" | "quota" | "planExpired" | "signedOut" | "failed" | "cancelled";
 
 export type ArchiveProgress = {
   phase: "checking" | "sending" | "finished";
@@ -189,17 +190,27 @@ export async function importArchive(
         return stop("limit", fresh.length - i);
       }
       let limited = 0;
+      let full = 0;
+      let closed = 0;
       const learned = new Map<string, Refusal>();
       for (const [j, result] of sent.results.entries()) {
         const refusal = result.ok ? null : refusalOf(result.error);
         if (refusal && batch[j]) learned.set(batch[j].hash, refusal);
         if (result.ok) p.imported += 1;
         else if (result.error === "rateLimited") limited += 1;
+        else if (result.error === "quota") full += 1;
+        else if (result.error === "planExpired") closed += 1;
         else if (refusal === "duplicate") p.known += 1;
         else if (refusal === "not_bike") p.skipped += 1;
         else p.unreadable += 1;
       }
       rememberRefusals(memory, riderId, learned);
+      // The workspace's room for files is used up (docs/adr/0087): the rest
+      // of the archive waits for someone to make room, not for the clock.
+      if (full > 0) return stop("quota", fresh.length - Math.min(fresh.length, i + BATCH) + full);
+      // The workspace may only be read (docs/adr/0090): nothing more comes in.
+      if (closed > 0)
+        return stop("planExpired", fresh.length - Math.min(fresh.length, i + BATCH) + closed);
       if (limited > 0) {
         p.retryAfterSeconds = sent.retryAfterSeconds;
         return stop("limit", fresh.length - Math.min(fresh.length, i + BATCH) + limited);

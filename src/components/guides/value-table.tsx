@@ -24,7 +24,7 @@ export function ValueTable() {
   return (
     <section
       aria-labelledby="value-title"
-      className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5"
+      className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-surface sm:p-5"
     >
       <h2 id="value-title" className="text-lg font-semibold">
         {t("title")}

@@ -1,10 +1,19 @@
 import { useLocale, useTranslations } from "next-intl";
 import { num } from "@/components/charts/format";
 import { cn } from "@/lib/utils";
+import type { Reference } from "@/modules/paradigms";
 import { DEVIATION_STYLE, deviationKind } from "./deviation";
 
-/** One month's deviation from DCU: tint, arrow, and the hours in words. */
-export function DeviationChip({ planned, dcu }: { planned: number; dcu: number }) {
+/** One month's deviation from DCU, or a senior's profile: tint, arrow, and the hours in words. */
+export function DeviationChip({
+  planned,
+  dcu,
+  reference = "dcu",
+}: {
+  planned: number;
+  dcu: number;
+  reference?: Reference;
+}) {
   const t = useTranslations("season.deviation");
   const locale = useLocale();
   const kind = deviationKind(planned, dcu);
@@ -19,7 +28,7 @@ export function DeviationChip({ planned, dcu }: { planned: number; dcu: number }
       )}
     >
       <Icon aria-hidden className="size-3.5" />
-      {t(kind, { hours })}
+      {t(kind, { hours, ref: reference })}
     </span>
   );
 }

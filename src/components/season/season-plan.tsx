@@ -75,6 +75,7 @@ export function SeasonPlan({
             ? t("totals", {
                 plan: total(shown.map((m) => m.hours)),
                 dcu: total(plan.dcu),
+                ref: plan.reference,
                 scheduled: total(scheduled.map((r) => r.hours)),
                 ridden: total(ridden.map((r) => r.hours)),
               })
@@ -91,13 +92,14 @@ export function SeasonPlan({
           </Button>
         )}
       </div>
-      <ol className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-[var(--surface-shadow)]">
+      <ol className="border-border bg-card divide-hairline flex flex-col divide-y rounded-xl border shadow-surface">
         {shown.map((month, i) =>
           editing ? (
             <MonthEditor
               key={month.month}
               month={month}
               dcu={plan.dcu ? (plan.dcu[i] ?? 0) : null}
+              reference={plan.reference}
               onChange={(next) => setMonths((all) => all.map((m, j) => (j === i ? next : m)))}
             />
           ) : (
@@ -105,6 +107,7 @@ export function SeasonPlan({
               key={month.month}
               month={month}
               dcu={plan.dcu ? (plan.dcu[i] ?? 0) : null}
+              reference={plan.reference}
               ridden={riddenOf(month.month)}
               scheduled={scheduledOf(month.month)}
             />
@@ -126,7 +129,7 @@ export function SeasonPlan({
               onChange={(e) => setNote(e.target.value)}
             />
           </div>
-          <div className="bg-background/95 sticky bottom-0 flex flex-wrap gap-2 py-2 backdrop-blur">
+          <div className="bg-background/95 sticky bottom-[var(--bottom-bar,0px)] flex flex-wrap gap-2 py-2 backdrop-blur">
             <Button type="submit" disabled={pending} className="max-sm:h-11 max-sm:flex-1">
               {t("save")}
             </Button>

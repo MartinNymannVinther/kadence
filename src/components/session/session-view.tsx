@@ -1,4 +1,4 @@
-import { Bike } from "lucide-react";
+import { Bike, Clock, MapPin } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
@@ -16,18 +16,27 @@ import { StructureView } from "@/components/workouts/structure-view";
 import { todayInCopenhagen } from "@/core/dates";
 import type { OrgContext } from "@/core/db/tenant";
 import { listDeviceLinks } from "@/modules/devices/links";
+import { refsInStructure } from "@/modules/exercises/program-session";
+import { resolveExercises } from "@/modules/exercises/resolve";
 import type { Me } from "@/modules/team/access";
 import { getRider, getRiders } from "@/modules/team/riders";
 import { getActivity } from "@/modules/training/activities";
 import { listComments } from "@/modules/training/comments";
 import { getSession as getPlannedSession } from "@/modules/training/sessions";
+import { clockText } from "@/modules/training/time-place";
 import { readStructure } from "@/modules/workouts/structure";
+import { modelConfigured } from "@/modules/ai/service";
+import { getTeamSettings } from "@/modules/team/settings";
+import { AiComment } from "./ai-comment";
 import { CommentThread } from "./comment-thread";
+import { readerFor } from "@/components/training/deviation-text";
+import { DeviationInline } from "./deviation-inline";
 import { CompleteForm } from "./complete-form";
 import { DoneSummary } from "./done-summary";
 import { ExportMenu } from "./export-menu";
 import { PushButtons } from "./push-buttons";
 import { SendToDeviceButton } from "./send-to-device-button";
+import { SessionPrint } from "./session-print";
 
 /**
  * One planned session, whole: what it is, how to ride it for this rider,
@@ -37,7 +46,11 @@ import { SendToDeviceButton } from "./send-to-device-button";
  * everything and writes nothing (ADR 0011, 0012). A bike session with
  * steps can be taken to a trainer or head unit as a file, and sent to the
  * rider's connected Wahoo or Garmin by the rider or a coach; the rider can
- * ride it indoors in Rulle, and a coach try it there (ADR 0033).
+ * ride it indoors in Rulle, and a coach try it there (ADR 0033). When it
+ * went off its plan, why stands under its mark; once done, the rider or a
+ * coach may ask the AI for a short comment on it (ADR 0095). Any session
+ * prints, or saves as a PDF, as what to do: the rest of the page is for
+ * the screen (session-print.tsx).
  */
 export async function SessionView({
   ctx,
@@ -45,6 +58,8 @@ export async function SessionView({
   sessionId,
   closeHref,
   heading = "h2",
+  place = "sheet",
+  autoPrint = false,
 }: {
   ctx: OrgContext;
   me: Me;
@@ -52,10 +67,15 @@ export async function SessionView({
   /** Where the page goes once the session is deleted. */
   closeHref: string;
   heading?: "h1" | "h2";
+  /** In the calendar's panel, or on the session's own page, which can print itself. */
+  place?: "sheet" | "page";
+  /** Print once the page is ready: it was opened from the panel to be printed. */
+  autoPrint?: boolean;
 }) {
   const t = await getTranslations("session");
   const sports = await getTranslations("training.sport");
   const duration = await getTranslations("training.duration");
+  const when = await getTranslations("training.when");
   const locale = await getLocale();
   const session = await getPlannedSession(ctx, sessionId);
   if (!session) {
@@ -74,6 +94,12 @@ export async function SessionView({
   const sport = card.sport as "bike" | "strength" | "other";
   const structure = readStructure(session.structure, sport);
   const exportable = structure.kind === "bike" && structure.steps.length > 0;
+  // A programme's exercises carry their place in the library: the figure
+  // and how-to of those this reader may see (src/modules/exercises/resolve.ts).
+  const exercises =
+    structure.kind === "strength"
+      ? await resolveExercises(ctx, refsInStructure(structure), await getTranslations("exercises"))
+      : {};
   const pushTo =
     exportable && canWrite && !card.activity
       ? (await listDeviceLinks(ctx, session.riderId))
@@ -82,25 +108,34 @@ export async function SessionView({
       : [];
   const today = todayInCopenhagen();
   const Heading = heading;
+  // The AI's comment: only on a done session, for whoever may write on it,
+  // with a model, and where the AI may read riders' data (ADR 0017, 0095).
+  const aiComment =
+    activity !== null &&
+    canWrite &&
+    (await modelConfigured(ctx)) &&
+    (await getTeamSettings(ctx)).aiOnRiderData;
 
   return (
     <article className="flex min-w-0 flex-col gap-6">
       <header className="flex flex-col gap-2">
-        <p className="text-chart-2 text-2sm font-medium first-letter:uppercase">
+        <p className="text-primary text-2sm font-medium first-letter:uppercase">
           {dayLong(card.onDate, locale)}
           {rider ? ` · ${rider.name}` : ""}
         </p>
         <div className="flex items-start justify-between gap-3">
-          <Heading className="text-[1.625rem] leading-tight font-semibold tracking-[-0.02em]">
+          <Heading className="text-title-section leading-tight font-semibold tracking-[-0.02em]">
             {card.title}
           </Heading>
           {canWrite && (
-            <SessionMenu
-              session={card}
-              riders={team.map((r) => ({ id: r.id, name: r.name }))}
-              isCoach={me.isCoach}
-              afterDeleteHref={closeHref}
-            />
+            <div className="print:hidden">
+              <SessionMenu
+                session={card}
+                riders={team.map((r) => ({ id: r.id, name: r.name }))}
+                isCoach={me.isCoach}
+                afterDeleteHref={closeHref}
+              />
+            </div>
           )}
         </div>
         <div className="text-meta flex flex-wrap items-center gap-x-3 gap-y-1.5 text-2sm">
@@ -110,12 +145,39 @@ export async function SessionView({
           </span>
           {card.plannedMinutes > 0 && <span>{durationText(card.plannedMinutes, duration)}</span>}
           {card.plannedKm ? <span>{t("km", { km: card.plannedKm })}</span> : null}
-          <ComplianceMark
-            colour={colourOf(card, today)}
-            done={card.activity !== null}
-            isToday={card.onDate === today}
-          />
+          {card.startTime && (
+            <span className="flex items-center gap-1.5">
+              <Clock aria-hidden className="size-4" />
+              {when("time", { time: clockText(card.startTime, locale) })}
+            </span>
+          )}
+          {card.meetingPlace && (
+            <span className="flex min-w-0 items-center gap-1.5">
+              <MapPin aria-hidden className="size-4 shrink-0" />
+              <span className="sr-only">{when("place")}: </span>
+              <span className="min-w-0 break-words">{card.meetingPlace}</span>
+            </span>
+          )}
+          <span className="print:hidden">
+            <ComplianceMark
+              colour={colourOf(card, today)}
+              done={card.activity !== null}
+              isToday={card.onDate === today}
+            />
+          </span>
           {card.groupKey && <Badge variant="outline">{t("group")}</Badge>}
+        </div>
+        <div className="print:hidden">
+          <DeviationInline
+            ctx={ctx}
+            session={session}
+            activity={activity}
+            today={today}
+            reader={readerFor(
+              { ownRiderId: me.rider?.id ?? null, isCoach: me.isCoach },
+              session.riderId,
+            )}
+          />
         </div>
       </header>
 
@@ -131,9 +193,10 @@ export async function SessionView({
           structure={structure}
           rider={rider ? { ftp: rider.ftpWatts, thresholdHr: rider.thresholdHr } : null}
           programmeSession={card.programmeSession}
+          exercises={exercises}
         />
         {exportable && (
-          <div className="flex flex-col items-start gap-2">
+          <div className="flex flex-col items-start gap-2 print:hidden">
             {(ownSession || me.isCoach) && !card.activity && (
               <Link
                 href={withQuery("/rulle", { session: card.id })}
@@ -150,9 +213,17 @@ export async function SessionView({
             {pushTo.length > 0 && <PushButtons sessionId={card.id} providers={pushTo} />}
           </div>
         )}
+        <div className="print:hidden">
+          <SessionPrint
+            sessionId={card.id}
+            title={[rider?.name, card.title, card.onDate].filter(Boolean).join(" – ")}
+            place={place}
+            auto={autoPrint}
+          />
+        </div>
       </section>
 
-      <section aria-labelledby="session-done" className="flex flex-col gap-3">
+      <section aria-labelledby="session-done" className="flex flex-col gap-3 print:hidden">
         <h3 id="session-done" className="text-base font-semibold">
           {t("doneTitle")}
         </h3>
@@ -176,9 +247,10 @@ export async function SessionView({
         ) : (
           <p className="text-meta text-2sm">{t("notDoneYet")}</p>
         )}
+        {aiComment && <AiComment sessionId={card.id} />}
       </section>
 
-      <section aria-labelledby="session-comments" className="flex flex-col gap-3">
+      <section aria-labelledby="session-comments" className="flex flex-col gap-3 print:hidden">
         <h3 id="session-comments" className="text-base font-semibold">
           {t("commentsTitle", { count: comments.length })}
         </h3>

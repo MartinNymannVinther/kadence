@@ -5,6 +5,8 @@ import {
   postureAt,
   sunToward,
   swayAt,
+  type ChallengerAt,
+  type Rival,
   type City,
   type Course,
   type Land,
@@ -12,6 +14,7 @@ import {
 } from "@/modules/rulle";
 import { Atmosphere } from "./atmosphere";
 import { CameraRig } from "./camera-rig";
+import { ChallengerScene } from "./challenger";
 import { FinishLine } from "./finish-line";
 import { Landscape } from "./landscape";
 import { Listener } from "./listener";
@@ -22,6 +25,7 @@ import { raceDayIn, type RaceDayScene } from "./race-day";
 import { rideRenderer } from "./renderer";
 import { RiderFigure } from "./rider";
 import { roadPoint, turnAt } from "./road-point";
+import { Showcase } from "./showcase";
 import { SpeedLines } from "./speed-lines";
 import {
   NO_WORDS,
@@ -66,6 +70,10 @@ export type Moment = {
   lean?: number;
   /** Whether the cheat code is on: the speed lines streak past. */
   cheat?: boolean;
+  /** The challenger, while he races the rider or rides on after (ADR 0074). */
+  challenger?: ChallengerAt | null;
+  /** While Rulle gets ready (ADR 0076): which of the two turns on the road at the start, the camera on him. */
+  showcase?: Rival | null;
 };
 
 /**
@@ -83,6 +91,10 @@ export class World {
   private readonly land: Landscape;
   private readonly listener: Listener;
   private readonly rider = new RiderFigure();
+  private readonly challenger: ChallengerScene;
+  private readonly showcase: Showcase;
+  /** Whether the showcase had the camera at the last frame: it cuts to it and back, not flies. */
+  private showing = false;
   private readonly lines = new SpeedLines();
   private readonly ray = new THREE.Raycaster();
   private readonly atmosphere: Atmosphere;
@@ -138,7 +150,10 @@ export class World {
     this.listener = new Listener(course, options.land ?? null, city !== null, hooks.hear);
     if (this.shaded) castShadows(this.rider.group);
     this.rider.group.rotation.order = "YXZ";
+    this.challenger = new ChallengerScene(course, this.shaded, words.finish);
+    this.showcase = new Showcase(course, this.shaded);
     this.scene.add(this.land.group, this.small.group, this.rider.group, this.lines.group);
+    this.scene.add(this.challenger.group, this.showcase.group);
     this.finish = options.finish
       ? new FinishLine(
           course,
@@ -198,6 +213,14 @@ export class World {
       );
     }
     this.crank += (cadence / 60) * 2 * Math.PI * seconds;
+    this.challenger.frame(moment.challenger ?? null, seconds, (d, o) => this.pointAt(d, o));
+    // While Rulle gets ready, one of the two turns at the start in the rider's place (ADR 0076).
+    const shown = this.showcase.frame(moment.showcase ?? null, seconds, (d, o) =>
+      this.pointAt(d, o),
+    );
+    bike.visible = !shown;
+    if (Boolean(shown) !== this.showing) this.rig.jump();
+    this.showing = Boolean(shown);
     // In the saddle, out of it on a steep climb, tucked on a fast descent.
     this.posture = postureAt(this.course, distance, speed, cadence, this.posture);
     this.rider.animate(seconds, cadence, speed, this.posture);
@@ -207,7 +230,8 @@ export class World {
       this.calm || pausing.parked ? 0 : (this.race?.road.jolt(bike, distance, speed, seconds) ?? 0);
 
     if (pausing.jump) this.rig.jump();
-    if (pausing.view) this.rig.view(pausing.view.eye, pausing.view.look, seconds);
+    if (shown) this.rig.view(shown.eye, shown.look, seconds);
+    else if (pausing.view) this.rig.view(pausing.view.eye, pausing.view.look, seconds);
     else {
       // Following the cheat's line across the road some of the way.
       const behind = this.pointAt(distance - BEHIND, 0.4 + (moment.line ?? 0) * 0.6);
@@ -234,6 +258,8 @@ export class World {
   dispose(): void {
     this.land.dispose();
     this.rider.dispose();
+    this.challenger.dispose();
+    this.showcase.dispose();
     this.lines.dispose();
     this.small.dispose();
     this.finish?.dispose();

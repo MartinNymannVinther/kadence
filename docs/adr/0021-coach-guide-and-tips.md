@@ -1,6 +1,6 @@
 # ADR 0021: A coach guide in Kadence's own words, and tips that never enforce
 
-Status: accepted · Date: 2026-09-27
+Status: accepted · Date: 2026-09-27 · Amended 2026-10-07 (the check-in asks three questions first; the zones unchanged)
 
 ## Context
 
@@ -52,3 +52,39 @@ permission; most other sources state no licence at all.
 - **No medical advice.** The guide points to a doctor or dietitian for
   concussion, pain, energy deficiency and missing periods, and never
   computes energy availability.
+
+## Amended 2026-10-07: a shorter check-in, the zones unchanged
+
+Riders are asked to check in every day of the winter, and nine questions
+is a lot on the way out of the door (backlog P2-11). The check-in has no
+ADR of its own; its zones follow Kolding Talent's model as the guide does
+(src/modules/load/wellbeing.ts), so the change is recorded here.
+
+- **Three questions first**: hours of sleep, energy ("overskud") and
+  ATK's pain steps, then "Gem". How well the rider slept, mood, legs,
+  calm, ill or not, and a note wait behind "Mere", which stays open or
+  closed for that rider on that device.
+- **The zone is not changed.** It is still worked out from every answer
+  by the same rule, for the coach's warnings and the rider's colours
+  alike. Whether a zone may rest on the three answers alone is the
+  question put to a professional in backlog A-06, and it stays open until
+  they answer; nothing in the zones assumes it meanwhile.
+- **So the answers behind "Mere" start from the rider's last check-in**,
+  if it is within the model's three weeks, or in the middle of each scale
+  and not ill when there is none (src/modules/wellbeing/prefill.ts), and
+  the saved row is whole. The three asked first start blank every day;
+  the note starts empty, since a note is about its own day. When an
+  answer behind "Mere" starts low or says ill, "Mere" opens by itself, so
+  nothing that colours the zone is saved unseen.
+
+### Trade-offs accepted
+
+- **An answer carried over is not an answer given.** A rider who taps
+  three answers and "Gem" saves yesterday's mood, legs and calm as
+  today's; the row cannot tell the two apart, and the zone counts both.
+  That is what keeps the zone the same until A-06 says otherwise. The
+  form says plainly that the answers are as last time, and opens "Mere"
+  where they were low.
+- **The middle is not nothing.** With no check-in to start from, a 3 on
+  each scale behind "Mere" counts in the zone's average, where a question
+  left unanswered did not.

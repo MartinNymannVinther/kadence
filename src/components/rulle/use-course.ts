@@ -5,6 +5,7 @@ import {
   buildCourse,
   bundledRoute,
   DEFAULT_ROUTE,
+  flatCourse,
   readLand,
   readRouteGpx,
   RouteError,
@@ -23,6 +24,9 @@ import {
  * land round it; or a GPX the rider picks, which is read here in the
  * browser and sent nowhere, and ridden through land made up from it. The
  * route chosen last is remembered on this device.
+ *
+ * Without Rulle's world (docs/adr/0057) there is nothing to choose and
+ * nothing to fetch: the session is ridden on a flat road made in memory.
  */
 
 export type CourseState =
@@ -85,14 +89,19 @@ function subscribe(listener: () => void): () => void {
   };
 }
 
-export function useCourse() {
+export function useCourse(world = true) {
   const key = useSyncExternalStore(subscribe, rememberedKey, () => DEFAULT_ROUTE);
   const route = bundledRoute(key);
-  const [state, setState] = useState<CourseState>({ status: "loading" });
+  const [state, setState] = useState<CourseState>(() =>
+    world
+      ? { status: "loading" }
+      : { status: "ready", course: flatCourse(), own: false, land: null },
+  );
   // Asked again for the same route: back from the rider's own file to it.
   const [asked, setAsked] = useState(0);
 
   useEffect(() => {
+    if (!world) return;
     let current = true;
     void fetchBundled(route).then((next) => {
       if (current) setState(next);
@@ -100,7 +109,7 @@ export function useCourse() {
     return () => {
       current = false;
     };
-  }, [route, asked]);
+  }, [route, asked, world]);
 
   /** One of the routes that come with Kadence, instead of the one there is. */
   const chooseRoute = useCallback((next: string) => {

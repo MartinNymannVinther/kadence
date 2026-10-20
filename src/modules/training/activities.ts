@@ -1,16 +1,23 @@
 import { and, asc, eq, getTableColumns, gte, inArray, lte, notExists, sql } from "drizzle-orm";
 import { activities, comments, plannedSessions, type ActivityRow } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
+import { nameRides } from "@/modules/activities/names";
+import type { RideName } from "@/modules/activities/ride-name";
 
 /**
  * Activities for the calendar: the ones no planned session claims (the
  * claimed ones travel with their session), and one activity in full for
- * its page. `streams` is only read where a chart needs it.
+ * its page. `streams` is only read where a chart needs it, and where a
+ * ride's name turns on it (docs/adr/0098).
  */
 
 const { streams, ...WITHOUT_STREAMS } = getTableColumns(activities);
 
-export type CalendarActivity = Omit<ActivityRow, "streams"> & { commentCount: number };
+export type CalendarActivity = Omit<ActivityRow, "streams"> & {
+  commentCount: number;
+  /** What the ride is called on the pages; an unplanned ride has no session to borrow from. */
+  name: RideName;
+};
 
 export async function listUnplannedIn(
   tx: AppTransaction,
@@ -38,7 +45,12 @@ export async function listUnplannedIn(
     .from(activities)
     .where(and(...where))
     .orderBy(asc(activities.startedAt));
-  return rows.map((r) => ({ ...r, commentCount: Number(r.commentCount) }));
+  const names = await nameRides(tx, rows);
+  return rows.map((r) => ({
+    ...r,
+    commentCount: Number(r.commentCount),
+    name: names.get(r.id)!,
+  }));
 }
 
 export async function listUnplanned(

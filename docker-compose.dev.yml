@@ -1,5 +1,5 @@
 # Development infrastructure for Kadence.
-# Runs Postgres 16 only; the app runs on the host via `pnpm dev`.
+# Runs Postgres 16 and a mail catcher; the app runs on the host via `pnpm dev`.
 #
 #   docker compose -f docker-compose.dev.yml up -d --wait
 #   pnpm db:migrate
@@ -32,6 +32,19 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+
+  # A mail catcher (docs/adr/0086): every mail `pnpm dev` sends lands here
+  # and nowhere else, read at http://localhost:8025. Point .env at it with
+  # SMTP_HOST=localhost and SMTP_PORT=1025 (the user and password are
+  # anything; it asks for none). A development server must never send
+  # through a real provider: the seeded addresses do not exist, and every
+  # bounce counts against the installation's sender name.
+  mail:
+    image: axllent/mailpit:v1.31
+    container_name: kadence-dev-mail
+    ports:
+      - "127.0.0.1:1025:1025"
+      - "127.0.0.1:8025:8025"
 
 volumes:
   kadence-dev-pgdata:

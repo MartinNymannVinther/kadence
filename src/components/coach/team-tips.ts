@@ -3,7 +3,8 @@ import { addDaysIso } from "@/core/dates";
 import type { OrgContext } from "@/core/db/tenant";
 import type { RiderRow } from "@/core/db/schema";
 import { coachTips, guideValues, type CoachTip } from "@/modules/coach";
-import { classFor, isClassBasis, seasonStartYear } from "@/modules/dcu";
+import { seasonStartYear } from "@/modules/dcu";
+import { riderClass } from "@/modules/season/class";
 import { listEvents } from "@/modules/training/events";
 
 /** How far ahead the tips look for races, camps and exams. */
@@ -31,11 +32,8 @@ export async function teamTips(
   const tips = coachTips({
     today,
     riders: input.riders.map((r) => {
-      const klass = classFor(
-        r.birthYear,
-        season,
-        isClassBasis(r.categoryOverride) ? r.categoryOverride : null,
-      );
+      // A coach's "senior" counts as senior here too, so DCU's race rules stay off (ADR 0091).
+      const klass = riderClass(r, season);
       return { category: klass.category, yearInClass: klass.yearInClass, sex: r.sex };
     }),
     events: events.map((e) => ({

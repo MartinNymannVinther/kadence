@@ -98,17 +98,57 @@ export {
   type WeekTotal,
 } from "./fitness";
 export {
+  GREEN_HIGH_PCT,
+  GREEN_LOW_PCT,
+  RPE_FAR_HIGH_PCT,
+  RPE_FAR_LOW_PCT,
+  YELLOW_HIGH_PCT,
+  YELLOW_LOW_PCT,
+  colourOfPct,
   compliance,
+  complianceRatio,
+  feltFarOff,
+  loadOffPlan,
   matchActivity,
   type ComplianceColour,
+  type ComplianceRatio,
   type ComplianceSide,
   type MatchCandidate,
 } from "./compliance";
+export {
+  planCarriesIntensity,
+  planIntensity,
+  planIntensityOf,
+  type PlanIntensity,
+} from "./plan-intensity";
+export {
+  builtAround,
+  deviation,
+  plannedZoneSeconds,
+  type Deviation,
+  type DeviationDone,
+  type DeviationFact,
+  type DeviationHeading,
+  type DeviationPlanned,
+  type ZoneSecondsBySource,
+} from "./deviation";
+export {
+  HINT_MIN_MINUTES,
+  HINT_POWER_INTENSITY,
+  intensityOfLoad,
+  type DeviationStory,
+  type Effort,
+  type PlanCharacter,
+  type TimeDirection,
+} from "./deviation-story";
+export { countedPain, painIsUsual, type UsualPainLike } from "./usual-pain";
+export { checkinReasons, usualPainPlaces, type CheckinReason } from "./checkin-reasons";
 export {
   LOW_AVERAGE,
   SHORT_NIGHT_HOURS,
   WELLBEING_WINDOW_DAYS,
   checkinZone,
+  isRedCheckin,
   wellbeingStatus,
   type Checkin,
   type CheckinZone,
@@ -164,6 +204,7 @@ export {
   midZoneFlag,
   type MidZoneInput,
 } from "./intensity-flag";
+export { LASTING_PAIN_WEEKS, lastingPainFlag, type LastingPainCheckin } from "./known-pain-flag";
 export {
   MATERIAL_STEP,
   splitResolved,

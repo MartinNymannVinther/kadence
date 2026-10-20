@@ -47,7 +47,7 @@ export function ClassPicker({
             <label
               key={c}
               className={cn(
-                "border-border bg-card flex min-h-28 cursor-pointer flex-col items-center justify-end gap-1 rounded-xl border px-1 py-2.5 text-center shadow-[var(--surface-shadow)] transition-colors duration-[120ms] ease-out sm:px-2 sm:py-3",
+                "border-border bg-card flex min-h-28 cursor-pointer flex-col items-center justify-end gap-1 rounded-xl border px-1 py-2.5 text-center shadow-surface transition-colors duration-[120ms] ease-out sm:px-2 sm:py-3",
                 "hover:bg-secondary has-[:checked]:border-primary has-[:checked]:bg-primary has-[:checked]:text-primary-foreground",
                 "has-[:focus-visible]:outline-ring has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2",
               )}

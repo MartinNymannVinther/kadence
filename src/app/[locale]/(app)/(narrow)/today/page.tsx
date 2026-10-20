@@ -1,96 +1,63 @@
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
+import { buttonVariants } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
-import { withQuery } from "@/components/calendar/href";
+import { calendarHref, withQuery } from "@/components/calendar/href";
 import { toCard, toEventCard } from "@/components/calendar/to-card";
 import { SessionSheet } from "@/components/session/session-sheet";
 import { SessionView } from "@/components/session/session-view";
-import { FitUpload } from "@/components/activities/fit-upload";
-import { SendToDeviceButton } from "@/components/session/send-to-device-button";
-import { GoalsCard, type GoalView } from "@/components/activities/goals-card";
-import { RecordsCard } from "@/components/activities/records-card";
-import { LoadPanel } from "@/components/load/load-panel";
-import { AttentionSection } from "@/components/today/attention-section";
-import { CheckinSection } from "@/components/today/checkin-section";
-import { CoachTips } from "@/components/coach/coach-tips";
-import { teamTips } from "@/components/coach/team-tips";
+import { AttentionTop } from "@/components/today/attention-top";
 import { CoachToday } from "@/components/today/coach-today";
 import { GettingStarted } from "@/components/today/getting-started";
+import { NextWeekCard } from "@/components/today/next-week-card";
+import { RiderNews } from "@/components/today/rider-news";
 import { SharedNotice } from "@/components/today/shared-notice";
-import { TodaySession } from "@/components/today/today-session";
-import { WeekGlance } from "@/components/today/week-glance";
-import { checkinValues } from "@/components/wellbeing/checkin-values";
-import { zoneDays } from "@/components/wellbeing/zone-days";
+import { coverShown, todayElsewhere } from "@/components/today/where";
 import { dayLong } from "@/components/training/day-label";
 import { getOrgContext } from "@/core/auth/session";
-import { addDaysIso, maxIso, todayInCopenhagen } from "@/core/dates";
-import type { OrgContext } from "@/core/db/tenant";
-import { redirect } from "@/i18n/navigation";
-import { getInsights } from "@/modules/insight/service";
+import { todayInCopenhagen, weekNumber } from "@/core/dates";
+import { Link, redirect } from "@/i18n/navigation";
+import { cn } from "@/lib/utils";
 import { whoAmI } from "@/modules/team/access";
-import { getRider, getRiders } from "@/modules/team/riders";
-import { getTeamSettings } from "@/modules/team/settings";
-import { listEvents } from "@/modules/training/events";
-import { dcuProposalFor, listGoals } from "@/modules/training/goals";
-import { getRiderRecords } from "@/modules/training/records";
-import { listSessions } from "@/modules/training/sessions";
-import { readStructure } from "@/modules/workouts/structure";
-import { weekDates, weekFrom } from "@/modules/training/week";
-import { getCheckin, listCheckins } from "@/modules/wellbeing/checkins";
 import { orgImageUrls } from "@/modules/team/images";
+import { getRiders } from "@/modules/team/riders";
+import { workspaceKind } from "@/modules/team/workspace-kind";
+import { coachOverview } from "./coach-data";
+import { riderDay } from "./rider-data";
+import { RiderToday } from "./rider-today";
+
+/**
+ * A coach's front page is Overblik, as the menu calls it (nav-items.ts);
+ * everyone else's is I dag, and so is the person's in a personal
+ * workspace, who is their own coach (ADR 0080).
+ */
+async function coachFront(ctx: { orgId: string; userId: string }, isCoach: boolean) {
+  return isCoach && (await workspaceKind(ctx.orgId, ctx.userId)) !== "personal";
+}
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("today");
-  return { title: t("title") };
+  const ctx = await getOrgContext();
+  const me = ctx ? await whoAmI(ctx.orgId, ctx.userId) : null;
+  const overview = ctx && me ? await coachFront(ctx, me.isCoach) : false;
+  return { title: overview ? t("overview.title") : t("title") };
 }
 
 const hrefFor = (sessionId: string) => withQuery("/today", { session: sessionId });
 
-async function weekOf(ctx: OrgContext, riderId: string, from: string, to: string, today: string) {
-  const [sessions, events] = await Promise.all([
-    listSessions(ctx, { from, to, riderIds: [riderId] }),
-    listEvents(ctx, { from, to, riderIds: [riderId] }),
-  ]);
-  // The next seven days' bike sessions with steps: what a bike computer can ride (ADR 0031).
-  const lastDay = addDaysIso(today, 6);
-  const toDevice = sessions
-    .filter((s) => s.onDate >= today && s.onDate <= lastDay && s.sport === "bike")
-    .filter((s) => {
-      const structure = readStructure(s.structure, "bike");
-      return structure.kind === "bike" && structure.steps.length > 0;
-    })
-    .map((s) => ({ id: s.id, title: s.title, onDate: s.onDate }));
-  return { sessions: sessions.map(toCard), events: events.map(toEventCard), toDevice };
-}
-
-/** The rider's own extras for today: the check-in, two weeks of zones and their load. */
-async function riderDay(ctx: OrgContext, riderId: string, today: string) {
-  const [checkin, recent, insights, records, goals, rider] = await Promise.all([
-    getCheckin(ctx, riderId, today),
-    listCheckins(ctx, { from: addDaysIso(today, -13), to: today, riderIds: [riderId] }),
-    getInsights(ctx, { riderIds: [riderId], today }),
-    getRiderRecords(ctx, riderId, { today }),
-    listGoals(ctx, riderId, today),
-    getRider(ctx, riderId),
-  ]);
-  return {
-    checkin: checkinValues(checkin),
-    days: zoneDays(recent, today),
-    insight: insights[0] ?? null,
-    records,
-    goals,
-    dcuProposal: rider ? dcuProposalFor(rider, goals, today) : null,
-  };
-}
-
 /**
- * The front page, by who is looking. A rider sees today's and tomorrow's
- * sessions with a big "Udført", the check-in, the week at a glance, the
- * upload and their form; a coach sees who needs attention, the team's day
- * and the week's team events — or, on an empty team, the three steps to
- * start; a parent sees each confirmed child's week. One person can be more
- * than one of these, and sees each part. A ride shared to Kadence from the
+ * The front page, by who is looking (docs/adr/0063). A rider's is I dag:
+ * the first steps while they are not done, today's session with a big
+ * "Udført", "how hard" about the last ride, the check-in and tomorrow;
+ * the rest of their picture is on Mig. A coach's is Overblik, because a
+ * coach's unit is the week: whether next week is planned and what is in
+ * it, the three riders most worth a look this week — the whole list is in
+ * the team's week — what the riders have written lately, then the team's
+ * day and the week's events; on an empty team, the three steps to start.
+ * A parent who is nothing else has one page, the child's (/parents). One
+ * person can be more than one of these, and sees each part. The club's
+ * picture shows on an empty day only. A ride shared to Kadence from the
  * phone lands here with what became of it (`?shared=`, ADR 0029).
  */
 export default async function TodayPage({
@@ -108,54 +75,42 @@ export default async function TodayPage({
   const me = await whoAmI(ctx.orgId, ctx.userId);
   const search = await searchParams;
   const openSession = typeof search.session === "string" ? search.session : undefined;
+  const elsewhere = todayElsewhere(me);
+  if (elsewhere) {
+    redirect({ href: withQuery(elsewhere, { session: openSession }), locale });
+    return null;
+  }
   const word = (key: string) => (typeof search[key] === "string" ? search[key] : undefined);
   const today = todayInCopenhagen();
-  const tomorrow = addDaysIso(today, 1);
-  const monday = weekFrom(undefined, today);
-  const days = weekDates(monday);
-  const sunday = days[6] ?? today;
 
   const riders = me?.isCoach ? await getRiders(ctx) : [];
+  const overview = me ? await coachFront(ctx, me.isCoach) : false;
+  // A parent who owns their child's workspace and does not ride lands on
+  // the child's page, which is their menu's first place (ADR 0080).
+  if (me?.isCoach && !overview && !me.rider && riders.length === 1) {
+    redirect({ href: `/riders/${riders[0]!.id}`, locale });
+    return null;
+  }
   const soloRider = me?.rider && riders.length === 1 && riders[0]?.id === me.rider.id;
-  const own = me?.rider
-    ? await weekOf(ctx, me.rider.id, monday, maxIso([sunday, addDaysIso(today, 6)]), today)
+  const mine = me?.rider
+    ? await riderDay(ctx, me.rider.id, today, {
+        today: t("rpe.today"),
+        yesterday: t("rpe.yesterday"),
+        locale,
+      })
     : null;
   const team =
-    me?.isCoach && riders.length > 0 && !soloRider
-      ? await Promise.all([
-          listSessions(ctx, { from: today, to: today, riderIds: riders.map((r) => r.id) }),
-          listEvents(ctx, { from: monday, to: sunday }),
-        ])
-      : null;
-  const children = await Promise.all(
-    (me?.children ?? [])
-      .filter((c) => c.confirmed)
-      .map(async (c) => ({ ...c, week: await weekOf(ctx, c.riderId, monday, sunday, today) })),
-  );
-  const waiting = (me?.children ?? []).some((c) => !c.confirmed);
-  // Confirmed, but the rider does not share training: the database hides the row (ADR 0011).
-  const hidden = (me?.children ?? []).some((c) => c.confirmed && c.name === null);
-  const mine = me?.rider ? await riderDay(ctx, me.rider.id, today) : null;
-  const [attention, settings] = team
-    ? await Promise.all([getInsights(ctx, { today }), getTeamSettings(ctx)])
-    : [null, null];
-  const tips =
-    attention && settings
-      ? await teamTips(ctx, {
-          today,
-          locale,
-          riders,
-          flagKinds: attention.flatMap((i) => i.flags.map((f) => f.kind)),
-          allowYouthWeight: settings.allowYouthWeight,
-        })
-      : [];
+    overview && riders.length > 0 && !soloRider ? await coachOverview(ctx, riders, today) : null;
   const nothing = !me || (!me.isCoach && !me.rider && me.children.length === 0);
-  const cover = (await orgImageUrls(ctx)).cover;
+  const sessionsToday = (mine?.today.length ?? 0) + (team?.sessionsToday.length ?? 0);
+  const cover = coverShown({ sessionsToday, waiting: Boolean(mine?.toRate) })
+    ? (await orgImageUrls(ctx)).cover
+    : null;
 
   return (
     <div className="flex max-w-3xl flex-col gap-8">
       {cover && (
-        // The club's own picture (ADR 0048), behind its login.
+        // The club's own picture (ADR 0048), behind its login, on an empty day.
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={cover}
@@ -164,141 +119,65 @@ export default async function TodayPage({
         />
       )}
       <PageHeader
-        title={t("title")}
-        subtitle={<span className="first-letter:uppercase">{dayLong(today, locale)}</span>}
+        title={overview ? t("overview.title") : t("title")}
+        subtitle={
+          // Inline-block, so the weekday's first letter can be a capital.
+          <span className="inline-block first-letter:uppercase">
+            {overview
+              ? t("overview.subtitle", { day: dayLong(today, locale), week: weekNumber(today) })
+              : dayLong(today, locale)}
+          </span>
+        }
+        actions={
+          team && (
+            <>
+              <Link
+                href={calendarHref({ view: "team" })}
+                className={cn(buttonVariants({ variant: "outline" }), "max-sm:h-11")}
+              >
+                {t("overview.teamWeek")}
+              </Link>
+              <Link href="/calendar/week-plan" className={cn(buttonVariants(), "max-sm:h-11")}>
+                {t("overview.plan")}
+              </Link>
+            </>
+          )
+        }
       />
 
       <SharedNotice shared={word("shared")} count={word("count")} reason={word("reason")} />
 
       {nothing && <EmptyState title={t("none.title")} hint={t("none.body")} />}
 
-      {own && me?.rider && (
-        <>
-          {(["today", "tomorrow"] as const).map((when) => {
-            const date = when === "today" ? today : tomorrow;
-            const list = own.sessions.filter((s) => s.onDate === date);
-            return (
-              <section key={when} aria-labelledby={`rider-${when}`} className="flex flex-col gap-3">
-                <h2 id={`rider-${when}`} className="text-lg font-semibold">
-                  {t(`rider.${when}`)}
-                </h2>
-                {list.length === 0 ? (
-                  <p className="text-meta text-2sm">{t("rider.rest")}</p>
-                ) : (
-                  list.map((s) => (
-                    <TodaySession
-                      key={s.id}
-                      session={s}
-                      today={today}
-                      href={hrefFor(s.id)}
-                      canComplete={date <= today}
-                    />
-                  ))
-                )}
-              </section>
-            );
-          })}
-          {mine && (
-            <CheckinSection
-              riderId={me.rider.id}
-              today={today}
-              initial={mine.checkin}
-              days={mine.days}
-            />
-          )}
-          <section aria-labelledby="rider-week" className="flex flex-col gap-3">
-            <h2 id="rider-week" className="text-lg font-semibold">
-              {t("rider.week")}
-            </h2>
-            <WeekGlance
-              days={days}
-              today={today}
-              sessions={own.sessions}
-              events={own.events}
-              hrefFor={hrefFor}
-            />
-            <SendToDeviceButton sessions={own.toDevice} week />
-          </section>
-          <section aria-labelledby="rider-upload" className="flex flex-col gap-3">
-            <div className="flex flex-col gap-1">
-              <h2 id="rider-upload" className="text-lg font-semibold">
-                {t("rider.upload")}
-              </h2>
-              <p className="text-meta text-2sm leading-relaxed">{t("rider.uploadBody")}</p>
-            </div>
-            <FitUpload riderId={me.rider.id} compact />
-          </section>
-          {mine?.insight && (
-            <section aria-labelledby="rider-form" className="flex flex-col gap-3">
-              <div className="flex flex-col gap-1">
-                <h2 id="rider-form" className="text-lg font-semibold">
-                  {t("rider.form")}
-                </h2>
-                <p className="text-meta text-2sm leading-relaxed">{t("rider.formBody")}</p>
-              </div>
-              <LoadPanel insight={mine.insight} />
-            </section>
-          )}
-          {mine && (
-            <section aria-labelledby="rider-goals" className="flex flex-col gap-3">
-              <h2 id="rider-goals" className="text-lg font-semibold">
-                {t("rider.goals")}
-              </h2>
-              <GoalsCard
-                riderId={me.rider.id}
-                goals={mine.goals.map((g) => ({ ...g, kind: g.kind as GoalView["kind"] }))}
-                today={today}
-                dcuProposal={mine.dcuProposal}
-                canWrite
-              />
-            </section>
-          )}
-          {mine && (
-            <section aria-labelledby="rider-records" className="flex flex-col gap-3">
-              <h2 id="rider-records" className="text-lg font-semibold">
-                {t("rider.records")}
-              </h2>
-              <RecordsCard byPeriod={mine.records.byPeriod} />
-            </section>
-          )}
-        </>
+      {mine && me?.rider && (
+        <RiderToday riderId={me.rider.id} day={mine} today={today} hrefFor={hrefFor} />
       )}
 
       {me?.isCoach && riders.length === 0 && <GettingStarted />}
-      {attention && (
-        <AttentionSection insights={attention} aiAllowed={Boolean(settings?.aiOnRiderData)} />
-      )}
-      {tips.length > 0 && <CoachTips tips={tips} />}
       {team && (
-        <CoachToday
-          riders={riders.map((r) => ({ id: r.id, name: r.name }))}
-          sessions={team[0].map(toCard)}
-          teamEvents={team[1].filter((e) => e.riderId === null).map(toEventCard)}
-          today={today}
-          hrefFor={hrefFor}
-        />
-      )}
-
-      {children.map((child) => (
-        <section
-          key={child.guardianId}
-          aria-labelledby={`child-${child.riderId}`}
-          className="flex flex-col gap-3"
-        >
-          <h2 id={`child-${child.riderId}`} className="text-lg font-semibold">
-            {t("parent.week", { name: child.name ?? "" })}
-          </h2>
-          <WeekGlance
-            days={days}
+        <>
+          <NextWeekCard summary={team.nextWeek} />
+          <AttentionTop insights={team.insights} />
+          <RiderNews items={team.news} today={today} />
+          <CoachToday
+            riders={riders.map((r) => ({ id: r.id, name: r.name }))}
+            sessions={team.sessionsToday.map(toCard)}
+            teamEvents={team.teamEvents.map(toEventCard)}
             today={today}
-            sessions={child.week.sessions}
-            events={child.week.events}
             hrefFor={hrefFor}
           />
-        </section>
-      ))}
-      {waiting && <EmptyState title={t("parent.waitingTitle")} hint={t("parent.waitingBody")} />}
-      {hidden && <EmptyState title={t("parent.hiddenTitle")} hint={t("parent.hiddenBody")} />}
+        </>
+      )}
+
+      {me && me.children.length > 0 && (
+        // A coach or rider who is also a parent: the child's page is one tap away.
+        <Link
+          href="/parents"
+          className="focus-ring text-primary flex min-h-11 w-fit items-center text-2sm font-medium hover:underline"
+        >
+          {t("parent.link", { count: me.children.length })}
+        </Link>
+      )}
 
       {openSession && me && (
         <SessionSheet key={openSession} closeHref="/today" title={t("sessionPanel")}>

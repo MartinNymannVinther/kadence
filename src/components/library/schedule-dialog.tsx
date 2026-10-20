@@ -16,6 +16,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { RepeatFields } from "@/components/calendar/repeat-fields";
 import { RiderPicker } from "@/components/calendar/rider-picker";
+import {
+  TimePlaceFields,
+  timePlaceDraft,
+  timePlaceValue,
+} from "@/components/calendar/time-place-fields";
 import type { RiderOption } from "@/components/calendar/types";
 import { scheduleTemplateAction } from "@/modules/training/actions";
 import type { Repeat } from "@/modules/training/recurrence";
@@ -46,6 +51,7 @@ export function ScheduleDialog({
   const [riderIds, setRiderIds] = useState(riders.length === 1 ? [riders[0]!.id] : []);
   const [onDate, setOnDate] = useState(today);
   const [repeat, setRepeat] = useState<Repeat | null>(null);
+  const [at, setAt] = useState(() => timePlaceDraft());
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -56,6 +62,7 @@ export function ScheduleDialog({
         riderIds,
         onDate,
         repeat: repeat ?? undefined,
+        ...timePlaceValue(at),
       }),
     );
     if (done) {
@@ -94,11 +101,13 @@ export function ScheduleDialog({
               onChange={(e) => setOnDate(e.target.value)}
             />
           </div>
+          <TimePlaceFields value={at} onChange={setAt} />
           <RepeatFields
             start={onDate}
             sport={template.sport}
             plannedMinutes={template.plannedMinutes}
             riderIds={riderIds}
+            riders={riders}
             value={repeat}
             onChange={setRepeat}
           />

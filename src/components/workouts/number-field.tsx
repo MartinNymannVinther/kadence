@@ -1,14 +1,18 @@
 "use client";
 
-import { useId } from "react";
+import { useId, type ReactNode } from "react";
+import { NumberInput } from "@/components/ui/number-input";
 import { cn } from "@/lib/utils";
 
 /**
  * A small labelled number input for the builder. It keeps what is typed
  * while it is typed and hands a whole number on (an empty field is the
  * floor), so a coach can clear a field and write a new number without the
- * field fighting back. An optional number — a cadence — is cleared
- * through `onClear`.
+ * field fighting back (NumberInput). An optional number — a cadence — is
+ * cleared through `onClear`.
+ *
+ * A unit sits inside the field, at its right; the keyboard's arrows step.
+ * `labelAddon` sits beside the label — an explanation's button.
  */
 export function NumberField({
   label,
@@ -20,6 +24,7 @@ export function NumberField({
   suffix,
   className,
   hideLabel = false,
+  labelAddon,
 }: {
   label: string;
   /** Null shows an empty field. */
@@ -32,30 +37,35 @@ export function NumberField({
   suffix?: string;
   className?: string;
   hideLabel?: boolean;
+  labelAddon?: ReactNode;
 }) {
   const id = useId();
   return (
     <div className={cn("flex min-w-0 flex-col gap-1", className)}>
-      <label htmlFor={id} className={cn("text-label text-xs font-medium", hideLabel && "sr-only")}>
-        {label}
-      </label>
+      {labelAddon && !hideLabel ? (
+        <div className="flex min-h-5 items-center gap-1">
+          <label htmlFor={id} className="text-label text-xs font-medium">
+            {label}
+          </label>
+          {labelAddon}
+        </div>
+      ) : (
+        <label
+          htmlFor={id}
+          className={cn("text-label text-xs font-medium", hideLabel && "sr-only")}
+        >
+          {label}
+        </label>
+      )}
       <div className="relative">
-        <input
+        <NumberInput
           id={id}
-          type="number"
-          inputMode="numeric"
           min={min}
           max={max}
-          value={value !== null && Number.isFinite(value) ? value : ""}
-          onChange={(e) => {
-            if (e.target.value === "" && onClear) return onClear();
-            const n = e.target.value === "" ? min : Math.round(Number(e.target.value));
-            if (Number.isFinite(n)) onChange(max === undefined ? n : Math.min(max, n));
-          }}
-          className={cn(
-            "border-input bg-card focus-visible:border-ring focus-visible:ring-ring/18 h-11 w-full min-w-0 rounded-md border px-2.5 text-base tabular-nums outline-none focus-visible:ring-3 sm:h-9 sm:text-sm",
-            suffix && "pr-12",
-          )}
+          value={value}
+          onChange={onChange}
+          onClear={onClear}
+          className={cn("h-11 px-2.5 py-0 tabular-nums sm:h-9 sm:text-sm", suffix && "pr-16")}
         />
         {suffix && (
           <span className="text-meta pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 text-xs">

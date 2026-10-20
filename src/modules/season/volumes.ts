@@ -1,9 +1,8 @@
 import { and, gte, inArray, lte } from "drizzle-orm";
-import { activities, plannedSessions, riders, seasonPlans } from "@/core/db/schema";
+import { activities, plannedSessions } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
-import { isClassBasis, seasonStartYear } from "@/modules/dcu";
-import { riderClass } from "./class";
-import { SeasonMonthsInput } from "./plans";
+import { seasonStartYear } from "@/modules/dcu";
+import { framesIn } from "./frames";
 import {
   seasonMonths,
   volumeOf,
@@ -14,7 +13,6 @@ import {
   type VolumeSession,
 } from "./volume";
 import type { Paradigm } from "@/modules/paradigms";
-import { teamParadigm } from "@/modules/team/settings";
 
 /**
  * The four numbers (ADR 0040) read from the database: each rider's
@@ -38,20 +36,10 @@ export async function readFor(
   riderIds: string[],
   range: VolumeRange,
 ): Promise<Map<string, RiderData>> {
-  const seasons = [seasonStartYear(range.from), seasonStartYear(range.to)];
-  // One after the other: a transaction is one connection, and pg queues
-  // rather than runs queries side by side on it.
-  const riderRows = await tx.select().from(riders).where(inArray(riders.id, riderIds));
-  const plans = await tx
-    .select()
-    .from(seasonPlans)
-    .where(
-      and(
-        inArray(seasonPlans.riderId, riderIds),
-        gte(seasonPlans.seasonStartYear, seasons[0]!),
-        lte(seasonPlans.seasonStartYear, seasons[1]!),
-      ),
-    );
+  const frames = await framesIn(tx, riderIds, {
+    from: seasonStartYear(range.from),
+    to: seasonStartYear(range.to),
+  });
   const sessionRows = await tx
     .select({
       riderId: plannedSessions.riderId,
@@ -84,31 +72,14 @@ export async function readFor(
       ),
     );
   const out = new Map<string, RiderData>();
-  const paradigm = riderRows[0] ? await teamParadigm(tx, riderRows[0].orgId) : null;
-  for (const rider of riderRows) {
-    const frames = new Map<number, SeasonFrame>();
-    const frameOf = (season: number): SeasonFrame => {
-      const known = frames.get(season);
-      if (known) return known;
-      // The plan's basis wins: a coach who plans a rider from another year's hours
-      // has chosen the DCU number the plan is measured against.
-      const plan = plans.find((p) => p.riderId === rider.id && p.seasonStartYear === season);
-      const months = plan ? SeasonMonthsInput.safeParse(plan.months) : null;
-      const frame: SeasonFrame = {
-        basis: plan && isClassBasis(plan.basis) ? plan.basis : riderClass(rider, season).basis,
-        goal: months?.success ? months.data : null,
-      };
-      frames.set(season, frame);
-      return frame;
-    };
-    out.set(rider.id, {
-      name: rider.name,
-      frameOf,
+  for (const [id, rider] of frames.riders) {
+    out.set(id, {
+      ...rider,
       sessions: sessionRows
-        .filter((s) => s.riderId === rider.id)
+        .filter((s) => s.riderId === id)
         .map((s) => ({ ...s, done: s.activityId !== null })),
-      activities: activityRows.filter((a) => a.riderId === rider.id),
-      paradigm,
+      activities: activityRows.filter((a) => a.riderId === id),
+      paradigm: frames.paradigm,
     });
   }
   return out;

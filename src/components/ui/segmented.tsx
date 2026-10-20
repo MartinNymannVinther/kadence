@@ -11,7 +11,7 @@ const segment = (active: boolean) =>
   cn(
     "rounded-sm px-3 py-1.5 text-2sm whitespace-nowrap transition-colors duration-[120ms] ease-out",
     active
-      ? "bg-card text-foreground shadow-[var(--surface-shadow)] font-semibold"
+      ? "bg-card text-foreground shadow-surface font-semibold"
       : "text-meta hover:text-foreground",
   );
 export { segment as segmentedSegment };
@@ -37,7 +37,7 @@ function SegmentedFilter({
           key={item.key}
           href={item.href}
           aria-current={item.active ? "true" : undefined}
-          className={segment(item.active)}
+          className={cn("focus-ring", segment(item.active))}
         >
           {item.label}
         </Link>
@@ -75,7 +75,7 @@ function SegmentedChoice<T extends string>({
           onClick={() => onChange(option.value)}
           className={cn(
             segment(option.value === value),
-            "focus-visible:outline-ring outline-none focus-visible:outline-2",
+            "focus-visible:outline-ring outline-none focus-visible:outline-2 focus-visible:outline-solid",
           )}
         >
           {option.label}

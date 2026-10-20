@@ -7,7 +7,13 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { compliance, type ComplianceColour } from "@/modules/load";
+import {
+  compliance,
+  planIntensityOf,
+  type ComplianceColour,
+  type LoadMethod,
+  type Sport,
+} from "@/modules/load";
 import { cn } from "@/lib/utils";
 
 /**
@@ -18,17 +24,31 @@ import { cn } from "@/lib/utils";
 
 export type PlannedLike = {
   onDate: string;
+  /** The session's sport and structure: a plan that says only how long is judged by time (compliance.ts). */
+  sport: string;
+  structure: unknown;
   plannedMinutes: number;
   plannedLoad: number | null;
-  activity: { movingSeconds: number; load: number | null } | null;
+  /** `loadMethod` decides whether the load counts: one from RPE alone only when far off (compliance.ts). */
+  activity: { movingSeconds: number; load: number | null; loadMethod?: string | null } | null;
 };
 
 export function colourOf(session: PlannedLike, today: string): ComplianceColour {
   const done = session.activity
-    ? { minutes: session.activity.movingSeconds / 60, load: session.activity.load }
+    ? {
+        minutes: session.activity.movingSeconds / 60,
+        load: session.activity.load,
+        method: (session.activity.loadMethod ?? null) as LoadMethod | null,
+        // A ride is only ever matched to a session of its own sport.
+        sport: session.sport as Sport,
+      }
     : null;
   return compliance(
-    { minutes: session.plannedMinutes, load: session.plannedLoad },
+    {
+      minutes: session.plannedMinutes,
+      load: session.plannedLoad,
+      intensity: planIntensityOf(session),
+    },
     done,
     session.onDate,
     today,

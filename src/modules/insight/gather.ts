@@ -3,12 +3,14 @@ import {
   activities,
   calendarEvents,
   checkins,
+  organizations,
   plannedSessions,
   riders,
   type CheckinRow,
   type RiderRow,
 } from "@/core/db/schema";
 import type { AppTransaction } from "@/core/db/tenant";
+import { planIntensityOf, type LoadMethod, type PlanIntensity } from "@/modules/load";
 
 /**
  * What the insight reads from the database, in one pass per team: the
@@ -26,6 +28,8 @@ export type InsightActivity = {
   seconds: number;
   distanceM: number | null;
   load: number | null;
+  /** How the load was measured; the colour counts one from RPE alone only when far off. */
+  loadMethod?: LoadMethod | null;
 };
 
 export type InsightSession = {
@@ -34,6 +38,8 @@ export type InsightSession = {
   sport: string;
   plannedMinutes: number;
   plannedLoad: number | null;
+  /** What the plan says of how hard (plan-intensity.ts); the colour reads time when it says nothing. */
+  intensity: PlanIntensity;
   activityId: string | null;
 };
 
@@ -89,6 +95,7 @@ export async function gather(
       seconds: activities.movingSeconds,
       distanceM: activities.distanceM,
       load: activities.load,
+      loadMethod: activities.loadMethod,
     })
     .from(activities)
     .where(
@@ -105,6 +112,7 @@ export async function gather(
       sport: plannedSessions.sport,
       plannedMinutes: plannedSessions.plannedMinutes,
       plannedLoad: plannedSessions.plannedLoad,
+      structure: plannedSessions.structure,
       activityId: plannedSessions.activityId,
     })
     .from(plannedSessions)
@@ -147,9 +155,29 @@ export async function gather(
     : [];
   return {
     riders: riderRows,
-    activities: acts.map((a) => ({ ...a, sport: a.sport as InsightActivity["sport"] })),
-    sessions,
+    activities: acts.map((a) => ({
+      ...a,
+      sport: a.sport as InsightActivity["sport"],
+      loadMethod: a.loadMethod as LoadMethod,
+    })),
+    sessions: sessions.map(({ structure, ...s }) => ({
+      ...s,
+      intensity: planIntensityOf({ sport: s.sport, structure }) ?? "none",
+    })),
     checkins: checks,
     races: races.map((r) => ({ ...r, priority: r.priority as "A" | "B" })),
   };
+}
+
+/**
+ * Whether the workspace is a club, where a coach reads the attention list;
+ * a personal workspace is one person's own (docs/adr/0080), with no coach
+ * to see a known pain that lasts (docs/adr/0097).
+ */
+export async function isClubWorkspace(tx: AppTransaction, orgId: string): Promise<boolean> {
+  const [org] = await tx
+    .select({ kind: organizations.kind })
+    .from(organizations)
+    .where(eq(organizations.id, orgId));
+  return org?.kind !== "personal";
 }

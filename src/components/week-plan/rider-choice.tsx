@@ -3,11 +3,14 @@
 import { useTranslations } from "next-intl";
 import { RiderPicker } from "@/components/calendar/rider-picker";
 import { cn } from "@/lib/utils";
+import { isClassBasis } from "@/modules/dcu";
+import { isSeniorBasis, profileOf } from "@/modules/paradigms";
 import type { PlanRider } from "./types";
 
 /**
  * Who the week is for: the whole team, a class with one tap — every U17
- * this season, say — or riders picked one by one.
+ * this season, say — or the adults on a training profile (ADR 0092), or
+ * riders picked one by one.
  */
 export function RiderChoice({
   riders,
@@ -19,15 +22,24 @@ export function RiderChoice({
   onChange: (ids: string[]) => void;
 }) {
   const t = useTranslations("weekPlan.riders");
-  const classOf = (r: PlanRider) => r.basis?.split("-")[0] ?? null;
-  const classes = [...new Set(riders.map(classOf).filter((c): c is string => c !== null))].sort();
+  const season = useTranslations("season");
+  // DCU's classes first, then the adults' profiles, each a chip of its own.
+  const classOf = (r: PlanRider) =>
+    isClassBasis(r.basis) ? r.basis.split("-")[0]! : isSeniorBasis(r.basis) ? r.basis : null;
+  const found = new Set(riders.map(classOf).filter((c): c is string => c !== null));
+  const classes = [
+    ...[...found].filter((c) => !isSeniorBasis(c)).sort(),
+    ...[...found].filter(isSeniorBasis).sort(),
+  ];
+  const nameOf = (c: string) =>
+    isSeniorBasis(c) ? season("basisSenior", { profile: profileOf(c) }) : c;
   const same = (ids: string[]) =>
     ids.length === selected.length && ids.every((id) => selected.includes(id));
   const chips = [
     { key: "all", label: t("all", { count: riders.length }), ids: riders.map((r) => r.id) },
     ...classes.map((c) => {
       const ids = riders.filter((r) => classOf(r) === c).map((r) => r.id);
-      return { key: c, label: t("class", { name: c, count: ids.length }), ids };
+      return { key: c, label: t("class", { name: nameOf(c), count: ids.length }), ids };
     }),
   ];
 

@@ -13,6 +13,7 @@ export function checkinValues(row: CheckinRow | null): CheckinValues | null {
     stress: row.stress,
     pain: row.pain,
     painWhere: row.painWhere,
+    usualPains: row.usualPains,
     ill: row.ill,
     note: row.note,
   };

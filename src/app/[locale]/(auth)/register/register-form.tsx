@@ -18,7 +18,13 @@ import { registerAction } from "@/core/auth/actions";
 import { Link, useRouter } from "@/i18n/navigation";
 
 /** What an invitation link fixes in advance; the form shows it, locked. */
-export type InvitationPrefill = { token: string; email: string; organizationName: string };
+export type InvitationPrefill = {
+  token: string;
+  email: string;
+  organizationName: string;
+  /** A personal workspace (docs/adr/0080): for the person, or for their child by first name. */
+  personal: { forWhom: "me" | "child"; childFirstName: string | null } | null;
+};
 
 /** A field the invitation decided: visibly settled, not visibly disabled. */
 const lockedClass = "bg-muted text-muted-foreground focus-visible:ring-0";
@@ -37,7 +43,7 @@ export function RegisterForm({ invitation }: { invitation?: InvitationPrefill })
     const result = await registerAction({
       name: String(form.get("name") ?? ""),
       email: String(form.get("email") ?? ""),
-      organizationName: String(form.get("organizationName") ?? ""),
+      organizationName: invitation?.organizationName ?? String(form.get("organizationName") ?? ""),
       password: String(form.get("password") ?? ""),
       ...(invitation ? { invitationToken: invitation.token } : {}),
     });
@@ -48,6 +54,7 @@ export function RegisterForm({ invitation }: { invitation?: InvitationPrefill })
         invalid: t("errorInvalid"),
         closed: t("closedBody"),
         invitationInvalid: t("errorInvitationInvalid"),
+        tooYoung: t("errorTooYoung"),
         generic: t("errorGeneric"),
       };
       setError(messages[result.error]);
@@ -84,22 +91,35 @@ export function RegisterForm({ invitation }: { invitation?: InvitationPrefill })
                 className={invitation ? lockedClass : undefined}
               />
             </Field>
-            <Field>
-              <FieldLabel htmlFor="organizationName">{t("organizationName")}</FieldLabel>
-              <Input
-                id="organizationName"
-                name="organizationName"
-                autoComplete="organization"
-                required
-                maxLength={200}
-                readOnly={Boolean(invitation)}
-                defaultValue={invitation?.organizationName}
-                className={invitation ? lockedClass : undefined}
-              />
-              <FieldDescription id={invitation ? "invitation-locked" : undefined}>
-                {invitation ? t("lockedHint") : t("organizationHint")}
-              </FieldDescription>
-            </Field>
+            {invitation?.personal ? (
+              // A personal workspace has no name to type: it is the
+              // rider's first name, fixed by the invitation.
+              <p className="border-border bg-accent/40 rounded-lg border p-3 text-2sm leading-relaxed">
+                {invitation.personal.forWhom === "child"
+                  ? t("personalChild", {
+                      workspace: invitation.organizationName,
+                      child: invitation.personal.childFirstName ?? "",
+                    })
+                  : t("personalMe", { workspace: invitation.organizationName })}
+              </p>
+            ) : (
+              <Field>
+                <FieldLabel htmlFor="organizationName">{t("organizationName")}</FieldLabel>
+                <Input
+                  id="organizationName"
+                  name="organizationName"
+                  autoComplete="organization"
+                  required
+                  maxLength={200}
+                  readOnly={Boolean(invitation)}
+                  defaultValue={invitation?.organizationName}
+                  className={invitation ? lockedClass : undefined}
+                />
+                <FieldDescription id={invitation ? "invitation-locked" : undefined}>
+                  {invitation ? t("lockedHint") : t("organizationHint")}
+                </FieldDescription>
+              </Field>
+            )}
             <Field>
               <FieldLabel htmlFor="password">{t("password")}</FieldLabel>
               <Input
@@ -127,7 +147,7 @@ export function RegisterForm({ invitation }: { invitation?: InvitationPrefill })
       </CardContent>
       <CardFooter className="justify-center text-sm">
         <span className="text-muted-foreground">{t("haveAccount")}&nbsp;</span>
-        <Link href="/login" className="font-medium underline-offset-4 hover:underline">
+        <Link href="/login" className="focus-ring font-medium underline-offset-4 hover:underline">
           {t("loginLink")}
         </Link>
       </CardFooter>

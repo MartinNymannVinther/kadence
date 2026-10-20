@@ -1,8 +1,12 @@
-import { and, asc, eq, gte, inArray, lte } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, lt, lte, sql } from "drizzle-orm";
 import { z } from "zod";
 import { checkins, type CheckinRow } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
+import { requireHealthConsent } from "@/modules/consent/service";
+import { isRedCheckin } from "@/modules/load/wellbeing";
 import { requireWriteFor } from "@/modules/team/access";
+import { MAX_KNOWN_PAINS } from "@/modules/load/usual-pain";
+import { usualPainsFor } from "./known-pains";
 
 /**
  * The daily check-in: how the rider slept, how much energy and mood they
@@ -10,7 +14,11 @@ import { requireWriteFor } from "@/modules/team/access";
  * anything hurts (ATK's four steps). Short enough to do on the way out of
  * the door; one per day, written again if the rider changes their mind.
  * The rider writes it (a coach may, after a conversation); parents read
- * it only when the rider shares wellbeing (ADR 0011).
+ * it only when the rider shares wellbeing (ADR 0011). In a personal
+ * workspace whose consent to health data is withdrawn, nobody writes it
+ * (docs/adr/0088). The known pains ticked "som det plejer" are stored with
+ * it as they stand that day (docs/adr/0097), so its zone is worked out
+ * from the row alone.
  */
 
 const scale = z.coerce.number().int().min(1).max(5).nullable().default(null);
@@ -28,17 +36,38 @@ export const CheckinInput = z.object({
   painWhere: z.string().trim().max(200).default(""),
   ill: z.coerce.number().int().min(0).max(1).default(0),
   note: z.string().trim().max(2000).default(""),
+  /** The rider's known pains ticked "som det plejer" today. */
+  knownPainIds: z.array(z.string().min(1).max(100)).max(MAX_KNOWN_PAINS).default([]),
 });
-export type CheckinInputT = z.infer<typeof CheckinInput>;
+/** The input as a service caller gives it: without known pains, none is ticked. */
+export type CheckinInputT = Omit<z.infer<typeof CheckinInput>, "knownPainIds"> & {
+  knownPainIds?: string[];
+};
 
+/**
+ * Saves the day's check-in, or changes it. `red_since` says when it last
+ * turned red (`isRedCheckin`): set when it becomes red, kept as it was
+ * while it stays red, cleared when it is put right. A coach's wellbeing
+ * reminder counts from it (docs/adr/0060), so saving a red check-in again
+ * is not news, and one changed from green to red later in the day is.
+ */
 export async function saveCheckin(ctx: OrgContext, input: CheckinInputT): Promise<void> {
   await withOrgContext(ctx, async (tx) => {
     await requireWriteFor(tx, ctx, input.riderId);
-    const { riderId, onDate, ...values } = input;
+    // Off once the person withdrew their consent to health data (ADR 0088).
+    await requireHealthConsent(tx);
+    const { riderId, onDate, knownPainIds = [], ...answers } = input;
+    // Every id must be this rider's known pain; the check-in keeps a snapshot.
+    const values = { ...answers, usualPains: await usualPainsFor(tx, riderId, knownPainIds) };
+    const red = isRedCheckin(values);
     await tx
       .insert(checkins)
-      .values({ orgId: ctx.orgId, riderId, onDate, ...values })
-      .onConflictDoUpdate({ target: [checkins.riderId, checkins.onDate], set: values });
+      .values({ orgId: ctx.orgId, riderId, onDate, ...values, redSince: red ? sql`now()` : null })
+      .onConflictDoUpdate({
+        target: [checkins.riderId, checkins.onDate],
+        // On conflict, the column names the row as it was before this save.
+        set: { ...values, redSince: red ? sql`coalesce(${checkins.redSince}, now())` : null },
+      });
   });
 }
 
@@ -68,6 +97,26 @@ export async function getCheckin(
       .select()
       .from(checkins)
       .where(and(eq(checkins.riderId, riderId), eq(checkins.onDate, onDate)));
+    return row ?? null;
+  });
+}
+
+/**
+ * The rider's last check-in before a day: what the shorter check-in starts
+ * the answers behind "Mere" from (src/modules/wellbeing/prefill.ts).
+ */
+export async function getLastCheckin(
+  ctx: OrgContext,
+  riderId: string,
+  before: string,
+): Promise<CheckinRow | null> {
+  return withOrgContext(ctx, async (tx) => {
+    const [row] = await tx
+      .select()
+      .from(checkins)
+      .where(and(eq(checkins.riderId, riderId), lt(checkins.onDate, before)))
+      .orderBy(desc(checkins.onDate))
+      .limit(1);
     return row ?? null;
   });
 }

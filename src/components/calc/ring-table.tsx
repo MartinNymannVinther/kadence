@@ -26,7 +26,7 @@ export function RingTable({
   const rows = ringTable(COGS, limit, circumference);
 
   return (
-    <section className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-[var(--surface-shadow)] sm:p-5">
+    <section className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-surface sm:p-5">
       <h2 className="text-lg font-semibold">{t("title")}</h2>
       <table className="w-full border-collapse text-2sm">
         <caption className="text-meta pb-2 text-left text-xs">

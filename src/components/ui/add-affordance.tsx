@@ -21,7 +21,7 @@ function AddAffordance({
       type="button"
       onClick={onClick}
       className={cn(
-        "border-input text-meta hover:border-label hover:text-foreground focus-visible:outline-ring flex w-full items-center gap-2 rounded-lg border border-dashed px-3 py-2 text-left text-sm transition-colors duration-[120ms] outline-none focus-visible:outline-2",
+        "border-input text-meta hover:border-label hover:text-foreground focus-visible:outline-ring flex w-full items-center gap-2 rounded-lg border border-dashed px-3 py-2 text-left text-sm transition-colors duration-[120ms] outline-none focus-visible:outline-2 focus-visible:outline-solid",
         className,
       )}
     >

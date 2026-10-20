@@ -12,24 +12,28 @@ import { cn } from "@/lib/utils";
 /**
  * "Go to": a year with arrows and its twelve months, each a link to the
  * week the month starts in — so August is two clicks away, not six weeks
- * of arrows. Links, like the week arrows: the back button knows them.
- * `weekHref` is the calendar's address with `__WEEK__` where the week
+ * of arrows — or, in the month view, to the month itself (docs/adr/0093).
+ * Links, like the week arrows: the back button knows them. `href` is the
+ * calendar's address with `__AT__` where the week's Monday or the month
  * goes, keeping the rider and view already chosen.
  */
 export function MonthJump({
-  monday,
+  at,
   today,
-  weekHref,
+  href,
+  target = "week",
 }: {
-  monday: string;
+  /** A day in what is shown: the week's Monday, or the month's first. */
+  at: string;
   today: string;
-  weekHref: string;
+  href: string;
+  target?: "week" | "month";
 }) {
   const t = useTranslations("calendar.nav");
   const locale = useLocale();
   const [open, setOpen] = useState(false);
-  const [year, setYear] = useState(Number(monday.slice(0, 4)));
-  const shown = monday.slice(0, 7);
+  const [year, setYear] = useState(Number(at.slice(0, 4)));
+  const shown = at.slice(0, 7);
   const now = today.slice(0, 7);
   const monthName = new Intl.DateTimeFormat(locale === "en" ? "en-GB" : "da-DK", {
     month: "short",
@@ -41,7 +45,7 @@ export function MonthJump({
       open={open}
       onOpenChange={(next) => {
         setOpen(next);
-        if (next) setYear(Number(monday.slice(0, 4)));
+        if (next) setYear(Number(at.slice(0, 4)));
       }}
     >
       <Popover.Trigger
@@ -76,12 +80,12 @@ export function MonthJump({
             <ul className="grid grid-cols-3 gap-1.5">
               {Array.from({ length: 12 }, (_, m) => {
                 const month = `${year}-${String(m + 1).padStart(2, "0")}`;
-                const week = mondayOf(`${month}-01`);
+                const place = target === "month" ? month : mondayOf(`${month}-01`);
                 const current = month === shown;
                 return (
                   <li key={month}>
                     <Link
-                      href={weekHref.replace("__WEEK__", week)}
+                      href={href.replace("__AT__", place)}
                       onClick={() => setOpen(false)}
                       aria-current={current ? "date" : undefined}
                       className={cn(

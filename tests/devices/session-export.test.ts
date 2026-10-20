@@ -82,8 +82,8 @@ beforeAll(async () => {
   await session("sx_free", { title: "Fri tur", sort: 3, structure: { kind: "bike", steps: [] } });
 });
 
-beforeEach(() => {
-  resetRateLimits();
+beforeEach(async () => {
+  await resetRateLimits();
   auth.session = IDA;
 });
 
@@ -145,7 +145,8 @@ describe("who may have it", () => {
   });
 
   it("is counted: a week is seven files, three hundred an hour is not a week", async () => {
-    for (let i = 0; i < 300; i++) rateLimit(`session-export:${IDA.userId}`, 300, 60 * 60 * 1000);
+    for (let i = 0; i < 300; i++)
+      await rateLimit(`session-export:${IDA.userId}`, 300, 60 * 60 * 1000);
     expect((await get("sx_tempo")).status).toBe(429);
     auth.session = COACH;
     expect((await get("sx_tempo")).status).toBe(200);

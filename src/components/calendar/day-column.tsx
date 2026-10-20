@@ -47,9 +47,11 @@ export function DayColumn({
   return (
     <li
       {...dropProps}
+      // The month view's days lead here (docs/adr/0093).
+      id={`day-${date}`}
       aria-current={isToday ? "date" : undefined}
       className={cn(
-        "flex min-w-0 flex-col gap-2 rounded-xl border px-2.5 py-1.5 transition-colors duration-[120ms] @4xl:min-h-52 @4xl:py-2.5",
+        "flex min-w-0 scroll-mt-24 flex-col gap-2 rounded-xl border px-2.5 py-1.5 transition-colors duration-[120ms] @4xl:min-h-52 @4xl:py-2.5",
         isToday ? "border-primary/40 bg-accent/40" : "border-border bg-secondary/40",
         isOver && "outline-primary/70 outline-2 -outline-offset-2 outline-dashed",
       )}
@@ -89,7 +91,7 @@ export function DayColumn({
       {events.length > 0 && (
         <div className="flex flex-col gap-1">
           {events.map((event) => (
-            <EventChip key={event.id} event={event} onOpen={onOpenEvent?.(event)} />
+            <EventChip key={event.id} event={event} onOpen={onOpenEvent?.(event)} day={date} full />
           ))}
         </div>
       )}

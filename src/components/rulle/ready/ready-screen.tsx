@@ -19,7 +19,8 @@ import { SessionCard } from "./session-card";
  * the trainer and the route, each in its card, and one Start. The route is
  * ready by itself and the session was chosen by the coach, so for most
  * rides the only thing to do here is to connect the trainer; a rider with
- * nothing planned chooses a session and a route (ADR 0035).
+ * nothing planned chooses a session and a route (ADR 0035). Without
+ * Rulle's world there is no route to choose, and no card for it (ADR 0057).
  */
 export function ReadyScreen({
   picked,
@@ -31,6 +32,7 @@ export function ReadyScreen({
   missing,
   devices,
   course,
+  world,
   kept,
   onChoose,
   onStart,
@@ -38,7 +40,7 @@ export function ReadyScreen({
   onDiscardKept,
 }: {
   picked: Picked | null;
-  choices: { today: Picked[]; team: Picked[]; dcu: Picked[] };
+  choices: { today: Picked[]; team: Picked[]; kadence: Picked[]; dcu: Picked[] };
   timeline: SessionTimeline | null;
   today: string;
   trial: boolean;
@@ -46,6 +48,8 @@ export function ReadyScreen({
   missing: boolean;
   devices: Devices;
   course: ReturnType<typeof useCourse>;
+  /** The installation has Rulle's world on, and so a route to choose. */
+  world: boolean;
   kept: KeptRide | null;
   onChoose: (id: string | null) => void;
   onStart: () => void;
@@ -76,6 +80,7 @@ export function ReadyScreen({
           picked={picked}
           today={choices.today}
           team={choices.team}
+          kadence={choices.kadence}
           dcu={choices.dcu}
           timeline={timeline}
           todayDate={today}
@@ -86,13 +91,15 @@ export function ReadyScreen({
         />
         <div className="flex flex-col gap-6">
           <DeviceCard devices={devices} />
-          <RouteCard
-            state={course.state}
-            route={course.route}
-            routes={course.routes}
-            onChoose={course.chooseRoute}
-            onFile={(file) => void course.loadFile(file)}
-          />
+          {world && (
+            <RouteCard
+              state={course.state}
+              route={course.route}
+              routes={course.routes}
+              onChoose={course.chooseRoute}
+              onFile={(file) => void course.loadFile(file)}
+            />
+          )}
         </div>
       </div>
 

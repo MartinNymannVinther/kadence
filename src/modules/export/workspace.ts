@@ -1,7 +1,9 @@
 import { and, eq, sql } from "drizzle-orm";
 import { auth } from "@/core/auth/auth";
-import { memberships, users } from "@/core/db/schema";
+import { memberships, organizations, users } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
+import { errorName, log } from "@/core/log";
+import { memberAddress, memberAddresses } from "@/modules/team/addresses";
 
 /**
  * The workspace itself: who is in it, and the one way out. Deletion runs
@@ -15,7 +17,9 @@ export type Member = { userId: string; name: string; email: string; role: string
 /**
  * The members page: the whole team for a coach, only themselves for a
  * rider or a parent — young riders' addresses are not a teammate's to
- * read (ADR 0011).
+ * read (ADR 0011). The address comes from `team_member_addresses()`,
+ * which hands a coach the team's and anyone else their own, so the rows
+ * here are the ones that carry one (docs/adr/0070).
  */
 export async function listMembers(ctx: OrgContext): Promise<Member[]> {
   return withOrgContext(ctx, async (tx) => {
@@ -23,12 +27,13 @@ export async function listMembers(ctx: OrgContext): Promise<Member[]> {
       .select({
         userId: memberships.userId,
         name: users.name,
-        email: users.email,
+        email: memberAddress.email,
         role: memberships.role,
         joinedAt: memberships.createdAt,
       })
       .from(memberships)
       .innerJoin(users, eq(users.id, memberships.userId))
+      .innerJoin(memberAddresses, eq(memberAddress.userId, memberships.userId))
       .where(
         and(
           eq(memberships.organizationId, ctx.orgId),
@@ -36,7 +41,7 @@ export async function listMembers(ctx: OrgContext): Promise<Member[]> {
         ),
       )
       .orderBy(memberships.createdAt);
-    return rows;
+    return rows.map((row) => ({ ...row, email: row.email ?? "" }));
   });
 }
 
@@ -55,6 +60,18 @@ export async function currentRole(ctx: OrgContext): Promise<string | null> {
       .where(and(eq(memberships.userId, ctx.userId), eq(memberships.organizationId, ctx.orgId)))
       .limit(1);
     return row?.role ?? null;
+  });
+}
+
+/** The active workspace's name, as its members see it. */
+export async function workspaceName(ctx: OrgContext): Promise<string | null> {
+  return withOrgContext(ctx, async (tx) => {
+    const [row] = await tx
+      .select({ name: organizations.name })
+      .from(organizations)
+      .where(eq(organizations.id, ctx.orgId))
+      .limit(1);
+    return row?.name ?? null;
   });
 }
 
@@ -114,7 +131,7 @@ export async function deleteWorkspace(
     // docker-compose.yml starts the app only on the migration step's
     // `service_completed_successfully`.
     if (sqlStateOf(error) === INSUFFICIENT_PRIVILEGE) return "notOwner";
-    console.error("workspace: delete failed", error);
+    await log.error("workspace: delete failed", { orgId: ctx.orgId, error: errorName(error) });
     return "failed";
   }
   return "deleted";

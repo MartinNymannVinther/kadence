@@ -8,9 +8,9 @@ export default async function NotFoundPage() {
 
   return (
     <main className="bg-background flex min-h-svh flex-col items-center justify-center gap-7 p-8 text-center">
-      <Wordmark className="text-[1.375rem]" />
+      <Wordmark className="text-brand" />
       <div className="flex max-w-md flex-col gap-2.5">
-        <h1 className="text-[1.625rem] leading-tight font-semibold tracking-[-0.02em]">
+        <h1 className="text-title-section leading-tight font-semibold tracking-[-0.02em]">
           {t("title")}
         </h1>
         <p className="text-muted-foreground text-reading leading-relaxed">{t("body")}</p>

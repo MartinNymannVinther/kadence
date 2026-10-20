@@ -4,14 +4,16 @@ import { useLocale, useTranslations } from "next-intl";
 import { LegendKey, type LegendItem } from "@/components/charts/chart-legend";
 import { num } from "@/components/charts/format";
 import { cn } from "@/lib/utils";
+import { referenceOf } from "@/modules/paradigms";
 import { dcuState, type Volume } from "@/modules/season/volume";
 
 /**
- * The four numbers on one bar (ADR 0040), drawn the same wherever they
- * stand — the calendar's week, the team's rows, the season's months. A
- * bullet bar: DCU's corridor as the band behind, the coach's goal as an
- * upright marker, the planned hours as an outline and the done hours
- * filling it. The bar is a picture of the numbers beside it, never the
+ * The four numbers on one bar (ADR 0040, named as in ADR 0062), drawn the
+ * same wherever they stand — the calendar's week, the team's rows, the
+ * season's months. A bullet bar: DCU's corridor as the band behind, the
+ * season plan as an upright marker, the hours put in the calendar as an
+ * outline and the hours ridden filling it. For a senior the band is the
+ * training profile's, and the words say so (docs/adr/0091). The bar is a picture of the numbers beside it, never the
  * only place they are: every value is also written out, with a key drawn
  * like its mark.
  */
@@ -85,12 +87,13 @@ export function VolumeBar({
   const t = useTranslations("volume");
   const locale = useLocale();
   const h = (v: number) => num(v, locale, 1);
+  const ref = referenceOf(volume.basis);
   const dcu = volume.dcu && volume.dcu.high > 0 ? volume.dcu : null;
   // A DCU number of nothing is October's "pause + frit", not a class without hours.
   const dcuText = dcu
     ? t("range", { low: h(dcu.low), high: h(dcu.high) })
     : volume.dcu
-      ? t("dcuBreak")
+      ? t("dcuBreak", { ref })
       : t("noDcu");
   const goalText = volume.goal !== null ? t("hours", { hours: h(volume.goal) }) : t("noGoal");
   const said = t("said", {
@@ -98,6 +101,7 @@ export function VolumeBar({
     planned: h(volume.planned),
     goal: goalText,
     dcu: dcuText,
+    ref,
   });
 
   if (compact)
@@ -107,17 +111,22 @@ export function VolumeBar({
         <p aria-hidden className="text-xs font-medium tabular-nums">
           {t("compact", { done: h(volume.done), planned: h(volume.planned) })}
         </p>
-        <p aria-hidden className="text-meta truncate text-2xs tabular-nums">
+        {/* Two short items that wrap onto two lines in a narrow column rather than cut off. */}
+        <p aria-hidden className="text-meta flex flex-wrap gap-x-2.5 text-2xs tabular-nums">
           {[
             volume.goal !== null ? t("goalShort", { hours: h(volume.goal) }) : null,
             dcu
-              ? t("dcuShort", { low: h(dcu.low), high: h(dcu.high) })
+              ? t("dcuShort", { low: h(dcu.low), high: h(dcu.high), ref })
               : volume.dcu
-                ? t("dcuBreak")
+                ? t("dcuBreak", { ref })
                 : null,
           ]
             .filter(Boolean)
-            .join(" · ")}
+            .map((item) => (
+              <span key={item} className="whitespace-nowrap">
+                {item}
+              </span>
+            ))}
         </p>
         <span className="sr-only">{said}</span>
       </div>
@@ -127,17 +136,18 @@ export function VolumeBar({
   const off = volume.goal !== null ? volume.expected - volume.goal : null;
   const near = off !== null && Math.abs(off) <= Math.max(0.5, (volume.goal ?? 0) * 0.1);
   const verdict = [
-    state ? t(`state.${state}`) : null,
+    state ? t(`state.${state}`, { ref }) : null,
     off === null
       ? null
       : near
         ? t("toGoal.on")
         : t(off > 0 ? "toGoal.over" : "toGoal.under", { hours: h(Math.abs(off)) }),
   ].filter(Boolean);
+  // In the order the season page says them: Sæsonplan · Lagt ind · Kørt · DCU.
   const items = [
-    { key: "done", value: t("hours", { hours: h(volume.done) }) },
-    { key: "planned", value: t("hours", { hours: h(volume.planned) }) },
     { key: "goal", value: goalText },
+    { key: "planned", value: t("hours", { hours: h(volume.planned) }) },
+    { key: "done", value: t("hours", { hours: h(volume.done) }) },
     { key: "dcu", value: dcuText },
   ] as const;
 
@@ -148,7 +158,7 @@ export function VolumeBar({
         {items.map((item) => (
           <div key={item.key} className="flex min-w-0 items-center gap-1.5">
             <LegendKey {...MARKS[item.key]} />
-            <dt className="text-meta">{t(item.key)}</dt>
+            <dt className="text-meta">{t(item.key, { ref })}</dt>
             <dd className="font-medium tabular-nums">{item.value}</dd>
           </div>
         ))}

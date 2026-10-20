@@ -1,11 +1,10 @@
 import { cleanupExpiredDemos, demoEnabled } from "../src/modules/demo/service";
 
 /**
- * Deletes expired demo workspaces. The app does this on each visit, so
- * this script is for an installation that wants it on a timer instead —
- * a cron entry on a machine with a checkout. Not a task inside the
- * container: neither image carries `scripts/` (see the Dockerfile), and
- * the server's own way is a POST to `/api/demo/cleanup`.
+ * Deletes expired demo workspaces, now. The worker does this every hour
+ * (`demo.cleanup`, docs/adr/0085) and a new demo does it first, so this
+ * script is for a person who wants it done this minute, on a machine with
+ * a checkout. The server's own way is a POST to `/api/demo/cleanup`.
  *
  *   pnpm script scripts/cleanup-demos.ts
  */

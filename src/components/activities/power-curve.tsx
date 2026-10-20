@@ -113,7 +113,7 @@ export function PowerCurve({
           viewBox={`0 0 ${width} ${HEIGHT}`}
           role="img"
           aria-label={t("label", { from: duration(first), to: duration(last) })}
-          className="focus-visible:outline-ring block touch-pan-y rounded-md outline-none focus-visible:outline-2"
+          className="focus-visible:outline-ring block touch-pan-y rounded-md outline-none focus-visible:outline-2 focus-visible:outline-solid"
           {...hover.handlers}
         >
           {ticks.map((tick) => (

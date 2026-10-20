@@ -20,6 +20,49 @@ export {
   DEFAULT_GUIDANCE,
   GUIDANCE_IDS,
   isGuidanceId,
+  isPlanBasis,
   type GuidanceId,
   type Paradigm,
+  type PlanBasis,
 } from "./paradigm";
+export {
+  DEFAULT_SENIOR_PROFILE,
+  SENIOR_BASES,
+  SENIOR_HOURS,
+  SENIOR_LONGEST_RIDE,
+  SENIOR_PROFILES,
+  isSeniorBasis,
+  isSeniorProfile,
+  profileOf,
+  referenceOf,
+  seniorBasisOf,
+  seniorMonthHours,
+  seniorSeasonHours,
+  seniorStrengthFrequency,
+  seniorWeeklyCorridor,
+  type SeniorBasis,
+  type Reference,
+  type SeniorProfile,
+} from "./senior";
+export {
+  SENIOR_BIKE_SESSIONS,
+  seniorSession,
+  sessionsFor,
+  type SeniorBikeSession,
+  type SessionIntensity,
+} from "./senior-sessions";
+export {
+  SENIOR_STRENGTH_PROGRAMMES,
+  strengthProgrammeFor,
+  type SeniorStrengthProgramme,
+} from "./senior-strength";
+export {
+  HARD_PER_WEEK,
+  SENIOR_CONTENT_KEYS,
+  SENIOR_SEASONS,
+  SENIOR_WEEKS,
+  seasonOfMonth,
+  seniorWeek,
+  type SeniorSeason,
+  type SeniorWeek,
+} from "./senior-weeks";

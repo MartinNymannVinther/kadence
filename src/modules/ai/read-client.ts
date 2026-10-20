@@ -1,7 +1,13 @@
 import type { ProposalResult } from "./wire";
 
 /** The read-only AI routes under /api/ai; each one is a file in src/app/api/ai. */
-export type AiRoad = "week-draft" | "build-workout" | "group-week" | "coach-brief";
+export type AiRoad =
+  | "week-draft"
+  | "build-workout"
+  | "build-program"
+  | "group-week"
+  | "coach-brief"
+  | "session-comment";
 
 /**
  * The client half of the read-only AI doors (docs/adr/0034). A plain

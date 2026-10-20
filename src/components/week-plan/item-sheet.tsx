@@ -3,6 +3,11 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { TemplatePicker, type TemplateOption } from "@/components/calendar/template-picker";
+import {
+  TimePlaceFields,
+  timePlaceDraft,
+  timePlaceValue,
+} from "@/components/calendar/time-place-fields";
 import { Button } from "@/components/ui/button";
 import { SegmentedChoice } from "@/components/ui/segmented";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
@@ -14,8 +19,8 @@ import { newKey, type PlanItem } from "./types";
 /**
  * A session for one day of the week plan: from the library, or built here
  * with the same builder — "Byg med AI" included — as anywhere a session is
- * written. Nothing reaches a calendar from here; the plan is laid in as a
- * whole.
+ * written, with a time and a place when it is ridden together (ADR 0058).
+ * Nothing reaches a calendar from here; the plan is laid in as a whole.
  */
 export function ItemSheet({
   open,
@@ -46,11 +51,13 @@ export function ItemSheet({
   const [draft, setDraft] = useState(() =>
     newDraft(item?.kind === "built" ? item.session : undefined),
   );
+  const [at, setAt] = useState(() => timePlaceDraft(item));
   const [problem, setProblem] = useState<string | null>(null);
 
   function save(event: React.FormEvent) {
     event.preventDefault();
     const key = item?.key ?? newKey();
+    const when = timePlaceValue(at);
     if (mode === "template") {
       const template = templates.find((tpl) => tpl.id === templateId);
       if (!template) return setProblem(add("pickTemplate"));
@@ -62,12 +69,13 @@ export function ItemSheet({
         name: template.name,
         sport: template.sport,
         minutes: template.plannedMinutes,
+        ...when,
       });
     } else {
       const checked = checkDraft(draft);
       if (!checked.ok)
         return setProblem(problemText(checked.problem, draft.structures[draft.sport], problems));
-      onSave({ key, day, kind: "built", session: checked.value });
+      onSave({ key, day, kind: "built", session: checked.value, ...when });
     }
     onOpenChange(false);
   }
@@ -79,6 +87,7 @@ export function ItemSheet({
           <SheetTitle className="text-lg font-semibold">
             {item ? t("editTitle", { day: dayLabel }) : t("addTitle", { day: dayLabel })}
           </SheetTitle>
+          <TimePlaceFields value={at} onChange={setAt} />
           <SegmentedChoice
             label={add("how")}
             value={mode}

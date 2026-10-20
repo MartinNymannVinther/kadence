@@ -13,7 +13,7 @@ import {
 import { domainId, users } from "./foundation";
 import { tenant, timestamps } from "./shared";
 import { riders } from "./team";
-import { calendarEvents } from "./training";
+import { calendarEvents } from "./calendar";
 
 /**
  * The club championship (docs/adr/0051): the one place in Kadence where

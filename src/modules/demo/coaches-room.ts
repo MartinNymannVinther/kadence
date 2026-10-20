@@ -15,6 +15,15 @@ import { pick, type L } from "./seed-data";
 
 const HOUR = 60 * 60 * 1000;
 
+/**
+ * Whether the active workspace is a demo with a room of its own. The demo
+ * team's seed is also used for test teams on a real installation
+ * (scripts/seed-test-teams.ts), where the example threads must not go.
+ */
+export async function inDemoRoom(ctx: OrgContext): Promise<boolean> {
+  return withOrgContext(ctx, (tx) => isDemoRoom(tx));
+}
+
 export async function seedCoachesRoom(ctx: OrgContext, l: L, now = new Date()): Promise<void> {
   const at = (daysAgo: number, hoursBack: number) =>
     new Date(now.getTime() - daysAgo * 24 * HOUR - hoursBack * HOUR);

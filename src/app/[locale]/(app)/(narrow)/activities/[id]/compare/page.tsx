@@ -9,6 +9,7 @@ import { durationText } from "@/components/training/duration";
 import { EmptyState } from "@/components/ui/empty-state";
 import { getOrgContext } from "@/core/auth/session";
 import { Link, redirect } from "@/i18n/navigation";
+import { rideNameText } from "@/modules/activities/ride-name";
 import { getRidesToCompare } from "@/modules/training/companions";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -41,7 +42,7 @@ export default async function ComparePage({
   const t = await getTranslations("activities.together");
   const summary = await getTranslations("activities.summary");
   const duration = await getTranslations("training.duration");
-  const sports = await getTranslations("training.sport");
+  const names = await getTranslations("activities.names");
   const { id } = await params;
   const ids = [
     ...new Set([id, ...((await searchParams).with ?? "").split(",").filter(Boolean)]),
@@ -63,13 +64,12 @@ export default async function ComparePage({
         {t("back")}
       </Link>
       <header className="flex flex-col gap-1">
-        <h1 className="text-[1.625rem] leading-tight font-semibold tracking-[-0.02em]">
+        <h1 className="text-title-section leading-tight font-semibold tracking-[-0.02em]">
           {t("pageTitle")}
         </h1>
         {first && (
           <p className="text-meta text-2sm first-letter:uppercase">
-            {dayLong(first.activity.onDate, locale)} ·{" "}
-            {first.activity.title || sports(first.activity.sport as "bike")}
+            {dayLong(first.activity.onDate, locale)} · {rideNameText(first.name, names)}
           </p>
         )}
       </header>

@@ -2,6 +2,7 @@ import { sql } from "drizzle-orm";
 import {
   bigint,
   boolean,
+  check,
   index,
   integer,
   jsonb,
@@ -49,6 +50,14 @@ export const users = pgTable("users", {
    * writable from a request (Better Auth field is `input: false`).
    */
   platformRole: text("platform_role"),
+  /**
+   * Created through door 2 (docs/adr/0088): a person's own workspace
+   * without an application. Such an account confirms its address within a
+   * week, or is locked until it does, and is deleted after thirty days
+   * unconfirmed (verify-days.ts). Set by the
+   * sign-up hook from door 2's key; never writable from a request.
+   */
+  selfSignup: boolean("self_signup").notNull().default(false),
   ...timestamps,
 });
 
@@ -108,14 +117,46 @@ export const verifications = pgTable(
   (t) => [index("verifications_identifier_idx").on(t.identifier)],
 );
 
-export const organizations = pgTable("organizations", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  slug: text("slug").notNull().unique(),
-  logo: text("logo"),
-  metadata: text("metadata"),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-});
+export const organizations = pgTable(
+  "organizations",
+  {
+    id: text("id").primaryKey(),
+    name: text("name").notNull(),
+    slug: text("slug").notNull().unique(),
+    logo: text("logo"),
+    metadata: text("metadata"),
+    /**
+     * What the workspace is (docs/adr/0080): a club or team, or one
+     * person's own training. Better Auth does not know the column and no
+     * request body can set it (a before-hook in src/core/auth/auth.ts
+     * refuses one that tries); our registration code sets it with a
+     * direct update right after the organization is created.
+     */
+    kind: text("kind").notNull().default("club"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    /**
+     * What the workspace pays (docs/adr/0090): 'free', 'trial', 'paid' or
+     * 'expired', with the dates beside it. Like `kind`, never set from a
+     * request: the registration sets it on the auth role, and afterwards
+     * only the database's own functions move it (set_payment,
+     * set_plan_free, expire_workspaces in drizzle/0052).
+     */
+    plan: text("plan").notNull().default("free"),
+    /** A key of price_plans; null is the one the kind gives ('person' or 'club'). */
+    pricePlan: text("price_plan"),
+    trialEndsAt: timestamp("trial_ends_at", { withTimezone: true }),
+    paidUntil: timestamp("paid_until", { withTimezone: true }),
+    freeReason: text("free_reason"),
+    /** A free workspace with a date becomes a trial when it passes ('first-season', 'youth'). */
+    freeUntil: timestamp("free_until", { withTimezone: true }),
+  },
+  (t) => [
+    check("organizations_kind", sql`${t.kind} in ('club', 'personal')`),
+    check("organizations_plan", sql`${t.plan} in ('free', 'trial', 'paid', 'expired')`),
+    index("organizations_kind_idx").on(t.kind),
+    index("organizations_plan_idx").on(t.plan),
+  ],
+);
 
 export const memberships = pgTable(
   "memberships",
@@ -238,73 +279,8 @@ export const auditLog = pgTable(
   (t) => [
     index("audit_log_org_created_idx").on(t.orgId, t.createdAt),
     index("audit_log_entity_idx").on(t.entityType, t.entityId),
-  ],
-);
-
-/* ------------------------------------------------------------------ */
-/* Admission: who may create an organization on this installation.   */
-/* Platform-level tables without org_id, reachable only through the   */
-/* auth role - see drizzle/0001 and ADR 0004.                          */
-/* ------------------------------------------------------------------ */
-
-/**
- * Someone asking to use this installation. Holds personal data about a
- * person who is not (yet) a user, which is why the table is narrow and
- * declines are kept only as a record of the decision.
- */
-export const accessRequests = pgTable(
-  "access_requests",
-  {
-    id: domainId("id"),
-    name: text("name").notNull(),
-    email: text("email").notNull(),
-    organizationName: text("organization_name").notNull(),
-    message: text("message"),
-    /** pending | approved | declined */
-    status: text("status").notNull().default("pending"),
-    ipAddress: text("ip_address"),
-    userAgent: text("user_agent"),
-    decidedAt: timestamp("decided_at", { withTimezone: true }),
-    decidedBy: text("decided_by").references(() => users.id, { onDelete: "set null" }),
-    ...timestamps,
-  },
-  (t) => [
-    // One open application per address; a declined or approved one does
-    // not block a later application from the same person.
-    uniqueIndex("access_requests_pending_email_uq")
-      .on(sql`lower(${t.email})`)
-      .where(sql`${t.status} = 'pending'`),
-    index("access_requests_status_created_idx").on(t.status, t.createdAt),
-  ],
-);
-
-/**
- * A single-use key that lets one e-mail address register one account and
- * its organization while signup is otherwise closed. Only the hash is
- * stored: the plain token is shown once, to the person who created it,
- * and travels in the registration link.
- */
-export const accessInvitations = pgTable(
-  "access_invitations",
-  {
-    id: domainId("id"),
-    email: text("email").notNull(),
-    organizationName: text("organization_name").notNull(),
-    /** sha256 hex of the token in the link. */
-    tokenHash: text("token_hash").notNull(),
-    invitedBy: text("invited_by").references(() => users.id, { onDelete: "set null" }),
-    accessRequestId: text("access_request_id").references(() => accessRequests.id, {
-      onDelete: "set null",
-    }),
-    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
-    usedAt: timestamp("used_at", { withTimezone: true }),
-    usedByUserId: text("used_by_user_id").references(() => users.id, { onDelete: "set null" }),
-    /** Set when the owner issued a replacement link; the old key is dead. */
-    revokedAt: timestamp("revoked_at", { withTimezone: true }),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  },
-  (t) => [
-    uniqueIndex("access_invitations_token_hash_uq").on(t.tokenHash),
-    index("access_invitations_email_idx").on(sql`lower(${t.email})`),
+    // Three more are hand-written in drizzle/0042: (org_id, id) for the
+    // export's pages, and the partial expression indexes on
+    // before_data/after_data ->> 'rider_id' for erase_rider().
   ],
 );

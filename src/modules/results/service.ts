@@ -77,7 +77,7 @@ export async function setUciId(
       });
     if (rows.length === 0) throw new Refused("notFound");
   });
-  forgetOwnRead(input.riderId);
+  await forgetOwnRead(input.riderId);
   return { uciId, byCoach, profile };
 }
 

@@ -51,8 +51,8 @@ import { PowerTrace } from "./trace";
  *   at the block's watts, but nothing about speed or distance is recorded:
  *   a ride is what was measured.
  * - Where the rider is shown can run ahead of where they have ridden — the
- *   developer's warp, the cheat code (`shown.ts`) — but what is recorded
- *   is what was ridden.
+ *   warp, the cheat codes, the challenger's slipstream (`shown.ts`) — but
+ *   what is recorded is what was ridden.
  */
 
 /** Watts the landscape moves at when nothing measures them and the block names none. */
@@ -82,8 +82,8 @@ export class RideEngine {
   intensity = 1;
   erg = true;
   recording: Recording | null = null;
-  /** Where the rider is shown: the developer's warp and the cheat code (`shown.ts`). */
-  readonly shown = new Shown();
+  /** Where the rider is shown: the warp, the cheat codes, the challenger (`shown.ts`). */
+  readonly shown: Shown;
   private readonly trace = new PowerTrace();
   private clock: Clock | null = null;
   private speed = 0;
@@ -101,6 +101,7 @@ export class RideEngine {
     private readonly events: EngineEvents,
   ) {
     this.onTarget = new OnTarget(timeline);
+    this.shown = new Shown(course);
   }
 
   start(now: number): void {
@@ -223,7 +224,8 @@ export class RideEngine {
           : "free",
       speed: this.shown.speed(this.speed),
       distance: this.shown.place(this.distance, this.speed),
-      cheat: this.shown.cheat.on,
+      cheat: this.shown.cheat.state(),
+      race: this.shown.race.live(),
       intensity: this.intensity,
       erg: this.erg,
       trace: this.trace.values,
@@ -284,7 +286,7 @@ export class RideEngine {
       : (this.blockWatts() ?? DRAWN_WATTS);
     this.speed = nextSpeed(this.speed, watts, courseAt(this.course, this.distance).grade, dt);
     this.distance += this.speed * dt;
-    this.shown.advance(this.distance, this.speed, dt);
+    this.shown.advance(this.distance, this.speed, dt, watts, this.timeline === null);
   }
 
   private blockWatts(): number | null {

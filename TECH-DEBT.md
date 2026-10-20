@@ -52,38 +52,26 @@ The adapters (src/modules/devices) are built from the public docs; the
 endpoints those do not pin down are marked "verify against the partner
 docs on approval" in the code. Garmin does not sign its pings (what a
 forged one can do is written at `verifyWebhook`), a ride whose download
-fails is not retried by the provider (the rider sees it in the link's
-last error and can upload the file), and two refreshes of one link at
-once are not serialised. All of it waits for developer access. Garmin
+fails because the provider is down is tried again by Kadence's own
+worker for about five hours (ADR 0085) and then waits for
+`scripts/retry-jobs.ts` (the rider sees it in the link's last error and
+can upload the file), and two refreshes of one link at once are not
+serialised. All of it waits for developer access. Garmin
 has taken no new partners since March 2026
 (docs/research/garmin-without-partner-access.md), and a coach reported
 in June 2026 that Wahoo no longer passes on heart rate for riders under
 16; that report is not confirmed with Wahoo and should be asked about in
 the application.
 
-### The limiter trusts a forwarded address when nothing is in front
+### Better Auth's organization endpoints ignore an expired plan
 
-`src/core/rate-limit.ts` reads the caller's address from the right of
-X-Forwarded-For, `TRUSTED_PROXY_HOPS` from the end, and treats 0 as 1. An
-installation with no proxy in front, which 0 is there to say, therefore
-believes the one entry the caller sent: a bucket of the caller's
-choosing on every public route, the upload key's door included (the
-review of ADR 0029 found it). The entries are not checked to be
-addresses either. The fix is small — at 0 read neither header, and take
-only what parses as an address — but the file is the family's, and is
-better changed once for all siblings. Kadence's own deployment has
-Traefik in front and is not affected.
-
-### Members can read each other's addresses in the database
-
-The foundation's `users` policy (drizzle/0001, `app_select_org_members`)
-lets any member of a team read the name and email of everyone on it.
-Kadence needs the names (comment authors); no page, export or API shows
-a rider or a parent another member's address any more (ADR 0019), but
-the row is there for a query that bypasses the services. Closing it
-means a narrower view for names only, or column privileges on `users`
-for the application role — family code, better changed once for all
-siblings.
+An expired workspace (ADR 0090) refuses every server action that adds or
+changes something, but Better Auth's own endpoints — renaming the
+workspace, inviting through `/organization/invite-member`, changing a
+role — can still be called directly by a coach who knows them; Kadence's
+own buttons go through actions that refuse. Gating them needs the active
+workspace's plan in the before-hook in `src/core/auth/auth.ts`, which is
+at its size limit.
 
 ## Accepted, with the reason written down
 
@@ -105,13 +93,21 @@ with `generateStaticParams` and `setRequestLocale`.
 That is a real trade with a real cost. It deserves its own change, with a
 test, not a line in a hardening pass.
 
-### Rate limiting is per process
+### The worker runs one job at a time
 
-`src/core/rate-limit.ts` counts in memory, which is correct for one
-container behind one proxy and says so. An installation scaled to several
-instances gets a limit per instance rather than a limit. The file is
-written so that it is the only one to replace; the call sites do not
-change.
+One worker container takes the background jobs one after the other
+(ADR 0085). A slow page at Cykling Danmark or a long reminder run holds
+up a ride's import by as long as it takes, bounded by the kind's
+timeout. Two workers would be safe (SKIP LOCKED) and are one line in
+`docker-compose.yml`; they wait until `oldestPendingSeconds` in
+`/api/health` says they are needed (plan §5.5). With `WORKER=on` and no
+worker running, nothing runs the jobs; the health check and the
+Installation page show it, and nothing pages anybody yet.
+
+What still lives in one process is the teams page's fallback when its
+volume will not take a write (`latest` in `src/modules/teams/refresh.ts`,
+ADR 0072): the process that read the sources keeps them in memory, and
+the log says why.
 
 ### The workspace model key is bound to its workspace, but old ciphertexts are not
 
@@ -134,6 +130,23 @@ costs nothing while it waits.
 `app_is_guardian_of` ends a parent's access on 1 January of the year the
 rider turns 18, because Kadence only stores the birth year (DCU's classes
 go by year). Up to a year early, never late (ADR 0011).
+
+### No error reporting service
+
+A failure that is not a service's deliberate refusal is logged
+(`src/core/log.ts`) and answered to the person with a generic word
+("generic", "noModel") — nobody is paged, and nothing keeps the stack
+trace once the log line rotates away (`docker-compose.yml`'s
+`logging:`). Reading `docker logs` or Coolify's log viewer after someone
+reports a problem is what there is today (docs/deploy.md,
+"Monitoring"). A hosted error-reporting SaaS (Sentry and the like) would
+fix that, at the cost of a new subprocessor seeing every stack trace and
+whatever local variables were in scope when it was thrown — for a tool
+that holds health data about minors, that is not a trade to make by
+installing the first SDK with a free tier. Dogma four means the real
+candidate is a self-hosted, EU-run one on this same server, such as
+GlitchTip; it is left for a later story once a real winter has shown
+whether the log lines above are enough.
 
 ## Waiting for real use
 
@@ -211,6 +224,15 @@ the laptop a family actually has in front of the bike. The two metres
 the numbers are sized for are measured on paper; a rider on a real
 trainer says whether they read.
 
+A diagnostics log (`?ble=log` on `/rulle`; P1-06) now keeps the last 500
+Bluetooth events in the browser — every connect, every service and
+characteristic found, every FTMS, Cycling Power and Heart Rate
+notification with its raw bytes and what the parsers read, and every
+Control Point write and the trainer's answer — and copies them as plain
+text. `docs/rulle-proevetur.md` is Martin's checklist for the first real
+ride; what it finds, named by trainer and strap, is what closes this
+item.
+
 ### Whether the small things are too many, or too few
 
 The things that pass, the cowbell and the coffee stop (ADR 0034) have
@@ -221,16 +243,16 @@ they cheer or wear, and whether anyone wants a switch.
 
 ### A team's own routes
 
-Every rider rides one of the five routes that come with Kadence or a
+Every rider rides one of the six routes that come with Kadence or a
 GPX of their own on the device. A coach who wants the team on the same
 local loop hands out a file, and that loop runs through land made up
-from it, not the real land the five have (ADR 0035, 0036). A route shared
+from it, not the real land the six have (ADR 0035, 0036, 0046). A route shared
 through Kadence is a table with RLS, audit and isolation tests (ADR
 0033), and waits until a coach asks for it.
 
 ### The real land is a map's
 
-The land round the five routes (ADR 0035, 0036) is OpenStreetMap's and
+The land round the six routes (ADR 0035, 0036, 0046) is OpenStreetMap's and
 a height model's, drawn by rule: a building is the rectangle round its
 footprint with windows spaced evenly, a lake's shore follows a 25 m grid
 softened by the land, a wood the map does not call conifer is one or the
@@ -282,9 +304,50 @@ question of taste, not of the map.
 
 ## Paid
 
+### What was still per process
+
+Paid with backlog S-06 (drizzle/0047, ADR 0085): the line the readings
+from Cykling Danmark waited in is jobs in the database, the reminder
+timer is a recurring job taken by one worker however many app instances
+run, a ride a provider told Kadence about is a job written before the
+provider's 200 and tried again when the provider was down, and the teams
+page's one-refresh-at-a-time is a place in the counters.
+
 ### A rider cannot yet have their own trail erased
 
 Paid in wave 4: `erase_rider` (drizzle/0006) deletes one rider and the
 audit rows about them, checked by the function itself like
 `delete_workspace`, and records that an erasure happened without naming
 anyone (tests/team/erase.test.ts).
+
+### The trail copied every file, and a demo's trail stayed
+
+Paid with backlog S-04 (drizzle/0042, ADR 0084): the audit trigger
+empties `bytes` and `streams` before it builds the row image, a deleted
+workspace is one event instead of a row per row it held, an expired
+demo goes with every audit row about it, and the export names its
+columns, reads the trail in pages, is limited per workspace and has the
+ride files beside it as a ZIP. The spreadsheet's trail is capped at the
+newest 10,000 rows; the JSON has all of it.
+
+### Members can read each other's addresses in the database
+
+Paid with backlog P2-07 (drizzle/0036, ADR 0070): the application role
+has `SELECT` on `users.id` and `users.name` and on no other column, so
+the address is refused by Postgres to any query that is not the definer
+`team_member_addresses()` — the caller's own, the team's to its coach,
+and to a rider the accounts holding a guardian link to them.
+tests/rls/member-addresses.test.ts proves each. The policy and grant came
+with the foundation; the siblings carry the same debt until they lift the
+migration.
+
+### The limiter trusts a forwarded address when nothing is in front
+
+Paid with backlog P2-08: `addressBehind` in `src/core/rate-limit.ts`
+reads no forwarded header at `TRUSTED_PROXY_HOPS=0` — Next does not
+hand a route the connection's own address, so every caller shares one
+bucket, which fails closed — and takes an entry from X-Forwarded-For or
+X-Real-Ip only when `node:net` parses it as an IPv4 or IPv6 address.
+tests/core/rate-limit.test.ts covers 0, 1 and 2 hops and garbage in the
+header. The file is the family's; the siblings carry the same debt until
+they lift it.

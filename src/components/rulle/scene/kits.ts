@@ -1,0 +1,132 @@
+import { PALETTE as P } from "./palette";
+
+/**
+ * Where a bike's bars sit against the rider's own, metres: `low` lower
+ * and `reach` further forward, on a longer stem that climbs `rise` from
+ * the head tube to the bar — the head tube as long as that leaves it —
+ * and `tilt`, radians the bar is turned up about where the stem holds it,
+ * the hoods and the drops with it. The rider's hands go with them
+ * (`poseOf`).
+ */
+export type Bars = { low: number; reach: number; rise: number; tilt: number };
+export const OWN_BARS: Bars = { low: 0, reach: 0, rise: 0.03, tilt: 0 };
+
+/** A rider's colours, head to toe, and their bike's (`RiderFigure`, `RoadBike`). */
+export type Kit = {
+  jersey: string;
+  sleeve: string;
+  /** The band across the jersey's back. */
+  band: string;
+  /** How wide the band is, as a share of the torso's length: a tenth, if not given. */
+  bandWidth?: number;
+  /** A thin stripe either side of the band, a little apart from it, in its colour. */
+  bandEdges?: boolean;
+  /** A quartered jersey: its two diagonal quarters, upper left and lower right, in this colour. */
+  quarters?: string;
+  /** A soft-edged crown in this colour in the middle of the chest and of the back. */
+  crown?: string;
+  shorts: string;
+  skin: string;
+  helmet: string;
+  sock: string;
+  shoe: string;
+  glove: string;
+  lens: string;
+  frame: string;
+  /** The fork and the head tube. */
+  fork: string;
+  /** The band on the down tube. */
+  accent: string;
+  tape: string;
+  /** A road helmet with vents along its top, or a smooth aero one with its straps. */
+  helmetStyle: "vented" | "aero";
+  /** Two bands round each sleeve, if the jersey has them. */
+  sleeveStripe?: string;
+  /** The shorts' leg ends, the band nearer the knee last, if they have them. */
+  hem?: readonly [string, string];
+  /** A race number on the seat post. */
+  plate?: boolean;
+  /** Bars lower and further forward than the rider's own, for a flat back. */
+  bars?: Bars;
+};
+
+/** The rider's own: Kadence's moss, on a dark bike. */
+export const RIDER_KIT: Kit = {
+  jersey: P.jersey,
+  sleeve: P.jerseyLight,
+  band: P.jerseyLight,
+  shorts: P.shorts,
+  skin: P.skin,
+  helmet: P.helmet,
+  sock: P.sock,
+  shoe: P.shoe,
+  glove: P.glove,
+  lens: P.lens,
+  frame: P.bikeFrame,
+  fork: P.bikeFrame,
+  accent: P.jersey,
+  tape: P.barTape,
+  helmetStyle: "vented",
+};
+
+/**
+ * The challenger's (ADR 0074): a red jersey with a broad white band, a
+ * thin white stripe either side of it, and white
+ * bands round the sleeves, black shorts with red and white at the leg
+ * ends, a smooth white aero helmet, white socks and shoes, on a black aero
+ * bike with a yellow fork and head tube, a number on its post and the
+ * bars low and far forward on a long stem that climbs to them. Muted,
+ * like the rest of the landscape.
+ */
+export const CHALLENGER_KIT: Kit = {
+  jersey: "#b8352f",
+  sleeve: "#b8352f",
+  band: "#f3f0ea",
+  bandWidth: 0.15,
+  bandEdges: true,
+  shorts: "#262422",
+  skin: "#e3c2a6",
+  helmet: "#f3f0ea",
+  sock: "#f3f0ea",
+  shoe: "#f1ece3",
+  glove: "#262422",
+  lens: "#b9c4ca",
+  frame: "#1f2124",
+  fork: "#d9b836",
+  accent: "#f3f0ea",
+  tape: "#2a2622",
+  helmetStyle: "aero",
+  sleeveStripe: "#f3f0ea",
+  hem: ["#f3f0ea", "#b8352f"],
+  plate: true,
+  bars: { low: 0.1, reach: 0.22, rise: 0.085, tilt: 0.35 },
+};
+
+/**
+ * The sprinter's (ADR 0075): a jersey quartered in red and black, the
+ * black quarters diagonal, with a soft-edged white crown in the middle of
+ * the chest and the back; red sleeves, black shorts, a white road helmet
+ * with its vents and gold glasses, bare hands, white socks and shoes, on
+ * a black bike with deep rims and a number on its post. No maker's names.
+ */
+export const SPRINTER_KIT: Kit = {
+  jersey: "#c23a30",
+  quarters: "#232120",
+  crown: "#f3f0ea",
+  sleeve: "#c23a30",
+  band: "#c23a30",
+  bandWidth: 0,
+  shorts: "#232120",
+  skin: "#e6c3a5",
+  helmet: "#f3f0ea",
+  sock: "#f3f0ea",
+  shoe: "#f1ece3",
+  glove: "#e6c3a5",
+  lens: "#d9b13a",
+  frame: "#1c1d20",
+  fork: "#1c1d20",
+  accent: "#2c2d31",
+  tape: "#1c1d20",
+  helmetStyle: "vented",
+  plate: true,
+};

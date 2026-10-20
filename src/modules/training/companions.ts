@@ -1,6 +1,8 @@
 import { and, eq, inArray } from "drizzle-orm";
 import { activities, riders, type ActivityRow } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
+import { rideNamesIn } from "@/modules/activities/names";
+import type { RideName } from "@/modules/activities/ride-name";
 import { companionsOf, firstFix, type RideOutline } from "@/modules/load/together";
 
 /**
@@ -10,7 +12,12 @@ import { companionsOf, firstFix, type RideOutline } from "@/modules/load/togethe
  * never any companions, and the section stays away (ADR 0011).
  */
 
-export type Companion = { activity: ActivityRow; riderName: string };
+export type Companion = {
+  activity: ActivityRow;
+  riderName: string;
+  /** What the ride is called on the pages (docs/adr/0098). */
+  name: RideName;
+};
 
 function outline(a: ActivityRow): RideOutline {
   return {
@@ -35,8 +42,13 @@ export async function listCompanions(ctx: OrgContext, activity: ActivityRow): Pr
       outline(activity),
       sameDay.map((row) => ({ ...outline(row.activity), row })),
     );
-    return matches
-      .map(({ row }) => row)
+    const rows = matches.map(({ row }) => row);
+    const names = await rideNamesIn(
+      tx,
+      rows.map((r) => r.activity.id),
+    );
+    return rows
+      .map((r) => ({ ...r, name: names.get(r.activity.id)! }))
       .sort((a, b) => a.riderName.localeCompare(b.riderName, "da"));
   });
 }
@@ -44,11 +56,16 @@ export async function listCompanions(ctx: OrgContext, activity: ActivityRow): Pr
 /** The rides to compare, by id, each with its rider's name — only those the caller may read. */
 export async function getRidesToCompare(ctx: OrgContext, ids: string[]): Promise<Companion[]> {
   if (ids.length === 0) return [];
-  return withOrgContext(ctx, (tx) =>
-    tx
+  return withOrgContext(ctx, async (tx) => {
+    const rows = await tx
       .select({ activity: activities, riderName: riders.name })
       .from(activities)
       .innerJoin(riders, eq(riders.id, activities.riderId))
-      .where(inArray(activities.id, ids)),
-  );
+      .where(inArray(activities.id, ids));
+    const names = await rideNamesIn(
+      tx,
+      rows.map((r) => r.activity.id),
+    );
+    return rows.map((r) => ({ ...r, name: names.get(r.activity.id)! }));
+  });
 }

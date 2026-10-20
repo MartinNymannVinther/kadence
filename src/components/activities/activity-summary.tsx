@@ -1,6 +1,9 @@
 import { useLocale, useTranslations } from "next-intl";
 import { num } from "@/components/charts/format";
+import { ComplianceMark } from "@/components/training/compliance-mark";
 import { durationText } from "@/components/training/duration";
+import type { ComplianceColour } from "@/modules/load";
+import { splitTiles } from "./summary-split";
 
 export type ActivityFacts = {
   movingSeconds: number;
@@ -20,17 +23,37 @@ export type ActivityFacts = {
   loadMethod: string;
 };
 
+/** How the ride went against the session it was ridden for. */
+export type PlanFit = {
+  colour: ComplianceColour;
+  /** Steps that hit their target, of those with one; null without a step-by-step reading. */
+  steps: { hit: number; judged: number } | null;
+};
+
+type Tile = { key: string; label: string; value: React.ReactNode; hint?: string };
+
 /**
  * What a ride or a session came to, in tiles: time, distance, speed,
- * climbing, watt, pulse and its drift, cadence, work, and the load with the method it was worked
- * out by in words — from watt, from pulse, or from how hard it felt
- * (ADR 0016). A tile appears only when the file had the number.
+ * climbing, watt, pulse and its drift, cadence, work, and the load with
+ * the method it was worked out by in words — from watt, from pulse, or
+ * from how hard it felt (ADR 0016). A tile appears only when the file had
+ * the number. Four come `first` — time, distance, climbing, and how close
+ * it came to the plan or the average pulse (`splitTiles`) — and the
+ * `rest` waits under "Mere data" (docs/adr/0063).
  */
-export function ActivitySummary({ facts }: { facts: ActivityFacts }) {
+export function ActivitySummary({
+  facts,
+  plan = null,
+  part,
+}: {
+  facts: ActivityFacts;
+  plan?: PlanFit | null;
+  part: "first" | "rest";
+}) {
   const t = useTranslations("activities.summary");
   const duration = useTranslations("training.duration");
   const locale = useLocale();
-  const tiles: Array<{ key: string; label: string; value: string; hint?: string }> = [
+  const tiles: Tile[] = [
     { key: "time", label: t("time"), value: durationText(facts.movingSeconds / 60, duration) },
   ];
   const add = (key: string, value: number | null, format: (v: number) => string, hint?: string) => {
@@ -40,6 +63,16 @@ export function ActivitySummary({ facts }: { facts: ActivityFacts }) {
   if (facts.elapsedSeconds && facts.elapsedSeconds - facts.movingSeconds >= 120)
     add("elapsed", facts.elapsedSeconds, (v) => durationText(v / 60, duration));
   add("distance", facts.distanceM, (v) => t("km", { km: num(v / 1000, locale, 1) }));
+  if (plan)
+    tiles.push({
+      key: "plan",
+      label: t("plan"),
+      value: plan.steps ? (
+        t("planSteps", plan.steps)
+      ) : (
+        <ComplianceMark colour={plan.colour} done className="h-6 text-xs" />
+      ),
+    });
   const avgSpeed =
     facts.distanceM && facts.movingSeconds > 0 ? facts.distanceM / facts.movingSeconds : null;
   const kmh = (v: number) => t("kmh", { kmh: num(v * 3.6, locale, 1) });
@@ -68,9 +101,18 @@ export function ActivitySummary({ facts }: { facts: ActivityFacts }) {
       hint: t(`method.${facts.loadMethod}` as "method.power"),
     });
 
+  const split = splitTiles(
+    tiles.map((tile) => tile.key),
+    plan !== null,
+  );
+  const shown = split[part]
+    .map((key) => tiles.find((tile) => tile.key === key))
+    .filter((tile): tile is Tile => tile !== undefined);
+  if (shown.length === 0) return null;
+
   return (
     <dl className="grid grid-cols-2 gap-2 sm:grid-cols-3 @3xl:grid-cols-4">
-      {tiles.map((tile) => (
+      {shown.map((tile) => (
         <div
           key={tile.key}
           className="border-border bg-card flex flex-col gap-0.5 rounded-lg border px-3 py-2.5"

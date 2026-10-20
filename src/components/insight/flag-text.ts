@@ -21,6 +21,8 @@ const n = (value: unknown) => (typeof value === "number" ? value : Number(value)
 
 export function flagSentence(flag: Flag, t: Translate, { locale, klass }: FlagContext): string {
   const v = flag.values;
+  // Whose numbers: DCU's, or a senior's training profile's (docs/adr/0091).
+  const ref = typeof v.ref === "string" ? v.ref : "dcu";
   const hours = (key: string) => num(n(v[key]), locale, 1);
   const day = (key: string) =>
     typeof v[key] === "string"
@@ -28,9 +30,9 @@ export function flagSentence(flag: Flag, t: Translate, { locale, klass }: FlagCo
       : "";
   switch (flag.kind) {
     case "hours_above_corridor":
-      return t("hours_above_corridor", { hours: hours("hours"), high: hours("high"), klass });
+      return t("hours_above_corridor", { hours: hours("hours"), high: hours("high"), klass, ref });
     case "hours_below_corridor":
-      return t("hours_below_corridor", { hours: hours("hours"), low: hours("low"), klass });
+      return t("hours_below_corridor", { hours: hours("hours"), low: hours("low"), klass, ref });
     case "ramp":
       return t("ramp", {
         hours: hours("hours"),
@@ -45,11 +47,15 @@ export function flagSentence(flag: Flag, t: Translate, { locale, klass }: FlagCo
             km: n(v.km),
             limitHours: n(v.limitHours),
             limitKm: n(v.limitKm),
+            klass,
+            ref,
           })
         : t("longest_ride", {
             hours: hours("hours"),
             limitHours: n(v.limitHours),
             limitKm: n(v.limitKm),
+            klass,
+            ref,
           });
     case "strength_spacing":
       return t("strength_spacing", { first: day("first"), second: day("second") });
@@ -77,6 +83,8 @@ export function flagSentence(flag: Flag, t: Translate, { locale, klass }: FlagCo
       return t("compliance", { red: n(v.red), judged: n(v.judged) });
     case "mid_zone":
       return t("mid_zone", { mid: n(v.mid), sessions: n(v.sessions), limit: n(v.limit) });
+    case "known_pain_lasting":
+      return t("known_pain_lasting", { place: String(v.place ?? ""), days: n(v.days) });
   }
 }
 

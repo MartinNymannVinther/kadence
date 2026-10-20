@@ -1,11 +1,20 @@
 import { addDaysIso, mondayOf } from "@/core/dates";
 import type { CheckinRow, RiderRow } from "@/core/db/schema";
 import { seasonStartYear, type WeeklyCorridor } from "@/modules/dcu";
-import { DCU_2025, profileFor, type GuidanceId, type Paradigm } from "@/modules/paradigms";
+import {
+  DCU_2025,
+  isSeniorBasis,
+  profileFor,
+  referenceOf,
+  type GuidanceId,
+  type Paradigm,
+} from "@/modules/paradigms";
 import {
   MID_ZONE_WEEKS,
+  LASTING_PAIN_WEEKS,
   compliance,
   countIntensity,
+  countedPain,
   forecastForm,
   guardrails,
   loadSeries,
@@ -25,12 +34,14 @@ import {
   type WellbeingStatus,
 } from "@/modules/load";
 import { riderClass } from "@/modules/season/class";
+import { withReference } from "./flag-reference";
 import type { InsightActivity, InsightRace, InsightSession } from "./gather";
 
 /**
  * One rider's week and season at a glance, from rows already read: the
  * load curve (fitness, fatigue, form), the weeks' hours against DCU's
- * corridor, the guardrails, and the wellbeing status. Pure — the
+ * corridor — a senior's against their training profile's (ADR 0091) —
+ * the guardrails, and the wellbeing status. Pure — the
  * database work is in gather.ts — so it is tested on its own.
  */
 
@@ -85,6 +96,12 @@ export function riderInsight(
    * team uses "Lav intensitet først" (ADR 0053); null leaves its flag out.
    */
   intensity: { sessions: IntensitySession[]; races: IntensityRace[] } | null = null,
+  /**
+   * Whether the workspace is a club, where a coach reads the attention
+   * list; a personal workspace has no coach, and no known-pain point
+   * (docs/adr/0097).
+   */
+  club = true,
 ): RiderInsight {
   const monday = mondayOf(todayIso);
   const sunday = addDaysIso(monday, 6);
@@ -136,8 +153,15 @@ export function riderInsight(
         : undefined;
       if (done) actById.set(s.activityId!, done);
       return compliance(
-        { minutes: s.plannedMinutes, load: s.plannedLoad },
-        done ? { minutes: done.seconds / 60, load: done.load } : null,
+        { minutes: s.plannedMinutes, load: s.plannedLoad, intensity: s.intensity },
+        done
+          ? {
+              minutes: done.seconds / 60,
+              load: done.load,
+              method: done.loadMethod,
+              sport: done.sport,
+            }
+          : null,
         s.onDate,
         todayIso,
       );
@@ -162,13 +186,26 @@ export function riderInsight(
     corridor,
     previousWeeksHours: previous,
     longestRide: longest,
-    longestRideLimit:
-      paradigm && (klass.category === "U17" || klass.category === "U19" || klass.category === "U23")
-        ? paradigm.longestRide(klass.category)
-        : null,
+    longestRideLimit: !paradigm
+      ? null
+      : isSeniorBasis(klass.basis)
+        ? paradigm.longestRide(klass.basis)
+        : klass.category === "U17" || klass.category === "U19" || klass.category === "U23"
+          ? paradigm.longestRide(klass.category)
+          : null,
     strengthDates,
     wellbeing,
-    latestPain: wellbeingVisible ? (latest?.pain ?? null) : null,
+    latestPain: wellbeingVisible && latest ? countedPain(latest) : null,
+    // A known pain three weeks running, for a rider under 18 in a club (ADR 0097).
+    knownPains:
+      wellbeingVisible && club && age < 18
+        ? {
+            checkins: checks
+              .filter((c) => c.onDate > addDaysIso(todayIso, -7 * LASTING_PAIN_WEEKS))
+              .map((c) => ({ date: c.onDate, usualPains: c.usualPains })),
+            today: todayIso,
+          }
+        : null,
     sleepHours: wellbeingVisible ? lastSeven : [],
     sleepMinimum: age < 18 ? 8 : null,
     compliance: colours,
@@ -180,7 +217,10 @@ export function riderInsight(
           }
         : null,
   });
-  const { open, resolved } = splitResolved(flags, resolutions);
+  const { open, resolved } = splitResolved(
+    withReference(flags, referenceOf(klass.basis)),
+    resolutions,
+  );
 
   return {
     riderId: rider.id,

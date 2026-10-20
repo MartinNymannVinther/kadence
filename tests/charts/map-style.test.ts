@@ -1,9 +1,32 @@
 import { describe, expect, it } from "vitest";
-import { DARK, LIGHT, mapStyle, routeBounds, routeLines } from "@/components/activities/map-style";
+import type { LayerSpecification } from "maplibre-gl";
+import {
+  DARK,
+  LIGHT,
+  basemapLayers,
+  mapSources,
+  mapStyle,
+  routeBounds,
+  routeLines,
+} from "@/components/activities/map-style";
 
-/** The map behind a route: a style over the Protomaps v4 layers, and the route as GeoJSON lines. */
+/** The map behind a route: a style over the Protomaps v4 layers, from one or two files, and the route as GeoJSON lines. */
 
-const V4_LAYERS = new Set(["earth", "landcover", "landuse", "water", "roads", "buildings"]);
+const V4_LAYERS = new Set([
+  "earth",
+  "landcover",
+  "landuse",
+  "water",
+  "roads",
+  "buildings",
+  "places",
+]);
+const GLYPHS = "https://kadence.example/map/fonts/{fontstack}/{range}.pbf";
+
+const DETAIL = "pmtiles://https://kadence.example/api/map/tiles?v=a-b";
+const WORLD = "pmtiles://https://kadence.example/api/map/world?v=c-d";
+
+const sourceOf = (layer: LayerSpecification) => (layer as { source?: string }).source;
 
 describe("the map style", () => {
   for (const [name, palette] of [
@@ -11,20 +34,83 @@ describe("the map style", () => {
     ["dark", DARK],
   ] as const)
     it(`reads only the basemap's own layers from Kadence's own tiles (${name})`, () => {
-      const style = mapStyle("pmtiles://https://kadence.example/api/map/tiles", palette);
-      expect(style.sources.basemap).toMatchObject({
-        type: "vector",
-        url: "pmtiles://https://kadence.example/api/map/tiles",
-      });
+      const style = mapStyle({ detail: DETAIL, world: WORLD, glyphs: GLYPHS }, palette);
+      expect(style.sources.basemap).toMatchObject({ type: "vector", url: DETAIL });
+      expect(style.sources.world).toMatchObject({ type: "vector", url: WORLD });
       expect(JSON.stringify(style.sources)).toContain("OpenStreetMap");
       for (const layer of style.layers) {
         if (layer.type === "background") continue;
         expect(V4_LAYERS.has((layer as { "source-layer": string })["source-layer"])).toBe(true);
       }
-      // No labels: nothing that needs font files from anywhere.
-      expect(style.layers.some((l) => l.type === "symbol")).toBe(false);
-      expect(style).not.toHaveProperty("glyphs");
+      // Names, in glyphs from Kadence's own origin (ADR 0100; tests/charts/map-labels.test.ts).
+      expect(style.layers.some((l) => l.type === "symbol")).toBe(true);
+      expect(style.glyphs).toBe(GLYPHS);
     });
+
+  it("draws the detail alone exactly as before the world came (ADR 0099)", () => {
+    const style = mapStyle({ detail: DETAIL, world: null }, LIGHT);
+    expect(Object.keys(style.sources)).toEqual(["basemap"]);
+    expect(style.layers.map((l) => l.id)).toEqual([
+      "background",
+      ...basemapLayers("basemap", "", LIGHT).map((l) => l.id),
+    ]);
+    expect(style.layers.some((l) => l.id === "earth")).toBe(false);
+  });
+
+  it("adds nothing about the world to the detail alone, its names included (ADR 0100)", () => {
+    const style = mapStyle({ detail: DETAIL, world: null, glyphs: GLYPHS }, LIGHT);
+    expect(Object.keys(style.sources)).toEqual(["basemap"]);
+    expect(style.layers.every((l) => l.type === "background" || sourceOf(l) === "basemap")).toBe(
+      true,
+    );
+    expect(style.layers.some((l) => l.id.startsWith("world-") || l.id === "earth")).toBe(false);
+    // The land and roads exactly as before, the names over them.
+    const base = style.layers.filter((l) => l.type !== "symbol");
+    expect(base.map((l) => l.id)).toEqual([
+      "background",
+      ...basemapLayers("basemap", "", LIGHT).map((l) => l.id),
+    ]);
+  });
+
+  it("lays the world under the detail, and the detail's land over the world", () => {
+    const style = mapStyle({ detail: DETAIL, world: WORLD }, LIGHT);
+    const sources = style.layers.map(sourceOf);
+    const lastWorld = sources.lastIndexOf("world");
+    const firstDetail = sources.indexOf("basemap");
+    expect(lastWorld).toBeGreaterThan(0);
+    expect(firstDetail).toBeGreaterThan(lastWorld);
+    expect(style.layers[firstDetail]).toMatchObject({
+      id: "earth",
+      "source-layer": "earth",
+      paint: { "fill-color": LIGHT.earth },
+    });
+    // The same picture from both files, with ids that do not collide.
+    const ids = style.layers.map((l) => l.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    const world = style.layers.filter((l) => sourceOf(l) === "world" && l.type !== "symbol");
+    expect(world.map((l) => l.id.replace(/^world-/, ""))).toEqual(
+      basemapLayers("basemap", "", LIGHT).map((l) => l.id),
+    );
+  });
+
+  it("draws the world alone where an installation has only that", () => {
+    const style = mapStyle({ world: WORLD, glyphs: GLYPHS }, DARK);
+    expect(Object.keys(style.sources)).toEqual(["world"]);
+    expect(style.layers.slice(1).every((l) => sourceOf(l) === "world")).toBe(true);
+  });
+
+  it("gives each file that is there its own address with its version", () => {
+    expect(mapSources("https://kadence.example", { detail: "a-b", world: "c-d" })).toEqual({
+      detail: DETAIL,
+      world: WORLD,
+      glyphs: GLYPHS,
+    });
+    expect(mapSources("https://kadence.example", { detail: "a-b", world: null })).toEqual({
+      detail: DETAIL,
+      world: null,
+      glyphs: GLYPHS,
+    });
+  });
 });
 
 describe("the route as lines", () => {

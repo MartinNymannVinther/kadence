@@ -13,8 +13,21 @@
 
 /** The word the interface shows for why the model did not answer. */
 export type AiFailure =
-  "noModel" | "rateLimited" | "unreachable" | "badAnswer" | "notAllowed" | "generic";
+  | "noModel"
+  | "rateLimited"
+  | "budget"
+  | "planExpired"
+  | "unreachable"
+  | "badAnswer"
+  | "notAllowed"
+  | "generic";
 
 export type ProposalResult<T> =
   | { ok: true; proposal: T; engine: string }
   | { ok: false; error: AiFailure | "unauthorized" | "invalid" | "notFound" };
+
+/**
+ * What a comment the AI proposed starts with once a person saves it
+ * (docs/adr/0095): comments carry no metadata, so the words say it.
+ */
+export const AI_COMMENT_PREFIX = "(AI) ";

@@ -56,6 +56,22 @@ is right for a fresh install and wrong for a development database full of
 test users, which is what this script is for. ADR 0004 explains why it is
 a script and not a setting.
 
+## migrate-files.ts
+
+Moves the ride files already in the database out to the object store,
+after `FILES_STORAGE` was switched to `s3` (ADR 0087, docs/deploy.md
+"File storage").
+
+```
+pnpm script scripts/migrate-files.ts            # puts the job files.migrate in the queue
+pnpm script scripts/migrate-files.ts --status   # how many files still sit in rows
+```
+
+It only puts a job in; the worker moves fifty files at a time, verifies
+each object's sha256 and then empties the row. Run it again at any time.
+It refuses to put the job in where `FILES_STORAGE` is not `s3`, since the
+job would only give up.
+
 ## ensure-roles.ts
 
 Gives the two runtime database roles their login rights and passwords.
@@ -67,6 +83,18 @@ for why it exists.
 Deletes demo workspaces that have expired. The application runs the same
 cleanup on every visit to `/demo`; the script is for a quiet installation
 or a scheduler that would rather not rely on visitors. Safe to run twice.
+
+## push-keys.ts
+
+Prints a fresh key pair for reminders by web push (docs/adr/0060) as
+`PUSH_PUBLIC_KEY`, `PUSH_PRIVATE_KEY` and a `PUSH_CONTACT` to fill in,
+ready for `.env` or Coolify. node:crypto makes the pair, so no web-push
+package is needed. Make one per installation and keep it; a new pair
+means every browser turns reminders on again.
+
+```
+pnpm script scripts/push-keys.ts
+```
 
 ## reread-activities.ts
 
@@ -99,10 +127,53 @@ nothing from this repository, so it can be copied out on its own.
 KADENCE_URL=https://kadence.example sh scripts/send-rides.sh /Volumes/GARMIN
 ```
 
+## fetch-map.sh
+
+Fetches the map behind routes (ADR 0023, 0099) from Protomaps' daily
+OpenStreetMap build: the world to zoom 8 and the regions in
+`map-regions.geojson` (Denmark and the training camps) to zoom 14, about
+1.2 GB together.
+
+```
+scripts/fetch-map.sh            # into ./data/map, for pnpm dev
+scripts/fetch-map.sh compose    # into the kadence-map volume
+```
+
+Production without the repository on the server: docs/deploy.md 6c.
+
+## fetch-map-fonts.sh
+
+Fetches the glyphs the map's place and road names are drawn with (ADR
+0100): Noto Sans Regular and Medium from Protomaps' basemaps-assets, the
+Latin ranges only, with the SIL Open Font License, into
+`public/map/fonts`. The files are checked in, so run it only to refresh
+or widen them; `public/map/fonts/README.md` says how.
+
+```
+scripts/fetch-map-fonts.sh                 # the pinned commit
+FONTS_REF=main scripts/fetch-map-fonts.sh  # the newest
+```
+
 ## backup-kadence.sh
 
 Nightly encrypted dump of the database to EU object storage. Runs on the
-VPS from cron, not in a container; docs/deploy.md section 7 has the setup.
+VPS from cron, not in a container; docs/deploy.md section 7.3 has the
+setup. It is the independent second copy beside pgBackRest.
+
+## restore-drill.sh
+
+The quarterly restore drill for pgBackRest (docker-compose.backup.yml,
+docs/adr/0089). On the VPS, beside the running stack:
+
+```
+scripts/restore-drill.sh                                  # the newest point
+scripts/restore-drill.sh --target "2026-10-11 14:05:00+02"   # a point in time
+```
+
+Restores into a throwaway container from the sidecar's image, counts
+users and Kadence's other tables, prints the recovery point and removes
+the container; the running database and the bucket are not touched.
+docs/deploy.md section 7.4 has the rest.
 
 ## icons.ts
 
@@ -144,3 +215,48 @@ its file changes, check the file in, and credit the sources on the route
 touches no database and is never run at build or ride time: Rulle reads
 the file, and without it draws the land it makes up. `rulle-land/` holds
 its PNG reader for the tiles and its geometry.
+
+## manual-pdf.ts
+
+Renders the user manual, `public/brugervejledning/index.html`, to the
+PDF beside it (docs/adr/0079).
+
+```
+pnpm dev                                              # or any running Kadence
+pnpm script scripts/manual-pdf.ts http://localhost:3000
+```
+
+Uses a Chrome of this machine's — `CHROME=/path/to/chrome`, else Google
+Chrome or Playwright's cached Chromium on a Mac — over the DevTools
+protocol, so nothing is added to the app. Run it, and commit the PDF,
+whenever the manual's text or pictures change; the pictures are taken by
+hand from a team with sessions in it (the seed in `seed-test-teams.ts`
+gives one).
+
+## worker.ts
+
+The worker that runs the background jobs (ADR 0085): reminders, rides
+from Wahoo, Garmin and Polar, races from Cykling Danmark, the teams page
+and the demos' clean-up.
+
+```
+pnpm script scripts/worker.ts
+```
+
+In production it is the `worker` service in `docker-compose.yml`, and
+the app only puts work in the queue (`WORKER=on`). Locally, `pnpm dev`
+runs the jobs itself unless `.env` says `WORKER=on`; then run this
+beside it. docs/deploy.md, section 6e, has the rest.
+
+## retry-jobs.ts
+
+The jobs that gave up after their last try, and new tries for them once
+the cause is mended.
+
+```
+pnpm script scripts/retry-jobs.ts               # lists them
+pnpm script scripts/retry-jobs.ts <job id>      # tries that one again, now
+pnpm script scripts/retry-jobs.ts --all [kind]  # every one, or every one of a kind
+```
+
+In the container: `docker compose exec worker node_modules/.bin/tsx scripts/retry-jobs.ts`.

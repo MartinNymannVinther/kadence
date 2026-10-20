@@ -37,7 +37,7 @@ function Tile({
   return (
     <section
       className={cn(
-        "border-border bg-card flex min-w-0 flex-col justify-between gap-1 rounded-xl border px-4 py-3 shadow-[var(--surface-shadow)] sm:px-5 lg:px-7 lg:py-5",
+        "border-border bg-card flex min-w-0 flex-col justify-between gap-1 rounded-xl border px-4 py-3 shadow-surface sm:px-5 lg:px-7 lg:py-5",
         className,
       )}
     >
@@ -137,7 +137,7 @@ export function BodyTile({ live }: { live: Live }) {
   const t = useTranslations("rulle.ride");
   const cadence = live.block?.block.cadence ?? null;
   return (
-    <section className="border-border bg-card grid h-full min-w-0 grid-cols-2 gap-3 rounded-xl border px-4 py-3 shadow-[var(--surface-shadow)] sm:px-5 lg:px-7 lg:py-5">
+    <section className="border-border bg-card grid h-full min-w-0 grid-cols-2 gap-3 rounded-xl border px-4 py-3 shadow-surface sm:px-5 lg:px-7 lg:py-5">
       <div className="flex min-w-0 flex-col justify-between gap-1">
         <h2 className="text-ride-label leading-tight font-medium tracking-wide uppercase opacity-80">
           {t("cadence")}

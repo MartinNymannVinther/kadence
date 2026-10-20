@@ -45,4 +45,13 @@ regexes = [
   # database, which every run wipes (tests/team/reset-link.test.ts). It
   # remains in the git history.
   '''et-nyt-langt-kodeord-2026''',
+  # The password of a test account that exists only in the test database,
+  # which every run wipes (tests/mail/verify.test.ts, the address
+  # confirmation of docs/adr/0086). It remains in the git history.
+  '''et-langt-kodeord-2026''',
+  # The keys of Kadence's own sessions, programmes and ready weeks for a
+  # motionist (src/modules/paradigms/senior-sessions.ts and the files
+  # beside it, docs/adr/0092): identifiers a person wrote after `key:`,
+  # like DCU's above, not credentials.
+  '''kadence-(recovery|endurance|long|tempo|threshold|vo2|30|hills|indoor|strength)-[a-z0-9x-]+''',
 ]

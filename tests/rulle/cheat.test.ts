@@ -119,7 +119,7 @@ describe("the cheat code in a ride", () => {
     cheat.engine.shown.cheat.hold(1, 0);
     cheat.ride(5, 40);
     const at = T0 + 40_000;
-    expect(cheat.engine.live(at).cheat).toBe(true);
+    expect(cheat.engine.live(at).cheat?.mode).toBe("speed");
     expect(cheat.engine.live(at).speed).toBeCloseTo(120 / 3.6, 3);
     expect(cheat.engine.positionAt(at).distance).toBeGreaterThan(
       2 * plain.engine.live(at).distance,

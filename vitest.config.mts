@@ -41,10 +41,46 @@ export default defineConfig({
       // default is "off" is proven in tests/core/env.
       DEMO: "on",
       LLM_PROVIDER: "none",
+      // The AI's ceilings, pinned so a developer's .env cannot move them:
+      // the installation's daily roof is off by default (docs/adr/0089) and
+      // on here, so tests/ai/limits exercises it; the monthly budget is
+      // the shipped default. Both defaults are proven from EnvSchema.
+      AI_DAILY_CALL_CAP: "2000",
+      AI_MONTHLY_BUDGET_MICRO: "5000000",
+      // The parts an installation may park are pinned off here, so every
+      // gate is exercised; they are on by default (tests/core/features), and
+      // a test that needs one on mocks "@/core/features"
+      // (tests/helpers/features.ts).
+      RULLE_WORLD: "off",
+      COACHES_ROOM: "off",
+      CLUB_CHAMPIONSHIP: "off",
+      CALC_ENERGY: "off",
+      GUIDE_FOOD: "off",
+      // Reminders are off: with a developer's push keys the app's own run
+      // would post to the push services. The tests hand the job its keys
+      // and a stand-in fetch (tests/push); an empty value is "not set".
+      PUSH_PUBLIC_KEY: "",
+      PUSH_PRIVATE_KEY: "",
+      // Mail is off (docs/adr/0086): with a developer's SMTP settings the
+      // suite would send real mail. A test that needs mail on sets the five
+      // in vi.hoisted and sends through a recording transport
+      // (tests/helpers/mail.ts); the mailer refuses SMTP in a test anyway.
+      // Billing is off, as shipped (docs/adr/0090): a developer's .env
+      // must not price the suite's workspaces. tests/billing turns it on
+      // in vi.hoisted where it is the subject.
+      BILLING: "off",
+      TRIAL_DAYS: "30",
+      SMTP_HOST: "",
+      SMTP_PORT: "",
+      SMTP_USER: "",
+      SMTP_PASSWORD: "",
+      MAIL_FROM: "",
     },
     environment: "node",
     include: ["tests/**/*.test.ts"],
     globalSetup: ["tests/global-setup.ts"],
+    // The counters live in the database; each file starts with none.
+    setupFiles: ["tests/setup-counters.ts"],
     // The suites share one database; run files sequentially.
     fileParallelism: false,
     testTimeout: 30_000,

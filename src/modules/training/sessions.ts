@@ -10,7 +10,9 @@ import {
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
 import { isCoachRole, requireCoach, requireWriteFor, roleIn } from "@/modules/team/access";
 import { readStructure, structureMinutes } from "@/modules/workouts/structure";
+import { recordDeletionsIn, recordMoveIn } from "./deletions";
 import { estimatePlannedLoad } from "./load-bridge";
+import { clockOf } from "./time-place";
 import type { Scope, SessionInputT } from "./vocabulary";
 
 /**
@@ -56,6 +58,8 @@ export async function listSessionsIn(
     .where(and(...where))
     .orderBy(
       asc(plannedSessions.onDate),
+      // A day's sessions in the order they start; those without a time after (docs/adr/0058).
+      asc(plannedSessions.startTime),
       asc(plannedSessions.sort),
       asc(plannedSessions.createdAt),
     );
@@ -100,6 +104,11 @@ function derived(input: Pick<SessionInputT, "structure" | "sport" | "plannedMinu
   };
 }
 
+/** A new session's time and place: none unless the input brings them (docs/adr/0058). */
+function timePlace(input: Pick<SessionInputT, "startTime" | "meetingPlace">) {
+  return { startTime: clockOf(input.startTime), meetingPlace: input.meetingPlace ?? "" };
+}
+
 export async function createSessionIn(
   tx: AppTransaction,
   ctx: OrgContext,
@@ -126,6 +135,7 @@ export async function createSessionIn(
       programmeSession: input.programmeSession ?? null,
       createdBy: ctx.userId,
       ...derived(input),
+      ...timePlace(input),
     })
     .returning({ id: plannedSessions.id });
   return row!;
@@ -163,6 +173,7 @@ export async function createSessionsIn(
           programmeSession: input.programmeSession ?? null,
           createdBy: ctx.userId,
           ...derived(input),
+          ...timePlace(input),
         })),
       )
       .returning({ id: plannedSessions.id });
@@ -230,6 +241,9 @@ export async function updateSession(
           description: input.description,
           plannedKm: input.plannedKm,
           templateId: input.templateId,
+          // Left out, they stay as they were; null and "" clear them.
+          startTime: input.startTime === undefined ? undefined : clockOf(input.startTime),
+          meetingPlace: input.meetingPlace,
           ...values,
         })
         .where(eq(plannedSessions.id, copy.id));
@@ -253,6 +267,7 @@ export async function moveSession(
         .update(plannedSessions)
         .set({ onDate, activityId: row.onDate === onDate ? row.activityId : null })
         .where(eq(plannedSessions.id, id));
+      await recordMoveIn(tx, ctx, row, onDate);
       return { id };
     }
     return createSessionIn(tx, ctx, {
@@ -265,6 +280,8 @@ export async function moveSession(
       plannedMinutes: row.plannedMinutes,
       plannedKm: row.plannedKm,
       templateId: row.templateId,
+      startTime: row.startTime,
+      meetingPlace: row.meetingPlace,
     });
   });
 }
@@ -274,6 +291,7 @@ export async function deleteSession(ctx: OrgContext, id: string, scope: Scope): 
     const row = await loadOwn(tx, ctx, id);
     const copies = await targets(tx, ctx, row, scope);
     const ids = copies.map((c) => c.id);
+    await recordDeletionsIn(tx, ctx, copies);
     await tx.delete(plannedSessions).where(inArray(plannedSessions.id, ids));
     return ids.length;
   });

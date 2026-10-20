@@ -41,7 +41,9 @@ export function browserMemory(): RefusalMemory | null {
 
 /** What the server's answer to a file says about sending it again; nothing for a failure that may pass. */
 export function refusalOf(error: string | undefined): Refusal | null {
-  if (!error || error === "generic" || error === "rateLimited" || error === "busy") return null;
+  // Nothing about the file itself: it is tried again another day.
+  if (!error || ["generic", "rateLimited", "busy", "quota", "planExpired"].includes(error))
+    return null;
   if (error === "duplicate" || error === "conflict") return "duplicate";
   if (error === "not_bike") return "not_bike";
   return "unreadable";

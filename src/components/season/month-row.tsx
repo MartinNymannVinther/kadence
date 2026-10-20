@@ -2,6 +2,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { num } from "@/components/charts/format";
 import { monthLong } from "@/components/charts/format";
 import { MONTH_NOTES } from "@/modules/dcu/phases";
+import type { Reference } from "@/modules/paradigms";
 import { DeviationChip } from "./deviation-chip";
 import type { PlanMonth } from "./types";
 
@@ -20,12 +21,15 @@ export function ownNote(month: PlanMonth): string {
 export function MonthRow({
   month,
   dcu,
+  reference = "dcu",
   ridden,
   scheduled,
 }: {
   month: PlanMonth;
   /** Null when the team plans without DCU (ADR 0049). */
   dcu: number | null;
+  /** Whose hours `dcu` is: DCU's, or a senior's profile's, which has no month notes (ADR 0091). */
+  reference?: Reference;
   ridden: number | null;
   scheduled: number | null;
 }) {
@@ -62,19 +66,19 @@ export function MonthRow({
           {dcu !== null && (
             <>
               <div className="flex items-baseline gap-1.5">
-                <dt className="text-meta">{t("dcu")}</dt>
+                <dt className="text-meta">{t("dcu", { ref: reference })}</dt>
                 <dd className="tabular-nums">{hours(dcu)}</dd>
               </div>
               <div>
-                <dt className="sr-only">{t("deviationLabel")}</dt>
+                <dt className="sr-only">{t("deviationLabel", { ref: reference })}</dt>
                 <dd>
-                  <DeviationChip planned={month.hours} dcu={dcu} />
+                  <DeviationChip planned={month.hours} dcu={dcu} reference={reference} />
                 </dd>
               </div>
             </>
           )}
         </dl>
-        {dcu !== null && (
+        {dcu !== null && reference === "dcu" && (
           <p className="text-meta text-xs leading-relaxed">
             <span className="font-medium">{t("dcuSays")}</span>{" "}
             {t(`monthNote.${month.month}` as "monthNote.1")}

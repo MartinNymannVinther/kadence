@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { addDaysIso } from "@/core/dates";
-import { checkinZone, wellbeingStatus, type Checkin } from "@/modules/load/wellbeing";
+import { checkinZone, isRedCheckin, wellbeingStatus, type Checkin } from "@/modules/load/wellbeing";
 
 const TODAY = "2026-09-27";
 
@@ -39,6 +39,15 @@ describe("one check-in's zone", () => {
     expect(checkinZone(red)).toEqual({ zone: "red", signs: ["ill"] });
     expect(checkinZone({ ...good, mood: 1 })).toEqual({ zone: "red", signs: ["mood"] });
     expect(checkinZone({ ...good, pain: 3, ill: 1 }).signs).toEqual(["ill", "pain"]);
+  });
+
+  it("is red by the one rule red_since and the coach's reminder share", () => {
+    expect(isRedCheckin({ ...good, pain: 3 })).toBe(true);
+    expect(isRedCheckin(red)).toBe(true);
+    expect(isRedCheckin({ ...good, mood: 1 })).toBe(true);
+    expect(isRedCheckin({ ...good, pain: 2 })).toBe(false);
+    expect(isRedCheckin(yellow)).toBe(false);
+    expect(isRedCheckin(good)).toBe(false);
   });
 
   it("is yellow for pain 2 or an answer at the bottom", () => {

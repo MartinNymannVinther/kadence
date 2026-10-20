@@ -7,18 +7,35 @@ import { cn } from "@/lib/utils";
  * the theme in both light and dark, and so it needs no network request. The
  * wordmark beside it is live text in Archivo 600, per the design handoff -
  * it is never part of the SVG.
+ *
+ * `moving` lets the bars keep time, one after the other, from their left
+ * edge: the mark as a wait (landing/demo-waiting.tsx). It stands still for
+ * a reader who asked for less motion.
  */
 export function HaijMark({
   className,
   tone = "brand",
+  moving = false,
 }: {
   className?: string;
   tone?: "brand" | "ink";
+  moving?: boolean;
 }) {
   const fills =
     tone === "ink"
       ? ["currentColor", "currentColor", "currentColor"]
       : ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)"];
+  const bar = (index: number) =>
+    moving
+      ? {
+          className: "animate-cadence motion-reduce:animate-none",
+          style: {
+            transformBox: "fill-box",
+            transformOrigin: "left center",
+            animationDelay: `${index * 180}ms`,
+          } as const,
+        }
+      : {};
   return (
     <svg
       viewBox="0 0 38 34"
@@ -26,9 +43,9 @@ export function HaijMark({
       aria-hidden
       className={cn("h-[1.15em] w-auto shrink-0", className)}
     >
-      <rect x="0" y="0" width="38" height="8" rx="2.5" fill={fills[0]} />
-      <rect x="0" y="13" width="25" height="8" rx="2.5" fill={fills[1]} />
-      <rect x="0" y="26" width="31" height="8" rx="2.5" fill={fills[2]} />
+      <rect x="0" y="0" width="38" height="8" rx="2.5" fill={fills[0]} {...bar(0)} />
+      <rect x="0" y="13" width="25" height="8" rx="2.5" fill={fills[1]} {...bar(1)} />
+      <rect x="0" y="26" width="31" height="8" rx="2.5" fill={fills[2]} {...bar(2)} />
     </svg>
   );
 }
@@ -64,7 +81,7 @@ export function WordmarkLockup({
     <span className="flex items-center gap-2.5">
       <HaijMark className="h-5" />
       <span className="flex min-w-0 flex-col">
-        <span className="text-[1.0625rem] leading-none font-semibold tracking-[-0.045em]">
+        <span className="text-heading leading-none font-semibold tracking-[-0.045em]">
           {PRODUCT_NAME}
         </span>
         {organization ? (

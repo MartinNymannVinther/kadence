@@ -4,9 +4,14 @@ import { nextSpeed, PHYSICS, steadySpeed, swayAt } from "@/modules/rulle";
 const kmh = (metresPerSecond: number) => metresPerSecond * 3.6;
 
 describe("the speed watts hold", () => {
-  it("is about 36 km/h for 250 W on the flat", () => {
-    expect(kmh(steadySpeed(250, 0))).toBeGreaterThan(35.5);
-    expect(kmh(steadySpeed(250, 0))).toBeLessThan(37);
+  it("is about 39 km/h for 250 W on the flat", () => {
+    expect(kmh(steadySpeed(250, 0))).toBeGreaterThan(38);
+    expect(kmh(steadySpeed(250, 0))).toBeLessThan(40);
+  });
+
+  it("is 46 to 48 km/h for 420 W on the flat", () => {
+    expect(kmh(steadySpeed(420, 0))).toBeGreaterThan(46);
+    expect(kmh(steadySpeed(420, 0))).toBeLessThan(48);
   });
 
   it("is a climber's pace for 250 W up 8 %", () => {
@@ -15,8 +20,8 @@ describe("the speed watts hold", () => {
   });
 
   it("rolls down a 5 % hill without a pedal stroke, and stands still on the flat", () => {
-    expect(kmh(steadySpeed(0, -0.05))).toBeGreaterThan(40);
-    expect(kmh(steadySpeed(0, -0.05))).toBeLessThan(50);
+    expect(kmh(steadySpeed(0, -0.05))).toBeGreaterThan(45);
+    expect(kmh(steadySpeed(0, -0.05))).toBeLessThan(55);
     expect(steadySpeed(0, 0)).toBe(0);
   });
 

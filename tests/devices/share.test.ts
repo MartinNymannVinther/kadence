@@ -120,7 +120,7 @@ describe("a ride shared from the phone", () => {
 
   it("waits when the hour's files are used up, and says so", async () => {
     for (let i = 0; i < STORED_FILES_PER_HOUR; i++)
-      rateLimit(storedFilesKey(IDA.userId), STORED_FILES_PER_HOUR, 3_600_000);
+      await rateLimit(storedFilesKey(IDA.userId), STORED_FILES_PER_HOUR, 3_600_000);
     const outcome = await importShared(IDA, [{ name: "d.fit", bytes: rideOn(9) }]);
     expect(outcome).toEqual({ kind: "rate_limited" });
     expect(await count()).toBe(6);

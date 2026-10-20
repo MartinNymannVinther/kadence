@@ -11,16 +11,19 @@ import { SEVERITY_STYLE } from "./severity";
 /**
  * One guardrail flag: how much it matters (icon and word) and the sentence
  * with the numbers. Shown to the coach, never enforced. `action` is what
- * the coach can do about the row itself — afklaret, or fortryd.
+ * the coach can do about the row itself — afklaret, or fortryd — and
+ * `weekHref` the rider's calendar for the week the flag is about.
  */
 export function FlagItem({
   flag,
   klass,
   action,
+  weekHref,
 }: {
   flag: Flag;
   klass: string;
   action?: ReactNode;
+  weekHref?: string;
 }) {
   const t = useTranslations("insight.flag");
   const severities = useTranslations("insight.severity");
@@ -49,8 +52,16 @@ export function FlagItem({
             {t("signs", { signs: signList.join(", ") })}
           </span>
         )}
-        {(section || action) && (
+        {(section || action || weekHref) && (
           <span className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+            {weekHref && (
+              <Link
+                href={weekHref}
+                className="focus-ring text-primary text-xs font-medium hover:underline"
+              >
+                {insight("weekLink")}
+              </Link>
+            )}
             {section && (
               <Link
                 href={`/help/coach#${section}`}
@@ -69,16 +80,19 @@ export function FlagItem({
 
 /**
  * A rider's flags, most serious first (the guardrails already sort them).
- * With `resolve`, each carries the coach's "Afklaret" button.
+ * With `resolve`, each carries the coach's "Afklaret" button; with
+ * `weekHref`, a way to the week it is about.
  */
 export function FlagList({
   flags,
   klass,
   resolve,
+  weekHref,
 }: {
   flags: Flag[];
   klass: string;
   resolve?: { riderId: string };
+  weekHref?: string;
 }) {
   const insight = useTranslations("insight");
   if (flags.length === 0) return <p className="text-meta text-2sm">{insight("noFlags")}</p>;
@@ -90,6 +104,7 @@ export function FlagList({
           flag={flag}
           klass={klass}
           action={resolve && <ResolveFlagButton riderId={resolve.riderId} kind={flag.kind} />}
+          weekHref={weekHref}
         />
       ))}
     </ul>

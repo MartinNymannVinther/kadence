@@ -41,7 +41,13 @@ export function ModelForm({
     startTransition(async () => {
       const result = await saveModelSettingsAction({ provider: choice, model, apiKey });
       if (!result.ok) {
-        toast.error(result.error === "unauthorized" ? t("notAllowed") : t("saveFailed"));
+        toast.error(
+          result.error === "unauthorized"
+            ? t("notAllowed")
+            : result.error === "planExpired"
+              ? t("planExpired")
+              : t("saveFailed"),
+        );
         return;
       }
       setKey("");

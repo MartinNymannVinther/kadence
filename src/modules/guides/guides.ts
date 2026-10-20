@@ -57,8 +57,9 @@ export const EQUIPMENT_GUIDE: readonly GuideSection[] = [
 
 /**
  * Food and drink (docs/research/ernaering.md). The section on low energy
- * availability is health advice to parents about minors; it went live
- * only after a sports dietitian had read it (ADR 0047).
+ * availability is health advice to parents about minors; a sports
+ * dietitian has not read it yet (backlog A-01). It is shown by default at
+ * Martin's choice; GUIDE_FOOD=off holds it back (ADR 0047, 0057).
  */
 export const FOOD_GUIDE: readonly GuideSection[] = [
   { id: "everyday", points: 4, sources: ["tdFood2026", "thomas2016", "desbrow2021"] },

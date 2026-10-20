@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { Client, Pool } from "pg";
 import { addChampion, crownChampions } from "@/modules/club/champions";
 import {
@@ -16,8 +16,14 @@ import { insertSql, seedPerson } from "../helpers/rows";
  * The club championship (drizzle/0022, docs/adr/0051): off until the club
  * turns it on; then everyone in the club reads it and only a coach writes
  * it; another club sees nothing; and the season's winners go on the roll
- * of honour.
+ * of honour. Above the club's choice sits the installation's (docs/adr/0057):
+ * on for this file, and off for one test to prove it is off for every club.
  */
+
+const on = vi.hoisted(() => new Set<string>(["clubChampionship"]));
+vi.mock("@/core/features", async (importOriginal) =>
+  (await import("../helpers/features")).featuresWith(await importOriginal(), on),
+);
 
 const ORG = "org_cm";
 const COACH = { orgId: ORG, userId: "user_cm_coach" };
@@ -150,6 +156,26 @@ describe("the club championship", () => {
         [ORG, roundId],
       );
     expect(await expectSqlError(asApp(app, COACH, foreign))).toBe("42501");
+  });
+
+  it("is off for every club while the installation has it off, and the club's choice waits", async () => {
+    on.delete("clubChampionship");
+    try {
+      expect(await listChampionships(COACH)).toBeNull();
+      expect(await getChampionship(ANNA, championshipId)).toBeNull();
+      expect(await listChampions(ANNA)).toEqual([]);
+      await expect(
+        createChampionship(COACH, { season: 2028, title: "KM 2028" }),
+      ).rejects.toMatchObject({ code: "notFound" });
+      const kept = await admin.query(
+        "select club_championship from team_settings where org_id = $1",
+        [ORG],
+      );
+      expect(kept.rows[0].club_championship).toBe(true);
+    } finally {
+      on.add("clubChampionship");
+    }
+    expect(await listChampionships(COACH)).toHaveLength(1);
   });
 
   it("the season's winners go on the roll of honour, once", async () => {

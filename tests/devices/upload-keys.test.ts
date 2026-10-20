@@ -131,7 +131,7 @@ describe("making a key", () => {
 
   it("is not a way around a limit: ten an hour, however many are removed", async () => {
     for (const key of await listUploadKeys(MIKKEL)) await removeUploadKey(MIKKEL, key.id);
-    resetRateLimits();
+    await resetRateLimits();
     for (let i = 0; i < 10; i++) {
       const made = await createUploadKey(MIKKEL, `Runde ${i + 1}`);
       await removeUploadKey(MIKKEL, made.id);

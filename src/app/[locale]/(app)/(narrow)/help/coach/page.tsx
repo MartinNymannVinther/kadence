@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /**
- * "Trænerguide": what Kadence tells a coach of young riders, in fourteen
+ * "Trænerguiden": what Kadence tells a coach of young riders, in fourteen
  * short sections with their sources (ADR 0021). Open to everyone signed
  * in — a rider or a parent may read what their coach is advised.
  */
