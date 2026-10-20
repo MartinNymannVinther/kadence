@@ -104,7 +104,7 @@ sends no mail (ADR 0032): the coach passes every link on by hand.
 ## Amended 2026-10-07: a parent already on the team is linked
 
 The trade-off above — "an address already on the team is refused" — met
-its first case at once: a mother with two children on the team, one
+its first case at once: a parent with two children on the team, one
 already joined. Backlog P2-16 lifts it for parents.
 
 - **On the rider's page**, "Tilføj forælder" asks who the parent is: a

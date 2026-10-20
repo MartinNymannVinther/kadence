@@ -25,16 +25,16 @@ const codes = (parsed: ParsedList) => parsed.problems.map((p) => [p.line, p.code
 describe("a list that reads", () => {
   it("takes a rider, a year, an address and two parents", () => {
     const parsed = read(
-      "Emma Holm, 2010, Emma@Holm.dk; Anne Holm, anne@holm.dk; Peter Holm\nOskar Lund, 2009",
+      "Emma Holm, 2010, Emma@Holm.example; Anne Holm, anne@holm.example; Peter Holm\nOskar Lund, 2009",
     );
     expect(parsed.problems).toEqual([]);
     expect(parsed.listProblem).toBeNull();
     expect(parsed.lines).toEqual([
       {
         line: 1,
-        rider: { name: "Emma Holm", birthYear: 2010, email: "emma@holm.dk" },
+        rider: { name: "Emma Holm", birthYear: 2010, email: "emma@holm.example" },
         parents: [
-          { name: "Anne Holm", email: "anne@holm.dk" },
+          { name: "Anne Holm", email: "anne@holm.example" },
           { name: "Peter Holm", email: null },
         ],
       },
@@ -44,13 +44,13 @@ describe("a list that reads", () => {
 
   it("reads the fields in any order, with spaces, tabs or brackets", () => {
     const parsed = read(
-      "emma@holm.dk, 2010, Emma Holm\nOskar  Lund 2009 <oskar@lund.dk>\nIda Berg\t2011\tida@berg.dk",
+      "emma@holm.example, 2010, Emma Holm\nOskar  Lund 2009 <oskar@lund.example>\nIda Berg\t2011\tida@berg.example",
     );
     expect(parsed.problems).toEqual([]);
     expect(parsed.lines.map((l) => l.rider)).toEqual([
-      { name: "Emma Holm", birthYear: 2010, email: "emma@holm.dk" },
-      { name: "Oskar Lund", birthYear: 2009, email: "oskar@lund.dk" },
-      { name: "Ida Berg", birthYear: 2011, email: "ida@berg.dk" },
+      { name: "Emma Holm", birthYear: 2010, email: "emma@holm.example" },
+      { name: "Oskar Lund", birthYear: 2009, email: "oskar@lund.example" },
+      { name: "Ida Berg", birthYear: 2011, email: "ida@berg.example" },
     ]);
   });
 
@@ -73,10 +73,10 @@ describe("a list that reads", () => {
 
   it("lets siblings share a parent, who gets one link", () => {
     const parsed = read(
-      "Emma Holm, 2010; Anne Holm, anne@holm.dk\nIda Holm, 2012; anne holm, anne@holm.dk",
+      "Emma Holm, 2010; Anne Holm, anne@holm.example\nIda Holm, 2012; anne holm, anne@holm.example",
     );
     expect(parsed.problems).toEqual([]);
-    expect(addressesIn(parsed.lines)).toEqual(["anne@holm.dk"]);
+    expect(addressesIn(parsed.lines)).toEqual(["anne@holm.example"]);
   });
 });
 
@@ -129,7 +129,7 @@ describe("a line that is refused", () => {
   });
 
   it("has no name, or two before the semicolon", () => {
-    const parsed = read(", 2010, emma@holm.dk\nEmma Holm, Anne Holm, 2010\n2010; Anne Holm");
+    const parsed = read(", 2010, emma@holm.example\nEmma Holm, Anne Holm, 2010\n2010; Anne Holm");
     expect(codes(parsed)).toEqual([
       [1, "noName"],
       [2, "twoNames"],
@@ -143,7 +143,7 @@ describe("a line that is refused", () => {
   });
 
   it("has an address that is not one, or two for one person", () => {
-    const parsed = read("Emma Holm, 2010, emma@\nOskar Lund, 2009, a@lund.dk, b@lund.dk");
+    const parsed = read("Emma Holm, 2010, emma@\nOskar Lund, 2009, a@lund.example, b@lund.example");
     expect(codes(parsed)).toEqual([
       [1, "badEmail"],
       [2, "twoEmails"],
@@ -167,24 +167,26 @@ describe("a line that is refused", () => {
   it("gives two people the same address", () => {
     const parsed = read(
       [
-        "Emma Holm, 2010, holm@mail.dk",
-        "Oskar Lund, 2009, holm@mail.dk",
-        "Ida Berg, 2011; Anne Berg, berg@mail.dk",
-        "Eva Berg, 2012; Karin Berg, berg@mail.dk",
-        "Bo Ny, 2010, ny@mail.dk; Lis Ny, ny@mail.dk",
+        "Emma Holm, 2010, holm@mail.example",
+        "Oskar Lund, 2009, holm@mail.example",
+        "Ida Berg, 2011; Anne Berg, berg@mail.example",
+        "Eva Berg, 2012; Karin Berg, berg@mail.example",
+        "Bo Ny, 2010, ny@mail.example; Lis Ny, ny@mail.example",
         "Jens Ny, 2011; Lis Ny; Lis Ny",
       ].join("\n"),
     );
     expect(parsed.problems).toEqual([
-      { line: 2, code: "sameEmail", value: "holm@mail.dk", other: 1 },
-      { line: 4, code: "sameEmail", value: "berg@mail.dk", other: 3 },
-      { line: 5, code: "twiceOnLine", value: "ny@mail.dk" },
+      { line: 2, code: "sameEmail", value: "holm@mail.example", other: 1 },
+      { line: 4, code: "sameEmail", value: "berg@mail.example", other: 3 },
+      { line: 5, code: "twiceOnLine", value: "ny@mail.example" },
       { line: 6, code: "twiceOnLine", value: "Lis Ny" },
     ]);
   });
 
   it("refuses a rider's address used by a parent elsewhere", () => {
-    const parsed = read("Emma Holm, 2010; Anne Holm, anne@holm.dk\nAnne Holm, 2008, anne@holm.dk");
+    const parsed = read(
+      "Emma Holm, 2010; Anne Holm, anne@holm.example\nAnne Holm, 2008, anne@holm.example",
+    );
     expect(codes(parsed)).toEqual([[2, "sameEmail"]]);
   });
 

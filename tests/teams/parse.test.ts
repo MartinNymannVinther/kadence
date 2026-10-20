@@ -41,11 +41,11 @@ describe("names across the sources", () => {
     expect(tidyCase("Team coloQuick")).toBe("Team coloQuick");
   });
 
-  it("turn the UCI's 'LANDBO Mads' into Mads Landbo", () => {
-    expect(riderName("LANDBO Mads")).toBe("Mads Landbo");
+  it("turn the UCI's 'EKSEMPEL Mads' into Mads Eksempel", () => {
+    expect(riderName("EKSEMPEL Mads")).toBe("Mads Eksempel");
     expect(riderName("RIBEIRO BRAVO Henrique")).toBe("Henrique Ribeiro Bravo");
     expect(riderName("VAN KERCKHOVE Matisse")).toBe("Matisse Van Kerckhove");
-    expect(riderName("Mads Landbo")).toBe("Mads Landbo");
+    expect(riderName("Mads Eksempel")).toBe("Mads Eksempel");
   });
 });
 

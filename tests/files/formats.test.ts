@@ -36,9 +36,9 @@ describe("GPX", () => {
   it("reads position, height, time, pulse and cadence, and works out distance and speed", () => {
     const { fit, format, title } = decodeActivityFile(bytesOf(gpx(600)));
     expect(format).toBe("gpx");
-    expect(title).toBe("Hørsholm & omegn");
+    expect(title).toBe("Østerbro rundt");
     expect(fit.records).toHaveLength(600);
-    expect(fit.records[0]).toMatchObject({ hr: 140, cadence: 88, lat: 55.87, lon: 12.5077 });
+    expect(fit.records[0]).toMatchObject({ hr: 140, cadence: 88, lat: 55.68, lon: 12.5683 });
     // 0.00009° of latitude a second is about 10 m/s.
     expect(fit.records[300]!.speed).toBeCloseTo(10, 0);
     const summary = summarizeActivity(fit);
@@ -47,7 +47,7 @@ describe("GPX", () => {
     expect(summary.distanceM).toBeLessThan(6100);
     expect(summary.movingSeconds).toBeGreaterThan(590);
     expect(summary.avgHr).toBe(140);
-    expect(summary.streams.lat[0]).toBeCloseTo(55.87, 3);
+    expect(summary.streams.lat[0]).toBeCloseTo(55.68, 3);
   });
 
   it("reads power where the exporter wrote it, and gives a load from it", () => {

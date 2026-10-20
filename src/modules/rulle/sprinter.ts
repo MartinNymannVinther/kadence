@@ -1,7 +1,7 @@
 import { PHYSICS, resistance } from "./physics";
 
 /**
- * The sprinter (ADR 0075), called by HYLDTOFT: a small rider, 52 kg, who
+ * The sprinter (ADR 0075), called by TURBO: a small rider, 52 kg, who
  * sits on the rider's wheel for as long as his legs let him, sprints at
  * 1150 W from 200 metres out if he has anything left, and throws his
  * bike at the line with a jump. Here what he can ride and what following

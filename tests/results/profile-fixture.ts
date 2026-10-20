@@ -61,18 +61,18 @@ export function profilePage(rows: string, uci = UCI, born = 2011): string {
 
 export const PAGE = profilePage(
   heading("Landevej - U17 (2026)") +
-    row("Demin Cup Finalen 2026 - Holb&#230;k CS", 17626, 101613, "13. september 2026", "11") +
-    row("Greve CC 2026", 17614, 101512, "6. september 2026", "3") +
-    row("B&amp;U DM Linjel&#248;b - Vejle CK 2026", 17480, 100581, "30. august 2026", "21") +
-    row("CAMPIONE HOLSTEBRO TOURS 2026 -1. ETAPE - Landevejsl&#248;b/Road Race", 19086, 110561, "30. juli 2026", "72") +
-    row("CAMPIONE HOLSTEBRO TOURS 2026 - Point Samlet", 19292, 111229, "30. juli 2026", "51") +
+    row("Demin Cup Finalen 2026 - Holb&#230;k CS", 17626, 101613, "13. september 2026", "14") +
+    row("Greve CC 2026", 17614, 101512, "6. september 2026", "6") +
+    row("B&amp;U DM Linjel&#248;b - Vejle CK 2026", 17480, 100581, "30. august 2026", "18") +
+    row("CAMPIONE HOLSTEBRO TOURS 2026 -1. ETAPE - Landevejsl&#248;b/Road Race", 19086, 110561, "30. juli 2026", "65") +
+    row("CAMPIONE HOLSTEBRO TOURS 2026 - Point Samlet", 19292, 111229, "30. juli 2026", "47") +
     row("Amager CR - Vitamin Well Grand Prix 2026", 17500, 100700, "21. juni 2026", "DNF") +
     total +
     heading("Landevej - U15 (2025)") +
-    row("Future Racing 2025", 16000, null, "15. juni 2025", "4") +
+    row("Future Racing 2025", 16000, null, "15. juni 2025", "9") +
     total +
     heading("Landevej - U13 (2023)") +
-    row("Sorø Cykelløb 2023", 13000, 90000, "3. maj 2023", "2") +
+    row("Sorø Cykelløb 2023", 13000, 90000, "3. maj 2023", "5") +
     total,
 ); // prettier-ignore
 

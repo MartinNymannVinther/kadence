@@ -87,8 +87,8 @@ function fresh(id: string, name: string, level: TeamLevel, reg: RegistryTeam | n
 }
 
 /**
- * Who a rider is across lists: the UCI writes "Sylvester Stokbro" where
- * DCU writes "Sylvester Vittinghus Stokbro", so the first and the last
+ * Who a rider is across lists: the UCI writes "Mads Holm" where
+ * DCU writes "Mads Eksempel Holm", so the first and the last
  * name with the birth year are the key, and the longer name is kept.
  */
 export function riderKey(rider: { name: string; born: number | null }): string {

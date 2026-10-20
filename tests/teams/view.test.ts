@@ -157,11 +157,11 @@ describe("the view", () => {
   });
 
   it("keeps a rider on two lists as one line, under the longer name", () => {
-    expect(riderKey({ name: "Sylvester Stokbro", born: 2007 })).toBe(
-      riderKey({ name: "Sylvester Vittinghus Stokbro", born: 2007 }),
+    expect(riderKey({ name: "Mads Holm", born: 2007 })).toBe(
+      riderKey({ name: "Mads Eksempel Holm", born: 2007 }),
     );
-    expect(riderKey({ name: "Sylvester Stokbro", born: 2007 })).not.toBe(
-      riderKey({ name: "Sylvester Stokbro", born: 2008 }),
+    expect(riderKey({ name: "Mads Holm", born: 2007 })).not.toBe(
+      riderKey({ name: "Mads Holm", born: 2008 }),
     );
     expect(u23Born(2026)).toEqual({ from: 2004, to: 2007 });
   });

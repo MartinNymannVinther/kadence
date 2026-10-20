@@ -1908,7 +1908,7 @@
       "title": "Inviter hele holdet",
       "body": "Skriv eller indsæt holdet med én rytter pr. linje. Du ser listen, før noget bliver oprettet.",
       "listLabel": "Holdet",
-      "placeholder": "Emma Holm, 2010, emma@holm.dk; Anne Holm, anne@holm.dk\nOskar Lund, 2009, oskar@lund.dk\nIda Berg, 2011; Peter Berg, peter@berg.dk",
+      "placeholder": "Emma Holm, 2010, emma@holm.example; Anne Holm, anne@holm.example\nOskar Lund, 2009, oskar@lund.example\nIda Berg, 2011; Peter Berg, peter@berg.example",
       "formatTitle": "Sådan skriver du en linje",
       "formatRider": "Først rytteren: navn, fødselsår og e-mail, adskilt af komma.",
       "formatParents": "Så forældrene, hver efter et semikolon: navn og e-mail. Højst to pr. rytter.",

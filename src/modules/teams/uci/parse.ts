@@ -105,7 +105,7 @@ export function nationStanding(
   return rank && points !== null ? { rank, points } : null;
 }
 
-/** The riders of one page of an individual ranking, as DataRide writes them ("LANDBO Mads"). */
+/** The riders of one page of an individual ranking, as DataRide writes them ("EKSEMPEL Mads"). */
 export function readRiders(data: unknown): {
   total: number;
   riders: RankedRider[];
@@ -136,7 +136,7 @@ export function readRiders(data: unknown): {
   };
 }
 
-/** "LANDBO Mads" → "Mads Landbo": the UCI writes the family name first, in capitals. */
+/** "EKSEMPEL Mads" → "Mads Eksempel": the UCI writes the family name first, in capitals. */
 export function riderName(listed: string): string {
   const parts = listed.trim().split(/\s+/);
   const family = parts.filter((p) => p === p.toUpperCase() && /\p{L}/u.test(p));

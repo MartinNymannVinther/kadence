@@ -16,7 +16,7 @@ The research is docs/research/teams.md. Two public sources answer
 software that says who it is: the UCI's DataRide, behind uci.org's
 rankings, and Cykling Danmark's team list and points lists. Neither has
 an API or terms for reuse; DCU has not yet said yes to being read (ADR
-0039), and Martin meets DCU the week after this page was built.
+0039).
 
 ## Decision
 
@@ -43,7 +43,7 @@ an API or terms for reuse; DCU has not yet said yes to being read (ADR
 - **A rider sits with a team only when a list says so.** A club in the
   list's team column is no team, and the rider is left out; names are
   matched on letters alone (`normalise.ts`), and a rider on two lists —
-  "Sylvester Stokbro" at the UCI, "Sylvester Vittinghus Stokbro" at DCU
+  "Mads Holm" at the UCI, "Mads Eksempel Holm" at DCU
   — is one line by first and last name and birth year.
 - **The registry adds, it never gates.** `src/modules/teams/registry/teams.json`
   holds what no list has: where a team is at home, its website, the
@@ -86,8 +86,7 @@ an API or terms for reuse; DCU has not yet said yes to being read (ADR
   a time, no redirect followed, the answer capped, the request saying
   who is asking — Kadence and the installation's address — so a host
   can see it and say no. Cykling Danmark is read only while `TEAMS_DCU`
-  is on; it is on by default so Martin can show DCU the page, and off is
-  one variable away.
+  is on; it is on by default, and off is one variable away.
 - **Every id is looked up.** The season, the ranking, the country and
   DCU's class ids are read from the sources' own forms on each read, so
   a new season needs no change in code.
@@ -97,8 +96,8 @@ an API or terms for reuse; DCU has not yet said yes to being read (ADR
 - **Reading Cykling Danmark before DCU has said yes.** The member portal
   does not withhold its pages from software and names no terms, and the
   team list is DCU's public page; still, this is reading a site that has
-  not been asked. It is on so it can be shown, and `TEAMS_DCU=off` turns
-  it off without a deploy. If DCU says no, off it goes, and the page
+  not been asked. It is on by default, and `TEAMS_DCU=off` turns it off
+  without a deploy. If DCU says no, off it goes, and the page
   keeps the UCI's part and the registry.
 - **Undocumented endpoints break without notice.** DataRide's grid
   endpoints are read as its own pages read them; a change there leaves

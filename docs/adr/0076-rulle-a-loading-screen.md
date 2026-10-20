@@ -8,7 +8,7 @@ Pressing Start on a route went straight to the countdown, three, two,
 one, while the landscape was still being built behind it. The wish was a
 loading screen in its own right: ten seconds with the route in the
 background, a view of what it looks like, and one of the two riders the
-rider may race — Johan or Hyldtoft — turning round in front of it.
+rider may race — the challenger or the sprinter — turning round in front of it.
 
 ## Decision
 
