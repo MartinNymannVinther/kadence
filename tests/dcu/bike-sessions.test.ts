@@ -34,7 +34,7 @@ describe("DCU's interval forms as sessions to ride", () => {
     expect(byKey("dcu-sprint-5x10").when.da).toBe("2 måneder før formtop");
   });
 
-  it("last about an hour, the opener half of it", () => {
+  it("last about an hour, the opener DCU's hour too", () => {
     const minutes = Object.fromEntries(
       DCU_BIKE_SESSIONS.map((s) => [s.key, structureMinutes(s.structure)]),
     );
@@ -45,7 +45,8 @@ describe("DCU's interval forms as sessions to ride", () => {
       "dcu-vo2-3x3": 48,
       "dcu-anaerobic-10x30": 45,
       "dcu-sprint-5x10": 55,
-      "dcu-opener": 30,
+      // DCU's example week: "Opladning", 1 t, the day before the race (U17 p. 14).
+      "dcu-opener": 60,
     });
   });
 

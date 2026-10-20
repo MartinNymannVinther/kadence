@@ -179,13 +179,13 @@ describe("the proposal around a race", () => {
       `{"kind":"race","title":"Løb i Hillerød","from":"${SATURDAY}","to":"${SATURDAY}","priority":null}`,
     );
     expect(sent).toContain("A race or event day holds one session, the race or event itself");
-    expect(sent).toContain('Title the opener "Kort tur med ryk".');
+    expect(sent).toContain("holds the race prep, which Kadence lays in itself");
     expect(sent).toContain("the race or event is still the week's hard effort");
     expect(sent).not.toContain("Forkølet");
     expect(sent).not.toContain('"ill"');
     expect(proposal.sessions.map((s) => [s.date, s.title, s.minutes])).toEqual([
       ["2026-10-19", "Let grundtur", 60],
-      ["2026-10-23", "Kort tur med ryk", 54],
+      ["2026-10-23", "Opladning før løbet", 60],
       [SATURDAY, "Løb i Hillerød", 70],
     ]);
     expect(proposal.events.map((e) => e.title)).toEqual(["Løb i Hillerød"]);

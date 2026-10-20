@@ -281,6 +281,7 @@ export function TeamGrid({
       <CalendarDialogs
         state={dialog}
         onClose={() => setDialog(null)}
+        onOpen={setDialog}
         riders={riders}
         templates={templates}
         isCoach
