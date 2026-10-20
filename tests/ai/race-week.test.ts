@@ -1,12 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
   groupWeekEvents,
+  layRacePrep,
   raceDays,
   raceWeekRules,
   settleRaceDays,
   type EventRow,
 } from "@/modules/assist/race-week";
-import type { DraftSession } from "@/modules/assist/week-draft";
+import type { DraftSession, WeekDraft } from "@/modules/assist/week-draft";
 import { parseWorkoutText } from "@/modules/workouts/parse-text";
 import { flattenSteps, readStructure, type Structure } from "@/modules/workouts/structure";
 
@@ -64,7 +65,7 @@ describe("the race-week rules", () => {
       'A race day holds one session, the race itself: sport "bike", the race\'s name from the calendar as its title',
     );
     expect(rules).toContain("Plan nothing else on that day.");
-    expect(rules).toContain("The day before a race: rest, or a short opener");
+    expect(rules).toContain("The day before a race holds the race prep");
     expect(rules).toContain(
       "In the two days before an A or B race: nothing hard and nothing long.",
     );
@@ -86,24 +87,26 @@ describe("the race-week rules", () => {
     );
   });
 
-  it("give the day before its Danish words, so an opener is not called a warm-up", () => {
-    // The model called Friday's opener "Opvarmning til cross … med lidt spidse".
+  it("leave the day before to the race prep Kadence lays in, and keep the warm-up on the race day", () => {
+    // The model called Friday's opener "Opvarmning til cross … med lidt spidse",
+    // and a later week had a recovery ride the day before a race.
     const da = raceWeekRules("adult", "da");
-    expect(da).toContain('Title the opener "Kort tur med ryk".');
+    expect(da).toContain(
+      "The day before a race or event holds the race prep, which Kadence lays in itself",
+    );
+    expect(da).toContain(
+      "Plan no session on that day, and count its hour in the week's bike hours.",
+    );
     expect(da).toContain('"Opvarmning" is ridden before the start on the race or event day');
-    expect(da).toContain('Short, hard efforts are "ryk" or "spurter" in Danish.');
     const en = raceWeekRules("adult", "en");
-    expect(en).toContain('Title the opener "Opener".');
-    expect(en).not.toContain("Kort tur med ryk");
+    expect(en).toContain("A warm-up is ridden before the start on the race or event day");
+    expect(en).not.toContain("Opvarmning");
   });
 
   it("give examples the shorthand reader understands", () => {
     const rules = raceWeekRules("youth", "da");
     const examples = [...rules.matchAll(/e\.g\. '([^']+)'/g)].map((m) => m[1]!);
-    expect(examples).toEqual([
-      "15 min opvarmning, 45 min RPE 9, 10 min nedkørsel",
-      "40 min Z2, 3x1 min Z5 / 2 min pause, 5 min Z1",
-    ]);
+    expect(examples).toEqual(["15 min opvarmning, 45 min RPE 9, 10 min nedkørsel"]);
     for (const text of examples) expect(parseWorkoutText(text)).not.toBeNull();
     const steps = flattenSteps(parseWorkoutText(examples[0]!)!);
     expect(steps.map((st) => st.target)).toContainEqual({ kind: "rpe", value: 9 });
@@ -206,5 +209,80 @@ describe("the race day", () => {
   it("keeps what the proposal carries beside its sessions", () => {
     const settled = settleRaceDays({ ...draft, events: [{ kind: "race" }] }, RACE_DAY);
     expect(settled.events).toEqual([{ kind: "race" }]);
+  });
+});
+
+describe("the day before", () => {
+  const MONDAY = "2026-10-19";
+  const EMPTY: WeekDraft = { sessions: [], note: "" };
+  const SATURDAY_RACE = [
+    { kind: "race", title: "Cross i Hillerød", from: "2026-10-24", to: "2026-10-24" },
+  ];
+
+  it("holds the race prep in place of whatever the model put there", () => {
+    // A later week had "Restitutionstur 45 min" the day before a cross race.
+    const laid = layRacePrep(
+      {
+        sessions: [
+          session("2026-10-19", "Let grundtur"),
+          session("2026-10-23", "Restitutionstur"),
+          session("2026-10-23", "Styrke", readStructure({}, "strength"), 30, "strength"),
+          session("2026-10-24", "Cross i Hillerød", race, 70),
+        ],
+        note: "",
+      },
+      SATURDAY_RACE,
+      MONDAY,
+      "da",
+    );
+    expect(laid.sessions.map((s) => [s.date, s.title, s.minutes])).toEqual([
+      ["2026-10-19", "Let grundtur", 45],
+      ["2026-10-23", "Opladning før løbet", 60],
+      ["2026-10-24", "Cross i Hillerød", 70],
+    ]);
+    expect(laid.sessions[1]!.why).toContain("5 minutter ved tærskel");
+  });
+
+  it("is laid even when the model left the day empty, in the reader's language", () => {
+    const laid = layRacePrep(EMPTY, SATURDAY_RACE, MONDAY, "en");
+    expect(laid.sessions.map((s) => [s.date, s.title])).toEqual([
+      ["2026-10-23", "Opener before the race"],
+    ]);
+  });
+
+  it("leaves a race day alone, and an eve outside the week", () => {
+    const weekend = [
+      { kind: "race", from: "2026-10-24", to: "2026-10-24" },
+      { kind: "race", from: "2026-10-25", to: "2026-10-25" },
+      // A race on the Monday has its eve in the week before.
+      { kind: "race", from: "2026-10-19", to: "2026-10-19" },
+    ];
+    const laid = layRacePrep(
+      { sessions: [session("2026-10-24", "Løb", race, 70)], note: "" },
+      weekend,
+      MONDAY,
+      "da",
+    );
+    expect(laid.sessions.map((s) => [s.date, s.title])).toEqual([
+      ["2026-10-23", "Opladning før løbet"],
+      ["2026-10-24", "Løb"],
+    ]);
+  });
+
+  it("gives a stage race one race prep, before its first day", () => {
+    const laid = layRacePrep(
+      EMPTY,
+      [{ kind: "race", from: "2026-10-23", to: "2026-10-25" }],
+      MONDAY,
+      "da",
+    );
+    expect(laid.sessions.map((s) => s.date)).toEqual(["2026-10-22"]);
+  });
+
+  it("changes nothing in a week without a race", () => {
+    const draft = { sessions: [session("2026-10-23", "Rolig tur")], note: "x" };
+    expect(
+      layRacePrep(draft, [{ kind: "exam", from: "2026-10-24", to: "2026-10-24" }], MONDAY, "da"),
+    ).toBe(draft);
   });
 });

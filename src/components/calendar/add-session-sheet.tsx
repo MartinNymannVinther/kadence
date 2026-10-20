@@ -26,7 +26,8 @@ import type { RiderOption } from "./types";
  * uses. Several riders make a group plan. A rider (not a coach) plans
  * from the library for themselves; building is the coach's. "Gentag" puts
  * it on chosen weekdays until a last day (ADR 0041). A time and a place
- * are there for a session ridden together (ADR 0058).
+ * are there for a session ridden together (ADR 0058). Opened from a race,
+ * it starts with the race prep built and ready to change (docs/adr/0106).
  */
 export function AddSessionSheet({
   open,
@@ -36,6 +37,7 @@ export function AddSessionSheet({
   defaultDate,
   templates,
   canBuild,
+  prefill,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -44,6 +46,8 @@ export function AddSessionSheet({
   defaultDate: string;
   templates: TemplateOption[];
   canBuild: boolean;
+  /** A session to start the builder from, as the race prep the day before a race. */
+  prefill?: { sport: string; title: string; description: string; structure: unknown };
 }) {
   const t = useTranslations("calendar.add");
   const problems = useTranslations("workouts.problem");
@@ -53,10 +57,10 @@ export function AddSessionSheet({
   const [riderIds, setRiderIds] = useState(defaultRiderIds);
   const [onDate, setOnDate] = useState(defaultDate);
   const [mode, setMode] = useState<"template" | "build">(
-    templates.length > 0 || !canBuild ? "template" : "build",
+    canBuild && (prefill || templates.length === 0) ? "build" : "template",
   );
   const [templateId, setTemplateId] = useState<string | null>(null);
-  const [draft, setDraft] = useState(() => newDraft());
+  const [draft, setDraft] = useState(() => newDraft(prefill));
   const [problem, setProblem] = useState<string | null>(null);
   const [repeat, setRepeat] = useState<Repeat | null>(null);
   const [at, setAt] = useState(() => timePlaceDraft());

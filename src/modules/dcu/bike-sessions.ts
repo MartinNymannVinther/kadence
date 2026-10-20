@@ -139,11 +139,18 @@ export const DCU_BIKE_SESSIONS: readonly DcuBikeSession[] = [
     key: "dcu-opener",
     name: { da: "Opladning: 5 min AT", en: "Opener: 5 min AT" },
     when: { da: "Dagen før løb", en: "The day before a race" },
+    // DCU's hour, the day before the race in the example week: the one
+    // effort in the middle, easy riding either side of it.
     structure: {
       kind: "bike",
-      steps: [warmUp(15), step("work", 5 * 60, zone(4)), coolDown(10)],
+      steps: [
+        warmUp(20),
+        step("work", 5 * 60, zone(4)),
+        step("steady", 25 * 60, zone(2)),
+        coolDown(10),
+      ],
     },
     source:
-      "DCU_U17_kompendium_2016.pdf p. 14; DCU_U19_kompendium_2016.pdf p. 17 (Opladning: 1*5 min. AT)",
+      "DCU_U17_kompendium_2016.pdf p. 14; DCU_U19_kompendium_2016.pdf p. 17 (Opladning: 1*5 min. AT, 1 t)",
   },
 ];

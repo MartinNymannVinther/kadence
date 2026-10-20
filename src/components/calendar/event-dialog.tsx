@@ -22,6 +22,7 @@ import {
   updateEventAction,
 } from "@/modules/training/actions";
 import { EventResults } from "./event-results";
+import { RacePrepOffer } from "./race-prep-offer";
 import { EventWhereFields, eventWhereDraft, eventWhereValue } from "./event-where-fields";
 import type { CalendarEventCard, RiderOption } from "./types";
 
@@ -34,7 +35,8 @@ const WITHOUT_WHERE = new Set(["holiday", "ill"]);
  * calendar (ADR 0013). A rider puts in their own — an exam, a day ill; a
  * coach puts in anyone's, and the team's own days that everyone sees.
  * A race, a camp or an exam may say when and where it starts and who
- * drives (docs/backlog.md P2-03).
+ * drives (docs/backlog.md P2-03). An open race offers its race prep the
+ * day before (docs/adr/0106).
  */
 export function EventDialog({
   open,
@@ -44,6 +46,7 @@ export function EventDialog({
   defaultRiderId,
   riders,
   isCoach,
+  onRacePrep,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -55,6 +58,8 @@ export function EventDialog({
   /** Who a coach may put it on; a rider's own is fixed. */
   riders: RiderOption[];
   isCoach: boolean;
+  /** Opens the race prep the day before this race, in this dialog's place. */
+  onRacePrep?: () => void;
 }) {
   const t = useTranslations("calendar.event");
   const kinds = useTranslations("training.eventKind");
@@ -110,6 +115,7 @@ export function EventDialog({
           </DialogHeader>
           {event?.fromParent && <p className="text-meta -mt-2 text-xs">{t("fromParent")}</p>}
           {event && <EventResults event={event} riders={riders} />}
+          {event && onRacePrep && <RacePrepOffer startsOn={event.startsOn} onPrep={onRacePrep} />}
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="flex flex-col gap-1.5">
               <label htmlFor={ids.kind} className="text-sm font-medium">

@@ -179,7 +179,7 @@ export function RiderWeek({
               }
               onOpenEvent={(event) =>
                 canEditEvent(event)
-                  ? () => setDialog({ kind: "event", date, riderId: event.riderId, event })
+                  ? () => setDialog({ kind: "event", date, riderId, event })
                   : undefined
               }
             >
@@ -206,6 +206,7 @@ export function RiderWeek({
       <CalendarDialogs
         state={dialog}
         onClose={() => setDialog(null)}
+        onOpen={setDialog}
         riders={riders}
         templates={templates}
         isCoach={isCoach}

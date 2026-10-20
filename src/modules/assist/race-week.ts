@@ -1,6 +1,7 @@
 import { addDaysIso } from "@/core/dates";
 import { targetIntensity } from "@/modules/load/planned-load";
-import { flattenSteps, ZONE_FTP_PCT } from "@/modules/workouts/structure";
+import { racePrepSession } from "@/modules/workouts/race-prep";
+import { flattenSteps, structureMinutes, ZONE_FTP_PCT } from "@/modules/workouts/structure";
 import type { DraftSession, WeekDraft } from "./week-draft";
 
 /**
@@ -35,19 +36,20 @@ export type EventRow = {
  * Race-week rules, as a coach plans a week around a race. `adult` speaks
  * of a race or event (a sportive); a youth week speaks of races, inside
  * the federation's frame the prompt already holds. The race day holds the
- * race as a session (docs/adr/0103), and the words for the day before are
- * given in the reader's language, so the model does not translate its way
- * to "opvarmning" for an opener.
+ * race as a session (docs/adr/0103), the day before holds the race prep,
+ * which Kadence lays in itself (docs/adr/0106), and the warm-up's word is
+ * given in the reader's language, so the model does not make a session of
+ * "opvarmning".
  */
 export function raceWeekRules(audience: "youth" | "adult", locale: string): string {
   const race = audience === "adult" ? "race or event" : "race";
   return [
     "The calendar's events are fixed: plan the week around them.",
     `A ${race} day holds one session, the ${race} itself: sport "bike", the ${race}'s name from the calendar as its title, and a workout of warm-up, the ${race} by feel and a cool-down, e.g. '15 min opvarmning, 45 min RPE 9, 10 min nedkørsel' for a cyclocross race of about 45 minutes. Its minutes are the whole session. Plan nothing else on that day.`,
-    `The day before a ${race}: rest, or a short opener of about 45–60 min easy with a few short, hard efforts written into its workout, e.g. '40 min Z2, 3x1 min Z5 / 2 min pause, 5 min Z1'.`,
+    `The day before a ${race} holds the race prep, which Kadence lays in itself: an hour easy with 5 minutes at threshold (zone 4). Plan no session on that day, and count its hour in the week's bike hours.`,
     locale === "en"
-      ? `Title the opener "Opener". A warm-up is ridden before the start on the ${race} day, inside the ${race}'s session, never as a session of its own.`
-      : `Title the opener "Kort tur med ryk". "Opvarmning" is ridden before the start on the ${race} day, inside the ${race}'s session, never as a session of its own. Short, hard efforts are "ryk" or "spurter" in Danish.`,
+      ? `A warm-up is ridden before the start on the ${race} day, inside the ${race}'s session, never as a session of its own.`
+      : `"Opvarmning" is ridden before the start on the ${race} day, inside the ${race}'s session, never as a session of its own.`,
     `In the two days before an A or B ${race}: nothing hard and nothing long.`,
     `The day after a ${race}: rest or a short, easy ride.`,
     `The ${race} counts as the week's hard session or sessions, not as extra on top of them.`,
@@ -140,5 +142,42 @@ export function settleRaceDays<T extends WeekDraft>(draft: T, events: CalendarRa
     if (race.get(s.date) !== s) return [];
     return [{ ...s, title: races.get(s.date) ?? s.title }];
   });
+  return { ...draft, sessions };
+}
+
+/**
+ * The race prep the day before every race, whatever the model said
+ * (docs/adr/0106): on the day before a race's first day, inside the week
+ * and no race day itself, the model's sessions go and DCU's opladning
+ * comes in their place (workouts/race-prep.ts). A race on the Monday has
+ * its eve in the week before, which this draft does not plan.
+ */
+export function layRacePrep<T extends WeekDraft>(
+  draft: T,
+  events: CalendarRace[],
+  monday: string,
+  locale: string,
+): T {
+  const races = raceDayTitles(events);
+  const sunday = addDaysIso(monday, 6);
+  const eves = new Set<string>();
+  for (const day of races.keys()) {
+    const eve = addDaysIso(day, -1);
+    if (eve >= monday && eve <= sunday && !races.has(eve)) eves.add(eve);
+  }
+  if (eves.size === 0) return draft;
+  const prep = racePrepSession(locale);
+  const laid = [...eves].map((date): DraftSession => ({
+    date,
+    sport: prep.sport,
+    title: prep.title,
+    minutes: structureMinutes(prep.structure),
+    templateId: null,
+    structure: prep.structure,
+    why: prep.description,
+  }));
+  const sessions = [...draft.sessions.filter((s) => !eves.has(s.date)), ...laid].sort((a, b) =>
+    a.date.localeCompare(b.date),
+  );
   return { ...draft, sessions };
 }

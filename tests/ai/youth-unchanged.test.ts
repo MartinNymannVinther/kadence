@@ -110,17 +110,17 @@ describe("a youth rider's prompts and picker", () => {
   });
 });
 
-/** Taken on main at aa312a0, before this change; the week drafts with docs/adr/0101–0103. */
+/** Taken on main at aa312a0, before this change; the week drafts with docs/adr/0101–0103 and 0106, Rulle's DCU opener with DCU's hour (docs/adr/0106). */
 const BEFORE = {
-  rulleDa: "2f384b485a6d45ea44d244af70fab31b095140a919760b1ca056ff4d5e30cee7",
-  rulleEn: "ccb456ae1d21c9f2fbdc3cef4c086c2ada0f2afbc19be3b763e38cf244ef8848",
+  rulleDa: "4408a3459f3f3673aa99042944a8057be13582cc5136f5bafe938a1814d4202e",
+  rulleEn: "7ddc30ad2c1096fe3df9e5d91887f164d0263d80cf1fa4685e5da4ca8af38a04",
   buildBike: "691af77836c1269d10e355cd083ac5cd71a10f042e27c71a7f67fdd659a49406",
   buildStrength: "1faf8cd7e92d7a331dcba7463d01d864c553060ad32b235f1338559d64cfae86",
   buildBikeUnguided: "d96b81621478df3e989b695850c784ce55e1d1e2fddf8e121124cb1699e45cc3",
   classLines: "435bf43a5917c1502e428707766c47d5068fabaffcc4194372fcf6948a6da85e",
   notes: "af0100329cf587bf17553fb295afb350a859750e9bc9181d718b1e75e9e49d12",
-  group: "0cda07a833d1b7f697e22e65f242dfbefb565e8ef3172693902da5af8cb11f71",
-  groupUnguided: "2d4f83f750ac682e22215dc5f8b7ec06aa3197012b089ff52025756944d8be58",
-  weekDraft: "4d37328665ecac5d9d075959151be4bf30efbe4f083185b9139be162be27414a",
+  group: "fc5575c43b5bc2d77c501abe58a918f457be60dbf498364e614278c44b63ad10",
+  groupUnguided: "c704162d7d2a1893e598bed66b54c50249c4104a4c62d024e737bfa6182d548e",
+  weekDraft: "3a9cd203d541c1ab814577c8c7647d049bceb1fe08f88afa084234dee3911081",
   strength: "998300967b25c6a0552aa26e0d2b6c3c9d38441438def904371b869535023b75",
 };
