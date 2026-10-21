@@ -13,7 +13,9 @@ import { drawnHeight } from "./terrain";
  * railway's ballast and rails, a footbridge's railings, a wildlife
  * crossing's green; how high and how far is its deck's (`overpass-deck.ts`).
  * Walls stand either side of the road under it, piers along it where the
- * land lies low, and an abutment at each end; none stands on the road.
+ * land lies low, and an abutment at each end; none stands on the road —
+ * one whose footprint comes near it anywhere is left out (`offTheRoad`),
+ * whatever the angle the deck crosses at (ADR 0108).
  */
 
 /** How a deck looks, by what it carries: its top, its sides, its parapets. */
@@ -30,6 +32,8 @@ const LOOK: Record<StructureKind, Look> = {
 
 /** Metres between piers along a long one. */
 const PIERS_APART = 42;
+/** Nothing under a deck stands nearer the road's middle than this, metres: off the asphalt, with room. */
+const OFF_ROAD = ROAD_HALF + 1.5;
 
 /** Every deck over the road, as one geometry; null where there is none. */
 export function overpassShapes(
@@ -48,7 +52,7 @@ export function overpassShapes(
 }
 
 function drawOne(w: Writer, ground: Ground, deck: DeckLine): void {
-  const { kind, line, arc, length, width, thick, top, lifts } = deck;
+  const { kind, line, arc, width, thick, top } = deck;
   const look = LOOK[kind];
   const frames = line.map((p, k) => frameAt(line, k, p));
   for (let k = 0; k + 1 < line.length; k++) {
@@ -97,27 +101,47 @@ function drawOne(w: Writer, ground: Ground, deck: DeckLine): void {
           P.metal,
         );
   }
+  for (const p of supports(ground, deck))
+    box(w, p.f, 0, 0, p.along, p.across, p.base, p.under, P.bridgeShade);
+}
+
+/** A wall, an abutment or a pier under a deck: where, `across` wide and `along` thick, from `base` up to `under`. */
+export type Support = {
+  f: Frame;
+  along: number;
+  across: number;
+  base: number;
+  under: number;
+};
+
+/** What holds a deck up, only where it stands on land below the deck and off the road. */
+export function supports(ground: Ground, deck: DeckLine): Support[] {
+  const { line, arc, length, width, thick, top, lifts } = deck;
+  const out: Support[] = [];
+  const add = (f: Frame, under: number, across: number, along: number) => {
+    const base = drawnHeight(ground, f.x, f.z) - 1;
+    if (under - base < 1 || !offTheRoad(ground, f, along, across)) return;
+    out.push({ f, along, across, base, under });
+  };
   // Walls either side of the road, under it, from the land up to the deck.
   for (const l of lifts)
     for (const way of [-1, 1]) {
       const s = l.s + way * l.hold;
       if (s < 0 || s > length) continue;
-      pier(w, ground, frameAtArc(line, arc, s), top(s) - thick, width, 1.4);
+      add(frameAtArc(line, arc, s), top(s) - thick, width, 1.4);
     }
   // An abutment at each end, where the bridge meets the land.
-  for (const s of [0.6, length - 0.6])
-    pier(w, ground, frameAtArc(line, arc, s), top(s) - thick, width, 1.2);
-  // Piers along a long one where the land lies low, never on the road.
+  for (const s of [0.6, length - 0.6]) add(frameAtArc(line, arc, s), top(s) - thick, width, 1.2);
+  // Piers along a long one where the land lies low.
   for (let s = PIERS_APART / 2; s < length; s += PIERS_APART) {
     const f = frameAtArc(line, arc, s);
-    if (ground.nearest(f.x, f.z, 15).d < ROAD_HALF + 4) continue;
     const under = top(s) - thick;
     if (under - drawnHeight(ground, f.x, f.z) < 2.5) continue;
     if (width > 14)
-      for (const off of [-width / 4, width / 4])
-        pier(w, ground, moved(f, off), under, width * 0.3, 2.2);
-    else pier(w, ground, f, under, width * 0.6, 2);
+      for (const off of [-width / 4, width / 4]) add(moved(f, off), under, width * 0.3, 2.2);
+    else add(f, under, width * 0.6, 2);
   }
+  return out;
 }
 
 /** Where a railway deck's rails lie across it: a pair for each track. */
@@ -131,18 +155,32 @@ export function railsAcross(width: number): number[] {
   return out;
 }
 
-/** A pier or a wall under a deck: `across` wide, `along` thick, from the land up to `under`. */
-function pier(
-  w: Writer,
-  ground: Ground,
-  f: Frame,
-  under: number,
-  across: number,
-  along: number,
-): void {
-  const base = drawnHeight(ground, f.x, f.z) - 1;
-  if (under - base < 1) return;
-  box(w, f, 0, 0, along, across, base, under, P.bridgeShade);
+/**
+ * Whether a footprint `along` by `across` metres in frame `f` keeps clear
+ * of the road: every point of its outline, a metre apart, at least
+ * `OFF_ROAD` from the road's middle line.
+ */
+export function offTheRoad(ground: Ground, f: Frame, along: number, across: number): boolean {
+  const reach = OFF_ROAD + Math.hypot(along, across);
+  if (ground.nearest(f.x, f.z, reach).d >= reach) return true;
+  for (const [l, s] of outline(along, across)) {
+    const x = f.x + f.lx * l + f.sx * s;
+    const z = f.z + f.lz * l + f.sz * s;
+    if (ground.nearest(x, z, OFF_ROAD + 1).d < OFF_ROAD) return false;
+  }
+  return true;
+}
+
+/** The outline of an `along` by `across` rectangle round its middle, a point every metre or less. */
+function outline(along: number, across: number): [number, number][] {
+  const out: [number, number][] = [];
+  const nl = Math.max(1, Math.ceil(along));
+  const ns = Math.max(1, Math.ceil(across));
+  for (let i = 0; i <= nl; i++)
+    for (const s of [-across / 2, across / 2]) out.push([-along / 2 + (along * i) / nl, s]);
+  for (let j = 1; j < ns; j++)
+    for (const l of [-along / 2, along / 2]) out.push([l, -across / 2 + (across * j) / ns]);
+  return out;
 }
 
 /** A face drawn from both sides, so it is seen whichever way it is wound. */

@@ -1,8 +1,11 @@
 import { inside, type City, type Course, type Land, type Stretch } from "@/modules/rulle";
+import { GRID } from "./grid-triangle";
 import { coverPatch, fieldColor, type Patch } from "./land-cover";
 import { hash, hills, smoothstep } from "./noise";
 import { PALETTE } from "./palette";
+import { clearedCorners, cornerKey } from "./road-clear";
 import { RoadGrid, type Nearest } from "./road-grid";
+import { sink } from "./road-profile";
 
 /**
  * The ground the route runs through, as a function of place: its height,
@@ -16,18 +19,18 @@ import { RoadGrid, type Nearest } from "./road-grid";
  * road, and a patchwork of fields, woods and pasture. Either way, where
  * the land dips below the sea there is water — the fjord beside the shore
  * road. Under a bridge the road is on (ADR 0037) the land is left as it
- * lies, and never higher than a little below the deck.
+ * lies, and never higher than a little below the deck. Where the land is
+ * drawn, in triangles, its corners by the road are lowered so that no
+ * triangle passes over the asphalt (`road-clear.ts`, ADR 0108).
  *
  * World coordinates are three.js's: x east, y up, z south (so a course's
  * north, and the land's, is -z).
  */
 
 export type { Patch } from "./land-cover";
+export { GRID } from "./grid-triangle";
+export { BRIDGE, groundAt, ROAD_HALF, sink, STREET, VERGE } from "./road-profile";
 
-/** Half the road's width, metres: a Danish country road. */
-export const ROAD_HALF = 3;
-/** The grass verge beyond the asphalt, metres, falling from the road to the land. */
-export const VERGE = 7;
 /**
  * The land lies at the road's height this far from it, and is its own
  * beyond `FREE_AT` — sooner on the real land, whose heights are surveyed
@@ -38,8 +41,6 @@ const FREE_AT = 75;
 const FREE_AT_REAL = 50;
 const PATCH = 150;
 const REACH = 300;
-/** Metres between the corners of the terrain's triangles. */
-export const GRID = 25;
 /** How far below its surface the bed of a lake is drawn. */
 const LAKE_DEPTH = 0.8;
 /** Under a bridge the land lies at least this far below the road. */
@@ -47,60 +48,12 @@ const UNDER_DECK = 2.5;
 /** Corner heights remembered before the memory is let go and started again. */
 const REMEMBERED = 120_000;
 
-/**
- * How far the land beside the road lies below it, metres: a little on
- * the flat, more where the road climbs steeply. The land is drawn on a
- * grid far coarser than the road, and where a flat road turns into a
- * steep one the straight edge of a grid triangle would otherwise pass
- * over the asphalt; lying lower there, the land never covers the road,
- * and the verge falls to meet it like an embankment.
- */
-export function sink(course: Course, index: number): number {
-  const n = course.grade.length;
-  let steepest = 0;
-  for (let k = -4; k <= 4; k++)
-    steepest = Math.max(steepest, Math.abs(course.grade[(((index + k) % n) + n) % n]!));
-  return Math.min(2.4, 0.35 + 12 * steepest);
-}
-
-/**
- * A city street's side (ADR 0036), outward from the asphalt's edge: a kerb,
- * the cycle track, a second kerb, the pavement, and down to the land.
- * Metres out and metres above the asphalt.
- */
-export const STREET = {
-  kerb: 0.15,
-  track: 2,
-  trackLift: 0.1,
-  pavement: 5,
-  pavementLift: 0.16,
-} as const;
-
-/**
- * The ground below the road's surface `off` metres from its middle, where
- * the land is `sunk` below it: the grass verge falling to the land, or in
- * a city the kerbs, the cycle track and the pavement.
- */
-export function groundAt(off: number, sunk: number, city = false): number {
-  const out = Math.abs(off) - ROAD_HALF;
-  if (out <= 0) return 0;
-  if (!city) return 0.01 - (sunk + 0.01) * Math.min(1, out / VERGE);
-  const S = STREET;
-  if (out <= S.kerb) return (S.trackLift * out) / S.kerb;
-  if (out <= S.track) return S.trackLift;
-  if (out <= S.track + S.kerb)
-    return S.trackLift + ((S.pavementLift - S.trackLift) * (out - S.track)) / S.kerb;
-  if (out <= S.pavement) return S.pavementLift;
-  return (
-    S.pavementLift -
-    (S.pavementLift + sunk) * Math.min(1, (out - S.pavement) / (VERGE - S.pavement))
-  );
-}
-
 export class Ground {
   private readonly road: RoadGrid;
   private base: ReturnType<typeof baseSurface> | null = null;
   private readonly corners = new Map<number, number>();
+  /** The corners near the road, lowered so the land never covers it; worked out at the first corner asked. */
+  private cleared: Map<number, number> | null = null;
 
   constructor(
     readonly course: Course,
@@ -144,9 +97,20 @@ export class Ground {
     return (road.ele - sink(this.course, road.index)) * (1 - w) + free * w;
   }
 
-  /** The height at a corner of the terrain's triangles, `GRID` metres apart: worked out once. */
+  /**
+   * The height at a corner of the terrain's triangles, `GRID` metres apart:
+   * worked out once — and near the road, lowered where a triangle would
+   * otherwise cover it (`road-clear.ts`, ADR 0108).
+   */
   corner(a: number, b: number): number {
-    const key = a * 262_144 + b;
+    const key = cornerKey(a, b);
+    this.cleared ??= clearedCorners(
+      this.course,
+      { city: this.city !== null, onDeck: (along) => this.onDeck(along) },
+      (i, j) => this.height(i * GRID, j * GRID),
+    );
+    const lowered = this.cleared.get(key);
+    if (lowered !== undefined) return lowered;
     let h = this.corners.get(key);
     if (h === undefined) {
       if (this.corners.size >= REMEMBERED) this.corners.clear();

@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import type { Course } from "@/modules/rulle";
-import { ROAD_HALF, sink, STREET, VERGE } from "./ground";
+import { BRIDGE, ROAD_HALF, sink, STREET, VERGE } from "./road-profile";
 import { PALETTE } from "./palette";
 
 /**
@@ -15,12 +15,6 @@ import { PALETTE } from "./palette";
  */
 
 const SEGMENT = 100;
-/**
- * A bridge's side, metres: the edge beside the asphalt and how high it
- * stands, the parapet's thickness and height, and the deck's depth below
- * the road.
- */
-const BRIDGE = { edge: 0.9, kerb: 0.12, wall: 0.25, parapet: 0.85, depth: 1.1 } as const;
 const DASH = 3;
 const DASH_EVERY = 12;
 

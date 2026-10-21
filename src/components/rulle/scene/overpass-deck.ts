@@ -47,6 +47,21 @@ export const SPAN: Record<StructureKind, Span> = {
 
 /** Metres between the deck's points. */
 const EVERY = 6;
+/** Metres from the asphalt's edge to the wall either side of the road under a deck. */
+export const WALL_FROM_EDGE = 3.2;
+
+/**
+ * How far along a deck either side of the road it lies level, and its
+ * walls stand: far enough that the whole road is under the level part,
+ * and that the wall's nearest corner — a deck `width` wide, crossing the
+ * road at `angle` (π/2 straight across) — is `WALL_FROM_EDGE` from the
+ * asphalt. A skewed wide deck reaches across the road with its corners;
+ * measured along its middle line alone, its wall stood on the road (ADR 0108).
+ */
+export function holdOver(width: number, angle: number): number {
+  const across = ROAD_HALF + WALL_FROM_EDGE + (width / 2) * Math.abs(Math.cos(angle));
+  return across / Math.max(0.3, Math.sin(angle));
+}
 
 /** One deck for each line, lifted over every place the road passes under it. */
 export function deckLines(
@@ -81,20 +96,25 @@ function deckLine(course: Course, ground: Ground, list: Overpass[]): DeckLine | 
   const h0 = land(line[0]!);
   const h1 = land(line.at(-1)!);
   const base = (s: number) => h0 + ((h1 - h0) * s) / length;
+  const width = Math.max(span.width, Math.min(90, o.wide * Math.sin(o.angle)));
   const lifts = list.map((c) => {
     const road = roadPoint(course, c.along, 0);
     const s = arcAt(line, arc, road.x, road.z);
     const lift = road.y + span.clear + span.thick - base(s);
-    // Level between the walls either side of the road, then easing down to the land.
-    const hold = (ROAD_HALF + 3.2) / Math.max(0.3, Math.sin(c.angle));
-    return { s, angle: c.angle, hold, lift, ease: (1.5 * lift) / span.ramp };
+    return {
+      s,
+      angle: c.angle,
+      hold: holdOver(width, c.angle),
+      lift,
+      ease: (1.5 * lift) / span.ramp,
+    };
   });
   return {
     kind: o.kind,
     line,
     arc,
     length,
-    width: Math.max(span.width, Math.min(90, o.wide * Math.sin(o.angle))),
+    width,
     thick: span.thick,
     top: (s) => {
       let lift = 0;

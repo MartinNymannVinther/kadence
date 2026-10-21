@@ -25,8 +25,13 @@ const SPACING: Record<LineKind, number> = { river: 8, stream: 8, trees: 8.5, hed
 const WIDTH = { river: 6, stream: 1.6 } as const;
 /** Nothing stands nearer the road's middle than this: in a city, the pavement is the street's. */
 const CLEAR = { country: 6.5, city: 8.5 } as const;
-/** A street tree stands on the pavement, beyond the cycle track. */
-const TREE_FROM = 5.3;
+/**
+ * A tree the map has stands this far from the road's middle at least:
+ * on the pavement, and far enough that its crown — a broadleaf's is 2.6 m
+ * across its middle, a street tree's at most 1.25 times that — ends at the
+ * kerb rather than over the asphalt (ADR 0108).
+ */
+const TREE_FROM = 6.3;
 
 type XZ = { x: number; z: number };
 type Bucket = {

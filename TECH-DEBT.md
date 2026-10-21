@@ -209,12 +209,23 @@ been lost for real, and shaped by what the coach needed that day.
 A rider on a club team and a national squad at once needs two accounts
 (ADR 0010). Whether real riders need more is for the first winter to say.
 
-### Rulle has never met a real trainer
+### Rulle has met one real trainer
+
+On 21 October 2026 Rulle rode a planned session on a real trainer for the
+first time: a Wahoo KICKR CORE with a single cog, whose gears are the
+trainer's own resistance, in ERG, with a heart-rate strap. ERG held each
+block's watts and changed them at each block, the pulse and the watts
+came through, and the speed on the screen matched the pedalling and the
+slope. What looked wrong was the landscape — bridges' piers, trees and
+hills over the road now and then — fixed in ADR 0108. Not yet seen on a
+real trainer: the route setting the resistance and the ERG ease (ADR 0107) — and on a single cog the route's resistance can only be met with
+cadence, unless the trainer's own virtual gears can be shifted from
+Rulle, which nobody has tried — a ride saved over a connection that
+comes and goes, and any other make. What follows was written before.
 
 Rulle (ADR 0033) speaks FTMS, Cycling Power and Heart Rate as the
 specifications lay them out, and is tested against those byte layouts
-and against a fake trainer in the page, in Chromium. No Wahoo, Tacx,
-Elite or Saris has been connected yet. Known from reading, not from a
+and against a fake trainer in the page, in Chromium. Known from reading, not from a
 ride: some trainers want to be started before they take a target, some
 send their Indoor Bike Data in two halves, and some drop control when
 another app connects — each handled, none seen. The first real ride says
