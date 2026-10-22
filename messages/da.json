@@ -1050,7 +1050,7 @@
       },
       "load": {
         "title": "Belastning: kondition, træthed og friskhed",
-        "body": "Hvert pas får en belastning. Med wattmåler regnes den ud fra watt, ellers fra puls, og ellers fra hvor hårdt passet føltes (RPE fra 1 til 10) gange minutterne. Det sidste virker for alle pas, også styrke. En time i tærskeltempo tæller 100, og en let time på RPE 3 tæller omkring 17. Kondition er det, de seneste seks uger har bygget op. Træthed er det, den seneste uge har kostet. Friskhed er kondition minus træthed: over nul er man udhvilet, under nul træt, og lidt under nul er normalt midt i en træningsuge."
+        "body": "Hvert pas får en belastning. Med wattmåler regnes den ud fra watt, ellers fra puls, og ellers fra hvor hårdt passet føltes (RPE fra 1 til 10) gange minutterne. Det sidste virker for alle pas, også styrke. En time i tærskeltempo tæller 100, og en let time på RPE 3 tæller omkring 17. Kondition er det, de seneste seks uger har bygget op. Træthed er det, den seneste uge har kostet. Friskhed er kondition minus træthed: over nul er man udhvilet, under nul træt, og lidt under nul er normalt midt i en træningsuge. Under grafen kan du bede AI'en forklare, hvad kurven fortæller, og hvad Kadence ellers ved om træningen: ugerne, tærsklerne, rekorderne og målene. Det kræver en sprogmodel, og at holdet har slået \"Må AI'en læse rytternes data\" til."
       },
       "warnings": {
         "title": "Opmærksomhedspunkter",
@@ -2672,7 +2672,13 @@
       "veryTired": "Lige nu er {name} ret træt. Søvn, mad og ro hjælper.",
       "label": "Konditionen de seneste 90 dage"
     },
-    "formScale": "over 0 udhvilet · under 0 træt",
+    "state": {
+      "rested": "udhvilet",
+      "tired": "lidt træt",
+      "veryTired": "træt"
+    },
+    "dateAhead": "{date} · efter planen",
+    "race": "Løb",
     "ahead": "Efter planen",
     "today": "I dag",
     "readoutAhead": "{date}, efter planen: kondition {fitness} · træthed {fatigue} · friskhed {form}",
@@ -3575,6 +3581,15 @@
       "close": "Luk",
       "saved": "Kommentaren er gemt under passet.",
       "empty": "AI'en havde ikke noget at skrive om passet. Prøv igen."
+    },
+    "formStory": {
+      "ask": "Forklar formen med AI",
+      "askOwn": "Forklar min form med AI",
+      "thinking": "AI'en læser tallene …",
+      "title": "Formen forklaret af AI'en",
+      "body": "Skrevet ud fra kurven, ugerne, tærsklerne, rekorderne og målene på denne side. Det er en læsning af tallene, ikke en dom, og intet gemmes.",
+      "close": "Luk",
+      "empty": "AI'en havde ikke noget at skrive om formen. Prøv igen."
     },
     "brief": {
       "ask": "Skriv et resumé",

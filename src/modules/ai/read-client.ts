@@ -7,7 +7,8 @@ export type AiRoad =
   | "build-program"
   | "group-week"
   | "coach-brief"
-  | "session-comment";
+  | "session-comment"
+  | "form-story";
 
 /**
  * The client half of the read-only AI doors (docs/adr/0034). A plain

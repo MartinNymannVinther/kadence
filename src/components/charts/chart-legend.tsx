@@ -4,7 +4,7 @@ export type LegendItem = {
   key: string;
   label: string;
   /** How the series is drawn, so the key looks like the mark. */
-  mark: "line" | "bar" | "outline" | "band" | "tick" | "marker" | "dash";
+  mark: "line" | "area" | "bar" | "outline" | "band" | "tick" | "marker" | "dash";
   color: string;
 };
 
@@ -32,6 +32,18 @@ export function LegendKey({ mark, color }: { mark: LegendItem["mark"]; color: st
     <svg aria-hidden width="18" height="10" viewBox="0 0 18 10" className="shrink-0">
       {mark === "line" && (
         <line x1="1" x2="17" y1="5" y2="5" stroke={color} strokeWidth="2" strokeLinecap="round" />
+      )}
+      {mark === "area" && (
+        <>
+          <path d="M1 9 L1 5 Q6 2 9 4 T17 3 L17 9 Z" fill={color} opacity="0.18" />
+          <path
+            d="M1 5 Q6 2 9 4 T17 3"
+            fill="none"
+            stroke={color}
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          />
+        </>
       )}
       {mark === "dash" && (
         <line x1="1" x2="17" y1="5" y2="5" stroke={color} strokeWidth="2" strokeDasharray="3 3" />

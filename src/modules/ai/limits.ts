@@ -37,8 +37,10 @@ export const DEFAULT_MONTHLY_BUDGET_MICRO = env.AI_MONTHLY_BUDGET_MICRO;
  * rows already counted), `group_week` a week for a group of riders
  * from DCU and the team's library (docs/adr/0043), `coach_brief` the
  * Monday summary of who needs attention, `session_comment` a short
- * comment on one session that went off its plan (docs/adr/0095), `test`
- * the connection test under Settings → AI.
+ * comment on one session that went off its plan (docs/adr/0095),
+ * `form_story` the prose reading of a rider's form chart and what else
+ * Kadence knows (docs/adr/0108), `test` the connection test under
+ * Settings → AI.
  */
 export type AiKind =
   | "week_draft"
@@ -48,6 +50,7 @@ export type AiKind =
   | "group_week"
   | "coach_brief"
   | "session_comment"
+  | "form_story"
   | "test";
 
 export class RateLimited extends Error {

@@ -3,6 +3,7 @@ import { dayMonthShort, signed } from "@/components/charts/format";
 import { EmptyState } from "@/components/ui/empty-state";
 import type { RiderInsight } from "@/modules/insight/rider";
 import { LoadChart } from "./load-chart";
+import { FormStory } from "./form-story";
 import { LoadExplainer } from "./load-explainer";
 import { weekBars } from "./week-bars";
 import { WeeklyHoursChart } from "./weekly-hours-chart";
@@ -11,15 +12,19 @@ import { WeeklyHoursChart } from "./weekly-hours-chart";
  * A rider's load, whole: the 90-day chart of kondition, træthed and
  * friskhed with the words that explain them, and the weeks' bike hours
  * against DCU's corridor. On the coach's rider page and the rider's own
- * today; the parents get the simpler FormTrend.
+ * page; the parents get the simpler FormTrend. With `story`, the AI's
+ * prose reading of it all stands under the chart (ADR 0108).
  */
 export function LoadPanel({
   insight,
   firstName = null,
+  story = null,
 }: {
   insight: RiderInsight;
   /** The rider's name for the sentence under the chart; null says "you". */
   firstName?: string | null;
+  /** Who the story is asked for, when a model may read the rider's data; null hides the button. */
+  story?: { riderId: string; own: boolean } | null;
 }) {
   const t = useTranslations("load");
   const locale = useLocale();
@@ -57,6 +62,7 @@ export function LoadPanel({
                   : t("aheadNoRace", { days: ahead.length })}
               </p>
             )}
+            {story && <FormStory riderId={story.riderId} own={story.own} />}
           </>
         ) : (
           <EmptyState variant="inline" title={t("empty")} hint={t("emptyBody")} />
