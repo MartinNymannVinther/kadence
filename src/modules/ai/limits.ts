@@ -39,7 +39,7 @@ export const DEFAULT_MONTHLY_BUDGET_MICRO = env.AI_MONTHLY_BUDGET_MICRO;
  * Monday summary of who needs attention, `session_comment` a short
  * comment on one session that went off its plan (docs/adr/0095),
  * `form_story` the prose reading of a rider's form chart and what else
- * Kadence knows (docs/adr/0108), `test` the connection test under
+ * Kadence knows (docs/adr/0109), `test` the connection test under
  * Settings → AI.
  */
 export type AiKind =

@@ -10,7 +10,7 @@ import type { LoadPoint } from "./load-chart";
  * number, and for friskhed the word (rested, a little tired, tired).
  * The date stands above; when the day is ahead of today it says so, and
  * the dashed key for "efter planen" sits beside it. A pointer or the
- * arrow keys move the day; a screen reader hears one sentence (ADR 0108).
+ * arrow keys move the day; a screen reader hears one sentence (ADR 0109).
  */
 export function LoadTiles({
   shown,

@@ -5,7 +5,7 @@ import type { Severity } from "@/modules/load";
 import { personaLine, type CommentPersona } from "./session-comment-prompt";
 
 /**
- * The words around "Forklar formen med AI" (docs/adr/0108): the prompt
+ * The words around "Forklar formen med AI" (docs/adr/0109): the prompt
  * for a prose reading of a rider's form chart and what else Kadence
  * knows about their training, and the sanitizer its answer passes
  * before anybody sees it.

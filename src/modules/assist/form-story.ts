@@ -11,7 +11,7 @@ import { formStoryContext } from "./form-story-context";
 import { formStoryPrompt, sanitizeStory } from "./form-story-prompt";
 
 /**
- * "Forklar formen med AI" under the form chart (docs/adr/0108): a prose
+ * "Forklar formen med AI" under the form chart (docs/adr/0109): a prose
  * reading of what the curve says and what else Kadence knows about the
  * rider's training — the weeks, the thresholds, the records, the goals —
  * written to the rider, or about them to their coach. A read: nothing is

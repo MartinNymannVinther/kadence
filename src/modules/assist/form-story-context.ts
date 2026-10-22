@@ -7,7 +7,7 @@ import { personaFor } from "./session-comment";
 import type { CurvePoint, FormStoryContext, StoryReader, StoryWeek } from "./form-story-prompt";
 
 /**
- * What the model reads for the form story (docs/adr/0108), and only
+ * What the model reads for the form story (docs/adr/0109), and only
  * that: a rider's insight, records and goals folded into a few numbers.
  * Ninety days of the curve become five points and two counts; the weeks
  * become the last eight; the records the best over four durations.

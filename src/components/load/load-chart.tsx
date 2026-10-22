@@ -22,7 +22,7 @@ const LEFT = 34;
 const RIGHT = 12;
 
 /**
- * Kondition, træthed and friskhed over the last 90 days (ADR 0016, 0108):
+ * Kondition, træthed and friskhed over the last 90 days (ADR 0016, 0109):
  * the first two as lines on one scale — kondition heavier with its area
  * under it, træthed lighter — and friskhed, the difference, in a strip of
  * its own colour below with zero in the middle, so no chart needs two

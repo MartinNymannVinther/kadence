@@ -13,7 +13,7 @@ import { WeeklyHoursChart } from "./weekly-hours-chart";
  * friskhed with the words that explain them, and the weeks' bike hours
  * against DCU's corridor. On the coach's rider page and the rider's own
  * page; the parents get the simpler FormTrend. With `story`, the AI's
- * prose reading of it all stands under the chart (ADR 0108).
+ * prose reading of it all stands under the chart (ADR 0109).
  */
 export function LoadPanel({
   insight,

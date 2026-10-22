@@ -89,7 +89,7 @@ export default async function MePage({
   const riderId = me.rider.id;
   const data = await meData(ctx, riderId, today);
   const personal = me.isCoach && (await workspaceKind(ctx.orgId, ctx.userId)) === "personal";
-  // The AI's reading of the form: with a model, where the AI may read the rider's data (ADR 0108).
+  // The AI's reading of the form: with a model, where the AI may read the rider's data (ADR 0109).
   const story =
     data.insight && (await modelConfigured(ctx)) && (await getTeamSettings(ctx)).aiOnRiderData
       ? { riderId, own: true }

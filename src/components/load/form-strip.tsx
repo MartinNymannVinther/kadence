@@ -10,7 +10,7 @@ type Point = readonly [number, number];
  * in friskhed's own colour, the area above zero tinted moss with the word
  * "udhvilet" and below zero clay with "træt" at its left, and a number at each edge
  * so the strip has a scale like the chart above it. The dashed part past
- * today is the plan's (ADR 0108). Drawn inside the chart's SVG.
+ * today is the plan's (ADR 0109). Drawn inside the chart's SVG.
  */
 export function FormStrip({
   clip,

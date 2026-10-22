@@ -112,7 +112,7 @@ export default async function RiderPage({ params, searchParams }: Props) {
   after(() => refreshStaleRaces(ctx, [rider.id]));
   const insight = insights[0] ?? null;
   // The AI's reading of the form: with a model, where the AI may read
-  // riders' data (ADR 0017, 0108). In a personal workspace the coach is the rider.
+  // riders' data (ADR 0017, 0109). In a personal workspace the coach is the rider.
   const story =
     insight && (await modelConfigured(ctx)) && (await getTeamSettings(ctx)).aiOnRiderData
       ? { riderId: rider.id, own: me.rider?.id === rider.id }

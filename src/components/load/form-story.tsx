@@ -11,7 +11,7 @@ import { askAi } from "@/modules/ai/read-client";
 import type { AiFailure } from "@/modules/ai/wire";
 
 /**
- * "Forklar formen med AI" (docs/adr/0108): a quiet button under the form
+ * "Forklar formen med AI" (docs/adr/0109): a quiet button under the form
  * chart that asks the model for a few paragraphs on what the curve says
  * and what else Kadence knows about the rider's training. The answer
  * stands in the AI's frame, marked as a reading, and "Luk" lets it go;

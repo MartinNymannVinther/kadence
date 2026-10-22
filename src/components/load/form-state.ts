@@ -1,7 +1,7 @@
 /**
  * The three words for friskhed, and the colours of the load chart's
  * three series, in one place so the chart, its tiles, the explainer and
- * the parents' sentence agree (ADR 0016, 0108).
+ * the parents' sentence agree (ADR 0016, 0109).
  *
  * Kondition is moss and træthed clay — a lightness step apart, the pair
  * the theme made for charts — and friskhed has a hue of its own, the
