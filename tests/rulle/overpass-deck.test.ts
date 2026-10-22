@@ -1,11 +1,12 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { Ground } from "@/components/rulle/scene/ground";
-import { deckLines, SPAN, type DeckLine } from "@/components/rulle/scene/overpass-deck";
+import { deckLines, holdOver, SPAN, type DeckLine } from "@/components/rulle/scene/overpass-deck";
 import { arcAt } from "@/components/rulle/scene/overpass-line";
-import { railsAcross } from "@/components/rulle/scene/overpasses";
+import { railsAcross, supports } from "@/components/rulle/scene/overpasses";
 import { roadPoint } from "@/components/rulle/scene/road-point";
-import { buildCourse, readLand, readRouteGpx, structuresOn } from "@/modules/rulle";
+import { buildCourse, readLand, readRouteGpx, structuresOn, type Course } from "@/modules/rulle";
+import { ROAD_HALF } from "@/components/rulle/scene/ground";
 
 // Vejle–Munkebjerg passes under the railway at the station, under Vejlefjordbroen and under the line to Fredericia.
 const course = buildCourse(
@@ -73,6 +74,62 @@ describe("the decks of what passes over the road", () => {
   it("reach far past the road where a train or a motorway's traffic is to be seen coming", () => {
     // From the road's middle, which lies a few metres off a line drawn along one track of several.
     for (const d of decks) expect(d.length).toBeGreaterThan(2 * (SPAN[d.kind].reach - 10));
+  });
+});
+
+/** The distance to the road's line, the long way: every stretch of it. */
+function toRoad(c: Course, x: number, z: number): number {
+  let best = Infinity;
+  const n = c.x.length;
+  for (let i = 0; i < n; i++) {
+    const j = (i + 1) % n;
+    const ax = c.x[i]!;
+    const az = -c.y[i]!;
+    const ux = c.x[j]! - ax;
+    const uz = -c.y[j]! - az;
+    const t = Math.max(0, Math.min(1, ((x - ax) * ux + (z - az) * uz) / (ux * ux + uz * uz || 1)));
+    best = Math.min(best, Math.hypot(ax + ux * t - x, az + uz * t - z));
+  }
+  return best;
+}
+
+describe("what holds a deck up (docs/adr/0108)", () => {
+  // On Vejle–Munkebjerg four of the six walls stood on the road, the nearest in its middle.
+  for (const name of ["vejle-munkebjerg", "bu-dm-2026-vejle"])
+    it(`never stands on the road, nor at its edge, on ${name}`, () => {
+      const c = buildCourse(readRouteGpx(readFileSync(`public/rulle/routes/${name}.gpx`, "utf8")));
+      const l = readLand(
+        JSON.parse(readFileSync(`public/rulle/routes/${name}.land.json`, "utf8")),
+        c,
+      )!;
+      const f = structuresOn(c, l.structures);
+      const g = new Ground(c, l, null, f.decks);
+      const all = deckLines(c, g, f.overpasses).flatMap((d) => supports(g, d));
+      expect(all.length).toBeGreaterThan(0);
+      for (const p of all)
+        for (const [a, b] of [
+          [-0.5, -0.5],
+          [-0.5, 0.5],
+          [0.5, -0.5],
+          [0.5, 0.5],
+          [0, -0.5],
+          [0, 0.5],
+          [-0.5, 0],
+          [0.5, 0],
+        ] as const) {
+          const x = p.f.x + p.f.lx * a * p.along + p.f.sx * b * p.across;
+          const z = p.f.z + p.f.lz * a * p.along + p.f.sz * b * p.across;
+          expect(toRoad(c, x, z)).toBeGreaterThan(ROAD_HALF + 1);
+        }
+    });
+
+  it("lies level far enough along a wide, skewed deck that its corners clear the road", () => {
+    // Straight across, the old 6.2 m either side of the road's middle.
+    expect(holdOver(10, Math.PI / 2)).toBeCloseTo(ROAD_HALF + 3.2, 9);
+    // A motorway 26 m wide at 60°: its wall's near corner as far from the asphalt as straight across.
+    const angle = Math.PI / 3;
+    const hold = holdOver(26, angle);
+    expect(hold * Math.sin(angle) - 13 * Math.cos(angle)).toBeCloseTo(ROAD_HALF + 3.2, 9);
   });
 });
 

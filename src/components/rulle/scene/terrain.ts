@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { GRID as STEP, type Ground } from "./ground";
+import { gridTriangle } from "./grid-triangle";
 import { hash } from "./noise";
 import { PALETTE } from "./palette";
 import { lakeSurface } from "./water";
@@ -20,30 +21,15 @@ export type ChunkKey = string;
 
 /**
  * The land's height as it is drawn: on the terrain's own triangles, whose
- * corners are the ground's heights every `STEP` metres, rather than the
- * smooth ground between them — so what stands on the land stands on it.
- * The diagonals alternate as `build` lays them (a chunk is an even number
- * of steps, so a corner's parity is the same counted from any chunk).
+ * corners are the ground's heights every `STEP` metres (`gridTriangle`),
+ * rather than the smooth ground between them — so what stands on the land
+ * stands on it.
  */
 export function drawnHeight(ground: Ground, x: number, z: number): number {
-  const a = Math.floor(x / STEP);
-  const b = Math.floor(z / STEP);
-  const u = x / STEP - a;
-  const v = z / STEP - b;
-  const h = (i: number, j: number) => ground.corner(a + i, b + j);
-  const h00 = h(0, 0);
-  const h11 = h(1, 1);
-  if ((((a + b) % 2) + 2) % 2 === 0)
-    // Split from (0,0) to (1,1).
-    return v >= u
-      ? h00 + (h(0, 1) - h00) * v + (h11 - h(0, 1)) * u
-      : h00 + (h(1, 0) - h00) * u + (h11 - h(1, 0)) * v;
-  // Split from (1,0) to (0,1).
-  const h10 = h(1, 0);
-  const h01 = h(0, 1);
-  return u + v <= 1
-    ? h00 + (h10 - h00) * u + (h01 - h00) * v
-    : h11 + (h01 - h11) * (1 - u) + (h10 - h11) * (1 - v);
+  const { corners, weights } = gridTriangle(x, z);
+  let h = 0;
+  for (let k = 0; k < 3; k++) h += weights[k]! * ground.corner(corners[k]![0], corners[k]![1]);
+  return h;
 }
 
 type Chunk = { land: THREE.Mesh; water: THREE.Mesh | null };
