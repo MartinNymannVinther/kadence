@@ -17,8 +17,10 @@ import { KnownPainsCard } from "@/components/wellbeing/known-pains-card";
 import { ZoneStrip } from "@/components/wellbeing/zone-strip";
 import { getOrgContext } from "@/core/auth/session";
 import { todayInCopenhagen } from "@/core/dates";
+import { modelConfigured } from "@/modules/ai/service";
 import { Link, redirect } from "@/i18n/navigation";
 import { whoAmI } from "@/modules/team/access";
+import { getTeamSettings } from "@/modules/team/settings";
 import { workspaceKind } from "@/modules/team/workspace-kind";
 import { meData } from "./me-data";
 
@@ -87,6 +89,11 @@ export default async function MePage({
   const riderId = me.rider.id;
   const data = await meData(ctx, riderId, today);
   const personal = me.isCoach && (await workspaceKind(ctx.orgId, ctx.userId)) === "personal";
+  // The AI's reading of the form: with a model, where the AI may read the rider's data (ADR 0109).
+  const story =
+    data.insight && (await modelConfigured(ctx)) && (await getTeamSettings(ctx)).aiOnRiderData
+      ? { riderId, own: true }
+      : null;
 
   return (
     <div className="flex max-w-3xl flex-col gap-8">
@@ -120,7 +127,7 @@ export default async function MePage({
 
       {data.insight && (
         <Section id="form" title={t("form")} body={t("formBody")}>
-          <LoadPanel insight={data.insight} />
+          <LoadPanel insight={data.insight} story={story} />
         </Section>
       )}
 

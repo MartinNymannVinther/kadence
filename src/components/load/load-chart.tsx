@@ -2,32 +2,33 @@
 
 import { useId } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { ChartLegend } from "@/components/charts/chart-legend";
-import { dayMonthShort, monthShort, num, signed } from "@/components/charts/format";
+import { monthShort, num, signed } from "@/components/charts/format";
 import { areaPath, linePath, linearScale, niceTicks } from "@/components/charts/scale";
 import { useHoverIndex } from "@/components/charts/use-hover-index";
 import { useWidth } from "@/components/charts/use-width";
+import { FATIGUE_COLOUR, FITNESS_COLOUR, FORM_COLOUR } from "./form-state";
+import { FormStrip } from "./form-strip";
 import { LoadTable } from "./load-table";
+import { LoadTiles } from "./load-tiles";
 
 export type LoadPoint = { date: string; fitness: number; fatigue: number; form: number };
 export type AheadRace = { title: string; date: string; priority: "A" | "B" };
 
-const FITNESS = "var(--series-1)";
-const FATIGUE = "var(--series-2)";
 const TOP = 150;
-const FORM = 56;
-const GAP = 30;
+const FORM = 80;
+const GAP = 34;
 const AXIS = 20;
-const LEFT = 30;
-const RIGHT = 34;
+const LEFT = 34;
+const RIGHT = 12;
 
 /**
- * Kondition, træthed and friskhed over the last 90 days (ADR 0016): the
- * first two as lines on one scale, friskhed — the difference — in its own
- * strip below with zero in the middle, so no chart needs two axes. Moss
- * above zero is rested, clay below is tired; the words say the same. A
- * pointer or the arrow keys read any day in the line above the chart.
- * `ahead` continues the three dashed past today — where they head if the
+ * Kondition, træthed and friskhed over the last 90 days (ADR 0016, 0109):
+ * the first two as lines on one scale — kondition heavier with its area
+ * under it, træthed lighter — and friskhed, the difference, in a strip of
+ * its own colour below with zero in the middle, so no chart needs two
+ * axes. Three tiles above the chart are legend and readout at once; a
+ * pointer or the arrow keys move the day they show. `ahead` continues the
+ * three dashed past today over a shaded field — where they head if the
  * plan is ridden (src/modules/load/forecast.ts) — to the race it names.
  * Kadence's own names throughout; the trademarked ones appear nowhere.
  */
@@ -53,11 +54,11 @@ export function LoadChart({
   const peak = Math.max(10, ...days.map((d) => Math.max(d.fitness, d.fatigue)));
   const ticks = niceTicks(0, peak, 3);
   const y = linearScale([0, ticks.at(-1)!], [TOP, 6]);
-  const formMax = Math.max(10, ...days.map((d) => Math.abs(d.form)));
+  const formLimit = niceTicks(0, Math.max(10, ...days.map((d) => Math.abs(d.form))), 2).at(-1)!;
   const formTop = TOP + GAP;
-  const formZero = formTop + FORM / 2;
-  const yForm = linearScale([-formMax, formMax], [formTop + FORM, formTop]);
-  const height = formTop + FORM + AXIS;
+  const yForm = linearScale([-formLimit, formLimit], [formTop + FORM, formTop]);
+  const bottom = formTop + FORM;
+  const height = bottom + AXIS;
 
   const all = {
     fitness: days.map((d, i) => [x(i), y(d.fitness)] as const),
@@ -68,7 +69,6 @@ export function LoadChart({
   // today's point so the two meet.
   const fitness = all.fitness.slice(0, past.length);
   const fatigue = all.fatigue.slice(0, past.length);
-  const form = all.form.slice(0, past.length);
   const aheadFrom = Math.max(0, todayIndex);
   const dashed = ahead.length > 0;
   const raceIndex = race ? days.findIndex((d) => d.date === race.date) : -1;
@@ -78,31 +78,11 @@ export function LoadChart({
   const last = past.at(-1);
   const shown = hover.index !== null ? days[hover.index] : last;
   const shownAhead = hover.index !== null && hover.index > todayIndex;
-  const labelsApart = last && Math.abs(y(last.fitness) - y(last.fatigue)) >= 12;
-
-  const readout = shown
-    ? t(shownAhead ? "readoutAhead" : "readout", {
-        date: dayMonthShort(shown.date, locale),
-        fitness: num(shown.fitness, locale),
-        fatigue: num(shown.fatigue, locale),
-        form: signed(shown.form, locale),
-      })
-    : "";
+  const raceLabelLeft = raceIndex >= 0 && x(raceIndex) + 140 < width - RIGHT;
 
   return (
-    <figure className="flex min-w-0 flex-col gap-2">
-      <ChartLegend
-        items={[
-          { key: "fitness", label: t("fitness"), mark: "line", color: FITNESS },
-          { key: "fatigue", label: t("fatigue"), mark: "line", color: FATIGUE },
-          ...(dashed
-            ? [{ key: "ahead", label: t("ahead"), mark: "dash" as const, color: "var(--meta)" }]
-            : []),
-        ]}
-      />
-      <p className="text-2sm min-h-5 font-medium tabular-nums" aria-live="polite">
-        {readout}
-      </p>
+    <figure className="flex min-w-0 flex-col gap-3">
+      {shown && <LoadTiles shown={shown} ahead={shownAhead} dashed={dashed} race={race !== null} />}
       <div ref={ref} className="w-full">
         <svg
           width="100%"
@@ -121,14 +101,17 @@ export function LoadChart({
           className="focus-visible:outline-ring block touch-pan-y rounded-md outline-none focus-visible:outline-2 focus-visible:outline-solid"
           {...hover.handlers}
         >
-          <defs>
-            <clipPath id={`${clip}-above`}>
-              <rect x={0} y={formTop - 2} width={width} height={FORM / 2 + 2} />
-            </clipPath>
-            <clipPath id={`${clip}-below`}>
-              <rect x={0} y={formZero} width={width} height={FORM / 2 + 2} />
-            </clipPath>
-          </defs>
+          {dashed && (
+            // The plan's field: everything to the right of today is not ridden yet.
+            <rect
+              x={x(todayIndex)}
+              y={4}
+              width={Math.max(0, x(n - 1) - x(todayIndex))}
+              height={bottom - 4}
+              fill="var(--chart-5)"
+              opacity={0.4}
+            />
+          )}
 
           {ticks.map((tick) => (
             <g key={tick}>
@@ -146,20 +129,20 @@ export function LoadChart({
             </g>
           ))}
 
-          <path d={areaPath(fitness, TOP)} fill={FITNESS} opacity={0.1} />
+          <path d={areaPath(fitness, TOP)} fill={FITNESS_COLOUR} opacity={0.12} />
           <path
             d={linePath(fatigue)}
             fill="none"
-            stroke={FATIGUE}
-            strokeWidth={2}
+            stroke={FATIGUE_COLOUR}
+            strokeWidth={1.75}
             strokeLinejoin="round"
             strokeLinecap="round"
           />
           <path
             d={linePath(fitness)}
             fill="none"
-            stroke={FITNESS}
-            strokeWidth={2}
+            stroke={FITNESS_COLOUR}
+            strokeWidth={2.5}
             strokeLinejoin="round"
             strokeLinecap="round"
           />
@@ -170,126 +153,72 @@ export function LoadChart({
                 x1={x(todayIndex)}
                 x2={x(todayIndex)}
                 y1={4}
-                y2={formTop + FORM}
+                y2={bottom}
                 stroke="var(--input)"
                 strokeWidth={1}
               />
               <text x={x(todayIndex) - 4} y={14} textAnchor="end" className="fill-meta text-2xs">
                 {t("today")}
               </text>
-              {(["fatigue", "fitness"] as const).map((line) => (
-                <path
-                  key={line}
-                  d={linePath(all[line].slice(aheadFrom))}
-                  fill="none"
-                  stroke={line === "fitness" ? FITNESS : FATIGUE}
-                  strokeWidth={2}
-                  strokeDasharray="4 4"
-                  strokeLinecap="round"
-                />
-              ))}
               <path
-                d={linePath(all.form.slice(aheadFrom))}
+                d={linePath(all.fatigue.slice(aheadFrom))}
                 fill="none"
-                stroke="var(--meta)"
-                strokeWidth={1.5}
+                stroke={FATIGUE_COLOUR}
+                strokeWidth={1.75}
                 strokeDasharray="4 4"
+                strokeLinecap="round"
               />
-              {raceIndex >= 0 && (
-                <>
-                  <line
-                    x1={x(raceIndex)}
-                    x2={x(raceIndex)}
-                    y1={4}
-                    y2={formTop + FORM}
-                    stroke="var(--chart-4)"
-                    strokeWidth={1.5}
-                  />
-                  <text
-                    x={x(raceIndex) + (x(raceIndex) + 140 < width - RIGHT ? 4 : -4)}
-                    y={28}
-                    textAnchor={x(raceIndex) + 140 < width - RIGHT ? "start" : "end"}
-                    className="fill-foreground text-2xs font-medium"
-                  >
-                    {race!.priority}: {race!.title.slice(0, 24)}
-                  </text>
-                  <circle
-                    cx={x(raceIndex)}
-                    cy={yForm(days[raceIndex]!.form)}
-                    r={4}
-                    fill="var(--chart-4)"
-                    stroke="var(--card)"
-                    strokeWidth={2}
-                  />
-                </>
-              )}
+              <path
+                d={linePath(all.fitness.slice(aheadFrom))}
+                fill="none"
+                stroke={FITNESS_COLOUR}
+                strokeWidth={2.5}
+                strokeDasharray="4 4"
+                strokeLinecap="round"
+              />
             </g>
           )}
 
-          {last && labelsApart && !dashed && (
-            <>
+          <FormStrip
+            clip={clip}
+            left={LEFT}
+            right={width - RIGHT}
+            top={formTop}
+            height={FORM}
+            limit={formLimit}
+            yForm={yForm}
+            past={all.form.slice(0, past.length)}
+            ahead={dashed ? all.form.slice(aheadFrom) : []}
+            wordsFit={width >= 420}
+          />
+
+          {raceIndex >= 0 && (
+            <g aria-hidden>
+              <line
+                x1={x(raceIndex)}
+                x2={x(raceIndex)}
+                y1={4}
+                y2={bottom}
+                stroke="var(--foreground)"
+                strokeWidth={1.5}
+              />
               <text
-                x={width - RIGHT + 6}
-                y={y(last.fitness) + 4}
+                x={x(raceIndex) + (raceLabelLeft ? 4 : -4)}
+                y={28}
+                textAnchor={raceLabelLeft ? "start" : "end"}
                 className="fill-foreground text-2xs font-medium"
               >
-                {num(last.fitness, locale)}
+                {race!.priority}: {race!.title.slice(0, 24)}
               </text>
-              <text x={width - RIGHT + 6} y={y(last.fatigue) + 4} className="fill-meta text-2xs">
-                {num(last.fatigue, locale)}
-              </text>
-            </>
-          )}
-
-          <text x={LEFT} y={formTop - 8} className="fill-foreground text-2xs font-medium">
-            {t("form")}
-          </text>
-          <line
-            x1={LEFT}
-            x2={width - RIGHT}
-            y1={formZero}
-            y2={formZero}
-            stroke="var(--input)"
-            strokeWidth={1}
-          />
-          <path
-            d={areaPath(form, formZero)}
-            fill={FITNESS}
-            opacity={0.22}
-            clipPath={`url(#${clip}-above)`}
-          />
-          <path
-            d={areaPath(form, formZero)}
-            fill={FATIGUE}
-            opacity={0.3}
-            clipPath={`url(#${clip}-below)`}
-          />
-          <path
-            d={linePath(form)}
-            fill="none"
-            stroke={FITNESS}
-            strokeWidth={1.5}
-            clipPath={`url(#${clip}-above)`}
-          />
-          <path
-            d={linePath(form)}
-            fill="none"
-            stroke={FATIGUE}
-            strokeWidth={1.5}
-            clipPath={`url(#${clip}-below)`}
-          />
-          <text x={LEFT - 6} y={formTop + 10} textAnchor="end" className="fill-meta text-2xs">
-            +
-          </text>
-          <text x={LEFT - 6} y={formTop + FORM - 2} textAnchor="end" className="fill-meta text-2xs">
-            −
-          </text>
-          {/* On a phone the scale's words crowd the race line; the explainer
-              under the chart says the same. */}
-          {width >= 420 && (
-            <text x={width - RIGHT} y={formTop - 8} textAnchor="end" className="fill-meta text-2xs">
-              {t("formScale")}
-            </text>
+              <circle
+                cx={x(raceIndex)}
+                cy={yForm(days[raceIndex]!.form)}
+                r={4}
+                fill="var(--foreground)"
+                stroke="var(--card)"
+                strokeWidth={2}
+              />
+            </g>
           )}
 
           {months.map(({ i, date }) => (
@@ -310,14 +239,14 @@ export function LoadChart({
                 x1={x(hover.index)}
                 x2={x(hover.index)}
                 y1={4}
-                y2={formTop + FORM}
+                y2={bottom}
                 stroke="var(--meta)"
                 strokeWidth={1}
               />
               {[
-                [y(shown.fitness), FITNESS],
-                [y(shown.fatigue), FATIGUE],
-                [yForm(shown.form), shown.form >= 0 ? FITNESS : FATIGUE],
+                [y(shown.fitness), FITNESS_COLOUR],
+                [y(shown.fatigue), FATIGUE_COLOUR],
+                [yForm(shown.form), FORM_COLOUR],
               ].map(([cy, color], k) => (
                 <circle
                   key={k}

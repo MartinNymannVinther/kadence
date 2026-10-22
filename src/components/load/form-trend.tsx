@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { areaPath, linePath, linearScale } from "@/components/charts/scale";
 import { useWidth } from "@/components/charts/use-width";
+import { formState, FITNESS_COLOUR } from "./form-state";
 import type { LoadPoint } from "./load-chart";
 
 const HEIGHT = 56;
@@ -16,8 +17,7 @@ export function formWords(
   if (!last || !before) return null;
   const change = last.fitness - before.fitness;
   const trend = change > 3 ? "up" : change < -3 ? "down" : "flat";
-  const now = last.form >= 0 ? "rested" : last.form > -15 ? "tired" : "veryTired";
-  return { trend, now };
+  return { trend, now: formState(last.form) };
 }
 
 /**
@@ -45,11 +45,11 @@ export function FormTrend({ days, name }: { days: LoadPoint[]; name: string }) {
           aria-label={t("label")}
           className="block"
         >
-          <path d={areaPath(points, HEIGHT - 2)} fill="var(--series-1)" opacity={0.1} />
+          <path d={areaPath(points, HEIGHT - 2)} fill={FITNESS_COLOUR} opacity={0.1} />
           <path
             d={linePath(points)}
             fill="none"
-            stroke="var(--series-1)"
+            stroke={FITNESS_COLOUR}
             strokeWidth={2}
             strokeLinejoin="round"
           />

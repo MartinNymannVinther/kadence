@@ -34,6 +34,7 @@ import { listPendingInvitations } from "@/core/team/service";
 import { Link, redirect } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { listUploadKeys, MAX_KEYS_PER_RIDER } from "@/modules/devices/upload-keys";
+import { modelConfigured } from "@/modules/ai/service";
 import { getInsights } from "@/modules/insight/service";
 import { refreshStaleRaces } from "@/modules/results/refresh";
 import { raceStatus } from "@/modules/results/service";
@@ -42,6 +43,7 @@ import { whoAmI } from "@/modules/team/access";
 import { listGuardians } from "@/modules/team/guardians";
 import { listLinkableMembers } from "@/modules/team/member-guardians";
 import { getRider } from "@/modules/team/riders";
+import { getTeamSettings } from "@/modules/team/settings";
 import { dcuProposalFor, listGoals } from "@/modules/training/goals";
 import { getRiderRecords } from "@/modules/training/records";
 import { listCheckins } from "@/modules/wellbeing/checkins";
@@ -109,6 +111,12 @@ export default async function RiderPage({ params, searchParams }: Props) {
   // Stale races into the queue (ADR 0085); if lost, the hourly dcu.races job queues them.
   after(() => refreshStaleRaces(ctx, [rider.id]));
   const insight = insights[0] ?? null;
+  // The AI's reading of the form: with a model, where the AI may read
+  // riders' data (ADR 0017, 0109). In a personal workspace the coach is the rider.
+  const story =
+    insight && (await modelConfigured(ctx)) && (await getTeamSettings(ctx)).aiOnRiderData
+      ? { riderId: rider.id, own: me.rider?.id === rider.id }
+      : null;
   const pending = new Set(invitations.map((i) => i.id));
   const invitationFor = (invitationId: string | null) => {
     const found = invitations.find((i) => i.id === invitationId);
@@ -164,7 +172,11 @@ export default async function RiderPage({ params, searchParams }: Props) {
             <h2 id="rider-form" className="text-lg font-semibold">
               {t("sections.form")}
             </h2>
-            <LoadPanel insight={insight} firstName={insight.name.split(" ")[0] ?? null} />
+            <LoadPanel
+              insight={insight}
+              firstName={insight.name.split(" ")[0] ?? null}
+              story={story}
+            />
           </section>
         )}
         <section aria-labelledby="rider-goals" className="flex flex-col gap-3">

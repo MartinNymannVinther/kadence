@@ -1050,7 +1050,7 @@
       },
       "load": {
         "title": "Load: fitness, fatigue and freshness",
-        "body": "Every session gets a load. With a power meter it is worked out from power, otherwise from heart rate, and otherwise from how hard the session felt (RPE from 1 to 10) times the minutes. The last works for every session, strength too. An hour at threshold counts 100, and an easy hour at RPE 3 about 17. Fitness is what the last six weeks have built. Fatigue is what the last week has cost. Freshness is fitness minus fatigue: above zero you are rested, below zero tired, and a little below zero is normal in the middle of a training week."
+        "body": "Every session gets a load. With a power meter it is worked out from power, otherwise from heart rate, and otherwise from how hard the session felt (RPE from 1 to 10) times the minutes. The last works for every session, strength too. An hour at threshold counts 100, and an easy hour at RPE 3 about 17. Fitness is what the last six weeks have built. Fatigue is what the last week has cost. Freshness is fitness minus fatigue: above zero you are rested, below zero tired, and a little below zero is normal in the middle of a training week. Under the chart you can ask the AI to explain what the curve says and what else Kadence knows about the training: the weeks, the thresholds, the records and the goals. It needs a language model, and the team must have switched on \"May the AI read riders' data\"."
       },
       "warnings": {
         "title": "Points of attention",
@@ -2672,7 +2672,13 @@
       "veryTired": "Right now {name} is quite tired. Sleep, food and rest help.",
       "label": "Fitness over the last 90 days"
     },
-    "formScale": "above 0 rested · below 0 tired",
+    "state": {
+      "rested": "rested",
+      "tired": "a little tired",
+      "veryTired": "tired"
+    },
+    "dateAhead": "{date} · if the plan is ridden",
+    "race": "Race",
     "ahead": "If the plan is ridden",
     "today": "Today",
     "readoutAhead": "{date}, if the plan is ridden: fitness {fitness} · fatigue {fatigue} · freshness {form}",
@@ -3575,6 +3581,15 @@
       "close": "Close",
       "saved": "The comment is saved under the session.",
       "empty": "The AI had nothing to write about the session. Try again."
+    },
+    "formStory": {
+      "ask": "Explain the form with AI",
+      "askOwn": "Explain my form with AI",
+      "thinking": "The AI is reading the numbers …",
+      "title": "The form, explained by the AI",
+      "body": "Written from the curve, the weeks, the thresholds, the records and the goals on this page. It is a reading of the numbers, not a verdict, and nothing is saved.",
+      "close": "Close",
+      "empty": "The AI had nothing to write about the form. Try again."
     },
     "brief": {
       "ask": "Write a summary",
