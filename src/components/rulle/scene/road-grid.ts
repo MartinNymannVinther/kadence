@@ -5,6 +5,11 @@ import type { Course } from "@/modules/rulle";
  * point of the road to a place is found by looking in the squares round
  * it, the nearest ring first, and no further out than the nearest point
  * found so far could be beaten. World coordinates: x east, z south.
+ *
+ * The distance is to the road's line between its samples, not to the
+ * samples themselves: they lie ten metres apart, and a place midway
+ * between two of them on the asphalt is five metres from either — far
+ * enough, by the samples alone, for a tree.
  */
 
 const CELL = 100;
@@ -55,16 +60,17 @@ export class RoadGrid {
   }
 
   /**
-   * The nearest point of the road within about `reach` metres: how far,
-   * how high the road is there, and which sample it is. Further than
-   * that, a distance of Infinity.
+   * The nearest point of the road's line within about `reach` metres: how
+   * far, how high the road is there, and the sample nearest it. Further
+   * than that, a distance of Infinity.
    */
   nearest(x: number, z: number, reach: number): Nearest {
     const ci = Math.floor(x / CELL) - this.i0;
     const cj = Math.floor(z / CELL) - this.j0;
     const rings = Math.ceil(reach / CELL);
-    let best = Infinity;
-    let index = -1;
+    // A sample further than the best line found by a sample's length cannot lead to a nearer one.
+    const step = this.course.step;
+    const found: Nearest = { d: Infinity, ele: 0, index: -1 };
     for (let r = 0; r <= rings; r++) {
       for (let i = ci - r; i <= ci + r; i++) {
         if (i < 0 || i >= this.ni) continue;
@@ -77,19 +83,35 @@ export class RoadGrid {
             const p = this.items[k]!;
             const dx = this.course.x[p]! - x;
             const dz = -this.course.y[p]! - z;
-            const d = dx * dx + dz * dz;
-            if (d < best) {
-              best = d;
-              index = p;
-            }
+            if (dx * dx + dz * dz < (found.d + step) ** 2) this.toLine(p, x, z, found);
           }
         }
       }
-      // Whatever lies in the next ring out is at least r squares away.
-      if (best <= (r * CELL) ** 2) break;
+      // Whatever lies in the next ring out is at least r squares away, and its line a sample nearer.
+      if (found.d <= r * CELL - step) break;
     }
-    return index < 0
-      ? { d: Infinity, ele: 0, index: -1 }
-      : { d: Math.sqrt(best), ele: this.course.ele[index]!, index };
+    return found;
+  }
+
+  /** The stretches of road either side of sample `p`: the nearer of them, if nearer than `found`. */
+  private toLine(p: number, x: number, z: number, found: Nearest): void {
+    const { x: cx, y: cy, ele } = this.course;
+    const n = cx.length;
+    for (const [a, b] of [
+      [(p - 1 + n) % n, p],
+      [p, (p + 1) % n],
+    ] as const) {
+      const ax = cx[a]!;
+      const az = -cy[a]!;
+      const ux = cx[b]! - ax;
+      const uz = -cy[b]! - az;
+      const len2 = ux * ux + uz * uz;
+      const t = len2 > 0 ? Math.max(0, Math.min(1, ((x - ax) * ux + (z - az) * uz) / len2)) : 0;
+      const d = Math.hypot(ax + ux * t - x, az + uz * t - z);
+      if (d >= found.d) continue;
+      found.d = d;
+      found.ele = ele[a]! + (ele[b]! - ele[a]!) * t;
+      found.index = t < 0.5 ? a : b;
+    }
   }
 }

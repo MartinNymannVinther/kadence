@@ -20,7 +20,7 @@ import { insertSql } from "../helpers/rows";
 import { seedMember, seedWorkspace } from "../helpers/workspace";
 
 /**
- * "Forklar formen med AI" (docs/adr/0108): asked for by whoever may
+ * "Forklar formen med AI" (docs/adr/0109): asked for by whoever may
  * write on the rider's training, only where the AI may read riders'
  * data, fed the curve, the weeks, the thresholds, the records and the
  * goals summarised — never a surname, a check-in or a note — written to

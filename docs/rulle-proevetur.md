@@ -55,6 +55,9 @@ karakteristikker, og det første skriv til dens control point.
 - **Sværhedsgrad**: tryk minus til 90 %. Watt-feltet siger "· 90 % af
   passet", og turens notat bagefter siger "Kørt i Rulle på 90 % af
   passet.".
+- **Landskabet holder sig fra vejen** (ADR 0108): ingen bropiller eller
+  vægge på asfalten, ingen bakke eller trækrone ind over den. Ses det
+  alligevel, så notér ruten og cirka hvor langt inde.
 - **Kokloen** mod slutningen af en hård blok (ADR 0034) — den skal
   lyde, ikke kun ses.
 - **Optagelsen** går hele tiden: tallene på skærmen bevæger sig, og
