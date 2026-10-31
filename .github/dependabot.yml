@@ -11,11 +11,11 @@ updates:
       interval: weekly
       day: monday
     open-pull-requests-limit: 5
-    # Better Auth is held at 1.7.1 on purpose (pnpm-workspace.yaml): 1.7.5
-    # dropped the account "issuer" column the schema requires, so a bump
-    # is a migration decided on its own, not a pull request read on a
-    # Monday. Security advisories against it still arrive; version bumps
-    # do not.
+    # Better Auth is pinned on purpose (pnpm-workspace.yaml): the three
+    # packages move together, and since 1.7.3 Better Auth refuses every
+    # request when the schema disagrees with it, so a bump is tried with a
+    # real login (docs/adr/0111), not a pull request read on a Monday.
+    # Security advisories against it still arrive; version bumps do not.
     ignore:
       - dependency-name: "better-auth"
         update-types: ["version-update:semver-minor", "version-update:semver-patch"]
