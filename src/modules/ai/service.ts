@@ -1,6 +1,7 @@
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { LlmError, type LlmMessage, type LlmStreamEvent } from "@/core/llm";
 import { errorName, log } from "@/core/log";
+import { GarminAiNotAllowed } from "./garmin-gate";
 import { reserveAiCall, type AiKind } from "./limits";
 import { workspaceLlm, workspaceLlmProvider } from "./model-settings";
 import { parseModelJson } from "./parse-json";
@@ -119,6 +120,7 @@ export async function streamAnswer(
 export function classifyAiError(error: unknown): AiFailure {
   if (error instanceof NoModel) return "noModel";
   if (error instanceof NotAllowed) return "notAllowed";
+  if (error instanceof GarminAiNotAllowed) return "garminAi";
   if (error instanceof Error && error.name === "RateLimited") return "rateLimited";
   if (error instanceof Error && error.name === "BudgetReached") return "budget";
   if (error instanceof Error && error.name === "PlanExpired") return "planExpired";

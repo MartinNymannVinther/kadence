@@ -126,6 +126,13 @@ is saved or sent on its own (dogma five).
   of the conversation so far, and the team's library of exercises. The
   class is the coach's own choice in the panel, not read from any
   rider, so no rider's data goes in either.
+- **Rides from Garmin** go into none of the above unless the rider has
+  said yes to it themselves on the Garmin card under Settings → Devices
+  (ADR 0112, `src/modules/ai/garmin-gate.ts`). Without that yes, the
+  comment on a ride from Garmin, the form story and the week draft for
+  that rider are refused before any call, and Monday's brief leaves the
+  rider out of the prompt. The yes is withdrawn in the same place, and
+  disconnecting Garmin withdraws it too.
 - **The connection test** under Settings → AI carries nothing from the
   workspace: one fixed sentence — "Svar med præcis ét ord: OK" — so that
   "configured" and "working" can be told apart.

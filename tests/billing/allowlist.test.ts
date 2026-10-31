@@ -27,9 +27,13 @@ const STILL_ALLOWED = {
   // Leaving, and taking one's training along (ADR 0081).
   "src/core/team/actions.ts": ["leaveWithHistoryAction", "acceptWithHistoryAction"],
   // Taking away: a rider's erasure, a parent's access, consent to health
-  // data, a device link, an upload key, a ride.
+  // data or to the AI reading rides from Garmin, a device link, an upload
+  // key, a ride.
   "src/modules/team/actions.ts": ["eraseRiderAction", "removeGuardianAction"],
-  "src/modules/consent/actions.ts": ["withdrawHealthConsentAction"],
+  "src/modules/consent/actions.ts": [
+    "withdrawHealthConsentAction",
+    "withdrawGarminAiConsentAction",
+  ],
   "src/modules/devices/actions.ts": [
     "disconnectAction",
     "removeUploadKeyAction",
