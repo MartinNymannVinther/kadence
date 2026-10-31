@@ -4,6 +4,7 @@ import { openSecret, sealSecret } from "@/core/crypto/secret-box";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { env } from "@/core/env";
 import { log } from "@/core/log";
+import { recordGarminConsent } from "@/modules/consent/garmin";
 import { whoAmIIn } from "@/modules/team/access";
 import { loggable } from "./http";
 import { saveLink } from "./links";
@@ -17,6 +18,9 @@ import { providerById, type ProviderId } from "./providers";
  *
  * `startConnect` is for a signed-in rider only — a coach cannot connect a
  * device in a rider's name, and the database refuses the row if one tries.
+ * Garmin first takes the rider's yes to what goes to and from Garmin
+ * (src/modules/consent/garmin.ts): without it the browser goes back to the
+ * devices settings, and with it the yes is written before it leaves.
  * It makes a state and a code verifier, seals both with the secret box
  * bound to the person (so the value opens for nobody else), and hands back
  * the provider's authorize URL and the cookie to set: short-lived,
@@ -45,6 +49,7 @@ export type ConnectError =
   | "denied"
   | "exchange_failed"
   | "already_linked"
+  | "consent"
   | "failed";
 
 export function settingsUrl(outcome: { connected: ProviderId } | { error: ConnectError }): string {
@@ -70,15 +75,25 @@ const cookieOwner = (userId: string) => `device-oauth:${userId}`;
 
 export type CookieToSet = { name: string; value: string; maxAge: number; secure: boolean };
 
+export type ConnectConsent = { given: boolean; locale: "da" | "en" };
+
 export async function startConnect(
   ctx: OrgContext,
   providerId: ProviderId,
   now: Date = new Date(),
+  consent: ConnectConsent = { given: false, locale: "da" },
 ): Promise<{ location: string; cookie?: CookieToSet }> {
   const provider = providerById(providerId);
   if (!provider.configured()) return { location: settingsUrl({ error: "not_configured" }) };
-  const me = await withOrgContext(ctx, (tx) => whoAmIIn(tx, ctx));
-  if (!me?.rider) return { location: settingsUrl({ error: "not_a_rider" }) };
+  const refused = await withOrgContext(ctx, async (tx): Promise<ConnectError | null> => {
+    const me = await whoAmIIn(tx, ctx);
+    if (!me?.rider) return "not_a_rider";
+    if (providerId !== "garmin") return null;
+    if (!consent.given) return "consent";
+    await recordGarminConsent(tx, ctx, { riderId: me.rider.id, locale: consent.locale });
+    return null;
+  });
+  if (refused) return { location: settingsUrl({ error: refused }) };
 
   const state = randomToken();
   const verifier = randomToken();

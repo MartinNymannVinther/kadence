@@ -12,7 +12,9 @@ import { SessionSheet } from "@/components/session/session-sheet";
 import { SessionView } from "@/components/session/session-view";
 import { WeekGlance } from "@/components/today/week-glance";
 import { meElsewhere } from "@/components/today/where";
+import { GarminDerivedNote } from "@/components/devices/garmin-attribution";
 import { PageHeader } from "@/components/ui/page-header";
+import { garminRidesLately } from "@/modules/devices/garmin-rides";
 import { KnownPainsCard } from "@/components/wellbeing/known-pains-card";
 import { ZoneStrip } from "@/components/wellbeing/zone-strip";
 import { getOrgContext } from "@/core/auth/session";
@@ -87,7 +89,10 @@ export default async function MePage({
   const openSession = typeof search.session === "string" ? search.session : undefined;
   const today = todayInCopenhagen();
   const riderId = me.rider.id;
-  const data = await meData(ctx, riderId, today);
+  const [data, fromGarmin] = await Promise.all([
+    meData(ctx, riderId, today),
+    garminRidesLately(ctx, [riderId], today),
+  ]);
   const personal = me.isCoach && (await workspaceKind(ctx.orgId, ctx.userId)) === "personal";
   // The AI's reading of the form: with a model, where the AI may read the rider's data (ADR 0109).
   const story =
@@ -98,6 +103,7 @@ export default async function MePage({
   return (
     <div className="flex max-w-3xl flex-col gap-8">
       <PageHeader title={t("title")} subtitle={data.name || undefined} />
+      <GarminDerivedNote show={fromGarmin} className="-mt-5" />
       <SectionNav
         label={common("sectionNav")}
         items={[

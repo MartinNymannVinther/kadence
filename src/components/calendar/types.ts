@@ -41,6 +41,8 @@ export type CalendarCard = {
     load: number | null;
     loadMethod: string;
     rpe: number | null;
+    /** "Garmin [device]" for a ride that came through Garmin (src/modules/devices/attribution.ts). */
+    attribution: string | null;
   } | null;
   commentCount: number;
 };
@@ -54,6 +56,8 @@ export type CalendarActivityCard = {
   name: RideName;
   movingSeconds: number;
   rpe: number | null;
+  /** "Garmin [device]" for a ride that came through Garmin (src/modules/devices/attribution.ts). */
+  attribution: string | null;
   commentCount: number;
 };
 

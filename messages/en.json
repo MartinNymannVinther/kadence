@@ -891,7 +891,7 @@
   },
   "terms": {
     "title": "Terms and privacy",
-    "updated": "Last updated 19 September 2026.",
+    "updated": "Last updated 31 October 2026.",
     "back": "Back",
     "language": "På dansk",
     "intro": "Kadence is an open source tool for training planning for young cyclists, run by Haij. This is the agreement between you and us when you use the edition we run. If you run the code yourself, only the licence applies.",
@@ -929,9 +929,13 @@
     },
     "contact": {
       "title": "Contact",
-      "body": "Write to martin@vintherconsulting.dk. If you have found a security problem, SECURITY.md in the repository says how to report it; use that rather than an ordinary email."
+      "body": "Write to martin@vintherconsulting.dk. If you see Kadence being misused, write to the same address. If you have found a security problem, SECURITY.md in the repository says how to report it; use that rather than an ordinary email."
     },
     "subprocessorsNote": "Who can see what is listed in",
+    "devices": {
+      "title": "Garmin and other devices",
+      "body": "When you connect a Garmin, Wahoo or Polar account, Kadence fetches your rides from it, and you or your coach can send sessions the other way. This happens only once you have connected the account yourself, and it stops when you disconnect it under Settings → Devices. For Garmin you give your yes in Kadence before you are sent on. Garmin is responsible for what Garmin keeps, and may use what Kadence sends to Garmin. Garmin's privacy notice is at garmin.com/privacy/connect. Rides from Garmin are shown with Garmin's name and the device, and numbers and charts built on them say so. Garmin's service is provided as it is. Neither Garmin nor Kadence is liable for losses it causes, as far as the law allows."
+    },
     "shareLinks": {
       "title": "Invitations",
       "body": "An invitation link is for one address and expires after a week. You send it."
@@ -3654,6 +3658,7 @@
       "denied": "You said no at the provider, so nothing is connected.",
       "exchange_failed": "The provider did not answer as it should. Try again in a moment.",
       "already_linked": "That account is already connected to another rider in Kadence.",
+      "consent": "Garmin needs your yes before you connect. Try again and tick the box.",
       "failed": "Something went wrong. Try again."
     },
     "disconnect": "Disconnect",
@@ -6426,6 +6431,20 @@
       "expiredStill": "Everything is still there. It can be seen and taken out, but nothing new can be added. Nothing is deleted.",
       "expiredInvoice": "To use it again, an invoice comes from Haij by mail. Once it is paid, everything works as before.",
       "link": "See the subscription here:"
+    }
+  },
+  "garmin": {
+    "derived": "Insights derived in part from Garmin device-sourced data.",
+    "connect": {
+      "title": "Connect Garmin",
+      "body": "When you connect your Garmin account, Garmin sends your rides to Kadence. Your coach and your parents can see them here, like your other rides. When you or your coach send a session to your Garmin, Garmin gets the session.",
+      "garminOwn": "Garmin is responsible for what Garmin keeps about you, and may use what Kadence sends to Garmin.",
+      "privacy": "Read Garmin's privacy notice",
+      "restricted": "If you are not allowed to put data in your Garmin account, do not connect it.",
+      "agree": "I allow Kadence to fetch my rides from Garmin and to send the sessions my coach or I choose to Garmin.",
+      "withdraw": "You can disconnect at any time here under Devices. Then Kadence fetches no more rides, and Garmin gets no more sessions.",
+      "continue": "Continue to Garmin",
+      "cancel": "Cancel"
     }
   }
 }

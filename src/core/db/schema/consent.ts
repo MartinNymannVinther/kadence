@@ -17,7 +17,7 @@ import { riders } from "./team";
  * as one boolean by `app_health_consent_withdrawn()`, which the wellbeing
  * services ask before they write.
  */
-export const CONSENT_KINDS = ["terms", "health"] as const;
+export const CONSENT_KINDS = ["terms", "health", "garmin", "garmin_ai"] as const;
 export type ConsentKind = (typeof CONSENT_KINDS)[number];
 
 export const consents = pgTable(
@@ -40,7 +40,7 @@ export const consents = pgTable(
     index("consents_org_kind_idx").on(t.orgId, t.kind),
     index("consents_user_idx").on(t.userId),
     index("consents_rider_idx").on(t.riderId),
-    check("consents_kind", sql`${t.kind} in ('terms', 'health')`),
+    check("consents_kind", sql`${t.kind} in ('terms', 'health', 'garmin', 'garmin_ai')`),
     check("consents_locale", sql`${t.locale} in ('da', 'en')`),
     check("consents_version", sql`char_length(${t.version}) between 1 and 20`),
   ],

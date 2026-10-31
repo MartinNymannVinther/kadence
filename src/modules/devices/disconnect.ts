@@ -1,6 +1,7 @@
 import { Refused } from "@/core/action";
-import type { OrgContext } from "@/core/db/tenant";
+import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { log } from "@/core/log";
+import { withdrawGarminConsents } from "@/modules/consent/garmin";
 import { loggable } from "./http";
 import { accessTokenFor, deleteOwnLink, linkExternalUserId, ownLinkOwner } from "./links";
 import { providerById, type ProviderId } from "./providers";
@@ -15,6 +16,7 @@ import { providerById, type ProviderId } from "./providers";
  * choice does not wait for: if the provider cannot be reached, or the keys
  * are gone from the installation, the link is deleted all the same and
  * the rider can revoke Kadence from the provider's own settings.
+ * Disconnecting Garmin withdraws the rider's yes to Garmin with it.
  */
 export async function disconnect(ctx: OrgContext, providerId: ProviderId): Promise<void> {
   const owner = await ownLinkOwner(ctx);
@@ -33,4 +35,5 @@ export async function disconnect(ctx: OrgContext, providerId: ProviderId): Promi
     }
   }
   if (!(await deleteOwnLink(ctx, providerId))) throw new Refused("notFound", "not_connected");
+  if (providerId === "garmin") await withOrgContext(ctx, (tx) => withdrawGarminConsents(tx, ctx));
 }

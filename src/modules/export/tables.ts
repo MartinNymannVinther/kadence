@@ -63,7 +63,7 @@ export const EXPORT_TABLES: ExportTable[] = [
     sheet: "Aktiviteter",
     orderBy: "rider_id, started_at",
     columns:
-      "id, org_id, rider_id, started_at, on_date, sport, title, moving_seconds, elapsed_seconds, distance_m, ascent_m, avg_power, weighted_power, max_power, avg_hr, max_hr, avg_cadence, work_kj, zone_seconds, best_powers, rpe, feel, load, load_method, source, external_id, note, created_by, created_at, updated_at, max_speed, hr_drift, laps, climbs, upload_key_id",
+      "id, org_id, rider_id, started_at, on_date, sport, title, moving_seconds, elapsed_seconds, distance_m, ascent_m, avg_power, weighted_power, max_power, avg_hr, max_hr, avg_cadence, work_kj, zone_seconds, best_powers, rpe, feel, load, load_method, source, external_id, note, created_by, created_at, updated_at, max_speed, hr_drift, laps, climbs, upload_key_id, device_name",
     redact: ["streams"],
   },
   {

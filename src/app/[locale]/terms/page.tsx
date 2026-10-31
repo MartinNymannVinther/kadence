@@ -14,6 +14,7 @@ const SECTIONS = [
   "account",
   "yourData",
   "ai",
+  "devices",
   "shareLinks",
   "leaving",
   "availability",

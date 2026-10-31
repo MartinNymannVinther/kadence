@@ -20,6 +20,7 @@ import { refsInStructure } from "@/modules/exercises/program-session";
 import { resolveExercises } from "@/modules/exercises/resolve";
 import type { Me } from "@/modules/team/access";
 import { getRider, getRiders } from "@/modules/team/riders";
+import { garminAttribution } from "@/modules/devices/attribution";
 import { getActivity } from "@/modules/training/activities";
 import { listComments } from "@/modules/training/comments";
 import { getSession as getPlannedSession } from "@/modules/training/sessions";
@@ -240,6 +241,7 @@ export async function SessionView({
               note: activity.note,
               load: activity.load,
               source: activity.source,
+              attribution: garminAttribution(activity),
             }}
           />
         ) : canWrite ? (

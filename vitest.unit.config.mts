@@ -63,6 +63,8 @@ export default defineConfig({
       // The calendar's month and season: the grid, the addresses, the days and a month's standing
       // (docs/adr/0093); what they read needs the database.
       "tests/calendar/{grid,href,month-days,standing,team-days}.test.ts",
+      // Garmin's attribution line, without the database.
+      "tests/devices/attribution.test.ts",
     ],
   },
 });

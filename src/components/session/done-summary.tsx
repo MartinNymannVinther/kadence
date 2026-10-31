@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Activity, Undo2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRun } from "@/components/common/use-run";
+import { GarminLine } from "@/components/devices/garmin-attribution";
 import { Button } from "@/components/ui/button";
 import { ConfirmButton } from "@/components/ui/confirm-button";
 import { durationText } from "@/components/training/duration";
@@ -23,6 +24,8 @@ export type DoneActivity = {
   note: string;
   load: number | null;
   source: string;
+  /** "Garmin [device]" for a ride that came through Garmin (src/modules/devices/attribution.ts). */
+  attribution?: string | null;
 };
 
 /**
@@ -66,6 +69,7 @@ export function DoneSummary({
 
   return (
     <div className="bg-success-tint/60 border-border flex flex-col gap-3 rounded-lg border p-4">
+      <GarminLine line={activity.attribution ?? null} />
       <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-1.5 text-2sm">
         {facts.map(([label, value]) => (
           <div key={label} className="contents">
@@ -77,7 +81,9 @@ export function DoneSummary({
       {activity.note && (
         <p className="text-2sm leading-relaxed whitespace-pre-line">{activity.note}</p>
       )}
-      {activity.source !== "manual" && <p className="text-meta text-xs">{t("fromFile")}</p>}
+      {activity.source !== "manual" && !activity.attribution && (
+        <p className="text-meta text-xs">{t("fromFile")}</p>
+      )}
       <div className="flex flex-wrap gap-2">
         <Link
           href={`/activities/${activity.id}`}

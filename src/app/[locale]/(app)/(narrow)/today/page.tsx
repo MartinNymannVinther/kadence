@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { buttonVariants } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { GarminDerivedNote } from "@/components/devices/garmin-attribution";
 import { PageHeader } from "@/components/ui/page-header";
+import { garminRidesLately } from "@/modules/devices/garmin-rides";
 import { calendarHref, withQuery } from "@/components/calendar/href";
 import { toCard, toEventCard } from "@/components/calendar/to-card";
 import { SessionSheet } from "@/components/session/session-sheet";
@@ -102,6 +104,11 @@ export default async function TodayPage({
   const team =
     overview && riders.length > 0 && !soloRider ? await coachOverview(ctx, riders, today) : null;
   const nothing = !me || (!me.isCoach && !me.rider && me.children.length === 0);
+  const fromGarmin = await garminRidesLately(
+    ctx,
+    [...new Set([...riders.map((r) => r.id), ...(me?.rider ? [me.rider.id] : [])])],
+    today,
+  );
   const sessionsToday = (mine?.today.length ?? 0) + (team?.sessionsToday.length ?? 0);
   const cover = coverShown({ sessionsToday, waiting: Boolean(mine?.toRate) })
     ? (await orgImageUrls(ctx)).cover
@@ -144,6 +151,7 @@ export default async function TodayPage({
           )
         }
       />
+      <GarminDerivedNote show={fromGarmin} className="-mt-5" />
 
       <SharedNotice shared={word("shared")} count={word("count")} reason={word("reason")} />
 

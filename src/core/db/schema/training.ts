@@ -158,6 +158,11 @@ export const activities = pgTable(
     source: text("source").notNull(),
     externalId: text("external_id"),
     /**
+     * The device a provider names for the ride, e.g. "Edge 1030 Plus": what
+     * Garmin's attribution shows beside it ("Garmin Edge 1030 Plus").
+     */
+    deviceName: text("device_name"),
+    /**
      * The upload key a ride came in with (ADR 0029), kept after the key is
      * gone: what tells a rider which rides a key that went astray added.
      */
@@ -175,6 +180,7 @@ export const activities = pgTable(
     check("activities_source", sql`${t.source} in ('fit','wahoo','garmin','polar','manual')`),
     check("activities_load_method", sql`${t.loadMethod} in ('power','hr','rpe','none')`),
     check("activities_rpe", sql`${t.rpe} is null or ${t.rpe} between 1 and 10`),
+    check("activities_device_name", sql`char_length(${t.deviceName}) <= 80`),
     check("activities_feel", sql`${t.feel} is null or ${t.feel} between 1 and 5`),
     check("activities_seconds", sql`${t.movingSeconds} between 0 and 172800`),
   ],
