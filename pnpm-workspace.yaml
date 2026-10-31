@@ -17,6 +17,12 @@ overrides:
   # audit gate that is red for a path nobody takes is a gate people learn
   # to ignore. The buffer API pptxgenjs would call is the same in 2.x.
   image-size: ">=2.0.3"
+  # Better Auth names vitest as an optional peer, so pnpm hangs our own
+  # test runner under it and the production audit walks into vite
+  # (better-auth > vitest > vite). Vite never runs in production, but
+  # GHSA-587h-7wmj-h5pm is fixed in 8.2.4, and a required gate that is
+  # red for a path nobody takes is a gate people learn to ignore.
+  vite: "^8.2.4"
 
 # Not an override: the Better Auth family is pinned to one exact version
 # in package.json — including @better-auth/core as a direct exact
