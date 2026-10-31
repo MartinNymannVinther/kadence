@@ -217,15 +217,21 @@ describe("a Wahoo ride", () => {
   });
 });
 
-describe("a Garmin ping", () => {
+describe("a Garmin push", () => {
   const ping = (userId: string, callbackURL: string) => ({
     activityFiles: [{ userId, summaryId: "s-1", activityId: 555, fileType: "FIT", callbackURL }],
   });
   const CALLBACK = "https://apis.garmin.com/wellness-api/rest/activityFile";
+  /** What a push from Garmin carries, as the proxy in front passes it on. */
+  const FROM_GARMIN = { "garmin-client-id": "garmin-client", "x-forwarded-for": "204.77.162.10" };
 
   it("fetches the file from Garmin with the rider's token and imports it as the rider", async () => {
     const calls = fakeFetch({ [`GET ${CALLBACK}`]: () => bytes(ride) });
-    const { status, outcomes } = await deliver("garmin", ping("g-mikkel", `${CALLBACK}?id=555`));
+    const { status, outcomes } = await deliver(
+      "garmin",
+      ping("g-mikkel", `${CALLBACK}?id=555`),
+      FROM_GARMIN,
+    );
     expect(status).toBe(200);
     expect(outcomes).toEqual(["imported"]);
     expect(calls[0]!.headers.get("authorization")).toBe("Bearer g-mik");
@@ -235,6 +241,7 @@ describe("a Garmin ping", () => {
 
   it("is refused when it names another client", async () => {
     const { status } = await deliver("garmin", ping("g-mikkel", `${CALLBACK}?id=556`), {
+      ...FROM_GARMIN,
       "garmin-client-id": "not-ours",
     });
     expect(status).toBe(401);
@@ -242,10 +249,14 @@ describe("a Garmin ping", () => {
 
   it("cannot disconnect a rider while Garmin still accepts the rider's token", async () => {
     fakeFetch({
-      "GET https://apis.garmin.com/wellness-api/rest/user/id": () =>
+      "GET https://apis.garmin.com/partner-gateway/rest/user/id": () =>
         new Response(JSON.stringify({ userId: "g-mikkel" }), { status: 200 }),
     });
-    const { outcomes } = await deliver("garmin", { deregistrations: [{ userId: "g-mikkel" }] });
+    const { outcomes } = await deliver(
+      "garmin",
+      { deregistrations: [{ userId: "g-mikkel" }] },
+      FROM_GARMIN,
+    );
     expect(outcomes).toEqual(["still_connected"]);
     const link = await admin.query(
       "select status from device_links where rider_id = 'dh_mikkel' and provider = 'garmin'",

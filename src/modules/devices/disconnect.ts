@@ -3,14 +3,15 @@ import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { log } from "@/core/log";
 import { withdrawGarminConsents } from "@/modules/consent/garmin";
 import { loggable } from "./http";
-import { accessTokenFor, deleteOwnLink, linkExternalUserId, ownLinkOwner } from "./links";
+import { accessTokenFor } from "./link-tokens";
+import { deleteOwnLink, linkExternalUserId, ownLinkOwner } from "./links";
 import { providerById, type ProviderId } from "./providers";
 
 /**
  * A rider disconnects their own Wahoo, Garmin or Polar account. The
  * provider is told first where its API allows (Wahoo: DELETE
- * /v1/permissions; Garmin: DELETE …/user/registration, which Garmin
- * requires of a partner that offers a disconnect; Polar: DELETE
+ * /v1/permissions; Garmin: DELETE …/partner-gateway/rest/user/registration,
+ * which Garmin requires whenever a rider leaves, exit.ts; Polar: DELETE
  * /v3/users/{user-id}, which also revokes the token), then the link and
  * its tokens are deleted. Telling the provider is a courtesy the rider's
  * choice does not wait for: if the provider cannot be reached, or the keys

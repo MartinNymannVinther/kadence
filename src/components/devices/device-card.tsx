@@ -16,6 +16,8 @@ export type DeviceLink = {
   provider: ProviderId;
   configured: boolean;
   canPush: boolean;
+  /** Garmin: whether the rider shares activities with Kadence; null where nobody knows. */
+  sharesActivities: boolean | null;
   status: "connected" | "error" | "revoked" | null;
   lastSyncAt: string | null;
   lastError: string;
@@ -26,7 +28,9 @@ export type DeviceLink = {
  * installation (and FIT upload instead), not connected, connected with the
  * last sync and any trouble in words, or broken and waiting for a new
  * connection. Connecting is a plain link to the OAuth route — the browser
- * leaves Kadence for the provider and comes back. Garmin's card also
+ * leaves Kadence for the provider and comes back. A Garmin link whose
+ * rider does not share activities with Kadence says so, and what to do
+ * (docs/adr/0113). Garmin's card also
  * holds the rider's yes to the AI reading their rides from Garmin, once
  * there is a link or a ride from Garmin for it to be about (ADR 0112).
  */
@@ -88,6 +92,11 @@ export function DeviceCard({
         <>
           {link.status === "connected" && (
             <p className="text-2sm">{synced ? t("lastSync", { when: synced }) : t("noSyncYet")}</p>
+          )}
+          {link.sharesActivities === false && (
+            <p className="bg-warning-tint rounded-md px-3 py-2 text-2sm leading-relaxed">
+              {t("noActivitySharing", { name })}
+            </p>
           )}
           {error && (
             <p className="bg-warning-tint rounded-md px-3 py-2 text-2sm leading-relaxed">

@@ -6,7 +6,9 @@ import { log } from "@/core/log";
 import { requireWriteFor } from "@/modules/team/access";
 import { readStructure } from "@/modules/workouts/structure";
 import { DeviceHttpError, loggable } from "./http";
-import { accessTokenFor, markLink } from "./links";
+import { accessTokenFor } from "./link-tokens";
+import { markLink } from "./links";
+import { allowsWorkouts } from "./permission-words";
 import { providerById, type ProviderId } from "./providers";
 
 /**
@@ -58,11 +60,15 @@ export async function pushSession(
       .from(riders)
       .where(eq(riders.id, session.riderId));
     const [link] = await tx
-      .select({ status: deviceLinks.status })
+      .select({ status: deviceLinks.status, permissions: deviceLinks.permissions })
       .from(deviceLinks)
       .where(and(eq(deviceLinks.riderId, session.riderId), eq(deviceLinks.provider, providerId)));
     if (!rider?.userId || link?.status !== "connected")
       throw new Refused("notFound", "not_connected");
+    // A rider who did not let Kadence put workouts in their Garmin account
+    // is not sent one (docs/adr/0113); a list never read lets Garmin answer.
+    if (providerId === "garmin" && link.permissions && !allowsWorkouts(link.permissions))
+      throw new Refused("forbidden", "provider_permission");
     return { session, structure, rider: { ...rider, userId: rider.userId } };
   });
 

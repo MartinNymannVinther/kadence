@@ -3,7 +3,8 @@ import type { Client, Pool } from "pg";
 import { openSecret } from "@/core/crypto/secret-box";
 import { finishConnect, OAUTH_COOKIE, startConnect } from "@/modules/devices/connect";
 import { disconnect } from "@/modules/devices/disconnect";
-import { accessTokenFor, listDeviceLinks, saveLink } from "@/modules/devices/links";
+import { accessTokenFor } from "@/modules/devices/link-tokens";
+import { listDeviceLinks, saveLink } from "@/modules/devices/links";
 import { providerById } from "@/modules/devices/providers";
 import { adminPool, appClient, asApp, expectSqlError } from "../helpers/db";
 import { insertSql, seedPerson } from "../helpers/rows";
@@ -176,14 +177,17 @@ describe("a coach", () => {
         provider: "wahoo",
         configured: true,
         canPush: true,
+        sharesActivities: null,
         status: "connected",
         lastSyncAt: null,
         lastError: "",
       },
       {
+        // Garmin offers a push only once the rider granted workout import.
         provider: "garmin",
         configured: true,
-        canPush: true,
+        canPush: false,
+        sharesActivities: null,
         status: null,
         lastSyncAt: null,
         lastError: "",
@@ -192,6 +196,7 @@ describe("a coach", () => {
         provider: "polar",
         configured: true,
         canPush: false,
+        sharesActivities: null,
         status: null,
         lastSyncAt: null,
         lastError: "",
@@ -338,7 +343,7 @@ describe("Garmin's yes", () => {
       expiresAt: new Date(Date.now() + 3600_000),
     });
     fakeFetch({
-      "DELETE https://apis.garmin.com/wellness-api/rest/user/registration": () =>
+      "DELETE https://apis.garmin.com/partner-gateway/rest/user/registration": () =>
         new Response(null, { status: 204 }),
     });
     await disconnect(IDA, "garmin");

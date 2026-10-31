@@ -14,12 +14,15 @@ const LAST_ERRORS = [
   "invalid_file",
   "quota",
   "planExpired",
+  // Garmin hands a file over once, and for a day (docs/adr/0113).
+  "download_gone",
+  "import_failed",
 ] as const;
 
 export function lastErrorKey(code: string): string | null {
   if (!code) return null;
-  if (code.startsWith("download_")) return "download";
-  return (LAST_ERRORS as readonly string[]).includes(code) ? code : "unknown";
+  if ((LAST_ERRORS as readonly string[]).includes(code)) return code;
+  return code.startsWith("download_") ? "download" : "unknown";
 }
 
 /** What an upload key noted about the last file it was used for (ingest.ts). */

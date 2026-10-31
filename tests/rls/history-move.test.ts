@@ -163,6 +163,14 @@ async function seedHistory() {
     external_user_id: "w_hm",
     access_token_sealed: "sealed",
   });
+  // A ride's file between its download and its import (drizzle/0061).
+  await seed("device_inbox", {
+    rider_id: FROM,
+    provider: "wahoo",
+    external_id: "w_hm_ride",
+    file_name: "Tur.fit",
+    bytes: Buffer.from("fit"),
+  });
   // What stays: a parent's link, and a deleted session the team remembers.
   await seed("guardians", { rider_id: FROM, name: "Mor" });
   await seed("planned_session_deletions", { rider_id: FROM, on_date: DAY, title: "Slettet" });
@@ -328,6 +336,7 @@ describe("the rider moves their own history", () => {
       race_results: 1,
       calendar_events: 1,
       device_links: 1,
+      device_inbox: 1,
     });
   });
 

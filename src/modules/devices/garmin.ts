@@ -1,41 +1,41 @@
 import { z } from "zod";
 import { env } from "@/core/env";
-import { activityFileName } from "./file-name";
+import { clientAddress } from "@/core/rate-limit";
+import { fromGarmin } from "./garmin-ip";
+import { garminPushEvents } from "./garmin-push";
 import { toGarminWorkout } from "./garmin-workout";
 import { bearer, downloadFile, requestJson, requestOk, type HostRule } from "./http";
 import { safeEqual, tokenRequest } from "./oauth";
-import type { ActivityNotification, DeviceProvider, PushWorkout, WebhookEvent } from "./providers";
+import type { ActivityNotification, DeviceProvider, PushWorkout } from "./providers";
 
 /**
- * Garmin's Connect Developer Program: OAuth 2.0 with PKCE (Garmin left
- * OAuth 1.0a behind), the Activity API's ping notifications, and the
- * Training API. Onboarding to the program was paused in 2026; this adapter
- * is complete and stays inert until GARMIN_CLIENT_ID and _SECRET are set.
+ * Garmin's Connect Developer Program on its Starter tier (docs/adr/0113):
+ * OAuth 2.0 with PKCE, and everything else pushed by Garmin. The adapter
+ * stays inert until GARMIN_CLIENT_ID and GARMIN_CLIENT_SECRET are set.
  *
- * From Garmin's public "OAuth2.0 PKCE Specification" (developerportal.
- * garmin.com): authorize at connect.garmin.com/oauth2Confirm (S256), tokens
- * at diauth.garmin.com/di-oauth2-service/oauth/token as a form post with
- * the client secret and the code verifier; access tokens live a day and
- * each refresh returns a new refresh token; the user's id at
- * apis.garmin.com/wellness-api/rest/user/id; and DELETE …/user/registration,
- * which Garmin requires when a partner offers a "disconnect".
+ * - The rider authorizes at connect.garmin.com/oauth2Confirm (S256);
+ *   tokens come from diauth.garmin.com as a form post with the client's
+ *   secret and the code verifier. An access token lives a day; each
+ *   refresh hands back a new refresh token and says when it runs out.
+ * - The account's id, the rider's permissions and the deregistration live
+ *   on Garmin's partner gateway (`/partner-gateway/rest/user/…`).
+ *   Deregistering is required whenever a rider leaves Kadence in any way
+ *   (disconnect.ts, exit.ts).
+ * - Garmin pushes: a ride's file is ready (with a one-time download
+ *   address on the activity file path), a rider deregistered, or a
+ *   rider's permissions changed (garmin-push.ts). Every push is answered
+ *   200 before any call back to Garmin (webhooks.ts).
  *
- * The Activity API and Training API references are for approved partners.
- * Pings follow the public Health API specification and Garmin's published
- * examples: `{"activityFiles": [{userId, summaryId, fileType, callbackURL,
- * activityId, …}]}` and `{"deregistrations": [{userId}]}`, answered with a
- * 200 before any callback is made. Each of those shapes sits in one
- * function below marked: verify against the partner docs on approval.
- *
- * Garmin does not sign notifications. The residual risk and what limits
- * it are written at `verifyWebhook`.
+ * Garmin signs no push. What a push is checked by, and the residual risk,
+ * are written at `verifyWebhook`.
  */
 
 const API = "https://apis.garmin.com";
+const PARTNER = `${API}/partner-gateway/rest`;
 const AUTHORIZE = "https://connect.garmin.com/oauth2Confirm";
 const TOKEN = "https://diauth.garmin.com/di-oauth2-service/oauth/token";
 
-/** Activity files come from Garmin's API host, on the activity file path, with the rider's token. */
+/** Activity files come from Garmin's API host, on the activity file path. */
 export const GARMIN_FILE_HOSTS: HostRule = {
   hosts: ["apis.garmin.com"],
   pathPrefix: "/wellness-api/rest/activityFile",
@@ -82,91 +82,65 @@ const GarminId = z.string().regex(/^[\w-]{1,100}$/);
 
 async function userId(accessToken: string): Promise<string> {
   const answer = await requestJson(
-    `${API}/wellness-api/rest/user/id`,
+    `${PARTNER}/user/id`,
     { headers: bearer(accessToken) },
     z.object({ userId: GarminId }),
   );
   return answer.userId;
 }
 
-async function deregister(accessToken: string): Promise<void> {
-  await requestOk(`${API}/wellness-api/rest/user/registration`, {
-    method: "DELETE",
-    headers: bearer(accessToken),
-  });
+async function deregister(accessToken: string, _externalUserId: string, timeoutMs?: number) {
+  await requestOk(
+    `${PARTNER}/user/registration`,
+    { method: "DELETE", headers: bearer(accessToken) },
+    timeoutMs,
+  );
+}
+
+/** A permission's name as Garmin writes it; anything else in the answer is left out. */
+const PERMISSION = /^[A-Z][A-Z_]{0,63}$/;
+
+async function permissions(accessToken: string): Promise<string[]> {
+  const answer = await requestJson(
+    `${PARTNER}/user/permissions`,
+    { headers: bearer(accessToken) },
+    z.object({ permissions: z.array(z.unknown()).max(100) }),
+  );
+  const names = answer.permissions.filter(
+    (p): p is string => typeof p === "string" && PERMISSION.test(p),
+  );
+  return [...new Set(names)].sort();
 }
 
 /**
- * Garmin offers no signature on its notifications, so there is nothing
- * to prove origin with. What a forged ping can do is therefore limited
- * elsewhere, and this is the residual risk accepted:
+ * Garmin signs no push, so a push is believed only when both of these
+ * hold, and refused with a 401 otherwise:
  *
- * - the file is fetched only from apis.garmin.com's activity file path,
- *   over https, with the token of the rider the ping names — so a forgery
- *   can at most make Kadence fetch that rider's own activity from Garmin,
- *   and never anything from anywhere else;
- * - the same activity twice is a duplicate and changes nothing;
- * - a deregistration is believed only once Garmin itself refuses the
- *   rider's token (webhooks.ts), so a forgery cannot disconnect anyone;
- * - the endpoint is rate limited per address and body-capped.
+ * - it names this installation in the `garmin-client-id` header, compared
+ *   in constant time; a push without the header is refused;
+ * - it comes from one of Garmin's own address ranges (garmin-ip.ts), as
+ *   the installation's proxy saw it (`clientAddress`, TRUSTED_PROXY_HOPS).
  *
- * One more check where Garmin gives the means: a notification that names
- * a client (the `garmin-client-id` header) must name this installation's.
- * Verify against the partner docs on approval whether that header is sent
- * on every notification; if it is, it should become required.
+ * What a push that gets through anyway can do is limited elsewhere, and
+ * that is the residual risk accepted: a file is fetched only from
+ * apis.garmin.com's activity file path, over https, and imported as the
+ * rider the push names, where the same activity twice is a duplicate; a
+ * deregistration is believed only once Garmin refuses the rider's token;
+ * a permission change only makes Kadence ask Garmin again; and the
+ * endpoint is rate limited per address and body-capped (webhooks.ts).
  */
 function verifyWebhook(payload: unknown, headers: Headers): boolean {
   if (!configured() || !payload || typeof payload !== "object" || Array.isArray(payload))
     return false;
   const client = headers.get("garmin-client-id");
-  return client === null || safeEqual(client, env.GARMIN_CLIENT_ID ?? "");
+  if (client === null || !safeEqual(client.trim(), env.GARMIN_CLIENT_ID ?? "")) return false;
+  return fromGarmin(clientAddress(headers));
 }
 
-const Ping = z.object({
-  activityFiles: z
-    .array(
-      z.object({
-        userId: GarminId,
-        summaryId: z.union([z.string().max(100), z.number()]).nullish(),
-        activityId: z.union([z.string().max(100), z.number()]).nullish(),
-        activityName: z.string().max(500).nullish(),
-        fileType: z.string().max(16).nullish(),
-        callbackURL: z.string().max(2048),
-      }),
-    )
-    .max(200)
-    .nullish(),
-  deregistrations: z
-    .array(z.object({ userId: GarminId }))
-    .max(200)
-    .nullish(),
-});
-
-/** Activity files (FIT only) and deregistrations; every other summary type is ignored. */
-function webhookEvents(payload: unknown): WebhookEvent[] {
-  const parsed = Ping.safeParse(payload);
-  if (!parsed.success) return [];
-  const events: WebhookEvent[] = [];
-  for (const file of parsed.data.activityFiles ?? []) {
-    if ((file.fileType ?? "FIT").toUpperCase() !== "FIT") continue;
-    const externalId = String(file.activityId ?? file.summaryId ?? "");
-    if (!/^[\w-]{1,100}$/.test(externalId)) continue;
-    events.push({
-      kind: "activity",
-      externalUserId: file.userId,
-      notification: {
-        externalUserId: file.userId,
-        externalId,
-        url: file.callbackURL,
-        fileName: activityFileName(file.activityName, "Garmin"),
-      },
-    });
-  }
-  for (const gone of parsed.data.deregistrations ?? [])
-    events.push({ kind: "deregistration", externalUserId: gone.userId });
-  return events;
-}
-
+/**
+ * The one-time download. The address carries its own token; the rider's
+ * bearer token goes with it as well, as for every call to Garmin's API.
+ */
 async function fetchActivityFile(notification: ActivityNotification, accessToken: string | null) {
   if (!accessToken) throw new Error("garmin: an activity file takes the rider's token");
   const bytes = await downloadFile(notification.url, GARMIN_FILE_HOSTS, bearer(accessToken));
@@ -174,9 +148,10 @@ async function fetchActivityFile(notification: ActivityNotification, accessToken
 }
 
 /**
- * Creates the workout, then schedules it on its day. Verify the paths
- * (training-api/workout and training-api/schedule), the answer's
- * `workoutId` and the schedule body against the partner docs on approval.
+ * Creates the workout, then schedules it on its day, on the Training API
+ * paths of the program's first version. Moving to the current Training
+ * API is its own change (G3, docs/adr/0113); until then a rider who has
+ * not granted workout import is not offered the button (links.ts).
  */
 async function pushWorkout(accessToken: string, workout: PushWorkout) {
   const headers = { ...bearer(accessToken), "Content-Type": "application/json" };
@@ -202,9 +177,10 @@ export const garmin: DeviceProvider = {
   refresh,
   userId,
   deregister,
+  permissions,
   fileNeedsToken: true,
   verifyWebhook,
-  webhookEvents,
+  webhookEvents: garminPushEvents,
   fetchActivityFile,
   pushWorkout,
 };

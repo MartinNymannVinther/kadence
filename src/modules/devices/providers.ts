@@ -1,3 +1,4 @@
+import type { Sport } from "@/modules/training/vocabulary";
 import type { BikeStructure } from "@/modules/workouts/structure";
 import { garmin } from "./garmin";
 import { polar } from "./polar";
@@ -21,6 +22,8 @@ export type Tokens = {
   accessToken: string;
   refreshToken: string | null;
   expiresAt: Date | null;
+  /** When the refresh token runs out, where the provider says (Garmin). */
+  refreshExpiresAt?: Date | null;
   /** The account's id, when the token answer names it (Polar's `x_user_id`). */
   externalUserId?: string;
 };
@@ -32,6 +35,10 @@ export type ActivityNotification = {
   externalId: string;
   url: string;
   fileName: string;
+  /** The device it was recorded on, made plain (device-name.ts), where the provider names it. */
+  deviceName?: string;
+  /** The sport the provider names (Garmin's activity type), which decides over the file's. */
+  sport?: Sport;
 };
 
 export type ActivityFile = { bytes: Uint8Array; fileName: string; externalId: string };
@@ -39,7 +46,9 @@ export type ActivityFile = { bytes: Uint8Array; fileName: string; externalId: st
 /** What a verified webhook asks Kadence to do; everything else in it is ignored. */
 export type WebhookEvent =
   | { kind: "activity"; externalUserId: string; notification: ActivityNotification }
-  | { kind: "deregistration"; externalUserId: string };
+  | { kind: "deregistration"; externalUserId: string }
+  /** The rider changed what they let Kadence do; read again with the token, never from the push. */
+  | { kind: "permissions"; externalUserId: string };
 
 /** A planned bike session on its way to a rider's device. */
 export type PushWorkout = {
@@ -71,8 +80,16 @@ export interface DeviceProvider {
    * for a provider that requires it before any data flows (Polar).
    */
   register?(accessToken: string, externalUserId: string): Promise<void>;
-  /** Tells the provider the rider has disconnected, where its API allows. */
-  deregister?(accessToken: string, externalUserId: string): Promise<void>;
+  /**
+   * Tells the provider the rider has disconnected, where its API allows.
+   * `timeoutMs` shortens the wait where a person's deletion must not hang on it.
+   */
+  deregister?(accessToken: string, externalUserId: string, timeoutMs?: number): Promise<void>;
+  /**
+   * What the rider lets Kadence do at the provider (Garmin's
+   * ACTIVITY_EXPORT, WORKOUT_IMPORT, …), for a provider that says.
+   */
+  permissions?(accessToken: string): Promise<string[]>;
   /** Whether fetching an activity file takes the rider's access token. */
   fileNeedsToken: boolean;
   /**

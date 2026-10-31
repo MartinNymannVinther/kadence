@@ -3623,7 +3623,7 @@
     },
     "about": {
       "wahoo": "ELEMNT-cykelcomputere og KICKR-hometrainere. Ture hentes automatisk, og pas kan sendes til dem.",
-      "garmin": "Edge-cykelcomputere og ure via Garmin Connect. Ture hentes automatisk. Et cykelpas lægger du på en Edge med kabel, fra passet.",
+      "garmin": "Edge-cykelcomputere og ure via Garmin Connect. Ture og andre aktiviteter hentes automatisk. Et cykelpas lægger du på en Edge med kabel, fra passet.",
       "polar": "Ure og cykelcomputere via Polar Flow. Ture hentes automatisk. Pas kan ikke sendes til Polar fra Kadence."
     },
     "state": {
@@ -3639,6 +3639,7 @@
     "lastSync": "Senest hentet {when}.",
     "noSyncYet": "Ingen ture hentet endnu. Din næste tur kommer ind af sig selv.",
     "canPush": "Du kan sende et cykelpas til {name} fra passet i kalenderen.",
+    "noActivitySharing": "Dine ture kommer ikke ind, fordi deling af aktiviteter med Kadence er slået fra hos {name}. Slå den til igen i {name} Connect, eller afbryd, forbind {name} igen og sæt hak ved aktiviteter. Upload af FIT-filer virker stadig.",
     "lastError": {
       "refresh_failed": "{name} ville ikke forny forbindelsen. Forbind igen.",
       "unauthorized": "{name} afviste Kadence. Forbind igen.",
@@ -3648,6 +3649,8 @@
       "download": "En tur kunne ikke hentes fra {name}. Upload filen selv, hvis den mangler.",
       "quota": "En tur fra {name} fik ikke plads: pladsen til filer er brugt. Slet gamle ture eller hent dem ud først, og upload filen selv.",
       "planExpired": "En tur fra {name} blev ikke hentet, fordi arbejdsrummet kun kan læses nu. Turen ligger stadig hos {name}.",
+      "download_gone": "En tur fra {name} kunne ikke hentes, fordi {name} kun udleverer en tur én gang og i kort tid. Upload filen selv, hvis turen mangler.",
+      "import_failed": "En tur fra {name} kom frem, men kunne ikke lægges ind, heller ikke efter flere forsøg. Upload filen selv, hvis turen mangler.",
       "unknown": "Noget gik galt med {name} sidst. Forbind igen, hvis dine ture ikke kommer ind."
     },
     "connected": "{name} er forbundet. Dine næste ture kommer ind af sig selv.",
@@ -6439,12 +6442,12 @@
     "derived": "Delvist bygget på data fra Garmin-enheder.",
     "connect": {
       "title": "Forbind Garmin",
-      "body": "Når du forbinder din Garmin-konto, sender Garmin dine ture til Kadence. Din træner og dine forældre kan se dem her, ligesom dine andre ture. Sender du eller din træner et pas til din Garmin, får Garmin passet.",
+      "body": "Når du forbinder din Garmin-konto, sender Garmin dine ture og dine andre aktiviteter, fx løb og styrketræning, til Kadence. Din træner og dine forældre kan se dem her, ligesom dine andre ture. Sender du eller din træner et pas til din Garmin, får Garmin passet.",
       "garminOwn": "Garmin er selv ansvarlig for det, Garmin gemmer om dig, og må bruge det, Kadence sender til Garmin.",
       "privacy": "Læs Garmins privatlivspolitik",
       "restricted": "Har du ikke lov til at lægge data på din Garmin-konto, så lad være med at forbinde den.",
-      "agree": "Jeg giver lov til, at Kadence henter mine ture fra Garmin og sender de pas, jeg eller min træner vælger, til Garmin.",
-      "withdraw": "Du kan altid afbryde forbindelsen her under Enheder. Så henter Kadence ikke flere ture, og Garmin får ikke flere pas.",
+      "agree": "Jeg giver lov til, at Kadence henter mine ture og andre aktiviteter fra Garmin og sender de pas, jeg eller min træner vælger, til Garmin.",
+      "withdraw": "Du kan altid afbryde forbindelsen her under Enheder. Så henter Kadence ikke mere fra Garmin, og Garmin får ikke flere pas.",
       "continue": "Fortsæt til Garmin",
       "cancel": "Fortryd"
     },

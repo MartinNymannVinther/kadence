@@ -48,6 +48,11 @@ export class DeviceHttpError extends Error {
     return this.code === "status" && this.status === 401;
   }
 
+  /** The provider will never hand this over again (410): Garmin's file, already downloaded or too old. */
+  get gone(): boolean {
+    return this.code === "status" && this.status === 410;
+  }
+
   /**
    * The provider turned the request down on its merits — a 4xx other than
    * too many requests — rather than being unavailable.
@@ -113,13 +118,17 @@ export function formBody(
   return body;
 }
 
-async function send(url: URL | string, init: RequestInit): Promise<Response> {
+async function send(
+  url: URL | string,
+  init: RequestInit,
+  timeoutMs = PROVIDER_TIMEOUT_MS,
+): Promise<Response> {
   try {
     return await fetch(url, {
       ...init,
       redirect: "manual",
       cache: "no-store",
-      signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
+      signal: AbortSignal.timeout(timeoutMs),
     });
   } catch (error) {
     const name = error instanceof Error ? error.name : "";
@@ -206,8 +215,12 @@ export async function requestJson<S extends z.ZodType>(
 }
 
 /** A call whose answer only has to be a success: a deletion, a schedule. */
-export async function requestOk(url: string, init: RequestInit): Promise<void> {
-  const response = await send(url, init);
+export async function requestOk(
+  url: string,
+  init: RequestInit,
+  timeoutMs = PROVIDER_TIMEOUT_MS,
+): Promise<void> {
+  const response = await send(url, init, timeoutMs);
   await discard(response);
   if (!response.ok) throw new DeviceHttpError("status", response.status);
 }
