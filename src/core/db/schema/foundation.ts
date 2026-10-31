@@ -82,9 +82,13 @@ export const accounts = pgTable(
   "accounts",
   {
     id: text("id").primaryKey(),
-    // Account identity is scoped by issuer since Better Auth 1.7
-    // (e.g. "local:credential" for password accounts).
-    issuer: text("issuer").notNull(),
+    // Left over from Better Auth 1.7.0–1.7.2, which scoped an account by
+    // issuer ("local:credential" for a password). From 1.7.3 an account is
+    // known by provider and account id again and Better Auth never writes
+    // this column; it must stay nullable, or Better Auth refuses every request.
+    // A trigger fills it for password accounts (drizzle/0059), so a
+    // rollback to 1.7.1 can still sign in everyone made after the upgrade.
+    issuer: text("issuer"),
     accountId: text("account_id").notNull(),
     providerId: text("provider_id").notNull(),
     userId: text("user_id")
@@ -101,7 +105,9 @@ export const accounts = pgTable(
   },
   (t) => [
     index("accounts_user_id_idx").on(t.userId),
-    uniqueIndex("accounts_issuer_account_uq").on(t.issuer, t.accountId),
+    // One account per provider and id: what Better Auth looks an account
+    // up by, and it refuses a lookup that finds two.
+    uniqueIndex("accounts_provider_account_uq").on(t.providerId, t.accountId),
   ],
 );
 

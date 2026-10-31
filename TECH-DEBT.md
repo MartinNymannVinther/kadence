@@ -73,6 +73,15 @@ own buttons go through actions that refuse. Gating them needs the active
 workspace's plan in the before-hook in `src/core/auth/auth.ts`, which is
 at its size limit.
 
+### The account's issuer outlives the Better Auth that wrote it
+
+Better Auth 1.7.3 and later never read or write `accounts.issuer`; it
+stays nullable, with its values, and the `accounts_fill_issuer` trigger
+writes "local:credential" on new password accounts, only so a rollback to
+1.7.1 can still sign everyone in (ADR 0111, drizzle/0059). Once nobody
+will go back to 1.7.1, one migration drops the trigger, its function and
+the column, and `scripts/set-password.ts` stops naming the column.
+
 ## Accepted, with the reason written down
 
 ### The content policy still allows inline scripts

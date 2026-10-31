@@ -17,13 +17,21 @@ overrides:
   # audit gate that is red for a path nobody takes is a gate people learn
   # to ignore. The buffer API pptxgenjs would call is the same in 2.x.
   image-size: ">=2.0.3"
+  # Better Auth names vitest as an optional peer, so pnpm hangs our own
+  # test runner under it and the production audit walks into vite
+  # (better-auth > vitest > vite). Vite never runs in production, but
+  # GHSA-587h-7wmj-h5pm is fixed in 8.2.4, and a required gate that is
+  # red for a path nobody takes is a gate people learn to ignore.
+  vite: "^8.2.4"
 
-# Not an override: better-auth 1.7.5 dropped the account "issuer" column
-# our auth schema requires, so the family is held at 1.7.1 in
-# package.json — including @better-auth/core as a direct exact
+# Not an override: the Better Auth family is pinned to one exact version
+# in package.json — including @better-auth/core as a direct exact
 # dependency, because the passkey plugin takes core as a *peer* and
 # pnpm resolves auto-installed peers to the root's own version, never
-# to an override. Lifting it is a migration, decided on its own.
+# to an override. The three move together or not at all. Since 1.7.3
+# Better Auth checks the schema it is given and refuses every request
+# when it disagrees, so a bump is read against its release notes and
+# tried with a real login first (drizzle/0059, docs/adr/0111).
 
 ignoredBuiltDependencies:
   - sharp
