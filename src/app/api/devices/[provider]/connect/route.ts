@@ -15,10 +15,7 @@ export const dynamic = "force-dynamic";
  * a rider with a configured provider lands back on the devices settings
  * with a short error code.
  */
-export async function GET(
-  _request: Request,
-  { params }: { params: Promise<{ provider: string }> },
-) {
+export async function GET(request: Request, { params }: { params: Promise<{ provider: string }> }) {
   const { provider } = await params;
   if (!isProviderId(provider)) return new Response("Not found", { status: 404 });
   const back = (path: string) => NextResponse.redirect(new URL(path, env.BETTER_AUTH_URL));
@@ -28,7 +25,12 @@ export async function GET(
   if (!(await rateLimit(`device-connect:${ctx.userId}`, 10, 10 * 60_000)).allowed)
     return back(settingsUrl({ error: "rate_limited" }));
 
-  const started = await startConnect(ctx, provider);
+  // Garmin's yes, given in the dialog on the devices page (src/modules/consent/garmin.ts).
+  const query = new URL(request.url).searchParams;
+  const started = await startConnect(ctx, provider, new Date(), {
+    given: query.get("consent") === "yes",
+    locale: query.get("locale") === "en" ? "en" : "da",
+  });
   if (!started.cookie) return back(started.location);
   const response = NextResponse.redirect(started.location);
   response.cookies.set(started.cookie.name, started.cookie.value, {

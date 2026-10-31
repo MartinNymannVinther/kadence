@@ -5,6 +5,7 @@ import { ChevronRight } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { num } from "@/components/charts/format";
 import { useRun } from "@/components/common/use-run";
+import { GarminLine } from "@/components/devices/garmin-attribution";
 import { ComplianceMark } from "@/components/training/compliance-mark";
 import { dayMonth, dayMonthYear, weekdayShort } from "@/components/training/day-label";
 import { durationText } from "@/components/training/duration";
@@ -69,6 +70,7 @@ export function OwnRidesList({ first, today }: { first: OwnRidesPage; today: str
                     <SportIcon sport={ride.sport} className="size-3.5 shrink-0" />
                     <span className="truncate">{title}</span>
                   </span>
+                  <GarminLine line={ride.attribution} className="break-words" />
                   <span className="text-meta text-xs tabular-nums">
                     {[
                       durationText(ride.movingSeconds / 60, duration),

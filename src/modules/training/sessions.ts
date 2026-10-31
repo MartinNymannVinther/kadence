@@ -50,6 +50,7 @@ export async function listSessionsIn(
         loadMethod: activities.loadMethod,
         rpe: activities.rpe,
         source: activities.source,
+        deviceName: activities.deviceName,
       },
       commentCount: sql<number>`(select count(*)::int from ${comments} c where c.planned_session_id = ${plannedSessions.id})`,
     })

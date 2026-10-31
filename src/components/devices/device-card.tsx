@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { disconnectAction } from "@/modules/devices/actions";
 import type { ProviderId } from "@/modules/devices/providers";
 import { lastErrorKey } from "./device-words";
+import { GarminConnectDialog } from "./garmin-connect-dialog";
 
 export type DeviceLink = {
   provider: ProviderId;
@@ -41,18 +42,22 @@ export function DeviceCard({ link }: { link: DeviceLink }) {
         timeZone: "Europe/Copenhagen",
       }).format(new Date(link.lastSyncAt))
     : null;
-  const connect = (
-    <a
-      href={`/api/devices/${link.provider}/connect`}
-      className={cn(
-        buttonVariants({ variant: link.status ? "outline" : "default" }),
-        "max-sm:h-11",
-      )}
-    >
-      {link.status ? <RefreshCw data-icon="inline-start" /> : <Plug data-icon="inline-start" />}
-      {link.status ? t("reconnect", { name }) : t("connect", { name })}
-    </a>
-  );
+  // Garmin asks for the rider's yes first (src/modules/consent/garmin.ts).
+  const connect =
+    link.provider === "garmin" ? (
+      <GarminConnectDialog again={link.status !== null} />
+    ) : (
+      <a
+        href={`/api/devices/${link.provider}/connect`}
+        className={cn(
+          buttonVariants({ variant: link.status ? "outline" : "default" }),
+          "max-sm:h-11",
+        )}
+      >
+        {link.status ? <RefreshCw data-icon="inline-start" /> : <Plug data-icon="inline-start" />}
+        {link.status ? t("reconnect", { name }) : t("connect", { name })}
+      </a>
+    );
 
   return (
     <article className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-surface sm:p-5">

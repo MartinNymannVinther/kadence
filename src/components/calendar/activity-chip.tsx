@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import { GarminLine } from "@/components/devices/garmin-attribution";
 import { ComplianceMark } from "@/components/training/compliance-mark";
 import { durationText } from "@/components/training/duration";
 import { SportIcon } from "@/components/training/sport-icon";
@@ -23,6 +24,7 @@ export function ActivityChip({ activity }: { activity: CalendarActivityCard }) {
         <SportIcon sport={activity.sport} className="size-3.5" />
         <span className="truncate">{rideNameText(activity.name, names)}</span>
       </span>
+      <GarminLine line={activity.attribution} className="leading-tight break-words" />
       <span className="text-meta text-xs tabular-nums">
         {durationText(activity.movingSeconds / 60, duration)}
       </span>

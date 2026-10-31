@@ -24,6 +24,7 @@ import { ftpLooksRaised } from "@/modules/load/threshold-estimate";
 import { bikeStructureSchema } from "@/modules/workouts/structure";
 import { whoAmI } from "@/modules/team/access";
 import { getRider } from "@/modules/team/riders";
+import { garminAttribution } from "@/modules/devices/attribution";
 import { getActivityFileName } from "@/modules/devices/import";
 import { formatOfName } from "@/modules/files";
 import { getActivity, getActivitySession } from "@/modules/training/activities";
@@ -148,9 +149,11 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
           {name}
         </h1>
         <p className="text-meta text-2sm">
-          {format === "fit" || format === "tcx" || format === "gpx"
-            ? t("sourceFormat", { format: format.toUpperCase() })
-            : t(`source.${activity.source}` as "source.fit")}
+          {/* Garmin's attribution, directly under the title (src/modules/devices/attribution.ts). */}
+          {garminAttribution(activity) ??
+            (format === "fit" || format === "tcx" || format === "gpx"
+              ? t("sourceFormat", { format: format.toUpperCase() })
+              : t(`source.${activity.source}` as "source.fit"))}
           {session && (
             <>
               {" · "}

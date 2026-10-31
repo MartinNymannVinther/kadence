@@ -891,7 +891,7 @@
   },
   "terms": {
     "title": "Vilkår og privatliv",
-    "updated": "Senest opdateret 19. september 2026.",
+    "updated": "Senest opdateret 31. oktober 2026.",
     "back": "Tilbage",
     "language": "In English",
     "intro": "Kadence er et open source-værktøj til træningsplanlægning for unge cykelryttere, drevet af Haij. Det her er aftalen mellem dig og os, når du bruger den udgave vi driver. Kører du koden selv, gælder kun licensen.",
@@ -929,9 +929,13 @@
     },
     "contact": {
       "title": "Kontakt",
-      "body": "Skriv til martin@vintherconsulting.dk. Har du fundet et sikkerhedsproblem, står fremgangsmåden i SECURITY.md i kodearkivet; meld det der frem for i en almindelig mail."
+      "body": "Skriv til martin@vintherconsulting.dk. Ser du misbrug af Kadence, så skriv til samme adresse. Har du fundet et sikkerhedsproblem, står fremgangsmåden i SECURITY.md i kodearkivet; meld det der frem for i en almindelig mail."
     },
     "subprocessorsNote": "Hvem der kan se hvad, står i",
+    "devices": {
+      "title": "Garmin og andre enheder",
+      "body": "Forbinder du en Garmin-, Wahoo- eller Polar-konto, henter Kadence dine ture derfra, og du eller din træner kan sende pas den anden vej. Det sker kun, når du selv har forbundet kontoen, og det stopper, når du afbryder den under Indstillinger → Enheder. Ved Garmin giver du dit ja i Kadence, før du sendes videre. Garmin er selv ansvarlig for det, Garmin gemmer, og må bruge det, Kadence sender til Garmin. Garmins privatlivspolitik står på garmin.com/privacy/connect. Ture fra Garmin vises med Garmins navn og enheden, og tal og grafer, der bygger på dem, siger det. Garmins tjeneste leveres, som den er. Hverken Garmin eller Kadence hæfter for tab, den giver, så langt loven tillader det."
+    },
     "shareLinks": {
       "title": "Invitationer",
       "body": "Et invitationslink gælder én adresse og udløber efter en uge. Det er dig, der sender det."
@@ -3654,6 +3658,7 @@
       "denied": "Du sagde nej hos udbyderen, så intet er forbundet.",
       "exchange_failed": "Udbyderen svarede ikke, som den skulle. Prøv igen om lidt.",
       "already_linked": "Den konto er allerede forbundet til en anden rytter i Kadence.",
+      "consent": "Garmin skal have dit ja, før du forbinder. Prøv igen, og sæt hak i feltet.",
       "failed": "Noget gik galt. Prøv igen."
     },
     "disconnect": "Afbryd",
@@ -6426,6 +6431,20 @@
       "expiredStill": "Alt er der stadig. Det kan ses og hentes ud, men intet nyt kan lægges ind. Intet bliver slettet.",
       "expiredInvoice": "Vil du bruge det igen, kommer en faktura fra Haij på mail. Når den er betalt, virker alt som før.",
       "link": "Se abonnementet her:"
+    }
+  },
+  "garmin": {
+    "derived": "Delvist bygget på data fra Garmin-enheder.",
+    "connect": {
+      "title": "Forbind Garmin",
+      "body": "Når du forbinder din Garmin-konto, sender Garmin dine ture til Kadence. Din træner og dine forældre kan se dem her, ligesom dine andre ture. Sender du eller din træner et pas til din Garmin, får Garmin passet.",
+      "garminOwn": "Garmin er selv ansvarlig for det, Garmin gemmer om dig, og må bruge det, Kadence sender til Garmin.",
+      "privacy": "Læs Garmins privatlivspolitik",
+      "restricted": "Har du ikke lov til at lægge data på din Garmin-konto, så lad være med at forbinde den.",
+      "agree": "Jeg giver lov til, at Kadence henter mine ture fra Garmin og sender de pas, jeg eller min træner vælger, til Garmin.",
+      "withdraw": "Du kan altid afbryde forbindelsen her under Enheder. Så henter Kadence ikke flere ture, og Garmin får ikke flere pas.",
+      "continue": "Fortsæt til Garmin",
+      "cancel": "Fortryd"
     }
   }
 }

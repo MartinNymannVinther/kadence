@@ -10,7 +10,9 @@ import { RecordsCard } from "@/components/activities/records-card";
 import { LoadPanel } from "@/components/load/load-panel";
 import { buttonVariants } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { GarminDerivedNote } from "@/components/devices/garmin-attribution";
 import { PageHeader } from "@/components/ui/page-header";
+import { garminRidesLately } from "@/modules/devices/garmin-rides";
 import { calendarHref } from "@/components/calendar/href";
 import { accountState } from "@/components/team/account-badge";
 import { ArchiveRider } from "@/components/team/archive-rider";
@@ -97,6 +99,7 @@ export default async function RiderPage({ params, searchParams }: Props) {
     uploadKeys,
     races,
     members,
+    fromGarmin,
   ] = await Promise.all([
     listGuardians(ctx, rider.id),
     listPendingInvitations(ctx.orgId),
@@ -107,6 +110,7 @@ export default async function RiderPage({ params, searchParams }: Props) {
     listUploadKeys(ctx, rider.id),
     raceStatus(ctx, rider.id),
     listLinkableMembers(ctx, rider.id),
+    garminRidesLately(ctx, [rider.id], today),
   ]);
   // Stale races into the queue (ADR 0085); if lost, the hourly dcu.races job queues them.
   after(() => refreshStaleRaces(ctx, [rider.id]));
@@ -159,6 +163,7 @@ export default async function RiderPage({ params, searchParams }: Props) {
           </>
         }
       />
+      <GarminDerivedNote show={fromGarmin} className="-mt-4" />
       <RiderSectionNav hasForm={insight !== null} />
       <div className="grid max-w-3xl gap-8 [&>*]:min-w-0">
         <section aria-labelledby="rider-week" className="flex flex-col gap-3">

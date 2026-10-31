@@ -39,6 +39,7 @@ const CONNECT_ERRORS = [
   "denied",
   "exchange_failed",
   "already_linked",
+  "consent",
   "failed",
 ] as const;
 
