@@ -934,7 +934,7 @@
     "subprocessorsNote": "Who can see what is listed in",
     "devices": {
       "title": "Garmin and other devices",
-      "body": "When you connect a Garmin, Wahoo or Polar account, Kadence fetches your rides from it, and you or your coach can send sessions the other way. This happens only once you have connected the account yourself, and it stops when you disconnect it under Settings → Devices. For Garmin you give your yes in Kadence before you are sent on. Garmin is responsible for what Garmin keeps, and may use what Kadence sends to Garmin. Garmin's privacy notice is at garmin.com/privacy/connect. Rides from Garmin are shown with Garmin's name and the device, and numbers and charts built on them say so. Garmin's service is provided as it is. Neither Garmin nor Kadence is liable for losses it causes, as far as the law allows."
+      "body": "When you connect a Garmin, Wahoo or Polar account, Kadence fetches your rides from it, and you or your coach can send sessions the other way. This happens only once you have connected the account yourself, and it stops when you disconnect it under Settings → Devices. For Garmin you give your yes in Kadence before you are sent on. Garmin is responsible for what Garmin keeps, and may use what Kadence sends to Garmin. Garmin's privacy notice is at garmin.com/privacy/connect. Rides from Garmin are shown with Garmin's name and the device, and numbers and charts built on them say so. The AI reads your rides from Garmin only if you have said yes to it yourself under Settings → Devices, and you can withdraw that yes in the same place. Kadence never uses your rides to train an AI. Garmin's service is provided as it is. Neither Garmin nor Kadence is liable for losses it causes, as far as the law allows."
     },
     "shareLinks": {
       "title": "Invitations",
@@ -3520,6 +3520,7 @@
       "noModelLink": "Settings → AI",
       "notAllowed": "The team has not let the AI read the riders' data. It is off by default, because it is health data about young people.",
       "notAllowedLink": "Settings → Team",
+      "garminAi": "The AI only reads rides from Garmin when the rider has said yes to it under Settings → Devices. Everything else works.",
       "rateLimited": "Many AI calls have been made just now. Try again in a moment.",
       "budget": "The AI is resting until next month. Everything else works.",
       "planExpired": "The AI is resting, because the workspace is read only now. Everything in it can still be seen and taken out.",
@@ -3602,7 +3603,8 @@
       "nothing": "The week looks calm, so there is nothing to summarise.",
       "noSummary": "The AI has nothing to add to the list.",
       "off": "A short summary from the AI needs the team to have turned on \"May the AI read the riders' data\".",
-      "offLink": "Settings → Team"
+      "offLink": "Settings → Team",
+      "leftOut": "The AI has not read about {names}. Riders with rides from Garmin must say yes themselves before the AI may read the rides."
     }
   },
   "devices": {
@@ -6445,6 +6447,26 @@
       "withdraw": "You can disconnect at any time here under Devices. Then Kadence fetches no more rides, and Garmin gets no more sessions.",
       "continue": "Continue to Garmin",
       "cancel": "Cancel"
+    },
+    "ai": {
+      "title": "The AI and your rides from Garmin",
+      "stateNo": "The AI does not read your rides from Garmin.",
+      "stateYes": "You have said yes to the AI reading your rides from Garmin.",
+      "open": "Read more and say yes",
+      "dialogTitle": "May the AI read your rides from Garmin?",
+      "what": "Some buttons in Kadence ask an AI for a proposal: a comment on a session, an explanation of your form, a draft of your week and your coach's Monday overview. A proposal is only used if you or your coach choose it.",
+      "reads": "If you say yes, the AI may read the numbers from your rides from Garmin: time, distance, load, zones and how hard the ride felt. It may also read what Kadence works out from the rides, such as your form.",
+      "model": "The language model runs in the EU or on a server the team controls itself. Kadence never uses your rides to train an AI.",
+      "without": "Without your yes, the AI does not read your rides from Garmin. The buttons that build on your rides then say that you have not said yes. Everything else works.",
+      "agree": "I allow the AI to read my rides from Garmin and what Kadence works out from them.",
+      "withdrawNote": "You can withdraw your yes here at any time. It applies from that moment.",
+      "give": "Say yes",
+      "cancel": "Cancel",
+      "given": "The AI may now read your rides from Garmin.",
+      "withdraw": "Withdraw the yes",
+      "withdrawTitle": "Withdraw your yes?",
+      "withdrawBody": "The AI stops reading your rides from Garmin straight away. Your rides and everything else stay as they are.",
+      "withdrawn": "Your yes has been withdrawn."
     }
   }
 }

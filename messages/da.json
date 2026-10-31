@@ -934,7 +934,7 @@
     "subprocessorsNote": "Hvem der kan se hvad, står i",
     "devices": {
       "title": "Garmin og andre enheder",
-      "body": "Forbinder du en Garmin-, Wahoo- eller Polar-konto, henter Kadence dine ture derfra, og du eller din træner kan sende pas den anden vej. Det sker kun, når du selv har forbundet kontoen, og det stopper, når du afbryder den under Indstillinger → Enheder. Ved Garmin giver du dit ja i Kadence, før du sendes videre. Garmin er selv ansvarlig for det, Garmin gemmer, og må bruge det, Kadence sender til Garmin. Garmins privatlivspolitik står på garmin.com/privacy/connect. Ture fra Garmin vises med Garmins navn og enheden, og tal og grafer, der bygger på dem, siger det. Garmins tjeneste leveres, som den er. Hverken Garmin eller Kadence hæfter for tab, den giver, så langt loven tillader det."
+      "body": "Forbinder du en Garmin-, Wahoo- eller Polar-konto, henter Kadence dine ture derfra, og du eller din træner kan sende pas den anden vej. Det sker kun, når du selv har forbundet kontoen, og det stopper, når du afbryder den under Indstillinger → Enheder. Ved Garmin giver du dit ja i Kadence, før du sendes videre. Garmin er selv ansvarlig for det, Garmin gemmer, og må bruge det, Kadence sender til Garmin. Garmins privatlivspolitik står på garmin.com/privacy/connect. Ture fra Garmin vises med Garmins navn og enheden, og tal og grafer, der bygger på dem, siger det. AI'en læser kun dine ture fra Garmin, hvis du selv har sagt ja til det under Indstillinger → Enheder, og du kan trække ja'et tilbage samme sted. Kadence bruger aldrig dine ture til at træne en AI. Garmins tjeneste leveres, som den er. Hverken Garmin eller Kadence hæfter for tab, den giver, så langt loven tillader det."
     },
     "shareLinks": {
       "title": "Invitationer",
@@ -3520,6 +3520,7 @@
       "noModelLink": "Indstillinger → AI",
       "notAllowed": "Holdet har ikke givet AI'en lov til at læse rytternes data. Det er slået fra som standard, fordi det er helbredsdata om unge.",
       "notAllowedLink": "Indstillinger → Holdet",
+      "garminAi": "AI'en læser kun ture fra Garmin, når rytteren selv har sagt ja til det under Indstillinger → Enheder. Alt andet virker.",
       "rateLimited": "Der er brugt mange AI-kald lige nu. Prøv igen om lidt.",
       "budget": "AI'en holder pause til næste måned. Alt andet virker.",
       "planExpired": "AI'en holder pause, fordi arbejdsrummet kun kan læses nu. Alt, der er lagt ind, kan stadig ses og hentes ud.",
@@ -3602,7 +3603,8 @@
       "nothing": "Ugen ser rolig ud, så der er intet at opsummere.",
       "noSummary": "AI'en har ikke noget at tilføje til listen.",
       "off": "Et kort resumé fra AI'en kræver, at holdet har slået \"Må AI'en læse rytternes data\" til.",
-      "offLink": "Indstillinger → Holdet"
+      "offLink": "Indstillinger → Holdet",
+      "leftOut": "AI'en har ikke læst om {names}. Ryttere med ture fra Garmin skal selv sige ja, før AI'en må læse turene."
     }
   },
   "devices": {
@@ -6445,6 +6447,26 @@
       "withdraw": "Du kan altid afbryde forbindelsen her under Enheder. Så henter Kadence ikke flere ture, og Garmin får ikke flere pas.",
       "continue": "Fortsæt til Garmin",
       "cancel": "Fortryd"
+    },
+    "ai": {
+      "title": "AI'en og dine ture fra Garmin",
+      "stateNo": "AI'en læser ikke dine ture fra Garmin.",
+      "stateYes": "Du har sagt ja til, at AI'en må læse dine ture fra Garmin.",
+      "open": "Læs mere og sig ja",
+      "dialogTitle": "Må AI'en læse dine ture fra Garmin?",
+      "what": "Nogle knapper i Kadence beder en AI om et forslag: en kommentar til et pas, en forklaring af din form, et udkast til din uge og trænerens overblik om mandagen. Et forslag bliver kun brugt, hvis du eller din træner vælger det.",
+      "reads": "Siger du ja, må AI'en læse tallene fra dine ture fra Garmin: tid, distance, belastning, zoner og hvor hårdt turen føltes. Den må også læse det, Kadence regner ud fra turene, fx din form.",
+      "model": "Sprogmodellen kører i EU eller på en server, holdet selv styrer. Kadence bruger aldrig dine ture til at træne en AI.",
+      "without": "Uden dit ja læser AI'en ikke dine ture fra Garmin. Så siger de knapper, der bygger på dine ture, at du ikke har sagt ja. Alt andet virker.",
+      "agree": "Jeg giver lov til, at AI'en må læse mine ture fra Garmin og det, Kadence regner ud fra dem.",
+      "withdrawNote": "Du kan trække dit ja tilbage her når som helst. Det gælder fra samme øjeblik.",
+      "give": "Sig ja",
+      "cancel": "Fortryd",
+      "given": "AI'en må nu læse dine ture fra Garmin.",
+      "withdraw": "Træk ja'et tilbage",
+      "withdrawTitle": "Træk dit ja tilbage?",
+      "withdrawBody": "AI'en holder op med at læse dine ture fra Garmin med det samme. Dine ture og alt andet bliver, som det er.",
+      "withdrawn": "Dit ja er trukket tilbage."
     }
   }
 }

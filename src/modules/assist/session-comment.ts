@@ -3,6 +3,7 @@ import { todayInCopenhagen } from "@/core/dates";
 import { activities, plannedSessions, riders, teamSettings } from "@/core/db/schema";
 import type { ActivityRow, PlannedSessionRow, RiderRow } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
+import { requireGarminAiForRide } from "@/modules/ai/garmin-gate";
 import { askForJson, NotAllowed } from "@/modules/ai/service";
 import { phaseOf, seasonStartYear } from "@/modules/dcu";
 import {
@@ -142,7 +143,9 @@ export async function proposeSessionComment(
       .from(activities)
       .where(eq(activities.id, session.activityId));
     const [rider] = await tx.select().from(riders).where(eq(riders.id, session.riderId));
-    return activity && rider ? { session, activity, rider } : null;
+    if (!activity || !rider) return null;
+    await requireGarminAiForRide(tx, activity);
+    return { session, activity, rider };
   });
   if (!loaded) return null;
   const prompt = sessionCommentPrompt(commentContext(loaded, todayInCopenhagen()), locale);

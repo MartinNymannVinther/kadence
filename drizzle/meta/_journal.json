@@ -421,6 +421,13 @@
       "when": 1793466425725,
       "tag": "0059_better_auth_account_identity",
       "breakpoints": true
+    },
+    {
+      "idx": 60,
+      "version": "7",
+      "when": 1793467996655,
+      "tag": "0060_garmin_ai_consent",
+      "breakpoints": true
     }
   ]
 }

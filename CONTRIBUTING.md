@@ -123,6 +123,11 @@ way Garmin's public API Brand Guidelines ask
    the data.
 5. The demo never shows a Garmin ride: its rides are made up, and the
    attribution would claim otherwise.
+6. A new AI proposal that reads rides, or numbers built on them, asks
+   the gate in `src/modules/ai/garmin-gate.ts` before the model:
+   `requireGarminAi` for one rider, `requireGarminAiForRide` for one
+   ride, `garminAiBlocked` to leave riders out of a team's prompt. The
+   AI reads rides from Garmin only with the rider's own yes (ADR 0112).
 
 ## Security
 

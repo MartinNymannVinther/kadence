@@ -389,6 +389,12 @@ describe("rls coverage (guards future tables)", () => {
     // when it is one, else null, read from installation state the
     // application role cannot read itself.
     "app_demo_room",
+    // Which of the given riders have their own standing yes to the AI
+    // reading their rides from Garmin (drizzle/0060, docs/adr/0112), for
+    // the AI's gate: the riders' ids alone, only for riders of the active
+    // workspace the caller may read — no row, no date, nobody else's yes.
+    // tests/ai/garmin-gate.test.ts proves it.
+    "app_garmin_ai_riders",
     // Whether the active workspace's consent to health data is withdrawn,
     // for the wellbeing services (drizzle/0050, docs/adr/0088): true or
     // false about the caller's own active workspace, for a member of it,

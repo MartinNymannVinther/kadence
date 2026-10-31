@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { disconnectAction } from "@/modules/devices/actions";
 import type { ProviderId } from "@/modules/devices/providers";
 import { lastErrorKey } from "./device-words";
+import { GarminAiConsent } from "./garmin-ai-consent";
 import { GarminConnectDialog } from "./garmin-connect-dialog";
 
 export type DeviceLink = {
@@ -25,9 +26,17 @@ export type DeviceLink = {
  * installation (and FIT upload instead), not connected, connected with the
  * last sync and any trouble in words, or broken and waiting for a new
  * connection. Connecting is a plain link to the OAuth route — the browser
- * leaves Kadence for the provider and comes back.
+ * leaves Kadence for the provider and comes back. Garmin's card also
+ * holds the rider's yes to the AI reading their rides from Garmin, once
+ * there is a link or a ride from Garmin for it to be about (ADR 0112).
  */
-export function DeviceCard({ link }: { link: DeviceLink }) {
+export function DeviceCard({
+  link,
+  garminAi,
+}: {
+  link: DeviceLink;
+  garminAi?: { given: boolean };
+}) {
   const t = useTranslations("devices");
   const locale = useLocale();
   const { run } = useRun();
@@ -109,6 +118,7 @@ export function DeviceCard({ link }: { link: DeviceLink }) {
           </div>
         </>
       )}
+      {link.provider === "garmin" && garminAi && <GarminAiConsent given={garminAi.given} />}
     </article>
   );
 }

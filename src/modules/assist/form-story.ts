@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 import { todayInCopenhagen } from "@/core/dates";
 import { riders, teamSettings } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
+import { requireGarminAi } from "@/modules/ai/garmin-gate";
 import { askForJson, NotAllowed } from "@/modules/ai/service";
 import { getInsights } from "@/modules/insight/service";
 import { requireWriteFor, whoAmIIn } from "@/modules/team/access";
@@ -40,6 +41,7 @@ export async function proposeFormStory(
     if (!settings?.allowed) throw new NotAllowed();
     const [rider] = await tx.select().from(riders).where(eq(riders.id, input.riderId));
     if (!rider) return null;
+    await requireGarminAi(tx, rider.id);
     const me = await whoAmIIn(tx, ctx);
     return { rider, own: me?.rider?.id === rider.id };
   });
