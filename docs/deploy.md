@@ -784,6 +784,42 @@ payment and everything works as before, at once.
 again, whatever its row says, and stops the job and the mails. The
 plans stay in the database for the day you turn it back on.
 
+## 6h. Garmin, if you have keys for it
+
+Without keys the Garmin card says it is not set up on this installation,
+and riders upload their files as before. With them, a rider connects
+Garmin under Indstillinger → Enheder, and Garmin pushes each new activity
+to Kadence (ADR 0018, 0110, 0112, 0113).
+
+1. **Keys.** In the app's environment in Coolify, set
+   `GARMIN_CLIENT_ID` and `GARMIN_CLIENT_SECRET` from the app in Garmin's
+   developer portal. `docker-compose.yml` forwards both to `app` and
+   `worker`. Redeploy.
+2. **Where Garmin sends the rider back.** The connect route sends
+   `https://<host>/api/devices/garmin/callback` as the redirect address,
+   built from `BETTER_AUTH_URL`. Where Garmin asks for a redirect address,
+   give it exactly that.
+3. **Pushes.** In Garmin's API tools, under the endpoint configuration,
+   turn on push to `https://<host>/api/devices/garmin/webhook` for
+   **Activity Files**, **Deregistrations** and **User Permissions**, and
+   leave every other summary type off: Kadence ignores them, and data it
+   does not use should not be sent to it.
+4. **The proxy.** A push is believed only with this installation's
+   client id in its `garmin-client-id` header and from one of Garmin's
+   address ranges, as the proxy in front saw it. `TRUSTED_PROXY_HOPS=1`,
+   the default, is right behind Coolify's Traefik alone; with a CDN in
+   front of Traefik, count it too, or every push looks like it came from
+   the CDN. A refused push is logged as `device webhook: not verified`
+   with `provider: garmin`, and Garmin sends it again later.
+5. **The worker** fetches each file (`device.fetch`) and, once a day,
+   renews Garmin links before their refresh token runs out and reads
+   permissions nobody has read (`device.refresh`). Both show on the
+   Installation page like any job (section 6e).
+
+To check it: connect your own Garmin account in your own workspace,
+save an activity on the device, and watch the Garmin card say when it
+last fetched a ride, and the ride carry "Garmin" and the device's name.
+
 ## 7. Backups: to the minute, and a second copy
 
 Kadence has two backups, and they are independent on purpose

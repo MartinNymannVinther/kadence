@@ -7,6 +7,7 @@ import {
   type ClimbSummary,
   type LapSummary,
 } from "@/modules/fit";
+import type { Sport } from "@/modules/training/vocabulary";
 import {
   activityLoad,
   heartRateDrift,
@@ -29,7 +30,7 @@ export type RiderThresholds = { ftp: number | null; thresholdHr: number | null }
 export type ActivityValues = {
   startedAt: Date;
   onDate: string;
-  sport: "bike" | "other";
+  sport: Sport;
   movingSeconds: number;
   elapsedSeconds: number;
   distanceM: number | null;
@@ -75,15 +76,21 @@ const within = (value: number | undefined, max: number) =>
  * file can do no more than guess — a GPX, whose type is a word or a
  * number from the exporter, or nothing — never over a FIT or TCX file's
  * own sport.
+ *
+ * `sport` is the sport a provider names for the activity (Garmin's
+ * activity type, docs/adr/0113): it decides over the file's own, and the
+ * load is worked out for it.
  */
 export function activityFromFit(
   bytes: Uint8Array,
   rider: RiderThresholds,
   sportHint?: "bike" | "other",
+  sport?: Sport,
 ): ActivityValues {
   const { fit, format, title } = decodeActivityFile(bytes);
   if (sportHint && format === "gpx") fit.sport = sportHint === "bike" ? SPORT.cycling : undefined;
   const summary = summarizeActivity(fit);
+  const decided = sport ?? summary.sport;
   const year = summary.startedAt.getUTCFullYear();
   if (!Number.isFinite(summary.startedAt.getTime()) || year < 1990 || year > 2100)
     throw new FitError("corrupt", "The ride's start time is not a real time.");
@@ -91,7 +98,7 @@ export function activityFromFit(
   const weighted = hasPower ? int(weightedPower(summary.power1hz) ?? undefined) : null;
   const load = activityLoad(
     {
-      sport: summary.sport,
+      sport: decided,
       seconds: summary.movingSeconds,
       power1hz: hasPower ? summary.power1hz : null,
       avgHr: summary.avgHr ?? null,
@@ -101,7 +108,7 @@ export function activityFromFit(
   return {
     startedAt: summary.startedAt,
     onDate: todayInCopenhagen(summary.startedAt),
-    sport: summary.sport,
+    sport: decided,
     movingSeconds: summary.movingSeconds,
     elapsedSeconds: int(within(summary.elapsedSeconds, MAX_SECONDS)) ?? summary.movingSeconds,
     distanceM: int(within(summary.distanceM, MAX_DISTANCE_M)),

@@ -126,6 +126,15 @@ describe("a demo workspace", () => {
     expect(asked).toMatchObject({ onDate: addDaysIso(today, -1), rpe: null, sport: "bike" });
   });
 
+  it("shows no ride from Garmin and no Garmin link, since its rides are made up (ADR 0110)", async () => {
+    const { rows } = await admin.query(
+      `select (select count(*)::int from activities where org_id = $1 and (source = 'garmin' or device_name is not null)) as rides,
+              (select count(*)::int from device_links where org_id = $1) as links`,
+      [orgId],
+    );
+    expect(rows[0]).toEqual({ rides: 0, links: 0 });
+  });
+
   it("proposes thresholds from a rider's rides that sit near her own (ADR 0094)", async () => {
     const coach = { orgId, userId };
     const emma = (await getRiders(coach)).find((r) => r.name === "Emma Holm")!;

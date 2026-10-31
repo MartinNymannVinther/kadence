@@ -459,6 +459,11 @@ describe("rls coverage (guards future tables)", () => {
     // and the link hold. Everything after it runs as the rider, under the
     // ordinary policies.
     "device_link_owner",
+    // Which connected Garmin links the daily job renews (drizzle/0061,
+    // docs/adr/0113): three ids and two booleans per link, for the links
+    // device_link_owner would also name, and refused from inside a
+    // workspace. Everything after it runs as the rider.
+    "device_links_to_renew",
     // A rider's right to erasure (drizzle/0006): deletes one rider of the
     // active team and purges the audit rows about that rider, which the
     // append-only guard would otherwise keep forever. Checks itself that
@@ -501,6 +506,11 @@ describe("rls coverage (guards future tables)", () => {
     // row, and tests/rls/history-move.test.ts proves each refusal and that
     // it is all or nothing.
     "move_rider_history",
+    // The caller's own links to a provider in every workspace, for the
+    // deletion of their account (drizzle/0061, docs/adr/0113): two ids per
+    // link, only on rider rows whose account is app.user_id, nothing
+    // without one. The rest runs as that rider, under the ordinary policies.
+    "own_device_links",
     // Removes the deleted sessions past their seven days, for the reminder
     // job that runs with nobody signed in (drizzle/0037, docs/adr/0060).
     // It takes no arguments, removes only rows older than seven days, and

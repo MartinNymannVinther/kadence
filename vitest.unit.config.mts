@@ -23,6 +23,8 @@ export default defineConfig({
       "tests/{dcu,load,fit,workouts,charts,coach,files,rulle,results,paradigms,calc,guides,today,activities,ui}/**/*.test.ts",
       // The championship's arithmetic only; tests/club/championship.test.ts needs the database.
       "tests/club/standings.test.ts",
+      // What a push from Garmin says (docs/adr/0113); the webhook and the jobs need the database.
+      "tests/devices/garmin-push.test.ts",
       // Reminders' keys, timing and words; the job and the policies need the database.
       "tests/push/{vapid,due,texts}.test.ts",
       // The pilot's three numbers (docs/adr/0066); the service and the overview need the database.

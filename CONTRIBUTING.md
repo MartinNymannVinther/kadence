@@ -128,6 +128,11 @@ way Garmin's public API Brand Guidelines ask
    `requireGarminAi` for one rider, `requireGarminAiForRide` for one
    ride, `garminAiBlocked` to leave riders out of a team's prompt. The
    AI reads rides from Garmin only with the rider's own yes (ADR 0112).
+7. A new way for a rider to leave — a deletion, an erasure, anything
+   that takes a link away — tells Garmin first, with
+   `deregisterGarminIn()` or `deregisterOwnGarmin()`
+   (`src/modules/devices/exit.ts`, ADR 0113), and never waits long for
+   the answer.
 
 ## Security
 

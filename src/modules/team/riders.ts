@@ -3,6 +3,7 @@ import { z } from "zod";
 import { Refused } from "@/core/action";
 import { riders, type RiderRow } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
+import { deregisterGarminIn } from "@/modules/devices/exit";
 import { requireCoach, whoAmIIn } from "./access";
 import { BIRTH_YEAR_MIN, birthYearMax } from "./birth-year";
 
@@ -169,12 +170,20 @@ export async function attachRiderInvitationIn(
  * audit trail's copies of it, gone (drizzle/0006 `erase_rider`, which
  * checks the caller coaches the team itself). Archiving keeps history;
  * this does not. A coach does it at the rider's or the parents' request.
+ * Garmin is told first to forget the rider, if they connected it
+ * (src/modules/devices/exit.ts, docs/adr/0113); the erasure does not wait
+ * long for it and goes on whatever Garmin answers.
  */
 export async function eraseRider(ctx: OrgContext, riderId: string): Promise<void> {
-  await withOrgContext(ctx, async (tx) => {
+  const find = async (tx: AppTransaction) => {
     await requireCoach(tx, ctx);
     const [row] = await tx.select({ id: riders.id }).from(riders).where(eq(riders.id, riderId));
     if (!row) throw new Refused("notFound");
+  };
+  await withOrgContext(ctx, find);
+  await deregisterGarminIn(ctx, riderId);
+  await withOrgContext(ctx, async (tx) => {
+    await find(tx);
     await tx.execute(sql`select erase_rider(${riderId})`);
   });
 }

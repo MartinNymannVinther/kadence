@@ -3623,7 +3623,7 @@
     },
     "about": {
       "wahoo": "ELEMNT bike computers and KICKR trainers. Rides come in automatically, and sessions can be sent to them.",
-      "garmin": "Edge bike computers and watches through Garmin Connect. Rides come in automatically. A bike session goes onto an Edge by cable, from the session.",
+      "garmin": "Edge bike computers and watches through Garmin Connect. Rides and other activities come in automatically. A bike session goes onto an Edge by cable, from the session.",
       "polar": "Watches and bike computers through Polar Flow. Rides come in automatically. Sessions cannot be sent to Polar from Kadence."
     },
     "state": {
@@ -3639,6 +3639,7 @@
     "lastSync": "Last fetched {when}.",
     "noSyncYet": "No rides fetched yet. Your next ride comes in by itself.",
     "canPush": "You can send a bike session to {name} from the session in the calendar.",
+    "noActivitySharing": "Your rides are not coming in, because sharing activities with Kadence is turned off at {name}. Turn it on again in {name} Connect, or disconnect, connect {name} again and tick activities. Uploading FIT files still works.",
     "lastError": {
       "refresh_failed": "{name} would not renew the connection. Connect again.",
       "unauthorized": "{name} refused Kadence. Connect again.",
@@ -3648,6 +3649,8 @@
       "download": "A ride could not be fetched from {name}. Upload the file yourself if it is missing.",
       "quota": "A ride from {name} had no room: the room for files is used up. Delete old rides or download them first, and upload the file yourself.",
       "planExpired": "A ride from {name} was not brought in, because the workspace is read only now. The ride is still at {name}.",
+      "download_gone": "A ride from {name} could not be fetched, because {name} hands a ride over only once and for a short while. Upload the file yourself if the ride is missing.",
+      "import_failed": "A ride from {name} arrived but could not be added, even after several tries. Upload the file yourself if the ride is missing.",
       "unknown": "Something went wrong with {name} last time. Connect again if your rides do not come in."
     },
     "connected": "{name} is connected. Your next rides come in by themselves.",
@@ -6439,12 +6442,12 @@
     "derived": "Insights derived in part from Garmin device-sourced data.",
     "connect": {
       "title": "Connect Garmin",
-      "body": "When you connect your Garmin account, Garmin sends your rides to Kadence. Your coach and your parents can see them here, like your other rides. When you or your coach send a session to your Garmin, Garmin gets the session.",
+      "body": "When you connect your Garmin account, Garmin sends your rides and your other activities, such as runs and strength training, to Kadence. Your coach and your parents can see them here, like your other rides. When you or your coach send a session to your Garmin, Garmin gets the session.",
       "garminOwn": "Garmin is responsible for what Garmin keeps about you, and may use what Kadence sends to Garmin.",
       "privacy": "Read Garmin's privacy notice",
       "restricted": "If you are not allowed to put data in your Garmin account, do not connect it.",
-      "agree": "I allow Kadence to fetch my rides from Garmin and to send the sessions my coach or I choose to Garmin.",
-      "withdraw": "You can disconnect at any time here under Devices. Then Kadence fetches no more rides, and Garmin gets no more sessions.",
+      "agree": "I allow Kadence to fetch my rides and other activities from Garmin and to send the sessions my coach or I choose to Garmin.",
+      "withdraw": "You can disconnect at any time here under Devices. Then Kadence fetches nothing more from Garmin, and Garmin gets no more sessions.",
       "continue": "Continue to Garmin",
       "cancel": "Cancel"
     },

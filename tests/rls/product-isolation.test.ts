@@ -146,6 +146,17 @@ const TABLES: Array<{ table: string; row: (s: string) => Record<string, unknown>
     }),
   },
   {
+    // A ride's file waiting for its import (drizzle/0061); a ride's file's rules.
+    table: "device_inbox",
+    row: (s) => ({
+      rider_id: `rider_${s}`,
+      provider: "garmin",
+      external_id: `ride_${s}`,
+      file_name: "Tur.fit",
+      bytes: FIT,
+    }),
+  },
+  {
     table: "upload_keys",
     row: (s) => ({
       rider_id: `rider_${s}`,

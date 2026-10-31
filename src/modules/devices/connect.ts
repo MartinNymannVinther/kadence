@@ -9,6 +9,7 @@ import { whoAmIIn } from "@/modules/team/access";
 import { loggable } from "./http";
 import { saveLink } from "./links";
 import { codeChallenge, randomToken, safeEqual } from "./oauth";
+import { readPermissionsQuietly } from "./permissions";
 import { providerById, type ProviderId } from "./providers";
 
 /**
@@ -30,10 +31,11 @@ import { providerById, type ProviderId } from "./providers";
  * `finishConnect` checks that the callback is this person's, in this
  * team, for this provider, in time, with the same state; exchanges the
  * code with the verifier; asks the provider whose account it is; registers
- * the account where the provider requires it (Polar); and stores the
- * sealed tokens on the rider's link. It answers with where to send the
- * browser: the devices settings, saying connected or naming what
- * went wrong in a short code.
+ * the account where the provider requires it (Polar); reads what the rider
+ * granted where the provider says (Garmin, docs/adr/0113); and stores the
+ * sealed tokens and the permissions on the rider's link. It answers with
+ * where to send the browser: the devices settings, saying connected or
+ * naming what went wrong in a short code.
  */
 
 export const OAUTH_COOKIE = "kadence_device_oauth";
@@ -151,10 +153,14 @@ export async function finishConnect(
   if (!provider.configured()) return settingsUrl({ error: "not_configured" });
   let externalUserId: string;
   let tokens;
+  let permissions: string[] | null = null;
   try {
     tokens = await provider.exchangeCode(params.code, pending.verifier, redirectUri(providerId));
     externalUserId = await provider.userId(tokens.accessToken, tokens.externalUserId);
     await provider.register?.(tokens.accessToken, externalUserId);
+    // Not reading them is no reason to refuse the link: the daily job reads
+    // them later (refresh-job.ts), and Garmin says when they change.
+    permissions = await readPermissionsQuietly(provider, tokens.accessToken);
   } catch (error) {
     await log.error("device connect: exchange failed", {
       provider: providerId,
@@ -163,7 +169,7 @@ export async function finishConnect(
     return settingsUrl({ error: "exchange_failed" });
   }
   try {
-    await saveLink(ctx, providerId, externalUserId, tokens);
+    await saveLink(ctx, providerId, externalUserId, tokens, permissions);
   } catch (error) {
     if (error instanceof Refused && error.detail === "already_linked")
       return settingsUrl({ error: "already_linked" });

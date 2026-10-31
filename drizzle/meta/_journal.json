@@ -428,6 +428,13 @@
       "when": 1793467996655,
       "tag": "0060_garmin_ai_consent",
       "breakpoints": true
+    },
+    {
+      "idx": 61,
+      "version": "7",
+      "when": 1793475616803,
+      "tag": "0061_garmin_push",
+      "breakpoints": true
     }
   ]
 }

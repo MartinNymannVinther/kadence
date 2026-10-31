@@ -2,6 +2,7 @@ import { registry, type Handler } from "@/core/jobs/registry";
 import { sweepHandler } from "@/core/jobs/sweep";
 import { billingExpireHandler } from "@/modules/billing/jobs";
 import { demoCleanupHandler } from "@/modules/demo/job";
+import { deviceRefreshHandler } from "@/modules/devices/refresh-job";
 import { retimeHandler } from "@/modules/devices/retime-job";
 import { deviceFetchHandler } from "@/modules/devices/webhooks";
 import { remindersHandler } from "@/modules/push/jobs";
@@ -22,6 +23,7 @@ export const HANDLERS: readonly Handler[] = [
   sweepHandler,
   remindersHandler,
   deviceFetchHandler,
+  deviceRefreshHandler,
   dcuReadHandler,
   dcuRacesHandler,
   teamsRefreshHandler,

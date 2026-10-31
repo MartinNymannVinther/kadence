@@ -7,7 +7,8 @@ import { HANDLERS } from "@/modules/jobs/handlers";
 
 /**
  * A job's payload holds ids, days, counts, short words, a provider's
- * address for a file and a ride file's name — never a person's name, an
+ * address for a file, a ride file's name and a device's model name —
+ * never a person's name, an
  * address, a token or anything about health (docs/adr/0085). The jobs
  * table is the installation's and carries no audit trigger, so this is
  * the rule that keeps it that way: every field of every kind is built
@@ -52,7 +53,7 @@ describe("every kind of job", () => {
 
 describe("a payload's fields", () => {
   it("are of the sorts there are", () => {
-    expect([...FIELD_SORTS]).toEqual(["id", "day", "count", "word", "ref", "file"]);
+    expect([...FIELD_SORTS]).toEqual(["id", "day", "count", "word", "ref", "file", "device"]);
   });
 
   it("refuse a name, an address and free text where an id belongs", () => {
@@ -67,5 +68,8 @@ describe("a payload's fields", () => {
     expect(field.ref().safeParse("https://cdn.example/ride.fit").success).toBe(true);
     expect(field.file().safeParse("Morgentur.fit").success).toBe(true);
     expect(field.file().safeParse("puls 182 og ondt i knæet").success).toBe(false);
+    expect(field.device().safeParse("Edge 1040 Solar").success).toBe(true);
+    for (const value of ["", " Edge", "Edge\n1040", "ida@example.com", "x".repeat(81)])
+      expect(field.device().safeParse(value).success, value).toBe(false);
   });
 });

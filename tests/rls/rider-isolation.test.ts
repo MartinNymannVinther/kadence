@@ -137,6 +137,14 @@ beforeAll(async () => {
     external_user_id: "w_r1",
     access_token_sealed: "sealed",
   });
+  // A ride's file waiting for its import (drizzle/0061): a ride's file's rules.
+  await seed("device_inbox", {
+    rider_id: "r1",
+    provider: "wahoo",
+    external_id: "w_r1_ride",
+    file_name: "Tur.fit",
+    bytes: Buffer.from("fit"),
+  });
   await seed("upload_keys", {
     id: "key_r1",
     rider_id: "r1",
@@ -228,6 +236,8 @@ describe("a rider", () => {
     }
     expect(await count(R1, "device_links")).toBe(1);
     expect(await count(R2, "device_links")).toBe(0);
+    expect(await count(R1, "device_inbox")).toBe(1);
+    expect(await count(R2, "device_inbox")).toBe(0);
   });
 
   it("sees the team's calendar and library", async () => {
@@ -554,6 +564,7 @@ describe("a member who is neither rider nor parent", () => {
       "guardians",
       "flag_resolutions",
       "device_links",
+      "device_inbox",
       "upload_keys",
     ]) {
       expect(await count(OTHER, table)).toBe(0);
