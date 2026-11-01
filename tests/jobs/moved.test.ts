@@ -68,6 +68,7 @@ describe("the schedule", () => {
       "dcu.races",
       "demo.cleanup",
       "device.refresh",
+      "device.workouts",
       "files.tombstones",
       "installation.sweep",
       "push.reminders",

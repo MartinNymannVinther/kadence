@@ -10,6 +10,7 @@ import { disconnectAction } from "@/modules/devices/actions";
 import type { ProviderId } from "@/modules/devices/providers";
 import { lastErrorKey } from "./device-words";
 import { GarminAiConsent } from "./garmin-ai-consent";
+import { GarminAutoSend } from "./garmin-auto-send";
 import { GarminConnectDialog } from "./garmin-connect-dialog";
 
 export type DeviceLink = {
@@ -18,6 +19,10 @@ export type DeviceLink = {
   canPush: boolean;
   /** Garmin: whether the rider shares activities with Kadence; null where nobody knows. */
   sharesActivities: boolean | null;
+  /** Garmin: whether the rider lets Kadence put workouts there; null where nobody knows. */
+  workoutImport: boolean | null;
+  /** Garmin: whether Kadence sends the rider's sessions there by itself (docs/adr/0114). */
+  autoSend: boolean | null;
   status: "connected" | "error" | "revoked" | null;
   lastSyncAt: string | null;
   lastError: string;
@@ -30,7 +35,9 @@ export type DeviceLink = {
  * connection. Connecting is a plain link to the OAuth route — the browser
  * leaves Kadence for the provider and comes back. A Garmin link whose
  * rider does not share activities with Kadence says so, and what to do
- * (docs/adr/0113). Garmin's card also
+ * (docs/adr/0113). A connected Garmin card holds the rider's switch for
+ * sending their sessions there by itself, and says when Garmin has not
+ * been allowed to take workouts (docs/adr/0114). Garmin's card also
  * holds the rider's yes to the AI reading their rides from Garmin, once
  * there is a link or a ride from Garmin for it to be about (ADR 0112).
  */
@@ -102,6 +109,9 @@ export function DeviceCard({
             <p className="bg-warning-tint rounded-md px-3 py-2 text-2sm leading-relaxed">
               {t(`lastError.${error}` as "lastError.unknown", { name })}
             </p>
+          )}
+          {link.status === "connected" && link.autoSend !== null && (
+            <GarminAutoSend on={link.autoSend} allowed={link.workoutImport} />
           )}
           {link.status === "connected" && link.canPush && (
             <p className="text-meta text-xs leading-relaxed">{t("canPush", { name })}</p>

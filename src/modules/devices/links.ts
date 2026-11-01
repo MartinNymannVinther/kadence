@@ -5,9 +5,16 @@ import { deviceLinks } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { sqlStateOf } from "@/core/db/sql-state";
 import { whoAmIIn } from "@/modules/team/access";
+import { dropRowsIn } from "./device-workouts";
 import { sealed } from "./link-seal";
 import { allowsWorkouts, sharesActivities } from "./permission-words";
-import { PROVIDER_IDS, providerById, type ProviderId, type Tokens } from "./providers";
+import {
+  PROVIDER_IDS,
+  providerById,
+  sendsWorkouts,
+  type ProviderId,
+  type Tokens,
+} from "./providers";
 
 /**
  * A rider's connection to Wahoo, Garmin or Polar: the `device_links` row. The
@@ -77,6 +84,16 @@ export type DeviceLinkView = {
    * provider (Garmin's ACTIVITY_EXPORT); null where nobody knows.
    */
   sharesActivities: boolean | null;
+  /**
+   * Whether the rider lets Kadence put workouts on their calendar at the
+   * provider (Garmin's WORKOUT_IMPORT); null where nobody knows.
+   */
+  workoutImport: boolean | null;
+  /**
+   * For a provider with a calendar (Garmin): whether Kadence keeps the
+   * rider's sessions for the next seven days there by itself (docs/adr/0114).
+   */
+  autoSend: boolean | null;
   status: LinkStatus | null;
   lastSyncAt: Date | null;
   lastError: string;
@@ -101,6 +118,7 @@ export async function listDeviceLinks(
         lastSyncAt: deviceLinks.lastSyncAt,
         lastError: deviceLinks.lastError,
         permissions: deviceLinks.permissions,
+        autoSend: deviceLinks.autoSend,
       })
       .from(deviceLinks)
       .where(eq(deviceLinks.riderId, target));
@@ -111,14 +129,17 @@ export async function listDeviceLinks(
     // Garmin says what the rider granted (docs/adr/0113); a link whose
     // permissions were never read offers no push until they are.
     const granted = id !== "garmin" || allowsWorkouts(row?.permissions ?? null);
+    const known = id === "garmin" && row?.status === "connected" && row.permissions !== null;
     return {
       provider: id,
       configured: provider.configured(),
-      canPush: provider.configured() && Boolean(provider.pushWorkout) && granted,
+      canPush: provider.configured() && sendsWorkouts(provider) && granted,
       sharesActivities:
         id === "garmin" && row?.status === "connected"
           ? sharesActivities(row.permissions ?? null)
           : null,
+      workoutImport: known ? allowsWorkouts(row.permissions ?? null) : null,
+      autoSend: provider.calendar && row ? row.autoSend : null,
       status: (row?.status as LinkStatus | undefined) ?? null,
       lastSyncAt: row?.lastSyncAt ?? null,
       lastError: row?.lastError ?? "",
@@ -160,6 +181,27 @@ export async function markLink(
   );
 }
 
+/** Clears a link's last error when it is still `code`, in the rider's name; nothing else changes. */
+export async function clearLinkError(
+  riderCtx: OrgContext,
+  riderId: string,
+  provider: ProviderId,
+  code: string,
+): Promise<void> {
+  await withOrgContext(riderCtx, (tx) =>
+    tx
+      .update(deviceLinks)
+      .set({ lastError: "" })
+      .where(
+        and(
+          eq(deviceLinks.riderId, riderId),
+          eq(deviceLinks.provider, provider),
+          eq(deviceLinks.lastError, code),
+        ),
+      ),
+  );
+}
+
 /** The provider's id for the account on a rider's link, read as the rider; null without one. */
 export async function linkExternalUserId(
   owner: LinkOwner,
@@ -175,11 +217,12 @@ export async function linkExternalUserId(
   return row?.externalUserId ?? null;
 }
 
-/** Removes the caller's own link; false when there was none. */
+/** Removes the caller's own link, and what Kadence remembers sending through it; false when there was none. */
 export async function deleteOwnLink(ctx: OrgContext, provider: ProviderId): Promise<boolean> {
   return withOrgContext(ctx, async (tx) => {
     const me = await whoAmIIn(tx, ctx);
     if (!me?.rider) throw new Refused("forbidden", "not_a_rider");
+    await dropRowsIn(tx, me.rider.id, provider);
     const gone = await tx
       .delete(deviceLinks)
       .where(and(eq(deviceLinks.riderId, me.rider.id), eq(deviceLinks.provider, provider)))

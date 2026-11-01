@@ -934,11 +934,11 @@
     "subprocessorsNote": "Who can see what is listed in",
     "devices": {
       "title": "Garmin and other devices",
-      "body": "When you connect a Garmin, Wahoo or Polar account, Kadence fetches your rides and other activities from it, and you or your coach can send sessions the other way. This happens only once you have connected the account yourself, and it stops when you disconnect it under Settings → Devices. What applies to data from Garmin is below."
+      "body": "When you connect a Garmin, Wahoo or Polar account, Kadence fetches your rides and other activities from it, and your bike sessions can go the other way, by themselves or with a button. This happens only once you have connected the account yourself, and it stops when you disconnect it under Settings → Devices. What applies to data from Garmin is below."
     },
     "garmin": {
       "title": "Data from Garmin",
-      "body": "For Garmin you give your yes in Kadence before you are sent on to Garmin. Garmin then sends your activities to Kadence, every type, with time, distance, heart rate, power, the route and the device they were recorded on. Kadence uses them to show your activities in your calendar, compare them with your sessions and work out your load and your form. You, your coaches on the team and your parents, if you share your training with them, can see them. Sessions you or your coach send to your Garmin go to Garmin. Data from Garmin is kept on Kadence's server at Hetzner Online GmbH in Germany and in the encrypted backups in Hetzner's storage in Germany. If you have said yes to it (see the next section), the language model reads it too: Mistral AI in the EU, or a model on the team's own server. Nobody else receives it. Kadence never sells it, never uses it for advertising and shares it with nobody beyond those named here. Garmin is responsible for what Garmin keeps about you, and may use what Kadence sends to Garmin. Garmin's privacy notice is at garmin.com/privacy/connect. Activities from Garmin are shown with Garmin's name and the device, and numbers and charts built on them say so. Garmin's service is provided as it is. Neither Garmin nor Kadence is liable for losses it causes, as far as the law allows."
+      "body": "For Garmin you give your yes in Kadence before you are sent on to Garmin. Garmin then sends your activities to Kadence, every type, with time, distance, heart rate, power, the route and the device they were recorded on. Kadence uses them to show your activities in your calendar, compare them with your sessions and work out your load and your form. You, your coaches on the team and your parents, if you share your training with them, can see them. Garmin gets the bike sessions Kadence sends to your Garmin: those for the next 7 days by themselves, unless you turn that off, and those you or your coach send with a button. Data from Garmin is kept on Kadence's server at Hetzner Online GmbH in Germany and in the encrypted backups in Hetzner's storage in Germany. If you have said yes to it (see the next section), the language model reads it too: Mistral AI in the EU, or a model on the team's own server. Nobody else receives it. Kadence never sells it, never uses it for advertising and shares it with nobody beyond those named here. Garmin is responsible for what Garmin keeps about you, and may use what Kadence sends to Garmin. Garmin's privacy notice is at garmin.com/privacy/connect. Activities from Garmin are shown with Garmin's name and the device, and numbers and charts built on them say so. Garmin's service is provided as it is. Neither Garmin nor Kadence is liable for losses it causes, as far as the law allows."
     },
     "garminAi": {
       "title": "AI transparency statement: your data from Garmin",
@@ -1086,7 +1086,7 @@
       },
       "toDevice": {
         "title": "Sessions on the bike computer",
-        "body": "A bike session with steps can go onto a Garmin, so you ride it with targets and a countdown on the screen. Plug the bike computer into the computer with a cable, press Send to bike computer on the session or Send the week's sessions on Me, and pick the bike computer when the browser asks. Kadence puts the files in the folder Garmin/NewFiles; eject the bike computer, and you find the sessions under Training. It works in Chrome and Edge on a computer and in Chrome on Android. In Safari and Firefox you download the files and put them in Garmin/NewFiles yourself. An Edge 540, 840, 1040 or 1050 does not show up as a drive on a Mac; use File Explorer on a Windows PC. Each session is named by its day first, such as 29.09 Tempo, so a week's sessions do not overwrite each other on the bike computer. A step without watts or pulse shows its target in words, such as RPE 7. Kadence writes nothing else to the bike computer and deletes nothing."
+        "body": "If you have connected Garmin under Settings → Devices and allowed Garmin to accept training sessions, Kadence puts your bike sessions with steps for the next 7 days in your Garmin calendar by itself. Your Garmin fetches them when it syncs with Garmin Connect. If your coach changes a session, Kadence changes it on your Garmin, and a deleted session goes away from there again. You can turn this off on the Garmin card, and you or your coach can always send a session with Send to Garmin on the session. Without a connection, a bike session with steps can go onto a Garmin by cable, so you ride it with targets and a countdown on the screen. Plug the bike computer into the computer with a cable, press Send to bike computer on the session or Send the week's sessions on Me, and pick the bike computer when the browser asks. Kadence puts the files in the folder Garmin/NewFiles; eject the bike computer, and you find the sessions under Training. It works in Chrome and Edge on a computer and in Chrome on Android. In Safari and Firefox you download the files and put them in Garmin/NewFiles yourself. An Edge 540, 840, 1040 or 1050 does not show up as a drive on a Mac; use File Explorer on a Windows PC. Each session is named by its day first, such as 29.09 Tempo, so a week's sessions do not overwrite each other on the bike computer. A step without watts or pulse shows its target in words, such as RPE 7. Kadence writes nothing else to the bike computer over the cable and deletes nothing."
       },
       "rulle": {
         "title": "Rulle: the session on the trainer",
@@ -2306,8 +2306,23 @@
         "reconnect": "The connection to {name} no longer works. The rider must connect again under Settings → Devices.",
         "provider_permission": "{name} has not been allowed to receive sessions. The rider can allow it at {name} and connect again.",
         "provider_error": "{name} did not accept the session. Try again in a moment.",
+        "provider_rejected": "{name} would not accept the session as it is. Change the session, or send it as a file.",
+        "provider_busy": "{name} is taking many sessions right now. Try again in a minute.",
+        "too_many_steps": "The session has more steps than {name} can take. Merge repeated steps, or send it as a file.",
+        "workouts_refused": "{name} is not accepting sessions from Kadence for the rider right now. The rider can disconnect and connect {name} again under Settings → Devices.",
         "not_configured": "{name} is not set up on this installation.",
         "generic": "The session could not be sent to {name}. Try again."
+      }
+    },
+    "onDevice": {
+      "on": "The session is in {who, select, own {your} other {the rider's}} {name} calendar.{known, select, yes { Sent {when}.} other {}}",
+      "pending": "Kadence puts the session in {who, select, own {your} other {the rider's}} {name} calendar by itself within a quarter of an hour.",
+      "not": {
+        "too_many_steps": "The session has more steps than {name} can take (at most {max}), so it does not go to {who, select, own {your} other {the rider's}} {name}. Merge repeated steps, or send it as a file.",
+        "no_permission": "{name} has not been allowed to accept sessions from Kadence. {who, select, own {You can allow it in {name} Connect.} other {The rider can allow it in {name} Connect.}}",
+        "rejected": "{name} would not accept the session as it is. Change the session, or send it as a file.",
+        "refused": "{name} is not accepting sessions from Kadence right now. {who, select, own {Disconnect and connect {name} again under Settings → Devices.} other {The rider can disconnect and connect {name} again.}}",
+        "error": "The session did not reach {name} last time. Kadence tries again by itself."
       }
     }
   },
@@ -3635,7 +3650,7 @@
     },
     "about": {
       "wahoo": "ELEMNT bike computers and KICKR trainers. Rides come in automatically, and sessions can be sent to them.",
-      "garmin": "Edge bike computers and watches through Garmin Connect. Rides and other activities come in automatically. A bike session goes onto an Edge by cable, from the session.",
+      "garmin": "Edge bike computers and watches through Garmin Connect. Rides and other activities come in automatically, and your bike sessions for the next 7 days go to your Garmin calendar by themselves once you allow it.",
       "polar": "Watches and bike computers through Polar Flow. Rides come in automatically. Sessions cannot be sent to Polar from Kadence."
     },
     "state": {
@@ -3652,6 +3667,16 @@
     "noSyncYet": "No rides fetched yet. Your next ride comes in by itself.",
     "canPush": "You can send a bike session to {name} from the session in the calendar.",
     "noActivitySharing": "Your rides are not coming in, because sharing activities with Kadence is turned off at {name}. Turn it on again in {name} Connect, or disconnect, connect {name} again and tick activities. Uploading FIT files still works.",
+    "autoSend": {
+      "label": "Send my sessions to Garmin automatically",
+      "hint": "Kadence puts your bike sessions for the next 7 days in your Garmin calendar and changes them when they change. If you turn it off, the sessions already there stay. You can always send a session from the session itself.",
+      "on": "On",
+      "off": "Off",
+      "turnedOn": "Your bike sessions go to your Garmin by themselves. The first ones are there within a quarter of an hour.",
+      "turnedOff": "Kadence no longer sends your sessions to Garmin by itself.",
+      "noPermission": "Garmin has not been allowed to accept training sessions from Kadence, so your sessions cannot go to your Garmin. Allow it in Garmin Connect, or disconnect, connect Garmin again and tick training sessions. Your rides come in as before.",
+      "unknownPermission": "Kadence does not know yet whether Garmin may accept your sessions. Kadence asks Garmin within a day."
+    },
     "lastError": {
       "refresh_failed": "{name} would not renew the connection. Connect again.",
       "unauthorized": "{name} refused Kadence. Connect again.",
@@ -3663,6 +3688,7 @@
       "planExpired": "A ride from {name} was not brought in, because the workspace is read only now. The ride is still at {name}.",
       "download_gone": "A ride from {name} could not be fetched, because {name} hands a ride over only once and for a short while. Upload the file yourself if the ride is missing.",
       "import_failed": "A ride from {name} arrived but could not be added, even after several tries. Upload the file yourself if the ride is missing.",
+      "workouts_refused": "{name} did not accept your sessions from Kadence last time. Your rides come in as before. Disconnect and connect {name} again if your sessions should go to your {name}.",
       "unknown": "Something went wrong with {name} last time. Connect again if your rides do not come in."
     },
     "connected": "{name} is connected. Your next rides come in by themselves.",
@@ -3727,7 +3753,7 @@
       "us": "{names} {count, plural, one {is a US company} other {are US companies}}",
       "eu": "{names} {count, plural, one {is a Finnish company} other {are Finnish companies}}"
     },
-    "usBody": "Kadence itself is in the EU{hasEu, select, yes {, and so is {euNames}} other {}}. When you connect, {providers} send your rides to Kadence{hasPushers, select, yes {, and Kadence sends the sessions you choose to {pushers}} other {}}. It is your choice, and you can disconnect at any time.",
+    "usBody": "Kadence itself is in the EU{hasEu, select, yes {, and so is {euNames}} other {}}. When you connect, {providers} send your rides to Kadence{hasPushers, select, yes {, and Kadence sends your sessions to {pushers}} other {}}. It is your choice, and you can disconnect at any time.",
     "usLink": "Who can see what"
   },
   "parents": {
@@ -6454,11 +6480,11 @@
     "derived": "Insights derived in part from Garmin device-sourced data.",
     "connect": {
       "title": "Connect Garmin",
-      "body": "When you connect your Garmin account, Garmin sends your rides and your other activities, such as runs and strength training, to Kadence. Your coach and your parents can see them here, like your other rides. When you or your coach send a session to your Garmin, Garmin gets the session.",
+      "body": "When you connect your Garmin account, Garmin sends your rides and your other activities, such as runs and strength training, to Kadence. Your coach and your parents can see them here, like your other rides. Kadence puts your planned bike sessions for the next 7 days in your Garmin calendar by itself, and you or your coach can send a session with a button. Garmin then gets the session. You turn the automatic sending off on the Garmin card.",
       "garminOwn": "Garmin is responsible for what Garmin keeps about you, and may use what Kadence sends to Garmin.",
       "privacy": "Read Garmin's privacy notice",
       "restricted": "If you are not allowed to put data in your Garmin account, do not connect it.",
-      "agree": "I allow Kadence to fetch my rides and other activities from Garmin and to send the sessions my coach or I choose to Garmin.",
+      "agree": "I allow Kadence to fetch my rides and other activities from Garmin and to send my planned bike sessions to Garmin.",
       "withdraw": "You can disconnect at any time here under Devices. Then Kadence fetches nothing more from Garmin, and Garmin gets no more sessions.",
       "continue": "Continue to Garmin",
       "cancel": "Cancel"

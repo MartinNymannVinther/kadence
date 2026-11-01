@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { lastErrorKey } from "@/components/devices/device-words";
+import da from "../../messages/da.json";
+import en from "../../messages/en.json";
+import { lastErrorKey, pushErrorKey } from "@/components/devices/device-words";
 import { deviceModelName } from "@/modules/devices/device-name";
 import { fromGarmin, inRange } from "@/modules/devices/garmin-ip";
 import { garminPushEvents } from "@/modules/devices/garmin-push";
@@ -199,5 +201,38 @@ describe("what the Garmin card says went wrong", () => {
     expect(lastErrorKey("download_status")).toBe("download");
     expect(lastErrorKey("something_new")).toBe("unknown");
     expect(lastErrorKey("")).toBeNull();
+  });
+
+  it("has words for Garmin refusing Kadence's workouts, and for each refusal of a send (docs/adr/0114)", () => {
+    expect(lastErrorKey("workouts_refused")).toBe("workouts_refused");
+    for (const detail of [
+      "too_many_steps",
+      "provider_rejected",
+      "provider_busy",
+      "workouts_refused",
+      "provider_permission",
+    ])
+      expect(pushErrorKey(detail)).toBe(detail);
+    expect(pushErrorKey("something_new")).toBe("generic");
+  });
+});
+
+describe("the words built at runtime for sessions on Garmin (docs/adr/0114)", () => {
+  type Tree = { [key: string]: string | Tree };
+  const words = (catalogue: unknown, path: string): unknown =>
+    path.split(".").reduce<unknown>((node, part) => (node as Tree | undefined)?.[part], catalogue);
+
+  it("exist in both languages, for every reason a session is not on Garmin and every refusal", () => {
+    const paths = [
+      ...["too_many_steps", "no_permission", "rejected", "refused", "error"].map(
+        (reason) => `session.onDevice.not.${reason}`,
+      ),
+      ...["too_many_steps", "provider_rejected", "provider_busy", "workouts_refused"].map(
+        (detail) => `session.push.error.${detail}`,
+      ),
+      "devices.lastError.workouts_refused",
+    ];
+    for (const path of paths)
+      for (const catalogue of [da, en]) expect(typeof words(catalogue, path), path).toBe("string");
   });
 });

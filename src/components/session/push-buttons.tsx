@@ -5,6 +5,7 @@ import { CircleCheck, CircleX, Send } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { pushErrorKey } from "@/components/devices/device-words";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "@/i18n/navigation";
 import { pushSessionAction } from "@/modules/devices/actions";
 import type { ProviderId } from "@/modules/devices/providers";
 
@@ -12,8 +13,9 @@ type Provider = ProviderId;
 
 /**
  * "Send til Wahoo" / "Send til Garmin", for a bike session whose rider has
- * connected one: a copy of the plan on the device's calendar, answered in
- * words — sent, or why not. Sending again after a change sends the change.
+ * connected one: the plan on the device's calendar, answered in words —
+ * sent, or why not. Sending again after a change sends the change; to
+ * Garmin, sending again with nothing changed sends nothing (docs/adr/0114).
  */
 export function PushButtons({
   sessionId,
@@ -26,6 +28,7 @@ export function PushButtons({
   const names = useTranslations("devices.name");
   const [busy, setBusy] = useState<Provider | null>(null);
   const [answer, setAnswer] = useState<{ ok: boolean; text: string } | null>(null);
+  const router = useRouter();
 
   async function send(provider: Provider) {
     setBusy(provider);
@@ -33,6 +36,8 @@ export function PushButtons({
     const name = names(provider);
     try {
       const result = await pushSessionAction({ sessionId, provider });
+      // The line above the buttons says where the session now is.
+      if (result.ok) router.refresh();
       setAnswer(
         result.ok
           ? { ok: true, text: t("sent", { name }) }

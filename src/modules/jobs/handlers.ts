@@ -5,6 +5,7 @@ import { demoCleanupHandler } from "@/modules/demo/job";
 import { deviceRefreshHandler } from "@/modules/devices/refresh-job";
 import { retimeHandler } from "@/modules/devices/retime-job";
 import { deviceFetchHandler } from "@/modules/devices/webhooks";
+import { deviceWorkoutsHandler } from "@/modules/devices/workouts-job";
 import { remindersHandler } from "@/modules/push/jobs";
 import { dcuRacesHandler, dcuReadHandler } from "@/modules/results/jobs";
 import { signupSweepHandler } from "@/modules/signup/job";
@@ -24,6 +25,7 @@ export const HANDLERS: readonly Handler[] = [
   remindersHandler,
   deviceFetchHandler,
   deviceRefreshHandler,
+  deviceWorkoutsHandler,
   dcuReadHandler,
   dcuRacesHandler,
   teamsRefreshHandler,
