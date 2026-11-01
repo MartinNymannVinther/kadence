@@ -262,6 +262,13 @@ export function columnNames(columns: string): string[] {
  *   reason.
  * - `device_links`: sealed tokens for Wahoo and Garmin — credentials, not
  *   data a team owns.
+ * - `device_inbox`: a ride's file between Garmin's download and the
+ *   import (docs/adr/0113); once imported it is in `activity_files`.
+ * - `device_workouts`: Garmin's ids for the sessions Kadence put on a
+ *   rider's Garmin calendar, and a hash of what was sent (docs/adr/0114)
+ *   — a copy kept so it can be changed and taken off again, not data a
+ *   team made. The sessions are in "Pas", and each send is in the audit
+ *   trail.
  * - `upload_keys`: the hashes of riders' upload keys (ADR 0029) —
  *   credentials again. That a key was made, used and removed is in the
  *   audit trail, without the hash.

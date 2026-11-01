@@ -157,6 +157,17 @@ const TABLES: Array<{ table: string; row: (s: string) => Record<string, unknown>
     }),
   },
   {
+    // A session on the rider's Garmin calendar (drizzle/0062); a row about the rider.
+    table: "device_workouts",
+    row: (s) => ({
+      rider_id: `rider_${s}`,
+      planned_session_id: `ses_${s}`,
+      provider: "garmin",
+      external_workout_id: `w_${s}`,
+      scheduled_on: DAY,
+    }),
+  },
+  {
     table: "upload_keys",
     row: (s) => ({
       rider_id: `rider_${s}`,
@@ -338,6 +349,16 @@ describe("a row can only name rows of its own team (drizzle/0003)", () => {
         author_id: A.userId,
         planned_session_id: "ses_b",
         body: "x",
+      },
+    ],
+    [
+      "a workout on Garmin for B's session",
+      {
+        table: "device_workouts",
+        rider_id: "rider_a",
+        planned_session_id: "ses_b",
+        provider: "garmin",
+        scheduled_on: DAY,
       },
     ],
     [

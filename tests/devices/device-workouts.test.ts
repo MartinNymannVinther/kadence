@@ -84,7 +84,8 @@ describe("the workouts sent to a head unit", () => {
   it("is a Garmin workout in watts and beats, numbered through the repeat", () => {
     const workout = toGarminWorkout(structure, rider, "Tærskel 3x5");
     expect(workout).toMatchObject({ workoutName: "Tærskel 3x5", sport: "CYCLING" });
-    expect(workout.steps[0]).toMatchObject({
+    const [steps] = workout.segments.map((segment) => segment.steps);
+    expect(steps![0]).toMatchObject({
       type: "WorkoutStep",
       stepOrder: 1,
       intensity: "WARMUP",
@@ -94,7 +95,7 @@ describe("the workouts sent to a head unit", () => {
       targetValueLow: 140,
       targetValueHigh: 188,
     });
-    expect(workout.steps[1]).toMatchObject({
+    expect(steps![1]).toMatchObject({
       type: "WorkoutRepeatStep",
       stepOrder: 2,
       repeatType: "REPEAT_UNTIL_STEPS_CMPLT",
@@ -104,7 +105,7 @@ describe("the workouts sent to a head unit", () => {
         { stepOrder: 4, targetType: "HEART_RATE", targetValueLow: 126, targetValueHigh: 144 },
       ],
     });
-    expect(workout.steps[2]).toMatchObject({
+    expect(steps![2]).toMatchObject({
       stepOrder: 5,
       targetType: "OPEN",
       description: "RPE 2",

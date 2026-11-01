@@ -17,6 +17,8 @@ const LAST_ERRORS = [
   // Garmin hands a file over once, and for a day (docs/adr/0113).
   "download_gone",
   "import_failed",
+  // Garmin refused Kadence's workouts for the rider; rides still come in (docs/adr/0114).
+  "workouts_refused",
 ] as const;
 
 export function lastErrorKey(code: string): string | null {
@@ -58,6 +60,10 @@ const PUSH_ERRORS = [
   "reconnect",
   "provider_permission",
   "provider_error",
+  "provider_rejected",
+  "provider_busy",
+  "too_many_steps",
+  "workouts_refused",
   "not_configured",
 ] as const;
 

@@ -4,6 +4,8 @@ import { appDb } from "@/core/db/client";
 import { deviceLinks, riders } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { errorName, log } from "@/core/log";
+import { withdrawWorkouts, WITHDRAW_DEADLINE_MS } from "./calendar-exit";
+import { dropRowsIn } from "./device-workouts";
 import { loggable } from "./http";
 import { accessTokenFor } from "./link-tokens";
 import type { LinkOwner } from "./links";
@@ -16,8 +18,10 @@ import { providerById } from "./providers";
  * rider, and before a person deletes their account. Those deletions take
  * the link with them by cascade, and with it the only token that can ask.
  *
- * It is a courtesy the person's deletion never waits long for and never
- * fails over: every rider at once, each with a short deadline, a failure
+ * The workouts Kadence put on the rider's Garmin calendar for today and
+ * later are taken off first, while the token still works (calendar-exit.ts,
+ * docs/adr/0114). All of it is a courtesy the person's deletion never waits
+ * long for and never fails over: every rider at once, each with a short deadline, a failure
  * logged by its code and never with a token, and the deletion goes on.
  * The token is read, and refreshed if it must be, in the rider's name, as
  * every use of a link is (link-tokens.ts).
@@ -25,8 +29,12 @@ import { providerById } from "./providers";
 
 /** How long Garmin gets to answer the deregistration itself. */
 export const EXIT_TIMEOUT_MS = 5_000;
-/** How long the whole of one rider's deregistration may hold a deletion up, a refresh included. */
-const EXIT_DEADLINE_MS = 8_000;
+/**
+ * How long the whole of one rider's deregistration may hold a deletion up:
+ * a refresh, the workouts taken off the calendar first (calendar-exit.ts)
+ * and the deregistration.
+ */
+const EXIT_DEADLINE_MS = 8_000 + WITHDRAW_DEADLINE_MS;
 
 function withDeadline<T>(work: Promise<T>, ms: number, late: () => T): Promise<T> {
   let timer: ReturnType<typeof setTimeout> | undefined;
@@ -43,6 +51,7 @@ async function forgetAtGarmin(owner: LinkOwner, externalUserId: string): Promise
   const deregister = garmin.deregister;
   const work = (async () => {
     const token = await accessTokenFor(owner, garmin);
+    await withdrawWorkouts(owner, garmin, token);
     await deregister(token, externalUserId, EXIT_TIMEOUT_MS);
     return true;
   })().catch(async (error: unknown) => {
@@ -130,7 +139,10 @@ export async function deregisterOwnGarmin(userId: string): Promise<number> {
         );
         const confirmed =
           link?.status === "connected" ? await forgetAtGarmin(owner, link.externalUserId) : false;
-        await withOrgContext(ctx, (tx) => tx.delete(deviceLinks).where(where));
+        await withOrgContext(ctx, async (tx) => {
+          await dropRowsIn(tx, row.rider_id, "garmin");
+          await tx.delete(deviceLinks).where(where);
+        });
         return confirmed;
       }),
     );
