@@ -138,8 +138,9 @@ Rules:
   `messages/en.json`, same keys.
 - The words: a team is **hold** (settings call it **arbejdsrum**; the
   code says organization), **træner**, **rytter**, **forælder**, a planned
-  session is a **pas**, a ride is a **tur**, plus **check-in**,
-  **sæsonplan** and **biblioteket**.
+  session is a **træningspas** (never "pas" alone; cykelpas and styrkepas
+  are fine), a ride is a **tur**, plus **check-in**, **sæsonplan** and
+  **biblioteket**.
 - Write to the reader as **du**, in plain short sentences. Say what
   happens and why, never blame the user, no exclamation marks. When
   something is missing or off, say so plainly and what still works

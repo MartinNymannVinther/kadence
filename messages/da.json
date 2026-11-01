@@ -61,20 +61,20 @@
     },
     "demo": {
       "title": "Prøv uden at oprette noget",
-      "body": "Du får dit eget U19-hold i fuld gang: ryttere, en sæsonplan efter DCU, uger med pas, aktiviteter og check-ins. Du starter som træner og kan skifte til rytteren Emma og hendes mor for at se Kadence med deres øjne. Det hele slettes efter {hours, plural, one {# time} other {# timer}}. Ingen e-mail, ingen tilmelding.",
+      "body": "Du får dit eget U19-hold i fuld gang: ryttere, en sæsonplan efter DCU, uger med træningspas, aktiviteter og check-ins. Du starter som træner og kan skifte til rytteren Emma og hendes mor for at se Kadence med deres øjne. Det hele slettes efter {hours, plural, one {# time} other {# timer}}. Ingen e-mail, ingen tilmelding.",
       "privacy": "Skriv ikke rigtige personoplysninger i demoen. Den passerer en database og eventuelt en sprogmodel på vejen.",
       "cta": "Åbn en demo",
       "ctaAlone": "Prøv som rytter alene"
     },
     "demoWait": {
       "title": "Vi gør din demo klar",
-      "team": "Du får et U19-hold med ryttere, en sæsonplan efter DCU, pas, ture og check-ins. Det tager som regel et par sekunder, og så starter du som træner.",
+      "team": "Du får et U19-hold med ryttere, en sæsonplan efter DCU, træningspas, ture og check-ins. Det tager som regel et par sekunder, og så starter du som træner.",
       "alone": "Du er Emma, U19-rytter på egen hånd, med en sæsonplan efter DCU, seks ugers ture og check-ins og næste uge lagt ind. Det tager som regel et par sekunder.",
       "slow": "Det tager lidt længere end det plejer. Siden går videre af sig selv, når demoen er klar."
     },
     "featuresLabel": "Det du får",
     "features": {
-      "calendar": "Kalender med pas på cykel, i styrkerummet og andet",
+      "calendar": "Kalender med træningspas på cykel, i styrkerummet og andet",
       "dcu": "Sæsonplan og styrkeprogrammer efter DCU for U17, U19 og U23",
       "load": "Belastning, form og friskhed, også uden wattmåler",
       "devices": "FIT-filer, Wahoo, Garmin og Polar",
@@ -85,7 +85,7 @@
     "ways": {
       "label": "To måder at bruge Kadence",
       "teamTitle": "På et hold",
-      "teamBody": "Træneren lægger pas i rytternes kalender, ser holdets uge og hvem der er værd at tale med. Rytterne kører, forældrene følger med på det, rytteren deler. Klubben ansøger, og vi sætter holdet op.",
+      "teamBody": "Træneren lægger træningspas i rytternes kalender, ser holdets uge og hvem der er værd at tale med. Rytterne kører, forældrene følger med på det, rytteren deler. Klubben ansøger, og vi sætter holdet op.",
       "aloneTitle": "Alene",
       "aloneBody": "Du planlægger din egen uge og sæson, lægger dine ture ind og tager check-in, uden at være på et hold. Er du U17, U19 eller U23, står DCU's tal ved siden af dine; er du voksen, sætter du dine egne timer. Kommer du på et hold senere, følger din træning med.",
       "aloneAge": "Fra 15 år opretter du selv. Er rytteren yngre, opretter en forælder og følger barnets træning.",
@@ -171,7 +171,7 @@
       "invitationInvalidBody": "Invitationen er udløbet, brugt eller erstattet af en nyere. Bed den der inviterede dig om et nyt link, eller ansøg om adgang igen.",
       "applyLink": "Ansøg om adgang",
       "errorTooYoung": "Man skal være mindst 15 år for at oprette en konto selv. En forælder kan oprette den og invitere dig.",
-      "personalMe": "Du får dit eget arbejdsrum, {workspace}. Her er du både din egen træner og rytter: du lægger dine pas, kører dem og følger din form.",
+      "personalMe": "Du får dit eget arbejdsrum, {workspace}. Her er du både din egen træner og rytter: du lægger dine træningspas, kører dem og følger din form.",
       "personalChild": "Du får et arbejdsrum, {workspace}, hvor du planlægger træningen for {child}. Når kontoen er oprettet, kan du invitere {child} fra rytterens side."
     },
     "twoFactor": {
@@ -388,10 +388,10 @@
       "title": "Data og eksport",
       "subtitle": "Tag en komplet kopi af alt hvad dette arbejdsrum indeholder.",
       "xlsxTitle": "Regneark",
-      "xlsxBody": "Én fil med en fane per type data: ryttere, pas, aktiviteter, check-ins, kalender, kommentarer, sæsonplaner, skabeloner og historik. Til jer selv, eller til enhver der skal kigge med uden at kende Kadence.",
+      "xlsxBody": "Én fil med en fane per type data: ryttere, træningspas, aktiviteter, check-ins, kalender, kommentarer, sæsonplaner, skabeloner og historik. Til jer selv, eller til enhver der skal kigge med uden at kende Kadence.",
       "xlsxAction": "Hent regneark",
       "jsonTitle": "Maskinlæsbar kopi",
-      "jsonBody": "De samme data som JSON, med alle id'er bevaret. Det er den fil der gør, at I kan flytte til noget andet end Kadence uden at miste sammenhængen mellem pas, aktiviteter og kommentarer.",
+      "jsonBody": "De samme data som JSON, med alle id'er bevaret. Det er den fil der gør, at I kan flytte til noget andet end Kadence uden at miste sammenhængen mellem træningspas, aktiviteter og kommentarer.",
       "jsonAction": "Hent JSON",
       "auditNote": "Revisionssporet i regnearket er de nyeste {rows, number} rækker. Hele sporet er i JSON-filen.",
       "filesTitle": "Dine filer",
@@ -530,14 +530,14 @@
         "nameMismatch": "Navnet passer ikke. Skriv arbejdsrummets navn præcis som det står.",
         "personal": {
           "title": "Slet min konto og alt om mig",
-          "body": "Alt om din træning forsvinder: pas, ture, check-ins, sæsonplanen, filerne og revisionssporet om dem. Er du ikke på et hold i Kadence, slettes din konto også. Det kan ikke fortrydes. Filerne er væk fra lageret inden for en time.",
+          "body": "Alt om din træning forsvinder: træningspas, ture, check-ins, sæsonplanen, filerne og revisionssporet om dem. Er du ikke på et hold i Kadence, slettes din konto også. Det kan ikke fortrydes. Filerne er væk fra lageret inden for en time.",
           "exportFirst": "Hent en eksport først, hvis du vil beholde noget. Den findes lige ovenfor.",
           "action": "Slet min konto og alt om mig"
         }
       },
       "images": {
         "title": "Logo og billede",
-        "body": "Klubbens logo står ved navnet i menuen, og billedet står øverst på forsiden for alle i klubben på en dag uden pas. Billedet bliver gjort mindre i din browser, før det sendes, og oplysninger som GPS-position bliver fjernet.",
+        "body": "Klubbens logo står ved navnet i menuen, og billedet står øverst på forsiden for alle i klubben på en dag uden træningspas. Billedet bliver gjort mindre i din browser, før det sendes, og oplysninger som GPS-position bliver fjernet.",
         "logo": "Logo",
         "cover": "Stemningsbillede",
         "logoHint": "Kvadratisk virker bedst. PNG, JPEG eller WebP.",
@@ -763,7 +763,7 @@
           "legend": "Tag din træning med?",
           "yes": "Ja, til et arbejdsrum der kun er mit",
           "no": "Nej, lad den blive hos holdet",
-          "body": "Dine pas, ture, check-ins, mål og sæsonplan flytter med til et arbejdsrum, der kun er dit. Holdet beholder ingen kopi, kun en linje i loggen om at træningen forlod holdet. Dine forældre skal bekræftes igen der.",
+          "body": "Dine træningspas, ture, check-ins, mål og sæsonplan flytter med til et arbejdsrum, der kun er dit. Holdet beholder ingen kopi, kun en linje i loggen om at træningen forlod holdet. Dine forældre skal bekræftes igen der.",
           "staysBody": "Det, du har lagt ind, bliver hos holdet. Vil du have en kopi, så hent den under Data først.",
           "hasHistory": "Du har allerede et eget arbejdsrum med træning i, så træningen kan ikke flyttes derhen. Forlad holdet uden at tage den med, eller hent en kopi under Data først.",
           "failed": "Træningen kunne ikke flyttes, så du er stadig på holdet. Prøv igen om lidt."
@@ -773,7 +773,7 @@
         "title": "Hvad dine forældre kan se",
         "body": "Det er dit valg, ikke trænerens eller forældrenes. Du kan ændre det når som helst.",
         "training": "Min træning",
-        "trainingHint": "Dine pas, det du har lavet, hvor hårdt det var, kommentarerne og din kalender med fx løb og eksamen.",
+        "trainingHint": "Dine træningspas, det du har lavet, hvor hårdt det var, kommentarerne og din kalender med fx løb og eksamen.",
         "wellbeing": "Hvordan jeg har det",
         "wellbeingHint": "Dine check-ins: søvn, energi, humør, ømhed og smerter, og din højde. Kun hvis du slår det til.",
         "coach": "Træneren ser altid det, du logger. Det er det, en træner er til.",
@@ -897,7 +897,7 @@
     "intro": "Kadence er et open source-værktøj til træningsplanlægning for unge cykelryttere, drevet af Haij. Det her er aftalen mellem dig og os, når du bruger den udgave vi driver. Kører du koden selv, gælder kun licensen.",
     "what": {
       "title": "Hvad Kadence er",
-      "body": "Et værktøj til at planlægge og følge træningen for ryttere, trænere og forældre: pas i en kalender, aktiviteter fra FIT-filer og enheder, check-ins og en sæsonplan. Anbefalinger og forslag fra AI er udkast, ikke facit, og erstatter ikke en træner eller en læge."
+      "body": "Et værktøj til at planlægge og følge træningen for ryttere, trænere og forældre: træningspas i en kalender, aktiviteter fra FIT-filer og enheder, check-ins og en sæsonplan. Anbefalinger og forslag fra AI er udkast, ikke facit, og erstatter ikke en træner eller en læge."
     },
     "account": {
       "title": "Konto og adgang",
@@ -909,7 +909,7 @@
     },
     "ai": {
       "title": "AI",
-      "body": "Er der sat en sprogmodel op, og beder en træner om et forslag, sendes det forslaget bygger på — pas, belastning og, hvis holdet har slået det til, check-ins — til modeludbyderen. Hvem det er, står under Indstillinger → AI og i listen over underdatabehandlere. Uden en sprogmodel virker alt andet som før."
+      "body": "Er der sat en sprogmodel op, og beder en træner om et forslag, sendes det forslaget bygger på — træningspas, belastning og, hvis holdet har slået det til, check-ins — til modeludbyderen. Hvem det er, står under Indstillinger → AI og i listen over underdatabehandlere. Uden en sprogmodel virker alt andet som før."
     },
     "leaving": {
       "title": "At holde op",
@@ -934,15 +934,15 @@
     "subprocessorsNote": "Hvem der kan se hvad, står i",
     "devices": {
       "title": "Garmin og andre enheder",
-      "body": "Forbinder du en Garmin-, Wahoo- eller Polar-konto, henter Kadence dine ture og andre aktiviteter derfra, og du eller din træner kan sende pas den anden vej. Det sker kun, når du selv har forbundet kontoen, og det stopper, når du afbryder den under Indstillinger → Enheder. Hvad der gælder for data fra Garmin, står herunder."
+      "body": "Forbinder du en Garmin-, Wahoo- eller Polar-konto, henter Kadence dine ture og andre aktiviteter derfra, og du eller din træner kan sende træningspas den anden vej. Det sker kun, når du selv har forbundet kontoen, og det stopper, når du afbryder den under Indstillinger → Enheder. Hvad der gælder for data fra Garmin, står herunder."
     },
     "garmin": {
       "title": "Data fra Garmin",
-      "body": "Ved Garmin giver du dit ja i Kadence, før du sendes videre til Garmin. Garmin sender så dine aktiviteter til Kadence, alle typer, med tid, distance, puls, watt, ruten og den enhed, de er optaget på. Kadence bruger dem til at vise dine aktiviteter i din kalender, sammenligne dem med dine pas og regne din belastning og din form ud. Du, dine trænere på holdet og dine forældre, hvis du deler din træning med dem, kan se dem. Pas, som du eller din træner sender til din Garmin, får Garmin. Data fra Garmin ligger på Kadences server hos Hetzner Online GmbH i Tyskland og i de krypterede backups i Hetzners lager i Tyskland. Har du sagt ja til det (se næste afsnit), læser sprogmodellen dem også: Mistral AI i EU eller en model på holdets egen server. Ingen andre får dem. Kadence sælger dem aldrig, bruger dem ikke til reklame og deler dem ikke med andre end dem, der står her. Garmin er selv ansvarlig for det, Garmin gemmer om dig, og må bruge det, Kadence sender til Garmin. Garmins privatlivspolitik står på garmin.com/privacy/connect. Aktiviteter fra Garmin vises med Garmins navn og enheden, og tal og grafer, der bygger på dem, siger det. Garmins tjeneste leveres, som den er. Hverken Garmin eller Kadence hæfter for tab, den giver, så langt loven tillader det."
+      "body": "Ved Garmin giver du dit ja i Kadence, før du sendes videre til Garmin. Garmin sender så dine aktiviteter til Kadence, alle typer, med tid, distance, puls, watt, ruten og den enhed, de er optaget på. Kadence bruger dem til at vise dine aktiviteter i din kalender, sammenligne dem med dine træningspas og regne din belastning og din form ud. Du, dine trænere på holdet og dine forældre, hvis du deler din træning med dem, kan se dem. Træningspas, som du eller din træner sender til din Garmin, får Garmin. Data fra Garmin ligger på Kadences server hos Hetzner Online GmbH i Tyskland og i de krypterede backups i Hetzners lager i Tyskland. Har du sagt ja til det (se næste afsnit), læser sprogmodellen dem også: Mistral AI i EU eller en model på holdets egen server. Ingen andre får dem. Kadence sælger dem aldrig, bruger dem ikke til reklame og deler dem ikke med andre end dem, der står her. Garmin er selv ansvarlig for det, Garmin gemmer om dig, og må bruge det, Kadence sender til Garmin. Garmins privatlivspolitik står på garmin.com/privacy/connect. Aktiviteter fra Garmin vises med Garmins navn og enheden, og tal og grafer, der bygger på dem, siger det. Garmins tjeneste leveres, som den er. Hverken Garmin eller Kadence hæfter for tab, den giver, så langt loven tillader det."
     },
     "garminAi": {
       "title": "AI-gennemsigtighed: dine data fra Garmin",
-      "body": "Nogle knapper i Kadence beder en AI om et forslag: en kommentar til et pas, en forklaring af din form, et udkast til din uge og trænerens overblik om mandagen. Et forslag bliver kun brugt, hvis du eller din træner vælger det. AI'en læser kun dine data fra Garmin, hvis du selv har sagt ja til det på Garmin-kortet under Indstillinger → Enheder, efter at have læst, hvad den læser. Ingen andre kan sige ja for dig, heller ikke din træner eller dine forældre. Siger du ja, læser AI'en tallene fra dine aktiviteter fra Garmin og det, Kadence regner ud fra dem, fx din form. Sprogmodellen er Mistral AI i EU eller en model på holdets egen server, og holdet skal også have givet AI'en lov til at læse rytternes data. Uden dit ja læser AI'en ikke dine data fra Garmin, og de knapper, der bygger på dem, siger det. Du trækker dit ja tilbage samme sted, og det gælder fra samme øjeblik. Det sker også, når du afbryder Garmin. Kadence bruger aldrig data fra Garmin, eller noget der er afledt af dem, til at træne, afprøve eller forbedre en AI-model."
+      "body": "Nogle knapper i Kadence beder en AI om et forslag: en kommentar til et træningspas, en forklaring af din form, et udkast til din uge og trænerens overblik om mandagen. Et forslag bliver kun brugt, hvis du eller din træner vælger det. AI'en læser kun dine data fra Garmin, hvis du selv har sagt ja til det på Garmin-kortet under Indstillinger → Enheder, efter at have læst, hvad den læser. Ingen andre kan sige ja for dig, heller ikke din træner eller dine forældre. Siger du ja, læser AI'en tallene fra dine aktiviteter fra Garmin og det, Kadence regner ud fra dem, fx din form. Sprogmodellen er Mistral AI i EU eller en model på holdets egen server, og holdet skal også have givet AI'en lov til at læse rytternes data. Uden dit ja læser AI'en ikke dine data fra Garmin, og de knapper, der bygger på dem, siger det. Du trækker dit ja tilbage samme sted, og det gælder fra samme øjeblik. Det sker også, når du afbryder Garmin. Kadence bruger aldrig data fra Garmin, eller noget der er afledt af dem, til at træne, afprøve eller forbedre en AI-model."
     },
     "rights": {
       "title": "Se, ret, hent ud, slet og træk tilbage",
@@ -981,10 +981,10 @@
       "legend": "Tag din træning med over på holdet?",
       "yes": "Ja, tag den med",
       "no": "Nej, lad den blive",
-      "body": "Dine pas, ture, check-ins, mål og sæsonplan flytter fra {workspace} over på holdet, og {workspace} lukkes bagefter. Dine forældre skal bekræftes igen på holdet.",
+      "body": "Dine træningspas, ture, check-ins, mål og sæsonplan flytter fra {workspace} over på holdet, og {workspace} lukkes bagefter. Dine forældre skal bekræftes igen på holdet.",
       "staysBody": "Din træning bliver i {workspace}, og du har to arbejdsrum at skifte imellem. Du kan ikke flytte den senere.",
       "stayed": "Du er med på holdet. Din træning blev ikke flyttet og ligger stadig i dit eget arbejdsrum.",
-      "stayedTargetHasHistory": "Du er med på holdet. Træneren har allerede lagt pas til dig her, så din træning blev ikke flyttet. Den ligger stadig i dit eget arbejdsrum.",
+      "stayedTargetHasHistory": "Du er med på holdet. Træneren har allerede lagt træningspas til dig her, så din træning blev ikke flyttet. Den ligger stadig i dit eget arbejdsrum.",
       "continue": "Gå til I dag"
     }
   },
@@ -1021,12 +1021,12 @@
         "body": "Er Kadence sat op til at sende mail, står der et link under Glemt adgangskode på siden Log ind, og så kan du selv få et link på mail. Ellers går vejen tilbage gennem en træner. En træner åbner Indstillinger → Arbejdsrum, trykker Link til ny adgangskode ved personen og sender linket selv, fx på SMS. Linket virker én gang og kun den næste time; den, der bruger det, vælger en ny adgangskode og bliver logget ud alle andre steder. Personen kan altid se på sin sikkerhedsside, at et link er lavet, og af hvem. En træner kan lave links til ryttere, forældre og andre trænere på holdet, men ikke til holdets ejer; en ejer, der har glemt sin adgangskode, logger ind med sin passkey eller får hjælp af den, der driver Kadence. Har du slået totrinsbekræftelse til, skal du stadig bruge koden fra din app."
       },
       "words": {
-        "title": "Pas, forløb, program og sæsonplan",
-        "body": "Et pas er én træning i kalenderen, på cyklen eller i styrkerummet. Rytterens uge består af pas. Et forløb er flere ugers pas fra biblioteket, lagt ind fra en mandag hos en eller flere ryttere. Et program er en opskrift på ét styrkepas: øvelser med tegninger og doser, som bliver til et pas, når det lægges i kalenderen. DCU's styrkeprogrammer er noget tredje: en serie pas med progression, hentet ind i biblioteket. Sæsonplanen er timerne måned for måned fra oktober til september, med DCU's tal ved siden af. En voksen rytter, senior, er motionist eller supermotionist: Kadences egne timer, omkring 5 eller 10 om ugen, for DCU har ingen for voksne. Planlæg ugen er det sted, træneren lægger en hel uge på én gang."
+        "title": "Træningspas, forløb, program og sæsonplan",
+        "body": "Et træningspas er én træning i kalenderen, på cyklen eller i styrkerummet. Rytterens uge består af træningspas. Et forløb er flere ugers træningspas fra biblioteket, lagt ind fra en mandag hos en eller flere ryttere. Et program er en opskrift på ét styrkepas: øvelser med tegninger og doser, som bliver til et træningspas, når det lægges i kalenderen. DCU's styrkeprogrammer er noget tredje: en serie træningspas med progression, hentet ind i biblioteket. Sæsonplanen er timerne måned for måned fra oktober til september, med DCU's tal ved siden af. En voksen rytter, senior, er motionist eller supermotionist: Kadences egne timer, omkring 5 eller 10 om ugen, for DCU har ingen for voksne. Planlæg ugen er det sted, træneren lægger en hel uge på én gang."
       },
       "overview": {
         "title": "Overblik: trænerens forside",
-        "body": "Som træner lander du på Overblik. Øverst står, om næste uge er planlagt, og hvad der er i den, som ferie, eksamen, lejr og løb, med en knap til planlæggeren for den uge. Derefter de tre ryttere, der er mest værd at se på i ugen, der er i gang; hele listen står under holdets uge i kalenderen. Nyt fra rytterne samler rytternes egne kommentarer på pas og ture og deres noter fra check-in de seneste 14 dage, nyeste først. Du kan svare i passets egen tråd. Til sidst holdets pas i dag og holdets begivenheder i ugen. En rytters forside hedder I dag."
+        "body": "Som træner lander du på Overblik. Øverst står, om næste uge er planlagt, og hvad der er i den, som ferie, eksamen, lejr og løb, med en knap til planlæggeren for den uge. Derefter de tre ryttere, der er mest værd at se på i ugen, der er i gang; hele listen står under holdets uge i kalenderen. Nyt fra rytterne samler rytternes egne kommentarer på træningspas og ture og deres noter fra check-in de seneste 14 dage, nyeste først. Du kan svare i træningspassets egen tråd. Til sidst holdets træningspas i dag og holdets begivenheder i ugen. En rytters forside hedder I dag."
       },
       "data": {
         "title": "Jeres data",
@@ -1034,27 +1034,27 @@
       },
       "calendar": {
         "title": "Kalenderen",
-        "body": "Kalenderen viser en uge ad gangen. På en computer står dagene side om side, på telefonen under hinanden, og holdets uge er et kort pr. rytter. Træneren kan trække et pas til en anden dag; på telefonen bruger du \"Flyt\" i passets menu. Løb, eksamen, skole, lejr, ferie og sygdom står som små mærker. Farverne viser, hvordan det gik: grøn er som planlagt, gul er tæt på planen, rød er din egen version eller ikke nået, og grå er ikke kørt endnu. Der står altid et ord ved farven. Et pas kan have et tidspunkt og et mødested, fx \"17.30 fra klubhuset\". En hel uge lægges ind under \"Planlæg ugen\": vælg ryttere, eventuelt en hel årgang med ét tryk, og start fra en tom uge, sidste uge, et forløb eller et forslag fra AI'en. Du ser, hvad ugen giver mod sæsonplanen, før du lægger den ind, og du kan gentage den i flere uger eller gemme den som forløb. Skal ét pas gå igen, fx styrke hver tirsdag og torsdag, slår du \"Gentag på faste ugedage\" til, når du lægger det ind; \"Ret\" og \"Slet\" kan også tage resten af serien. \"Kopiér ugen før\" lægger hver rytters egne pas fra en anden uge ind på de samme ugedage. \"Del ugen\" laver en tekst med ugens pas, tider og steder til holdets chat, uden noget om rytternes trivsel."
+        "body": "Kalenderen viser en uge ad gangen. På en computer står dagene side om side, på telefonen under hinanden, og holdets uge er et kort pr. rytter. Træneren kan trække et træningspas til en anden dag; på telefonen bruger du \"Flyt\" i træningspassets menu. Løb, eksamen, skole, lejr, ferie og sygdom står som små mærker. Farverne viser, hvordan det gik: grøn er som planlagt, gul er tæt på planen, rød er din egen version eller ikke nået, og grå er ikke kørt endnu. Der står altid et ord ved farven. Et træningspas kan have et tidspunkt og et mødested, fx \"17.30 fra klubhuset\". En hel uge lægges ind under \"Planlæg ugen\": vælg ryttere, eventuelt en hel årgang med ét tryk, og start fra en tom uge, sidste uge, et forløb eller et forslag fra AI'en. Du ser, hvad ugen giver mod sæsonplanen, før du lægger den ind, og du kan gentage den i flere uger eller gemme den som forløb. Skal ét træningspas gå igen, fx styrke hver tirsdag og torsdag, slår du \"Gentag på faste ugedage\" til, når du lægger det ind; \"Ret\" og \"Slet\" kan også tage resten af serien. \"Kopiér ugen før\" lægger hver rytters egne træningspas fra en anden uge ind på de samme ugedage. \"Del ugen\" laver en tekst med ugens træningspas, tider og steder til holdets chat, uden noget om rytternes trivsel."
       },
       "search": {
         "title": "Søg",
-        "body": "Søg finder en rytter, et pas fra biblioteket, en side eller et afsnit her i hjælpen. Tryk ⌘K på en Mac eller Ctrl+K på en pc, eller tryk på søgefeltet øverst i menuen. På telefonen er det luppen øverst på skærmen. Skriv et par bogstaver, gå op og ned med piletasterne, og tryk Enter for at åbne. Du kan skrive o for ø og a for å. Søg viser kun det, du i forvejen må se: en træner finder holdets ryttere, en forælder sit eget barn."
+        "body": "Søg finder en rytter, et træningspas fra biblioteket, en side eller et afsnit her i hjælpen. Tryk ⌘K på en Mac eller Ctrl+K på en pc, eller tryk på søgefeltet øverst i menuen. På telefonen er det luppen øverst på skærmen. Skriv et par bogstaver, gå op og ned med piletasterne, og tryk Enter for at åbne. Du kan skrive o for ø og a for å. Søg viser kun det, du i forvejen må se: en træner finder holdets ryttere, en forælder sit eget barn."
       },
       "sessions": {
-        "title": "Pas og skabeloner",
-        "body": "Et pas bygges i trin: opvarmning, arbejde, pause og nedkørsel, med en længde og et mål i zoner, procent af FTP eller tærskelpuls, eller efter følelse. Gentagelser samler trin, der køres flere gange. Når rytterens tærskler er sat, står målene i watt og puls. Styrkepas har øvelser, og et program har en progression, så sæt og gentagelser følger med fra pas til pas. Træneren kan også trykke \"Byg med AI\" og skrive passet med sine egne ord, fx \"5x4 min VO2max\" eller \"styrke 45 min, ben og core\", eller hvad der skal ændres i det pas, der står. Forslaget vises først, og intet gemmes, før træneren gemmer passet. Cykelpas kan bygges med byggeklodser med ét tryk, fx opvarmning, tærskelintervaller eller sprint, og styrkeøvelser foreslås, mens du skriver navnet, med DCU's øvelser og øvelser uden maskiner. Gem et pas som skabelon i biblioteket, så kan det lægges til én rytter eller hele holdet på én gang. Flere ugers pas kan samles i et forløb og lægges ind fra en mandag. Vælger du en øvelse fra biblioteket, viser passet dens tegning og vejledning med et link til øvelsen. Et pas kan udskrives eller gemmes som PDF fra passet; et styrkepas får et felt til hvert sæt, som du kan skrive vægt og gentagelser i."
+        "title": "Træningspas og skabeloner",
+        "body": "Et træningspas bygges i trin: opvarmning, arbejde, pause og nedkørsel, med en længde og et mål i zoner, procent af FTP eller tærskelpuls, eller efter følelse. Gentagelser samler trin, der køres flere gange. Når rytterens tærskler er sat, står målene i watt og puls. Styrkepas har øvelser, og et program har en progression, så sæt og gentagelser følger med fra træningspas til træningspas. Træneren kan også trykke \"Byg med AI\" og skrive træningspasset med sine egne ord, fx \"5x4 min VO2max\" eller \"styrke 45 min, ben og core\", eller hvad der skal ændres i det træningspas, der står. Forslaget vises først, og intet gemmes, før træneren gemmer træningspasset. Cykelpas kan bygges med byggeklodser med ét tryk, fx opvarmning, tærskelintervaller eller sprint, og styrkeøvelser foreslås, mens du skriver navnet, med DCU's øvelser og øvelser uden maskiner. Gem et træningspas som skabelon i biblioteket, så kan det lægges til én rytter eller hele holdet på én gang. Flere ugers træningspas kan samles i et forløb og lægges ind fra en mandag. Vælger du en øvelse fra biblioteket, viser træningspasset dens tegning og vejledning med et link til øvelsen. Et træningspas kan udskrives eller gemmes som PDF fra træningspasset; et styrkepas får et felt til hvert sæt, som du kan skrive vægt og gentagelser i."
       },
       "exercises": {
         "title": "Øvelser og programmer",
-        "body": "Øvelser og programmer med tegninger ligger under Bibliotek → Øvelser og programmer, og \"Øvelser og programmer\" er også en af de åbne guider, som alle kan åbne uden at logge ind. Du vælger et af Kadences egne programmer, eller sammensætter dit eget ud fra øvelserne i biblioteket. Hent det som én fil, der virker på telefonen uden internet, eller udskriv det som PDF fra browseren. Som træner tegner du holdets egne øvelser med et tegneværktøj og sætter dem sammen til programmer, der står ved siden af Kadences egne. \"Læg i kalenderen\" lægger programmet ind som et pas, hvor hver øvelse viser sin tegning. Som rytter kan du lægge et program i din egen kalender, som træneren kan for hele holdet."
+        "body": "Øvelser og programmer med tegninger ligger under Bibliotek → Øvelser og programmer, og \"Øvelser og programmer\" er også en af de åbne guider, som alle kan åbne uden at logge ind. Du vælger et af Kadences egne programmer, eller sammensætter dit eget ud fra øvelserne i biblioteket. Hent det som én fil, der virker på telefonen uden internet, eller udskriv det som PDF fra browseren. Som træner tegner du holdets egne øvelser med et tegneværktøj og sætter dem sammen til programmer, der står ved siden af Kadences egne. \"Læg i kalenderen\" lægger programmet ind som et træningspas, hvor hver øvelse viser sin tegning. Som rytter kan du lægge et program i din egen kalender, som træneren kan for hele holdet."
       },
       "done": {
         "title": "Udført og RPE",
-        "body": "Når passet er gjort, trykker rytteren \"Udført\". Minutterne står der allerede fra planen. Så svarer rytteren på, hvor hårdt det var på en skala fra 1 til 10 (RPE): 1 er meget, meget let, 5 er hårdt, og 10 er det hårdeste, man kan. Tænk på hele passet. Minutter gange RPE giver passets belastning, også uden wattmåler. Har man trykket forkert, kan det fortrydes."
+        "body": "Når træningspasset er gjort, trykker rytteren \"Udført\". Minutterne står der allerede fra planen. Så svarer rytteren på, hvor hårdt det var på en skala fra 1 til 10 (RPE): 1 er meget, meget let, 5 er hårdt, og 10 er det hårdeste, man kan. Tænk på hele træningspasset. Minutter gange RPE giver træningspassets belastning, også uden wattmåler. Har man trykket forkert, kan det fortrydes."
       },
       "comments": {
         "title": "Kommentarer",
-        "body": "Hvert pas har én samtale. Træneren og rytteren skriver i den, og rytterens forældre kan læse med. Der findes ingen private beskeder mellem en voksen og en ung rytter. Man kan rette og slette sine egne kommentarer, og en træner kan fjerne en kommentar."
+        "body": "Hvert træningspas har én samtale. Træneren og rytteren skriver i den, og rytterens forældre kan læse med. Der findes ingen private beskeder mellem en voksen og en ung rytter. Man kan rette og slette sine egne kommentarer, og en træner kan fjerne en kommentar."
       },
       "parents": {
         "title": "Forældre",
@@ -1062,15 +1062,15 @@
       },
       "season": {
         "title": "Sæsonplanen og DCU",
-        "body": "Sæsonen går fra oktober til september. Planen kan fyldes ud med DCU's timer for rytterens årgang (U17, U19 eller U23 og året i den), måned for måned, med DCU's faser: pause og frit i oktober, distance i november og december, lange basisintervaller i januar og februar, korte hårde intervaller omkring marts og løbssæson fra april. Under \"Hele holdet\" laver \"Opret sæsonplaner for alle uden en plan\" planerne for hele holdet på én gang. Træneren og rytteren kan rette alt. Følger holdet DCU's anbefalinger (Indstillinger → Holdet), står DCU's tal og afvigelsen ved siden af. Overalt hvor der planlægges, står de samme fire tal: Sæsonplan (de timer, træneren har sat), Lagt ind (passene i kalenderen), Kørt (det, der faktisk er kørt) og DCU (DCU's timer og rammen omkring dem). Du ser dem for ugen i kalenderen, for hver rytter i holdets uge og måned for måned på sæsonsiden. Kun timer på cyklen tæller med. Kadences syv zoner er Kadences egne; DCU's pulsbånd står ved siden af til sammenligning."
+        "body": "Sæsonen går fra oktober til september. Planen kan fyldes ud med DCU's timer for rytterens årgang (U17, U19 eller U23 og året i den), måned for måned, med DCU's faser: pause og frit i oktober, distance i november og december, lange basisintervaller i januar og februar, korte hårde intervaller omkring marts og løbssæson fra april. Under \"Hele holdet\" laver \"Opret sæsonplaner for alle uden en plan\" planerne for hele holdet på én gang. Træneren og rytteren kan rette alt. Følger holdet DCU's anbefalinger (Indstillinger → Holdet), står DCU's tal og afvigelsen ved siden af. Overalt hvor der planlægges, står de samme fire tal: Sæsonplan (de timer, træneren har sat), Lagt ind (træningspassene i kalenderen), Kørt (det, der faktisk er kørt) og DCU (DCU's timer og rammen omkring dem). Du ser dem for ugen i kalenderen, for hver rytter i holdets uge og måned for måned på sæsonsiden. Kun timer på cyklen tæller med. Kadences syv zoner er Kadences egne; DCU's pulsbånd står ved siden af til sammenligning."
       },
       "load": {
         "title": "Belastning: kondition, træthed og friskhed",
-        "body": "Hvert pas får en belastning. Med wattmåler regnes den ud fra watt, ellers fra puls, og ellers fra hvor hårdt passet føltes (RPE fra 1 til 10) gange minutterne. Det sidste virker for alle pas, også styrke. En time i tærskeltempo tæller 100, og en let time på RPE 3 tæller omkring 17. Kondition er det, de seneste seks uger har bygget op. Træthed er det, den seneste uge har kostet. Friskhed er kondition minus træthed: over nul er man udhvilet, under nul træt, og lidt under nul er normalt midt i en træningsuge. Under grafen kan du bede AI'en forklare, hvad kurven fortæller, og hvad Kadence ellers ved om træningen: ugerne, tærsklerne, rekorderne og målene. Det kræver en sprogmodel, og at holdet har slået \"Må AI'en læse rytternes data\" til."
+        "body": "Hvert træningspas får en belastning. Med wattmåler regnes den ud fra watt, ellers fra puls, og ellers fra hvor hårdt træningspasset føltes (RPE fra 1 til 10) gange minutterne. Det sidste virker for alle træningspas, også styrke. En time i tærskeltempo tæller 100, og en let time på RPE 3 tæller omkring 17. Kondition er det, de seneste seks uger har bygget op. Træthed er det, den seneste uge har kostet. Friskhed er kondition minus træthed: over nul er man udhvilet, under nul træt, og lidt under nul er normalt midt i en træningsuge. Under grafen kan du bede AI'en forklare, hvad kurven fortæller, og hvad Kadence ellers ved om træningen: ugerne, tærsklerne, rekorderne og målene. Det kræver en sprogmodel, og at holdet har slået \"Må AI'en læse rytternes data\" til."
       },
       "warnings": {
         "title": "Opmærksomhedspunkter",
-        "body": "Kadence viser træneren, når en uge går ud over rammerne, og træneren beslutter, hvad der skal ske. Opmærksomhedspunkterne står under Kalender → Hele holdet: som mærker ved hver rytter og som en liste under ugen, hvor \"Se ugen\" åbner rytterens uge. På Overblik står de tre ryttere, der er mest værd at se på, med vejen til hele listen. Punkterne er: timer på cyklen over eller under DCU's ramme for ugen (oktober er DCU's pause og har ingen ramme), mere end 15 % flere timer end de seneste uger, en tur længere end DCU's grænse (U17 højst 4 timer eller 120 km, U19 højst 5 timer eller 150 km), styrkepas med under 48 timer imellem, pas der gik helt anderledes end planlagt, meget tid i mellemzonen når holdet bruger \"Lav intensitet først\", for lidt søvn, smerter efter ATK's smertetrappe og check-ins i gul eller rød zone. Hvert punkt har et ord for, hvor meget det betyder: \"Vigtigt nu\", \"Værd at se på\" eller \"Godt at vide\". Når I har talt om et punkt, kan du markere det som afklaret."
+        "body": "Kadence viser træneren, når en uge går ud over rammerne, og træneren beslutter, hvad der skal ske. Opmærksomhedspunkterne står under Kalender → Hele holdet: som mærker ved hver rytter og som en liste under ugen, hvor \"Se ugen\" åbner rytterens uge. På Overblik står de tre ryttere, der er mest værd at se på, med vejen til hele listen. Punkterne er: timer på cyklen over eller under DCU's ramme for ugen (oktober er DCU's pause og har ingen ramme), mere end 15 % flere timer end de seneste uger, en tur længere end DCU's grænse (U17 højst 4 timer eller 120 km, U19 højst 5 timer eller 150 km), styrkepas med under 48 timer imellem, træningspas der gik helt anderledes end planlagt, meget tid i mellemzonen når holdet bruger \"Lav intensitet først\", for lidt søvn, smerter efter ATK's smertetrappe og check-ins i gul eller rød zone. Hvert punkt har et ord for, hvor meget det betyder: \"Vigtigt nu\", \"Værd at se på\" eller \"Godt at vide\". Når I har talt om et punkt, kan du markere det som afklaret."
       },
       "checkin": {
         "title": "Check-in og trivselszoner",
@@ -1082,20 +1082,20 @@
       },
       "devices": {
         "title": "Upload og enheder",
-        "body": "Upload en FIT-fil fra cykelcomputeren, uret eller hometraineren under Mig, i kalenderen eller på rytterens side. Kadence læser filen selv, også uden internet, og sætter turen på dagens pas, hvis det passer. Hver tur har sin egen side med kurver, tid i zoner og bedste watt. Er Wahoo, Garmin eller Polar sat op her, kan du forbinde dem under Indstillinger → Enheder, så ture kommer ind af sig selv. Wahoo og Garmin er amerikanske firmaer, Polar er finsk, og det er rytterens eget valg. Ellers kommer turene ind som filer, og det virker lige så godt. Et cykelpas kan også hentes som .zwo, .erg, .mrc eller .fit."
+        "body": "Upload en FIT-fil fra cykelcomputeren, uret eller hometraineren under Mig, i kalenderen eller på rytterens side. Kadence læser filen selv, også uden internet, og sætter turen på dagens træningspas, hvis det passer. Hver tur har sin egen side med kurver, tid i zoner og bedste watt. Er Wahoo, Garmin eller Polar sat op her, kan du forbinde dem under Indstillinger → Enheder, så ture kommer ind af sig selv. Wahoo og Garmin er amerikanske firmaer, Polar er finsk, og det er rytterens eget valg. Ellers kommer turene ind som filer, og det virker lige så godt. Et cykelpas kan også hentes som .zwo, .erg, .mrc eller .fit."
       },
       "toDevice": {
-        "title": "Pas på cykelcomputeren",
-        "body": "Et cykelpas med trin kan lægges på en Garmin, så du kører det med mål og nedtælling på skærmen. Sæt cykelcomputeren til computeren med kabel, tryk Send til cykelcomputer på passet eller Send ugens pas på Mig, og vælg cykelcomputeren, når browseren spørger. Kadence lægger filerne i mappen Garmin/NewFiles; skub cykelcomputeren ud, så finder du passene under Træning. Det virker i Chrome og Edge på en computer og i Chrome på Android. I Safari og Firefox henter du filerne og lægger dem selv i Garmin/NewFiles. En Edge 540, 840, 1040 eller 1050 viser sig ikke som et drev på en Mac; brug Stifinder på en Windows-pc. Hvert pas hedder dagen først, fx 29.09 Tempo, så en uges pas ikke overskriver hinanden på cykelcomputeren. Et trin uden watt eller puls viser sit mål i ord, fx RPE 7. Kadence skriver intet andet på cykelcomputeren og sletter intet."
+        "title": "Træningspas på cykelcomputeren",
+        "body": "Et cykelpas med trin kan lægges på en Garmin, så du kører det med mål og nedtælling på skærmen. Sæt cykelcomputeren til computeren med kabel, tryk Send til cykelcomputer på træningspasset eller Send ugens træningspas på Mig, og vælg cykelcomputeren, når browseren spørger. Kadence lægger filerne i mappen Garmin/NewFiles; skub cykelcomputeren ud, så finder du træningspassene under Træning. Det virker i Chrome og Edge på en computer og i Chrome på Android. I Safari og Firefox henter du filerne og lægger dem selv i Garmin/NewFiles. En Edge 540, 840, 1040 eller 1050 viser sig ikke som et drev på en Mac; brug Stifinder på en Windows-pc. Hvert træningspas hedder dagen først, fx 29.09 Tempo, så en uges træningspas ikke overskriver hinanden på cykelcomputeren. Et trin uden watt eller puls viser sit mål i ord, fx RPE 7. Kadence skriver intet andet på cykelcomputeren og sletter intet."
       },
       "rulle": {
-        "title": "Rulle: passet på hometraineren",
-        "body": "Kan du ikke komme ud, så kør dagens pas indendørs i Rulle: i menuen, eller \"Kør indendørs\" på passet. Forbind hometraineren med ét tryk. En smart trainer styrer selv watt i hver blok (ERG), så du bare skal træde; kan traineren kun måle, rammer du selv tallene. Et pulsbælte kan forbindes ved siden af. Skærmen viser watt mod mål, tiden tilbage af blokken og hele passet som en bjælke, du kører hen over, stort nok til at læse fra cyklen. Mellemrum holder pause, pil højre springer til næste blok, pil op og ned skruer sværhedsgraden ned eller op, fra 50 til 120 %, hvis benene er dårlige eller gode; procenten står på turen bagefter. Kan traineren køre en vej, kan du i stedet lade ruten styre modstanden, så bakkerne mærkes på halv styrke og du selv gearer efter blokkens watt; E skifter undervejs. Falder kadencen helt sammen under et mål, letter ERG, til du er oppe igen. Holder du op med at træde, holder Rulle pause med dig. Når passet er slut, gemmes turen som en almindelig tur på passet, og du siger, hvor hårdt det var. Uden net venter turen i browseren. Rulle kræver Chrome eller Edge på en computer eller Android; på iPhone kan appen Bluefy. Har du ikke noget pas i dag, kan du vælge et af holdets egne eller DCU's standardpas. M slår lyden fra og til.",
+        "title": "Rulle: træningspasset på hometraineren",
+        "body": "Kan du ikke komme ud, så kør dagens træningspas indendørs i Rulle: i menuen, eller \"Kør indendørs\" på træningspasset. Forbind hometraineren med ét tryk. En smart trainer styrer selv watt i hver blok (ERG), så du bare skal træde; kan traineren kun måle, rammer du selv tallene. Et pulsbælte kan forbindes ved siden af. Skærmen viser watt mod mål, tiden tilbage af blokken og hele træningspasset som en bjælke, du kører hen over, stort nok til at læse fra cyklen. Mellemrum holder pause, pil højre springer til næste blok, pil op og ned skruer sværhedsgraden ned eller op, fra 50 til 120 %, hvis benene er dårlige eller gode; procenten står på turen bagefter. Kan traineren køre en vej, kan du i stedet lade ruten styre modstanden, så bakkerne mærkes på halv styrke og du selv gearer efter blokkens watt; E skifter undervejs. Falder kadencen helt sammen under et mål, letter ERG, til du er oppe igen. Holder du op med at træde, holder Rulle pause med dig. Når træningspasset er slut, gemmes turen som en almindelig tur på træningspasset, og du siger, hvor hårdt det var. Uden net venter turen i browseren. Rulle kræver Chrome eller Edge på en computer eller Android; på iPhone kan appen Bluefy. Har du ikke noget træningspas i dag, kan du vælge et af holdets egne eller DCU's standardpas. M slår lyden fra og til.",
         "world": "Undervejs sker der små ting en gang imellem – en el-ladcykel, en bil med sprinklervæske, en hund – og holder du pause længe nok, sætter du dig på en café. De tælles med i dagens små ting, når du er færdig; tallene og bjælken får lov at være i fred. Under turen lyder vinden og dækkene efter farten, en fugl på landet, byens summen og publikum på løbsdagen, så et dyt aldrig kommer ud af stilheden. Der er gemt snydekoder i Rulle. De snyder kun landskabet, aldrig turen, der gemmes. Du kan vælge mellem ruterne – blandt dem DM-omgangen fra B&U DM 2026 i Vejle med mål på toppen, Future Racing-omgangen gennem København og VM-rundstrækningen om Mont-Royal i Montréal. K viser og skjuler det lille kort over ruten. I skjuler alle tal, så du kun ser rytteren og landskabet; tryk på skærmen eller på I igen, så kommer de tilbage. H viser hastigheden – rutens fart for dine watt og en standardrytter, så den er et fingerpeg, ikke en måling – og på en stigning eller nedkørsel står procenten nede i hjørnet. Rytteren på skærmen rejser sig på de stejle stigninger og ligger lavt på de hurtige nedkørsler. Ruterne, der følger med, kører gennem det rigtige land fra OpenStreetMap – skovene, søerne, fjorden og byerne – og du møder andre ryttere på vejen, nogle med en hånd i vejret. Vejen krydser åerne på broer, og kører du under en jernbane eller en motorvej, kommer der ind imellem et tog over, og bilerne kører på broen. På byruterne er det løbsdag: publikum langs opløbet og op ad stigningerne, vagter med gule flag ved hellerne og i de skarpe sving, vagter på motorcykel, der dytter og kører et stykke foran dig, brosten, der ryster, fartbump, en langningszone og holdbusserne. København er en junimorgen i en storby – karreer i okker, gul og rød mursten, butikker i gadeplan, lamper hængt over gaden og en pølsevogn, Montréal en septembereftermiddag med røde ahorntræer, trapper uden på husene og korset på Mont-Royal. Byerne på landet, som Vejle, er bygget lavere i gule og røde mursten under røde og sorte tegl."
       },
       "keys": {
         "title": "Upload-nøgler",
-        "body": "En upload-nøgle lader et program aflevere ture til Kadence af sig selv, uden at du er logget ind. Opret en under Indstillinger → Enheder → Avanceret, giv den et navn, og kopiér den med det samme: den vises kun den ene gang. Programmet sender turens fil til adressen, der står ved nøglen, med nøglen i feltet Authorization, skrevet som Bearer og derefter nøglen. Turen lander på dagens pas, præcis som når du selv uploader. Nøglen kan kun lægge ture ind hos dig. Den kan ikke læse noget, og du eller din træner kan fjerne den når som helst. Giv den kun til det program, der skal bruge den."
+        "body": "En upload-nøgle lader et program aflevere ture til Kadence af sig selv, uden at du er logget ind. Opret en under Indstillinger → Enheder → Avanceret, giv den et navn, og kopiér den med det samme: den vises kun den ene gang. Programmet sender turens fil til adressen, der står ved nøglen, med nøglen i feltet Authorization, skrevet som Bearer og derefter nøglen. Turen lander på dagens træningspas, præcis som når du selv uploader. Nøglen kan kun lægge ture ind hos dig. Den kan ikke læse noget, og du eller din træner kan fjerne den når som helst. Giv den kun til det program, der skal bruge den."
       },
       "strava": {
         "title": "Fra Strava til Kadence",
@@ -1107,7 +1107,7 @@
       },
       "ai": {
         "title": "AI'en",
-        "body": "AI'en foreslår, og træneren bestemmer. Den kan læse en træners kortform som \"3x10 min Z4 / 5 min pause\" til trin (reglerne klarer det meste uden nogen sprogmodel), bygge et pas ud fra dine ord med \"Byg med AI\" i biblioteket, sammensætte et træningsprogram i en samtale under Øvelser og programmer, hvor hvert svar lægges direkte i byggeren, foreslå en uge under \"Planlæg ugen\" for én rytter eller flere, og skrive et kort resumé af ugens opmærksomhedspunkter i holdets uge. Intet lægges i kalenderen, før en træner trykker. Den skriver aldrig til en rytter og sletter aldrig noget. Ugeforslag og resumé læser rytternes data, så de virker kun, hvis holdet har slået \"Må AI'en læse rytternes data\" til under Indstillinger → Holdet. Uden en sprogmodel virker alt andet som før."
+        "body": "AI'en foreslår, og træneren bestemmer. Den kan læse en træners kortform som \"3x10 min Z4 / 5 min pause\" til trin (reglerne klarer det meste uden nogen sprogmodel), bygge et træningspas ud fra dine ord med \"Byg med AI\" i biblioteket, sammensætte et træningsprogram i en samtale under Øvelser og programmer, hvor hvert svar lægges direkte i byggeren, foreslå en uge under \"Planlæg ugen\" for én rytter eller flere, og skrive et kort resumé af ugens opmærksomhedspunkter i holdets uge. Intet lægges i kalenderen, før en træner trykker. Den skriver aldrig til en rytter og sletter aldrig noget. Ugeforslag og resumé læser rytternes data, så de virker kun, hvis holdet har slået \"Må AI'en læse rytternes data\" til under Indstillinger → Holdet. Uden en sprogmodel virker alt andet som før."
       },
       "pilot": {
         "title": "De første to uger som pilothold",
@@ -1117,19 +1117,19 @@
   },
   "today": {
     "title": "I dag",
-    "sessionPanel": "Pas",
+    "sessionPanel": "Træningspas",
     "none": {
       "title": "Velkommen til holdet",
       "body": "Du er med på holdet, men er hverken træner, rytter eller forælder her endnu. Bed en træner om en invitation som rytter eller forælder, så dukker træningen op her."
     },
     "rider": {
-      "today": "Dit pas i dag",
+      "today": "Dit træningspas i dag",
       "tomorrow": "I morgen",
       "rest": "Intet planlagt. Nyd det, eller log det, hvis du alligevel træner.",
       "restTomorrow": "Intet planlagt i morgen.",
       "done": "Udført",
       "doneTitle": "Godt gået. Hvordan gik det?",
-      "open": "Se hele passet",
+      "open": "Se hele træningspasset",
       "indoors": "Kør indendørs",
       "comments": "{count, plural, one {# kommentar} other {# kommentarer}}"
     },
@@ -1138,7 +1138,7 @@
     },
     "coach": {
       "title": "Holdet i dag",
-      "summary": "{done} af {total} pas udført",
+      "summary": "{done} af {total} træningspas udført",
       "rest": "Intet planlagt i dag",
       "events": "Holdets begivenheder i denne uge",
       "noEvents": "Ingen løb eller lejre for hele holdet i denne uge."
@@ -1155,8 +1155,8 @@
     },
     "nextWeek": {
       "none": "Uge {week} er ikke planlagt endnu",
-      "some": "Uge {week} har pas til {planned} af {riders, plural, one {# rytter} other {# ryttere}}",
-      "all": "Uge {week} er planlagt: {sessions, plural, one {# pas} other {# pas}} til {riders, plural, one {# rytter} other {# ryttere}}",
+      "some": "Uge {week} har træningspas til {planned} af {riders, plural, one {# rytter} other {# ryttere}}",
+      "all": "Uge {week} er planlagt: {sessions, plural, one {# træningspas} other {# træningspas}} til {riders, plural, one {# rytter} other {# ryttere}}",
       "start": "Du kan starte fra uge {week}, et forløb eller en tom uge.",
       "quiet": "Ingen ferie, eksamen, lejr eller løb i ugen.",
       "riders": "{count, plural, one {# rytter} other {# ryttere}} {kind, select, holiday {har ferie} exam {har eksamen} school {har noget i skolen} ill {{count, plural, one {er syg} other {er syge}}} camp {er på lejr} race {kører løb} other {har noget}}",
@@ -1170,14 +1170,14 @@
     },
     "attentionTop": {
       "title": "Værd at se på",
-      "hint": "Ugen, der er i gang, ud fra timerne, passene og check-ins. Vist, aldrig håndhævet.",
+      "hint": "Ugen, der er i gang, ud fra timerne, træningspassene og check-ins. Vist, aldrig håndhævet.",
       "more": "{count, plural, one {# punkt mere} other {# punkter mere}}",
       "others": "{count, plural, one {# rytter mere har noget, der er værd at se på.} other {# ryttere mere har noget, der er værd at se på.}}",
       "all": "Alle opmærksomhedspunkter i holdets uge"
     },
     "news": {
       "title": "Nyt fra rytterne",
-      "hint": "Kommentarer på pas og noter fra check-in, nyeste først. Svar skrives i passets egen tråd.",
+      "hint": "Kommentarer på træningspas og noter fra check-in, nyeste først. Svar skrives i træningspassets egen tråd.",
       "empty": "Ingen kommentarer eller noter de seneste 14 dage.",
       "comment": "Kommentar til {about}",
       "commentRide": "Kommentar til en tur",
@@ -1199,13 +1199,13 @@
         "action": "Tilføj ryttere"
       },
       "session": {
-        "title": "Byg eller vælg et pas",
-        "body": "Byg et pas i biblioteket, eller hent DCU's styrkeprogrammer.",
+        "title": "Byg eller vælg et træningspas",
+        "body": "Byg et træningspas i biblioteket, eller hent DCU's styrkeprogrammer.",
         "action": "Åbn biblioteket"
       },
       "week": {
         "title": "Planlæg ugen",
-        "body": "Læg pas i kalenderen til én rytter eller hele holdet på én gang.",
+        "body": "Læg træningspas i kalenderen til én rytter eller hele holdet på én gang.",
         "action": "Åbn kalenderen"
       }
     },
@@ -1271,7 +1271,7 @@
       }
     },
     "rpe": {
-      "named": "Hvor hårdt føltes {sport, select, bike {turen} other {passet}} “{title}”?",
+      "named": "Hvor hårdt føltes {sport, select, bike {turen} other {træningspasset}} “{title}”?",
       "today": "I dag",
       "yesterday": "I går",
       "scale": "Hvor hårdt, fra 1 til 10",
@@ -1283,7 +1283,7 @@
   },
   "me": {
     "title": "Mig",
-    "sessionPanel": "Pas",
+    "sessionPanel": "Træningspas",
     "nav": {
       "week": "Uge",
       "rides": "Ture",
@@ -1301,10 +1301,10 @@
     "goals": "Dine mål",
     "records": "Dine rekorder",
     "upload": "Upload tur",
-    "uploadBody": "Filer fra cykelcomputeren, uret eller hometraineren. Turen lander på dagens pas af sig selv. Herunder kan du også sende ugens pas til din Garmin.",
+    "uploadBody": "Filer fra cykelcomputeren, uret eller hometraineren. Turen lander på dagens træningspas af sig selv. Herunder kan du også sende ugens træningspas til din Garmin.",
     "rides": {
       "title": "Dine ture",
-      "body": "Dine seneste ture, den nyeste først. Farven viser, hvor tæt turen kom på passet.",
+      "body": "Dine seneste ture, den nyeste først. Farven viser, hvor tæt turen kom på træningspasset.",
       "empty": "Du har ingen ture endnu. Upload en fil herunder, så kommer den her.",
       "km": "{km} km",
       "more": "Vis flere"
@@ -1324,7 +1324,7 @@
     "notFound": "Det findes ikke længere. Genindlæs siden.",
     "conflict": "Nogen har ændret det samtidig. Genindlæs siden og prøv igen.",
     "generic": "Noget gik galt. Prøv igen.",
-    "alreadyDone": "Passet er allerede markeret som udført. Genindlæs siden.",
+    "alreadyDone": "Træningspasset er allerede markeret som udført. Genindlæs siden.",
     "alreadyInvited": "Der er allerede et åbent link til den adresse. Kopiér det, der findes, eller træk det tilbage under Indstillinger → Arbejdsrum.",
     "alreadyMember": "Personen er allerede med på holdet.",
     "alreadyParent": "Personen er allerede forælder til rytteren.",
@@ -1344,7 +1344,7 @@
     "repeatOrder": "Slutdatoen ligger før den første dag.",
     "repeatTooLong": "En gentagelse kan højst gå et halvt år frem.",
     "repeatEmpty": "Ingen af de valgte ugedage ligger i perioden.",
-    "repeatTooMany": "Det bliver for mange pas på én gang. Vælg færre ryttere eller en kortere periode.",
+    "repeatTooMany": "Det bliver for mange træningspas på én gang. Vælg færre ryttere eller en kortere periode.",
     "copySameWeek": "En uge kan ikke kopieres ind i sig selv.",
     "uciBirthYear": "Det UCI ID tilhører en rytter med et andet fødselsår. Tjek tallet på licensen.",
     "uciUnknown": "Cykling Danmark kender ikke det UCI ID. Tjek tallet på licensen.",
@@ -1355,13 +1355,13 @@
   "calendar": {
     "title": "Kalender",
     "teamSubtitle": "Hele holdets uge",
-    "sessionPanel": "Pas",
+    "sessionPanel": "Træningspas",
     "backToWeek": "Tilbage til ugen",
-    "sessionMissing": "Passet findes ikke",
+    "sessionMissing": "Træningspasset findes ikke",
     "sessionMissingHint": "Det er måske slettet, eller også har du ikke adgang til det.",
     "empty": {
       "coachTitle": "Ingen ryttere endnu",
-      "coachBody": "Kalenderen fyldes, når holdet har ryttere. Tilføj den første, så kan du lægge pas i ugen.",
+      "coachBody": "Kalenderen fyldes, når holdet har ryttere. Tilføj den første, så kan du lægge træningspas i ugen.",
       "coachAction": "Tilføj ryttere",
       "waitingTitle": "Venter på dit barns bekræftelse",
       "waitingBody": "Du kan se dit barns træning, når rytteren har bekræftet forbindelsen til dig under Indstillinger → Profil.",
@@ -1400,7 +1400,7 @@
       "legend": "Farverne betyder",
       "dayLabel": "{day}: {what}",
       "nothing": "intet planlagt",
-      "rides": "{count, plural, one {# tur uden pas} other {# ture uden pas}}",
+      "rides": "{count, plural, one {# tur uden træningspas} other {# ture uden træningspas}}",
       "more": "+{count}",
       "teamCaption": "Holdets måned: en række pr. rytter og en kolonne pr. dag",
       "rider": "Rytter",
@@ -1427,7 +1427,7 @@
       "noGoal": "Ingen sæsonplan",
       "planned": "Lagt ind {hours} t",
       "dcu": "{ref, select, dcu {DCU} motionist {Motionist} other {Supermotionist}} {hours} t",
-      "sessions": "{done} af {planned} pas udført",
+      "sessions": "{done} af {planned} træningspas udført",
       "teamCaption": "Holdets sæson: en række pr. rytter og en kolonne pr. måned",
       "rider": "Rytter",
       "total": "I alt",
@@ -1445,7 +1445,7 @@
     "week": {
       "today": "I dag",
       "nothing": "Intet planlagt",
-      "addOn": "Tilføj pas {day}",
+      "addOn": "Tilføj træningspas {day}",
       "movedTo": "{title} er flyttet til {day}."
     },
     "totals": {
@@ -1458,7 +1458,7 @@
       "explain": {
         "title": "Hvad betyder tallene?",
         "plannedTerm": "Lagt ind",
-        "planned": "De pas, der ligger i kalenderen, udført eller ej. Under hele ugen tæller alle sportsgrene, på cyklen kun cykelpassene.",
+        "planned": "De træningspas, der ligger i kalenderen, udført eller ej. Under hele ugen tæller alle sportsgrene, på cyklen kun cykelpassene.",
         "doneTerm": "Udført og kørt",
         "done": "Det, der faktisk er lavet. Udført tæller alle sportsgrene, kørt kun cyklen.",
         "goalTerm": "Sæsonplan",
@@ -1467,17 +1467,17 @@
         "expectedTerm": "Forventet",
         "expected": "Det, der er kørt, plus de cykelpas, der stadig ligger resten af ugen."
       },
-      "strength": "Styrke: {done} af {planned} pas udført. {ref, select, dcu {DCU anbefaler} motionist {Motionist foreslår} other {Supermotionist foreslår}} {dcu} om ugen.",
-      "strengthOwn": "Styrke: {done} af {planned} pas udført."
+      "strength": "Styrke: {done} af {planned} træningspas udført. {ref, select, dcu {DCU anbefaler} motionist {Motionist foreslår} other {Supermotionist foreslår}} {dcu} om ugen.",
+      "strengthOwn": "Styrke: {done} af {planned} træningspas udført."
     },
     "actions": {
-      "addSession": "Tilføj pas",
+      "addSession": "Tilføj træningspas",
       "log": "Log træning",
       "addEvent": "Tilføj begivenhed"
     },
     "card": {
       "group": "Holdpas",
-      "series": "Gentaget pas",
+      "series": "Gentaget træningspas",
       "comments": "{count, plural, one {# kommentar} other {# kommentarer}}"
     },
     "team": {
@@ -1498,18 +1498,18 @@
       "delete": "Slet"
     },
     "move": {
-      "moveTitle": "Flyt passet",
-      "copyTitle": "Kopiér passet",
+      "moveTitle": "Flyt træningspasset",
+      "copyTitle": "Kopiér træningspasset",
       "date": "Til dato",
       "rider": "Til rytter",
       "move": "Flyt",
       "copy": "Kopiér",
-      "moved": "Passet er flyttet.",
-      "copied": "Passet er kopieret."
+      "moved": "Træningspasset er flyttet.",
+      "copied": "Træningspasset er kopieret."
     },
     "delete": {
       "title": "Slet {title}?",
-      "body": "Passet forsvinder fra kalenderen sammen med kommentarerne til det.",
+      "body": "Træningspasset forsvinder fra kalenderen sammen med kommentarerne til det.",
       "scope": "Hvad skal slettes?",
       "scopes": {
         "one": "Kun denne",
@@ -1517,25 +1517,25 @@
         "series": "Dette og de kommende i serien"
       },
       "scopeHints": {
-        "one": "Kun denne rytters pas.",
-        "group": "Alle ryttere, der har fået passet og ikke har udført det endnu.",
-        "series": "Alle pas i serien fra denne dag, som ikke er udført endnu."
+        "one": "Kun denne rytters træningspas.",
+        "group": "Alle ryttere, der har fået træningspasset og ikke har udført det endnu.",
+        "series": "Alle træningspas i serien fra denne dag, som ikke er udført endnu."
       },
-      "deleted": "Passet er slettet."
+      "deleted": "Træningspasset er slettet."
     },
     "edit": {
-      "title": "Ret passet",
-      "done": "Passet er udført. Retter du planen, sammenlignes det udførte med den nye plan.",
+      "title": "Ret træningspasset",
+      "done": "Træningspasset er udført. Retter du planen, sammenlignes det udførte med den nye plan.",
       "scope": "Hvad skal ændringen gælde for?",
       "scopes": {
         "group": "Hele gruppen (dem, der ikke har udført det)",
-        "one": "Kun dette pas",
+        "one": "Kun dette træningspas",
         "series": "Dette og de kommende i serien (dem, der ikke er udført)"
       }
     },
     "add": {
-      "title": "Tilføj pas",
-      "body": "Vælg hvem og hvornår, og tag et pas fra biblioteket eller byg et nyt.",
+      "title": "Tilføj træningspas",
+      "body": "Vælg hvem og hvornår, og tag et træningspas fra biblioteket eller byg et nyt.",
       "riders": "Ryttere",
       "all": "Vælg alle",
       "none": "Fravælg alle",
@@ -1550,14 +1550,14 @@
       "noTemplates": "Biblioteket er tomt endnu.",
       "noMatch": "Ingen skabeloner passer til søgningen.",
       "pickRider": "Vælg mindst én rytter.",
-      "pickTemplate": "Vælg et pas fra biblioteket.",
+      "pickTemplate": "Vælg et træningspas fra biblioteket.",
       "submit": "Læg i kalenderen",
-      "added": "{count, plural, one {Passet er lagt i kalenderen.} other {Passet er lagt i # kalendere.}}",
-      "addedSeries": "{count, plural, one {Serien er lagt ind: # pas.} other {Serien er lagt ind: # pas.}}"
+      "added": "{count, plural, one {Træningspasset er lagt i kalenderen.} other {Træningspasset er lagt i # kalendere.}}",
+      "addedSeries": "{count, plural, one {Serien er lagt ind: # træningspas.} other {Serien er lagt ind: # træningspas.}}"
     },
     "timePlace": {
       "legend": "Tid og sted",
-      "hint": "Til et pas, I kører sammen. Begge kan stå tomme.",
+      "hint": "Til et træningspas, I kører sammen. Begge kan stå tomme.",
       "time": "Starttid",
       "place": "Mødested",
       "placePlaceholder": "Fx klubhuset",
@@ -1567,7 +1567,7 @@
       "open": "Del ugen",
       "week": "Uge {n}",
       "riders": "{count, plural, one {# rytter} other {# ryttere}}",
-      "empty": "Ingen pas i ugen.",
+      "empty": "Ingen træningspas i ugen.",
       "until": "til og med {day}",
       "transport": "Kørsel: {note}",
       "copied": "Ugen er kopieret som tekst. Sæt den ind i holdets chat.",
@@ -1577,32 +1577,32 @@
       "toggle": "Gentag på faste ugedage",
       "weekdays": "Ugedage",
       "until": "Til og med",
-      "summary": "Det giver {count} pas.",
-      "summaryRiders": "Det giver {count} pas pr. rytter, {total} i alt.",
+      "summary": "Det giver {count} træningspas.",
+      "summaryRiders": "Det giver {count} træningspas pr. rytter, {total} i alt.",
       "problem": {
         "order": "Slutdatoen ligger før den første dag.",
         "tooLong": "Højst {weeks} uger ad gangen.",
         "empty": "Ingen af de valgte ugedage ligger i perioden.",
-        "tooMany": "Det bliver for mange pas på én gang. Vælg færre ryttere eller en kortere periode."
+        "tooMany": "Det bliver for mange træningspas på én gang. Vælg færre ryttere eller en kortere periode."
       },
       "close": "{first} og {second} ligger under 48 timer fra hinanden. DCU anbefaler mindst 48 timer mellem styrkepas.",
       "tooManyStrength": "Fra uge {week} ({date}) anbefaler DCU {max} styrkepas om ugen. Serien har {perWeek}.",
       "closeProfile": "{first} og {second} ligger under 48 timer fra hinanden. Hold mindst 48 timer mellem to styrkepas.",
       "tooManyStrengthProfile": "Fra uge {week} ({date}) foreslår {profile, select, motionist {Motionist} other {Supermotionist}} {max} styrkepas om ugen. Serien har {perWeek}.",
-      "hint": "Hvert pas kan stadig flyttes og rettes for sig. \"Ret\" og \"Slet\" kan også tage resten af serien.",
+      "hint": "Hvert træningspas kan stadig flyttes og rettes for sig. \"Ret\" og \"Slet\" kan også tage resten af serien.",
       "preview": "Se timerne mod sæsonplanen"
     },
     "copyWeek": {
       "open": "Kopiér ugen før",
       "title": "Kopiér en uge",
-      "body": "Hver rytter får sine egne pas fra den valgte uge lagt ind på de samme ugedage i {week}. Det, der er kørt, følger ikke med.",
+      "body": "Hver rytter får sine egne træningspas fra den valgte uge lagt ind på de samme ugedage i {week}. Det, der er kørt, følger ikke med.",
       "from": "Kopiér fra ugen med",
       "weekLabel": "uge {n} ({from}–{to})",
       "preview": "Se, hvad det giver",
       "confirm": "Kopiér ugen",
-      "counts": "{copied, plural, =0 {Der er ingen pas at kopiere i den uge.} one {# pas kopieres.} other {# pas kopieres.}}",
-      "skipped": "{skipped, plural, one {# pas springes over, fordi serien allerede har en dag i ugen.} other {# pas springes over, fordi deres serie allerede har en dag i ugen.}}",
-      "done": "{count, plural, one {# pas er kopieret.} other {# pas er kopieret.}}"
+      "counts": "{copied, plural, =0 {Der er ingen træningspas at kopiere i den uge.} one {# træningspas kopieres.} other {# træningspas kopieres.}}",
+      "skipped": "{skipped, plural, one {# træningspas springes over, fordi serien allerede har en dag i ugen.} other {# træningspas springes over, fordi deres serie allerede har en dag i ugen.}}",
+      "done": "{count, plural, one {# træningspas er kopieret.} other {# træningspas er kopieret.}}"
     },
     "event": {
       "addTitle": "Tilføj begivenhed",
@@ -1631,7 +1631,7 @@
       "fromParent": "En forælder har lagt den ind. Rytteren og trænerne kan rette og slette den.",
       "racePrep": {
         "title": "Dagen før løbet",
-        "body": "Opladning før løbet: en time roligt med 5 minutter ved tærskel, så benene er vågne og friske til start. Passet åbner, så du kan rette det, før det lægges ind.",
+        "body": "Opladning før løbet: en time roligt med 5 minutter ved tærskel, så benene er vågne og friske til start. Træningspasset åbner, så du kan rette det, før det lægges ind.",
         "add": "Læg opladning ind {day}"
       },
       "results": {
@@ -1661,9 +1661,9 @@
     "backCalendar": "Tilbage til kalenderen",
     "coachOnly": "Kun trænere planlægger holdets uge.",
     "open": "Planlæg ugen",
-    "applied": "{count, plural, one {# pas er lagt ind} other {# pas er lagt ind}} hos {riders, plural, one {# rytter} other {# ryttere}}.",
-    "appliedOwn": "{count, plural, one {# pas er lagt ind} other {# pas er lagt ind}} i din kalender.",
-    "appliedChild": "{count, plural, one {# pas er lagt ind} other {# pas er lagt ind}} i {owner} kalender.",
+    "applied": "{count, plural, one {# træningspas er lagt ind} other {# træningspas er lagt ind}} hos {riders, plural, one {# rytter} other {# ryttere}}.",
+    "appliedOwn": "{count, plural, one {# træningspas er lagt ind} other {# træningspas er lagt ind}} i din kalender.",
+    "appliedChild": "{count, plural, one {# træningspas er lagt ind} other {# træningspas er lagt ind}} i {owner} kalender.",
     "riders": {
       "title": "Hvem er ugen for?",
       "quick": "Vælg hurtigt",
@@ -1672,13 +1672,13 @@
     },
     "week": {
       "title": "Ugen",
-      "body": "Læg pas på dagene fra biblioteket, eller byg dem her. Intet kommer i kalenderen, før du lægger ugen ind.",
+      "body": "Læg træningspas på dagene fra biblioteket, eller byg dem her. Intet kommer i kalenderen, før du lægger ugen ind.",
       "replaced": "Ugen er skiftet ud.",
       "moved": "{title} er flyttet til {day}.",
       "undo": "Fortryd"
     },
     "days": {
-      "add": "Tilføj pas {day}",
+      "add": "Tilføj træningspas {day}",
       "edit": "Ret {title}",
       "remove": "Fjern {title}",
       "move": "Flyt {title} til en anden dag",
@@ -1686,8 +1686,8 @@
       "rest": "Hviledag"
     },
     "item": {
-      "addTitle": "Pas {day}",
-      "editTitle": "Ret passet {day}",
+      "addTitle": "Træningspas {day}",
+      "editTitle": "Ret træningspasset {day}",
       "add": "Læg på {day}"
     },
     "start": {
@@ -1696,14 +1696,14 @@
       "last": "Sidste uge",
       "block": "Et forløb",
       "ai": "AI",
-      "emptyBody": "Begynd med en tom uge, og læg passene på dagene.",
+      "emptyBody": "Begynd med en tom uge, og læg træningspassene på dagene.",
       "clear": "Tøm ugen",
-      "lastOne": "Henter rytterens pas fra ugen før.",
-      "lastOwn": "Henter dine pas fra ugen før.",
-      "lastChild": "Henter {owner} pas fra ugen før.",
-      "lastMany": "Henter holdpassene fra ugen før, hvert pas én gang. Rytternes egne pas kommer ikke med.",
+      "lastOne": "Henter rytterens træningspas fra ugen før.",
+      "lastOwn": "Henter dine træningspas fra ugen før.",
+      "lastChild": "Henter {owner} træningspas fra ugen før.",
+      "lastMany": "Henter holdpassene fra ugen før, hvert træningspas én gang. Rytternes egne træningspas kommer ikke med.",
       "loadLast": "Hent sidste uge",
-      "lastEmpty": "Der var ingen pas at hente i ugen før.",
+      "lastEmpty": "Der var ingen træningspas at hente i ugen før.",
       "noBlocks": "Der er ingen forløb i biblioteket endnu. Gem en uge som forløb nedenfor, så kan du starte fra den en anden gang.",
       "week": "Ugen i forløbet",
       "weekN": "Uge {n}",
@@ -1728,34 +1728,34 @@
       "title": "Forslag til holdets uge",
       "titleOwn": "Forslag til din uge",
       "titleChild": "Forslag til {owner} uge",
-      "body": "\"Brug forslaget\" lægger passene i planen her. Intet kommer i kalenderen, før du lægger ugen ind.",
-      "empty": "AI'en foreslog ingen pas til ugen.",
+      "body": "\"Brug forslaget\" lægger træningspassene i planen her. Intet kommer i kalenderen, før du lægger ugen ind.",
+      "empty": "AI'en foreslog ingen træningspas til ugen.",
       "use": "Brug forslaget"
     },
     "apply": {
       "title": "Læg ugen ind",
-      "empty": "Vælg ryttere, og læg mindst ét pas på ugen.",
-      "emptyOne": "Læg mindst ét pas på ugen.",
-      "summary": "{sessions, plural, one {# pas} other {# pas}} til {riders, plural, one {# rytter} other {# ryttere}}. Hvert pas bliver et holdpas, så \"Ret alle\" virker bagefter.",
+      "empty": "Vælg ryttere, og læg mindst ét træningspas på ugen.",
+      "emptyOne": "Læg mindst ét træningspas på ugen.",
+      "summary": "{sessions, plural, one {# træningspas} other {# træningspas}} til {riders, plural, one {# rytter} other {# ryttere}}. Hvert træningspas bliver et holdpas, så \"Ret alle\" virker bagefter.",
       "preview": "Se, hvad det giver mod sæsonplanen",
       "confirm": "{riders, plural, one {Læg ugen ind hos # rytter} other {Læg ugen ind hos # ryttere}}",
       "repeat": "Læg ugen ind i",
       "weeksOption": "{weeks, plural, one {Kun denne uge} other {# uger i træk}}",
-      "summaryWeeks": "{sessions, plural, one {# pas} other {# pas}} om ugen til {riders, plural, one {# rytter} other {# ryttere}} i {weeks, plural, one {# uge} other {# uger i træk}}. Hvert pas bliver et holdpas hver uge og en serie over ugerne, så du kan rette dem samlet bagefter.",
+      "summaryWeeks": "{sessions, plural, one {# træningspas} other {# træningspas}} om ugen til {riders, plural, one {# rytter} other {# ryttere}} i {weeks, plural, one {# uge} other {# uger i træk}}. Hvert træningspas bliver et holdpas hver uge og en serie over ugerne, så du kan rette dem samlet bagefter.",
       "confirmWeeks": "{riders, plural, one {Læg ugerne ind hos # rytter} other {Læg ugerne ind hos # ryttere}}",
-      "summaryOwn": "{sessions, plural, one {# pas} other {# pas}} i din kalender.",
-      "summaryOwnWeeks": "{sessions, plural, one {# pas} other {# pas}} om ugen i din kalender i {weeks, plural, one {# uge} other {# uger i træk}}. Hvert pas bliver en serie over ugerne, så du kan rette dem samlet bagefter.",
+      "summaryOwn": "{sessions, plural, one {# træningspas} other {# træningspas}} i din kalender.",
+      "summaryOwnWeeks": "{sessions, plural, one {# træningspas} other {# træningspas}} om ugen i din kalender i {weeks, plural, one {# uge} other {# uger i træk}}. Hvert træningspas bliver en serie over ugerne, så du kan rette dem samlet bagefter.",
       "confirmOwn": "Læg ugen ind i din kalender",
       "confirmOwnWeeks": "Læg ugerne ind i din kalender",
-      "summaryChild": "{sessions, plural, one {# pas} other {# pas}} i {owner} kalender.",
-      "summaryChildWeeks": "{sessions, plural, one {# pas} other {# pas}} om ugen i {owner} kalender i {weeks, plural, one {# uge} other {# uger i træk}}. Hvert pas bliver en serie over ugerne, så du kan rette dem samlet bagefter.",
+      "summaryChild": "{sessions, plural, one {# træningspas} other {# træningspas}} i {owner} kalender.",
+      "summaryChildWeeks": "{sessions, plural, one {# træningspas} other {# træningspas}} om ugen i {owner} kalender i {weeks, plural, one {# uge} other {# uger i træk}}. Hvert træningspas bliver en serie over ugerne, så du kan rette dem samlet bagefter.",
       "confirmChild": "Læg ugen ind i {owner} kalender",
       "confirmChildWeeks": "Læg ugerne ind i {owner} kalender"
     },
     "save": {
       "open": "Gem som forløb",
       "title": "Gem ugen som forløb",
-      "body": "Ugen bliver et forløb på én uge i biblioteket. Du kan starte fra det igen eller lægge det ind derfra. Pas, du har bygget her, bliver i forløbet og kommer ikke i biblioteket for sig.",
+      "body": "Ugen bliver et forløb på én uge i biblioteket. Du kan starte fra det igen eller lægge det ind derfra. Træningspas, du har bygget her, bliver i forløbet og kommer ikke i biblioteket for sig.",
       "name": "Navn",
       "defaultName": "Uge {n}",
       "submit": "Gem forløbet",
@@ -1780,44 +1780,44 @@
   "library": {
     "title": "Bibliotek",
     "own": {
-      "titleRider": "Mine pas",
-      "subtitleRider": "Pas, du selv har bygget. Din træner kan se dem og tage dem med i holdets bibliotek.",
-      "titleCoach": "Rytternes egne pas",
-      "subtitleCoach": "Pas, rytterne selv har bygget. Tag et ind i holdets bibliotek, så hele holdet kan bruge det.",
-      "emptyRider": "Her kommer de pas, du selv bygger. Start med knapperne ovenfor.",
-      "emptyCoach": "Når en rytter bygger sine egne pas, står de her.",
+      "titleRider": "Mine træningspas",
+      "subtitleRider": "Træningspas, du selv har bygget. Din træner kan se dem og tage dem med i holdets bibliotek.",
+      "titleCoach": "Rytternes egne træningspas",
+      "subtitleCoach": "Træningspas, rytterne selv har bygget. Tag et ind i holdets bibliotek, så hele holdet kan bruge det.",
+      "emptyRider": "Her kommer de træningspas, du selv bygger. Start med knapperne ovenfor.",
+      "emptyCoach": "Når en rytter bygger sine egne træningspas, står de her.",
       "schedule": "Læg i kalenderen",
       "edit": "Ret",
       "adopt": "Tag ind i holdets bibliotek",
       "adopted": "Taget ind i biblioteket",
-      "adoptedNow": "Passet er nu i holdets bibliotek.",
-      "newSubtitle": "Dit eget pas. Du kan lægge det i din kalender, og din træner kan se det.",
-      "detailSubtitle": "En rytters eget pas."
+      "adoptedNow": "Træningspasset er nu i holdets bibliotek.",
+      "newSubtitle": "Dit eget træningspas. Du kan lægge det i din kalender, og din træner kan se det.",
+      "detailSubtitle": "En rytters eget træningspas."
     },
-    "subtitle": "Holdets pas og programmer, klar til at lægge i kalenderen.",
+    "subtitle": "Holdets træningspas og programmer, klar til at lægge i kalenderen.",
     "newBike": "Nyt cykelpas",
     "newStrength": "Nyt styrkepas",
     "newWithAi": "Byg med AI",
-    "newSession": "Nyt pas",
+    "newSession": "Nyt træningspas",
     "moreActions": "Flere handlinger",
     "newTitle": "Ny skabelon",
     "newTitleBike": "Nyt cykelpas",
     "newTitleStrength": "Nyt styrkepas",
-    "newSubtitle": "Et pas, du kan bruge igen og igen, til én rytter eller hele holdet.",
+    "newSubtitle": "Et træningspas, du kan bruge igen og igen, til én rytter eller hele holdet.",
     "back": "Tilbage til biblioteket",
     "search": "Søg efter navn",
-    "sportFilter": "Vis pas",
+    "sportFilter": "Vis træningspas",
     "allSports": "Alle",
     "noMatch": "Ingen skabeloner passer til søgningen",
     "emptyTitle": "Biblioteket er tomt",
-    "emptyBody": "Byg holdets første pas, eller hent DCU's styrkeprogrammer. Så kan du lægge dem i kalenderen med et par tryk.",
+    "emptyBody": "Byg holdets første træningspas, eller hent DCU's styrkeprogrammer. Så kan du lægge dem i kalenderen med et par tryk.",
     "archivedMark": "Arkiveret",
     "showArchived": "Vis også arkiverede",
     "hideArchived": "Skjul arkiverede",
     "dcuSubtitle": "DCU's program. Det kan ikke rettes her, men du kan kopiere det og tilpasse kopien.",
-    "kadenceSubtitle": "Kadences eget pas til voksne på en træningsprofil. Det kan ikke rettes her, men du kan kopiere det og tilpasse kopien.",
+    "kadenceSubtitle": "Kadences eget træningspas til voksne på en træningsprofil. Det kan ikke rettes her, men du kan kopiere det og tilpasse kopien.",
     "coachOnlyTitle": "Kun trænere laver skabeloner",
-    "coachOnlyBody": "Du kan stadig lægge bibliotekets pas i din egen kalender.",
+    "coachOnlyBody": "Du kan stadig lægge bibliotekets træningspas i din egen kalender.",
     "actions": {
       "schedule": "Planlæg",
       "edit": "Ret",
@@ -1831,12 +1831,12 @@
       "restored": "Skabelonen er tilbage i biblioteket."
     },
     "schedule": {
-      "title": "Planlæg pas",
+      "title": "Planlæg træningspas",
       "forRider": "For {name}",
       "date": "Dato",
       "submit": "Læg i kalenderen",
-      "done": "{count, plural, one {Passet er lagt i kalenderen.} other {Passet er lagt i # kalendere.}}",
-      "doneSeries": "{count, plural, one {Serien er lagt ind: # pas.} other {Serien er lagt ind: # pas.}}"
+      "done": "{count, plural, one {Træningspasset er lagt i kalenderen.} other {Træningspasset er lagt i # kalendere.}}",
+      "doneSeries": "{count, plural, one {Serien er lagt ind: # træningspas.} other {Serien er lagt ind: # træningspas.}}"
     },
     "editor": {
       "create": "Gem skabelonen",
@@ -1848,17 +1848,17 @@
     },
     "kadence": {
       "install": "Hent motionistpas",
-      "done": "Kadences pas, programmer og forløb til voksne er i biblioteket: {installed} nye, {updated} opdateret."
+      "done": "Kadences træningspas, programmer og forløb til voksne er i biblioteket: {installed} nye, {updated} opdateret."
     },
     "blocks": {
       "title": "Forløb",
-      "subtitle": "Flere ugers pas fra biblioteket, lagt ind fra en mandag hos en eller flere ryttere.",
+      "subtitle": "Flere ugers træningspas fra biblioteket, lagt ind fra en mandag hos en eller flere ryttere.",
       "new": "Nyt forløb",
-      "newBody": "Læg pas fra biblioteket på dagene, uge for uge. Forløbet kommer først i kalenderen, når det lægges ind.",
+      "newBody": "Læg træningspas fra biblioteket på dagene, uge for uge. Forløbet kommer først i kalenderen, når det lægges ind.",
       "editBody": "Ret forløbet. Det, der allerede ligger i kalenderen, ændres ikke.",
       "coachOnly": "Kun trænere kan lave forløb.",
       "empty": "Ingen forløb endnu.",
-      "meta": "{weeks, plural, one {# uge} other {# uger}} · {sessions, plural, one {# pas} other {# pas}} · ca. {hours} t på cyklen",
+      "meta": "{weeks, plural, one {# uge} other {# uger}} · {sessions, plural, one {# træningspas} other {# træningspas}} · ca. {hours} t på cyklen",
       "edit": "Ret",
       "apply": "Læg ind",
       "name": "Navn",
@@ -1867,8 +1867,8 @@
       "weekCount": "{n, plural, one {# uge} other {# uger}}",
       "week": "Uge {n}",
       "weekHours": "{hours} på cyklen",
-      "add": "+ Tilføj pas",
-      "addTo": "Tilføj pas {day} i uge {week}",
+      "add": "+ Tilføj træningspas",
+      "addTo": "Tilføj træningspas {day} i uge {week}",
       "remove": "Fjern {name}",
       "applyTitle": "Læg forløbet ind",
       "applyBody": "{name}, {weeks, plural, one {# uge} other {# uger}}: vælg ryttere og den mandag, forløbet starter.",
@@ -1880,7 +1880,7 @@
       "weekLine": "Uge {n} ({date}): {hours} t på cyklen, {strength, plural, =0 {ingen styrkepas} one {# styrkepas} other {# styrkepas}}",
       "corridor": "DCU {low}–{high} t",
       "previewNote": "Opmærksomhedspunkterne er en hjælp, og du bestemmer. Du kan lægge forløbet ind og rette bagefter i kalenderen.",
-      "ownSession": "Bygget i planlæggeren. Passet findes kun i forløbet."
+      "ownSession": "Bygget i planlæggeren. Træningspasset findes kun i forløbet."
     }
   },
   "riders": {
@@ -1895,7 +1895,7 @@
     "back": "Tilbage til rytterne",
     "calendar": "Se kalenderen",
     "emptyTitle": "Ingen ryttere endnu",
-    "emptyBody": "Tilføj holdets ryttere. Du kan lægge pas til dem med det samme, og invitere dem, når de er klar.",
+    "emptyBody": "Tilføj holdets ryttere. Du kan lægge træningspas til dem med det samme, og invitere dem, når de er klar.",
     "coachOnlyTitle": "Kun for trænere",
     "coachOnlyBody": "Holdets liste over ryttere er trænernes. Din egen profil finder du under Indstillinger → Profil.",
     "showArchived": "Vis også arkiverede ryttere",
@@ -2024,7 +2024,7 @@
       "body": "Rytteren er senior, og DCU har ingen timer for voksne. Vælg den profil, sæsonplanen og ugens ramme bygger på.",
       "legend": "Profil",
       "motionist": "Motionist",
-      "motionistBody": "Omkring 5 timer om ugen, mest rolige ture, et par hårde pas.",
+      "motionistBody": "Omkring 5 timer om ugen, mest rolige ture, et par hårde træningspas.",
       "superMotionist": "Supermotionist",
       "superMotionistBody": "Omkring 10 timer om ugen, bygget op mod sommerens løb og lange ture.",
       "default": "Motionist er valgt, fordi der ikke er valgt en profil endnu. Du kan skifte når som helst.",
@@ -2040,7 +2040,7 @@
       "restingHr": "Hvilepuls",
       "bpm": "slag/min",
       "date": "Målt den",
-      "hint": "Brug tallene fra den seneste test. Tomme felter er helt i orden: så viser passene zoner og følelse.",
+      "hint": "Brug tallene fra den seneste test. Tomme felter er helt i orden: så viser træningspassene zoner og følelse.",
       "explainLabel": "Hvad er {name}?",
       "explain": {
         "ftpWatts": "Den højeste effekt, du kan holde i omkring en time. Zonerne på cyklen regnes ud fra den. Du finder den med en test på 20 minutter, hvor FTP er 95 % af gennemsnittet, eller ved at lade Kadence foreslå den ud fra turene.",
@@ -2100,8 +2100,8 @@
     },
     "accountCard": {
       "title": "Rytterens konto",
-      "hasAccount": "Rytteren har sin egen konto og kan se og udføre sine pas.",
-      "body": "Med en konto kan rytteren se sine pas, markere dem udført og skrive kommentarer.",
+      "hasAccount": "Rytteren har sin egen konto og kan se og udføre sine træningspas.",
+      "body": "Med en konto kan rytteren se sine træningspas, markere dem udført og skrive kommentarer.",
       "email": "Rytterens e-mail",
       "send": "Lav invitationslink",
       "resend": "Lav et nyt link"
@@ -2210,13 +2210,13 @@
   },
   "session": {
     "print": "Udskriv eller gem som PDF",
-    "notFound": "Passet findes ikke",
+    "notFound": "Træningspasset findes ikke",
     "indoors": "Kør indendørs i Rulle",
-    "tryIndoors": "Prøv passet i Rulle",
+    "tryIndoors": "Prøv træningspasset i Rulle",
     "notFoundHint": "Det er måske slettet, eller også har du ikke adgang til det.",
     "km": "{km} km",
     "group": "Holdpas",
-    "structure": "Passet",
+    "structure": "Træningspasset",
     "done": {
       "time": "Tid",
       "distance": "Distance",
@@ -2229,7 +2229,7 @@
       "note": "Note",
       "undo": "Fortryd udført",
       "undoTitle": "Fortryd udført?",
-      "undoBody": "Passet bliver åbent igen, og den tid og vurdering, der blev skrevet, forsvinder.",
+      "undoBody": "Træningspasset bliver åbent igen, og den tid og vurdering, der blev skrevet, forsvinder.",
       "openActivity": "Se aktiviteten"
     },
     "notDoneYet": "Ikke udført endnu.",
@@ -2249,7 +2249,7 @@
     },
     "feedback": {
       "rpe": "Hvor hårdt var det? (RPE)",
-      "rpeHint": "Tænk på hele passet. 1 er meget, meget let, 10 er det hårdeste, du kan.",
+      "rpeHint": "Tænk på hele træningspasset. 1 er meget, meget let, 10 er det hårdeste, du kan.",
       "feel": "Hvordan havde du det?"
     },
     "complete": {
@@ -2258,23 +2258,23 @@
       "note": "Note",
       "notePlaceholder": "Fx tunge ben, men god dag",
       "submit": "Udført",
-      "saved": "Godt gået. Passet er udført."
+      "saved": "Godt gået. Træningspasset er udført."
     },
     "doneTitle": "Udført",
     "commentsTitle": "{count, plural, =0 {Kommentarer} one {# kommentar} other {# kommentarer}}",
     "toDevice": {
       "button": "Send til cykelcomputer",
-      "weekButton": "{count, plural, one {Send ugens pas til cykelcomputeren} other {Send ugens # pas til cykelcomputeren}}",
-      "working": "Lægger pas på cykelcomputeren …",
+      "weekButton": "{count, plural, one {Send ugens træningspas til cykelcomputeren} other {Send ugens # træningspas til cykelcomputeren}}",
+      "working": "Lægger træningspas på cykelcomputeren …",
       "hint": "Sæt cykelcomputeren til med kabel, og vælg den, når browseren spørger.",
       "manualHint": "Din browser kan ikke skrive på cykelcomputeren. Du kan hente filerne og lægge dem over selv.",
-      "manual": "Hent {count, plural, one {filen} other {filerne}}, sæt cykelcomputeren til med kabel, og læg {count, plural, one {den} other {dem}} i mappen Garmin/NewFiles. Skub cykelcomputeren ud; så finder du {count, plural, one {passet} other {passene}} under Træning.",
+      "manual": "Hent {count, plural, one {filen} other {filerne}}, sæt cykelcomputeren til med kabel, og læg {count, plural, one {den} other {dem}} i mappen Garmin/NewFiles. Skub cykelcomputeren ud; så finder du {count, plural, one {træningspasset} other {træningspassene}} under Træning.",
       "mtp": "En Edge 540, 840, 1040 eller 1050 viser sig ikke som et drev på en Mac. Brug Stifinder på en Windows-pc.",
-      "sent": "{count, plural, one {Passet ligger nu på cykelcomputeren.} other {# pas ligger nu på cykelcomputeren.}} Skub den ud; så finder du {count, plural, one {det} other {dem}} under Træning.",
+      "sent": "{count, plural, one {Træningspasset ligger nu på cykelcomputeren.} other {# træningspas ligger nu på cykelcomputeren.}} Skub den ud; så finder du {count, plural, one {det} other {dem}} under Træning.",
       "notGarmin": "Det ligner ikke en Garmin. Vælg selve cykelcomputeren, drevet der hedder GARMIN.",
       "denied": "Kadence fik ikke lov til at skrive på cykelcomputeren. Prøv igen, og sig ja, når browseren spørger.",
-      "failed": "Passene kunne ikke lægges på cykelcomputeren. Prøv igen, eller hent filerne selv.",
-      "help": "Sådan kommer passene på cykelcomputeren"
+      "failed": "Træningspassene kunne ikke lægges på cykelcomputeren. Prøv igen, eller hent filerne selv.",
+      "help": "Sådan kommer træningspassene på cykelcomputeren"
     },
     "export": {
       "button": "Hent til træner/enhed",
@@ -2292,22 +2292,22 @@
       },
       "fit": {
         "label": "Cykelcomputer (.fit)",
-        "hint": "Et pas, som Garmin, Wahoo og andre kan køre."
+        "hint": "Et træningspas, som Garmin, Wahoo og andre kan køre."
       }
     },
     "push": {
       "send": "Send til {name}",
       "sending": "Sender …",
-      "sent": "Passet er sendt til {name}. Det ligger på dagen i {name}s kalender.",
+      "sent": "Træningspasset er sendt til {name}. Det ligger på dagen i {name}s kalender.",
       "error": {
         "not_bike": "Kun cykelpas kan sendes til en enhed.",
-        "no_steps": "Passet har ingen trin at sende. Byg det i trin først.",
+        "no_steps": "Træningspasset har ingen trin at sende. Byg det i trin først.",
         "not_connected": "Rytteren har ikke forbundet {name}.",
         "reconnect": "Forbindelsen til {name} virker ikke længere. Rytteren skal forbinde igen under Indstillinger → Enheder.",
-        "provider_permission": "{name} har ikke fået lov til at modtage pas. Rytteren kan give lov hos {name} og forbinde igen.",
-        "provider_error": "{name} tog ikke imod passet. Prøv igen om lidt.",
+        "provider_permission": "{name} har ikke fået lov til at modtage træningspas. Rytteren kan give lov hos {name} og forbinde igen.",
+        "provider_error": "{name} tog ikke imod træningspasset. Prøv igen om lidt.",
         "not_configured": "{name} er ikke sat op på denne installation.",
-        "generic": "Passet kunne ikke sendes til {name}. Prøv igen."
+        "generic": "Træningspasset kunne ikke sendes til {name}. Prøv igen."
       }
     }
   },
@@ -2341,11 +2341,11 @@
         "harder": "Mere gas end planlagt"
       },
       "fact": {
-        "missed": "Planlagt {planned}. Der er ikke kommet noget ind for passet.",
-        "intensityHard": "Passet var bygget om zone {zone} med {planned} min der eller over. Turen havde {done} min, mest i zone {most}.",
-        "intensityEasy": "Passet var et roligt pas i zone {zone}. {share} % af turen lå i passets zoner, mest i zone {most}."
+        "missed": "Planlagt {planned}. Der er ikke kommet noget ind for træningspasset.",
+        "intensityHard": "Træningspasset var bygget om zone {zone} med {planned} min der eller over. Turen havde {done} min, mest i zone {most}.",
+        "intensityEasy": "Træningspasset var et roligt træningspas i zone {zone}. {share} % af turen lå i træningspassets zoner, mest i zone {most}."
       },
-      "plan": "Planen var {character, select, easy {en rolig tur} tempo {en tur i tempo} threshold {et pas om tærsklen} intervals {et intervalpas} strength {et styrkepas} other {et pas}}{timed, select, yes { på {planned}} other {}}.",
+      "plan": "Planen var {character, select, easy {en rolig tur} tempo {en tur i tempo} threshold {et træningspas om tærsklen} intervals {et intervalpas} strength {et styrkepas} other {et træningspas}}{timed, select, yes { på {planned}} other {}}.",
       "ride": {
         "power": "{who, select, you {Du} other {Rytteren}} kørte {done}{effort, select, muchHarder { og en del hårdere} harder { og lidt hårdere} same { og omtrent så hårdt som planlagt} easier { og lidt roligere} muchEasier { og en del roligere} other {}}, i gennemsnit omkring {pct} % af {who, select, you {din} other {sin}} FTP.",
         "hr": "{who, select, you {Du} other {Rytteren}} {sport, select, bike {kørte} other {trænede}} {done}{effort, select, muchHarder { og en del hårdere} harder { og lidt hårdere} same { og omtrent så hårdt som planlagt} easier { og lidt roligere} muchEasier { og en del roligere} other {}}, med en gennemsnitspuls omkring {pct} % af {who, select, you {din} other {sin}} tærskelpuls.",
@@ -2353,9 +2353,9 @@
         "time": "{who, select, you {Du} other {Rytteren}} {sport, select, bike {kørte} other {trænede}} {done}{effort, select, muchHarder { og en del hårdere} harder { og lidt hårdere} same { og omtrent så hårdt som planlagt} easier { og lidt roligere} muchEasier { og en del roligere} other {}}."
       },
       "whole": {
-        "more": "Samlet var {sport, select, bike {turen} other {passet}} omkring {pct} % hårdere for kroppen end planlagt{time, select, shorter {, selvom {sport, select, bike {den} other {det}} var kortere} longer {, og {sport, select, bike {den} other {det}} var også længere} other {}}.",
-        "less": "Samlet var {sport, select, bike {turen} other {passet}} omkring {pct} % lettere for kroppen end planlagt{time, select, shorter {, og {sport, select, bike {den} other {det}} var også kortere} longer {, selvom {sport, select, bike {den} other {det}} var længere} other {}}.",
-        "times": "Samlet var {sport, select, bike {turen omkring {times} gange så hård} other {passet omkring {times} gange så hårdt}} for kroppen som planlagt{time, select, shorter {, selvom {sport, select, bike {den} other {det}} var kortere} longer {, og {sport, select, bike {den} other {det}} var også længere} other {}}."
+        "more": "Samlet var {sport, select, bike {turen} other {træningspasset}} omkring {pct} % hårdere for kroppen end planlagt{time, select, shorter {, selvom {sport, select, bike {den} other {det}} var kortere} longer {, og {sport, select, bike {den} other {det}} var også længere} other {}}.",
+        "less": "Samlet var {sport, select, bike {turen} other {træningspasset}} omkring {pct} % lettere for kroppen end planlagt{time, select, shorter {, og {sport, select, bike {den} other {det}} var også kortere} longer {, selvom {sport, select, bike {den} other {det}} var længere} other {}}.",
+        "times": "Samlet var {sport, select, bike {turen omkring {times} gange så hård} other {træningspasset omkring {times} gange så hårdt}} for kroppen som planlagt{time, select, shorter {, selvom {sport, select, bike {den} other {det}} var kortere} longer {, og {sport, select, bike {den} other {det}} var også længere} other {}}."
       },
       "hint": {
         "ftp": "{who, select, you {Over {minutes} minutter i gennemsnit over din FTP er mere, end de fleste kan holde. Din FTP er nok sat for lavt.} other {Over {minutes} minutter i gennemsnit over rytterens FTP er mere, end de fleste kan holde. Rytterens FTP er nok sat for lavt.}}",
@@ -2364,13 +2364,13 @@
       },
       "howCounted": {
         "summary": "Sådan er det regnet",
-        "body": "{basis, select, pulse {Kadence vurderer, hvor meget et pas trækker på kroppen, ud fra tiden og din puls i forhold til din tærskelpuls. En time præcis på tærskelpulsen tæller 100.} felt {Kadence vurderer, hvor meget {sport, select, bike {en tur} other {et pas}} trækker på kroppen, ud fra tiden og hvor hårdt det føltes. En time på hårdt (8 af 10) tæller 100.} other {Kadence vurderer, hvor meget {sport, select, bike {en tur} other {et pas}} trækker på kroppen, ud fra tiden og hvor hårdt du kørte i forhold til din FTP (eller puls eller hvordan det føltes). En time præcis på FTP tæller 100.}}",
-        "numbers": "{sport, select, bike {Denne tur} other {Dette pas}}: {done}. Planen: {planned}."
+        "body": "{basis, select, pulse {Kadence vurderer, hvor meget et træningspas trækker på kroppen, ud fra tiden og din puls i forhold til din tærskelpuls. En time præcis på tærskelpulsen tæller 100.} felt {Kadence vurderer, hvor meget {sport, select, bike {en tur} other {et træningspas}} trækker på kroppen, ud fra tiden og hvor hårdt det føltes. En time på hårdt (8 af 10) tæller 100.} other {Kadence vurderer, hvor meget {sport, select, bike {en tur} other {et træningspas}} trækker på kroppen, ud fra tiden og hvor hårdt du kørte i forhold til din FTP (eller puls eller hvordan det føltes). En time præcis på FTP tæller 100.}}",
+        "numbers": "{sport, select, bike {Denne tur} other {Dette træningspas}}: {done}. Planen: {planned}."
       },
       "week": {
-        "inside": "Med resten af ugens pas ender ugen inden for {ref, select, dcu {DCU's ramme} other {profilens ramme}}.",
-        "over": "Med resten af ugens pas ender ugen over {ref, select, dcu {DCU's ramme} other {profilens ramme}}.",
-        "under": "Med resten af ugens pas ender ugen under {ref, select, dcu {DCU's ramme} other {profilens ramme}}."
+        "inside": "Med resten af ugens træningspas ender ugen inden for {ref, select, dcu {DCU's ramme} other {profilens ramme}}.",
+        "over": "Med resten af ugens træningspas ender ugen over {ref, select, dcu {DCU's ramme} other {profilens ramme}}.",
+        "under": "Med resten af ugens træningspas ender ugen under {ref, select, dcu {DCU's ramme} other {profilens ramme}}."
       }
     },
     "eventKind": {
@@ -2420,8 +2420,8 @@
   },
   "workouts": {
     "profile": {
-      "empty": "Ingen trin endnu. Tilføj et trin, så tegnes passet her.",
-      "label": "Passets profil: {steps, plural, one {# trin} other {# trin}}, {duration}"
+      "empty": "Ingen trin endnu. Tilføj et trin, så tegnes træningspasset her.",
+      "label": "Træningspassets profil: {steps, plural, one {# trin} other {# trin}}, {duration}"
     },
     "intent": {
       "warmup": "Opvarmning",
@@ -2476,7 +2476,7 @@
       "stepName": "trin {n}",
       "repeatName": "gentagelse {n}",
       "repeatTitle": "Gentagelse {n} · {times} ×",
-      "empty": "Passet har ingen trin endnu.",
+      "empty": "Træningspasset har ingen trin endnu.",
       "addStep": "Tilføj trin",
       "addRepeat": "Tilføj gentagelse"
     },
@@ -2499,21 +2499,21 @@
       "secondsShort": "sek",
       "note": "Note",
       "notePlaceholder": "Fx hold ryggen rank",
-      "linked": "Fra biblioteket: {name}. Passet viser tegning og vejledning.",
-      "linkedUnnamed": "Fra biblioteket. Passet viser tegning og vejledning.",
+      "linked": "Fra biblioteket: {name}. Træningspasset viser tegning og vejledning.",
+      "linkedUnnamed": "Fra biblioteket. Træningspasset viser tegning og vejledning.",
       "unlink": "Fjern koblingen"
     },
     "progression": {
       "group": "Gruppe",
-      "from": "Fra pas",
-      "to": "Til pas",
+      "from": "Fra træningspas",
+      "to": "Til træningspas",
       "sets": "Sæt",
       "reps": "Gentagelser",
       "load": "Belastning",
       "rowName": "Regel {n}",
       "remove": "Fjern regel {n}",
       "add": "Tilføj regel",
-      "hint": "Fra pas og til pas tæller rytterens pas i programmet. Lad \"til\" stå tomt for resten af programmet. Øvelser uden en regel beholder deres egne sæt og gentagelser."
+      "hint": "Fra træningspas og til træningspas tæller rytterens træningspas i programmet. Lad \"til\" stå tomt for resten af programmet. Øvelser uden en regel beholder deres egne sæt og gentagelser."
     },
     "strength": {
       "warmup": "Opvarmning",
@@ -2540,10 +2540,10 @@
       "descriptionPlaceholder": "Hvad skal rytteren tænke på?"
     },
     "problem": {
-      "title": "Passet mangler en titel.",
+      "title": "Træningspasset mangler en titel.",
       "structure": "Tjek {where}.",
       "where": {
-        "session": "passet",
+        "session": "træningspasset",
         "step": "trin {n}",
         "repeat": "gentagelse {n}",
         "exercise": "øvelse {n}",
@@ -2564,8 +2564,8 @@
         "load": "belastning",
         "restSeconds": "pause",
         "note": "note",
-        "from": "fra pas",
-        "to": "til pas",
+        "from": "fra træningspas",
+        "to": "til træningspas",
         "minutes": "varighed",
         "warmup": "opvarmning",
         "text": "tekst"
@@ -2588,7 +2588,7 @@
       "cadence": "kadence {low}–{high}",
       "repeat": "{times} ×",
       "noThresholds": "Når rytterens FTP og tærskelpuls er sat, står watt og puls her.",
-      "programmeSession": "Pas {n} i programmet",
+      "programmeSession": "Træningspas {n} i programmet",
       "warmup": "Opvarmning:",
       "rest": "{seconds} sek pause",
       "setsReps": "{sets} × {reps}",
@@ -2600,7 +2600,7 @@
         "done": "Udført"
       },
       "progression": "Progression",
-      "rule": "{open, select, yes {{group}, fra pas {from}} other {{group}, pas {from}–{to}}}: {sets} × {reps}"
+      "rule": "{open, select, yes {{group}, fra træningspas {from}} other {{group}, træningspas {from}–{to}}}: {sets} × {reps}"
     },
     "blocks": {
       "title": "Byggeklodser",
@@ -2643,7 +2643,7 @@
       "open": "Uden mål",
       "exercises": "{count, plural, one {# øvelse} other {# øvelser}}",
       "sets": "{count, plural, one {# sæt} other {# sæt}}",
-      "loadHint": "Belastningen er Kadences eget skøn ud fra zonerne eller minutterne, det samme skøn som form og belastning regner med for passet."
+      "loadHint": "Belastningen er Kadences eget skøn ud fra zonerne eller minutterne, det samme skøn som form og belastning regner med for træningspasset."
     }
   },
   "load": {
@@ -2656,12 +2656,12 @@
       "fatigue": "det, den seneste uges træning har kostet. Den stiger hurtigt efter hårde dage og falder, når du hviler.",
       "form": "kondition minus træthed. Over nul er du udhvilet, under nul er du træt, og lidt under nul er helt normalt midt i en træningsuge."
     },
-    "scale": "Tallene er Kadences egen skala: en times træning i tærskeltempo tæller 100. Pas uden wattmåler tæller ud fra puls eller ud fra, hvor hårdt det føltes (RPE).",
+    "scale": "Tallene er Kadences egen skala: en times træning i tærskeltempo tæller 100. Træningspas uden wattmåler tæller ud fra puls eller ud fra, hvor hårdt det føltes (RPE).",
     "chartLabel": "Kondition, træthed og friskhed de seneste 90 dage. I dag: kondition {fitness}, træthed {fatigue}, friskhed {form}.",
     "readout": "{date}: kondition {fitness} · træthed {fatigue} · friskhed {form}",
     "hint": "Peg på grafen, eller brug piletasterne, for at læse en bestemt dag.",
     "empty": "Ingen træning de seneste 90 dage endnu.",
-    "emptyBody": "Kurven tegnes, når der er gennemført pas. Tryk \"Udført\" efter et pas, eller upload turen.",
+    "emptyBody": "Kurven tegnes, når der er gennemført træningspas. Tryk \"Udført\" efter et træningspas, eller upload turen.",
     "table": "Se tallene",
     "tableCaption": "Kondition, træthed og friskhed, én række pr. uge",
     "date": "Dato",
@@ -2704,7 +2704,7 @@
   },
   "insight": {
     "title": "Mulige opmærksomhedspunkter",
-    "subtitle": "Ugen, der er i gang, ud fra timerne, passene og check-ins.",
+    "subtitle": "Ugen, der er i gang, ud fra timerne, træningspassene og check-ins.",
     "riderTitle": "Opmærksomhedspunkter",
     "noFlags": "Ugen ser rolig ud.",
     "allCalm": "Holdet ser ud til at være i balance i denne uge.",
@@ -2736,8 +2736,8 @@
       "pain_3": "Smerte på trin 3: under træning eller i hverdagen. ATK anbefaler pause fra det, der gør ondt, til en fysioterapeut eller læge har set på det.",
       "sleep_short": "Søvnen har i snit været {average} timer de seneste {nights, plural, one {# nat} other {# nætter}}, under {limit} timer.",
       "sleep_below_minimum": "Søvnen har i snit været {average} timer de seneste {nights, plural, one {# nat} other {# nætter}}. 14–17-årige har brug for mindst {minimum} timer.",
-      "compliance": "{red} af {judged} pas i denne uge gik anderledes end planlagt. Måske kan planen tilpasses ugen.",
-      "mid_zone": "Mellemzonen fylder {mid} % af de {sessions} pas og løbsdage de sidste fire uger. \"Lav intensitet først\" lægger højst {limit} % der fra november til februar.",
+      "compliance": "{red} af {judged} træningspas i denne uge gik anderledes end planlagt. Måske kan planen tilpasses ugen.",
+      "mid_zone": "Mellemzonen fylder {mid} % af de {sessions} træningspas og løbsdage de sidste fire uger. \"Lav intensitet først\" lægger højst {limit} % der fra november til februar.",
       "known_pain_lasting": "Kendt smerte ({place}) i check-ins tre uger i træk. ATK anbefaler, at smerter, der bliver ved hos unge, bliver set af en voksen, gerne en fysioterapeut. Måske er det en snak værd.",
       "signs": "Tegn: {signs}"
     },
@@ -2761,7 +2761,7 @@
       "ramp": "Hurtig stigning",
       "longest_ride": "Lang tur",
       "strength_spacing": "Styrkepas tæt",
-      "compliance": "Pas gik anderledes",
+      "compliance": "Træningspas gik anderledes",
       "mid_zone": "Meget mellemzone",
       "wellbeing_talk": "Tid til en snak",
       "wellbeing_help": "Hjælp fra fagfolk",
@@ -2782,7 +2782,7 @@
     },
     "pilot": {
       "title": "Holdets tre tal",
-      "body": "Tre tal om ugen viser, hvordan Kadence bliver brugt på holdet: hvor mange ryttere der checker ind, hvor mange pas der får en kvittering, og et skøn over tiden til planlægning. Tallene skal hjælpe med at afgøre, hvad Kadence skal være efter vinteren.",
+      "body": "Tre tal om ugen viser, hvordan Kadence bliver brugt på holdet: hvor mange ryttere der checker ind, hvor mange træningspas der får en kvittering, og et skøn over tiden til planlægning. Tallene skal hjælpe med at afgøre, hvad Kadence skal være efter vinteren.",
       "week": "Uge",
       "weekNumber": "Uge {week}",
       "inProgress": "i gang",
@@ -2794,9 +2794,9 @@
       "minutesValue": "{minutes} min",
       "none": "–",
       "explainCheckins": "Check-in: ryttere med et check-in på mindst fire af ugens dage.",
-      "explainReceipts": "Kvittering: pas til og med i går, der er markeret udført, har fået en RPE eller har fået en tur.",
+      "explainReceipts": "Kvittering: træningspas til og med i går, der er markeret udført, har fået en RPE eller har fået en tur.",
       "explainRiders": "En rytter tæller med fra sin første hele uge på holdet. Arkiverede ryttere tæller ikke med.",
-      "explainMinutes": "Planlægning er et groft skøn i minutter ud fra, hvornår trænerne har gemt pas, forløb og sæsonplaner. Ændringer med under ti minutters mellemrum regnes som én omgang, og hver omgang tæller mindst to minutter. Tid til at tænke og læse planen er ikke med. Tallet skal hjælpe med at se, om Kadence sparer tid. Det er ikke en vurdering af nogen.",
+      "explainMinutes": "Planlægning er et groft skøn i minutter ud fra, hvornår trænerne har gemt træningspas, forløb og sæsonplaner. Ændringer med under ti minutters mellemrum regnes som én omgang, og hver omgang tæller mindst to minutter. Tid til at tænke og læse planen er ikke med. Tallet skal hjælpe med at se, om Kadence sparer tid. Det er ikke en vurdering af nogen.",
       "clubsTitle": "Tre tal pr. klub, uge {week}",
       "clubsBody": "Sidste hele uge, mandag til søndag. Kun tal, aldrig en rytter, et navn eller et check-in.",
       "club": "Klub"
@@ -2818,18 +2818,18 @@
   "search": {
     "label": "Søg",
     "placeholder": "Hvad leder du efter?",
-    "open": "Søg rytter eller pas",
+    "open": "Søg rytter eller træningspas",
     "openOther": "Søg i Kadence",
     "shortcut": "Genvej: {keys}",
     "groups": {
       "riders": "Ryttere",
-      "templates": "Pas",
+      "templates": "Træningspas",
       "places": "Sider",
       "help": "Hjælp"
     },
     "empty": "Intet fundet",
     "loading": "Henter …",
-    "failed": "Ryttere og pas kunne ikke hentes lige nu. Sider og hjælp kan du stadig finde.",
+    "failed": "Ryttere og træningspas kunne ikke hentes lige nu. Sider og hjælp kan du stadig finde.",
     "hint": "↑↓ vælg · ↵ åbn · esc luk"
   },
   "checkin": {
@@ -3015,7 +3015,7 @@
       "polar": "Fra Polar",
       "manual": "Skrevet ind i hånden"
     },
-    "session": "Hører til passet “{title}”",
+    "session": "Hører til træningspasset “{title}”",
     "streamsTitle": "Turen undervejs",
     "noStreams": "Filen havde ingen målinger undervejs.",
     "zonesTitle": "Tid i zoner",
@@ -3116,7 +3116,7 @@
       "download": "Hent den originale fil",
       "delete": "Slet aktiviteten",
       "deleteTitle": "Slet aktiviteten?",
-      "deleteBody": "Aktiviteten og dens fil forsvinder. Et pas, den hørte til, bliver åbent igen."
+      "deleteBody": "Aktiviteten og dens fil forsvinder. Et træningspas, den hørte til, bliver åbent igen."
     },
     "upload": {
       "title": "Upload tur",
@@ -3125,8 +3125,8 @@
       "drop": "Træk filer hertil, eller tryk for at vælge",
       "busy": "Henter …",
       "hint": ".fit, .tcx, .gpx, .gz eller .zip, højst 25 MB pr. fil. Dit Strava-arkiv kan lægges ind, som det er.",
-      "matched": "Hentet og sat på passet “{title}”.",
-      "unmatched": "Hentet. Den passede ikke til et planlagt pas, så den står for sig selv i kalenderen.",
+      "matched": "Hentet og sat på træningspasset “{title}”.",
+      "unmatched": "Hentet. Den passede ikke til et planlagt træningspas, så den står for sig selv i kalenderen.",
       "open": "Se turen",
       "results": "Resultat for hver fil",
       "archive": {
@@ -3423,20 +3423,20 @@
     "readOnlyNote": "Du kan se planen. Træneren og rytteren kan rette den.",
     "intensity": {
       "title": "Intensitet uge for uge",
-      "body": "Hvert cykelpas tæller én gang i den zone, det er lagt i: lav, mellem eller høj. En løbsdag tæller som et hårdt pas. Styrke og anden træning er ikke med.",
+      "body": "Hvert cykelpas tæller én gang i den zone, det er lagt i: lav, mellem eller høj. En løbsdag tæller som et hårdt træningspas. Styrke og anden træning er ikke med.",
       "zones": "Zonerne lægges sammen sådan: Z1–Z2 er lav, Z3–Z4 mellem og Z5–Z7 høj.",
       "low": "Lav",
       "mid": "Mellem",
       "high": "Høj",
       "week": "Uge {week}",
       "thisWeek": "denne uge",
-      "bar": "{low} lave, {mid} mellem og {high} høje pas",
+      "bar": "{low} lave, {mid} mellem og {high} høje træningspas",
       "races": "{count, plural, one {# løbsdag} other {# løbsdage}}",
-      "unknown": "{count, plural, one {# pas uden mål} other {# pas uden mål}}",
+      "unknown": "{count, plural, one {# træningspas uden mål} other {# træningspas uden mål}}",
       "empty": "Ingen cykelpas i planen",
-      "recent": "De sidste fire uger: {low} % lav, {mid} % mellem og {high} % høj, af {sessions} pas og løbsdage.",
-      "recentNone": "De sidste fire uger har endnu ingen pas med et mål.",
-      "dcu": "DCU's årshjul for {month}: {share} af mængden med højere intensitet, tempo medregnet. DCU tæller timer, og her tælles pas.",
+      "recent": "De sidste fire uger: {low} % lav, {mid} % mellem og {high} % høj, af {sessions} træningspas og løbsdage.",
+      "recentNone": "De sidste fire uger har endnu ingen træningspas med et mål.",
+      "dcu": "DCU's årshjul for {month}: {share} af mængden med højere intensitet, tempo medregnet. DCU tæller timer, og her tælles træningspas.",
       "dcuShare": {
         "1": "mindst 10 %",
         "2": "omkring 15–20 %",
@@ -3444,7 +3444,7 @@
         "12": "omkring 10 %"
       },
       "profile": "Lav intensitet først: mindst {lowMin}–{lowTarget} % lav, højst {midMax} % mellem og resten høj fra november til februar.",
-      "profileOff": "Du kan måle pasene mod \"Lav intensitet først\" under Indstillinger → Holdet → Træningsgrundlag."
+      "profileOff": "Du kan måle træningspassene mod \"Lav intensitet først\" under Indstillinger → Holdet → Træningsgrundlag."
     },
     "chart": {
       "title": "Timer pr. måned",
@@ -3518,7 +3518,7 @@
     "preview": {
       "week": "Uge {n}",
       "planned": "Lagt ind {before} → {after} t",
-      "note": "Bjælken viser, hvordan det ser ud, når passene er lagt ind. Opmærksomhedspunkterne er en hjælp, og du bestemmer."
+      "note": "Bjælken viser, hvordan det ser ud, når træningspassene er lagt ind. Opmærksomhedspunkterne er en hjælp, og du bestemmer."
     }
   },
   "assist": {
@@ -3541,12 +3541,12 @@
       "notFound": "Det findes ikke længere. Genindlæs siden.",
       "invalid": "Der mangler noget i det, du sendte.",
       "unauthorized": "Du er ikke logget ind længere.",
-      "unreadable": "Teksten kunne ikke læses som et pas. Prøv at skrive det lidt anderledes, fx \"3x10 min Z4 / 5 min pause\".",
+      "unreadable": "Teksten kunne ikke læses som et træningspas. Prøv at skrive det lidt anderledes, fx \"3x10 min Z4 / 5 min pause\".",
       "generic": "Det lykkedes ikke at få et forslag. Prøv igen."
     },
     "build": {
       "open": "Byg med AI",
-      "label": "Beskriv passet",
+      "label": "Beskriv træningspasset",
       "placeholder": {
         "bike": "Fx 75 min med 5x4 min VO2max og 3 min pause imellem",
         "strength": "Fx 45 min styrke uden maskiner, med fokus på ben og core",
@@ -3558,46 +3558,46 @@
         "bike2": "Tærskelpas med 2x20 min Z4 og 5 min pause",
         "bike3": "Sprintpas på en time med 8 sprint på 10 sek",
         "strength1": "Styrke 45 min med kropsvægt, ben og core",
-        "strength2": "Første pas i vinterens styrkeforløb i fitnesscentret",
+        "strength2": "Første træningspas i vinterens styrkeforløb i fitnesscentret",
         "strength3": "Core og bevægelighed i 20 min derhjemme"
       },
       "category": "Årgang",
       "categoryNone": "Ingen bestemt",
       "categoryOrProfile": "Årgang eller profil",
-      "refine": "Ret i det pas, der står nu",
-      "hint": "Vælger du årgang, holder forslaget sig til DCU's anbefalinger for den. Der går ingen rytterdata med, og intet gemmes, før du gemmer passet.",
+      "refine": "Ret i det træningspas, der står nu",
+      "hint": "Vælger du årgang, holder forslaget sig til DCU's anbefalinger for den. Der går ingen rytterdata med, og intet gemmes, før du gemmer træningspasset.",
       "ruleHint": "Kortform som \"3x10 min Z4 / 5 min pause\" læses af reglerne uden sprogmodel.",
       "build": "Byg forslaget",
       "building": "Bygger … det kan tage lidt tid.",
       "close": "Luk",
-      "title": "Forslag til passet",
-      "body": "Se forslaget igennem. \"Brug forslaget\" lægger det i byggeren, hvor du kan rette alt. Intet gemmes, før du gemmer passet.",
+      "title": "Forslag til træningspasset",
+      "body": "Se forslaget igennem. \"Brug forslaget\" lægger det i byggeren, hvor du kan rette alt. Intet gemmes, før du gemmer træningspasset.",
       "use": "Brug forslaget",
-      "used": "Forslaget ligger nu i passet.",
+      "used": "Forslaget ligger nu i træningspasset.",
       "undo": "Fortryd",
-      "longestRide": "Passet er længere end DCU's længste træningstur for {category} på {hours} timer. Det er din beslutning.",
-      "longestRideProfile": "Passet er længere end den længste tur, Kadence foreslår for {profile, select, motionist {Motionist} other {Supermotionist}}, på {hours} timer. Det er din beslutning."
+      "longestRide": "Træningspasset er længere end DCU's længste træningstur for {category} på {hours} timer. Det er din beslutning.",
+      "longestRideProfile": "Træningspasset er længere end den længste tur, Kadence foreslår for {profile, select, motionist {Motionist} other {Supermotionist}}, på {hours} timer. Det er din beslutning."
     },
     "week": {
       "open": "Foreslå ugen",
       "title": "Forslag til ugen",
-      "body": "AI'en læser DCU's timer og fase, kalenderen, de seneste uger og opmærksomhedspunkterne og foreslår pas. Du vælger, hvad der kommer i kalenderen.",
+      "body": "AI'en læser DCU's timer og fase, kalenderen, de seneste uger og opmærksomhedspunkterne og foreslår træningspas. Du vælger, hvad der kommer i kalenderen.",
       "thinking": "Tænker … det kan tage lidt tid.",
       "proposal": "Forslag fra AI'en",
-      "empty": "AI'en foreslog ingen pas til ugen.",
-      "accept": "{count, plural, =0 {Læg valgte i kalenderen} one {Læg det valgte pas i kalenderen} other {Læg # valgte pas i kalenderen}}",
+      "empty": "AI'en foreslog ingen træningspas til ugen.",
+      "accept": "{count, plural, =0 {Læg valgte i kalenderen} one {Læg det valgte træningspas i kalenderen} other {Læg # valgte træningspas i kalenderen}}",
       "again": "Foreslå igen",
-      "added": "{count, plural, one {Passet er lagt i kalenderen.} other {# pas er lagt i kalenderen.}}"
+      "added": "{count, plural, one {Træningspasset er lagt i kalenderen.} other {# træningspas er lagt i kalenderen.}}"
     },
     "sessionComment": {
       "ask": "Få en kommentar fra AI'en",
       "thinking": "AI'en skriver en kommentar …",
       "title": "Forslag fra AI'en",
-      "body": "En kommentar til passet. Den gemmes kun, hvis du trykker Gem som kommentar.",
+      "body": "En kommentar til træningspasset. Den gemmes kun, hvis du trykker Gem som kommentar.",
       "save": "Gem som kommentar",
       "close": "Luk",
-      "saved": "Kommentaren er gemt under passet.",
-      "empty": "AI'en havde ikke noget at skrive om passet. Prøv igen."
+      "saved": "Kommentaren er gemt under træningspasset.",
+      "empty": "AI'en havde ikke noget at skrive om træningspasset. Prøv igen."
     },
     "formStory": {
       "ask": "Forklar formen med AI",
@@ -3625,7 +3625,7 @@
     "filesOnly": "Dine ture kommer ind som filer, og det virker lige så godt.",
     "ridersFilesOnly": "Rytterne lægger deres ture ind som filer, og det virker lige så godt.",
     "coachNote": "Ryttere forbinder selv deres {providers} her under Indstillinger → Enheder.",
-    "coachPush": "Når en rytter har forbundet {providers}, kan du sende pas til rytterens enhed fra passet i kalenderen.",
+    "coachPush": "Når en rytter har forbundet {providers}, kan du sende træningspas til rytterens enhed fra træningspasset i kalenderen.",
     "otherNote": "Enheder hører til rytteren. Kun rytteren selv kan forbinde sin {providers}.",
     "advanced": "Avanceret",
     "name": {
@@ -3634,9 +3634,9 @@
       "polar": "Polar"
     },
     "about": {
-      "wahoo": "ELEMNT-cykelcomputere og KICKR-hometrainere. Ture hentes automatisk, og pas kan sendes til dem.",
-      "garmin": "Edge-cykelcomputere og ure via Garmin Connect. Ture og andre aktiviteter hentes automatisk. Et cykelpas lægger du på en Edge med kabel, fra passet.",
-      "polar": "Ure og cykelcomputere via Polar Flow. Ture hentes automatisk. Pas kan ikke sendes til Polar fra Kadence."
+      "wahoo": "ELEMNT-cykelcomputere og KICKR-hometrainere. Ture hentes automatisk, og træningspas kan sendes til dem.",
+      "garmin": "Edge-cykelcomputere og ure via Garmin Connect. Ture og andre aktiviteter hentes automatisk. Et cykelpas lægger du på en Edge med kabel, fra træningspasset.",
+      "polar": "Ure og cykelcomputere via Polar Flow. Ture hentes automatisk. Træningspas kan ikke sendes til Polar fra Kadence."
     },
     "state": {
       "notConfigured": "Ikke sat op her",
@@ -3650,7 +3650,7 @@
     "reconnect": "Forbind {name} igen",
     "lastSync": "Senest hentet {when}.",
     "noSyncYet": "Ingen ture hentet endnu. Din næste tur kommer ind af sig selv.",
-    "canPush": "Du kan sende et cykelpas til {name} fra passet i kalenderen.",
+    "canPush": "Du kan sende et cykelpas til {name} fra træningspasset i kalenderen.",
     "noActivitySharing": "Dine ture kommer ikke ind, fordi deling af aktiviteter med Kadence er slået fra hos {name}. Slå den til igen i {name} Connect, eller afbryd, forbind {name} igen og sæt hak ved aktiviteter. Upload af FIT-filer virker stadig.",
     "lastError": {
       "refresh_failed": "{name} ville ikke forny forbindelsen. Forbind igen.",
@@ -3727,7 +3727,7 @@
       "us": "{names} er {count, plural, one {et amerikansk firma} other {amerikanske firmaer}}",
       "eu": "{names} er {count, plural, one {et finsk firma} other {finske firmaer}}"
     },
-    "usBody": "Kadence selv ligger i EU{hasEu, select, yes {, og det gør {euNames} også} other {}}. Når du forbinder, sender {providers} dine ture til Kadence{hasPushers, select, yes {, og Kadence sender de pas, du vælger, til {pushers}} other {}}. Det er dit valg, og du kan afbryde når som helst.",
+    "usBody": "Kadence selv ligger i EU{hasEu, select, yes {, og det gør {euNames} også} other {}}. Når du forbinder, sender {providers} dine ture til Kadence{hasPushers, select, yes {, og Kadence sender de træningspas, du vælger, til {pushers}} other {}}. Det er dit valg, og du kan afbryde når som helst.",
     "usLink": "Hvem der kan se hvad"
   },
   "parents": {
@@ -3735,14 +3735,14 @@
     "childTitle": "Barnet",
     "childrenTitle": "Børnene",
     "subtitle": "Træningen i denne uge, de næste 30 dage, og hvordan det går.",
-    "sessionPanel": "Pas",
+    "sessionPanel": "Træningspas",
     "waitingTitle": "Venter på dit barns bekræftelse",
     "waitingBody": "Du kan se dit barns uge her, når dit barn har bekræftet forbindelsen til dig. Det gør rytteren selv under Indstillinger → Profil.",
     "basicsTitle": "Godt at vide",
     "child": {
       "title": "{name}s uge",
       "week": "Træningen i denne uge",
-      "hours": "{sessions} af {total} pas udført · {done} af {planned} t",
+      "hours": "{sessions} af {total} træningspas udført · {done} af {planned} t",
       "form": "Formen",
       "noForm": "Der er ikke gennemført træning nok til at vise formen endnu.",
       "upcoming": "De næste 30 dage",
@@ -3880,7 +3880,7 @@
       "canLabel": "Det kan du",
       "cannotLabel": "Det kan du ikke",
       "can": {
-        "training": "Dit barns træning: pas, hvad der er udført, og timerne, når dit barn har bekræftet forbindelsen og deler træningen.",
+        "training": "Dit barns træning: træningspas, hvad der er udført, og timerne, når dit barn har bekræftet forbindelsen og deler træningen.",
         "wellbeing": "Hvordan dit barn har det (check-ins), men kun hvis dit barn vælger at dele det.",
         "comments": "Samtalen om træningen: du kan læse med, men ikke skrive. Der findes ingen private beskeder mellem en voksen og en ung rytter.",
         "calendar": "Lægge ferie, eksamen og andet ind i dit barns kalender, så træneren kan planlægge uden om det. Dit barn ser det og kan slette det."
@@ -3923,7 +3923,7 @@
           "1": "Børneattest er lovpligtig for trænere med direkte og vedvarende kontakt med børn under 15 år. En førsteårs U17-rytter kan være 14 år, indtil de har fødselsdag, så det gælder reelt alle U17-trænere. Det er klubben, der indhenter attesten.",
           "2": "DIF anbefaler børneattest for alle, der træner unge under 18 år, og at den fornyes hvert 2.–3. år.",
           "3": "Det er strafbart at have et seksuelt forhold til en person under 18 år, der er betroet én til undervisning eller opdragelse (straffeloven § 223). Aftal i klubben, hvad god fysisk kontakt er, og hold omklædningen adskilt.",
-          "4": "Kadence er bygget til åbenhed: der er ingen private beskeder mellem voksne og unge ryttere. Kommentarer på pas og ture læses af træneren, rytteren og rytterens forældre.",
+          "4": "Kadence er bygget til åbenhed: der er ingen private beskeder mellem voksne og unge ryttere. Kommentarer på træningspas og ture læses af træneren, rytteren og rytterens forældre.",
           "5": "DCU har kurser for trænere: B&U Basistræner, Træner 1 og 2, og Kaptajn Landevej til sikre fællesture. På fællesture må man køre to og to, hvor der er plads, og det ikke er til fare eller unødig ulempe (færdselsloven § 49)."
         }
       },
@@ -3952,7 +3952,7 @@
         "title": "Styrketræning",
         "intro": "DCU's styrkeprogrammer, som Team Danmark har lavet, ligger i Kadences bibliotek med deres progression.",
         "points": {
-          "1": "Fra november til midt i marts anbefales 2–3 styrkepas om ugen med mindst 48 timer imellem, derefter 1 om ugen. U17 og U19 bør nå mindst 30 pas over vinteren.",
+          "1": "Fra november til midt i marts anbefales 2–3 styrkepas om ugen med mindst 48 timer imellem, derefter 1 om ugen. U17 og U19 bør nå mindst 30 træningspas over vinteren.",
           "2": "Styrketræning er ikke farlig for unge og hæmmer ikke væksten. Giv tid til teknikken i øvelser med frie vægte, før belastningen sættes op.",
           "3": "Start med kontrollerede gentagelser med kræfter i reserve. DCU's egne tekster er uenige på et par punkter, og Kadence viser forskellene åbent.",
           "4": "I vækstspurten skal du holde ekstra øje med smerter ved knæ og hæl."
@@ -4047,7 +4047,7 @@
         "points": {
           "1": "Forældre ser deres barns træning, når rytteren har bekræftet koblingen, og check-ins kun, hvis rytteren deler dem.",
           "2": "Forældreguiden fra Team Danmark og Kolding Talent ligger under Viden og hjælp i Kadence. Henvis gerne dertil.",
-          "3": "Der er én åben samtale: kommentarer på pas og ture læses af træner, rytter og forældre.",
+          "3": "Der er én åben samtale: kommentarer på træningspas og ture læses af træner, rytter og forældre.",
           "4": "For ryttere under 18 år anbefaler DIF at tænke forældrene ind i planen."
         }
       }
@@ -4067,9 +4067,9 @@
     "newClassU19": "Nye U19-ryttere: løbene bliver længere, og udvekslingsgrænsen falder væk. Hæv mængden med omtanke, 10–15 % om året.",
     "newClassU23": "Nye U23-ryttere: det er i orden at ligge lidt under DCU's timer de første år. De har fire år til at nå dem.",
     "childCertificate": "Holdet har førsteårs U17-ryttere, som kan være 14 år. Så skal trænere have børneattest efter loven, og DIF anbefaler den for alle, der træner unge under 18.",
-    "strengthWinter": "Styrkesæsonen er i gang: 2–3 pas om ugen med mindst 48 timer imellem, og mindst 30 pas over vinteren for U17 og U19.",
+    "strengthWinter": "Styrkesæsonen er i gang: 2–3 træningspas om ugen med mindst 48 timer imellem, og mindst 30 træningspas over vinteren for U17 og U19.",
     "weightOn": "Holdet registrerer vægt for ryttere under 19. Lad vægt og mad ligge i snakken med rytterne, og tal kun om en rytters vægt i enrum.",
-    "heat": "Sommervarme: drik løbende, tænk salt med på lange ture, og flyt de hårde pas til morgen eller aften."
+    "heat": "Sommervarme: drik løbende, tænk salt med på lange ture, og flyt de hårde træningspas til morgen eller aften."
   },
   "reminders": {
     "title": "Påmindelser",
@@ -4119,10 +4119,10 @@
       "checkin": "Check-in om aftenen",
       "checkinHint": "Klokken 19, hvis du ikke har checket ind i dag.",
       "comment": "Nye kommentarer",
-      "commentHint": "Når en anden skriver på et pas eller en tur, du kan se.",
-      "commentHintCoach": "Når en rytter eller en forælder skriver på et pas eller en tur.",
+      "commentHint": "Når en anden skriver på et træningspas eller en tur, du kan se.",
+      "commentHintCoach": "Når en rytter eller en forælder skriver på et træningspas eller en tur.",
       "plan": "Ændret plan",
-      "planHint": "Når en træner lægger, ændrer eller sletter et pas i de næste syv dage.",
+      "planHint": "Når en træner lægger, ændrer eller sletter et træningspas i de næste syv dage.",
       "week": "Ugens overblik",
       "weekHint": "Søndag aften, når ugen er gået.",
       "wellbeing": "Trivsel",
@@ -4197,36 +4197,36 @@
   },
   "rulle": {
     "title": "Rulle",
-    "tagline": "Dagens pas på hometraineren, når du ikke kan komme ud.",
+    "tagline": "Dagens træningspas på hometraineren, når du ikke kan komme ud.",
     "back": "Til Kadence",
     "start": "Start",
     "session": {
-      "heading": "Pas",
+      "heading": "Træningspas",
       "freeTitle": "Fri tur",
-      "freeBody": "Uden pas kører du, som du vil, så længe du vil, og turen gemmes som en almindelig tur.",
+      "freeBody": "Uden træningspas kører du, som du vil, så længe du vil, og turen gemmes som en almindelig tur.",
       "blocks": "{count, plural, one {# blok} other {# blokke}}",
       "pick": "Vælg",
       "free": "Kør frit",
-      "none": "Du har ikke noget cykelpas i dag. Vælg et af holdets pas eller DCU's standardpas – eller kør frit.",
-      "missing": "Det pas kan ikke køres her: det findes ikke, eller det har ingen intervaller.",
-      "done": "Passet er allerede gjort. Kører du det igen, gemmes turen for sig selv.",
-      "otherDay": "Passet ligger {day}. Turen lander på den dag, du kører den.",
-      "noFtp": "Der er ingen FTP på dig endnu, så passet køres frit: du rammer zonerne efter følelsen og pulsen. Din træner kan sætte den.",
-      "trial": "Du prøver passet med rytterens watt. En prøvetur gemmes ikke.",
-      "fromTeam": "Pas fra holdets bibliotek",
+      "none": "Du har ikke noget cykelpas i dag. Vælg et af holdets træningspas eller DCU's standardpas – eller kør frit.",
+      "missing": "Det træningspas kan ikke køres her: det findes ikke, eller det har ingen intervaller.",
+      "done": "Træningspasset er allerede gjort. Kører du det igen, gemmes turen for sig selv.",
+      "otherDay": "Træningspasset ligger {day}. Turen lander på den dag, du kører den.",
+      "noFtp": "Der er ingen FTP på dig endnu, så træningspasset køres frit: du rammer zonerne efter følelsen og pulsen. Din træner kan sætte den.",
+      "trial": "Du prøver træningspasset med rytterens watt. En prøvetur gemmes ikke.",
+      "fromTeam": "Træningspas fra holdets bibliotek",
       "fromDcu": "Standardpas fra DCU",
-      "fromKadence": "Et pas fra Kadence til voksne",
+      "fromKadence": "Et træningspas fra Kadence til voksne",
       "whenNote": "DCU sætter det: {when}. Det er tænkt som en rettesnor.",
       "source": "Kilde: {source}. Opvarmning, pauser og nedkørsel er Kadences.",
-      "pickOther": "Vælg et andet pas",
-      "pickTitle": "Vælg pas",
-      "pickBody": "Dagens planlagte pas først, så holdets egne og DCU's standardpas. Et pas, du selv vælger, gemmes som en almindelig tur.",
+      "pickOther": "Vælg et andet træningspas",
+      "pickTitle": "Vælg træningspas",
+      "pickBody": "Dagens planlagte træningspas først, så holdets egne og DCU's standardpas. Et træningspas, du selv vælger, gemmes som en almindelig tur.",
       "today": "I dag",
-      "team": "Holdets pas",
+      "team": "Holdets træningspas",
       "dcu": "DCU's standardpas",
       "dcuNote": "Bygget på DCU's intervalark og eksempeluger. Din træner kender din plan bedst.",
-      "kadence": "Kadences pas til voksne",
-      "kadenceNote": "Kadences egne pas til din træningsprofil. Kilden står under hvert pas.",
+      "kadence": "Kadences træningspas til voksne",
+      "kadenceNote": "Kadences egne træningspas til din træningsprofil. Kilden står under hvert træningspas.",
       "kadenceWhen": "Hvornår: {when}",
       "kadenceWhenNote": "Hvornår i sæsonen: {when}. Tænkt som en rettesnor.",
       "kadenceSource": "Kilde: {source}.",
@@ -4317,8 +4317,8 @@
       "terrainCanada": "Terræn og højder: CDEM © Natural Resources Canada (Open Government Licence – Canada), via Mapzen"
     },
     "note": {
-      "at": "Kørt i Rulle på {pct} % af passet.",
-      "between": "Kørt i Rulle på {low}–{high} % af passet."
+      "at": "Kørt i Rulle på {pct} % af træningspasset.",
+      "between": "Kørt i Rulle på {low}–{high} % af træningspasset."
     },
     "ride": {
       "watt": "Watt",
@@ -4341,7 +4341,7 @@
       "autoPaused": "Pause: træd for at køre videre",
       "intensityLabel": "Sværhedsgrad",
       "intensity": "{pct} %",
-      "atIntensity": "{pct} % af passet",
+      "atIntensity": "{pct} % af træningspasset",
       "easier": "Lettere",
       "harder": "Hårdere",
       "erg": "ERG",
@@ -4359,7 +4359,7 @@
       "left": "{time} tilbage",
       "loading": "Ruten gøres klar …",
       "countdown": "Gør klar",
-      "profile": "Hele passet: {duration}. {elapsed} kørt.",
+      "profile": "Hele træningspasset: {duration}. {elapsed} kørt.",
       "routeProfile": "Ruten: {km} km. Omgang {lap}, {along} km inde.",
       "map": "Kort over ruten",
       "mapShow": "Vis kortet (K)",
@@ -4409,15 +4409,15 @@
       "saving": "Gemmer turen …",
       "saved": "Turen er gemt i Kadence.",
       "already": "Turen var allerede gemt.",
-      "landed": "Den landede på passet “{title}”.",
-      "unmatched": "Den passede ikke til et planlagt pas, så den står for sig selv i kalenderen.",
+      "landed": "Den landede på træningspasset “{title}”.",
+      "unmatched": "Den passede ikke til et planlagt træningspas, så den står for sig selv i kalenderen.",
       "open": "Se turen",
       "offline": "Turen er ikke gemt endnu: der er ingen forbindelse til Kadence. Den venter her i browseren og sendes, så snart der er.",
       "failed": "Turen kunne ikke gemmes. Hent FIT-filen, så den ikke går tabt, og prøv igen.",
       "retry": "Prøv igen",
       "trial": "Prøveturen er ikke gemt.",
-      "unmeasured": "Uden sensorer er der ingen målinger at gemme. Sig, hvor længe og hvor hårdt, så tæller passet med.",
-      "unmeasuredFree": "Uden sensorer og uden pas er der ikke noget at gemme.",
+      "unmeasured": "Uden sensorer er der ingen målinger at gemme. Sig, hvor længe og hvor hårdt, så tæller træningspasset med.",
+      "unmeasuredFree": "Uden sensorer og uden træningspas er der ikke noget at gemme.",
       "feedback": "Din vurdering",
       "thanks": "Tak. Din træner kan se det.",
       "download": "Hent FIT-filen",
@@ -4427,7 +4427,7 @@
         "duplicate": "Turen er allerede gemt.",
         "rateLimited": "Du har gemt mange ture den sidste time. Prøv igen om lidt.",
         "not_rider": "Kun en rytter kan gemme en tur.",
-        "notFound": "Passet findes ikke længere. Hent FIT-filen, og upload den på “Mig”.",
+        "notFound": "Træningspasset findes ikke længere. Hent FIT-filen, og upload den på “Mig”.",
         "too_large": "Turen er for stor til at gemme herfra. Hent FIT-filen, og upload den på “Mig”.",
         "quota": "Pladsen til filer er brugt, så turen blev ikke gemt. Hent FIT-filen, og slet gamle ture eller hent dem ud først.",
         "planExpired": "Arbejdsrummet kan kun læses nu, så turen blev ikke gemt. Hent FIT-filen, så har du den."
@@ -4450,7 +4450,7 @@
       "cows": "{count, plural, one {# ko fulgte dig med øjnene.} other {# køer passeret.}}",
       "cafe": "{stops, plural, one {Et kaffestop} other {# kaffestop}} og {cups, plural, one {en kop} other {# kopper}}.",
       "stand": "{stops, plural, one {Et stop ved boden} other {# stop ved boden}} og {bottles, plural, one {en sodavand} other {# sodavand}}.",
-      "onTarget": "Alle blokke på mål: passet kørt, som det var skrevet."
+      "onTarget": "Alle blokke på mål: træningspasset kørt, som det var skrevet."
     },
     "kept": {
       "waiting": "En tur fra {when} venter på at blive gemt.",
@@ -4685,7 +4685,7 @@
       "body": "Tekst",
       "bodyHint": "Hvad vil du dele eller spørge om?",
       "rule": "Del erfaringer om træningen, og hold rytternes navne ude af det.",
-      "attach": "Vedhæft et pas fra biblioteket",
+      "attach": "Vedhæft et træningspas fra biblioteket",
       "post": "Del",
       "posted": "Tråden er delt."
     },
@@ -4694,7 +4694,7 @@
       "replyHint": "Skriv et svar",
       "replied": "Dit svar er delt.",
       "take": "Tag med i mit bibliotek",
-      "taken": "Passet er nu i dit holds bibliotek.",
+      "taken": "Træningspasset er nu i dit holds bibliotek.",
       "hiddenNote": "Skjult af installationens ejer. Kun forfatteren og ejeren kan se det.",
       "lockedNote": "Tråden er låst, så der kan ikke skrives flere svar."
     },
@@ -4746,10 +4746,10 @@
         "club": "Til klubben eller holdet. Klubben betaler for rytterne. Trænere og forældre koster ikke noget."
       },
       "included": {
-        "calendar": "Kalenderen med pas på cykel og i styrkerummet",
+        "calendar": "Kalenderen med træningspas på cykel og i styrkerummet",
         "rides": "Turene fra FIT-filer, Wahoo, Garmin og Polar",
         "checkin": "Daglig check-in",
-        "rulle": "Rulle, der kører passet på hometraineren",
+        "rulle": "Rulle, der kører træningspasset på hometraineren",
         "ai": "AI'en, der foreslår, inden for et budget hver måned",
         "files": "{gb} GB til filer",
         "team": "Holdets uge og alle holdets trænere og forældre"
@@ -5132,7 +5132,7 @@
             "1": "Team Danmark anbefaler 5–7 g kulhydrat pr. kg kropsvægt om dagen ved under 1½ times træning og 7–10 g pr. kg ved mere.",
             "2": "På dage med hård træning over 1½ time kan halvdelen af tallerkenen være kulhydrat, en fjerdedel protein og en fjerdedel grønt. På lettere dage passer Fødevarestyrelsens Y-tallerken: 2/5 kulhydrat, 1/5 protein og 2/5 grønt.",
             "3": "Unge i vækst anbefales 1,2–2,0 g protein pr. kg om dagen. De fleste får det gennem almindelig mad, fordelt over dagens måltider.",
-            "4": "Morgenmad før morgentræning hjælper. Er det svært at spise tidligt, kan en lille portion og en sportsdrik under passet gøre det."
+            "4": "Morgenmad før morgentræning hjælper. Er det svært at spise tidligt, kan en lille portion og en sportsdrik under træningspasset gøre det."
           }
         },
         "timing": {
@@ -5150,9 +5150,9 @@
           "intro": "I dansk vejr sveder ryttere typisk 0,7–1,2 liter i timen, og mere i varme.",
           "points": {
             "1": "Ved træning over en time eller i varme: mindst 1–2 dl hvert kvarter, og 2–3 dl ved meget sved. Kroppen kan optage omkring 1–1,5 liter i timen.",
-            "2": "Vægttabet i sved bør højst være 2 % af kropsvægten under 25 °C og 1 % over 30 °C. Rytteren kan veje sig før og efter et pas og kender så sin svedrate.",
+            "2": "Vægttabet i sved bør højst være 2 % af kropsvægten under 25 °C og 1 % over 30 °C. Rytteren kan veje sig før og efter et træningspas og kender så sin svedrate.",
             "3": "Ved hård træning over en time hjælper 500–700 mg natrium pr. liter. Urinen skal være lys gul og klar.",
-            "4": "Drik højst det, du sveder. Tager rytteren på under et pas, er det for meget, og meget væske med for lidt salt kan være farligt."
+            "4": "Drik højst det, du sveder. Tager rytteren på under et træningspas, er det for meget, og meget væske med for lidt salt kan være farligt."
           }
         },
         "homemade": {
@@ -5199,7 +5199,7 @@
           "title": "Når energien ikke slår til",
           "intro": "Får kroppen for lidt energi i forhold til træningen, hedder det relativ energimangel i sport (REDs). Det rammer både piger og drenge, og det sker oftest, uden at nogen har villet det.",
           "points": {
-            "1": "Det opstår typisk, når træningen vokser, når skole og cykling skal passes, når appetitten forsvinder efter hårde pas, eller når rytteren ikke får spist på lange ture.",
+            "1": "Det opstår typisk, når træningen vokser, når skole og cykling skal passes, når appetitten forsvinder efter hårde træningspas, eller når rytteren ikke får spist på lange ture.",
             "2": "Det kan sjældent ses på vægten, fordi kroppen sænker sit stofskifte. Tegn hos begge køn: væksten går langsommere, træningen giver mindre, rytteren er ofte træt, syg eller skadet, har humørsvingninger eller sover dårligt. En hvilepuls under 50 kan være et tegn hos unge.",
             "3": "Hos piger kan menstruationen udeblive eller blive uregelmæssig. Hos drenge kan sexlysten blive mindre og morgenerektionerne færre.",
             "4": "Tal om energi, restitution og om at blive ved med at kunne træne, og lad vægt og kropsform ligge. Fortæl, hvad du har set, og foreslå en snak med en sportsdiætist eller læge.",
@@ -5729,7 +5729,7 @@
       "about": {
         "title": "Om rådene",
         "points": {
-          "1": "Rådene følger Team Danmarks \"Kost og elitesport\" (2026): drik nok og spis godt med kulhydrat, så lagrene er fyldte, et hovedmåltid 3–4 timer før, et let mellemmåltid 1–2 timer før og ½–1 liter at drikke, sportsdrik på pas over en time, og kulhydrat, protein og væske lige efter. Opladningsturen dagen før løb er fra DCU's kompendier for U17 og U19, og DCU's styrkeprogrammer nævner også et restitutionsmåltid lige efter træning.",
+          "1": "Rådene følger Team Danmarks \"Kost og elitesport\" (2026): drik nok og spis godt med kulhydrat, så lagrene er fyldte, et hovedmåltid 3–4 timer før, et let mellemmåltid 1–2 timer før og ½–1 liter at drikke, sportsdrik på træningspas over en time, og kulhydrat, protein og væske lige efter. Opladningsturen dagen før løb er fra DCU's kompendier for U17 og U19, og DCU's styrkeprogrammer nævner også et restitutionsmåltid lige efter træning.",
           "2": "Mængderne regnes ud for en typisk rytter i den klasse og det køn, du vælger, efter de nordiske næringsstofanbefalinger (NNR 2023). Du skal ikke skrive din vægt. Er du stor eller lille for din alder, så vælg klassen over eller under.",
           "3": "Før start: 1–4 g kulhydrat pr. kg 1–4 timer før (Thomas 2016), som Kadence læser som omkring 1 g pr. kg for hver time fra hovedmåltidet til start. Efter: 1–1,2 g kulhydrat og 0,25–0,3 g protein pr. kg (Team Danmark, Thomas 2016). Skal du køre hårdt igen inden for 8 timer, gentages kulhydratet hver time de første fire timer.",
           "4": "Kulhydrat i timen følger Thomas 2016, Jeukendrup 2014 og Team Danmark. Ingen kilde har tal for teenagere, så Kadence stopper ved 60 g i timen uden øvelse og foreslår højst 90 g. På rolige træningsture regner Kadence med mindre: 0–30 g i timen op til 2 timer og 30–60 g derover.",
@@ -5974,7 +5974,7 @@
     "library": {
       "tabs": {
         "label": "Bibliotekets dele",
-        "sessions": "Pas og forløb",
+        "sessions": "Træningspas og forløb",
         "programs": "Øvelser og programmer"
       },
       "subtitle": "Programmer og øvelser med tegninger, som rytterne kan følge derhjemme. Kadences egne står ved siden af holdets egne.",
@@ -6012,7 +6012,7 @@
       "copyName": "{name} (kopi)",
       "archive": "Arkivér",
       "restore": "Gendan",
-      "archivedDone": "Programmet er arkiveret. De pas, der allerede ligger i kalenderen, er der stadig.",
+      "archivedDone": "Programmet er arkiveret. De træningspas, der allerede ligger i kalenderen, er der stadig.",
       "restoredDone": "Programmet er tilbage i biblioteket.",
       "archivedNote": "Programmet er arkiveret, så det står ikke i listen. Du kan stadig se det og hente det.",
       "needs": "Kræver: {equipment}",
@@ -6130,7 +6130,7 @@
     "builder": {
       "newTitle": "Nyt program",
       "newSubtitle": "Sæt øvelser sammen i dele af dagen. Du kan vælge blandt Kadences og holdets egne øvelser.",
-      "editSubtitle": "Pas, der allerede ligger i kalenderen, beholder de øvelser, de fik.",
+      "editSubtitle": "Træningspas, der allerede ligger i kalenderen, beholder de øvelser, de fik.",
       "name": "Navn",
       "namePlaceholder": "For eksempel Styrke før sæsonen",
       "description": "Beskrivelse",
@@ -6185,13 +6185,13 @@
     "schedule": {
       "button": "Læg i kalenderen",
       "title": "Læg programmet i kalenderen",
-      "intro": "Programmet bliver et styrkepas med {count, plural, one {# øvelse} other {# øvelser}} på ca. {minutes} min. Rytterne ser tegningerne i passet.",
+      "intro": "Programmet bliver et styrkepas med {count, plural, one {# øvelse} other {# øvelser}} på ca. {minutes} min. Rytterne ser tegningerne i træningspasset.",
       "forRider": "For {name}",
       "date": "Dato",
       "submit": "Læg i kalenderen",
       "done": "{count, plural, one {Programmet er lagt i kalenderen.} other {Programmet er lagt i # kalendere.}}",
-      "doneSeries": "{count, plural, one {Serien er lagt ind: # pas.} other {Serien er lagt ind: # pas.}}",
-      "tooLong": "Et pas kan rumme 30 øvelser, og programmet har {count}. Du kan dele det i to programmer og lægge dem ind hver for sig.",
+      "doneSeries": "{count, plural, one {Serien er lagt ind: # træningspas.} other {Serien er lagt ind: # træningspas.}}",
+      "tooLong": "Et træningspas kan rumme 30 øvelser, og programmet har {count}. Du kan dele det i to programmer og lægge dem ind hver for sig.",
       "noRiders": "Der er ingen ryttere på holdet endnu."
     },
     "parts": {
@@ -6454,12 +6454,12 @@
     "derived": "Delvist bygget på data fra Garmin-enheder.",
     "connect": {
       "title": "Forbind Garmin",
-      "body": "Når du forbinder din Garmin-konto, sender Garmin dine ture og dine andre aktiviteter, fx løb og styrketræning, til Kadence. Din træner og dine forældre kan se dem her, ligesom dine andre ture. Sender du eller din træner et pas til din Garmin, får Garmin passet.",
+      "body": "Når du forbinder din Garmin-konto, sender Garmin dine ture og dine andre aktiviteter, fx løb og styrketræning, til Kadence. Din træner og dine forældre kan se dem her, ligesom dine andre ture. Sender du eller din træner et træningspas til din Garmin, får Garmin træningspasset.",
       "garminOwn": "Garmin er selv ansvarlig for det, Garmin gemmer om dig, og må bruge det, Kadence sender til Garmin.",
       "privacy": "Læs Garmins privatlivspolitik",
       "restricted": "Har du ikke lov til at lægge data på din Garmin-konto, så lad være med at forbinde den.",
-      "agree": "Jeg giver lov til, at Kadence henter mine ture og andre aktiviteter fra Garmin og sender de pas, jeg eller min træner vælger, til Garmin.",
-      "withdraw": "Du kan altid afbryde forbindelsen her under Enheder. Så henter Kadence ikke mere fra Garmin, og Garmin får ikke flere pas.",
+      "agree": "Jeg giver lov til, at Kadence henter mine ture og andre aktiviteter fra Garmin og sender de træningspas, jeg eller min træner vælger, til Garmin.",
+      "withdraw": "Du kan altid afbryde forbindelsen her under Enheder. Så henter Kadence ikke mere fra Garmin, og Garmin får ikke flere træningspas.",
       "continue": "Fortsæt til Garmin",
       "cancel": "Fortryd"
     },
@@ -6469,7 +6469,7 @@
       "stateYes": "Du har sagt ja til, at AI'en må læse dine ture fra Garmin.",
       "open": "Læs mere og sig ja",
       "dialogTitle": "Må AI'en læse dine ture fra Garmin?",
-      "what": "Nogle knapper i Kadence beder en AI om et forslag: en kommentar til et pas, en forklaring af din form, et udkast til din uge og trænerens overblik om mandagen. Et forslag bliver kun brugt, hvis du eller din træner vælger det.",
+      "what": "Nogle knapper i Kadence beder en AI om et forslag: en kommentar til et træningspas, en forklaring af din form, et udkast til din uge og trænerens overblik om mandagen. Et forslag bliver kun brugt, hvis du eller din træner vælger det.",
       "reads": "Siger du ja, må AI'en læse tallene fra dine ture fra Garmin: tid, distance, belastning, zoner og hvor hårdt turen føltes. Den må også læse det, Kadence regner ud fra turene, fx din form.",
       "model": "Sprogmodellen kører i EU eller på en server, holdet selv styrer. Kadence bruger aldrig dine ture til at træne en AI.",
       "without": "Uden dit ja læser AI'en ikke dine ture fra Garmin. Så siger de knapper, der bygger på dine ture, at du ikke har sagt ja. Alt andet virker.",

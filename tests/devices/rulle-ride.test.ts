@@ -222,7 +222,7 @@ describe("the rider's own ride", () => {
     expect(at90.status).toBe(201);
     const { activityId } = await at90.json();
     expect((await row("select note from activities where id = $1", [activityId])).note).toBe(
-      "Kørt i Rulle på 90 % af passet.",
+      "Kørt i Rulle på 90 % af træningspasset.",
     );
     locale.value = "en";
     const between = await post("?name=Hilly&low=80&high=110", ride(120));
