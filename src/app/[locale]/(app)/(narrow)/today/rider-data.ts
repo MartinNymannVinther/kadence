@@ -8,6 +8,7 @@ import { checkinValues } from "@/components/wellbeing/checkin-values";
 import { addDaysIso } from "@/core/dates";
 import type { OrgContext } from "@/core/db/tenant";
 import { holdsHealthConsent, isHealthConsentWithdrawn } from "@/modules/consent/service";
+import { garminAttribution } from "@/modules/devices/attribution";
 import { listDeviceLinks } from "@/modules/devices/links";
 import { hasAnyRide, recentRides } from "@/modules/today/recent-rides";
 import { listGuardians } from "@/modules/team/guardians";
@@ -22,7 +23,8 @@ import { checkinStart } from "@/modules/wellbeing/prefill";
  * What a rider's Today shows (docs/adr/0063): today's and tomorrow's
  * sessions, today's check-in — and, for a new one, the answers behind
  * "Mere" from the last (backlog P2-11), with the rider's known pains and
- * whether a coach reads it (docs/adr/0097) — the ride to say "how hard" about,
+ * whether a coach reads it (docs/adr/0097) — today's rides no session
+ * claims, so a ride nobody planned shows on the day too, the ride to say "how hard" about,
  * and what the first steps need to know. The rest of the rider's picture is on Mig.
  */
 export async function riderDay(
@@ -81,6 +83,16 @@ export async function riderDay(
   };
   return {
     today: cards.filter((s) => s.onDate === today),
+    ridden: rides
+      .filter((r) => r.onDate === today && !r.planned)
+      .map((r) => ({
+        id: r.id,
+        name: r.name,
+        sport: r.sport,
+        movingSeconds: r.movingSeconds,
+        distanceM: r.distanceM,
+        attribution: garminAttribution(r),
+      })),
     tomorrow: cards.filter((s) => s.onDate === tomorrow),
     checkin: checkinValues(checkin),
     checkinStart: checkinStart(
