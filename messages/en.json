@@ -891,7 +891,7 @@
   },
   "terms": {
     "title": "Terms and privacy",
-    "updated": "Last updated 31 October 2026.",
+    "updated": "Last updated 1 November 2026.",
     "back": "Back",
     "language": "På dansk",
     "intro": "Kadence is an open source tool for training planning for young cyclists, run by Haij. This is the agreement between you and us when you use the edition we run. If you run the code yourself, only the licence applies.",
@@ -934,7 +934,19 @@
     "subprocessorsNote": "Who can see what is listed in",
     "devices": {
       "title": "Garmin and other devices",
-      "body": "When you connect a Garmin, Wahoo or Polar account, Kadence fetches your rides from it, and you or your coach can send sessions the other way. This happens only once you have connected the account yourself, and it stops when you disconnect it under Settings → Devices. For Garmin you give your yes in Kadence before you are sent on. Garmin is responsible for what Garmin keeps, and may use what Kadence sends to Garmin. Garmin's privacy notice is at garmin.com/privacy/connect. Rides from Garmin are shown with Garmin's name and the device, and numbers and charts built on them say so. The AI reads your rides from Garmin only if you have said yes to it yourself under Settings → Devices, and you can withdraw that yes in the same place. Kadence never uses your rides to train an AI. Garmin's service is provided as it is. Neither Garmin nor Kadence is liable for losses it causes, as far as the law allows."
+      "body": "When you connect a Garmin, Wahoo or Polar account, Kadence fetches your rides and other activities from it, and you or your coach can send sessions the other way. This happens only once you have connected the account yourself, and it stops when you disconnect it under Settings → Devices. What applies to data from Garmin is below."
+    },
+    "garmin": {
+      "title": "Data from Garmin",
+      "body": "For Garmin you give your yes in Kadence before you are sent on to Garmin. Garmin then sends your activities to Kadence, every type, with time, distance, heart rate, power, the route and the device they were recorded on. Kadence uses them to show your activities in your calendar, compare them with your sessions and work out your load and your form. You, your coaches on the team and your parents, if you share your training with them, can see them. Sessions you or your coach send to your Garmin go to Garmin. Data from Garmin is kept on Kadence's server at Hetzner Online GmbH in Germany and in the encrypted backups in Hetzner's storage in Germany. If you have said yes to it (see the next section), the language model reads it too: Mistral AI in the EU, or a model on the team's own server. Nobody else receives it. Kadence never sells it, never uses it for advertising and shares it with nobody beyond those named here. Garmin is responsible for what Garmin keeps about you, and may use what Kadence sends to Garmin. Garmin's privacy notice is at garmin.com/privacy/connect. Activities from Garmin are shown with Garmin's name and the device, and numbers and charts built on them say so. Garmin's service is provided as it is. Neither Garmin nor Kadence is liable for losses it causes, as far as the law allows."
+    },
+    "garminAi": {
+      "title": "AI transparency statement: your data from Garmin",
+      "body": "Some buttons in Kadence ask an AI for a proposal: a comment on a session, an explanation of your form, a draft of your week and your coach's Monday overview. A proposal is only used if you or your coach choose it. The AI reads your data from Garmin only if you have said yes to it yourself on the Garmin card under Settings → Devices, after reading what it reads. Nobody else can say yes for you, not your coach and not your parents. If you say yes, the AI reads the numbers from your activities from Garmin and what Kadence works out from them, such as your form. The language model is Mistral AI in the EU or a model on the team's own server, and the team must also have allowed the AI to read the riders' data. Without your yes, the AI does not read your data from Garmin, and the buttons that build on it say so. You withdraw your yes in the same place, and it applies from that moment. Disconnecting Garmin withdraws it too. Kadence never uses data from Garmin, or anything derived from it, to train, evaluate or improve an AI model."
+    },
+    "rights": {
+      "title": "Seeing, correcting, exporting, deleting and withdrawing",
+      "body": "You can see everything Kadence holds about you. You correct your profile under Settings → Profile, and if an activity is wrong, you delete it on its page. Under Settings → Data you export everything in one click and delete your workspace or your account with everything about you. You withdraw each consent where you gave it: the connection to Garmin under Settings → Devices, the AI's access to your data from Garmin on the Garmin card in the same place, and the consent to health data under Settings → Data. When you disconnect Garmin, Garmin is told and Kadence fetches nothing more. What has already come in is yours until you delete it. Questions about your data go to the address under Contact."
     },
     "shareLinks": {
       "title": "Invitations",

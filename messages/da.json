@@ -891,7 +891,7 @@
   },
   "terms": {
     "title": "Vilkår og privatliv",
-    "updated": "Senest opdateret 31. oktober 2026.",
+    "updated": "Senest opdateret 1. november 2026.",
     "back": "Tilbage",
     "language": "In English",
     "intro": "Kadence er et open source-værktøj til træningsplanlægning for unge cykelryttere, drevet af Haij. Det her er aftalen mellem dig og os, når du bruger den udgave vi driver. Kører du koden selv, gælder kun licensen.",
@@ -934,7 +934,19 @@
     "subprocessorsNote": "Hvem der kan se hvad, står i",
     "devices": {
       "title": "Garmin og andre enheder",
-      "body": "Forbinder du en Garmin-, Wahoo- eller Polar-konto, henter Kadence dine ture derfra, og du eller din træner kan sende pas den anden vej. Det sker kun, når du selv har forbundet kontoen, og det stopper, når du afbryder den under Indstillinger → Enheder. Ved Garmin giver du dit ja i Kadence, før du sendes videre. Garmin er selv ansvarlig for det, Garmin gemmer, og må bruge det, Kadence sender til Garmin. Garmins privatlivspolitik står på garmin.com/privacy/connect. Ture fra Garmin vises med Garmins navn og enheden, og tal og grafer, der bygger på dem, siger det. AI'en læser kun dine ture fra Garmin, hvis du selv har sagt ja til det under Indstillinger → Enheder, og du kan trække ja'et tilbage samme sted. Kadence bruger aldrig dine ture til at træne en AI. Garmins tjeneste leveres, som den er. Hverken Garmin eller Kadence hæfter for tab, den giver, så langt loven tillader det."
+      "body": "Forbinder du en Garmin-, Wahoo- eller Polar-konto, henter Kadence dine ture og andre aktiviteter derfra, og du eller din træner kan sende pas den anden vej. Det sker kun, når du selv har forbundet kontoen, og det stopper, når du afbryder den under Indstillinger → Enheder. Hvad der gælder for data fra Garmin, står herunder."
+    },
+    "garmin": {
+      "title": "Data fra Garmin",
+      "body": "Ved Garmin giver du dit ja i Kadence, før du sendes videre til Garmin. Garmin sender så dine aktiviteter til Kadence, alle typer, med tid, distance, puls, watt, ruten og den enhed, de er optaget på. Kadence bruger dem til at vise dine aktiviteter i din kalender, sammenligne dem med dine pas og regne din belastning og din form ud. Du, dine trænere på holdet og dine forældre, hvis du deler din træning med dem, kan se dem. Pas, som du eller din træner sender til din Garmin, får Garmin. Data fra Garmin ligger på Kadences server hos Hetzner Online GmbH i Tyskland og i de krypterede backups i Hetzners lager i Tyskland. Har du sagt ja til det (se næste afsnit), læser sprogmodellen dem også: Mistral AI i EU eller en model på holdets egen server. Ingen andre får dem. Kadence sælger dem aldrig, bruger dem ikke til reklame og deler dem ikke med andre end dem, der står her. Garmin er selv ansvarlig for det, Garmin gemmer om dig, og må bruge det, Kadence sender til Garmin. Garmins privatlivspolitik står på garmin.com/privacy/connect. Aktiviteter fra Garmin vises med Garmins navn og enheden, og tal og grafer, der bygger på dem, siger det. Garmins tjeneste leveres, som den er. Hverken Garmin eller Kadence hæfter for tab, den giver, så langt loven tillader det."
+    },
+    "garminAi": {
+      "title": "AI-gennemsigtighed: dine data fra Garmin",
+      "body": "Nogle knapper i Kadence beder en AI om et forslag: en kommentar til et pas, en forklaring af din form, et udkast til din uge og trænerens overblik om mandagen. Et forslag bliver kun brugt, hvis du eller din træner vælger det. AI'en læser kun dine data fra Garmin, hvis du selv har sagt ja til det på Garmin-kortet under Indstillinger → Enheder, efter at have læst, hvad den læser. Ingen andre kan sige ja for dig, heller ikke din træner eller dine forældre. Siger du ja, læser AI'en tallene fra dine aktiviteter fra Garmin og det, Kadence regner ud fra dem, fx din form. Sprogmodellen er Mistral AI i EU eller en model på holdets egen server, og holdet skal også have givet AI'en lov til at læse rytternes data. Uden dit ja læser AI'en ikke dine data fra Garmin, og de knapper, der bygger på dem, siger det. Du trækker dit ja tilbage samme sted, og det gælder fra samme øjeblik. Det sker også, når du afbryder Garmin. Kadence bruger aldrig data fra Garmin, eller noget der er afledt af dem, til at træne, afprøve eller forbedre en AI-model."
+    },
+    "rights": {
+      "title": "Se, ret, hent ud, slet og træk tilbage",
+      "body": "Du kan se alt, Kadence har om dig. Din profil retter du under Indstillinger → Profil, og er en aktivitet forkert, sletter du den på dens side. Under Indstillinger → Data henter du alt ud med ét klik og sletter dit arbejdsrum eller din konto med alt om dig. Hvert samtykke trækker du tilbage, hvor du gav det: forbindelsen til Garmin under Indstillinger → Enheder, AI'ens adgang til dine data fra Garmin på Garmin-kortet samme sted og samtykket til helbredsoplysninger under Indstillinger → Data. Afbryder du Garmin, får Garmin besked, og Kadence henter ikke mere. Det, der allerede er kommet ind, er dit, indtil du sletter det. Har du spørgsmål om dine data, så skriv til adressen under Kontakt."
     },
     "shareLinks": {
       "title": "Invitationer",
