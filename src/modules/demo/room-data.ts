@@ -79,7 +79,7 @@ export const ROOM_THREADS: DemoThread[] = [
     daysAgo: 6,
     title: { da: "Hvor meget intensitet i december?", en: "How much intensity in December?" },
     body: {
-      da: "Vi har seks U19-ryttere, og flere af dem kører hårdt, hver gang de er ude i en gruppe. Jeg overvejer at lægge vinteren an på mest rolig træning og ét hårdt pas om ugen. Hvordan fordeler I intensiteten fra november til februar?",
+      da: "Vi har seks U19-ryttere, og flere af dem kører hårdt, hver gang de er ude i en gruppe. Jeg overvejer at lægge vinteren an på mest rolig træning og ét hårdt træningspas om ugen. Hvordan fordeler I intensiteten fra november til februar?",
       en: "We have six U19 riders, and several of them ride hard every time they are out in a group. I am thinking of building the winter on mostly easy riding and one hard session a week. How do you spread the intensity from November to February?",
     },
     replies: [
@@ -95,7 +95,7 @@ export const ROOM_THREADS: DemoThread[] = [
         by: ANDERS,
         daysAgo: 4,
         body: {
-          da: "Det samme her. Det hjalp at sige til rytterne, at et roligt pas er et rigtigt pas. Gruppeturene kører vi med en træner forrest, så tempoet holder.",
+          da: "Det samme her. Det hjalp at sige til rytterne, at et roligt træningspas er et rigtigt træningspas. Gruppeturene kører vi med en træner forrest, så tempoet holder.",
           en: "Same here. It helped to tell the riders that an easy session is a real session. We ride the group rides with a coach at the front, so the pace holds.",
         },
       },
@@ -126,7 +126,7 @@ export const ROOM_THREADS: DemoThread[] = [
         by: JONAS,
         daysAgo: 4,
         body: {
-          da: "Vi starter med DCU's U17-program fra biblioteket og bruger de første uger på teknik med lette vægte. To pas om ugen med mindst 48 timer imellem passer godt ind ved siden af skolen.",
+          da: "Vi starter med DCU's U17-program fra biblioteket og bruger de første uger på teknik med lette vægte. To træningspas om ugen med mindst 48 timer imellem passer godt ind ved siden af skolen.",
           en: "We start with DCU's U17 programme from the library and spend the first weeks on technique with light weights. Two sessions a week with at least 48 hours between them fit well beside school.",
         },
       },

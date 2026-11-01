@@ -91,7 +91,7 @@ describe("applyWords", () => {
     const words = applyWords(self, one, "da");
     expect(words.chooseRiders).toBe(false);
     expect(words.empty).toBe("apply.emptyOne");
-    expect(say("da", words.summary)).toBe("6 pas i din kalender.");
+    expect(say("da", words.summary)).toBe("6 træningspas i din kalender.");
     expect(say("da", words.confirm)).toBe("Læg ugen ind i din kalender");
     expect(say("en", words.confirm)).toBe("Lay the week into your calendar");
     for (const text of [say("da", words.summary), say("da", words.confirm)]) {
@@ -103,7 +103,7 @@ describe("applyWords", () => {
     const words = applyWords(self, { sessions: 6, riders: 1, weeks: 4 }, "da");
     expect(words.summary.key).toBe("apply.summaryOwnWeeks");
     expect(say("da", words.summary)).toBe(
-      "6 pas om ugen i din kalender i 4 uger i træk. Hvert pas bliver en serie over ugerne, så du kan rette dem samlet bagefter.",
+      "6 træningspas om ugen i din kalender i 4 uger i træk. Hvert træningspas bliver en serie over ugerne, så du kan rette dem samlet bagefter.",
     );
     expect(say("da", words.confirm)).toBe("Læg ugerne ind i din kalender");
   });
@@ -111,7 +111,7 @@ describe("applyWords", () => {
   it("names the child's calendar by first name, for a parent", () => {
     const words = applyWords(child, one, "da");
     expect(words.chooseRiders).toBe(false);
-    expect(say("da", words.summary)).toBe("6 pas i Emmas kalender.");
+    expect(say("da", words.summary)).toBe("6 træningspas i Emmas kalender.");
     expect(say("da", words.confirm)).toBe("Læg ugen ind i Emmas kalender");
     expect(say("en", applyWords(child, one, "en").confirm)).toBe(
       "Lay the week into Emma's calendar",
@@ -124,14 +124,14 @@ describe("applyWords", () => {
 describe("appliedWords", () => {
   it("tells a club how many riders got the week, and a person their own calendar", () => {
     expect(say("da", appliedWords({ kind: "team" }, { count: 12, riders: 2 }, "da"))).toBe(
-      "12 pas er lagt ind hos 2 ryttere.",
+      "12 træningspas er lagt ind hos 2 ryttere.",
     );
     expect(say("da", appliedWords({ kind: "self" }, { count: 6, riders: 1 }, "da"))).toBe(
-      "6 pas er lagt ind i din kalender.",
+      "6 træningspas er lagt ind i din kalender.",
     );
     expect(
       say("da", appliedWords({ kind: "child", name: "Emma" }, { count: 1, riders: 1 }, "da")),
-    ).toBe("1 pas er lagt ind i Emmas kalender.");
+    ).toBe("1 træningspas er lagt ind i Emmas kalender.");
   });
 });
 
@@ -141,14 +141,14 @@ describe("startWords", () => {
   const child = startWords({ kind: "child", name: "Emma Holm" }, "da");
 
   it("keeps the club's words for last week and the AI", () => {
-    expect(say("da", team.lastOne)).toBe("Henter rytterens pas fra ugen før.");
+    expect(say("da", team.lastOne)).toBe("Henter rytterens træningspas fra ugen før.");
     expect(say("da", team.aiTitle)).toBe("Forslag til holdets uge");
     expect(say("da", team.aiHint(false))).toContain("holdets egne begivenheder");
     expect(say("da", team.aiHint(true))).toContain("træningsprofilen, holdets egne begivenheder");
   });
 
   it("speaks of your own week, with nothing about a team or its riders", () => {
-    expect(say("da", self.lastOne)).toBe("Henter dine pas fra ugen før.");
+    expect(say("da", self.lastOne)).toBe("Henter dine træningspas fra ugen før.");
     expect(say("da", self.aiTitle)).toBe("Forslag til din uge");
     expect(say("da", self.aiHint(false))).toBe(
       "AI'en får DCU's timer for årgangen, biblioteket, navn og dato på dine løb og datoerne for andre dage i kalenderen. Den får ikke andet om dig. Forslaget lander i planen, hvor du kan rette det.",
@@ -157,7 +157,7 @@ describe("startWords", () => {
   });
 
   it("speaks of the child's week by first name, for a parent", () => {
-    expect(say("da", child.lastOne)).toBe("Henter Emmas pas fra ugen før.");
+    expect(say("da", child.lastOne)).toBe("Henter Emmas træningspas fra ugen før.");
     expect(say("da", child.aiTitle)).toBe("Forslag til Emmas uge");
     expect(say("da", child.aiHint(true))).toContain(
       "navn og dato på Emmas løb og datoerne for andre dage i kalenderen. Den får ikke andet om Emma.",

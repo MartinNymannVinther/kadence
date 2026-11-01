@@ -93,7 +93,7 @@ describe("the devices page names only the configured providers", () => {
       hasPushers: "yes",
       pushers: "Wahoo",
     });
-    expect(withPush).toContain("sender de pas, du vælger, til Wahoo");
+    expect(withPush).toContain("sender de træningspas, du vælger, til Wahoo");
 
     const withoutPush = t("usBody", {
       hasEu: "yes",
@@ -102,7 +102,7 @@ describe("the devices page names only the configured providers", () => {
       hasPushers: "no",
       pushers: "",
     });
-    expect(withoutPush).not.toContain("sender de pas");
+    expect(withoutPush).not.toContain("sender de træningspas");
   });
 
   it("never leaves an ICU placeholder or a missing key showing, in either language", () => {

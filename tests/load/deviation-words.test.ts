@@ -126,7 +126,7 @@ describe("the words of a deviation", () => {
       lines: [
         "Planen var et styrkepas på 45 min.",
         "Du trænede 45 min, og det føltes en del lettere end planlagt.",
-        "Samlet var passet omkring 60 % lettere for kroppen end planlagt.",
+        "Samlet var træningspasset omkring 60 % lettere for kroppen end planlagt.",
       ],
       hint: null,
     });
@@ -196,7 +196,7 @@ describe("the words of a deviation", () => {
     const missed = deviation({ minutes: 60 }, null, PAST, TODAY);
     expect(words(missed)).toEqual({
       heading: "Ikke nået",
-      lines: ["Planlagt 1 t. Der er ikke kommet noget ind for passet."],
+      lines: ["Planlagt 1 t. Der er ikke kommet noget ind for træningspasset."],
       hint: null,
     });
     expect(words(missed, "strength")?.heading).toBe("Ikke nået");
@@ -227,11 +227,11 @@ describe("the words of a deviation", () => {
     );
     const w = words(d, "bike", "da", { state: "inside", ref: "dcu" });
     expect(w?.lines).toEqual([
-      "Planen var et pas om tærsklen på 30 min.",
+      "Planen var et træningspas om tærsklen på 30 min.",
       "Du kørte 30 min og en del roligere, i gennemsnit omkring 71 % af din FTP.",
       "Samlet var turen omkring 50 % lettere for kroppen end planlagt.",
-      "Passet var bygget om zone 4 med 30 min der eller over. Turen havde 3 min, mest i zone 2.",
-      "Med resten af ugens pas ender ugen inden for DCU's ramme.",
+      "Træningspasset var bygget om zone 4 med 30 min der eller over. Turen havde 3 min, mest i zone 2.",
+      "Med resten af ugens træningspas ender ugen inden for DCU's ramme.",
     ]);
   });
 
