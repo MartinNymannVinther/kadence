@@ -51,7 +51,7 @@ export const EXPORT_TABLES: ExportTable[] = [
   },
   {
     table: "planned_sessions",
-    sheet: "Pas",
+    sheet: "Træningspas",
     orderBy: "rider_id, on_date, sort",
     columns:
       "id, org_id, rider_id, on_date, sort, sport, title, description, structure, planned_minutes, planned_load, planned_km, template_id, programme_session, group_key, origin, activity_id, created_by, created_at, updated_at, series_key, start_time, meeting_place, updated_by",
@@ -142,7 +142,7 @@ export const EXPORT_TABLES: ExportTable[] = [
   },
   {
     table: "training_block_items",
-    sheet: "Forløbets pas",
+    sheet: "Forløbets træningspas",
     orderBy: "block_id, day, sort",
     columns:
       "id, org_id, block_id, template_id, day, sort, sport, title, description, structure, planned_minutes, start_time, meeting_place",

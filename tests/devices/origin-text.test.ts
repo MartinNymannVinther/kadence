@@ -94,7 +94,7 @@ describe("the devices page names only the configured providers", () => {
       pushers: "Wahoo",
     });
     // Garmin's go by themselves too (docs/adr/0114), so the words say "your sessions".
-    expect(withPush).toContain("sender dine pas til Wahoo");
+    expect(withPush).toContain("sender dine træningspas til Wahoo");
 
     const withoutPush = t("usBody", {
       hasEu: "yes",
@@ -103,7 +103,7 @@ describe("the devices page names only the configured providers", () => {
       hasPushers: "no",
       pushers: "",
     });
-    expect(withoutPush).not.toContain("sender dine pas");
+    expect(withoutPush).not.toContain("sender dine træningspas");
   });
 
   it("never leaves an ICU placeholder or a missing key showing, in either language", () => {

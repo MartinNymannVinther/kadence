@@ -160,7 +160,7 @@ describe("Martin's run, 14 October", () => {
     expect(d.heading).toBe("shorter");
     const w = words(d, "other");
     expect(w?.heading).toBe("Kortere end planlagt");
-    expect(w?.lines).toEqual(["Planen var et pas på 30 min.", "Du trænede 12 min."]);
+    expect(w?.lines).toEqual(["Planen var et træningspas på 30 min.", "Du trænede 12 min."]);
     expect(w?.hint).toBeNull();
     const text = [w?.heading, ...(w?.lines ?? [])].join(" ");
     for (const never of ["gas", "tærskelpuls", "gange", "hårdere", "roligere"])

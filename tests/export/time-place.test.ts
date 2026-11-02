@@ -63,7 +63,7 @@ afterAll(async () => {
 describe("the export", () => {
   it("carries a session's time and place", async () => {
     const data = await buildOrgExport(COACH);
-    const sheet = data.sections.find((s) => s.sheet === "Pas")!;
+    const sheet = data.sections.find((s) => s.sheet === "Træningspas")!;
     const row = sheet.rows[0]!;
     expect(row[sheet.columns.indexOf("start_time")]).toBe("17:30:00");
     expect(row[sheet.columns.indexOf("meeting_place")]).toBe("Klubhuset");
@@ -80,7 +80,7 @@ describe("the export", () => {
 
   it("carries a block's own session, steps, time and place included", async () => {
     const data = await buildOrgExport(COACH);
-    const sheet = data.sections.find((s) => s.sheet === "Forløbets pas")!;
+    const sheet = data.sections.find((s) => s.sheet === "Forløbets træningspas")!;
     const row = sheet.rows[0]!;
     const cell = (column: string) => row[sheet.columns.indexOf(column)];
     expect(cell("template_id")).toBeNull();
