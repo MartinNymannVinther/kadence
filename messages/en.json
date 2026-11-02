@@ -1131,6 +1131,7 @@
       "doneTitle": "Well done. How did it go?",
       "open": "See the whole session",
       "indoors": "Ride indoors",
+      "km": "{km} km",
       "comments": "{count, plural, one {# comment} other {# comments}}"
     },
     "week": {

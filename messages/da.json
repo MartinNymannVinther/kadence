@@ -1131,6 +1131,7 @@
       "doneTitle": "Godt gået. Hvordan gik det?",
       "open": "Se hele passet",
       "indoors": "Kør indendørs",
+      "km": "{km} km",
       "comments": "{count, plural, one {# kommentar} other {# kommentarer}}"
     },
     "week": {
