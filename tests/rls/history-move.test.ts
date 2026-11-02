@@ -171,6 +171,16 @@ async function seedHistory() {
     file_name: "Tur.fit",
     bytes: Buffer.from("fit"),
   });
+  // A session on the rider's Garmin calendar (drizzle/0062), with the session it names.
+  await seed("device_workouts", {
+    rider_id: FROM,
+    planned_session_id: "hm_ps_lib",
+    provider: "garmin",
+    external_workout_id: "9001",
+    external_schedule_id: "9002",
+    scheduled_on: DAY,
+    content_hash: "c".repeat(64),
+  });
   // What stays: a parent's link, and a deleted session the team remembers.
   await seed("guardians", { rider_id: FROM, name: "Mor" });
   await seed("planned_session_deletions", { rider_id: FROM, on_date: DAY, title: "Slettet" });
@@ -337,6 +347,7 @@ describe("the rider moves their own history", () => {
       calendar_events: 1,
       device_links: 1,
       device_inbox: 1,
+      device_workouts: 1,
     });
   });
 

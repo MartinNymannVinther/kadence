@@ -2,6 +2,7 @@ import { Refused } from "@/core/action";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { log } from "@/core/log";
 import { withdrawGarminConsents } from "@/modules/consent/garmin";
+import { withdrawWorkouts } from "./calendar-exit";
 import { loggable } from "./http";
 import { accessTokenFor } from "./link-tokens";
 import { deleteOwnLink, linkExternalUserId, ownLinkOwner } from "./links";
@@ -17,7 +18,11 @@ import { providerById, type ProviderId } from "./providers";
  * choice does not wait for: if the provider cannot be reached, or the keys
  * are gone from the installation, the link is deleted all the same and
  * the rider can revoke Kadence from the provider's own settings.
- * Disconnecting Garmin withdraws the rider's yes to Garmin with it.
+ * Disconnecting Garmin withdraws the rider's yes to Garmin with it. Before
+ * Garmin is told, the workouts Kadence put on the rider's Garmin calendar
+ * for today and later are taken off, as far as a few seconds allow
+ * (calendar-exit.ts, docs/adr/0114); what Kadence remembers sending goes
+ * with the link.
  */
 export async function disconnect(ctx: OrgContext, providerId: ProviderId): Promise<void> {
   const owner = await ownLinkOwner(ctx);
@@ -25,6 +30,7 @@ export async function disconnect(ctx: OrgContext, providerId: ProviderId): Promi
   if (provider.deregister && provider.configured()) {
     try {
       const token = await accessTokenFor(owner, provider);
+      await withdrawWorkouts(owner, provider, token);
       const account = await linkExternalUserId(owner, providerId);
       if (account) await provider.deregister(token, account);
     } catch (error) {

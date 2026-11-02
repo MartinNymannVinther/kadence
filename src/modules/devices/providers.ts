@@ -63,6 +63,46 @@ export type PushWorkout = {
   updatedAt: Date;
 };
 
+/**
+ * A provider that keeps Kadence's workouts on the rider's calendar and
+ * lets Kadence change and take them off again: Garmin's Training API
+ * (docs/adr/0114). Kadence remembers what it sent (device_workouts) and
+ * calls only when something changed (workout-sync.ts). Every call takes the
+ * rider's access token and throws DeviceHttpError when the provider says
+ * no; "gone" is the provider no longer having the thing.
+ */
+export interface WorkoutCalendar {
+  /** The most steps the provider takes in one workout. */
+  maxSteps: number;
+  /** How many steps the provider counts in the session. */
+  stepCount(structure: BikeStructure): number;
+  /** The workout as the provider takes it: the JSON that is sent and hashed. */
+  build(workout: PushWorkout): object;
+  /** Creates the workout; the provider's id for it. */
+  createWorkout(accessToken: string, workout: object): Promise<string>;
+  /** Replaces the workout with this one. */
+  updateWorkout(
+    accessToken: string,
+    workoutId: string,
+    workout: object,
+  ): Promise<"updated" | "gone">;
+  /** Deletes the workout; one the provider no longer has is gone already. */
+  deleteWorkout(accessToken: string, workoutId: string, timeoutMs?: number): Promise<void>;
+  /** Puts the workout on a day; the provider's id for that, when it says. */
+  schedule(accessToken: string, workoutId: string, date: string): Promise<string | null>;
+  /** Moves a schedule to another day. */
+  reschedule(
+    accessToken: string,
+    scheduleId: string,
+    workoutId: string,
+    date: string,
+  ): Promise<"updated" | "gone">;
+  /** Takes the workout off its day; one the provider no longer has is gone already. */
+  unschedule(accessToken: string, scheduleId: string, timeoutMs?: number): Promise<void>;
+  /** The schedule of the workout on a day, for a schedule whose id the provider did not say. */
+  findSchedule(accessToken: string, workoutId: string, date: string): Promise<string | null>;
+}
+
 export interface DeviceProvider {
   id: ProviderId;
   /** Both halves of the provider's keys are in the environment. */
@@ -108,8 +148,13 @@ export interface DeviceProvider {
     notification: ActivityNotification,
     accessToken: string | null,
   ): Promise<ActivityFile>;
-  /** Puts a planned session on the rider's device calendar; the provider's id for it. */
+  /**
+   * Puts a planned session on the rider's device calendar; the provider's
+   * id for it. A copy: sent again, it is sent again (Wahoo).
+   */
   pushWorkout?(accessToken: string, workout: PushWorkout): Promise<{ externalId: string }>;
+  /** Keeps planned sessions on the rider's calendar, changed and taken off again (Garmin). */
+  calendar?: WorkoutCalendar;
 }
 
 const PROVIDERS: Record<ProviderId, DeviceProvider> = { wahoo, garmin, polar };
@@ -120,6 +165,11 @@ export function isProviderId(value: unknown): value is ProviderId {
 
 export function providerById(id: ProviderId): DeviceProvider {
   return PROVIDERS[id];
+}
+
+/** Whether Kadence can send a planned session to the provider at all, by either way. */
+export function sendsWorkouts(provider: DeviceProvider): boolean {
+  return Boolean(provider.pushWorkout ?? provider.calendar);
 }
 
 /**

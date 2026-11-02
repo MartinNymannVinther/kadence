@@ -5,22 +5,25 @@ import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { log } from "@/core/log";
 import { requireWriteFor } from "@/modules/team/access";
 import { readStructure } from "@/modules/workouts/structure";
+import { pushToCalendar } from "./calendar-push";
 import { DeviceHttpError, loggable } from "./http";
 import { accessTokenFor } from "./link-tokens";
 import { markLink } from "./links";
 import { allowsWorkouts } from "./permission-words";
-import { providerById, type ProviderId } from "./providers";
+import { providerById, sendsWorkouts, type ProviderId, type PushWorkout } from "./providers";
 
 /**
  * Sends a planned bike session to the rider's connected device: a Wahoo
- * plan on its day, or a Garmin Training API workout scheduled on its day.
+ * plan on its day, or a workout on the rider's Garmin calendar on its day.
  * The rider or a coach may send it — the same people who may change the
  * plan — never a parent or a teammate. It needs a bike session with steps
  * and a connected link; the targets are worked out from the rider's own
  * FTP and threshold heart rate, as in the workout files.
  *
- * Sending is a copy: Kadence's plan stays the plan, and a session changed
- * afterwards is sent again by pressing again.
+ * To Wahoo, sending is a copy: a session changed afterwards is sent again
+ * by pressing again. To Garmin it goes the way Kadence's own sending goes
+ * (calendar-push.ts, docs/adr/0114): what is already there is changed
+ * rather than copied, and pressing again with nothing changed sends nothing.
  */
 
 export type PushResult = { provider: ProviderId; externalId: string };
@@ -31,7 +34,7 @@ export async function pushSession(
   providerId: ProviderId,
 ): Promise<PushResult> {
   const provider = providerById(providerId);
-  if (!provider.configured() || !provider.pushWorkout)
+  if (!provider.configured() || !sendsWorkouts(provider))
     throw new Refused("invalid", "not_configured");
 
   const job = await withOrgContext(ctx, async (tx) => {
@@ -69,21 +72,27 @@ export async function pushSession(
     // is not sent one (docs/adr/0113); a list never read lets Garmin answer.
     if (providerId === "garmin" && link.permissions && !allowsWorkouts(link.permissions))
       throw new Refused("forbidden", "provider_permission");
-    return { session, structure, rider: { ...rider, userId: rider.userId } };
+    const workout: PushWorkout = {
+      sessionId: session.id,
+      name: session.title,
+      description: session.description,
+      onDate: session.onDate,
+      structure,
+      rider: { ftp: rider.ftp, thresholdHr: rider.thresholdHr },
+      updatedAt: session.updatedAt,
+    };
+    return { workout, riderId: session.riderId, riderUserId: rider.userId };
   });
 
-  const owner = { orgId: ctx.orgId, riderId: job.session.riderId, riderUserId: job.rider.userId };
+  const owner = { orgId: ctx.orgId, riderId: job.riderId, riderUserId: job.riderUserId };
+  if (provider.calendar) {
+    const sent = await pushToCalendar(owner, provider, job.workout);
+    return { provider: providerId, ...sent };
+  }
+  if (!provider.pushWorkout) throw new Refused("invalid", "not_configured");
   const token = await accessTokenFor(owner, provider);
   try {
-    const sent = await provider.pushWorkout(token, {
-      sessionId: job.session.id,
-      name: job.session.title,
-      description: job.session.description,
-      onDate: job.session.onDate,
-      structure: job.structure,
-      rider: { ftp: job.rider.ftp, thresholdHr: job.rider.thresholdHr },
-      updatedAt: job.session.updatedAt,
-    });
+    const sent = await provider.pushWorkout(token, job.workout);
     return { provider: providerId, externalId: sent.externalId };
   } catch (error) {
     if (!(error instanceof DeviceHttpError)) throw error;
@@ -95,7 +104,6 @@ export async function pushSession(
       });
       throw new Refused("conflict", "reconnect");
     }
-    // Garmin answers 403 when the rider did not grant workout import.
     if (error.status === 403) throw new Refused("forbidden", "provider_permission");
     throw new Refused("conflict", "provider_error");
   }

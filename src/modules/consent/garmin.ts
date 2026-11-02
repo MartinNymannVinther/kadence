@@ -19,8 +19,10 @@ import type { AppTransaction, OrgContext } from "@/core/db/tenant";
 /**
  * The version of the words under `garmin.connect` a yes was given to.
  * "2026-10-31": every kind of activity comes in, not only rides (docs/adr/0113).
+ * "2026-11-01": the rider's planned bike sessions go to Garmin by
+ * themselves, unless the rider turns it off (docs/adr/0114).
  */
-export const GARMIN_CONSENT_VERSION = "2026-10-31";
+export const GARMIN_CONSENT_VERSION = "2026-11-01";
 
 export async function recordGarminConsent(
   tx: AppTransaction,

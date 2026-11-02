@@ -187,12 +187,13 @@ export async function readLimited(
   return out;
 }
 
-/** A call to a provider's API that answers with JSON of the given shape. */
-export async function requestJson<S extends z.ZodType>(
+/** The answer's JSON, parsed with `schema`; null for an empty body when `orEmpty`. */
+async function answerJson<S extends z.ZodType>(
   url: string,
   init: RequestInit,
   schema: S,
-): Promise<z.infer<S>> {
+  orEmpty: boolean,
+): Promise<z.infer<S> | null> {
   const response = await send(url, init);
   if (!response.ok) {
     await discard(response);
@@ -203,15 +204,38 @@ export async function requestJson<S extends z.ZodType>(
     MAX_JSON_BYTES,
     response.headers.get("content-length"),
   );
+  const text = new TextDecoder().decode(bytes);
+  if (orEmpty && text.trim() === "") return null;
   let data: unknown;
   try {
-    data = JSON.parse(new TextDecoder().decode(bytes));
+    data = JSON.parse(text);
   } catch {
     throw new DeviceHttpError("invalid_response");
   }
   const parsed = schema.safeParse(data);
   if (!parsed.success) throw new DeviceHttpError("invalid_response");
   return parsed.data;
+}
+
+/** A call to a provider's API that answers with JSON of the given shape. */
+export async function requestJson<S extends z.ZodType>(
+  url: string,
+  init: RequestInit,
+  schema: S,
+): Promise<z.infer<S>> {
+  return (await answerJson(url, init, schema, false)) as z.infer<S>;
+}
+
+/**
+ * A call that may answer with JSON of the given shape or with nothing at
+ * all (a 204, or a 200 without a body): null for nothing.
+ */
+export async function requestMaybeJson<S extends z.ZodType>(
+  url: string,
+  init: RequestInit,
+  schema: S,
+): Promise<z.infer<S> | null> {
+  return answerJson(url, init, schema, true);
 }
 
 /** A call whose answer only has to be a success: a deletion, a schedule. */

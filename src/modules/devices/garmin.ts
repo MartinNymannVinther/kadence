@@ -3,10 +3,10 @@ import { env } from "@/core/env";
 import { clientAddress } from "@/core/rate-limit";
 import { fromGarmin } from "./garmin-ip";
 import { garminPushEvents } from "./garmin-push";
-import { toGarminWorkout } from "./garmin-workout";
+import { garminTraining } from "./garmin-training";
 import { bearer, downloadFile, requestJson, requestOk, type HostRule } from "./http";
 import { safeEqual, tokenRequest } from "./oauth";
-import type { ActivityNotification, DeviceProvider, PushWorkout } from "./providers";
+import type { ActivityNotification, DeviceProvider } from "./providers";
 
 /**
  * Garmin's Connect Developer Program on its Starter tier (docs/adr/0113):
@@ -25,6 +25,10 @@ import type { ActivityNotification, DeviceProvider, PushWorkout } from "./provid
  *   address on the activity file path), a rider deregistered, or a
  *   rider's permissions changed (garmin-push.ts). Every push is answered
  *   200 before any call back to Garmin (webhooks.ts).
+ * - Planned bike sessions go to the rider's Garmin calendar through the
+ *   Training API, version 2 (garmin-training.ts, docs/adr/0114), and are
+ *   changed and taken off again there; never without the rider's
+ *   WORKOUT_IMPORT.
  *
  * Garmin signs no push. What a push is checked by, and the residual risk,
  * are written at `verifyWebhook`.
@@ -147,28 +151,6 @@ async function fetchActivityFile(notification: ActivityNotification, accessToken
   return { bytes, fileName: notification.fileName, externalId: notification.externalId };
 }
 
-/**
- * Creates the workout, then schedules it on its day, on the Training API
- * paths of the program's first version. Moving to the current Training
- * API is its own change (G3, docs/adr/0113); until then a rider who has
- * not granted workout import is not offered the button (links.ts).
- */
-async function pushWorkout(accessToken: string, workout: PushWorkout) {
-  const headers = { ...bearer(accessToken), "Content-Type": "application/json" };
-  const body = toGarminWorkout(workout.structure, workout.rider, workout.name, workout.description);
-  const created = await requestJson(
-    `${API}/training-api/workout`,
-    { method: "POST", headers, body: JSON.stringify(body) },
-    z.object({ workoutId: z.union([z.number().int(), z.string().regex(/^[\w-]{1,100}$/)]) }),
-  );
-  await requestOk(`${API}/training-api/schedule`, {
-    method: "POST",
-    headers,
-    body: JSON.stringify({ workoutId: created.workoutId, date: workout.onDate }),
-  });
-  return { externalId: String(created.workoutId) };
-}
-
 export const garmin: DeviceProvider = {
   id: "garmin",
   configured,
@@ -182,5 +164,5 @@ export const garmin: DeviceProvider = {
   verifyWebhook,
   webhookEvents: garminPushEvents,
   fetchActivityFile,
-  pushWorkout,
+  calendar: garminTraining,
 };

@@ -1,6 +1,6 @@
 # ADR 0113: Garmin pushes, a file is kept once it arrives, links stay alive, and Garmin is told whenever a rider leaves
 
-Status: accepted · Date: 2026-10-31 · Builds on 0018 (devices act as the rider), 0085 (jobs), 0087 (file storage), 0110 (Garmin says so), 0112 (the AI and Garmin)
+Status: accepted · Date: 2026-10-31 · Builds on 0018 (devices act as the rider), 0085 (jobs), 0087 (file storage), 0110 (Garmin says so), 0112 (the AI and Garmin) · Amended by 0114 (sessions to Garmin on the Training API, version 2)
 
 ## Context
 

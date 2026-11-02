@@ -16,6 +16,7 @@ import { StructureView } from "@/components/workouts/structure-view";
 import { todayInCopenhagen } from "@/core/dates";
 import type { OrgContext } from "@/core/db/tenant";
 import { listDeviceLinks } from "@/modules/devices/links";
+import { sessionOnDevices } from "@/modules/devices/session-device";
 import { refsInStructure } from "@/modules/exercises/program-session";
 import { resolveExercises } from "@/modules/exercises/resolve";
 import type { Me } from "@/modules/team/access";
@@ -33,6 +34,7 @@ import { CommentThread } from "./comment-thread";
 import { readerFor } from "@/components/training/deviation-text";
 import { DeviationInline } from "./deviation-inline";
 import { CompleteForm } from "./complete-form";
+import { DeviceStatus } from "./device-status";
 import { DoneSummary } from "./done-summary";
 import { ExportMenu } from "./export-menu";
 import { PushButtons } from "./push-buttons";
@@ -46,7 +48,8 @@ import { SessionPrint } from "./session-print";
  * database decides whether the caller may see it at all; a parent sees
  * everything and writes nothing (ADR 0011, 0012). A bike session with
  * steps can be taken to a trainer or head unit as a file, and sent to the
- * rider's connected Wahoo or Garmin by the rider or a coach; the rider can
+ * rider's connected Wahoo or Garmin by the rider or a coach, who also see
+ * whether it is on the rider's Garmin already (docs/adr/0114); the rider can
  * ride it indoors in Rulle, and a coach try it there (ADR 0033). When it
  * went off its plan, why stands under its mark; once done, the rider or a
  * coach may ask the AI for a short comment on it (ADR 0095). Any session
@@ -101,13 +104,21 @@ export async function SessionView({
     structure.kind === "strength"
       ? await resolveExercises(ctx, refsInStructure(structure), await getTranslations("exercises"))
       : {};
-  const pushTo =
-    exportable && canWrite && !card.activity
-      ? (await listDeviceLinks(ctx, session.riderId))
-          .filter((l) => l.canPush && l.status === "connected")
-          .map((l) => l.provider)
-      : [];
   const today = todayInCopenhagen();
+  const links =
+    exportable && canWrite && !card.activity ? await listDeviceLinks(ctx, session.riderId) : [];
+  const pushTo = links.filter((l) => l.canPush && l.status === "connected").map((l) => l.provider);
+  // On the rider's Garmin, or why not (docs/adr/0114).
+  const onDevices =
+    structure.kind === "bike" && links.length > 0
+      ? await sessionOnDevices(ctx, {
+          sessionId: card.id,
+          onDate: card.onDate,
+          today,
+          structure,
+          links,
+        })
+      : [];
   const Heading = heading;
   // The AI's comment: only on a done session, for whoever may write on it,
   // with a model, and where the AI may read riders' data (ADR 0017, 0095).
@@ -211,6 +222,7 @@ export async function SessionView({
             <SendToDeviceButton
               sessions={[{ id: card.id, title: card.title, onDate: card.onDate }]}
             />
+            <DeviceStatus items={onDevices} own={ownSession} />
             {pushTo.length > 0 && <PushButtons sessionId={card.id} providers={pushTo} />}
           </div>
         )}

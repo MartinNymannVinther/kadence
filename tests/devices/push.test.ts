@@ -194,8 +194,8 @@ describe("to Wahoo", () => {
 describe("to Garmin", () => {
   it("creates the workout in watts at the rider's FTP and schedules it on the day", async () => {
     const calls = fakeFetch({
-      "POST https://apis.garmin.com/training-api/workout": () => json({ workoutId: 1234 }),
-      "POST https://apis.garmin.com/training-api/schedule": () => json(99),
+      "POST https://apis.garmin.com/workoutportal/workout/v2": () => json({ workoutId: 1234 }),
+      "POST https://apis.garmin.com/training-api/schedule/": () => json(99),
     });
     const result = await pushSession(IDA, "dp_threshold", "garmin");
     expect(result).toEqual({ provider: "garmin", externalId: "1234" });
@@ -206,7 +206,8 @@ describe("to Garmin", () => {
       sport: "CYCLING",
       workoutProvider: "Kadence",
     });
-    expect(workout.steps[0]).toMatchObject({
+    const steps = workout.segments[0].steps;
+    expect(steps[0]).toMatchObject({
       type: "WorkoutStep",
       stepOrder: 1,
       intensity: "WARMUP",
@@ -216,7 +217,7 @@ describe("to Garmin", () => {
       targetValueLow: 140,
       targetValueHigh: 188,
     });
-    expect(workout.steps[1]).toMatchObject({
+    expect(steps[1]).toMatchObject({
       type: "WorkoutRepeatStep",
       repeatValue: 3,
       steps: [

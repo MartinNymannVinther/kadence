@@ -132,7 +132,16 @@ way Garmin's public API Brand Guidelines ask
    that takes a link away — tells Garmin first, with
    `deregisterGarminIn()` or `deregisterOwnGarmin()`
    (`src/modules/devices/exit.ts`, ADR 0113), and never waits long for
-   the answer.
+   the answer. Those take the rider's upcoming workouts off the Garmin
+   calendar before they deregister (`withdrawWorkouts()`, ADR 0114); a
+   path that deletes a link itself drops its `device_workouts` rows in
+   the same transaction (`dropRowsIn()`).
+8. A session reaches the rider's Garmin only through
+   `syncWorkout()` (`src/modules/devices/workout-sync.ts`, ADR 0114),
+   for a press and for the job alike, so a second way to send never
+   makes a second copy. A new way to change or delete a planned session
+   needs nothing more: the job finds the difference within a quarter of
+   an hour.
 
 ## Security
 

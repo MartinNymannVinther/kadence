@@ -129,10 +129,11 @@ describe("a demo workspace", () => {
   it("shows no ride from Garmin and no Garmin link, since its rides are made up (ADR 0110)", async () => {
     const { rows } = await admin.query(
       `select (select count(*)::int from activities where org_id = $1 and (source = 'garmin' or device_name is not null)) as rides,
-              (select count(*)::int from device_links where org_id = $1) as links`,
+              (select count(*)::int from device_links where org_id = $1) as links,
+              (select count(*)::int from device_workouts where org_id = $1) as sent`,
       [orgId],
     );
-    expect(rows[0]).toEqual({ rides: 0, links: 0 });
+    expect(rows[0]).toEqual({ rides: 0, links: 0, sent: 0 });
   });
 
   it("proposes thresholds from a rider's rides that sit near her own (ADR 0094)", async () => {

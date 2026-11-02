@@ -3,6 +3,7 @@ import { Refused } from "@/core/action";
 import { deviceLinks } from "@/core/db/schema";
 import { withOrgContext } from "@/core/db/tenant";
 import { withdrawGarminConsents } from "@/modules/consent/garmin";
+import { dropRowsIn } from "./device-workouts";
 import { DeviceHttpError } from "./http";
 import { NO_TOKENS } from "./link-seal";
 import { accessTokenFor } from "./link-tokens";
@@ -22,7 +23,8 @@ import type { DeviceProvider } from "./providers";
  * name: the tokens go, the link stays as "revoked" with `deregistered` so
  * the rider's devices page says what happened, and both of the rider's
  * yeses to Garmin — to rides coming in and to the AI reading them — are
- * withdrawn in the same transaction.
+ * withdrawn in the same transaction, and Kadence forgets the workouts it
+ * sent.
  */
 export async function confirmDeregistration(
   provider: DeviceProvider,
@@ -58,6 +60,9 @@ export async function endLink(provider: DeviceProvider, owner: LinkOwner): Promi
       .update(deviceLinks)
       .set({ ...NO_TOKENS, permissions: null, status: "revoked", lastError: "deregistered" })
       .where(and(eq(deviceLinks.riderId, owner.riderId), eq(deviceLinks.provider, provider.id)));
+    // Garmin no longer takes Kadence's calls for the rider: what was sent
+    // is forgotten, and stays on the rider's calendar (docs/adr/0114).
+    await dropRowsIn(tx, owner.riderId, provider.id);
     if (provider.id === "garmin") await withdrawGarminConsents(tx, riderCtx);
   });
   return "revoked";

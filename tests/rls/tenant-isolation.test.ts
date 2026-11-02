@@ -464,6 +464,12 @@ describe("rls coverage (guards future tables)", () => {
     // device_link_owner would also name, and refused from inside a
     // workspace. Everything after it runs as the rider.
     "device_links_to_renew",
+    // Which connected Garmin links the quarter-hourly job keeps sessions on
+    // (drizzle/0062, docs/adr/0114): three ids and one boolean per link,
+    // for the links device_link_owner would also name, and refused from
+    // inside a workspace. Everything after it runs as the rider;
+    // tests/devices/garmin-calendar-job.test.ts proves the refusal.
+    "device_links_to_sync",
     // A rider's right to erasure (drizzle/0006): deletes one rider of the
     // active team and purges the audit rows about that rider, which the
     // append-only guard would otherwise keep forever. Checks itself that

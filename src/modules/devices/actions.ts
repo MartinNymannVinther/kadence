@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { runAction, STILL_ALLOWED } from "@/core/action";
+import { setAutoSend } from "./auto-send";
 import { disconnect } from "./disconnect";
 import { deleteActivity } from "./import";
 import { PROVIDER_IDS } from "./providers";
@@ -22,6 +23,19 @@ const id = z.string().min(1).max(100);
 export async function pushSessionAction(raw: unknown) {
   return runAction(raw, z.object({ sessionId: id, provider }), (ctx, input) =>
     pushSession(ctx, input.sessionId, input.provider),
+  );
+}
+
+/**
+ * Whether Kadence sends the caller's own bike sessions to their Garmin by
+ * itself (docs/adr/0114): the rider's choice alone.
+ */
+export async function setAutoSendAction(raw: unknown) {
+  return runAction(
+    raw,
+    z.object({ provider, on: z.boolean() }),
+    (ctx, input) => setAutoSend(ctx, input.provider, input.on),
+    ["/settings/devices"],
   );
 }
 
