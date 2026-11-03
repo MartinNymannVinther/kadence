@@ -10,8 +10,15 @@ import { errorName, log } from "@/core/log";
 import { planIn } from "@/modules/billing/state";
 import { readStructure, type BikeStructure } from "@/modules/workouts/structure";
 import { calendarTurn } from "./calendar-budget";
-import { planCalendar, WINDOW_DAYS, type PlanSession } from "./calendar-plan";
-import { dropPastRows, rowsOf } from "./device-workouts";
+import {
+  keptFrom,
+  pastKeeping,
+  planCalendar,
+  WINDOW_DAYS,
+  type PlanSession,
+} from "./calendar-plan";
+import { tidyCalendar } from "./calendar-tidy";
+import { rowsOf } from "./device-workouts";
 import type { LinkOwner } from "./links";
 import { providerById, type DeviceProvider } from "./providers";
 import { calendarSync, syncWorkout, type SyncOutcome } from "./workout-sync";
@@ -23,16 +30,23 @@ import { calendarSync, syncWorkout, type SyncOutcome } from "./workout-sync";
  * sessions from today through the sixth day after (Copenhagen days) are
  * compared with what was sent (calendar-plan.ts), and only what differs is
  * created, changed or taken off (workout-sync.ts) — a run in which nothing
- * changed calls Garmin not once. Rows for days that have passed are
- * dropped without a call, for every link that has any.
+ * changed calls Garmin not once.
+ *
+ * Once every rider's upcoming sessions are seen to, the run tidies: a
+ * workout whose day is more than KEEP_PAST_DAYS behind is taken off Garmin
+ * and its row dropped (calendar-tidy.ts, docs/adr/0115), for every link
+ * that holds one, whatever the rider's switch says, and also in a
+ * workspace that may only be read, which sends nothing.
  *
  * `device_links_to_sync()` (drizzle/0062) names the links, three ids and
  * one answer each, for this job with nobody signed in; everything after it
- * runs as the rider, under the ordinary policies. A workspace that may
- * only be read sends nothing. Garmin's limits are kept by the budgets in
- * calendar-budget.ts: a spent app budget, or Garmin's 429, ends the run,
- * and the rest waits for the next one; a rider's spent day waits for
- * tomorrow. The log gets counts only.
+ * runs as the rider, under the ordinary policies. It is given the first
+ * day whose workouts are kept as its "today", so a link that does not send
+ * is named only while it holds rows older than that: the ones to tidy.
+ * Garmin's limits are kept by the budgets in calendar-budget.ts: a spent
+ * app budget, or Garmin's 429, ends the run, and the rest waits for the
+ * next one; a rider's spent day waits for tomorrow. The log gets counts
+ * only.
  */
 
 export const deviceWorkoutsJob = jobKind("device.workouts", payload({}), {
@@ -47,6 +61,9 @@ export type WorkoutsRun = {
   unchanged: number;
   refused: number;
   failed: number;
+  /** Workouts whose days were up, taken off Garmin. */
+  tidied: number;
+  /** Rows whose days were up, dropped without taking anything off: nothing there, or Kadence no longer may. */
   dropped: number;
   /** The run stopped for Garmin's sake; the rest waits for the next one. */
   stopped: boolean;
@@ -104,21 +121,29 @@ async function sessionsOf(owner: LinkOwner, today: string, end: string, named: s
   });
 }
 
-/** One rider's calendar brought in line; the last outcome that ends the link's turn, if any. */
+type Synced = {
+  /** The last outcome that ended the rider's turn, if any. */
+  ended: SyncOutcome | null;
+  /** The rider held rows whose days are up when the turn began. */
+  tidy: boolean;
+};
+
+/** One rider's calendar brought in line. */
 async function syncRider(
   owner: LinkOwner,
   provider: DeviceProvider,
   today: string,
   run: WorkoutsRun,
   signal?: AbortSignal,
-): Promise<SyncOutcome | null> {
+): Promise<Synced> {
   const end = addDaysIso(today, WINDOW_DAYS - 1);
   const rows = await rowsOf(owner, provider.id);
+  const tidy = pastKeeping(rows, today).length > 0;
   const named = rows.flatMap((row) => (row.plannedSessionId ? [row.plannedSessionId] : []));
   const { sessions, rider } = await sessionsOf(owner, today, end, named);
-  const sync = calendarSync(owner, provider, today);
+  const sync = calendarSync(owner, provider);
   for (const step of planCalendar({ today, end, sessions, rows })) {
-    if (signal?.aborted) return "busy";
+    if (signal?.aborted) return { ended: "busy", tidy };
     const outcome =
       step.action === "remove"
         ? await syncWorkout(sync, step.row, { kind: "remove" })
@@ -142,10 +167,21 @@ async function syncRider(
       run.failed++;
       // A link Garmin refuses, a missing permission or a spent budget ends
       // the rider's turn; a provider that failed once is tried for the rest.
-      if (outcome !== "failed") return outcome;
+      if (outcome !== "failed") return { ended: outcome, tidy };
     }
   }
-  return null;
+  return { ended: null, tidy };
+}
+
+/** A rider's turn at their calendar, or false when a press for them is under way. */
+async function inTurn<T>(owner: LinkOwner, work: () => Promise<T>): Promise<T | false> {
+  const key = `garmin:${owner.riderId}`;
+  if (!(await calendarTurn.enter(key))) return false;
+  try {
+    return await work();
+  } finally {
+    await calendarTurn.leave(key);
+  }
 }
 
 export async function syncGarminCalendars(
@@ -159,6 +195,7 @@ export async function syncGarminCalendars(
     unchanged: 0,
     refused: 0,
     failed: 0,
+    tidied: 0,
     dropped: 0,
     stopped: false,
   };
@@ -167,8 +204,11 @@ export async function syncGarminCalendars(
   const today = todayInCopenhagen(now);
   const { rows } = await appPool.query<Listed>("select * from device_links_to_sync($1, $2)", [
     "garmin",
-    today,
+    keptFrom(today),
   ]);
+  const toTidy: LinkOwner[] = [];
+
+  // The upcoming sessions first, for the riders who send by themselves.
   for (const link of rows) {
     if (signal?.aborted || run.stopped) break;
     const owner: LinkOwner = {
@@ -176,23 +216,36 @@ export async function syncGarminCalendars(
       riderId: link.rider_id,
       riderUserId: link.rider_user_id,
     };
-    const key = `garmin:${owner.riderId}`;
     try {
-      run.dropped += await dropPastRows(owner, "garmin", today);
-      if (!link.send) continue;
-      if (await readOnly(owner)) continue;
-      // A press for the same rider is under way; this rider waits for the next run.
-      if (!(await calendarTurn.enter(key))) continue;
-      run.links++;
-      try {
-        const ended = await syncRider(owner, garmin, today, run, signal);
-        if (ended === "busy") run.stopped = true;
-      } finally {
-        await calendarTurn.leave(key);
+      // A link that does not send is named for its old rows; one in a workspace
+      // that may only be read sends nothing, and is tidied all the same.
+      if (!link.send || (await readOnly(owner))) {
+        toTidy.push(owner);
+        continue;
       }
+      // A press for the same rider is under way; this rider waits for the next run.
+      const synced = await inTurn(owner, () => syncRider(owner, garmin, today, run, signal));
+      if (synced === false) continue;
+      run.links++;
+      if (synced.ended === "busy") run.stopped = true;
+      if (synced.tidy) toTidy.push(owner);
     } catch (error) {
       run.failed++;
       await log.warn("device workouts: a rider was not synced", { error: errorName(error) });
+    }
+  }
+
+  // Then what Kadence put there whose days are up, within what sending left.
+  for (const owner of toTidy) {
+    if (signal?.aborted || run.stopped) break;
+    try {
+      const ended = await inTurn(owner, () => tidyCalendar(owner, garmin, today, run, signal));
+      if (ended === "busy") run.stopped = true;
+    } catch (error) {
+      run.failed++;
+      await log.warn("device workouts: a rider's calendar was not tidied", {
+        error: errorName(error),
+      });
     }
   }
   await log.info("device workouts: garmin calendars", run);

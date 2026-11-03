@@ -1,12 +1,20 @@
 import { describe, expect, it } from "vitest";
-import { planCalendar, type PlanRow, type PlanSession } from "@/modules/devices/calendar-plan";
+import {
+  KEEP_PAST_DAYS,
+  pastKeeping,
+  planCalendar,
+  type PlanRow,
+  type PlanSession,
+} from "@/modules/devices/calendar-plan";
 
 /**
- * What the job does with one rider's Garmin calendar (docs/adr/0114),
- * before it calls anything: the bike sessions with steps from today
+ * What the job does with one rider's Garmin calendar (docs/adr/0114,
+ * 0115), before it calls anything: the bike sessions with steps from today
  * through the sixth day after go on, a workout whose session is gone,
  * changed sport or left the window comes off, and a workout sent ahead by
- * a press waits until the window reaches it. Pure.
+ * a press waits until the window reaches it. A workout whose day has
+ * passed stays for three days, unless its session moved into the window,
+ * and is then for the tidy. Pure.
  */
 
 const TODAY = "2026-11-02";
@@ -62,7 +70,37 @@ describe("a rider's calendar, planned", () => {
     ).toEqual(["remove rm"]);
   });
 
-  it("leaves rows for days before today to the job's quiet clean-up", () => {
-    expect(plan([s("a", "2026-11-01")], [r("old", "a", "2026-11-01")])).toEqual([]);
+  it("leaves a workout whose day has passed as it is, whatever became of its session", () => {
+    expect(
+      plan(
+        [s("a", "2026-11-01"), s("gym", "2026-11-04", false), s("far", "2026-11-12")],
+        [
+          r("ra", "a", "2026-11-01"),
+          r("gone", null, "2026-10-31"),
+          r("rg", "gym", "2026-10-30"),
+          r("rf", "far", "2026-10-20"),
+        ],
+      ),
+    ).toEqual([]);
+  });
+
+  it("takes the workout along when its session moved from a day that has passed into the window", () => {
+    expect(plan([s("moved", "2026-11-03")], [r("old", "moved", "2026-10-31")])).toEqual([
+      "send moved over old",
+    ]);
+  });
+});
+
+describe("a rider's past days", () => {
+  it("keeps three days after the day, and gives the rest to the tidy", () => {
+    expect(KEEP_PAST_DAYS).toBe(3);
+    const rows = [
+      r("yesterday", "a", "2026-11-01"),
+      r("three", "b", "2026-10-30"),
+      r("four", "c", "2026-10-29"),
+      r("old", null, "2026-09-01"),
+      r("today", "d", TODAY),
+    ];
+    expect(pastKeeping(rows, TODAY).map((row) => row.id)).toEqual(["four", "old"]);
   });
 });

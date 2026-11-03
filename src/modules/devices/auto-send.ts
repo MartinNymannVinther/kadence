@@ -12,7 +12,9 @@ import { providerById, type ProviderId } from "./providers";
  * link. A coach or a parent cannot change it, and the database would not
  * let them write the link anyway (drizzle/0003). Turning it off sends
  * nothing more by itself and leaves what is already on the rider's Garmin
- * where it is; a press on a session still sends it.
+ * where it is, until the job tidies it away once its day is a few days
+ * behind, as it does with every link (calendar-tidy.ts, docs/adr/0115); a
+ * press on a session still sends it.
  */
 export async function setAutoSend(
   ctx: OrgContext,

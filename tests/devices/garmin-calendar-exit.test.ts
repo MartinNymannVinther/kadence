@@ -23,13 +23,13 @@ import {
 import { ID_URL } from "./garmin-fixture";
 
 /**
- * Before a Garmin link goes (docs/adr/0114), the workouts Kadence put on
- * the rider's calendar for today and later are taken off — while the
- * token still works, before Garmin is told to forget the rider — and
- * what Kadence remembers sending goes with the link. Workouts for days
- * that have passed stay, as the rider's history. A Garmin that does not
- * answer holds nobody up for more than a few seconds. A confirmed
- * deregistration only drops the rows: Garmin no longer takes the calls.
+ * Before a Garmin link goes (docs/adr/0114, 0115), the workouts Kadence
+ * put on the rider's calendar are taken off — today's and later, and those
+ * of the last few days the job would have tidied later — while the token
+ * still works, before Garmin is told to forget the rider, and what Kadence
+ * remembers sending goes with the link. A Garmin that does not answer
+ * holds nobody up for more than a few seconds. A confirmed deregistration
+ * only drops the rows: Garmin no longer takes the calls.
  */
 
 const ORG = "org_gx2";
@@ -117,7 +117,7 @@ afterAll(async () => {
 });
 
 describe("disconnecting Garmin", () => {
-  it("takes today's and later workouts off first, then tells Garmin, and forgets what was sent", async () => {
+  it("takes yesterday's, today's and later workouts off first, then tells Garmin, and forgets what was sent", async () => {
     const [past, today, tomorrow] = await riderWithWorkouts("eva");
     const calls = fakeCalendar(garmin, {
       [REGISTRATION]: () => new Response(null, { status: 204 }),
@@ -127,13 +127,15 @@ describe("disconnecting Garmin", () => {
     expect(done.at(-1)).toBe("DELETE /partner-gateway/rest/user/registration");
     expect(done.slice(0, -1).sort()).toEqual(
       [
+        `DELETE /training-api/workout/v2/${past}`,
         `DELETE /training-api/workout/v2/${today}`,
         `DELETE /training-api/workout/v2/${tomorrow}`,
+        "DELETE /training-api/schedule/2001",
         "DELETE /training-api/schedule/2002",
         "DELETE /training-api/schedule/2003",
       ].sort(),
     );
-    expect(garmin.workouts.has(past!)).toBe(true);
+    expect(garmin.workouts.has(past!)).toBe(false);
     expect(garmin.workouts.has(today!)).toBe(false);
     expect(await rowCount("gx2_eva")).toBe(0);
   });
@@ -155,13 +157,14 @@ describe("disconnecting Garmin", () => {
 
 describe("the other ways a rider leaves", () => {
   it("erasing a rider takes the workouts off before Garmin is told", async () => {
-    const [, today, tomorrow] = await riderWithWorkouts("gro");
+    const [past, today, tomorrow] = await riderWithWorkouts("gro");
     const calls = fakeCalendar(garmin, {
       [REGISTRATION]: () => new Response(null, { status: 204 }),
     });
     await eraseRider(COACH, "gx2_gro");
     const done = called(calls);
     expect(done.at(-1)).toBe("DELETE /partner-gateway/rest/user/registration");
+    expect(done).toContain(`DELETE /training-api/workout/v2/${past}`);
     expect(done).toContain(`DELETE /training-api/workout/v2/${today}`);
     expect(done).toContain(`DELETE /training-api/workout/v2/${tomorrow}`);
     expect(await rowCount("gx2_gro")).toBe(0);
