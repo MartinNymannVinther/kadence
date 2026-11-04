@@ -18,9 +18,9 @@ import { providerById } from "./providers";
  * rider, and before a person deletes their account. Those deletions take
  * the link with them by cascade, and with it the only token that can ask.
  *
- * The workouts Kadence put on the rider's Garmin calendar for today and
- * later are taken off first, while the token still works (calendar-exit.ts,
- * docs/adr/0114). All of it is a courtesy the person's deletion never waits
+ * The workouts Kadence put on the rider's Garmin calendar are taken off
+ * first, while the token still works (calendar-exit.ts, docs/adr/0114,
+ * 0115). All of it is a courtesy the person's deletion never waits
  * long for and never fails over: every rider at once, each with a short deadline, a failure
  * logged by its code and never with a token, and the deletion goes on.
  * The token is read, and refreshed if it must be, in the rider's name, as

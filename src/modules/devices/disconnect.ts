@@ -20,9 +20,8 @@ import { providerById, type ProviderId } from "./providers";
  * the rider can revoke Kadence from the provider's own settings.
  * Disconnecting Garmin withdraws the rider's yes to Garmin with it. Before
  * Garmin is told, the workouts Kadence put on the rider's Garmin calendar
- * for today and later are taken off, as far as a few seconds allow
- * (calendar-exit.ts, docs/adr/0114); what Kadence remembers sending goes
- * with the link.
+ * are taken off, as far as a few seconds allow (calendar-exit.ts,
+ * docs/adr/0114, 0115); what Kadence remembers sending goes with the link.
  */
 export async function disconnect(ctx: OrgContext, providerId: ProviderId): Promise<void> {
   const owner = await ownLinkOwner(ctx);

@@ -27,9 +27,9 @@ import {
  * sixth day after are sent; what changed is changed, what left is taken
  * off, and a run in which nothing changed calls Garmin not once. A rider
  * who turned it off, or did not grant the permission, is not sent
- * anything; rows for days that have passed go without a call; Garmin's
- * 429 and Kadence's own budget end the run. The switch is the rider's
- * alone.
+ * anything; rows for the days just passed stay without a call (their
+ * tidy is garmin-calendar-tidy.test.ts); Garmin's 429 and Kadence's own
+ * budget end the run. The switch is the rider's alone.
  */
 
 const ORG = "org_gj";
@@ -112,12 +112,16 @@ beforeAll(async () => {
   });
   await admin.query(g.text, g.values);
   await setAutoSend(ctx("bo"), "garmin", false);
-  // Links other test files left behind send nothing here: their riders'
-  // sessions are theirs to assert, and the job's counts are this team's.
+  // Links other test files left behind send nothing here, and what they
+  // sent is not this file's to tidy: their riders' sessions are theirs to
+  // assert, and the job's counts are this team's.
   await admin.query(
     "update device_links set auto_send = false where provider = 'garmin' and org_id <> $1",
     [ORG],
   );
+  await admin.query("delete from device_workouts where provider = 'garmin' and org_id <> $1", [
+    ORG,
+  ]);
 
   await session("ane_today", "ane", day(0));
   await session("ane_sixth", "ane", day(6));
@@ -200,7 +204,7 @@ describe("the job", () => {
     expect((await rows("ane")).map((r) => r.planned_session_id)).toContain("ane_ahead");
   });
 
-  it("drops rows for days that have passed without asking Garmin, for every rider", async () => {
+  it("keeps the rows for the days just passed without asking Garmin, for every rider", async () => {
     for (const who of ["ane", "bo"]) {
       const q = insertSql("device_workouts", {
         org_id: ORG,
@@ -216,9 +220,13 @@ describe("the job", () => {
     const calls = fakeCalendar(garmin);
     const run = await syncGarminCalendars();
     expect(calls).toHaveLength(0);
-    expect(run.dropped).toBeGreaterThanOrEqual(2);
-    expect((await rows("bo")).length).toBe(0);
-    expect((await rows("ane")).every((r) => r.day >= TODAY)).toBe(true);
+    expect(run).toMatchObject({ tidied: 0, dropped: 0 });
+    expect((await rows("bo")).map((r) => r.day)).toEqual([day(-1)]);
+    expect((await rows("ane")).filter((r) => r.day < TODAY)).toHaveLength(1);
+    await admin.query("delete from device_workouts where org_id = $1 and scheduled_on < $2", [
+      ORG,
+      TODAY,
+    ]);
   });
 
   it("does not send again unchanged what Garmin turned down", async () => {
@@ -323,6 +331,7 @@ describe("the job's schedule", () => {
       "removed",
       "sent",
       "stopped",
+      "tidied",
       "unchanged",
     ]);
     vi.restoreAllMocks();

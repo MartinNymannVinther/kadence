@@ -1,4 +1,3 @@
-import { todayInCopenhagen } from "@/core/dates";
 import { log } from "@/core/log";
 import { rowsOf } from "./device-workouts";
 import { loggable } from "./http";
@@ -8,11 +7,12 @@ import { calendarSync, takeOff } from "./workout-sync";
 
 /**
  * Before a link goes — the rider disconnects, is erased, deletes their
- * account or loses their workspace — the workouts Kadence put on the
- * rider's calendar for today and later are taken off (docs/adr/0114), with
+ * account or loses their workspace — every workout Kadence still remembers
+ * putting on the rider's calendar is taken off (docs/adr/0114, 0115), with
  * the token that is about to stop working, and before Garmin is told to
- * forget the rider. Workouts for days that have passed stay: they are the
- * rider's history there.
+ * forget the rider: today's and later, and those of the last few days the
+ * job would have tidied later (calendar-tidy.ts), since no later run will.
+ * The rides stay; they are another thing at the provider.
  *
  * A courtesy that never holds a deletion up for long and never fails it:
  * every workout at once, each call with a short deadline, the whole within
@@ -24,21 +24,20 @@ import { calendarSync, takeOff } from "./workout-sync";
 export const WITHDRAW_DEADLINE_MS = 3_000;
 const CALL_TIMEOUT_MS = 2_500;
 
-/** The rider's upcoming workouts off the provider's calendar; how many went. Never throws. */
+/** The rider's workouts off the provider's calendar; how many went. Never throws. */
 export async function withdrawWorkouts(
   owner: LinkOwner,
   provider: DeviceProvider,
   accessToken: string,
 ): Promise<number> {
   if (!provider.calendar) return 0;
-  const today = todayInCopenhagen();
-  const sync = calendarSync(owner, provider, today, { accessToken });
+  const sync = calendarSync(owner, provider, { accessToken });
   let taken = 0;
   const work = (async () => {
     const rows = await rowsOf(owner, provider.id);
     await Promise.all(
       rows
-        .filter((row) => row.externalWorkoutId && row.scheduledOn >= today)
+        .filter((row) => row.externalWorkoutId)
         .map((row) =>
           takeOff(sync, row, CALL_TIMEOUT_MS).then(
             () => void taken++,

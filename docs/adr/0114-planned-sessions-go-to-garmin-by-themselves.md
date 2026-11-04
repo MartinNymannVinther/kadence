@@ -1,6 +1,6 @@
 # ADR 0114: Planned bike sessions go to the rider's Garmin by themselves, are kept in step with the plan, and are taken off when they go
 
-Status: accepted · Date: 2026-11-01 · Builds on 0018 (devices act as the rider), 0031 (sessions by cable), 0085 (jobs), 0110 (Garmin says so), 0113 (Garmin on Starter)
+Status: accepted · Date: 2026-11-01 · Builds on 0018 (devices act as the rider), 0031 (sessions by cable), 0085 (jobs), 0110 (Garmin says so), 0113 (Garmin on Starter) · Amended by 0115 (Kadence takes its own workouts off three days after their day)
 
 ## Context
 

@@ -1,4 +1,4 @@
-import { rateLimit } from "@/core/rate-limit";
+import { peekRateLimit, rateLimit } from "@/core/rate-limit";
 import { inFlight } from "./in-flight";
 import type { ProviderId } from "./providers";
 
@@ -14,12 +14,22 @@ import type { ProviderId } from "./providers";
  * Every call to the calendar takes one from both budgets first. A spent
  * budget is not an error: the job stops and comes back on its next run,
  * and a press is told to try again in a moment.
+ *
+ * Taking Kadence's own workouts off once their days are up
+ * (calendar-tidy.ts, docs/adr/0115) counts like any other call, and may
+ * use each budget only down to a share it leaves for sending: what a
+ * press and the next run need is never spent on tidying.
  */
 
 export const APP_CALLS_PER_MINUTE = 40;
 export const RIDER_CALLS_PER_DAY = 80;
+/** What tidying leaves of the minute's budget and of the rider's day for sending. */
+export const TIDY_LEAVES_APP = 10;
+export const TIDY_LEAVES_RIDER = 20;
 const MINUTE = 60_000;
 const DAY = 24 * 60 * MINUTE;
+const appKey = (provider: ProviderId) => `calendar:${provider}`;
+const riderKey = (provider: ProviderId, riderId: string) => `calendar:${provider}:${riderId}`;
 
 /** A budget ran out: the app's for this minute, or the rider's for the day. */
 export class BudgetSpent extends Error {
@@ -31,10 +41,25 @@ export class BudgetSpent extends Error {
 
 /** Takes one call from the app's and the rider's budgets, or throws BudgetSpent. */
 export async function spendCall(provider: ProviderId, riderId: string): Promise<void> {
-  const app = await rateLimit(`calendar:${provider}`, APP_CALLS_PER_MINUTE, MINUTE);
+  const app = await rateLimit(appKey(provider), APP_CALLS_PER_MINUTE, MINUTE);
   if (!app.allowed) throw new BudgetSpent("app");
-  const rider = await rateLimit(`calendar:${provider}:${riderId}`, RIDER_CALLS_PER_DAY, DAY);
+  const rider = await rateLimit(riderKey(provider, riderId), RIDER_CALLS_PER_DAY, DAY);
   if (!rider.allowed) throw new BudgetSpent("rider");
+}
+
+/**
+ * Takes one call for tidying from both budgets, or throws BudgetSpent when
+ * either is down to what tidying leaves for sending.
+ */
+export async function spendTidyCall(provider: ProviderId, riderId: string): Promise<void> {
+  const app = await peekRateLimit(appKey(provider), APP_CALLS_PER_MINUTE - TIDY_LEAVES_APP);
+  if (!app.allowed) throw new BudgetSpent("app");
+  const rider = await peekRateLimit(
+    riderKey(provider, riderId),
+    RIDER_CALLS_PER_DAY - TIDY_LEAVES_RIDER,
+  );
+  if (!rider.allowed) throw new BudgetSpent("rider");
+  await spendCall(provider, riderId);
 }
 
 /**

@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { Refused } from "@/core/action";
 import { log } from "@/core/log";
-import { BudgetSpent, spendCall } from "./calendar-budget";
+import { BudgetSpent, spendCall, spendTidyCall } from "./calendar-budget";
 import {
   dropRow,
   noteRow,
@@ -13,7 +13,7 @@ import { DeviceHttpError, loggable } from "./http";
 import { accessTokenFor } from "./link-tokens";
 import { markLink, type LinkOwner } from "./links";
 import { refreshPermissions } from "./permissions";
-import type { DeviceProvider, PushWorkout, WorkoutCalendar } from "./providers";
+import type { DeviceProvider, ProviderId, PushWorkout, WorkoutCalendar } from "./providers";
 
 /**
  * The one way a planned session reaches, changes on or leaves a rider's
@@ -26,8 +26,9 @@ import type { DeviceProvider, PushWorkout, WorkoutCalendar } from "./providers";
  * - nothing changed: nothing is called, so pressing again makes no copy;
  * - the session is gone, moved off or no longer a bike session with steps
  *   (`remove`): the schedule and the workout are deleted at the provider
- *   and the row dropped — unless its day has passed, which is the rider's
- *   history there and is left alone;
+ *   and the row dropped. Which rows that is, and when a workout whose day
+ *   has passed goes, is calendar-plan.ts's and calendar-tidy.ts's to say
+ *   (docs/adr/0115); `takeOff` takes off whatever it is given;
  * - more steps than the provider takes: nothing is sent, a workout sent
  *   before is taken off, and the row says why.
  *
@@ -61,18 +62,17 @@ export type Sync = {
   owner: LinkOwner;
   provider: DeviceProvider;
   calendar: WorkoutCalendar;
-  /** The Copenhagen day: a workout before it is history and stays. */
-  today: string;
   /** A press: a workout the provider turned down before is sent again. */
   again: boolean;
+  /** Takes a call from the budgets (calendar-budget.ts), or throws BudgetSpent. */
+  spend: (provider: ProviderId, riderId: string) => Promise<void>;
   token: () => Promise<string>;
 };
 
 export function calendarSync(
   owner: LinkOwner,
   provider: DeviceProvider,
-  today: string,
-  options: { again?: boolean; accessToken?: string } = {},
+  options: { again?: boolean; accessToken?: string; tidying?: boolean } = {},
 ): Sync {
   if (!provider.calendar) throw new Error(`${provider.id}: no calendar`);
   let token: Promise<string> | null = options.accessToken
@@ -82,8 +82,9 @@ export function calendarSync(
     owner,
     provider,
     calendar: provider.calendar,
-    today,
     again: options.again ?? false,
+    // Tidying leaves a share of each budget for sending.
+    spend: options.tidying ? spendTidyCall : spendCall,
     // Read once, and only when a call is made.
     token: () => (token ??= accessTokenFor(owner, provider)),
   };
@@ -95,14 +96,17 @@ export function workoutHash(workout: object): string {
 }
 
 async function call<T>(sync: Sync, work: (token: string) => Promise<T>): Promise<T> {
-  await spendCall(sync.provider.id, sync.owner.riderId);
+  await sync.spend(sync.provider.id, sync.owner.riderId);
   return work(await sync.token());
 }
 
-/** The workout off the rider's calendar, unless its day has passed. */
+/**
+ * The workout off the rider's calendar: its schedule, then the workout.
+ * One the provider no longer has is gone, as wanted (garmin-training.ts).
+ */
 export async function takeOff(sync: Sync, row: DeviceWorkoutRow, timeoutMs?: number) {
   const workoutId = row.externalWorkoutId;
-  if (!workoutId || row.scheduledOn < sync.today) return;
+  if (!workoutId) return;
   const scheduleId = row.externalScheduleId;
   if (scheduleId) await call(sync, (t) => sync.calendar.unschedule(t, scheduleId, timeoutMs));
   await call(sync, (t) => sync.calendar.deleteWorkout(t, workoutId, timeoutMs));

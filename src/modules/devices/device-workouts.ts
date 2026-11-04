@@ -1,4 +1,4 @@
-import { and, eq, lt } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { deviceWorkouts, type DeviceWorkoutRow } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
 import type { LinkOwner } from "./links";
@@ -10,6 +10,12 @@ import type { ProviderId } from "./providers";
  * name, whoever set it off — the job, the rider's press or a coach's — as
  * every write about a link is (links.ts); read by whoever may read the
  * rider's training, under the ordinary policies.
+ *
+ * A row outlives its day by KEEP_PAST_DAYS (calendar-plan.ts): until then
+ * the workout is the rider's recent history at the provider and the row is
+ * left as it is; after, the job takes the workout off and drops the row
+ * (calendar-tidy.ts, docs/adr/0115). Kadence never forgets a workout it
+ * can still take off.
  */
 
 export type { DeviceWorkoutRow };
@@ -105,31 +111,6 @@ export async function dropRow(owner: LinkOwner, row: DeviceWorkoutRow): Promise<
   await withOrgContext(riderCtx(owner), (tx) =>
     tx.delete(deviceWorkouts).where(eq(deviceWorkouts.id, row.id)),
   );
-}
-
-/**
- * The rows for days before `today`, dropped without asking the provider:
- * a workout whose day has passed is the rider's history there, and
- * Kadence leaves it alone. How many.
- */
-export async function dropPastRows(
-  owner: LinkOwner,
-  provider: ProviderId,
-  today: string,
-): Promise<number> {
-  const gone = await withOrgContext(riderCtx(owner), (tx) =>
-    tx
-      .delete(deviceWorkouts)
-      .where(
-        and(
-          eq(deviceWorkouts.riderId, owner.riderId),
-          eq(deviceWorkouts.provider, provider),
-          lt(deviceWorkouts.scheduledOn, today),
-        ),
-      )
-      .returning({ id: deviceWorkouts.id }),
-  );
-  return gone.length;
 }
 
 /**

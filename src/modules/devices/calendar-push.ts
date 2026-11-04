@@ -1,6 +1,5 @@
 import { Refused } from "@/core/action";
 import type { ActionError } from "@/core/result";
-import { todayInCopenhagen } from "@/core/dates";
 import { calendarTurn } from "./calendar-budget";
 import { rowFor } from "./device-workouts";
 import { clearLinkError, type LinkOwner } from "./links";
@@ -50,7 +49,7 @@ export async function pushToCalendar(
   const key = `${provider.id}:${owner.riderId}`;
   if (!(await takeTurn(key))) throw new Refused("conflict", "provider_busy");
   try {
-    const sync = calendarSync(owner, provider, todayInCopenhagen(), { again: true });
+    const sync = calendarSync(owner, provider, { again: true });
     const row = await rowFor(owner, provider.id, workout.sessionId);
     const outcome = await syncWorkout(sync, row, { kind: "send", workout });
     const refusal = REFUSAL[outcome];
