@@ -1,3 +1,4 @@
+import { toEventCard } from "@/components/calendar/to-card";
 import type { ChecklistFacts } from "@/components/today/rider-checklist";
 import type { RideToRate } from "@/components/today/rpe-prompt";
 import { rideToRate, RPE_WINDOW_DAYS } from "@/components/today/rpe-pick";
@@ -13,6 +14,7 @@ import { listDeviceLinks } from "@/modules/devices/links";
 import { hasAnyRide, recentRides } from "@/modules/today/recent-rides";
 import { listGuardians } from "@/modules/team/guardians";
 import { getRider } from "@/modules/team/riders";
+import { listEvents } from "@/modules/training/events";
 import { listSessions } from "@/modules/training/sessions";
 import { workspaceKind } from "@/modules/team/workspace-kind";
 import { getCheckin, getLastCheckin } from "@/modules/wellbeing/checkins";
@@ -21,7 +23,9 @@ import { checkinStart } from "@/modules/wellbeing/prefill";
 
 /**
  * What a rider's Today shows (docs/adr/0063): today's and tomorrow's
- * sessions, today's check-in — and, for a new one, the answers behind
+ * sessions and the races, exams and other days in the calendar on them —
+ * a race tomorrow is what today's session is for — today's check-in — and,
+ * for a new one, the answers behind
  * "Mere" from the last (backlog P2-11), with the rider's known pains and
  * whether a coach reads it (docs/adr/0097) — today's rides no session
  * claims, so a ride nobody planned shows on the day too, the ride to say "how hard" about,
@@ -34,9 +38,10 @@ export async function riderDay(
   words: { today: string; yesterday: string; locale: string },
 ) {
   const tomorrow = addDaysIso(today, 1);
-  const [sessions, checkin, last, rides, rider, guardians, links, consentOff, pains, kind] =
+  const [sessions, events, checkin, last, rides, rider, guardians, links, consentOff, pains, kind] =
     await Promise.all([
       listSessions(ctx, { from: today, to: tomorrow, riderIds: [riderId] }),
+      listEvents(ctx, { from: today, to: tomorrow, riderIds: [riderId] }),
       getCheckin(ctx, riderId, today),
       getLastCheckin(ctx, riderId, today),
       recentRides(ctx, riderId, { from: addDaysIso(today, -(RPE_WINDOW_DAYS - 1)), to: today }),
@@ -48,6 +53,8 @@ export async function riderDay(
       workspaceKind(ctx.orgId, ctx.userId),
     ]);
   const cards = sessions.map(toTodayCard);
+  const eventCards = events.map(toEventCard);
+  const on = (date: string) => eventCards.filter((e) => e.startsOn <= date && e.endsOn >= date);
   const ride = rideToRate(rides, today);
   const when = (date: string) =>
     date === today
@@ -94,6 +101,7 @@ export async function riderDay(
         attribution: garminAttribution(r),
       })),
     tomorrow: cards.filter((s) => s.onDate === tomorrow),
+    events: { today: on(today), tomorrow: on(tomorrow) },
     checkin: checkinValues(checkin),
     checkinStart: checkinStart(
       last ? { onDate: last.onDate, answers: checkinValues(last)! } : null,

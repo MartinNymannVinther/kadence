@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import { EventChip } from "@/components/calendar/event-chip";
 import { ConsentOffCard } from "@/components/consent/consent-off-card";
 import { CheckinSection } from "@/components/today/checkin-section";
 import { RiderChecklist } from "@/components/today/rider-checklist";
@@ -6,6 +7,7 @@ import { RpePrompt } from "@/components/today/rpe-prompt";
 import { TodayRideCard } from "@/components/today/today-ride";
 import { TodaySession } from "@/components/today/today-session";
 import { DeviationViewerProvider } from "@/components/training/deviation-viewer";
+import { addDaysIso } from "@/core/dates";
 import type { RiderDay } from "./rider-data";
 
 /**
@@ -13,9 +15,10 @@ import type { RiderDay } from "./rider-data";
  * first steps while they are not done, today's check-in first — three
  * answers on the way out of the door, and once they are given a short
  * card — then today's session with the big "Udført" and "Kør indendørs",
- * and today's rides nobody planned,
- * "how hard" about the last ride, and tomorrow. The week, the form, goals,
- * records and the upload are on Mig.
+ * and today's rides nobody planned, "how hard" about the last ride, and
+ * tomorrow. Each day shows its races, exams and other days from the
+ * calendar above its sessions, with when and where a race starts and who
+ * drives. The week, the form, goals, records and the upload are on Mig.
  */
 export function RiderToday({
   riderId,
@@ -31,13 +34,24 @@ export function RiderToday({
   const t = useTranslations("today.rider");
   const list = (when: "today" | "tomorrow") => {
     const sessions = day[when];
+    const events = day.events[when];
+    const date = when === "today" ? today : addDaysIso(today, 1);
     const ridden = when === "today" ? day.ridden : [];
     return (
       <section aria-labelledby={`rider-${when}`} className="flex flex-col gap-3">
         <h2 id={`rider-${when}`} className="text-lg font-semibold">
           {t(when)}
         </h2>
-        {sessions.length === 0 && ridden.length === 0 && (
+        {events.length > 0 && (
+          <ul className="flex flex-col gap-1.5">
+            {events.map((e) => (
+              <li key={e.id}>
+                <EventChip event={e} day={date} full />
+              </li>
+            ))}
+          </ul>
+        )}
+        {sessions.length === 0 && ridden.length === 0 && events.length === 0 && (
           <p className="text-meta text-2sm">{t(when === "today" ? "rest" : "restTomorrow")}</p>
         )}
         {sessions.map((s) => (
