@@ -200,4 +200,6 @@ has **no table of its own**:
 `README.md` (the dogmas, the product), `CONTRIBUTING.md` (the tenancy
 and AI checklists), `docs/adr/` (every decision), `docs/deploy.md` and
 `docs/launch.md` (production), `docs/research/` (DCU and TrainingPeaks),
-`src/modules/dcu/` (DCU's numbers with their sources).
+`src/modules/dcu/` (DCU's numbers with their sources),
+`docs/traeningsmodel/` (Kadence's training model: the principles, the
+rulebook and the register of sources the AI leans on).
