@@ -39,12 +39,22 @@ const TokenResponse = z.object({
     .positive()
     .max(10 * 365 * 86_400)
     .nullish(),
+  // Garmin says when the refresh token runs out (docs/adr/0113); an answer
+  // that does not is read as not saying.
+  refresh_token_expires_in: z.coerce
+    .number()
+    .int()
+    .positive()
+    .max(10 * 365 * 86_400)
+    .nullish()
+    .catch(null),
 });
 
 /**
  * POSTs a token request as a form, the way both providers document it,
  * and reads the answer: an access token, maybe a refresh token (both
- * rotate them), and when the access token runs out.
+ * rotate them), when the access token runs out, and when the refresh
+ * token does, for a provider that says.
  */
 export async function tokenRequest(
   url: string,
@@ -67,5 +77,8 @@ export async function tokenRequest(
     accessToken: answer.access_token,
     refreshToken: answer.refresh_token ?? null,
     expiresAt: answer.expires_in ? new Date(now.getTime() + answer.expires_in * 1000) : null,
+    refreshExpiresAt: answer.refresh_token_expires_in
+      ? new Date(now.getTime() + answer.refresh_token_expires_in * 1000)
+      : null,
   };
 }

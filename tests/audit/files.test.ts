@@ -142,12 +142,19 @@ describe("the audit trail without files", () => {
     expect(rows.map((r) => r.col)).toEqual([
       "activities.streams",
       "activity_files.bytes",
+      "device_inbox.bytes",
       "org_images.bytes",
     ]);
     const source = await admin.query(
       `select prosrc from pg_proc where proname = 'audit_row_change'`,
     );
-    for (const name of ["activity_files", "org_images", "NEW.bytes", "NEW.streams"]) {
+    for (const name of [
+      "activity_files",
+      "org_images",
+      "device_inbox",
+      "NEW.bytes",
+      "NEW.streams",
+    ]) {
       expect(source.rows[0].prosrc).toContain(name);
     }
   });

@@ -34,6 +34,10 @@ export const SCHEDULE = {
   sweep: 15 * MINUTE,
   /** Objects whose row is gone (docs/adr/0087): deleted from the store a little after the row. */
   fileTombstones: 15 * MINUTE,
+  /** Garmin links renewed before their refresh token runs out (docs/adr/0113). */
+  deviceRefresh: 24 * HOUR,
+  /** Riders' bike sessions for the next seven days kept on their Garmin (docs/adr/0114). */
+  deviceWorkouts: 15 * MINUTE,
 } as const;
 
 export const RECURRING_KEY = "recurring";

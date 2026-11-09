@@ -3,7 +3,8 @@ import type { Client, Pool } from "pg";
 import { openSecret } from "@/core/crypto/secret-box";
 import { finishConnect, OAUTH_COOKIE, startConnect } from "@/modules/devices/connect";
 import { disconnect } from "@/modules/devices/disconnect";
-import { accessTokenFor, listDeviceLinks, saveLink } from "@/modules/devices/links";
+import { accessTokenFor } from "@/modules/devices/link-tokens";
+import { listDeviceLinks, saveLink } from "@/modules/devices/links";
 import { providerById } from "@/modules/devices/providers";
 import { adminPool, appClient, asApp, expectSqlError } from "../helpers/db";
 import { insertSql, seedPerson } from "../helpers/rows";
@@ -176,14 +177,22 @@ describe("a coach", () => {
         provider: "wahoo",
         configured: true,
         canPush: true,
+        sharesActivities: null,
+        workoutImport: null,
+        autoSend: null,
         status: "connected",
         lastSyncAt: null,
         lastError: "",
       },
       {
+        // Garmin offers a push only once the rider granted workout import.
         provider: "garmin",
         configured: true,
-        canPush: true,
+        canPush: false,
+        sharesActivities: null,
+        workoutImport: null,
+        // Nothing to send automatically without a link.
+        autoSend: null,
         status: null,
         lastSyncAt: null,
         lastError: "",
@@ -192,6 +201,9 @@ describe("a coach", () => {
         provider: "polar",
         configured: true,
         canPush: false,
+        sharesActivities: null,
+        workoutImport: null,
+        autoSend: null,
         status: null,
         lastSyncAt: null,
         lastError: "",
@@ -286,5 +298,64 @@ describe("disconnecting", () => {
   it("refuses when there is nothing to disconnect", async () => {
     fakeFetch({});
     await expect(disconnect(IDA, "garmin")).rejects.toMatchObject({ code: "notFound" });
+  });
+});
+
+describe("Garmin's yes", () => {
+  const consentsOf = async (userId: string) =>
+    (
+      await admin.query(
+        "select kind, version, locale, rider_id, withdrawn_at from consents where user_id = $1 and kind = 'garmin' order by given_at",
+        [userId],
+      )
+    ).rows as {
+      kind: string;
+      version: string;
+      locale: string;
+      rider_id: string;
+      withdrawn_at: Date | null;
+    }[];
+
+  it("sends a rider without a yes back to the devices page, and writes nothing", async () => {
+    const started = await startConnect(IDA, "garmin");
+    expect(started.location).toBe("/settings/devices?error=consent");
+    expect(started.cookie).toBeUndefined();
+    expect(await consentsOf(IDA.userId)).toEqual([]);
+  });
+
+  it("writes the yes about the rider's own row before sending them to Garmin", async () => {
+    const started = await startConnect(IDA, "garmin", new Date(), { given: true, locale: "en" });
+    expect(new URL(started.location).host).toBe("connect.garmin.com");
+    expect(started.cookie).toBeDefined();
+    expect(await consentsOf(IDA.userId)).toEqual([
+      expect.objectContaining({
+        kind: "garmin",
+        locale: "en",
+        rider_id: "dc_ida",
+        withdrawn_at: null,
+      }),
+    ]);
+  });
+
+  it("takes no yes from a coach, who cannot connect in a rider's name", async () => {
+    const started = await startConnect(COACH, "garmin", new Date(), { given: true, locale: "da" });
+    expect(started.location).toBe("/settings/devices?error=not_a_rider");
+    expect(await consentsOf(COACH.userId)).toEqual([]);
+  });
+
+  it("is withdrawn when the rider disconnects Garmin", async () => {
+    await saveLink(IDA, "garmin", "g-ida", {
+      accessToken: "acc-g",
+      refreshToken: null,
+      expiresAt: new Date(Date.now() + 3600_000),
+    });
+    fakeFetch({
+      "DELETE https://apis.garmin.com/partner-gateway/rest/user/registration": () =>
+        new Response(null, { status: 204 }),
+    });
+    await disconnect(IDA, "garmin");
+    const rows = await consentsOf(IDA.userId);
+    expect(rows.length).toBeGreaterThan(0);
+    expect(rows.every((r) => r.withdrawn_at !== null)).toBe(true);
   });
 });

@@ -3,6 +3,7 @@ import { teamSettings } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { DATA_RULE, languageRule } from "@/modules/ai/prompting";
 import { asString, rec } from "@/modules/ai/sanitize-helpers";
+import { garminAiBlocked } from "@/modules/ai/garmin-gate";
 import { askForJson, modelConfigured, NotAllowed } from "@/modules/ai/service";
 import type { Flag } from "@/modules/load";
 import { getInsights } from "@/modules/insight/service";
@@ -15,11 +16,13 @@ import { requireCoach } from "@/modules/team/access";
  * coach sees on each rider — so it works with no model at all. With a
  * model, and only where the team lets the AI read riders' data, the model
  * writes a few sentences on top: which conversations to have first. It
- * never writes to a rider.
+ * never writes to a rider. A rider with rides from Garmin and no yes of
+ * their own to the AI reading them (ADR 0112) stays on the list and out
+ * of what the model reads, and the coach is told who.
  */
 
 export type BriefRider = { riderId: string; name: string; flags: Flag[] };
-export type CoachBrief = { riders: BriefRider[]; summary: string | null };
+export type CoachBrief = { riders: BriefRider[]; summary: string | null; leftOut: string[] };
 
 export function briefPrompt(riders: BriefRider[], locale: string) {
   const system = [
@@ -58,12 +61,26 @@ export async function buildCoachBrief(
   const riders = insights
     .filter((i) => i.flags.length > 0)
     .map((i) => ({ riderId: i.riderId, name: i.name, flags: i.flags }));
-  if (!options.withSummary || riders.length === 0)
-    return { proposal: { riders, summary: null }, engine: "none" };
+  const none = { riders, summary: null, leftOut: [] as string[] };
+  if (!options.withSummary || riders.length === 0) return { proposal: none, engine: "none" };
   if (!allowed) throw new NotAllowed();
-  if (!(await modelConfigured(ctx))) return { proposal: { riders, summary: null }, engine: "none" };
-  const { data, engine } = await askForJson(ctx, "coach_brief", briefPrompt(riders, locale), {
+  if (!(await modelConfigured(ctx))) return { proposal: none, engine: "none" };
+  const blocked = await withOrgContext(ctx, (tx) =>
+    garminAiBlocked(
+      tx,
+      riders.map((r) => r.riderId),
+    ),
+  );
+  const read = riders.filter((r) => !blocked.has(r.riderId));
+  const leftOut = riders
+    .filter((r) => blocked.has(r.riderId))
+    .map((r) => r.name.split(" ")[0] ?? r.name);
+  if (read.length === 0) return { proposal: { ...none, leftOut }, engine: "none" };
+  const { data, engine } = await askForJson(ctx, "coach_brief", briefPrompt(read, locale), {
     maxTokens: 700,
   });
-  return { proposal: { riders, summary: asString(rec(data).summary, "", 1200) || null }, engine };
+  return {
+    proposal: { riders, summary: asString(rec(data).summary, "", 1200) || null, leftOut },
+    engine,
+  };
 }

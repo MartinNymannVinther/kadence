@@ -95,7 +95,8 @@ describe("OAuth with PKCE", () => {
     const calls = fakeFetch({
       "POST https://diauth.garmin.com/di-oauth2-service/oauth/token": () =>
         json({ access_token: "g-2", refresh_token: "g-ref-2", expires_in: 86400 }),
-      "GET https://apis.garmin.com/wellness-api/rest/user/id": () => json({ userId: "d3315b10" }),
+      "GET https://apis.garmin.com/partner-gateway/rest/user/id": () =>
+        json({ userId: "d3315b10" }),
     });
     const tokens = await garmin.refresh("g-ref-1");
     expect(tokens).toMatchObject({ accessToken: "g-2", refreshToken: "g-ref-2" });
@@ -175,10 +176,23 @@ describe("the Garmin ping", () => {
     expect(events[0]).toMatchObject({ notification: { externalId: "6287993625" } });
   });
 
-  it("refuses a notification that names another client", () => {
-    const headers = new Headers({ "garmin-client-id": "someone-else" });
-    expect(garmin.verifyWebhook({ activityFiles: [] }, headers)).toBe(false);
-    expect(garmin.verifyWebhook({ activityFiles: [] }, new Headers())).toBe(true);
+  it("believes a push only with this client's id, from Garmin's addresses", () => {
+    const garminAddress = "204.77.163.244";
+    const push = (client: string | null, address: string) =>
+      garmin.verifyWebhook(
+        { activityFiles: [] },
+        new Headers({
+          ...(client === null ? {} : { "garmin-client-id": client }),
+          "x-forwarded-for": address,
+        }),
+      );
+    expect(push("garmin-client", garminAddress)).toBe(true);
+    expect(push("someone-else", garminAddress)).toBe(false);
+    expect(push(null, garminAddress)).toBe(false);
+    expect(push("garmin-client", "203.0.113.9")).toBe(false);
+    expect(garmin.verifyWebhook([], new Headers({ "garmin-client-id": "garmin-client" }))).toBe(
+      false,
+    );
   });
 });
 

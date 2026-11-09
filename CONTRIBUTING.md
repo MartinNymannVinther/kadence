@@ -104,6 +104,45 @@ looked up at runtime is a version that can lie.
 6. `docs/subprocessors.md` says what the prompt contains. A feature that
    sends something new updates that page in the same PR.
 
+## The Garmin checklist (every new place that shows rides)
+
+A ride that came through Garmin's API (`source = 'garmin'`) is shown the
+way Garmin's public API Brand Guidelines ask
+(developer.garmin.com/brand-guidelines/api-brand-guidelines):
+
+1. One ride on screen: "Garmin [device]" directly under or beside its
+   title, with `GarminLine` and `garminAttribution()`
+   (`src/components/devices/garmin-attribution.tsx`,
+   `src/modules/devices/attribution.ts`).
+2. A list of rides: the line on each entry, or one note in the list's
+   header.
+3. A chart, total or overview built on rides: `GarminDerivedNote` under
+   its heading when `garminRidesIn()` or `anyFromGarmin()` says a Garmin
+   ride is among them. Never only in a tooltip, a footnote or a fold.
+4. An export, a print or a shared picture keeps the attribution with
+   the data.
+5. The demo never shows a Garmin ride: its rides are made up, and the
+   attribution would claim otherwise.
+6. A new AI proposal that reads rides, or numbers built on them, asks
+   the gate in `src/modules/ai/garmin-gate.ts` before the model:
+   `requireGarminAi` for one rider, `requireGarminAiForRide` for one
+   ride, `garminAiBlocked` to leave riders out of a team's prompt. The
+   AI reads rides from Garmin only with the rider's own yes (ADR 0112).
+7. A new way for a rider to leave — a deletion, an erasure, anything
+   that takes a link away — tells Garmin first, with
+   `deregisterGarminIn()` or `deregisterOwnGarmin()`
+   (`src/modules/devices/exit.ts`, ADR 0113), and never waits long for
+   the answer. Those take the rider's upcoming workouts off the Garmin
+   calendar before they deregister (`withdrawWorkouts()`, ADR 0114); a
+   path that deletes a link itself drops its `device_workouts` rows in
+   the same transaction (`dropRowsIn()`).
+8. A session reaches the rider's Garmin only through
+   `syncWorkout()` (`src/modules/devices/workout-sync.ts`, ADR 0114),
+   for a press and for the job alike, so a second way to send never
+   makes a second copy. A new way to change or delete a planned session
+   needs nothing more: the job finds the difference within a quarter of
+   an hour.
+
 ## Security
 
 Vulnerabilities go to [SECURITY.md](SECURITY.md), not the issue tracker.

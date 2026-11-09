@@ -784,6 +784,61 @@ payment and everything works as before, at once.
 again, whatever its row says, and stops the job and the mails. The
 plans stay in the database for the day you turn it back on.
 
+## 6h. Garmin, if you have keys for it
+
+Without keys the Garmin card says it is not set up on this installation,
+and riders upload their files as before. With them, a rider connects
+Garmin under Indstillinger → Enheder, Garmin pushes each new activity
+to Kadence, and Kadence keeps the rider's planned bike sessions for the
+next seven days on their Garmin calendar (ADR 0018, 0110, 0112, 0113,
+0114).
+
+1. **Keys.** In the app's environment in Coolify, set
+   `GARMIN_CLIENT_ID` and `GARMIN_CLIENT_SECRET` from the app in Garmin's
+   developer portal. `docker-compose.yml` forwards both to `app` and
+   `worker`. Redeploy.
+2. **Where Garmin sends the rider back.** The connect route sends
+   `https://<host>/api/devices/garmin/callback` as the redirect address,
+   built from `BETTER_AUTH_URL`. Where Garmin asks for a redirect address,
+   give it exactly that.
+3. **Pushes.** In Garmin's API tools, under the endpoint configuration,
+   turn on push to `https://<host>/api/devices/garmin/webhook` for
+   **Activity Files**, **Deregistrations** and **User Permissions**, and
+   leave every other summary type off: Kadence ignores them, and data it
+   does not use should not be sent to it.
+4. **The proxy.** A push is believed only with this installation's
+   client id in its `garmin-client-id` header and from one of Garmin's
+   address ranges, as the proxy in front saw it. `TRUSTED_PROXY_HOPS=1`,
+   the default, is right behind Coolify's Traefik alone; with a CDN in
+   front of Traefik, count it too, or every push looks like it came from
+   the CDN. A refused push is logged as `device webhook: not verified`
+   with `provider: garmin`, and Garmin sends it again later.
+5. **The worker** fetches each file (`device.fetch`), once a day renews
+   Garmin links before their refresh token runs out and reads
+   permissions nobody has read (`device.refresh`), and every quarter of
+   an hour keeps riders' bike sessions on their Garmin
+   (`device.workouts`). All three show on the Installation page like any
+   job (section 6e).
+6. **Sessions to Garmin.** The app in Garmin's developer portal needs
+   the Training API, so that Garmin's consent page asks the rider for
+   workout import (`WORKOUT_IMPORT`). A rider who did not grant it is
+   sent nothing, and the Garmin card says what to do. For a rider who
+   did, `device.workouts` sends the bike sessions with steps from today
+   through the sixth day after, changes them when the plan changes and
+   takes them off when they go; a run in which nothing changed calls
+   Garmin not at all. It keeps to 40 calls a minute for the installation
+   and 80 a day per rider, well inside Starter's 100 and 200, ends a run
+   at Garmin's 429, and logs counts only, as
+   `device workouts: garmin calendars`. The first run after a deploy
+   sends every connected rider's week, 40 calls at a time.
+
+To check it: connect your own Garmin account in your own workspace,
+save an activity on the device, and watch the Garmin card say when it
+last fetched a ride, and the ride carry "Garmin" and the device's name.
+Then plan a bike session with steps for tomorrow: within a quarter of an
+hour it says on the session that it is in your Garmin calendar, and
+Garmin Connect shows it on its day.
+
 ## 7. Backups: to the minute, and a second copy
 
 Kadence has two backups, and they are independent on purpose

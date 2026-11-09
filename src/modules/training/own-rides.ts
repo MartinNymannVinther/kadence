@@ -6,6 +6,7 @@ import { activities, plannedSessions, riders } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { nameRides } from "@/modules/activities/names";
 import type { RideName } from "@/modules/activities/ride-name";
+import { garminAttribution } from "@/modules/devices/attribution";
 import {
   compliance,
   planIntensityOf,
@@ -45,6 +46,8 @@ export type OwnRide = {
   movingSeconds: number;
   distanceM: number | null;
   /** How close it came to its session; "none" for a ride nobody planned. */
+  /** "Garmin [device]" for a ride that came through Garmin (src/modules/devices/attribution.ts). */
+  attribution: string | null;
   colour: ComplianceColour;
 };
 
@@ -73,6 +76,7 @@ export async function listOwnRides(
         sport: activities.sport,
         title: activities.title,
         source: activities.source,
+        deviceName: activities.deviceName,
         movingSeconds: activities.movingSeconds,
         distanceM: activities.distanceM,
         load: activities.load,
@@ -108,6 +112,7 @@ export async function listOwnRides(
       name: names.get(r.id)!,
       movingSeconds: r.movingSeconds,
       distanceM: r.distanceM,
+      attribution: garminAttribution(r),
       colour:
         r.sessionDate === null
           ? "none"

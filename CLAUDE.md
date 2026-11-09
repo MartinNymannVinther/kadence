@@ -24,17 +24,17 @@ TOTP; nothing is shown before it has run a real winter with a real team.
 
 ## The stack, and why
 
-| Piece                                      | Why                                                                                                                                                                         |
-| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Next.js 16 (App Router), TypeScript strict | One app, server-rendered, installs as a PWA on a phone. This Next differs from older ones: read `node_modules/next/dist/docs/` before relying on memory (`AGENTS.md`).      |
-| Postgres 16 + Drizzle                      | One database. Separation is enforced **in the database** with RLS, not only in code. Migrations are checked in; roles, RLS and triggers are hand-written SQL in `drizzle/`. |
-| Better Auth, pinned at 1.7.1               | Organizations, passkeys and TOTP, self-hosted. 1.7.5 dropped a column we need; lifting the pin is a migration (`pnpm-workspace.yaml`).                                      |
-| Tailwind + shadcn/ui, Haij tokens          | The family's look (warm paper, moss green, Archivo). Charts are hand-drawn SVG.                                                                                             |
-| next-intl                                  | Danish default with no URL prefix, English under `/en`.                                                                                                                     |
-| Mistral (EU endpoint) or Ollama            | Dogma four. All model access goes through `src/core/llm`; without a model everything but the AI buttons works.                                                              |
-| Our own FIT decoder (`src/modules/fit`)    | No dependency; it refuses rather than guesses on untrusted files.                                                                                                           |
-| three.js                                   | Only on Rulle's ride screen.                                                                                                                                                |
-| Docker Compose on an EU VPS via Coolify    | Hetzner today, replaceable tomorrow. No Vercel, no Neon, no US cloud.                                                                                                       |
+| Piece                                      | Why                                                                                                                                                                                           |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Next.js 16 (App Router), TypeScript strict | One app, server-rendered, installs as a PWA on a phone. This Next differs from older ones: read `node_modules/next/dist/docs/` before relying on memory (`AGENTS.md`).                        |
+| Postgres 16 + Drizzle                      | One database. Separation is enforced **in the database** with RLS, not only in code. Migrations are checked in; roles, RLS and triggers are hand-written SQL in `drizzle/`.                   |
+| Better Auth, pinned at 1.7.14              | Organizations, passkeys and TOTP, self-hosted. Held at an exact version: 1.7.3 changed the account model, so each lift is checked and may need a migration (ADR 0111, `pnpm-workspace.yaml`). |
+| Tailwind + shadcn/ui, Haij tokens          | The family's look (warm paper, moss green, Archivo). Charts are hand-drawn SVG.                                                                                                               |
+| next-intl                                  | Danish default with no URL prefix, English under `/en`.                                                                                                                                       |
+| Mistral (EU endpoint) or Ollama            | Dogma four. All model access goes through `src/core/llm`; without a model everything but the AI buttons works.                                                                                |
+| Our own FIT decoder (`src/modules/fit`)    | No dependency; it refuses rather than guesses on untrusted files.                                                                                                                             |
+| three.js                                   | Only on Rulle's ride screen.                                                                                                                                                                  |
+| Docker Compose on an EU VPS via Coolify    | Hetzner today, replaceable tomorrow. No Vercel, no Neon, no US cloud.                                                                                                                         |
 
 Changing any of these needs a new ADR. Ask before adding any dependency.
 
@@ -138,8 +138,9 @@ Rules:
   `messages/en.json`, same keys.
 - The words: a team is **hold** (settings call it **arbejdsrum**; the
   code says organization), **træner**, **rytter**, **forælder**, a planned
-  session is a **pas**, a ride is a **tur**, plus **check-in**,
-  **sæsonplan** and **biblioteket**.
+  session is a **træningspas** (never "pas" alone; cykelpas and styrkepas
+  are fine), a ride is a **tur**, plus **check-in**, **sæsonplan** and
+  **biblioteket**.
 - Write to the reader as **du**, in plain short sentences. Say what
   happens and why, never blame the user, no exclamation marks. When
   something is missing or off, say so plainly and what still works

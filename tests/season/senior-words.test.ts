@@ -28,7 +28,7 @@ describe("the words for U17–U23 are unchanged", () => {
     expect(t("volume")("state.inside", { ref: "dcu" })).toBe("inden for DCU's ramme");
     expect(t("volume")("dcuBreak", { ref: "dcu" })).toBe("DCU: pause og frit");
     expect(t("calendar.totals")("strength", { done: 1, planned: 2, dcu: "2–3", ref: "dcu" })).toBe(
-      "Styrke: 1 af 2 pas udført. DCU anbefaler 2–3 om ugen.",
+      "Styrke: 1 af 2 træningspas udført. DCU anbefaler 2–3 om ugen.",
     );
     expect(t("insight.badge")("hours_above_corridor", { ref: "dcu" })).toBe("Over DCU's ramme");
     expect(t("season.chart", "en")("dcu", { ref: "dcu" })).toBe("DCU");
@@ -51,7 +51,7 @@ describe("the words for a senior", () => {
       "1 t under Supermotionist",
       "Fyld planen ud igen fra profilen?",
       "over profilens ramme",
-      "Styrke: 0 af 1 pas udført. Motionist foreslår 1 om ugen.",
+      "Styrke: 0 af 1 træningspas udført. Motionist foreslår 1 om ugen.",
       "Supermotionist",
       "Motionist",
     ]);

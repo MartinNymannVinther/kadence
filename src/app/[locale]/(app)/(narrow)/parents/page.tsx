@@ -10,7 +10,9 @@ import { SessionView } from "@/components/session/session-view";
 import { parentsElsewhere } from "@/components/today/where";
 import { dayLong } from "@/components/training/day-label";
 import { EmptyState } from "@/components/ui/empty-state";
+import { GarminDerivedNote } from "@/components/devices/garmin-attribution";
 import { PageHeader } from "@/components/ui/page-header";
+import { garminRidesLately } from "@/modules/devices/garmin-rides";
 import { getOrgContext } from "@/core/auth/session";
 import { todayInCopenhagen } from "@/core/dates";
 import { redirect } from "@/i18n/navigation";
@@ -70,6 +72,11 @@ export default async function ParentsPage({
   ).filter((c): c is ChildView => c !== null);
 
   const only = children.length === 1 ? children[0] : undefined;
+  const fromGarmin = await garminRidesLately(
+    ctx,
+    confirmed.map((c) => c.riderId),
+    today,
+  );
 
   return (
     <div className="flex min-w-0 max-w-4xl flex-col gap-10">
@@ -84,6 +91,7 @@ export default async function ParentsPage({
           )
         }
       />
+      <GarminDerivedNote show={fromGarmin} className="-mt-7" />
 
       {children.map((child) => (
         <ChildCard

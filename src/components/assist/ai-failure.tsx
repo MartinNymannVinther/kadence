@@ -40,6 +40,7 @@ export function AiFailureText({ error }: { error: Failure | string }) {
     "planExpired",
     "unreachable",
     "badAnswer",
+    "garminAi",
     "notFound",
     "invalid",
     "unauthorized",

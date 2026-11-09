@@ -84,7 +84,7 @@ export const SENIOR_WEEKS: readonly SeniorWeek[] = [
     "motionist",
     "winter",
     {
-      da: "November til februar. Omkring 4 timer på cyklen, et pas på hometraineren og styrke to gange.",
+      da: "November til februar. Omkring 4 timer på cyklen, et træningspas på hometraineren og styrke to gange.",
       en: "November to February. About 4 hours on the bike, one session on the trainer and strength twice.",
     },
     [
@@ -100,7 +100,7 @@ export const SENIOR_WEEKS: readonly SeniorWeek[] = [
     "motionist",
     "spring",
     {
-      da: "Marts til maj. Omkring 5½ time med et hårdt pas, en lang tur og styrke en gang.",
+      da: "Marts til maj. Omkring 5½ time med et hårdt træningspas, en lang tur og styrke en gang.",
       en: "March to May. About 5½ hours with one hard session, a long ride and strength once.",
     },
     [
@@ -115,7 +115,7 @@ export const SENIOR_WEEKS: readonly SeniorWeek[] = [
     "motionist",
     "summer",
     {
-      da: "Juni til september. Omkring 6½ time med et hårdt pas, en lang tur og styrke en gang.",
+      da: "Juni til september. Omkring 6½ time med et hårdt træningspas, en lang tur og styrke en gang.",
       en: "June to September. About 6½ hours with one hard session, a long ride and strength once.",
     },
     [
@@ -161,7 +161,7 @@ export const SENIOR_WEEKS: readonly SeniorWeek[] = [
     "super-motionist",
     "spring",
     {
-      da: "Marts til maj. Omkring 10 timer med to hårde pas, en lang tur på 4 timer og styrke en gang.",
+      da: "Marts til maj. Omkring 10 timer med to hårde træningspas, en lang tur på 4 timer og styrke en gang.",
       en: "March to May. About 10 hours with two hard sessions, a 4-hour ride and strength once.",
     },
     [
@@ -178,7 +178,7 @@ export const SENIOR_WEEKS: readonly SeniorWeek[] = [
     "super-motionist",
     "summer",
     {
-      da: "Juni til september. Omkring 11 timer med to hårde pas, to lange ture og styrke en gang.",
+      da: "Juni til september. Omkring 11 timer med to hårde træningspas, to lange ture og styrke en gang.",
       en: "June to September. About 11 hours with two hard sessions, two long rides and strength once.",
     },
     [

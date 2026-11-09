@@ -67,6 +67,8 @@ describe("the schedule", () => {
       "billing.expire",
       "dcu.races",
       "demo.cleanup",
+      "device.refresh",
+      "device.workouts",
       "files.tombstones",
       "installation.sweep",
       "push.reminders",

@@ -25,7 +25,7 @@ import en from "../../messages/en.json";
 /**
  * The marks in words that motivate (the amendment of 15 October to
  * docs/adr/0095). Martin looked at "Styrketræning", 1 t planned with
- * nothing in "Passet", done in 1 t at RPE 3, and read "Langt fra planen",
+ * nothing in "Træningspasset", done in 1 t at RPE 3, and read "Langt fra planen",
  * "Roligere end planlagt … omkring 70 % lettere", an explanation about
  * his FTP and "Belastning 17" in the "Udført" block: "Det lyder stadig
  * forkert med 'langt fra planen', find på noget mere motiverende."
@@ -89,7 +89,7 @@ describe("the marks' words", () => {
     for (const sport of ["bike", "strength", "other"]) {
       expect(words(missed, sport)?.heading).toBe("Ikke nået");
       expect(words(missed, sport)?.lines).toEqual([
-        "Planlagt 1 t. Der er ikke kommet noget ind for passet.",
+        "Planlagt 1 t. Der er ikke kommet noget ind for træningspasset.",
       ]);
     }
   });
@@ -215,8 +215,8 @@ describe("Sådan er det regnet, by sport", () => {
   it("speaks of the pulse off the bike, and says the session", () => {
     expect(counted(run, "other")).toEqual({
       summary: "Sådan er det regnet",
-      body: "Kadence vurderer, hvor meget et pas trækker på kroppen, ud fra tiden og din puls i forhold til din tærskelpuls. En time præcis på tærskelpulsen tæller 100.",
-      numbers: "Dette pas: 42. Planen: 21.",
+      body: "Kadence vurderer, hvor meget et træningspas trækker på kroppen, ud fra tiden og din puls i forhold til din tærskelpuls. En time præcis på tærskelpulsen tæller 100.",
+      numbers: "Dette træningspas: 42. Planen: 21.",
     });
   });
 
@@ -224,8 +224,8 @@ describe("Sådan er det regnet, by sport", () => {
     const words = counted(gym, "strength");
     expect(words).toEqual({
       summary: "Sådan er det regnet",
-      body: "Kadence vurderer, hvor meget et pas trækker på kroppen, ud fra tiden og hvor hårdt det føltes. En time på hårdt (8 af 10) tæller 100.",
-      numbers: "Dette pas: 17. Planen: 60.",
+      body: "Kadence vurderer, hvor meget et træningspas trækker på kroppen, ud fra tiden og hvor hårdt det føltes. En time på hårdt (8 af 10) tæller 100.",
+      numbers: "Dette træningspas: 17. Planen: 60.",
     });
     expect(JSON.stringify(words)).not.toMatch(/FTP|turen|Denne tur/);
   });

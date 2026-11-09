@@ -11,6 +11,7 @@ import { discardPlaced, keepPlaced, placeFile } from "@/modules/storage/keep";
 import { assertWritableIn } from "@/modules/billing/plan";
 import { assertFileRoom } from "@/modules/storage/quota";
 import { requireWriteFor } from "@/modules/team/access";
+import type { Sport } from "@/modules/training/vocabulary";
 import { activityFromFit } from "./from-fit";
 
 export {
@@ -70,6 +71,17 @@ export type ImportSource = {
    */
   sportHint?: "bike" | "other";
   /**
+   * The sport the provider names for the activity (Garmin's activity
+   * type, docs/adr/0113): it decides over the file's own sport.
+   */
+  sport?: Sport;
+  /**
+   * The device the ride was recorded on, as the provider names it, already
+   * made plain (device-name.ts): `activities.device_name`, which Garmin's
+   * attribution reads (ADR 0110).
+   */
+  deviceName?: string | null;
+  /**
    * The planned session the ride was ridden for, in Rulle (ADR 0033): the
    * ride lands on it when it is this rider's, still open and on the ride's
    * day; otherwise the usual match decides, as for any file.
@@ -109,7 +121,7 @@ export async function importFitIn(
 
   let values;
   try {
-    values = activityFromFit(bytes, rider, origin.sportHint);
+    values = activityFromFit(bytes, rider, origin.sportHint, origin.sport);
   } catch (error) {
     if (error instanceof FitError) throw new Refused("invalid", error.code);
     throw error;
@@ -140,6 +152,7 @@ export async function importFitIn(
       ...row,
       title: (origin.title || title || (origin.unnamed ? "" : baseName(fileName))).slice(0, 120),
       source: origin.source,
+      deviceName: origin.deviceName?.slice(0, 80) || null,
       note: origin.note ?? "",
       externalId: origin.externalId ?? null,
       uploadKeyId: origin.uploadKeyId ?? null,

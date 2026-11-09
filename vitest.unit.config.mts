@@ -23,6 +23,11 @@ export default defineConfig({
       "tests/{dcu,load,fit,workouts,charts,coach,files,rulle,results,paradigms,calc,guides,today,activities,ui}/**/*.test.ts",
       // The championship's arithmetic only; tests/club/championship.test.ts needs the database.
       "tests/club/standings.test.ts",
+      // What a push from Garmin says (docs/adr/0113); the webhook and the jobs need the database.
+      "tests/devices/garmin-push.test.ts",
+      // A session as Garmin's Training API takes it, and what the job plans for a
+      // rider's calendar (docs/adr/0114); the calls and the rows need the database.
+      "tests/devices/{garmin-workout,calendar-plan}.test.ts",
       // Reminders' keys, timing and words; the job and the policies need the database.
       "tests/push/{vapid,due,texts}.test.ts",
       // The pilot's three numbers (docs/adr/0066); the service and the overview need the database.
@@ -63,6 +68,8 @@ export default defineConfig({
       // The calendar's month and season: the grid, the addresses, the days and a month's standing
       // (docs/adr/0093); what they read needs the database.
       "tests/calendar/{grid,href,month-days,standing,team-days}.test.ts",
+      // Garmin's attribution line, without the database.
+      "tests/devices/attribution.test.ts",
     ],
   },
 });

@@ -1,20 +1,27 @@
 import { Refused } from "@/core/action";
-import type { OrgContext } from "@/core/db/tenant";
+import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { log } from "@/core/log";
+import { withdrawGarminConsents } from "@/modules/consent/garmin";
+import { withdrawWorkouts } from "./calendar-exit";
 import { loggable } from "./http";
-import { accessTokenFor, deleteOwnLink, linkExternalUserId, ownLinkOwner } from "./links";
+import { accessTokenFor } from "./link-tokens";
+import { deleteOwnLink, linkExternalUserId, ownLinkOwner } from "./links";
 import { providerById, type ProviderId } from "./providers";
 
 /**
  * A rider disconnects their own Wahoo, Garmin or Polar account. The
  * provider is told first where its API allows (Wahoo: DELETE
- * /v1/permissions; Garmin: DELETE …/user/registration, which Garmin
- * requires of a partner that offers a disconnect; Polar: DELETE
+ * /v1/permissions; Garmin: DELETE …/partner-gateway/rest/user/registration,
+ * which Garmin requires whenever a rider leaves, exit.ts; Polar: DELETE
  * /v3/users/{user-id}, which also revokes the token), then the link and
  * its tokens are deleted. Telling the provider is a courtesy the rider's
  * choice does not wait for: if the provider cannot be reached, or the keys
  * are gone from the installation, the link is deleted all the same and
  * the rider can revoke Kadence from the provider's own settings.
+ * Disconnecting Garmin withdraws the rider's yes to Garmin with it. Before
+ * Garmin is told, the workouts Kadence put on the rider's Garmin calendar
+ * are taken off, as far as a few seconds allow (calendar-exit.ts,
+ * docs/adr/0114, 0115); what Kadence remembers sending goes with the link.
  */
 export async function disconnect(ctx: OrgContext, providerId: ProviderId): Promise<void> {
   const owner = await ownLinkOwner(ctx);
@@ -22,6 +29,7 @@ export async function disconnect(ctx: OrgContext, providerId: ProviderId): Promi
   if (provider.deregister && provider.configured()) {
     try {
       const token = await accessTokenFor(owner, provider);
+      await withdrawWorkouts(owner, provider, token);
       const account = await linkExternalUserId(owner, providerId);
       if (account) await provider.deregister(token, account);
     } catch (error) {
@@ -33,4 +41,5 @@ export async function disconnect(ctx: OrgContext, providerId: ProviderId): Promi
     }
   }
   if (!(await deleteOwnLink(ctx, providerId))) throw new Refused("notFound", "not_connected");
+  if (providerId === "garmin") await withOrgContext(ctx, (tx) => withdrawGarminConsents(tx, ctx));
 }
