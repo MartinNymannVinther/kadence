@@ -33,6 +33,9 @@ export type CalendarCard = {
   /** The series a "Gentag" made it part of (ADR 0041). */
   seriesKey: string | null;
   programmeSession: number | null;
+  /** Skipped on purpose, and why in one word (docs/adr/0117); it counts in no planned hours. */
+  skipped: boolean;
+  skipReason: string | null;
   activityId: string | null;
   /** The ride done for it, with how its load was measured (for the explanation, ADR 0095). */
   activity: {

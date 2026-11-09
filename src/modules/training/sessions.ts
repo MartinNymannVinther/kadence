@@ -10,7 +10,7 @@ import {
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
 import { isCoachRole, requireCoach, requireWriteFor, roleIn } from "@/modules/team/access";
 import { readStructure, structureMinutes } from "@/modules/workouts/structure";
-import { recordDeletionsIn, recordMoveIn } from "./deletions";
+import { recordDeletionsIn } from "./deletions";
 import { estimatePlannedLoad } from "./load-bridge";
 import { clockOf } from "./time-place";
 import type { Scope, SessionInputT } from "./vocabulary";
@@ -187,7 +187,7 @@ export async function createSession(ctx: OrgContext, input: SessionInputT) {
   return withOrgContext(ctx, (tx) => createSessionIn(tx, ctx, input));
 }
 
-async function loadOwn(tx: AppTransaction, ctx: OrgContext, id: string) {
+export async function loadOwn(tx: AppTransaction, ctx: OrgContext, id: string) {
   const [row] = await tx.select().from(plannedSessions).where(eq(plannedSessions.id, id));
   if (!row) throw new Refused("notFound");
   await requireWriteFor(tx, ctx, row.riderId);
@@ -250,40 +250,6 @@ export async function updateSession(
         .where(eq(plannedSessions.id, copy.id));
     }
     return copies.length;
-  });
-}
-
-/** Moving a session to another day, or copying it — to the same rider or another. */
-export async function moveSession(
-  ctx: OrgContext,
-  id: string,
-  onDate: string,
-  copy = false,
-  toRiderId?: string,
-) {
-  return withOrgContext(ctx, async (tx) => {
-    const row = await loadOwn(tx, ctx, id);
-    if (!copy) {
-      await tx
-        .update(plannedSessions)
-        .set({ onDate, activityId: row.onDate === onDate ? row.activityId : null })
-        .where(eq(plannedSessions.id, id));
-      await recordMoveIn(tx, ctx, row, onDate);
-      return { id };
-    }
-    return createSessionIn(tx, ctx, {
-      riderId: toRiderId ?? row.riderId,
-      onDate,
-      sport: row.sport as SessionInputT["sport"],
-      title: row.title,
-      description: row.description,
-      structure: readStructure(row.structure, row.sport as SessionInputT["sport"]),
-      plannedMinutes: row.plannedMinutes,
-      plannedKm: row.plannedKm,
-      templateId: row.templateId,
-      startTime: row.startTime,
-      meetingPlace: row.meetingPlace,
-    });
   });
 }
 

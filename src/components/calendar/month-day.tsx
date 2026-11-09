@@ -19,6 +19,7 @@ export const DOT: Record<ComplianceColour, string> = {
   red: "bg-destructive",
   grey: "border-input bg-card border-2",
   none: "bg-chart-3",
+  skipped: "border-input bg-muted border-2 border-dashed",
 };
 
 const EVENT_TINT: Record<string, string> = {

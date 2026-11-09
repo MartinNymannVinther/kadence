@@ -1034,7 +1034,7 @@
       },
       "calendar": {
         "title": "The calendar",
-        "body": "The calendar shows one week at a time. On a computer the days stand side by side, on a phone one below the other, and the team's week is one card per rider. The coach can drag a session to another day; on a phone you use \"Move\" in the session's menu. Races, exams, school, camps, holidays and illness sit in the calendar as small labels. The colours show how it went: green is as planned, yellow is close to the plan, red is your own version or not reached, and grey is not ridden yet. There is always a word beside the colour. A session can have a time and a meeting place, say \"17:30 from the clubhouse\". A whole week is laid in under \"Plan the week\": choose riders, a whole class with one tap if you like, and start from an empty week, last week, a block or a proposal from the AI. You see what the week gives against the season plan before you lay it in, and you can repeat it over several weeks or save it as a block. If one session should come back, say strength every Tuesday and Thursday, turn on \"Repeat on set weekdays\" when you add it; \"Edit\" and \"Delete\" can also take the rest of the series. \"Copy the week before\" lays each rider's own sessions from another week on the same weekdays. \"Share the week\" makes a text with the week's sessions, times and places for the team's chat, with nothing about the riders' wellbeing."
+        "body": "The calendar shows one week at a time. On a computer the days stand side by side, on a phone one below the other, and the team's week is one card per rider. The coach can drag a session to another day; on a phone you use \"Move\" in the session's menu. Races, exams, school, camps, holidays and illness sit in the calendar as small labels. The colours show how it went: green is as planned, yellow is close to the plan, red is your own version or not reached, and grey is not ridden yet. There is always a word beside the colour. A session can have a time and a meeting place, say \"17:30 from the clubhouse\". A whole week is laid in under \"Plan the week\": choose riders, a whole class with one tap if you like, and start from an empty week, last week, a block or a proposal from the AI. You see what the week gives against the season plan before you lay it in, and you can repeat it over several weeks or save it as a block. If one session should come back, say strength every Tuesday and Thursday, turn on \"Repeat on set weekdays\" when you add it; \"Edit\" and \"Delete\" can also take the rest of the series. \"Copy the week before\" lays each rider's own sessions from another week on the same weekdays. \"Share the week\" makes a text with the week's sessions, times and places for the team's chat, with nothing about the riders' wellbeing. To move or skip a session, use its menu or Today, and say why with one tap. A skipped session stays, grey, and does not count in the hours."
       },
       "search": {
         "title": "Search",
@@ -1178,11 +1178,13 @@
     },
     "news": {
       "title": "News from the riders",
-      "hint": "Comments on sessions and notes from check-ins, newest first. Replies go in the session's own thread.",
-      "empty": "No comments or notes in the last 14 days.",
+      "hint": "Comments on sessions, notes from check-in and sessions the riders moved or skipped, newest first. Answers go in the session's own thread.",
+      "empty": "No comments, notes or changes in the last 14 days.",
       "comment": "Comment on {about}",
       "commentRide": "Comment on a ride",
       "checkin": "Check-in",
+      "moved": "Moved {about} to {day}",
+      "skipped": "Skipped {about}",
       "quote": "“{text}”",
       "when": "{day} {clock}",
       "today": "today",
@@ -1495,6 +1497,8 @@
       "open": "Open",
       "edit": "Edit",
       "move": "Move",
+      "skip": "Skip",
+      "unskip": "Undo skip",
       "copy": "Copy",
       "delete": "Delete"
     },
@@ -2345,7 +2349,8 @@
       "missed": "Not reached",
       "today": "Today",
       "planned": "Planned",
-      "unplanned": "Unplanned"
+      "unplanned": "Unplanned",
+      "skipped": "Skipped"
     },
     "deviation": {
       "open": "{state}. See why",
@@ -6509,6 +6514,31 @@
       "withdrawTitle": "Withdraw your yes?",
       "withdrawBody": "The AI stops reading your rides from Garmin straight away. Your rides and everything else stay as they are.",
       "withdrawn": "Your yes has been withdrawn."
+    }
+  },
+  "changes": {
+    "why": "Why? You need not answer.",
+    "note": "Comment",
+    "noteWho": "Only the rider and the coaches can read the comment.",
+    "reason": {
+      "ill": "Ill",
+      "pain": "Pain or injury",
+      "tired": "Tired",
+      "school": "School or work",
+      "weather": "Weather",
+      "time": "Time",
+      "travel": "Travel",
+      "other": "Other"
+    },
+    "skip": {
+      "title": "Skip the session",
+      "body": "It stays in the calendar, grey, and does not count in the hours.",
+      "confirm": "Skip",
+      "done": "The session is skipped.",
+      "undo": "Undo",
+      "undone": "The session is planned again.",
+      "line": "Skipped: {reason}",
+      "lineNoReason": "Skipped"
     }
   }
 }

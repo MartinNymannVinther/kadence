@@ -1034,7 +1034,7 @@
       },
       "calendar": {
         "title": "Kalenderen",
-        "body": "Kalenderen viser en uge ad gangen. På en computer står dagene side om side, på telefonen under hinanden, og holdets uge er et kort pr. rytter. Træneren kan trække et træningspas til en anden dag; på telefonen bruger du \"Flyt\" i træningspassets menu. Løb, eksamen, skole, lejr, ferie og sygdom står som små mærker. Farverne viser, hvordan det gik: grøn er som planlagt, gul er tæt på planen, rød er din egen version eller ikke nået, og grå er ikke kørt endnu. Der står altid et ord ved farven. Et træningspas kan have et tidspunkt og et mødested, fx \"17.30 fra klubhuset\". En hel uge lægges ind under \"Planlæg ugen\": vælg ryttere, eventuelt en hel årgang med ét tryk, og start fra en tom uge, sidste uge, et forløb eller et forslag fra AI'en. Du ser, hvad ugen giver mod sæsonplanen, før du lægger den ind, og du kan gentage den i flere uger eller gemme den som forløb. Skal ét træningspas gå igen, fx styrke hver tirsdag og torsdag, slår du \"Gentag på faste ugedage\" til, når du lægger det ind; \"Ret\" og \"Slet\" kan også tage resten af serien. \"Kopiér ugen før\" lægger hver rytters egne træningspas fra en anden uge ind på de samme ugedage. \"Del ugen\" laver en tekst med ugens træningspas, tider og steder til holdets chat, uden noget om rytternes trivsel."
+        "body": "Kalenderen viser en uge ad gangen. På en computer står dagene side om side, på telefonen under hinanden, og holdets uge er et kort pr. rytter. Træneren kan trække et træningspas til en anden dag; på telefonen bruger du \"Flyt\" i træningspassets menu. Løb, eksamen, skole, lejr, ferie og sygdom står som små mærker. Farverne viser, hvordan det gik: grøn er som planlagt, gul er tæt på planen, rød er din egen version eller ikke nået, og grå er ikke kørt endnu. Der står altid et ord ved farven. Et træningspas kan have et tidspunkt og et mødested, fx \"17.30 fra klubhuset\". En hel uge lægges ind under \"Planlæg ugen\": vælg ryttere, eventuelt en hel årgang med ét tryk, og start fra en tom uge, sidste uge, et forløb eller et forslag fra AI'en. Du ser, hvad ugen giver mod sæsonplanen, før du lægger den ind, og du kan gentage den i flere uger eller gemme den som forløb. Skal ét træningspas gå igen, fx styrke hver tirsdag og torsdag, slår du \"Gentag på faste ugedage\" til, når du lægger det ind; \"Ret\" og \"Slet\" kan også tage resten af serien. \"Kopiér ugen før\" lægger hver rytters egne træningspas fra en anden uge ind på de samme ugedage. \"Del ugen\" laver en tekst med ugens træningspas, tider og steder til holdets chat, uden noget om rytternes trivsel. Skal et træningspas flyttes eller springes over, gør du det i træningspassets menu eller på I dag, og du kan sige hvorfor med ét tryk. Et træningspas, der springes over, bliver stående gråt og tæller ikke med i timerne."
       },
       "search": {
         "title": "Søg",
@@ -1178,11 +1178,13 @@
     },
     "news": {
       "title": "Nyt fra rytterne",
-      "hint": "Kommentarer på træningspas og noter fra check-in, nyeste først. Svar skrives i træningspassets egen tråd.",
-      "empty": "Ingen kommentarer eller noter de seneste 14 dage.",
+      "hint": "Kommentarer på træningspas, noter fra check-in og træningspas, rytterne har flyttet eller sprunget over, nyeste først. Svar skrives i træningspassets egen tråd.",
+      "empty": "Ingen kommentarer, noter eller ændringer de seneste 14 dage.",
       "comment": "Kommentar til {about}",
       "commentRide": "Kommentar til en tur",
       "checkin": "Check-in",
+      "moved": "Flyttede {about} til {day}",
+      "skipped": "Sprang {about} over",
       "quote": "“{text}”",
       "when": "{day} {clock}",
       "today": "i dag",
@@ -1495,6 +1497,8 @@
       "open": "Åbn",
       "edit": "Ret",
       "move": "Flyt",
+      "skip": "Spring over",
+      "unskip": "Fortryd spring over",
       "copy": "Kopiér",
       "delete": "Slet"
     },
@@ -2345,7 +2349,8 @@
       "missed": "Ikke nået",
       "today": "I dag",
       "planned": "Planlagt",
-      "unplanned": "Uden plan"
+      "unplanned": "Uden plan",
+      "skipped": "Sprunget over"
     },
     "deviation": {
       "open": "{state}. Se hvorfor",
@@ -6509,6 +6514,31 @@
       "withdrawTitle": "Træk dit ja tilbage?",
       "withdrawBody": "AI'en holder op med at læse dine ture fra Garmin med det samme. Dine ture og alt andet bliver, som det er.",
       "withdrawn": "Dit ja er trukket tilbage."
+    }
+  },
+  "changes": {
+    "why": "Hvorfor? Du behøver ikke svare.",
+    "note": "Kommentar",
+    "noteWho": "Kun rytteren og trænerne kan læse kommentaren.",
+    "reason": {
+      "ill": "Syg",
+      "pain": "Ondt eller skade",
+      "tired": "Træt",
+      "school": "Skole eller arbejde",
+      "weather": "Vejret",
+      "time": "Tid",
+      "travel": "Rejse",
+      "other": "Andet"
+    },
+    "skip": {
+      "title": "Spring træningspasset over",
+      "body": "Det bliver stående i kalenderen, gråt, og tæller ikke med i timerne.",
+      "confirm": "Spring over",
+      "done": "Træningspasset er sprunget over.",
+      "undo": "Fortryd",
+      "undone": "Træningspasset er planlagt igen.",
+      "line": "Sprunget over: {reason}",
+      "lineNoReason": "Sprunget over"
     }
   }
 }

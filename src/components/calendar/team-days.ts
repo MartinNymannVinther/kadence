@@ -35,7 +35,7 @@ export type CardDay = {
 };
 
 /** Which colour speaks for a day: missed or far off first, then off plan, still open, unplanned, as planned. */
-const LOUDEST: readonly ComplianceColour[] = ["red", "yellow", "grey", "none", "green"];
+const LOUDEST: readonly ComplianceColour[] = ["red", "yellow", "grey", "none", "skipped", "green"];
 
 export function dayColour(colours: readonly ComplianceColour[]): ComplianceColour | null {
   return LOUDEST.find((c) => colours.includes(c)) ?? null;
@@ -43,6 +43,7 @@ export function dayColour(colours: readonly ComplianceColour[]): ComplianceColou
 
 /** How a planned session went against its plan, in the load model's colours. */
 export function colourOf(session: CalendarCard, today: string): ComplianceColour {
+  if (session.skipped && !session.activity) return "skipped";
   const done = session.activity
     ? {
         minutes: session.activity.movingSeconds / 60,
@@ -111,7 +112,8 @@ export function weekMinutes(
 ): { planned: number; done: number } {
   const mine = sessions.filter((s) => s.riderId === riderId);
   return {
-    planned: mine.reduce((sum, s) => sum + s.plannedMinutes, 0),
+    // A skipped session counts in no planned hours (docs/adr/0117).
+    planned: mine.reduce((sum, s) => sum + (s.skipped ? 0 : s.plannedMinutes), 0),
     done:
       mine.reduce((sum, s) => sum + (s.activity?.movingSeconds ?? 0), 0) / 60 +
       activities

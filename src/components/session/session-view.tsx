@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 import { SessionMenu } from "@/components/calendar/session-menu";
 import { toCard } from "@/components/calendar/to-card";
+import { SkipLine } from "@/components/training/skip-line";
 import { ComplianceMark, colourOf } from "@/components/training/compliance-mark";
 import { dayLong } from "@/components/training/day-label";
 import { durationText } from "@/components/training/duration";
@@ -178,6 +179,7 @@ export async function SessionView({
             />
           </span>
           {card.groupKey && <Badge variant="outline">{t("group")}</Badge>}
+          <SkipLine session={card} className="text-2sm" />
         </div>
         <div className="print:hidden">
           <DeviationInline

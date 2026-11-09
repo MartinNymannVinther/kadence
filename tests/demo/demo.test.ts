@@ -136,6 +136,22 @@ describe("a demo workspace", () => {
     expect(rows[0]).toEqual({ rides: 0, links: 0, sent: 0 });
   });
 
+  it("has a session skipped for illness and one moved for school, with their reasons (ADR 0117)", async () => {
+    const { rows } = await admin.query(
+      `select kind, reason from session_changes where org_id = $1 order by kind`,
+      [orgId],
+    );
+    expect(rows).toEqual([
+      { kind: "moved", reason: "school" },
+      { kind: "skipped", reason: "ill" },
+    ]);
+    const skipped = await admin.query(
+      `select count(*)::int as n from planned_sessions where org_id = $1 and skip_reason = 'ill'`,
+      [orgId],
+    );
+    expect(skipped.rows[0].n).toBe(1);
+  });
+
   it("proposes thresholds from a rider's rides that sit near her own (ADR 0094)", async () => {
     const coach = { orgId, userId };
     const emma = (await getRiders(coach)).find((r) => r.name === "Emma Holm")!;
