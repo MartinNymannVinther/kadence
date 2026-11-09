@@ -40,6 +40,8 @@ function session(over: Partial<CalendarCard>): CalendarCard {
     groupKey: null,
     seriesKey: null,
     programmeSession: null,
+    skipped: false,
+    skipReason: null,
     activityId: null,
     activity: null,
     commentCount: 0,
@@ -186,5 +188,23 @@ describe("a rider's week in minutes", () => {
     ];
     expect(weekMinutes("r1", sessions, activities)).toEqual({ planned: 135, done: 110 });
     expect(weekMinutes("nobody", sessions, activities)).toEqual({ planned: 0, done: 0 });
+  });
+});
+
+describe("a skipped session (docs/adr/0117)", () => {
+  const skipped = session({ id: "skip", onDate: "2026-11-03", skipped: true, skipReason: "ill" });
+
+  it("is grey and says skipped, not missed, in both colourings", () => {
+    for (const colour of [colourOf, markColourOf]) expect(colour(skipped, TODAY)).toBe("skipped");
+  });
+
+  it("counts in no planned minutes", () => {
+    const kept = session({ id: "kept", onDate: "2026-11-04", plannedMinutes: 60 });
+    expect(weekMinutes("r1", [skipped, kept], [])).toEqual({ planned: 60, done: 0 });
+  });
+
+  it("is quieter than any other day's colour but green", () => {
+    expect(dayColour(["skipped", "none"])).toBe("none");
+    expect(dayColour(["skipped", "green"])).toBe("skipped");
   });
 });

@@ -181,6 +181,21 @@ async function seedHistory() {
     scheduled_on: DAY,
     content_hash: "c".repeat(64),
   });
+  // A skipped session's reason and the rider's words (drizzle/0063, ADR 0117).
+  await seed("session_changes", {
+    id: "hm_change",
+    rider_id: FROM,
+    planned_session_id: "hm_ps_own",
+    kind: "skipped",
+    from_date: DAY,
+    sport: "bike",
+    title: "Eget",
+    planned_minutes: 60,
+    reason: "tired",
+    by_role: "rider",
+    changed_by: RIDER,
+  });
+  await seed("session_change_notes", { change_id: "hm_change", rider_id: FROM, note: "Træt" });
   // What stays: a parent's link, and a deleted session the team remembers.
   await seed("guardians", { rider_id: FROM, name: "Mor" });
   await seed("planned_session_deletions", { rider_id: FROM, on_date: DAY, title: "Slettet" });
@@ -348,6 +363,8 @@ describe("the rider moves their own history", () => {
       device_links: 1,
       device_inbox: 1,
       device_workouts: 1,
+      session_changes: 1,
+      session_change_notes: 1,
     });
   });
 

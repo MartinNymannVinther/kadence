@@ -1,4 +1,4 @@
-import { and, gte, inArray, lte } from "drizzle-orm";
+import { and, gte, inArray, lte, isNull } from "drizzle-orm";
 import { activities, plannedSessions } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
 import { seasonStartYear } from "@/modules/dcu";
@@ -54,6 +54,8 @@ export async function readFor(
         inArray(plannedSessions.riderId, riderIds),
         gte(plannedSessions.onDate, range.from),
         lte(plannedSessions.onDate, range.to),
+        // A skipped session counts in no planned hours (docs/adr/0117).
+        isNull(plannedSessions.skippedAt),
       ),
     );
   const activityRows = await tx

@@ -442,6 +442,13 @@
       "when": 1793549086179,
       "tag": "0062_garmin_workouts",
       "breakpoints": true
+    },
+    {
+      "idx": 63,
+      "version": "7",
+      "when": 1794234924495,
+      "tag": "0063_session_changes",
+      "breakpoints": true
     }
   ]
 }

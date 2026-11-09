@@ -1,15 +1,11 @@
+import { moveSession } from "@/modules/training/session-move";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { Pool } from "pg";
 import { addComment, deleteComment, editComment, listComments } from "@/modules/training/comments";
 import { completeSession, reopenSession, setFeedback } from "@/modules/training/complete";
 import { createEvent, listEvents } from "@/modules/training/events";
 import { createGroupSessions, scheduleTemplate } from "@/modules/training/group";
-import {
-  deleteSession,
-  listSessions,
-  moveSession,
-  updateSession,
-} from "@/modules/training/sessions";
+import { deleteSession, listSessions, updateSession } from "@/modules/training/sessions";
 import { createTemplate, updateTemplate } from "@/modules/training/templates";
 import type { StrengthStructure } from "@/modules/workouts/structure";
 import { adminPool } from "../helpers/db";

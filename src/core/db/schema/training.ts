@@ -77,6 +77,13 @@ export const plannedSessions = pgTable(
     /** template | ai | manual | group */
     origin: text("origin").notNull().default("manual"),
     activityId: text("activity_id").references(() => activities.id, { onDelete: "set null" }),
+    /**
+     * When the session was skipped ("Spring over", docs/adr/0117), and why in
+     * one word: it stays in the calendar, grey, and counts in no planned
+     * hours. The whole story is in `session_changes`.
+     */
+    skippedAt: timestamp("skipped_at", { withTimezone: true }),
+    skipReason: text("skip_reason"),
     createdBy: text("created_by").references(() => users.id, { onDelete: "set null" }),
     /**
      * Who last changed it: stamped by the database from the caller's
@@ -98,6 +105,10 @@ export const plannedSessions = pgTable(
     check("planned_sessions_sport", sql`${t.sport} in ('bike','strength','other')`),
     check("planned_sessions_origin", sql`${t.origin} in ('template','ai','manual','group')`),
     check("planned_sessions_minutes", sql`${t.plannedMinutes} between 0 and 1440`),
+    check(
+      "planned_sessions_skip",
+      sql`(${t.skipReason} is null or ${t.skippedAt} is not null) and (${t.skipReason} is null or ${t.skipReason} in ('ill','pain','tired','school','weather','time','travel','other'))`,
+    ),
   ],
 );
 

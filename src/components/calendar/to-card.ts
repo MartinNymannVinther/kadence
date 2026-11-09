@@ -29,6 +29,8 @@ export function toCard(s: CalendarSession): CalendarCard {
     groupKey: s.groupKey,
     seriesKey: s.seriesKey,
     programmeSession: s.programmeSession,
+    skipped: s.skippedAt !== null,
+    skipReason: s.skipReason,
     activityId: s.activityId,
     activity: s.activity
       ? {

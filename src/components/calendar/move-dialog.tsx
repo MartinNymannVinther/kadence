@@ -14,13 +14,15 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { NativeSelect } from "@/components/ui/native-select";
+import { NO_WHY, ReasonPicker } from "@/components/training/reason-picker";
 import { moveSessionAction } from "@/modules/training/actions";
 import type { RiderOption } from "./types";
 
 /**
  * "Flyt" and "Kopiér" with a date field: the way to move a session that
  * works with a thumb and a keyboard, where dragging does not. A coach may
- * copy to another rider as well.
+ * copy to another rider as well. A move asks why, in one tap that may be
+ * left out (docs/adr/0117).
  */
 export function MoveDialog({
   open,
@@ -45,6 +47,7 @@ export function MoveDialog({
   const riderId = useId();
   const [onDate, setOnDate] = useState(session.onDate);
   const [toRider, setToRider] = useState(session.riderId);
+  const [why, setWhy] = useState(NO_WHY);
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -57,6 +60,7 @@ export function MoveDialog({
           onDate,
           copy,
           toRiderId: copy && toRider !== session.riderId ? toRider : undefined,
+          ...(copy ? {} : { reason: why.reason, note: why.note }),
         }),
       { success: copy ? t("copied") : t("moved") },
     );
@@ -65,7 +69,7 @@ export function MoveDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-h-[90dvh] overflow-y-auto">
         <form onSubmit={submit} className="flex flex-col gap-4">
           <DialogHeader>
             <DialogTitle>{mode === "copy" ? t("copyTitle") : t("moveTitle")}</DialogTitle>
@@ -103,6 +107,7 @@ export function MoveDialog({
               </NativeSelect>
             </div>
           )}
+          {mode === "move" && <ReasonPicker value={why} onChange={setWhy} />}
           <DialogFooter>
             <Button type="submit" disabled={pending || !onDate} className="max-sm:h-11">
               {mode === "copy" ? t("copy") : t("move")}
