@@ -7,6 +7,8 @@ import { UploadKeysCard } from "@/components/devices/upload-keys-card";
 import { getOrgContext } from "@/core/auth/session";
 import { env } from "@/core/env";
 import { Link, redirect } from "@/i18n/navigation";
+import { myGarminAiConsent } from "@/modules/consent/garmin-ai";
+import { garminRidesIn } from "@/modules/devices/garmin-rides";
 import { listDeviceLinks } from "@/modules/devices/links";
 import { providerOrigin } from "@/modules/devices/origin";
 import {
@@ -100,9 +102,17 @@ export default async function DevicesPage({
     );
   }
 
-  const [links, keys] = await Promise.all([listDeviceLinks(ctx), listUploadKeys(ctx)]);
+  const [links, keys, garminRides, garminAiGiven] = await Promise.all([
+    listDeviceLinks(ctx),
+    listUploadKeys(ctx),
+    garminRidesIn(ctx, { riderIds: [me.rider.id] }),
+    myGarminAiConsent(ctx),
+  ]);
   // A link made before the installation lost its keys still shows, so the rider knows it is there.
   const shown = links.filter((link) => link.configured || link.status !== null);
+  // The AI's yes is about rides from Garmin: offered once there is a link or a ride for it to cover.
+  const garminLinked = links.some((link) => link.provider === "garmin" && link.status !== null);
+  const garminAi = garminLinked || garminRides ? { given: garminAiGiven } : undefined;
 
   return (
     <div className="flex max-w-2xl flex-col gap-5">
@@ -140,6 +150,7 @@ export default async function DevicesPage({
             <DeviceCard
               key={link.provider}
               link={{ ...link, lastSyncAt: link.lastSyncAt?.toISOString() ?? null }}
+              garminAi={garminAi}
             />
           ))}
         </div>

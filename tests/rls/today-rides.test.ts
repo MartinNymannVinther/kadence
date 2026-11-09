@@ -93,6 +93,14 @@ describe("the last rides on Today", () => {
     expect(await hasAnyRide(ANNA, "tr_anna")).toBe(true);
   });
 
+  it("say which a planned session claims, so Today can show the others on the day", async () => {
+    const rides = await recentRides(ANNA, "tr_anna", { from: "2026-10-04", to: "2026-10-05" });
+    expect(rides.map((r) => [r.id, r.planned])).toEqual([
+      ["tr_a2", true],
+      ["tr_a1", false],
+    ]);
+  });
+
   it("are named by the part of the day, or as indoors, when the title is a file's name", async () => {
     const rides = await recentRides(ANNA, "tr_anna", { from: "2026-10-03", to: "2026-10-03" });
     expect(rides.map((r) => [r.id, r.name])).toEqual([

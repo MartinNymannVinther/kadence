@@ -1,10 +1,12 @@
 import { after } from "next/server";
 import { getTranslations } from "next-intl/server";
 import { basisText } from "@/components/season/basis-text";
+import { GarminDerivedNote } from "@/components/devices/garmin-attribution";
 import { TeamAttention } from "@/components/insight/team-attention";
 import { teamAttentionData } from "@/components/insight/team-attention-data";
 import { ATTENTION_ID } from "@/components/insight/signals";
 import { mondayOf } from "@/core/dates";
+import { anyFromGarminIn } from "@/modules/devices/attribution";
 import { refreshStaleRaces } from "@/modules/results/refresh";
 import { listRaceResults } from "@/modules/results/service";
 import { volumesFor } from "@/modules/season/volumes";
@@ -87,6 +89,7 @@ export async function WeekView({
   return (
     <>
       <WeekNav monday={monday} today={today} query={query} />
+      <GarminDerivedNote show={anyFromGarminIn(sessions, unplanned)} />
       {teamView ? (
         <TeamGrid
           riders={visible}

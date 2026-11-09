@@ -2,6 +2,7 @@ import { field, payload } from "@/core/jobs/payload";
 import { enqueue } from "@/core/jobs/queue";
 import { jobKind } from "@/core/jobs/registry";
 import { errorName, log } from "@/core/log";
+import { SPORTS } from "@/modules/training/vocabulary";
 import { PROVIDER_IDS, type ProviderId, type WebhookEvent } from "./providers";
 
 /**
@@ -13,10 +14,12 @@ import { PROVIDER_IDS, type ProviderId, type WebhookEvent } from "./providers";
  * (Next's after()), and a deploy or a provider's bad minute lost the ride
  * with nothing trying again.
  *
- * The payload is what the fetch needs and nothing else: the provider, the
- * provider's ids for the person and the activity, where the file is, and
- * the file's name as the device named the ride. Never the notification's
- * other fields — a summary can carry a heart rate.
+ * The payload is what the work needs and nothing else: the provider, the
+ * provider's ids for the person and the activity, where the file is, the
+ * file's name as the device named the ride, the model of the device and
+ * the sport the provider names (Garmin, docs/adr/0113). Never the
+ * notification's other fields — a summary can carry a heart rate. A
+ * deregistration and a change of permissions carry the person's id only.
  *
  * Idempotent: the same activity notified twice waits once (the dedupe
  * key), and a job run twice finds the ride already imported, by the
@@ -27,11 +30,13 @@ export const deviceFetch = jobKind(
   "device.fetch",
   payload({
     provider: field.word(PROVIDER_IDS),
-    event: field.word(["activity", "deregistration"]),
+    event: field.word(["activity", "deregistration", "permissions"]),
     externalUserId: field.id(),
     externalId: field.id().optional(),
     url: field.ref().optional(),
     fileName: field.file().optional(),
+    deviceName: field.device().optional(),
+    sport: field.word(SPORTS).optional(),
   }),
   // A file is fetched with a fifteen-second deadline and imported in a
   // second or two; two minutes leaves room for a token refresh as well.
@@ -41,9 +46,9 @@ export const deviceFetch = jobKind(
 type DeviceFetch = ReturnType<typeof deviceFetch.payload.parse>;
 
 export function eventPayload(provider: ProviderId, event: WebhookEvent): DeviceFetch {
-  if (event.kind === "deregistration")
-    return { provider, event: "deregistration", externalUserId: event.externalUserId };
-  const { externalId, url, fileName } = event.notification;
+  if (event.kind !== "activity")
+    return { provider, event: event.kind, externalUserId: event.externalUserId };
+  const { externalId, url, fileName, deviceName, sport } = event.notification;
   return {
     provider,
     event: "activity",
@@ -51,11 +56,15 @@ export function eventPayload(provider: ProviderId, event: WebhookEvent): DeviceF
     externalId,
     url,
     fileName,
+    ...(deviceName ? { deviceName } : {}),
+    ...(sport ? { sport } : {}),
   };
 }
 
 /** The event a job's payload describes, as the provider's adapter gave it. */
 export function payloadEvent(job: DeviceFetch): WebhookEvent {
+  if (job.event === "permissions")
+    return { kind: "permissions", externalUserId: job.externalUserId };
   if (job.event === "deregistration" || !job.externalId || !job.url)
     return { kind: "deregistration", externalUserId: job.externalUserId };
   return {
@@ -66,14 +75,16 @@ export function payloadEvent(job: DeviceFetch): WebhookEvent {
       externalId: job.externalId,
       url: job.url,
       fileName: job.fileName ?? `${job.provider}.fit`,
+      ...(job.deviceName ? { deviceName: job.deviceName } : {}),
+      ...(job.sport ? { sport: job.sport } : {}),
     },
   };
 }
 
 /**
- * Queues each event. An event whose ids do not fit a payload is left out
- * and logged by name, never by value: it could not have been fetched
- * either. Throws when the queue cannot be written, so the provider is told
+ * Queues every event, however many a notification holds. An event whose
+ * ids do not fit a payload is left out and logged by name, never by
+ * value: it could not have been fetched either. Throws when the queue cannot be written, so the provider is told
  * to try again rather than told all is well.
  */
 export async function enqueueDeviceEvents(
@@ -90,7 +101,7 @@ export async function enqueueDeviceEvents(
       });
       continue;
     }
-    const id = parsed.data.externalId ?? "deregistration";
+    const id = parsed.data.externalId ?? parsed.data.event;
     const key = `${provider}:${parsed.data.externalUserId}:${id}`.slice(0, 200);
     if (await enqueue(deviceFetch, parsed.data, { dedupeKey: key })) queued += 1;
   }

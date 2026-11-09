@@ -1,16 +1,17 @@
 import { and, eq, sql } from "drizzle-orm";
 import { Refused } from "@/core/action";
-import { openSecret, sealSecret } from "@/core/crypto/secret-box";
 import { appDb } from "@/core/db/client";
 import { deviceLinks } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
-import { sqlStateOf } from "@/modules/export/workspace";
+import { sqlStateOf } from "@/core/db/sql-state";
 import { whoAmIIn } from "@/modules/team/access";
-import { DeviceHttpError } from "./http";
+import { dropRowsIn } from "./device-workouts";
+import { sealed } from "./link-seal";
+import { allowsWorkouts, sharesActivities } from "./permission-words";
 import {
   PROVIDER_IDS,
   providerById,
-  type DeviceProvider,
+  sendsWorkouts,
   type ProviderId,
   type Tokens,
 } from "./providers";
@@ -19,9 +20,10 @@ import {
  * A rider's connection to Wahoo, Garmin or Polar: the `device_links` row. The
  * rider writes it, a coach may see that it exists and remove it, nobody
  * else sees it (drizzle/0003). Tokens are sealed with the secret box and
- * bound to the rider and provider, so a sealed token copied into another
- * row does not open; they leave this file only as the access token a
- * provider call needs, and never towards the interface.
+ * bound to the rider and provider (link-seal.ts), so a sealed token copied
+ * into another row does not open; they leave the server only as the access
+ * token a provider call needs (link-tokens.ts), and never towards the
+ * interface.
  *
  * Every write to a link is made in the rider's name, whoever set it off:
  * the rider connecting, a webhook importing a ride, or a coach whose push
@@ -31,33 +33,22 @@ import {
  * The caller's own right to act is checked before, in the caller's name.
  */
 
-/** Refresh this long before the provider says a token runs out (Garmin asks for 600 s). */
-const REFRESH_MARGIN_MS = 10 * 60 * 1000;
-
-type Status = "connected" | "error" | "revoked";
-
-const sealOwner = (riderId: string, provider: ProviderId) => `device-link:${riderId}:${provider}`;
-
-function sealed(riderId: string, provider: ProviderId, tokens: Tokens) {
-  const owner = sealOwner(riderId, provider);
-  return {
-    accessTokenSealed: sealSecret(tokens.accessToken, owner),
-    refreshTokenSealed: tokens.refreshToken ? sealSecret(tokens.refreshToken, owner) : null,
-    expiresAt: tokens.expiresAt,
-  };
-}
+export type LinkStatus = "connected" | "error" | "revoked";
 
 /**
  * Stores the caller's own connection, connected, replacing an earlier one
  * to the same provider. Only a rider has one: a coach cannot connect a
  * device in a rider's name, and the database would refuse it anyway. An
  * account already linked to another rider is refused as `already_linked`.
+ * `permissions` are what the provider said the rider granted, where it
+ * says (Garmin); null when they could not be read.
  */
 export async function saveLink(
   ctx: OrgContext,
   provider: ProviderId,
   externalUserId: string,
   tokens: Tokens,
+  permissions: string[] | null = null,
 ): Promise<void> {
   await withOrgContext(ctx, async (tx) => {
     const me = await whoAmIIn(tx, ctx);
@@ -66,6 +57,7 @@ export async function saveLink(
     const values = {
       externalUserId,
       ...sealed(riderId, provider, tokens),
+      permissions,
       status: "connected" as const,
       lastError: "",
     };
@@ -85,9 +77,24 @@ export type DeviceLinkView = {
   provider: ProviderId;
   /** The installation has the provider's keys. */
   configured: boolean;
-  /** The provider can take a planned session. */
+  /** The provider can take a planned session — for Garmin, the rider granted workout import. */
   canPush: boolean;
-  status: Status | null;
+  /**
+   * Whether the rider shares their activities with Kadence at the
+   * provider (Garmin's ACTIVITY_EXPORT); null where nobody knows.
+   */
+  sharesActivities: boolean | null;
+  /**
+   * Whether the rider lets Kadence put workouts on their calendar at the
+   * provider (Garmin's WORKOUT_IMPORT); null where nobody knows.
+   */
+  workoutImport: boolean | null;
+  /**
+   * For a provider with a calendar (Garmin): whether Kadence keeps the
+   * rider's sessions for the next seven days there by itself (docs/adr/0114).
+   */
+  autoSend: boolean | null;
+  status: LinkStatus | null;
   lastSyncAt: Date | null;
   lastError: string;
 };
@@ -110,6 +117,8 @@ export async function listDeviceLinks(
         status: deviceLinks.status,
         lastSyncAt: deviceLinks.lastSyncAt,
         lastError: deviceLinks.lastError,
+        permissions: deviceLinks.permissions,
+        autoSend: deviceLinks.autoSend,
       })
       .from(deviceLinks)
       .where(eq(deviceLinks.riderId, target));
@@ -117,11 +126,21 @@ export async function listDeviceLinks(
   return PROVIDER_IDS.map((id) => {
     const provider = providerById(id);
     const row = rows.find((r) => r.provider === id);
+    // Garmin says what the rider granted (docs/adr/0113); a link whose
+    // permissions were never read offers no push until they are.
+    const granted = id !== "garmin" || allowsWorkouts(row?.permissions ?? null);
+    const known = id === "garmin" && row?.status === "connected" && row.permissions !== null;
     return {
       provider: id,
       configured: provider.configured(),
-      canPush: provider.configured() && Boolean(provider.pushWorkout),
-      status: (row?.status as Status | undefined) ?? null,
+      canPush: provider.configured() && sendsWorkouts(provider) && granted,
+      sharesActivities:
+        id === "garmin" && row?.status === "connected"
+          ? sharesActivities(row.permissions ?? null)
+          : null,
+      workoutImport: known ? allowsWorkouts(row.permissions ?? null) : null,
+      autoSend: provider.calendar && row ? row.autoSend : null,
+      status: (row?.status as LinkStatus | undefined) ?? null,
       lastSyncAt: row?.lastSyncAt ?? null,
       lastError: row?.lastError ?? "",
     };
@@ -152,7 +171,7 @@ export async function markLink(
   riderCtx: OrgContext,
   riderId: string,
   provider: ProviderId,
-  patch: { status?: Status; lastError?: string; lastSyncAt?: Date },
+  patch: { status?: LinkStatus; lastError?: string; lastSyncAt?: Date },
 ): Promise<void> {
   await withOrgContext(riderCtx, (tx) =>
     tx
@@ -162,65 +181,25 @@ export async function markLink(
   );
 }
 
-/**
- * The link's access token, refreshed first when it has run out or is about
- * to. A provider that refuses the refresh leaves the link in "error" with
- * `refresh_failed` — the rider connects again — and one that is merely
- * unavailable leaves it connected with `provider_unavailable`. Either way
- * the caller gets a refusal it can name, never a stale token.
- */
-export async function accessTokenFor(
-  owner: LinkOwner,
-  provider: DeviceProvider,
-  now: Date = new Date(),
-): Promise<string> {
-  const riderCtx = { orgId: owner.orgId, userId: owner.riderUserId };
-  const [row] = await withOrgContext(riderCtx, (tx) =>
-    tx
-      .select()
-      .from(deviceLinks)
-      .where(and(eq(deviceLinks.riderId, owner.riderId), eq(deviceLinks.provider, provider.id))),
-  );
-  if (!row || row.status !== "connected") throw new Refused("notFound", "not_connected");
-
-  const seal = sealOwner(owner.riderId, provider.id);
-  const access = openSecret(row.accessTokenSealed, seal);
-  const fresh = !row.expiresAt || row.expiresAt.getTime() - REFRESH_MARGIN_MS > now.getTime();
-  if (access && fresh) return access;
-
-  const refreshToken = openSecret(row.refreshTokenSealed, seal);
-  const fail = async (status: Status | undefined, code: string) => {
-    await markLink(riderCtx, owner.riderId, provider.id, {
-      ...(status ? { status } : {}),
-      lastError: code,
-    });
-    return new Refused("conflict", status === "error" ? "reconnect" : code);
-  };
-  if (!refreshToken) throw await fail("error", "refresh_failed");
-
-  let tokens: Tokens;
-  try {
-    tokens = await provider.refresh(refreshToken);
-  } catch (error) {
-    if (error instanceof DeviceHttpError && error.rejected)
-      throw await fail("error", "refresh_failed");
-    if (error instanceof DeviceHttpError) throw await fail(undefined, "provider_unavailable");
-    throw error;
-  }
-  const next = sealed(owner.riderId, provider.id, tokens);
+/** Clears a link's last error when it is still `code`, in the rider's name; nothing else changes. */
+export async function clearLinkError(
+  riderCtx: OrgContext,
+  riderId: string,
+  provider: ProviderId,
+  code: string,
+): Promise<void> {
   await withOrgContext(riderCtx, (tx) =>
     tx
       .update(deviceLinks)
-      .set({
-        ...next,
-        // Wahoo and Garmin rotate refresh tokens; keep the old one if none came back.
-        refreshTokenSealed: next.refreshTokenSealed ?? row.refreshTokenSealed,
-        status: "connected",
-        lastError: "",
-      })
-      .where(and(eq(deviceLinks.riderId, owner.riderId), eq(deviceLinks.provider, provider.id))),
+      .set({ lastError: "" })
+      .where(
+        and(
+          eq(deviceLinks.riderId, riderId),
+          eq(deviceLinks.provider, provider),
+          eq(deviceLinks.lastError, code),
+        ),
+      ),
   );
-  return tokens.accessToken;
 }
 
 /** The provider's id for the account on a rider's link, read as the rider; null without one. */
@@ -238,11 +217,12 @@ export async function linkExternalUserId(
   return row?.externalUserId ?? null;
 }
 
-/** Removes the caller's own link; false when there was none. */
+/** Removes the caller's own link, and what Kadence remembers sending through it; false when there was none. */
 export async function deleteOwnLink(ctx: OrgContext, provider: ProviderId): Promise<boolean> {
   return withOrgContext(ctx, async (tx) => {
     const me = await whoAmIIn(tx, ctx);
     if (!me?.rider) throw new Refused("forbidden", "not_a_rider");
+    await dropRowsIn(tx, me.rider.id, provider);
     const gone = await tx
       .delete(deviceLinks)
       .where(and(eq(deviceLinks.riderId, me.rider.id), eq(deviceLinks.provider, provider)))

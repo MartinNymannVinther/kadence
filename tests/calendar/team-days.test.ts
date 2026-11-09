@@ -53,6 +53,7 @@ const ridden = (minutes: number) => ({
   load: null,
   loadMethod: "none",
   rpe: null,
+  attribution: null,
 });
 
 describe("a rider's days on the phone", () => {
@@ -113,7 +114,7 @@ describe("how the load was measured (13 October)", () => {
       structure: ZONE_2,
       plannedLoad: 60,
       activityId: "a",
-      activity: { id: "a", movingSeconds: 3600, load, loadMethod, rpe: 5 },
+      activity: { id: "a", movingSeconds: 3600, load, loadMethod, rpe: 5, attribution: null },
     });
 
   it("reads an RPE ride by its minutes unless the feeling is far off, on the card and the mark", () => {
@@ -133,7 +134,7 @@ describe("a plan that says only how long (14 October)", () => {
       session({
         plannedLoad: 42,
         activityId: "a",
-        activity: { id: "a", movingSeconds: 3600, load, loadMethod, rpe: 5 },
+        activity: { id: "a", movingSeconds: 3600, load, loadMethod, rpe: 5, attribution: null },
       });
     for (const colour of [colourOf, markColourOf]) {
       expect(colour(bike(100, "power"), TODAY)).toBe("green");
@@ -150,7 +151,14 @@ describe("a plan that says only how long (14 October)", () => {
       plannedMinutes: 30,
       plannedLoad: 21,
       activityId: "a",
-      activity: { id: "a", movingSeconds: 31 * 60, load: 42, loadMethod: "hr", rpe: null },
+      activity: {
+        id: "a",
+        movingSeconds: 31 * 60,
+        load: 42,
+        loadMethod: "hr",
+        rpe: null,
+        attribution: null,
+      },
     });
     for (const colour of [colourOf, markColourOf]) expect(colour(run, TODAY)).toBe("green");
   });
@@ -172,6 +180,7 @@ describe("a rider's week in minutes", () => {
         name: { title: "Tur" },
         movingSeconds: 30 * 60,
         rpe: null,
+        attribution: null,
         commentCount: 0,
       },
     ];

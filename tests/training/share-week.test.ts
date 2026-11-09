@@ -160,7 +160,7 @@ describe("Del ugen", () => {
         { team: "Holdet", monday: "2026-10-07", sessions: [], locale: "da" },
         wordsFor("da"),
       ),
-    ).toBe("Holdet · Uge 41\n\nIngen pas i ugen.");
+    ).toBe("Holdet · Uge 41\n\nIngen træningspas i ugen.");
   });
 
   describe("with events", () => {
@@ -254,7 +254,7 @@ describe("Del ugen", () => {
         { team: "Holdet", monday: MONDAY, sessions: [], events: [events[0]!], locale: "da" },
         wordsFor("da"),
       );
-      expect(text).not.toContain("Ingen pas i ugen.");
+      expect(text).not.toContain("Ingen træningspas i ugen.");
     });
   });
 });

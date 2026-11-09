@@ -6,7 +6,8 @@ import { z } from "zod";
  * in, and the table has no audit trigger. So a payload holds what is
  * needed to find the work again and nothing that is anybody's to keep:
  * ids, days, counts, short words from a fixed list, a provider's address
- * for a file, and a ride's file name as the rider's device gave it. Never
+ * for a file, a ride's file name as the rider's device gave it, and the
+ * model name of the device it was recorded on. Never
  * a person's name, an e-mail address, a password or a token, and nothing
  * about health. The handler reads the rest as the team's own people, under
  * the ordinary policies.
@@ -18,7 +19,7 @@ import { z } from "zod";
  */
 
 /** What a field of a payload is. */
-export const FIELD_SORTS = ["id", "day", "count", "word", "ref", "file"] as const;
+export const FIELD_SORTS = ["id", "day", "count", "word", "ref", "file", "device"] as const;
 export type FieldSort = (typeof FIELD_SORTS)[number];
 
 /** An id: a row's, a provider's for a person or an activity, a key. Letters, digits and `_-.:@`. */
@@ -58,6 +59,18 @@ export const field = {
       .max(110)
       .regex(/\.fit$/)
       .describe("file"),
+  /**
+   * The model of the device a ride was recorded on, as its maker names it
+   * ("Edge 1040"), already made plain by src/modules/devices/device-name.ts:
+   * letters, digits, spaces and a little punctuation, at most eighty
+   * characters. A product's name, never a person's words.
+   */
+  device: () =>
+    z
+      .string()
+      .max(80)
+      .regex(/^[\p{L}\p{N}][\p{L}\p{N} .,+&'()/_-]*$/u)
+      .describe("device"),
 };
 
 /** A payload: an object of fields and nothing else. */

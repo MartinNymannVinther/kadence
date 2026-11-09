@@ -20,6 +20,7 @@ export type AiFailure =
   | "unreachable"
   | "badAnswer"
   | "notAllowed"
+  | "garminAi"
   | "generic";
 
 export type ProposalResult<T> =

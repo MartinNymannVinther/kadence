@@ -1,4 +1,5 @@
 import type { CalendarEventRow, RaceResultRow } from "@/core/db/schema";
+import { garminAttribution } from "@/modules/devices/attribution";
 import type { CalendarActivity } from "@/modules/training/activities";
 import type { CalendarSession } from "@/modules/training/sessions";
 import { clockOf } from "@/modules/training/time-place";
@@ -36,6 +37,7 @@ export function toCard(s: CalendarSession): CalendarCard {
           load: s.activity.load,
           loadMethod: s.activity.loadMethod,
           rpe: s.activity.rpe,
+          attribution: garminAttribution(s.activity),
         }
       : null,
     commentCount: s.commentCount,
@@ -51,6 +53,7 @@ export function toActivityCard(a: CalendarActivity): CalendarActivityCard {
     name: a.name,
     movingSeconds: a.movingSeconds,
     rpe: a.rpe,
+    attribution: garminAttribution(a),
     commentCount: a.commentCount,
   };
 }

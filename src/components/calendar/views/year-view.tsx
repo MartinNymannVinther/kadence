@@ -1,6 +1,8 @@
+import { GarminDerivedNote } from "@/components/devices/garmin-attribution";
 import { seasonStartYear } from "@/modules/dcu";
-import { seasonMonthKeys } from "@/modules/calendar/grid";
+import { seasonBounds, seasonMonthKeys } from "@/modules/calendar/grid";
 import { riderSeason, teamSeason } from "@/modules/calendar/season-data";
+import { garminRidesIn } from "@/modules/devices/garmin-rides";
 import { calendarHref, withQuery } from "../href";
 import { SeasonNav } from "../period-nav";
 import { RiderYear } from "../rider-year";
@@ -22,7 +24,14 @@ export async function YearView({
   query,
   season,
 }: ViewProps & { season: number }) {
-  const nav = <SeasonNav season={season} current={seasonStartYear(today)} query={query} />;
+  const riderIds = teamView ? visible.map((r) => r.id) : [rider.id];
+  const fromGarmin = garminRidesIn(ctx, { riderIds, ...seasonBounds(season) });
+  const nav = (
+    <>
+      <SeasonNav season={season} current={seasonStartYear(today)} query={query} />
+      <GarminDerivedNote show={await fromGarmin} />
+    </>
+  );
 
   if (teamView) {
     const read = await teamSeason(

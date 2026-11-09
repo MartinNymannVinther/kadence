@@ -1,5 +1,7 @@
+import { GarminDerivedNote } from "@/components/devices/garmin-attribution";
 import { monthBounds, monthWeeks } from "@/modules/calendar/grid";
 import { riderMonth, teamMonth } from "@/modules/calendar/month-data";
+import { anyFromGarminIn } from "@/modules/devices/attribution";
 import { calendarHref } from "../href";
 import { monthCells, teamMonthDays } from "../month-days";
 import { MonthNav } from "../period-nav";
@@ -49,6 +51,7 @@ export async function MonthView({
     return (
       <>
         {nav}
+        <GarminDerivedNote show={anyFromGarminIn(read.sessions, read.unplanned)} />
         <TeamMonth
           days={days}
           today={today}
@@ -80,6 +83,7 @@ export async function MonthView({
   return (
     <>
       {nav}
+      <GarminDerivedNote show={anyFromGarminIn(read.sessions, read.unplanned)} />
       <RiderMonth weeks={weeks} volumes={Object.fromEntries(read.weeks)} query={query} />
     </>
   );

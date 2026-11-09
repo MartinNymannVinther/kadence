@@ -82,7 +82,10 @@ export const SENIOR_BIKE_SESSIONS: readonly SeniorBikeSession[] = [
   {
     key: "kadence-recovery-45",
     name: { da: "Restitutionstur 45 min", en: "Recovery ride 45 min" },
-    when: { da: "Hele året, dagen efter et hårdt pas", en: "All year, the day after a hard one" },
+    when: {
+      da: "Hele året, dagen efter et hårdt træningspas",
+      en: "All year, the day after a hard one",
+    },
     why: {
       da: "Let tråd, så benene kommer sig. Så roligt, at du kan snakke hele vejen.",
       en: "Easy spinning so the legs recover. Easy enough to talk all the way.",
@@ -139,7 +142,7 @@ export const SENIOR_BIKE_SESSIONS: readonly SeniorBikeSession[] = [
     name: { da: "Tempo 2 × 20 min", en: "Tempo 2 × 20 min" },
     when: { da: "Vinter og forår", en: "Winter and spring" },
     why: {
-      da: "Jævnt og fast i zone 3. Bygger udholdenhed uden at tære så meget som et hårdt pas.",
+      da: "Jævnt og fast i zone 3. Bygger udholdenhed uden at tære så meget som et hårdt træningspas.",
       en: "Firm and even in zone 3. Builds endurance without costing as much as a hard session.",
     },
     intensity: "moderate",
@@ -247,7 +250,7 @@ export const SENIOR_BIKE_SESSIONS: readonly SeniorBikeSession[] = [
     name: { da: "Hometrainer 45 min, 3 × 7 min", en: "Indoor 45 min, 3 × 7 min" },
     when: { da: "Vinter, og når vejret driller", en: "Winter, and when the weather says no" },
     why: {
-      da: "Et kort pas til Rulle eller hometraineren: tre drag lige under tærsklen. Godt, når tiden er knap.",
+      da: "Et kort træningspas til Rulle eller hometraineren: tre drag lige under tærsklen. Godt, når tiden er knap.",
       en: "A short session for Rulle or the trainer: three efforts just under threshold. Good when time is short.",
     },
     intensity: "moderate",

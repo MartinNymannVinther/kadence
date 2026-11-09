@@ -9,11 +9,20 @@ import { cn } from "@/lib/utils";
 import { disconnectAction } from "@/modules/devices/actions";
 import type { ProviderId } from "@/modules/devices/providers";
 import { lastErrorKey } from "./device-words";
+import { GarminAiConsent } from "./garmin-ai-consent";
+import { GarminAutoSend } from "./garmin-auto-send";
+import { GarminConnectDialog } from "./garmin-connect-dialog";
 
 export type DeviceLink = {
   provider: ProviderId;
   configured: boolean;
   canPush: boolean;
+  /** Garmin: whether the rider shares activities with Kadence; null where nobody knows. */
+  sharesActivities: boolean | null;
+  /** Garmin: whether the rider lets Kadence put workouts there; null where nobody knows. */
+  workoutImport: boolean | null;
+  /** Garmin: whether Kadence sends the rider's sessions there by itself (docs/adr/0114). */
+  autoSend: boolean | null;
   status: "connected" | "error" | "revoked" | null;
   lastSyncAt: string | null;
   lastError: string;
@@ -24,9 +33,21 @@ export type DeviceLink = {
  * installation (and FIT upload instead), not connected, connected with the
  * last sync and any trouble in words, or broken and waiting for a new
  * connection. Connecting is a plain link to the OAuth route — the browser
- * leaves Kadence for the provider and comes back.
+ * leaves Kadence for the provider and comes back. A Garmin link whose
+ * rider does not share activities with Kadence says so, and what to do
+ * (docs/adr/0113). A connected Garmin card holds the rider's switch for
+ * sending their sessions there by itself, and says when Garmin has not
+ * been allowed to take workouts (docs/adr/0114). Garmin's card also
+ * holds the rider's yes to the AI reading their rides from Garmin, once
+ * there is a link or a ride from Garmin for it to be about (ADR 0112).
  */
-export function DeviceCard({ link }: { link: DeviceLink }) {
+export function DeviceCard({
+  link,
+  garminAi,
+}: {
+  link: DeviceLink;
+  garminAi?: { given: boolean };
+}) {
   const t = useTranslations("devices");
   const locale = useLocale();
   const { run } = useRun();
@@ -41,18 +62,22 @@ export function DeviceCard({ link }: { link: DeviceLink }) {
         timeZone: "Europe/Copenhagen",
       }).format(new Date(link.lastSyncAt))
     : null;
-  const connect = (
-    <a
-      href={`/api/devices/${link.provider}/connect`}
-      className={cn(
-        buttonVariants({ variant: link.status ? "outline" : "default" }),
-        "max-sm:h-11",
-      )}
-    >
-      {link.status ? <RefreshCw data-icon="inline-start" /> : <Plug data-icon="inline-start" />}
-      {link.status ? t("reconnect", { name }) : t("connect", { name })}
-    </a>
-  );
+  // Garmin asks for the rider's yes first (src/modules/consent/garmin.ts).
+  const connect =
+    link.provider === "garmin" ? (
+      <GarminConnectDialog again={link.status !== null} />
+    ) : (
+      <a
+        href={`/api/devices/${link.provider}/connect`}
+        className={cn(
+          buttonVariants({ variant: link.status ? "outline" : "default" }),
+          "max-sm:h-11",
+        )}
+      >
+        {link.status ? <RefreshCw data-icon="inline-start" /> : <Plug data-icon="inline-start" />}
+        {link.status ? t("reconnect", { name }) : t("connect", { name })}
+      </a>
+    );
 
   return (
     <article className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-surface sm:p-5">
@@ -75,10 +100,18 @@ export function DeviceCard({ link }: { link: DeviceLink }) {
           {link.status === "connected" && (
             <p className="text-2sm">{synced ? t("lastSync", { when: synced }) : t("noSyncYet")}</p>
           )}
+          {link.sharesActivities === false && (
+            <p className="bg-warning-tint rounded-md px-3 py-2 text-2sm leading-relaxed">
+              {t("noActivitySharing", { name })}
+            </p>
+          )}
           {error && (
             <p className="bg-warning-tint rounded-md px-3 py-2 text-2sm leading-relaxed">
               {t(`lastError.${error}` as "lastError.unknown", { name })}
             </p>
+          )}
+          {link.status === "connected" && link.autoSend !== null && (
+            <GarminAutoSend on={link.autoSend} allowed={link.workoutImport} />
           )}
           {link.status === "connected" && link.canPush && (
             <p className="text-meta text-xs leading-relaxed">{t("canPush", { name })}</p>
@@ -104,6 +137,7 @@ export function DeviceCard({ link }: { link: DeviceLink }) {
           </div>
         </>
       )}
+      {link.provider === "garmin" && garminAi && <GarminAiConsent given={garminAi.given} />}
     </article>
   );
 }

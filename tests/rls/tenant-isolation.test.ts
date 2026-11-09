@@ -389,6 +389,12 @@ describe("rls coverage (guards future tables)", () => {
     // when it is one, else null, read from installation state the
     // application role cannot read itself.
     "app_demo_room",
+    // Which of the given riders have their own standing yes to the AI
+    // reading their rides from Garmin (drizzle/0060, docs/adr/0112), for
+    // the AI's gate: the riders' ids alone, only for riders of the active
+    // workspace the caller may read — no row, no date, nobody else's yes.
+    // tests/ai/garmin-gate.test.ts proves it.
+    "app_garmin_ai_riders",
     // Whether the active workspace's consent to health data is withdrawn,
     // for the wellbeing services (drizzle/0050, docs/adr/0088): true or
     // false about the caller's own active workspace, for a member of it,
@@ -453,6 +459,17 @@ describe("rls coverage (guards future tables)", () => {
     // and the link hold. Everything after it runs as the rider, under the
     // ordinary policies.
     "device_link_owner",
+    // Which connected Garmin links the daily job renews (drizzle/0061,
+    // docs/adr/0113): three ids and two booleans per link, for the links
+    // device_link_owner would also name, and refused from inside a
+    // workspace. Everything after it runs as the rider.
+    "device_links_to_renew",
+    // Which connected Garmin links the quarter-hourly job keeps sessions on
+    // (drizzle/0062, docs/adr/0114): three ids and one boolean per link,
+    // for the links device_link_owner would also name, and refused from
+    // inside a workspace. Everything after it runs as the rider;
+    // tests/devices/garmin-calendar-job.test.ts proves the refusal.
+    "device_links_to_sync",
     // A rider's right to erasure (drizzle/0006): deletes one rider of the
     // active team and purges the audit rows about that rider, which the
     // append-only guard would otherwise keep forever. Checks itself that
@@ -495,6 +512,11 @@ describe("rls coverage (guards future tables)", () => {
     // row, and tests/rls/history-move.test.ts proves each refusal and that
     // it is all or nothing.
     "move_rider_history",
+    // The caller's own links to a provider in every workspace, for the
+    // deletion of their account (drizzle/0061, docs/adr/0113): two ids per
+    // link, only on rider rows whose account is app.user_id, nothing
+    // without one. The rest runs as that rider, under the ordinary policies.
+    "own_device_links",
     // Removes the deleted sessions past their seven days, for the reminder
     // job that runs with nobody signed in (drizzle/0037, docs/adr/0060).
     // It takes no arguments, removes only rows older than seven days, and

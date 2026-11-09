@@ -48,6 +48,11 @@ export class DeviceHttpError extends Error {
     return this.code === "status" && this.status === 401;
   }
 
+  /** The provider will never hand this over again (410): Garmin's file, already downloaded or too old. */
+  get gone(): boolean {
+    return this.code === "status" && this.status === 410;
+  }
+
   /**
    * The provider turned the request down on its merits — a 4xx other than
    * too many requests — rather than being unavailable.
@@ -113,13 +118,17 @@ export function formBody(
   return body;
 }
 
-async function send(url: URL | string, init: RequestInit): Promise<Response> {
+async function send(
+  url: URL | string,
+  init: RequestInit,
+  timeoutMs = PROVIDER_TIMEOUT_MS,
+): Promise<Response> {
   try {
     return await fetch(url, {
       ...init,
       redirect: "manual",
       cache: "no-store",
-      signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
+      signal: AbortSignal.timeout(timeoutMs),
     });
   } catch (error) {
     const name = error instanceof Error ? error.name : "";
@@ -178,12 +187,13 @@ export async function readLimited(
   return out;
 }
 
-/** A call to a provider's API that answers with JSON of the given shape. */
-export async function requestJson<S extends z.ZodType>(
+/** The answer's JSON, parsed with `schema`; null for an empty body when `orEmpty`. */
+async function answerJson<S extends z.ZodType>(
   url: string,
   init: RequestInit,
   schema: S,
-): Promise<z.infer<S>> {
+  orEmpty: boolean,
+): Promise<z.infer<S> | null> {
   const response = await send(url, init);
   if (!response.ok) {
     await discard(response);
@@ -194,9 +204,11 @@ export async function requestJson<S extends z.ZodType>(
     MAX_JSON_BYTES,
     response.headers.get("content-length"),
   );
+  const text = new TextDecoder().decode(bytes);
+  if (orEmpty && text.trim() === "") return null;
   let data: unknown;
   try {
-    data = JSON.parse(new TextDecoder().decode(bytes));
+    data = JSON.parse(text);
   } catch {
     throw new DeviceHttpError("invalid_response");
   }
@@ -205,9 +217,34 @@ export async function requestJson<S extends z.ZodType>(
   return parsed.data;
 }
 
+/** A call to a provider's API that answers with JSON of the given shape. */
+export async function requestJson<S extends z.ZodType>(
+  url: string,
+  init: RequestInit,
+  schema: S,
+): Promise<z.infer<S>> {
+  return (await answerJson(url, init, schema, false)) as z.infer<S>;
+}
+
+/**
+ * A call that may answer with JSON of the given shape or with nothing at
+ * all (a 204, or a 200 without a body): null for nothing.
+ */
+export async function requestMaybeJson<S extends z.ZodType>(
+  url: string,
+  init: RequestInit,
+  schema: S,
+): Promise<z.infer<S> | null> {
+  return answerJson(url, init, schema, true);
+}
+
 /** A call whose answer only has to be a success: a deletion, a schedule. */
-export async function requestOk(url: string, init: RequestInit): Promise<void> {
-  const response = await send(url, init);
+export async function requestOk(
+  url: string,
+  init: RequestInit,
+  timeoutMs = PROVIDER_TIMEOUT_MS,
+): Promise<void> {
+  const response = await send(url, init, timeoutMs);
   await discard(response);
   if (!response.ok) throw new DeviceHttpError("status", response.status);
 }

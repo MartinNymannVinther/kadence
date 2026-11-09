@@ -26,6 +26,9 @@ export type RecentRide = {
   note: string;
   load: number | null;
   source: string;
+  deviceName: string | null;
+  /** Whether a planned session claims the ride. */
+  planned: boolean;
 };
 
 export async function recentRides(
@@ -49,6 +52,8 @@ export async function recentRides(
         note: activities.note,
         load: activities.load,
         source: activities.source,
+        deviceName: activities.deviceName,
+        sessionId: plannedSessions.id,
       })
       .from(activities)
       .leftJoin(plannedSessions, eq(plannedSessions.activityId, activities.id))
@@ -62,8 +67,9 @@ export async function recentRides(
       .orderBy(desc(activities.startedAt))
       .limit(20);
     const names = await nameRides(tx, rows);
-    return rows.map(({ sessionTitle: _session, title: _title, ...r }) => ({
+    return rows.map(({ sessionTitle: _session, title: _title, sessionId, ...r }) => ({
       ...r,
+      planned: sessionId !== null,
       name: names.get(r.id)!,
     }));
   });

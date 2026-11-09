@@ -11,13 +11,19 @@ import { AiFailureText } from "./ai-failure";
 import { Thinking } from "./thinking";
 import { ProposalFrame } from "./proposal-frame";
 
-type Brief = { riders: Array<{ riderId: string; name: string }>; summary: string | null };
+type Brief = {
+  riders: Array<{ riderId: string; name: string }>;
+  summary: string | null;
+  leftOut: string[];
+};
 
 /**
  * "Skriv et resumé" on the coach's Monday: a few sentences from the model
  * on who to talk to first, on top of the attention list the guardrails
  * already made (ADR 0017). Only where the team lets the AI read riders'
  * data; it never writes to a rider, and the coach decides what to do.
+ * Riders whose rides from Garmin the AI may not read are named under it
+ * (ADR 0112).
  */
 export function CoachBrief({ allowed }: { allowed: boolean }) {
   const t = useTranslations("assist.brief");
@@ -78,7 +84,8 @@ export function CoachBrief({ allowed }: { allowed: boolean }) {
       {answer &&
         !answer.brief.summary &&
         answer.engine === "none" &&
-        answer.brief.riders.length > 0 && <AiFailureText error="noModel" />}
+        answer.brief.riders.length > 0 &&
+        answer.brief.leftOut.length === 0 && <AiFailureText error="noModel" />}
       {answer &&
         (answer.brief.summary ? (
           <ProposalFrame title={t("title")} engine={answer.engine} onClose={() => setAnswer(null)}>
@@ -91,6 +98,16 @@ export function CoachBrief({ allowed }: { allowed: boolean }) {
             {answer.brief.riders.length === 0 ? t("nothing") : t("noSummary")}
           </p>
         ))}
+      {answer && answer.brief.leftOut.length > 0 && (
+        <p className="text-meta text-2sm leading-relaxed">
+          {t("leftOut", {
+            names: new Intl.ListFormat(locale === "en" ? "en-GB" : "da-DK", {
+              type: "conjunction",
+            }).format(answer.brief.leftOut),
+            count: answer.brief.leftOut.length,
+          })}
+        </p>
+      )}
     </div>
   );
 }

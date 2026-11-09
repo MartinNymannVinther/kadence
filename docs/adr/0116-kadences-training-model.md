@@ -1,4 +1,4 @@
-# ADR 0110: Kadence's own training model, written down and kept alive
+# ADR 0116: Kadence's own training model, written down and kept alive
 
 Status: proposed · Date: 2026-11-09 · Builds on 0014 (DCU as the frame), 0049 (a paradigm is a shape), 0053 (low intensity first), 0091 (Motionist and Supermotionist), 0095 (why a session went off plan), 0109 (the AI tells the story of the form)
 

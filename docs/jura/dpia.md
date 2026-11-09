@@ -95,7 +95,7 @@ afgøre noget.
 ### 2.4 Aktiver
 
 Webapplikationen (Next.js), Postgres 16 med row level security, Better
-Auth 1.7.1, Docker Compose på en VPS hos Hetzner, Coolify som
+Auth 1.7.14, Docker Compose på en VPS hos Hetzner, Coolify som
 drifts-panel, backup-scriptet med `age` og `rclone`.
 
 ## 3. Nødvendighed og proportionalitet

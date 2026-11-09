@@ -2,7 +2,9 @@ import { and, eq, sql } from "drizzle-orm";
 import { auth } from "@/core/auth/auth";
 import { memberships, organizations, users } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
+import { sqlStateOf } from "@/core/db/sql-state";
 import { errorName, log } from "@/core/log";
+import { deregisterGarminIn } from "@/modules/devices/exit";
 import { memberAddress, memberAddresses } from "@/modules/team/addresses";
 
 /**
@@ -10,6 +12,9 @@ import { memberAddress, memberAddresses } from "@/modules/team/addresses";
  * through `delete_workspace()` in the database, which checks that the
  * caller owns the workspace, removes everything it holds including the
  * audit rows about it, and leaves one context-free row saying it happened.
+ * Garmin is told first to forget the workspace's riders (docs/adr/0113),
+ * as it must be whenever a rider leaves; the deletion never waits long on
+ * Garmin and never fails for it.
  */
 
 export type Member = { userId: string; name: string; email: string; role: string; joinedAt: Date };
@@ -75,27 +80,12 @@ export async function workspaceName(ctx: OrgContext): Promise<string | null> {
   });
 }
 
+export { sqlStateOf };
+
 export type DeleteResult = "deleted" | "notOwner" | "nameMismatch" | "failed";
 
 /** Postgres' `insufficient_privilege`, which is how a refusal says so. */
 const INSUFFICIENT_PRIVILEGE = "42501";
-
-/**
- * The SQLSTATE behind a failed query, or undefined when there is none.
- *
- * Drizzle wraps what the driver threw, so the database's own error is the
- * cause; `pg` puts the code on the error itself. Both are looked at, and
- * the chain is walked rather than assumed to be one deep.
- */
-export function sqlStateOf(error: unknown): string | undefined {
-  let current: unknown = error;
-  for (let depth = 0; current && depth < 5; depth += 1) {
-    const code = (current as { code?: unknown }).code;
-    if (typeof code === "string" && /^[0-9A-Z]{5}$/.test(code)) return code;
-    current = (current as { cause?: unknown }).cause;
-  }
-  return undefined;
-}
 
 /**
  * Deletes the active workspace. The person types the workspace's name to
@@ -113,6 +103,7 @@ export async function deleteWorkspace(
   });
   if (!organization) return "failed";
   if (organization.name.trim() !== typedName.trim()) return "nameMismatch";
+  if ((await currentRole(ctx)) === "owner") await deregisterGarminIn(ctx);
   try {
     await withOrgContext(ctx, async (tx) => {
       await tx.execute(sql`select delete_workspace(${ctx.orgId})`);

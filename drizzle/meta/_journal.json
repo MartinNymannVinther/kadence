@@ -407,6 +407,41 @@
       "when": 1791751000000,
       "tag": "0057_known_pains",
       "breakpoints": true
+    },
+    {
+      "idx": 58,
+      "version": "7",
+      "when": 1793462098088,
+      "tag": "0058_garmin_attribution_and_consent",
+      "breakpoints": true
+    },
+    {
+      "idx": 59,
+      "version": "7",
+      "when": 1793466425725,
+      "tag": "0059_better_auth_account_identity",
+      "breakpoints": true
+    },
+    {
+      "idx": 60,
+      "version": "7",
+      "when": 1793467996655,
+      "tag": "0060_garmin_ai_consent",
+      "breakpoints": true
+    },
+    {
+      "idx": 61,
+      "version": "7",
+      "when": 1793475616803,
+      "tag": "0061_garmin_push",
+      "breakpoints": true
+    },
+    {
+      "idx": 62,
+      "version": "7",
+      "when": 1793549086179,
+      "tag": "0062_garmin_workouts",
+      "breakpoints": true
     }
   ]
 }
