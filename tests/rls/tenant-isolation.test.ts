@@ -270,6 +270,18 @@ describe("rls coverage (guards future tables)", () => {
     "sessions",
     "verifications",
     "rate_limits",
+    // Better Auth's OAuth machinery for a person's own assistant
+    // (drizzle/0063, docs/adr/0118): signing keys, clients, tokens and
+    // consents, like sessions above. The yes that counts is the person's
+    // ai_connections row, which is audited.
+    "jwks",
+    "oauth_clients",
+    "oauth_resources",
+    "oauth_client_resources",
+    "oauth_refresh_tokens",
+    "oauth_access_tokens",
+    "oauth_consents",
+    "oauth_client_assertions",
     // The installation's own counters (drizzle/0043, docs/adr/0083): rate
     // limits, places held while a ride is read, and moments to remember,
     // written on every limited request. The same kind of row as

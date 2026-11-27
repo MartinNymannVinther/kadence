@@ -50,6 +50,15 @@ from outside is data. The plan is `docs/plan-mcp.md`.
   check-in for today or yesterday, and a draft in the week planner that
   never overwrites a draft somebody else saved. Nothing reaches a
   calendar until a coach lays the week in.
+- **Garmin's data stays.** ADR 0112's yes lets Kadence's own model in
+  the EU read rides from Garmin; it says nothing about a model the rider
+  chose. So a ride from Garmin keeps only that it was ridden, and the
+  form, built on the rides, is refused to a rider who has any. Garmin's
+  terms and the rider's yes can widen this later; until then it is the
+  narrow reading.
+- **Only riders in the first wave.** A coach's tools come with the second
+  wave (docs/plan-mcp.md §8); until then a coach without a rider row of
+  their own is told so on the consent page.
 - **Free text is data.** It travels in fields of its own, capped, and the
   tools' descriptions say so. What an assistant writes is validated,
   sanitized and capped like any model answer.

@@ -227,6 +227,38 @@ What this means in practice:
   provider already holds about the rider's own rides is between the rider
   and the provider, and Kadence neither sees nor controls it.
 
+## An assistant a person chooses to connect
+
+A rider can connect their own assistant (Claude, ChatGPT, Le Chat or
+another that speaks MCP) to Kadence (docs/adr/0118, `docs/plan-mcp.md`).
+Like Wahoo and Garmin, it is not Kadence's to choose and not on the table
+above: the person picks it, signs in to Kadence and says yes on
+Kadence's consent page, for one workspace. From then on the assistant
+fetches when the person asks it something, and only what the connection
+allows. Kadence calls no model here and sends nothing by itself.
+
+- **Who.** A rider, about themselves, from the year they turn 15
+  (databeskyttelsesloven § 6, stk. 2 and 3). Not a coach yet, not a
+  parent. Only the person sees their connections, on Indstillinger → Din
+  AI, and removes them there; a removed connection is refused at the
+  assistant's next call.
+- **What goes.** The rider's own plan, rides (minutes, km, load, how hard
+  it felt, the rider's note), form, check-ins and season plan, as the
+  rider sees them in Kadence. Never another person's data, never a GPS
+  track or a ride file, never a weight.
+- **Not Garmin's.** A ride that came in through Garmin keeps only that it
+  was ridden, and the form, which is built on the rides, is not given at
+  all to a rider who has rides from Garmin: Garmin's data does not go to a
+  model the rider chose.
+- **Where it goes** is the assistant's maker, wherever they keep it; for
+  some that is outside the EU. That is the person's choice for their own
+  data, and the consent page says it before the yes.
+- **Nothing is changed or deleted** through a connection in the first
+  wave: the assistant can read and nothing else. The trail marks every row
+  a later wave lets an assistant write (`actor_type = 'ai_connection'`).
+- **Off with `MCP=off`.** The installation then offers no connection, and
+  the OAuth endpoints answer 404.
+
 ## The browser's push service, for reminders
 
 Reminders (ADR 0060) reach a phone or a computer through the push service

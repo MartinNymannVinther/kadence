@@ -37,6 +37,7 @@ describe("the installation's features", () => {
       energyCalculator: true,
       foodGuide: false,
       teamsGuide: true,
+      aiConnections: true,
     });
   });
 
@@ -63,6 +64,7 @@ describe("a parked path", () => {
     energyCalculator: false,
     foodGuide: false,
     teamsGuide: false,
+    aiConnections: false,
   };
 
   it("is each parked part's page and everything under it, while the part is off", () => {
@@ -101,7 +103,14 @@ describe("a parked path", () => {
   it("names a path for every part that has one, and none for Rulle's world", () => {
     const named = new Set(PARKED_PATHS.map((p) => p.feature));
     expect([...named].sort()).toEqual(
-      ["clubChampionship", "coachesRoom", "energyCalculator", "foodGuide", "teamsGuide"].sort(),
+      [
+        "aiConnections",
+        "clubChampionship",
+        "coachesRoom",
+        "energyCalculator",
+        "foodGuide",
+        "teamsGuide",
+      ].sort(),
     );
     expect(named.has("rulleWorld")).toBe(false);
   });
@@ -141,6 +150,7 @@ describe("docker-compose.yml", () => {
     "CALC_ENERGY",
     "GUIDE_FOOD",
     "GUIDE_TEAMS",
+    "MCP",
     "TEAMS_DCU",
     "PUSH_PUBLIC_KEY",
     "PUSH_PRIVATE_KEY",

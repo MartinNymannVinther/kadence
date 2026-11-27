@@ -3,7 +3,7 @@
  * amended by 0068). Pure, for the tests.
  *
  * - "Dig": the person's own — themselves, a rider's Wahoo, Garmin and
- *   Polar (ADR 0018), their security, and for anyone who is not a coach
+ *   Polar (ADR 0018), a rider's own assistant over MCP (ADR 0118), their security, and for anyone who is not a coach
  *   "Data", the one-click way out (dogma three);
  * - "Holdet", for coaches: everything a team is run with — the team, the
  *   workspace, its AI, and the team's data;
@@ -37,6 +37,7 @@ export type SettingsKey =
   | "access"
   | "installation"
   | "ai"
+  | "aiConnections"
   | "data"
   | "subscription"
   | "billing"
@@ -62,10 +63,13 @@ type Who = {
   personal?: boolean;
   /** The installation prices its workspaces (BILLING=on, ADR 0090). */
   billing?: boolean;
+  /** The installation lets a person connect their own assistant (MCP, docs/adr/0118). */
+  mcp?: boolean;
 };
 
 /** Where a tab lives; Betaling and Priser sit under Installation's own address. */
 function hrefOf(item: SettingsKey): string {
+  if (item === "aiConnections") return "/settings/ai-connections";
   return item === "billing" || item === "prices"
     ? `/settings/installation/${item}`
     : `/settings/${item}`;
@@ -77,11 +81,23 @@ export function settingsGroups({
   isRider,
   personal,
   billing,
+  mcp,
 }: Who): SettingsGroup[] {
   const pays = Boolean(billing) && isCoach && "subscription";
+  // A rider's own assistant (docs/adr/0118), beside the rider's devices.
+  const ownAi = Boolean(mcp) && isRider && "aiConnections";
   const yours: Array<SettingsKey | false> = personal
-    ? ["me", isRider && "devices", "security", isCoach && "team", isCoach && "ai", pays, "data"]
-    : ["me", isRider && "devices", "security", !isCoach && "data"];
+    ? [
+        "me",
+        isRider && "devices",
+        ownAi,
+        "security",
+        isCoach && "team",
+        isCoach && "ai",
+        pays,
+        "data",
+      ]
+    : ["me", isRider && "devices", ownAi, "security", !isCoach && "data"];
   const groups: Array<[SettingsGroupKey | null, Array<SettingsKey | false>]> = [
     ["you", yours],
     [

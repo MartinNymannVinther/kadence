@@ -421,3 +421,33 @@ Tests i hver bølge:
    og `@better-auth/cimd`, på 1.7.14.
 7. **Vejledningen nævner Claude og Le Chat først** og siger ligeud, hvad
    ChatGPT kan og ikke kan.
+
+## 11. Bølge 1, bygget 27. november 2026
+
+På branchen `feat/mcp`:
+
+- `/api/mcp` taler MCP 2026-07-28 og den tidligere version
+  (`src/modules/mcp/protocol.ts`), med de syv værktøjer fra 4.1 til
+  læsning.
+- Login går gennem `@better-auth/mcp` og `@better-auth/cimd` på 1.7.14.
+  Dynamisk registrering er slået til for Le Chat. Discovery ligger ved
+  roden (`/.well-known/oauth-*`).
+- `/connect` sender en person gennem Kadences eget login, også med
+  to-trinsbekræftelse, og videre til samtykkesiden. Samtykkesiden lader
+  personen vælge arbejdsrum.
+- Migreringen er `drizzle/0063`. Den indeholder Better Auths
+  OAuth-tabeller på auth-rollen, `ai_connections` med RLS, så kun personen
+  selv ser sine forbindelser, og audit-mærket `ai_connection`.
+- Siden "Din AI" ligger under Indstillinger og viser kun rytterens egne
+  forbindelser. Når en forbindelse fjernes, får dens tokens 401 ved næste
+  kald.
+- Tre beslutninger er truffet undervejs og står i ADR 0118:
+  - Ture fra Garmin kommer ikke med.
+  - Formen afvises for en rytter med ture fra Garmin.
+  - Kun ryttere kan forbinde i bølge 1.
+
+Prøvet af mod en dev-server med en klient, der registrerede sig selv:
+login, samtykke, token, alle værktøjer i begge protokolversioner,
+afvisning af en forælder og af en rytter under 15, fjernelse og 401.
+Ikke prøvet endnu: Claude, Le Chat og ChatGPT mod en rigtig
+installation, fordi de kræver https.

@@ -63,8 +63,13 @@ export function columnNames(columns: string): string[] {
  * - `price_plans`: the installation's prices (ADR 0090), not a workspace's.
  * - `workspace_llm_settings`: the model choice, which holds an encrypted
  *   key; a workspace that leaves gets its data, not its secrets.
+ * - `ai_connections`: a person's own assistants (docs/adr/0118), which the
+ *   policy shows to nobody else, the coach exporting included, and nothing
+ *   about training. That one was made, used and removed is in the audit
+ *   trail.
  * - Everything Better Auth owns (users, sessions, accounts, passkeys, two
- *   factors, rate limits). Sessions and passkeys are credentials, and the
+ *   factors, rate limits, and the OAuth clients, tokens, consents and
+ *   signing keys an assistant signs in with). Sessions and passkeys are credentials, and the
  *   people are exported as members below rather than as auth rows.
  * - `access_requests` and `access_invitations`: they belong to the
  *   installation, not to any workspace, and describe people who are not
