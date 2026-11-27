@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { Pool } from "pg";
 import { applyBlock, previewBlock } from "@/modules/training/block-apply";
 import { blockItemInput } from "@/modules/training/block-items";
@@ -7,6 +7,13 @@ import { listSessions } from "@/modules/training/sessions";
 import { createTemplate } from "@/modules/training/templates";
 import { adminPool } from "../helpers/db";
 import { insertSql, seedPerson } from "../helpers/rows";
+
+// A block is laid from a Monday no more than a week back (block-apply.ts),
+// so the days below are read as of the week they are in.
+vi.mock("@/core/dates", async (importOriginal) => {
+  const real = await importOriginal<typeof import("@/core/dates")>();
+  return { ...real, todayInCopenhagen: () => "2026-11-04" };
+});
 
 /**
  * A block: kept by a coach, read by a rider, previewed against the
