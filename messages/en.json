@@ -2173,6 +2173,7 @@
       "uploadBody": "A ride from the rider's FIT file, if the rider has not uploaded it themselves.",
       "profile": "Profile and thresholds",
       "records": "Records",
+      "changes": "Changes to the plan",
       "goals": "Process goals"
     },
     "erase": {
@@ -2759,6 +2760,7 @@
       "sleep_below_minimum": "{nights, plural, one {Sleep has averaged {average} h over the last night. 14–17-year-olds need at least {minimum} h.} other {Sleep has averaged {average} h over the last # nights. 14–17-year-olds need at least {minimum} h.}}",
       "compliance": "{red} of {judged} sessions this week went differently from the plan. Perhaps the plan can be fitted to the week.",
       "mid_zone": "The middle zone holds {mid} % of the {sessions} sessions and race days over the last four weeks. \"Low intensity first\" puts at most {limit} % there from November to February.",
+      "changed_for_pain": "{count} sessions were moved or skipped for pain or injury this week. It may be worth a talk before the next week is planned.",
       "known_pain_lasting": "A known pain ({place}) in the check-ins three weeks running. ATK recommends that pain which lasts in young people is seen by an adult, ideally a physiotherapist. It may be worth a talk.",
       "signs": "Signs: {signs}"
     },
@@ -2789,6 +2791,7 @@
       "pain": "Pain",
       "sleep_short": "Short sleep",
       "sleep_below_minimum": "Too little sleep",
+      "changed_for_pain": "Pain or injury several times",
       "known_pain_lasting": "Known pain for three weeks"
     },
     "resolve": {
@@ -6529,6 +6532,22 @@
       "time": "Time",
       "travel": "Travel",
       "other": "Other"
+    },
+    "patterns": {
+      "title": "Changes to the plan",
+      "hint": "Sessions moved or skipped in the last eight weeks, and the patterns Kadence sees in them.",
+      "empty": "No sessions were moved or skipped in the last eight weeks.",
+      "counts": "{moved} moved · {skipped} skipped",
+      "weekday": "Often on {day}s: {count} of {total} changes hit a session on that day. Another day may suit better.",
+      "weekdayWhy": "Often on {day}s: {count} of {total} changes hit a session on that day, most often for \"{reason}\". Another day may suit better.",
+      "reason": "The reason was most often \"{reason}\": {count} of {total} changes.",
+      "long": "Long sessions: {count} of {total} changes hit a session of two hours or more. They might be split or put where there is more time.",
+      "strength": "Strength: {count} of {total} changes hit a strength session. Another day or a shorter version may be easier to reach.",
+      "moved": "moved to {day}",
+      "skipped": "skipped",
+      "unskipped": "planned again",
+      "byCoach": "by the coach",
+      "plannerHint": "Patterns in the riders' changes"
     },
     "skip": {
       "title": "Skip the session",

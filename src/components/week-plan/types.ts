@@ -1,3 +1,4 @@
+import type { ChangePattern } from "@/modules/training/change-patterns";
 import type { TemplateOption } from "@/components/calendar/template-picker";
 import type { DraftValue } from "@/components/workouts/session-draft";
 import type { PlanBasis } from "@/modules/paradigms";
@@ -23,7 +24,13 @@ export type PlanItem = {
   | { kind: "built"; session: DraftValue }
 );
 
-export type PlanRider = { id: string; name: string; basis: PlanBasis | null };
+export type PlanRider = {
+  id: string;
+  name: string;
+  basis: PlanBasis | null;
+  /** The patterns in the rider's moved and skipped sessions (docs/adr/0118). */
+  patterns?: ChangePattern[];
+};
 
 /** A block of the library as the planner starts from it: its items on the block's days. */
 export type PlanBlock = { id: string; name: string; weeks: number; items: PlanItemInputT[] };

@@ -17,6 +17,7 @@ import {
   countedPain,
   forecastForm,
   guardrails,
+  painChangesFlag,
   loadSeries,
   splitResolved,
   weeklyTotals,
@@ -35,7 +36,7 @@ import {
 } from "@/modules/load";
 import { riderClass } from "@/modules/season/class";
 import { withReference } from "./flag-reference";
-import type { InsightActivity, InsightRace, InsightSession } from "./gather";
+import type { InsightActivity, InsightPainChange, InsightRace, InsightSession } from "./gather";
 
 /**
  * One rider's week and season at a glance, from rows already read: the
@@ -79,6 +80,7 @@ export type RiderInsight = {
 };
 
 const hours = (seconds: number) => seconds / 3600;
+const RANK = { alert: 0, warn: 1, info: 2 } as const;
 
 export function riderInsight(
   rider: RiderRow,
@@ -102,6 +104,8 @@ export function riderInsight(
    * (docs/adr/0097).
    */
   club = true,
+  /** Sessions moved or skipped for pain or injury (docs/adr/0118). */
+  painChanges: readonly InsightPainChange[] = [],
 ): RiderInsight {
   const monday = mondayOf(todayIso);
   const sunday = addDaysIso(monday, 6);
@@ -180,7 +184,7 @@ export function riderInsight(
   const profile = intensity ? profileFor(Number(todayIso.slice(5, 7))) : null;
   const windowFrom = addDaysIso(monday, -7 * (MID_ZONE_WEEKS - 1));
 
-  const flags = guardrails({
+  const fromGuardrails = guardrails({
     bikeHours:
       (thisWeek?.bikeHours ?? 0) + plannedBike.reduce((s, p) => s + p.plannedMinutes / 60, 0),
     corridor,
@@ -217,6 +221,11 @@ export function riderInsight(
           }
         : null,
   });
+  // Changes for pain twice in a week (ADR 0118), beside the guardrails' own, still most serious first.
+  const painFlag = painChangesFlag(painChanges, todayIso);
+  const flags = painFlag
+    ? [...fromGuardrails, painFlag].sort((a, b) => RANK[a.severity] - RANK[b.severity])
+    : fromGuardrails;
   const { open, resolved } = splitResolved(
     withReference(flags, referenceOf(klass.basis)),
     resolutions,

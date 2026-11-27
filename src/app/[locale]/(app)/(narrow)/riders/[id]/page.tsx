@@ -3,7 +3,6 @@ import { CalendarDays, CalendarRange, ChevronLeft } from "lucide-react";
 import { notFound } from "next/navigation";
 import { after } from "next/server";
 import { getLocale, getTranslations } from "next-intl/server";
-import { FitUpload } from "@/components/activities/fit-upload";
 import { UploadKeysCard } from "@/components/devices/upload-keys-card";
 import { GoalsCard, type GoalView } from "@/components/activities/goals-card";
 import { RecordsCard } from "@/components/activities/records-card";
@@ -25,7 +24,9 @@ import { guardianState } from "@/components/team/guardian-state";
 import { RiderAccount } from "@/components/team/rider-account";
 import { RiderInsightCard } from "@/components/team/rider-insight-card";
 import { RiderProfileForm } from "@/components/team/rider-profile-form";
+import { RiderChangesSection } from "@/components/team/rider-changes-section";
 import { RiderSectionNav } from "@/components/team/rider-section-nav";
+import { RiderUploadSection } from "@/components/team/rider-upload-section";
 import { RiderThresholds } from "@/components/team/rider-thresholds";
 import { RiderBodyCards } from "@/components/wellbeing/rider-body-cards";
 import { zoneDays } from "@/components/wellbeing/zone-days";
@@ -184,6 +185,7 @@ export default async function RiderPage({ params, searchParams }: Props) {
             />
           </section>
         )}
+        <RiderChangesSection ctx={ctx} riderId={rider.id} today={today} />
         <section aria-labelledby="rider-goals" className="flex flex-col gap-3">
           <h2 id="rider-goals" className="text-lg font-semibold">
             {t("sections.goals")}
@@ -203,15 +205,7 @@ export default async function RiderPage({ params, searchParams }: Props) {
           <RecordsCard byPeriod={riderRecords.byPeriod} names={riderRecords.names} />
         </section>
         <RiderBodyCards ctx={ctx} rider={rider} today={today} />
-        <section aria-labelledby="rider-upload" className="flex flex-col gap-3">
-          <div className="flex flex-col gap-1">
-            <h2 id="rider-upload" className="text-lg font-semibold">
-              {t("sections.upload")}
-            </h2>
-            <p className="text-meta text-2sm">{t("sections.uploadBody")}</p>
-          </div>
-          <FitUpload riderId={rider.id} compact />
-        </section>
+        <RiderUploadSection riderId={rider.id} />
         {uploadKeys.length > 0 && (
           <UploadKeysCard
             own={false}

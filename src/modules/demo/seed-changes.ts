@@ -10,14 +10,17 @@ import { pick, type L } from "./seed-data";
  * days that was not ridden, where it would have stood "Ikke nået", or else
  * the next one ahead — so it stands grey with its reason; and
  * one of Emma's next sessions moved a day for school, with the coach's
- * words beside it. Written through the ordinary services, as the coach.
+ * words beside it; and a third rider whose sessions on one weekday were
+ * skipped for school three weeks running, so "Ændringer i planen" and
+ * "Planlæg ugen" have a pattern to show (ADR 0118). Written through the
+ * ordinary services, as the coach.
  */
 export async function seedChanges(
   ctx: OrgContext,
   l: L,
   { today, riderIds }: { today: string; riderIds: string[] },
 ): Promise<void> {
-  const [emma, other] = riderIds;
+  const [emma, other, third] = riderIds;
   if (!emma || !other) return;
   const open = (
     await listSessions(ctx, {
@@ -44,4 +47,23 @@ export async function seedChanges(
       reason: "school",
       note: pick({ da: "Eksamen om formiddagen.", en: "An exam in the morning." }, l),
     });
+  if (third) await seedPattern(ctx, today, third);
+}
+
+/**
+ * Three sessions on today's weekday, one, two and three weeks back, skipped
+ * for school: copies of one of the rider's sessions, so the pattern is the
+ * same whatever the rest of the demo's weeks hold.
+ */
+async function seedPattern(ctx: OrgContext, today: string, riderId: string): Promise<void> {
+  const [model] = await listSessions(ctx, {
+    from: addDaysIso(today, -7 * 5),
+    to: addDaysIso(today, 7),
+    riderIds: [riderId],
+  });
+  if (!model) return;
+  for (const weeks of [1, 2, 3]) {
+    const copy = await moveSession(ctx, model.id, addDaysIso(today, -7 * weeks), true);
+    await skipSession(ctx, copy.id, { reason: "school" });
+  }
 }

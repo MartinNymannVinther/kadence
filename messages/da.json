@@ -2173,6 +2173,7 @@
       "uploadBody": "En tur fra rytterens FIT-fil, hvis rytteren ikke selv har hentet den.",
       "profile": "Profil og tærskler",
       "records": "Rekorder",
+      "changes": "Ændringer i planen",
       "goals": "Procesmål"
     },
     "erase": {
@@ -2759,6 +2760,7 @@
       "sleep_below_minimum": "Søvnen har i snit været {average} timer de seneste {nights, plural, one {# nat} other {# nætter}}. 14–17-årige har brug for mindst {minimum} timer.",
       "compliance": "{red} af {judged} træningspas i denne uge gik anderledes end planlagt. Måske kan planen tilpasses ugen.",
       "mid_zone": "Mellemzonen fylder {mid} % af de {sessions} træningspas og løbsdage de sidste fire uger. \"Lav intensitet først\" lægger højst {limit} % der fra november til februar.",
+      "changed_for_pain": "{count} træningspas er flyttet eller sprunget over pga. ondt eller skade denne uge. Måske er det en snak værd, før næste uge lægges.",
       "known_pain_lasting": "Kendt smerte ({place}) i check-ins tre uger i træk. ATK anbefaler, at smerter, der bliver ved hos unge, bliver set af en voksen, gerne en fysioterapeut. Måske er det en snak værd.",
       "signs": "Tegn: {signs}"
     },
@@ -2789,6 +2791,7 @@
       "pain": "Smerte",
       "sleep_short": "Kort søvn",
       "sleep_below_minimum": "For lidt søvn",
+      "changed_for_pain": "Ondt eller skade flere gange",
       "known_pain_lasting": "Kendt smerte i tre uger"
     },
     "resolve": {
@@ -6529,6 +6532,22 @@
       "time": "Tid",
       "travel": "Rejse",
       "other": "Andet"
+    },
+    "patterns": {
+      "title": "Ændringer i planen",
+      "hint": "Træningspas, der er flyttet eller sprunget over de sidste otte uger, og de mønstre, Kadence ser i dem.",
+      "empty": "Ingen træningspas er flyttet eller sprunget over de sidste otte uger.",
+      "counts": "{moved} flyttet · {skipped} sprunget over",
+      "weekday": "Tit om {day}en: {count} af {total} ændringer ramte et træningspas den dag. Måske passer en anden dag bedre.",
+      "weekdayWhy": "Tit om {day}en: {count} af {total} ændringer ramte et træningspas den dag, oftest med grunden „{reason}“. Måske passer en anden dag bedre.",
+      "reason": "Grunden var oftest „{reason}“: {count} af {total} ændringer.",
+      "long": "Lange træningspas: {count} af {total} ændringer ramte et træningspas på to timer eller mere. Måske kan de deles op eller lægges, hvor der er mere tid.",
+      "strength": "Styrke: {count} af {total} ændringer ramte et styrkepas. Måske er en anden dag eller en kortere udgave lettere at nå.",
+      "moved": "flyttet til {day}",
+      "skipped": "sprunget over",
+      "unskipped": "planlagt igen",
+      "byCoach": "af træneren",
+      "plannerHint": "Mønstre i rytternes ændringer"
     },
     "skip": {
       "title": "Spring træningspasset over",

@@ -6,6 +6,7 @@ import {
   organizations,
   plannedSessions,
   riders,
+  sessionChanges,
   type CheckinRow,
   type RiderRow,
 } from "@/core/db/schema";
@@ -51,12 +52,16 @@ export type InsightRace = {
   priority: "A" | "B";
 };
 
+/** A session moved or skipped for pain or injury (docs/adr/0118). */
+export type InsightPainChange = { riderId: string; fromDate: string; reason: string | null };
+
 export type Gathered = {
   riders: RiderRow[];
   activities: InsightActivity[];
   sessions: InsightSession[];
   checkins: CheckinRow[];
   races: InsightRace[];
+  painChanges: InsightPainChange[];
 };
 
 export async function gather(
@@ -83,7 +88,7 @@ export async function gather(
     .orderBy(asc(riders.name));
   const ids = riderRows.map((r) => r.id);
   if (ids.length === 0)
-    return { riders: [], activities: [], sessions: [], checkins: [], races: [] };
+    return { riders: [], activities: [], sessions: [], checkins: [], races: [], painChanges: [] };
   const sessionsTo = range.aheadTo && range.aheadTo > range.to ? range.aheadTo : range.to;
 
   const acts = await tx
@@ -136,6 +141,22 @@ export async function gather(
       ),
     )
     .orderBy(asc(checkins.onDate));
+  const painChanges = await tx
+    .select({
+      riderId: sessionChanges.riderId,
+      fromDate: sessionChanges.fromDate,
+      reason: sessionChanges.reason,
+    })
+    .from(sessionChanges)
+    .where(
+      and(
+        inArray(sessionChanges.riderId, ids),
+        eq(sessionChanges.reason, "pain"),
+        inArray(sessionChanges.kind, ["moved", "skipped"]),
+        gte(sessionChanges.fromDate, range.from),
+        lte(sessionChanges.fromDate, range.to),
+      ),
+    );
   const races = range.aheadTo
     ? await tx
         .select({
@@ -168,6 +189,7 @@ export async function gather(
     })),
     checkins: checks,
     races: races.map((r) => ({ ...r, priority: r.priority as "A" | "B" })),
+    painChanges,
   };
 }
 
