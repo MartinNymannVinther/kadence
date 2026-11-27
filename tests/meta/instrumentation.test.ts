@@ -17,6 +17,9 @@ const REQUIRED = {
   AUTH_DATABASE_URL: "postgres://auth:auth@localhost:5432/kadence",
   BETTER_AUTH_SECRET: "LongEnoughSecretForTheProductionGuard0123456789",
   NEXT_RUNTIME: "nodejs",
+  // With MCP on, Better Auth looks up its one OAuth resource at boot
+  // (docs/adr/0118) and says so when there is no database, as here.
+  MCP: "off",
 };
 
 async function boot(env: Record<string, string>) {

@@ -27,3 +27,5 @@ export * from "./exercises";
 export * from "./week-plan";
 export * from "./consent";
 export * from "./billing";
+export * from "./oauth";
+export * from "./ai-connections";

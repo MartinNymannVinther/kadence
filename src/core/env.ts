@@ -161,6 +161,10 @@ export const EnvShape = z.object({
   // The open page of Danish U19 and U23 teams (ADR 0072), read from the
   // UCI and from Cykling Danmark once a day into TEAMS_DIR.
   GUIDE_TEAMS: z.enum(["off", "on"]).default("on"),
+  // A person's own assistant talking to Kadence over MCP (docs/adr/0118):
+  // /api/mcp, the OAuth endpoints it signs in through and the page "Din AI".
+  // "off" answers them with 404; the connections already given stay.
+  MCP: z.enum(["off", "on"]).default("on"),
   // Whether that page reads Cykling Danmark's team list and points lists
   // (src/modules/teams/dcu). An external service that has not yet said
   // yes to being read: "off" leaves the page with the UCI's part alone.
