@@ -17,7 +17,8 @@ import { parseWorkoutText } from "@/modules/workouts/parse-text";
  * same inputs; a change here is a change for young riders and needs a
  * reason of its own. The three week drafts changed on purpose with
  * docs/adr/0101: a race week is planned as a coach plans it, for young
- * riders as for adults.
+ * riders as for adults; the week draft again with docs/adr/0118, which
+ * tells the model the patterns in the rider's moved and skipped sessions.
  */
 
 const h = (v: unknown) => createHash("sha256").update(JSON.stringify(v)).digest("hex");
@@ -100,6 +101,7 @@ describe("a youth rider's prompts and picker", () => {
             events,
             recentWeeks: [8, 9],
             flags: [],
+            patterns: [],
             templates,
           },
           "da",
@@ -121,6 +123,6 @@ const BEFORE = {
   notes: "af0100329cf587bf17553fb295afb350a859750e9bc9181d718b1e75e9e49d12",
   group: "fc5575c43b5bc2d77c501abe58a918f457be60dbf498364e614278c44b63ad10",
   groupUnguided: "c704162d7d2a1893e598bed66b54c50249c4104a4c62d024e737bfa6182d548e",
-  weekDraft: "3a9cd203d541c1ab814577c8c7647d049bceb1fe08f88afa084234dee3911081",
+  weekDraft: "8040442f5f1f40322aeef125e634c939c819c64cd01e46e7c9925dcbf5f2c36f",
   strength: "998300967b25c6a0552aa26e0d2b6c3c9d38441438def904371b869535023b75",
 };

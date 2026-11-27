@@ -116,7 +116,11 @@ is saved or sent on its own (dogma five).
   the same as above for that rider's class, plus — only because the
   team has turned on "Må AI'en læse rytternes data" (`team_settings`, ADR 0017) — that rider's bike hours for the last few weeks and the _kind_
   of any open guardrail flag (a word such as "fatigue" or "pain", never
-  the check-in's own text, never a weight or a body measurement).
+  the check-in's own text, never a weight or a body measurement), and
+  the patterns in the rider's moved and skipped sessions over the last
+  eight weeks as codes and counts — "Tuesday, 3 of 4 changes, mostly
+  school" (ADR 0118) — never the words a rider or coach wrote beside a
+  change.
 - **"Mandagsoverblikket", the coach's Monday brief**
   (`src/modules/assist/coach-brief.ts`): only where the same switch is
   on, each flagged rider's first name and the kind and severity of

@@ -20,6 +20,7 @@ const base: WeekDraftContext = {
   events: [],
   recentWeeks: [3.5, 4],
   flags: [],
+  patterns: [],
   templates: [],
 };
 

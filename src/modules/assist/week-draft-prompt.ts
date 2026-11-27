@@ -1,4 +1,5 @@
 import { DATA_RULE, fenceUntrusted, languageRule } from "@/modules/ai/prompting";
+import type { ChangePattern } from "@/modules/training/change-patterns";
 import { RACE_RULES, raceRulesFor } from "@/modules/dcu";
 import { raceWeekRules, type PromptEvent } from "./race-week";
 
@@ -25,8 +26,27 @@ export type WeekDraftContext = {
   events: PromptEvent[];
   recentWeeks: number[];
   flags: string[];
+  /** The patterns in the rider's moved and skipped sessions (docs/adr/0118); codes and counts, never words. */
+  patterns: ChangePattern[];
   templates: Array<{ id: string; name: string; sport: string; minutes: number }>;
 };
+
+const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+/** A pattern as a line of context: what, how often, and the reason code where one stands out. */
+export function patternLine(p: ChangePattern): string {
+  const share = `${p.count} of ${p.total} changes`;
+  switch (p.key) {
+    case "weekday":
+      return `${WEEKDAYS[p.weekday]} sessions are often moved or skipped (${share}${p.reason ? `, mostly "${p.reason}"` : ""})`;
+    case "reason":
+      return `the reason is mostly "${p.reason}" (${share})`;
+    case "long":
+      return `sessions of two hours or more are often moved or skipped (${share})`;
+    case "strength":
+      return `strength sessions are often moved or skipped (${share})`;
+  }
+}
 
 export function weekDraftPrompt(c: WeekDraftContext, locale: string) {
   const senior = c.guided ? c.senior : null;
@@ -50,6 +70,7 @@ export function weekDraftPrompt(c: WeekDraftContext, locale: string) {
     raceWeekRules(senior ? "adult" : "youth", locale),
     "Never mention the rider's weight, body or food portions.",
     "Do not repeat sessions already planned. Respect the guardrails: if the rider shows signs of fatigue, pain or poor wellbeing, plan less and say so in the note.",
+    "The rider's moved and skipped sessions over the last eight weeks may show patterns. Where the week allows, lay the sessions around them — another day, a shorter or split session — and say so briefly in the note.",
     senior
       ? "why: one short sentence per session. note: two sentences at most for the rider."
       : "why: one short sentence per session a 16-year-old understands. note: two sentences at most for the coach.",
@@ -75,6 +96,7 @@ export function weekDraftPrompt(c: WeekDraftContext, locale: string) {
     `Strength this time of year: ${c.strength.min}–${c.strength.max} sessions a week.`,
     `Bike hours the last weeks: ${c.recentWeeks.map((h) => h.toFixed(1)).join(", ") || "none recorded"}.`,
     `Guardrails now: ${c.flags.join(", ") || "none"}.`,
+    `Patterns in moved or skipped sessions: ${c.patterns.map(patternLine).join("; ") || "none"}.`,
     `Already planned: ${fenceUntrusted(JSON.stringify(c.planned), 2000)}`,
     `Calendar: ${fenceUntrusted(JSON.stringify(c.events), 2000)}`,
     `Library: ${fenceUntrusted(JSON.stringify(c.templates), 3000)}`,

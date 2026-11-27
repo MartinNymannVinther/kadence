@@ -140,6 +140,7 @@ describe("Foreslå ugen for one adult", () => {
           events: [],
           recentWeeks: [],
           flags: [],
+          patterns: [],
           templates,
         },
         "da",

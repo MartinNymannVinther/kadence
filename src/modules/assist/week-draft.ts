@@ -10,6 +10,7 @@ import {
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { asString, list, rec } from "@/modules/ai/sanitize-helpers";
 import { requireGarminAi } from "@/modules/ai/garmin-gate";
+import { patternsFor } from "@/modules/training/session-changes";
 import { askForJson, modelConfigured, NoModel, NotAllowed } from "@/modules/ai/service";
 import { PHASE_INFO, phaseOf, seasonStartYear, strengthFrequency } from "@/modules/dcu";
 import { isGuidanceId, isSeniorBasis, paradigmFor, profileOf } from "@/modules/paradigms";
@@ -139,6 +140,8 @@ export async function proposeWeek(
           eq(plannedSessions.riderId, rider.id),
           gte(plannedSessions.onDate, input.monday),
           lte(plannedSessions.onDate, sunday),
+          // A skipped session is not planned (docs/adr/0117).
+          isNull(plannedSessions.skippedAt),
         ),
       );
     const events = await tx
@@ -167,6 +170,8 @@ export async function proposeWeek(
     riderIds: [rider.id],
     today: addDaysIso(input.monday, -1),
   });
+  // Codes and counts only; the rider's words beside a change never reach the model (ADR 0118).
+  const patterns = await patternsFor(ctx, [rider.id], addDaysIso(input.monday, -1));
   const paradigm = paradigmFor(isGuidanceId(loaded.guidance) ? loaded.guidance : "dcu-2025");
   const guided = paradigm !== null;
   const strength = paradigm
@@ -201,6 +206,7 @@ export async function proposeWeek(
     })),
     recentWeeks: (insight?.weeks ?? []).slice(-4).map((w) => w.bikeHours),
     flags: draftFlagKinds(insight),
+    patterns: patterns[rider.id] ?? [],
     templates: templates.map((t) => ({
       id: t.id,
       name: t.name,

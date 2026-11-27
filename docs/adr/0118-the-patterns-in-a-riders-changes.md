@@ -40,6 +40,13 @@ the decision to the coach.
   (`src/modules/load/pain-change-flag.ts`) and can be marked afklaret
   like the others; a third one brings it back. Migration 0064 lets
   `flag_resolutions` hold it.
+- **The AI's week draft for one rider is told the patterns,** as codes
+  and counts ("Tuesday sessions are often moved or skipped, 3 of 4
+  changes, mostly school"), and asked to lay the week around them where
+  it can and say so in its note. Only where the team lets the AI read the
+  riders' data, as for the rest of that draft; never the words beside a
+  change. The group's week reads no rider's data and is unchanged. A
+  skipped session is no longer among the "already planned" it is shown.
 - **The demo** has a rider whose sessions on one weekday were skipped
   for school three weeks running.
 
@@ -51,5 +58,5 @@ the decision to the coach.
 - The rider's page reads the changes once more per visit, and the
   planner once for all the team's riders; both are indexed on rider and
   day.
-- The AI reading the patterns for its week drafts is the next step, and
-  only where the team lets the AI read the riders' data.
+- The young riders' week-draft prompt changed with this, on purpose;
+  `tests/ai/youth-unchanged` holds its new hash and says why.
