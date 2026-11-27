@@ -6,7 +6,7 @@ ChatGPT, Claude eller en anden assistent til at tale med sin Kadence, og
 på hans ja til retningen samme dag. Den følger arbejdsgangen i CLAUDE.md:
 planen, skemaet og API-fladen godkendes først, og derefter bygges der
 bølge for bølge, hver på sin egen branch og med sin egen PR. Afsnit 9
-samler spørgsmålene til Martin. Ingen kode er skrevet endnu.
+samler spørgsmålene til Martin, og afsnit 10 hans svar. Ingen kode er skrevet endnu.
 
 Beslutningen og dens pris står i ADR
 [0118](adr/0118-your-own-ai-talks-to-kadence.md), foreslået sammen med
@@ -63,7 +63,7 @@ uden klubbens aftale. Derfor:
   check-ins, form, smerter, tærskler eller guardrail-flag gennem MCP, uanset
   om holdets "Må AI'en læse rytternes data" er slået til. Den
   indstilling blev givet til Kadences egen model i EU, og den rækker ikke
-  til en model, træneren selv har valgt (spørgsmål 9.3).
+  til en model, træneren selv har valgt (Martins svar 10.3).
 - **Forælderen** er ikke med i første omgang (afsnit 7).
 - **Vægt** findes ikke som tal i Kadence og kommer heller ikke ud her.
 - **Alder.** En person skal selv kunne give samtykke for at forbinde en
@@ -160,9 +160,9 @@ afhængighed, og den kræver Martins ja (spørgsmål 9.6).
    arbejdsrummet, og hvad assistenten må og ikke må, med et flueben pr.
    scope (`kadence:read`, `kadence:checkin`, `kadence:draft`). Kun de
    scopes, personens rolle kan bruge, bliver vist.
-5. Kadence afviser her, hvis personen er under 15 (2.2), hvis holdet har
-   sagt nej (spørgsmål 9.2), hvis personen er forælder, eller hvis flaget
-   er slået fra.
+5. Kadence afviser her, hvis personen er under 15 (2.2), hvis personen
+   er forælder, eller hvis installationen har slået flaget fra. Holdet har
+   ingen indstilling for det (10.2).
 6. Når personen siger ja, oprettes rækken i `ai_connections` (5.2).
 
 **Ved hvert kald** tjekkes tokenet lokalt: udstedt af Kadence, til
@@ -267,10 +267,10 @@ som CONTRIBUTING.md kræver:
 | `last_used_at` | sidst brugt                                                                  |
 | `created_at`   | givet                                                                        |
 
-Politikker: personen ser, giver og fjerner sine egne. En træner ser, at
-en rytter på holdet har en forbindelse, og navnet på assistenten, og kan
-fjerne den, som med upload-nøgler (ADR 0029). Det afhænger af svaret på
-spørgsmål 9.1. En forælder og en holdkammerat ser intet.
+Politikker: personen ser, giver og fjerner sine egne, og ingen andre ser
+dem, heller ikke en træner (10.1). Det er forskellen fra upload-nøglen
+(ADR 0029): nøglen bringer ture ind på holdet, mens en forbindelse kun
+henter personens egne data ud til dem selv.
 
 En forbindelse er død med det samme, når den fjernes, når personen
 forlader arbejdsrummet, og når rytteren arkiveres. Ved hvert kald tjekkes
@@ -320,9 +320,9 @@ i audit-funktionen.
 - `src/app/[locale]/(auth)/connect/`: samtykkesiden, på dansk. Den siger,
   hvem der beder om adgang, hvilket arbejdsrum, og hvad assistenten må og
   ikke må.
-- Installationsflaget `MCP`, slået fra som standard (ADR 0057's mønster,
-  men omvendt, se ADR 0118). Slået fra giver `/api/mcp` og
-  OAuth-endepunkterne 404, og siden findes ikke.
+- Installationsflaget `MCP`, slået til som standard som de andre (ADR
+  0057), også på kadence.haij.dk fra begyndelsen (10.5). Slået fra giver
+  `/api/mcp` og OAuth-endepunkterne 404, og siden findes ikke.
 
 Ingen MCP-SDK. Den officielle pakke (`@modelcontextprotocol/sdk` 1.32)
 trækker Express, Hono, CORS og en HTTP-server med sig, som en Next-route
@@ -345,8 +345,7 @@ fordelt på filer under 300 linjer, med tests.
 
 ## 8. Bølger
 
-Hver bølge er en PR til Martin, kan deployes for sig og er slået fra som
-standard.
+Hver bølge er en PR til Martin og kan deployes for sig.
 
 1. **Døren og rytterens læsning.** ADR 0118, flaget, OAuth med
    samtykkesiden, `ai_connections`, siden "Din AI", protokollen og 4.1.
@@ -406,3 +405,19 @@ Tests i hver bølge:
    for Business, Enterprise og Edu, og læsning kun fra Pro. Skal
    vejledningen nævne Claude og Le Chat først og sige det om ChatGPT
    ligeud? Forslag: ja.
+
+## 10. Martins svar, 27. november 2026
+
+1. **Træneren ser ikke forbindelserne.** Kun personen selv ser, giver og
+   fjerner sine egne (5.2).
+2. **Holdet kan ikke sige nej.** Der kommer ingen holdindstilling.
+3. **Holdets "Må AI'en læse rytternes data" gælder kun Kadences egen
+   model i EU.** Træneren får aldrig rytternes helbredsdata gennem MCP.
+4. **En personlig nøgle kommer senere,** efter bølge 1 er prøvet.
+5. **Slået til fra begyndelsen,** også på kadence.haij.dk, fordi der
+   stadig kun er testbrugere. Flaget er derfor slået til som standard og
+   kan slås fra.
+6. **Ja til de tre pakker** `@better-auth/mcp`, `@better-auth/oauth-provider`
+   og `@better-auth/cimd`, på 1.7.14.
+7. **Vejledningen nævner Claude og Le Chat først** og siger ligeud, hvad
+   ChatGPT kan og ikke kan.

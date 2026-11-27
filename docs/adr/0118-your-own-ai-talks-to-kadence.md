@@ -1,6 +1,6 @@
 # ADR 0118: Your own AI talks to Kadence
 
-Status: proposed · Date: 2026-11-27 · Builds on 0029 (an upload key per rider), 0043 (the week planner's draft), 0057 (installation flags), 0090 (an expired workspace is read only), 0111 (Better Auth at 1.7.14)
+Status: accepted · Date: 2026-11-27 · Builds on 0029 (an upload key per rider), 0043 (the week planner's draft), 0057 (installation flags), 0090 (an expired workspace is read only), 0111 (Better Auth at 1.7.14)
 
 ## Context
 
@@ -12,7 +12,8 @@ in the EU or to Ollama, and dogma four keeps it there. An assistant the
 person has chosen is a different thing: Kadence does not call it and
 does not choose it. The person does.
 
-The same day Martin answered the four questions it raises. A model
+The same day Martin answered the four questions it raises, and then the
+seven questions of the plan. A model
 outside the EU is fine when the person has chosen it themselves. Other
 people's data does not go with it. Nothing is deleted or sent. Content
 from outside is data. The plan is `docs/plan-mcp.md`.
@@ -54,8 +55,14 @@ from outside is data. The plan is `docs/plan-mcp.md`.
   sanitized and capped like any model answer.
 - **Audited.** Each call is a semantic event without its content. Rows it
   writes are marked `actor_type = 'ai_connection'` in the trail.
-- **Off by default** (`MCP=off`). Unlike the parked parts of ADR 0057,
-  this one is new surface, and it is turned on where it is wanted.
+- **Only the person sees a connection.** A coach does not see that a
+  rider has one, and a team has no setting to forbid it: it is the
+  rider's own data, fetched to the rider.
+- **On by default** (`MCP`), like the flags of ADR 0057, and on at
+  kadence.haij.dk from the start while it holds only test users. An
+  installation can turn it off.
+- **No fixed key yet.** Clients that cannot do OAuth wait until the
+  first wave has been tried.
 
 ## Consequences
 
