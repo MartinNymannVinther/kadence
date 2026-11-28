@@ -246,10 +246,13 @@ allows. Kadence calls no model here and sends nothing by itself.
   it felt, the rider's note), form, check-ins and season plan, as the
   rider sees them in Kadence. Never another person's data, never a GPS
   track or a ride file, never a weight.
-- **Not Garmin's.** A ride that came in through Garmin keeps only that it
-  was ridden, and the form, which is built on the rides, is not given at
-  all to a rider who has rides from Garmin: Garmin's data does not go to a
-  model the rider chose.
+- **Not Garmin's.** A ride that came in through Garmin keeps only what
+  Kadence itself holds about it: that it was ridden, the rider's own
+  rating, feel and note, and the planned session's day and title when it
+  was planned. Its time, distance, load, heart rate, power and the day of
+  a ride nobody planned stay, and the form, which is built on the rides,
+  is not given at all to a rider who has rides from Garmin: Garmin's data
+  does not go to a model the rider chose.
 - **Where it goes** is the assistant's maker, wherever they keep it; for
   some that is outside the EU. That is the person's choice for their own
   data, and the consent page says it before the yes.
