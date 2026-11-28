@@ -1189,7 +1189,8 @@
       "quote": "“{text}”",
       "when": "{day} {clock}",
       "today": "today",
-      "yesterday": "yesterday"
+      "yesterday": "yesterday",
+      "viaAi": "via own AI"
     },
     "parent": {
       "link": "{count, plural, one {See your child's week} other {See your children's weeks}}"
@@ -1354,7 +1355,8 @@
     "uciUnknown": "Cykling Danmark does not know that UCI ID. Check the number on the licence.",
     "exerciseUnknown": "One of the exercises no longer exists. Reload the page and choose again.",
     "exerciseArchived": "One of the exercises is archived, so it cannot go into a programme. You can bring it back in the library or choose another.",
-    "planExpired": "This workspace is read only now, because its trial or subscription has ended. You can still see everything and take it out."
+    "planExpired": "This workspace is read only now, because its trial or subscription has ended. You can still see everything and take it out.",
+    "changedSince": "It has been changed since, so Kadence leaves it. Change it yourself if it should be different."
   },
   "calendar": {
     "title": "Calendar",
@@ -6548,7 +6550,8 @@
       "skipped": "skipped",
       "unskipped": "planned again",
       "byCoach": "by the coach",
-      "plannerHint": "Patterns in the riders' changes"
+      "plannerHint": "Patterns in the riders' changes",
+      "viaAi": "via own AI"
     },
     "skip": {
       "title": "Skip the session",
@@ -6567,10 +6570,8 @@
     "returnsTo": "When you have answered, Kadence sends you back to {host}.",
     "workspace": "Workspace",
     "workspaceOne": "The connection is for {workspace}.",
-    "mayTitle": "The assistant can",
-    "mayRead": "read your plan, your rides, your form, your check-ins and your season plan",
+    "mayTitle": "What the assistant may do",
     "mayNotTitle": "The assistant cannot",
-    "mayNotChange": "change, delete or send anything in Kadence",
     "mayNotOthers": "see anyone else's data, your teammates' included",
     "mayNotGarmin": "read rides that came in from Garmin",
     "where": "What the assistant reads goes to the service you chose yourself, which may be outside the EU. You can remove the connection again under Settings → Your AI.",
@@ -6584,7 +6585,9 @@
     "refused": {
       "notRider": "For now only riders can connect their own AI, and only to their own data. Everything else in Kadence works as before.",
       "tooYoung": "You can connect an AI yourself from the year you turn 15. That is what the Danish data protection act says. Everything else in Kadence works as before."
-    }
+    },
+    "mayHint": "You decide. Reading is on, changing and deleting are off until you turn them on. You can change it any time under Settings → AI connections.",
+    "mayNotSend": "send anything, neither messages nor mails"
   },
   "aiConnections": {
     "title": "Your AI",
@@ -6607,6 +6610,50 @@
     "refused": {
       "notRider": "For now only riders can connect their own AI, and only to their own data. Everything else in Kadence works as before.",
       "tooYoung": "You can connect an AI yourself from the year you turn 15. That is what the Danish data protection act says. Everything else in Kadence works as before."
+    },
+    "permissions": {
+      "title": "What may it do?",
+      "saved": "Saved. It holds from the assistant's next call.",
+      "always": "Whatever you switch on, your AI can touch only your own data, never anyone else's, and it never sends anything. Everything it changes or deletes you can undo here for 30 days.",
+      "group": {
+        "read": "Read",
+        "write": "Change",
+        "delete": "Delete"
+      },
+      "read_sessions": "Your sessions and your calendar",
+      "read_rides": "Your rides",
+      "read_checkins": "Your check-ins",
+      "read_form": "Your form",
+      "read_season": "Your season plan",
+      "write_checkin": "Save the day's check-in",
+      "write_ride_feedback": "Say how hard a ride was, and a note",
+      "write_move_skip": "Move and skip sessions",
+      "write_sessions": "Lay and change sessions in your calendar",
+      "delete_sessions": "Delete sessions",
+      "delete_manual": "Delete activities you entered by hand",
+      "delete_rides": "Delete rides",
+      "delete_checkins": "Delete check-ins"
+    },
+    "actions": {
+      "title": "What your AI has done",
+      "hint": "What your AI changed or deleted in the last 30 days. Undo puts it back as it was.",
+      "empty": "Your AI has not changed or deleted anything.",
+      "undo": "Undo",
+      "undone": "Undone",
+      "undoneNow": "It is back as it was.",
+      "tool": {
+        "save_my_checkin": "Saved a check-in",
+        "rate_my_ride": "Said how hard a ride was",
+        "move_my_session": "Moved a session",
+        "skip_my_session": "Skipped a session",
+        "unskip_my_session": "Planned a session again",
+        "add_my_session": "Laid a session",
+        "update_my_session": "Changed a session",
+        "delete_my_session": "Deleted a session",
+        "delete_my_manual_activity": "Deleted an activity",
+        "delete_my_ride": "Deleted a ride",
+        "delete_my_checkin": "Deleted a check-in"
+      }
     }
   }
 }

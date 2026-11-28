@@ -386,6 +386,7 @@ describe("rls coverage (guards future tables)", () => {
     "activity_file_moved_out",
     "activity_files_in_rows",
     "activity_files_places",
+    "ai_actions_sweep",
     // Returns the installation's model-call count for the last day, across
     // every workspace (docs/adr/0035). A number crosses the boundary; no
     // row does, and it takes no arguments, so it can answer one question

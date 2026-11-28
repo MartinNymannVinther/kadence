@@ -6,14 +6,18 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { NativeSelect } from "@/components/ui/native-select";
+import { PermissionSwitches } from "@/components/mcp/permission-switches";
 import { authClient } from "@/core/auth/client";
+import { stageAiPermissionsAction } from "@/modules/mcp/actions";
+import { DEFAULT_PERMISSIONS, type Permission } from "@/modules/mcp/permissions";
 import type { ConsentWorkspace } from "@/modules/mcp/consent-view";
 
 /**
  * The yes or no (docs/adr/0118). A yes first makes the chosen workspace the
  * active one, because the yes is for the workspace the session names, then
  * tells Better Auth, which answers with the address back to the assistant.
- * A no goes back too, so the assistant hears it.
+ * The switches the person set go just before the yes, for the connection
+ * it makes (docs/adr/0120). A no goes back too, so the assistant hears it.
  */
 export function ConsentForm({
   workspaces,
@@ -28,6 +32,7 @@ export function ConsentForm({
     allowed.find((w) => w.orgId === active)?.orgId ?? allowed[0]?.orgId ?? "",
   );
   const [pending, setPending] = useState(false);
+  const [permissions, setPermissions] = useState<Permission[]>([...DEFAULT_PERMISSIONS]);
   const [error, setError] = useState<string | null>(null);
   const refusal =
     allowed.length === 0 ? (workspaces.find((w) => w.orgId === active) ?? workspaces[0]) : null;
@@ -40,6 +45,15 @@ export function ConsentForm({
         organizationId: chosen,
       });
       if (switchError) {
+        setPending(false);
+        setError(t("error"));
+        return;
+      }
+    }
+    if (accept) {
+      const clientId = new URLSearchParams(window.location.search).get("client_id") ?? "";
+      const staged = await stageAiPermissionsAction({ clientId, permissions });
+      if (!staged.ok) {
         setPending(false);
         setError(t("error"));
         return;
@@ -95,16 +109,15 @@ export function ConsentForm({
               {t("workspaceOne", { workspace: allowed[0]?.name ?? "" })}
             </p>
           )}
-          <section className="flex flex-col gap-1.5">
+          <section className="flex flex-col gap-2">
             <h2 className="text-sm font-semibold">{t("mayTitle")}</h2>
-            <ul className="text-2sm list-disc pl-5 leading-relaxed">
-              <li>{t("mayRead")}</li>
-            </ul>
+            <p className="text-meta text-2sm leading-relaxed">{t("mayHint")}</p>
+            <PermissionSwitches value={permissions} onChange={setPermissions} disabled={pending} />
           </section>
           <section className="flex flex-col gap-1.5">
             <h2 className="text-sm font-semibold">{t("mayNotTitle")}</h2>
             <ul className="text-2sm list-disc pl-5 leading-relaxed">
-              <li>{t("mayNotChange")}</li>
+              <li>{t("mayNotSend")}</li>
               <li>{t("mayNotOthers")}</li>
               <li>{t("mayNotGarmin")}</li>
             </ul>

@@ -5,6 +5,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRun } from "@/components/common/use-run";
 import { ConfirmButton } from "@/components/ui/confirm-button";
 import { removeAiConnectionAction } from "@/modules/mcp/actions";
+import type { Permission } from "@/modules/mcp/permissions";
+import { ConnectionPermissions } from "./connection-permissions";
 
 export type ConnectionItem = {
   id: string;
@@ -12,12 +14,14 @@ export type ConnectionItem = {
   clientHost: string;
   createdAt: string;
   lastUsedAt: string | null;
+  permissions: Permission[];
 };
 
 /**
  * The person's assistants on "Din AI" (docs/adr/0118): each with its name
  * as it gave it, where it returns to, when it was connected and last used,
- * and a way to remove it, which holds at once.
+ * what the person lets it do (docs/adr/0120), and a way to remove it,
+ * which holds at once.
  */
 export function ConnectionsList({ connections }: { connections: ConnectionItem[] }) {
   const t = useTranslations("aiConnections");
@@ -66,6 +70,7 @@ export function ConnectionsList({ connections }: { connections: ConnectionItem[]
             {t("remove")}
             <span className="sr-only">{` ${c.clientName}`}</span>
           </ConfirmButton>
+          <ConnectionPermissions id={c.id} initial={c.permissions} />
         </li>
       ))}
     </ul>

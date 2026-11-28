@@ -19,6 +19,7 @@ export const getMySeasonPlan = defineTool({
       .describe("The year the season starts in October. Default: the current season."),
   }),
   scope: "kadence:read",
+  permission: "read_season",
   role: "rider",
   readOnly: true,
   run: async ({ ctx, riderId, today }, input) => {

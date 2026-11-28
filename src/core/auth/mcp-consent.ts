@@ -4,6 +4,7 @@ import { todayInCopenhagen } from "@/core/dates";
 import { log, errorName } from "@/core/log";
 import { describeClient, recordConnection } from "@/modules/mcp/connections";
 import { connectingRider } from "@/modules/mcp/eligibility";
+import { openStaged, STAGED_COOKIE } from "@/modules/mcp/staged-permissions";
 import { MCP_SCOPES } from "./mcp";
 import { stillAMember } from "./session";
 import { mustVerifyFirst } from "./verify-first";
@@ -58,6 +59,8 @@ export async function afterConsent(ctx: GenericEndpointContext): Promise<void> {
       clientName: client.name,
       clientHost: client.host,
       scopes,
+      // The switches the person set on the consent page (docs/adr/0120).
+      permissions: openStaged(ctx.getCookie(STAGED_COOKIE), caller.userId, clientId),
     });
   } catch (error) {
     // The code is already on its way to the assistant; without the row its

@@ -67,6 +67,11 @@ export function columnNames(columns: string): string[] {
  *   policy shows to nobody else, the coach exporting included, and nothing
  *   about training. That one was made, used and removed is in the audit
  *   trail.
+ * - `ai_actions`: what a person's own assistant changed or deleted, with
+ *   the row as it was, kept 30 days for the person to undo (docs/adr/0120).
+ *   The person's own, which the policy shows to nobody else; the rows it
+ *   speaks of are exported as they are, and each change is in the audit
+ *   trail.
  * - Everything Better Auth owns (users, sessions, accounts, passkeys, two
  *   factors, rate limits, and the OAuth clients, tokens, consents and
  *   signing keys an assistant signs in with). Sessions and passkeys are credentials, and the

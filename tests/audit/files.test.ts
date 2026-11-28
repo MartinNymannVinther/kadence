@@ -142,6 +142,7 @@ describe("the audit trail without files", () => {
     expect(rows.map((r) => r.col)).toEqual([
       "activities.streams",
       "activity_files.bytes",
+      "ai_actions.file_bytes",
       "device_inbox.bytes",
       "org_images.bytes",
     ]);
@@ -152,8 +153,10 @@ describe("the audit trail without files", () => {
       "activity_files",
       "org_images",
       "device_inbox",
+      "ai_actions",
       "NEW.bytes",
       "NEW.streams",
+      "NEW.file_bytes",
     ]) {
       expect(source.rows[0].prosrc).toContain(name);
     }

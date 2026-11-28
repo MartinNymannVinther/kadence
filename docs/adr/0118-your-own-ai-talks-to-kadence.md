@@ -1,6 +1,6 @@
 # ADR 0118: Your own AI talks to Kadence
 
-Status: accepted · Date: 2026-11-27 · Builds on 0029 (an upload key per rider), 0043 (the week planner's draft), 0057 (installation flags), 0090 (an expired workspace is read only), 0111 (Better Auth at 1.7.14)
+Status: accepted, amended by 0120 (writing and deleting by the person's choice) · Date: 2026-11-27 · Builds on 0029 (an upload key per rider), 0043 (the week planner's draft), 0057 (installation flags), 0090 (an expired workspace is read only), 0111 (Better Auth at 1.7.14)
 
 ## Context
 

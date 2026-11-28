@@ -1,6 +1,7 @@
 import type { z } from "zod";
 import type { OrgContext } from "@/core/db/tenant";
 import type { McpScope } from "@/core/auth/mcp";
+import type { Permission } from "./permissions";
 
 /**
  * One tool an assistant may call (docs/adr/0118, docs/plan-mcp.md §4): its
@@ -18,6 +19,10 @@ export type Caller = {
   riderId: string;
   /** Today in Copenhagen, ISO. */
   today: string;
+  /** The connection the call came through, for the undo log. */
+  connectionId: string | null;
+  /** What the person lets this assistant do (./permissions.ts). */
+  permissions: readonly Permission[];
 };
 
 export type Tool<S extends z.ZodType = z.ZodType> = {
@@ -26,10 +31,14 @@ export type Tool<S extends z.ZodType = z.ZodType> = {
   description: string;
   input: S;
   scope: McpScope;
+  /** The person's switch the tool needs (docs/adr/0120); without it the tool is not offered. */
+  permission: Permission;
   /** Only rider tools exist in the first wave; coach tools come in the second. */
   role: "rider";
   /** Whether the tool only reads. Writes are named in tests/mcp/registry.test.ts. */
   readOnly: boolean;
+  /** Whether it changes or removes what is there; the assistant's maker may ask the person first. */
+  destructive?: boolean;
   run: (caller: Caller, input: z.infer<S>) => Promise<unknown>;
 };
 

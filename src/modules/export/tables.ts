@@ -62,7 +62,7 @@ export const EXPORT_TABLES: ExportTable[] = [
     sheet: "Flyttet og sprunget over",
     orderBy: "rider_id, changed_at",
     columns:
-      "id, org_id, rider_id, planned_session_id, kind, from_date, to_date, sport, title, planned_minutes, reason, by_role, changed_by, changed_at",
+      "id, org_id, rider_id, planned_session_id, kind, from_date, to_date, sport, title, planned_minutes, reason, by_role, changed_by, changed_at, via",
   },
   {
     table: "session_change_notes",

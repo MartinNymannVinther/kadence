@@ -1189,7 +1189,8 @@
       "quote": "“{text}”",
       "when": "{day} {clock}",
       "today": "i dag",
-      "yesterday": "i går"
+      "yesterday": "i går",
+      "viaAi": "via egen AI"
     },
     "parent": {
       "link": "{count, plural, one {Se dit barns uge} other {Se dine børns uger}}"
@@ -1354,7 +1355,8 @@
     "uciUnknown": "Cykling Danmark kender ikke det UCI ID. Tjek tallet på licensen.",
     "exerciseUnknown": "En af øvelserne findes ikke længere. Genindlæs siden og vælg igen.",
     "exerciseArchived": "En af øvelserne er arkiveret, så den kan ikke komme med i et program. Du kan tage den frem igen i biblioteket eller vælge en anden.",
-    "planExpired": "Arbejdsrummet kan kun læses nu, fordi prøveperioden eller abonnementet er udløbet. Du kan stadig se alt og hente det ud."
+    "planExpired": "Arbejdsrummet kan kun læses nu, fordi prøveperioden eller abonnementet er udløbet. Du kan stadig se alt og hente det ud.",
+    "changedSince": "Det er ændret siden, så Kadence lader det stå. Ret det selv, hvis det skal være anderledes."
   },
   "calendar": {
     "title": "Kalender",
@@ -6548,7 +6550,8 @@
       "skipped": "sprunget over",
       "unskipped": "planlagt igen",
       "byCoach": "af træneren",
-      "plannerHint": "Mønstre i rytternes ændringer"
+      "plannerHint": "Mønstre i rytternes ændringer",
+      "viaAi": "via egen AI"
     },
     "skip": {
       "title": "Spring træningspasset over",
@@ -6567,10 +6570,8 @@
     "returnsTo": "Når du har svaret, sender Kadence dig tilbage til {host}.",
     "workspace": "Arbejdsrum",
     "workspaceOne": "Forbindelsen gælder {workspace}.",
-    "mayTitle": "Assistenten kan",
-    "mayRead": "læse din plan, dine ture, din form, dine check-ins og din sæsonplan",
+    "mayTitle": "Det må assistenten",
     "mayNotTitle": "Assistenten kan ikke",
-    "mayNotChange": "ændre, slette eller sende noget i Kadence",
     "mayNotOthers": "se andres data, heller ikke dine holdkammeraters",
     "mayNotGarmin": "læse ture, der er kommet ind fra Garmin",
     "where": "Det, assistenten læser, sendes til den tjeneste, du selv har valgt, og den kan ligge uden for EU. Du kan fjerne forbindelsen igen under Indstillinger → Din AI.",
@@ -6584,7 +6585,9 @@
     "refused": {
       "notRider": "Lige nu kan kun ryttere forbinde deres egen AI, og kun til deres egne data. Alt andet i Kadence virker som før.",
       "tooYoung": "Du kan selv forbinde en AI fra det år, du fylder 15. Sådan siger databeskyttelsesloven. Alt andet i Kadence virker som før."
-    }
+    },
+    "mayHint": "Du bestemmer selv. Læse er slået til, ændre og slette er slået fra, til du slår dem til. Du kan ændre det når som helst under Indstillinger → AI-forbindelser.",
+    "mayNotSend": "sende noget, hverken beskeder eller mails"
   },
   "aiConnections": {
     "title": "Din AI",
@@ -6607,6 +6610,50 @@
     "refused": {
       "notRider": "Lige nu kan kun ryttere forbinde deres egen AI, og kun til deres egne data. Alt andet i Kadence virker som før.",
       "tooYoung": "Du kan selv forbinde en AI fra det år, du fylder 15. Sådan siger databeskyttelsesloven. Alt andet i Kadence virker som før."
+    },
+    "permissions": {
+      "title": "Hvad må den?",
+      "saved": "Gemt. Det gælder fra assistentens næste kald.",
+      "always": "Uanset hvad du slår til, kan din AI kun røre dine egne data, aldrig andres, og den sender aldrig noget. Alt, den ændrer eller sletter, kan du fortryde her i 30 dage.",
+      "group": {
+        "read": "Læse",
+        "write": "Ændre",
+        "delete": "Slette"
+      },
+      "read_sessions": "Dine træningspas og din kalender",
+      "read_rides": "Dine ture",
+      "read_checkins": "Dine check-ins",
+      "read_form": "Din form",
+      "read_season": "Din sæsonplan",
+      "write_checkin": "Gemme dagens check-in",
+      "write_ride_feedback": "Skrive hvor hårdt en tur var, og en note",
+      "write_move_skip": "Flytte og springe træningspas over",
+      "write_sessions": "Lægge og rette træningspas i din kalender",
+      "delete_sessions": "Slette træningspas",
+      "delete_manual": "Slette aktiviteter, du har skrevet ind i hånden",
+      "delete_rides": "Slette ture",
+      "delete_checkins": "Slette check-ins"
+    },
+    "actions": {
+      "title": "Det har din AI gjort",
+      "hint": "Det, din AI har ændret eller slettet de sidste 30 dage. Fortryd sætter det tilbage, som det var.",
+      "empty": "Din AI har ikke ændret eller slettet noget.",
+      "undo": "Fortryd",
+      "undone": "Fortrudt",
+      "undoneNow": "Det er sat tilbage.",
+      "tool": {
+        "save_my_checkin": "Gemte en check-in",
+        "rate_my_ride": "Skrev hvor hårdt en tur var",
+        "move_my_session": "Flyttede et træningspas",
+        "skip_my_session": "Sprang et træningspas over",
+        "unskip_my_session": "Planlagde et træningspas igen",
+        "add_my_session": "Lagde et træningspas",
+        "update_my_session": "Rettede et træningspas",
+        "delete_my_session": "Slettede et træningspas",
+        "delete_my_manual_activity": "Slettede en aktivitet",
+        "delete_my_ride": "Slettede en tur",
+        "delete_my_checkin": "Slettede en check-in"
+      }
     }
   }
 }

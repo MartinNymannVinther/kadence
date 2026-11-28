@@ -26,6 +26,8 @@ export type RecentChange = {
   title: string;
   reason: string | null;
   byRole: "rider" | "coach";
+  /** Made by the rider's own assistant (docs/adr/0120). */
+  viaAi: boolean;
   /** The words beside the change; null where there are none or the reader may not read them. */
   note: string | null;
 };
@@ -94,6 +96,7 @@ export async function riderChanges(
         title: sessionChanges.title,
         reason: sessionChanges.reason,
         byRole: sessionChanges.byRole,
+        via: sessionChanges.via,
         note: sessionChangeNotes.note,
       })
       .from(sessionChanges)
@@ -103,8 +106,9 @@ export async function riderChanges(
       .limit(RECENT);
     return {
       summary: changeSummary(facts, today),
-      recent: rows.map((r) => ({
+      recent: rows.map(({ via, ...r }) => ({
         ...r,
+        viaAi: via === "ai",
         kind: r.kind as RecentChange["kind"],
         byRole: r.byRole as RecentChange["byRole"],
         note: r.note ?? null,

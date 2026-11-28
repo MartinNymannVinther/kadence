@@ -12,7 +12,8 @@ import { SCHEDULE } from "./schedule";
  * up a month ago and never tried again. A day, because a ride's job
  * carries the address the provider gave for its file, which has no
  * business outliving the import; a month, because a job that gave up
- * waits for a person (scripts/retry-jobs.ts). Deleting what is already
+ * waits for a person (scripts/retry-jobs.ts). And an assistant's changes
+ * past the 30 days they can be undone in (docs/adr/0120). Deleting what is already
  * gone deletes nothing, so a second run is harmless.
  */
 
@@ -30,9 +31,15 @@ export async function pruneJobs(): Promise<number> {
   return rowCount ?? 0;
 }
 
+/** An assistant's changes past their 30 days to undo (drizzle/0066); how many. */
+export async function pruneAiActions(): Promise<number> {
+  const { rows } = await appPool.query<{ n: number }>(`select ai_actions_sweep() as n`);
+  return rows[0]?.n ?? 0;
+}
+
 export const sweepJob = jobKind("installation.sweep", payload({}), { every: SCHEDULE.sweep });
 
 export const sweepHandler = handle(sweepJob, async () => {
   const counters = await sweepCounters();
-  return { ...counters, jobs: await pruneJobs() };
+  return { ...counters, jobs: await pruneJobs(), aiActions: await pruneAiActions() };
 });

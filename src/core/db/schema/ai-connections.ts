@@ -30,6 +30,17 @@ export const aiConnections = pgTable(
     /** Where the assistant returns to after the yes (claude.ai): what the person can trust. */
     clientHost: text("client_host").notNull(),
     scopes: text("scopes").array().notNull(),
+    /**
+     * What the person lets the assistant do (docs/adr/0120,
+     * src/modules/mcp/permissions.ts): reading on from the start, writing
+     * and deleting off until the person turns them on.
+     */
+    permissions: text("permissions")
+      .array()
+      .notNull()
+      .default(
+        sql`array['read_sessions','read_rides','read_checkins','read_form','read_season']::text[]`,
+      ),
     lastUsedAt: timestamp("last_used_at", { withTimezone: true }),
     ...timestamps,
   },
@@ -39,6 +50,10 @@ export const aiConnections = pgTable(
     index("ai_connections_client_idx").on(t.clientId),
     check("ai_connections_name", sql`char_length(${t.clientName}) between 1 and 80`),
     check("ai_connections_host", sql`char_length(${t.clientHost}) between 1 and 255`),
+    check(
+      "ai_connections_permissions",
+      sql`${t.permissions} <@ array['read_sessions','read_rides','read_checkins','read_form','read_season','write_checkin','write_ride_feedback','write_move_skip','write_sessions','delete_sessions','delete_manual','delete_rides','delete_checkins']::text[]`,
+    ),
     check(
       "ai_connections_scopes",
       sql`${t.scopes} <@ array['kadence:read','kadence:checkin','kadence:draft']::text[]`,

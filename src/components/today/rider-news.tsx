@@ -26,12 +26,15 @@ export function RiderNews({ items, today }: { items: News[]; today: string }) {
     if (item.kind === "checkin") return t("checkin");
     if (item.change) {
       const why = item.change.reason ? ` · ${reasons(item.change.reason as "ill")}` : "";
-      return item.change.kind === "moved" && item.change.toDate
-        ? t("moved", {
-            about: item.about,
-            day: `${weekdayShort(item.change.toDate, locale)} ${dayMonth(item.change.toDate, locale)}`,
-          }) + why
-        : t("skipped", { about: item.about }) + why;
+      return (
+        (item.change.kind === "moved" && item.change.toDate
+          ? t("moved", {
+              about: item.about,
+              day: `${weekdayShort(item.change.toDate, locale)} ${dayMonth(item.change.toDate, locale)}`,
+            }) + why
+          : t("skipped", { about: item.about }) + why) +
+        (item.change.viaAi ? ` · ${t("viaAi")}` : "")
+      );
     }
     if (item.on === "day")
       return t("comment", {

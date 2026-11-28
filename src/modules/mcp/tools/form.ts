@@ -32,6 +32,7 @@ export const getMyForm = defineTool({
       .describe("How many days back, 7-90. Default 42."),
   }),
   scope: "kadence:read",
+  permission: "read_form",
   role: "rider",
   readOnly: true,
   run: async ({ ctx, riderId, today }, input) => {
