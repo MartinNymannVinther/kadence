@@ -55,6 +55,8 @@ async function recordChangeIn(
       plannedMinutes: row.plannedMinutes,
       reason: why.reason ?? null,
       byRole: rider?.userId === ctx.userId ? "rider" : "coach",
+      // The database checks this against the request's channel (drizzle/0066).
+      via: ctx.channel === "mcp" ? "ai" : "app",
       changedBy: ctx.userId,
     })
     .returning({ id: sessionChanges.id });

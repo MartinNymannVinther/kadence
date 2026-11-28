@@ -30,3 +30,4 @@ export * from "./consent";
 export * from "./billing";
 export * from "./oauth";
 export * from "./ai-connections";
+export * from "./ai-actions";

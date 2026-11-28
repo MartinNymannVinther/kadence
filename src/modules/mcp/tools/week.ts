@@ -18,6 +18,7 @@ export const getMyWeek = defineTool({
       ),
   }),
   scope: "kadence:read",
+  permission: "read_sessions",
   role: "rider",
   readOnly: true,
   run: async ({ ctx, riderId, today }, input) => {

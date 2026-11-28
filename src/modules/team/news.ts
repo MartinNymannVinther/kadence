@@ -52,7 +52,13 @@ export type RiderNews = {
   /** Where the coach reads more and answers. */
   href: string;
   /** For a move or a skip: which, why in one word, and the day it went to. */
-  change?: { kind: "moved" | "skipped"; reason: string | null; toDate: string | null };
+  change?: {
+    kind: "moved" | "skipped";
+    reason: string | null;
+    toDate: string | null;
+    /** Made by the rider's own assistant (docs/adr/0120). */
+    viaAi: boolean;
+  };
 };
 
 /** A day's comment and a check-in are read on the rider's page, with the 14 days around them. */
@@ -127,6 +133,7 @@ export async function listRiderNews(
         kind: sessionChanges.kind,
         reason: sessionChanges.reason,
         toDate: sessionChanges.toDate,
+        via: sessionChanges.via,
         title: sessionChanges.title,
         sessionId: sessionChanges.plannedSessionId,
         note: sessionChangeNotes.note,
@@ -204,6 +211,7 @@ export async function listRiderNews(
           kind: c.kind === "moved" ? "moved" : "skipped",
           reason: c.reason,
           toDate: c.toDate,
+          viaAi: c.via === "ai",
         },
       })),
     ];

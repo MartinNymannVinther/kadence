@@ -9,6 +9,7 @@ import {
 } from "@/core/db/schema";
 import { withOrgContext, type OrgContext } from "@/core/db/tenant";
 import { MCP_SCOPES, type McpScope } from "@/core/auth/mcp";
+import { cleanPermissions, DEFAULT_PERMISSIONS, type Permission } from "./permissions";
 
 /**
  * A person's connections to their own assistants (docs/adr/0118): made on
@@ -23,6 +24,7 @@ export type ConnectionView = {
   clientName: string;
   clientHost: string;
   scopes: McpScope[];
+  permissions: Permission[];
   createdAt: Date;
   lastUsedAt: Date | null;
 };
@@ -60,9 +62,17 @@ export async function describeClient(
 /** The yes, as a row: made once, its scopes replaced when the person says yes again. */
 export async function recordConnection(
   ctx: OrgContext,
-  input: { clientId: string; clientName: string; clientHost: string; scopes: string[] },
+  input: {
+    clientId: string;
+    clientName: string;
+    clientHost: string;
+    scopes: string[];
+    /** The switches the person set on the consent page; left out, reading only. */
+    permissions?: readonly string[];
+  },
 ): Promise<void> {
   const scopes = input.scopes.filter(isScope);
+  const permissions = cleanPermissions(input.permissions ?? DEFAULT_PERMISSIONS);
   await withOrgContext(ctx, async (tx) => {
     await tx
       .insert(aiConnections)
@@ -73,10 +83,11 @@ export async function recordConnection(
         clientName: input.clientName.slice(0, NAME_CHARS),
         clientHost: input.clientHost.slice(0, 255),
         scopes,
+        permissions,
       })
       .onConflictDoUpdate({
         target: [aiConnections.orgId, aiConnections.userId, aiConnections.clientId],
-        set: { scopes, clientName: input.clientName.slice(0, NAME_CHARS) },
+        set: { scopes, permissions, clientName: input.clientName.slice(0, NAME_CHARS) },
       });
   });
 }
@@ -94,6 +105,7 @@ export async function listConnections(ctx: OrgContext): Promise<ConnectionView[]
     clientName: r.clientName,
     clientHost: r.clientHost,
     scopes: r.scopes.filter(isScope),
+    permissions: cleanPermissions(r.permissions),
     createdAt: r.createdAt,
     lastUsedAt: r.lastUsedAt,
   }));
@@ -106,10 +118,14 @@ export async function listConnections(ctx: OrgContext): Promise<ConnectionView[]
 export async function connectionFor(
   ctx: OrgContext,
   clientId: string,
-): Promise<{ id: string; scopes: McpScope[] } | null> {
+): Promise<{ id: string; scopes: McpScope[]; permissions: Permission[] } | null> {
   return withOrgContext(ctx, async (tx) => {
     const [row] = await tx
-      .select({ id: aiConnections.id, scopes: aiConnections.scopes })
+      .select({
+        id: aiConnections.id,
+        scopes: aiConnections.scopes,
+        permissions: aiConnections.permissions,
+      })
       .from(aiConnections)
       .where(and(eq(aiConnections.clientId, clientId), eq(aiConnections.userId, ctx.userId)));
     if (!row) return null;
@@ -126,8 +142,28 @@ export async function connectionFor(
           ),
         ),
       );
-    return { id: row.id, scopes: row.scopes.filter(isScope) };
+    return {
+      id: row.id,
+      scopes: row.scopes.filter(isScope),
+      permissions: cleanPermissions(row.permissions),
+    };
   });
+}
+
+/** The person's own switches for one connection, changed under Indstillinger → AI-forbindelser. */
+export async function setPermissions(
+  ctx: OrgContext,
+  id: string,
+  permissions: readonly string[],
+): Promise<boolean> {
+  const rows = await withOrgContext(ctx, (tx) =>
+    tx
+      .update(aiConnections)
+      .set({ permissions: cleanPermissions(permissions) })
+      .where(and(eq(aiConnections.id, id), eq(aiConnections.userId, ctx.userId)))
+      .returning({ id: aiConnections.id }),
+  );
+  return rows.length > 0;
 }
 
 /**

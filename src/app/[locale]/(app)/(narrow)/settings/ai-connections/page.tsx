@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
+import { AiActionsList } from "@/components/mcp/ai-actions-list";
 import { ConnectionsList } from "@/components/mcp/connections-list";
 import { MCP_RESOURCE, mcpOn } from "@/core/auth/mcp";
 import { getOrgContext } from "@/core/auth/session";
 import { todayInCopenhagen } from "@/core/dates";
 import { redirect } from "@/i18n/navigation";
+import { listAiActions } from "@/modules/mcp/ai-actions";
 import { listConnections } from "@/modules/mcp/connections";
 import { connectingRider } from "@/modules/mcp/eligibility";
 
@@ -30,7 +32,8 @@ export default async function AiConnectionsPage() {
   }
   const t = await getTranslations("aiConnections");
   const rider = await connectingRider(ctx, Number(todayInCopenhagen().slice(0, 4)));
-  const connections = "refused" in rider ? [] : await listConnections(ctx);
+  const [connections, actions] =
+    "refused" in rider ? [[], []] : await Promise.all([listConnections(ctx), listAiActions(ctx)]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -52,6 +55,16 @@ export default async function AiConnectionsPage() {
               clientHost: c.clientHost,
               createdAt: c.createdAt.toISOString(),
               lastUsedAt: c.lastUsedAt?.toISOString() ?? null,
+              permissions: c.permissions,
+            }))}
+          />
+          <AiActionsList
+            actions={actions.map((a) => ({
+              id: a.id,
+              tool: a.tool,
+              label: a.label,
+              createdAt: a.createdAt.toISOString(),
+              undone: a.undoneAt !== null,
             }))}
           />
           <section className="flex flex-col gap-2">

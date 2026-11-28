@@ -260,9 +260,13 @@ allows. Kadence calls no model here and sends nothing by itself.
 - **Where it goes** is the assistant's maker, wherever they keep it; for
   some that is outside the EU. That is the person's choice for their own
   data, and the consent page says it before the yes.
-- **Nothing is changed or deleted** through a connection in the first
-  wave: the assistant can read and nothing else. The trail marks every row
-  a later wave lets an assistant write (`actor_type = 'ai_connection'`).
+- **Changing and deleting are the person's choice** (docs/adr/0120). A
+  new connection can read and nothing else; the person turns on, switch
+  by switch, what it may change or delete of their own, and can take any
+  change back under AI-forbindelser for 30 days. What the assistant sends
+  Kadence to change goes to nobody else; nothing is mailed or messaged.
+  The trail marks every row an assistant writes
+  (`actor_type = 'ai_connection'`).
 - **Off with `MCP=off`.** The installation then offers no connection, and
   the OAuth endpoints answer 404.
 

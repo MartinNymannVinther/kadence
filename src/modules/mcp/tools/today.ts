@@ -13,19 +13,23 @@ export const getToday = defineTool({
     "The rider's day in Kadence: today's planned sessions (pas), the rides (ture) of today and yesterday — one from Garmin with only the rider's own part, as in list_my_rides — and whether today's check-in is done. Dates are Copenhagen days.",
   input: z.object({}),
   scope: "kadence:read",
+  permission: "read_sessions",
   role: "rider",
   readOnly: true,
-  run: async ({ ctx, riderId, today }) => {
-    const [sessions, rides, checkin] = await Promise.all([
+  run: async ({ ctx, riderId, today, permissions }) => {
+    // Rides and the check-in only where the person lets the assistant read them (docs/adr/0120).
+    const rides = permissions.includes("read_rides");
+    const checkins = permissions.includes("read_checkins");
+    const [sessions, ridden, checkin] = await Promise.all([
       listSessions(ctx, { from: today, to: today, riderIds: [riderId] }),
-      recentRides(ctx, riderId, { from: addDaysIso(today, -1), to: today }),
-      getCheckin(ctx, riderId, today),
+      rides ? recentRides(ctx, riderId, { from: addDaysIso(today, -1), to: today }) : [],
+      checkins ? getCheckin(ctx, riderId, today) : null,
     ]);
     return {
       today,
       sessions: sessions.map(sessionShape),
-      rides: rides.map(anyRideShape),
-      checkinDone: checkin !== null,
+      ...(rides && { rides: ridden.map(anyRideShape) }),
+      ...(checkins && { checkinDone: checkin !== null }),
     };
   },
 });

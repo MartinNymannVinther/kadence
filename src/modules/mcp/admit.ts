@@ -119,5 +119,14 @@ export async function admit(
 
   // What the token says and what the person said yes to, both.
   const scopes = connection.scopes.filter((s) => claims.scopes.includes(s));
-  return { caller: { ctx, riderId: rider.riderId, today }, scopes };
+  return {
+    caller: {
+      ctx,
+      riderId: rider.riderId,
+      today,
+      connectionId: connection.id,
+      permissions: connection.permissions,
+    },
+    scopes,
+  };
 }

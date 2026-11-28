@@ -69,6 +69,7 @@ export async function RiderChangesSection({
                       : t(c.kind === "unskipped" ? "unskipped" : "skipped")}
                     {c.reason && ` · ${reason(c.reason as "ill")}`}
                     {c.byRole === "coach" && <span className="text-meta"> · {t("byCoach")}</span>}
+                    {c.viaAi && <span className="text-meta"> · {t("viaAi")}</span>}
                   </span>
                   {c.note && <span className="text-meta break-words">“{c.note}”</span>}
                 </li>

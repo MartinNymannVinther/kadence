@@ -463,6 +463,13 @@
       "when": 1795855620043,
       "tag": "0065_pain_changes_flag",
       "breakpoints": true
+    },
+    {
+      "idx": 66,
+      "version": "7",
+      "when": 1795856156193,
+      "tag": "0066_ai_permissions_and_undo",
+      "breakpoints": true
     }
   ]
 }

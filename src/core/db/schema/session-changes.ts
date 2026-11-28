@@ -44,6 +44,8 @@ export const sessionChanges = pgTable(
     reason: text("reason"),
     /** Who made the change: the rider, or a coach. */
     byRole: text("by_role").notNull(),
+    /** Whether the person made it in Kadence, or their own assistant did (docs/adr/0120). */
+    via: text("via").notNull().default("app"),
     changedBy: text("changed_by").references(() => users.id, { onDelete: "set null" }),
     changedAt: timestamp("changed_at", { withTimezone: true }).notNull().defaultNow(),
   },
@@ -55,6 +57,7 @@ export const sessionChanges = pgTable(
       sql`${t.reason} is null or ${t.reason} in ('ill','pain','tired','school','weather','time','travel','other')`,
     ),
     check("session_changes_by_role", sql`${t.byRole} in ('rider', 'coach')`),
+    check("session_changes_via", sql`${t.via} in ('app', 'ai')`),
     check("session_changes_to_date", sql`(${t.kind} = 'moved') = (${t.toDate} is not null)`),
   ],
 );
