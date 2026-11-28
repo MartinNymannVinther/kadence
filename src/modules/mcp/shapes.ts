@@ -7,8 +7,11 @@ import type { CalendarSession } from "@/modules/training/sessions";
  * objects with English keys, minutes and kilometres, and whatever a person
  * wrote in a field of its own, capped (docs/plan-mcp.md §2.4). Nobody's
  * account id, nothing about other people, no GPS track. A ride that came
- * through Garmin keeps only that it was ridden: Garmin's numbers do not go
- * to a model the rider chose (docs/adr/0118, ADR 0112). Pure.
+ * through Garmin keeps only what Kadence itself holds about it: that it
+ * was ridden, the session it was planned as, and what the rider said of
+ * it — how hard, how it felt, the note. Garmin's own numbers (time,
+ * distance, load, heart rate, power, the day it was recorded) do not go
+ * to a model the rider chose (docs/adr/0118, amended 28 November 2026; ADR 0112). Pure.
  */
 
 export const TEXT_CHARS = 2000;
@@ -43,7 +46,7 @@ export function sessionShape(s: CalendarSession) {
     structure: s.structure ?? null,
     ridden: ride
       ? fromGarmin(ride.source)
-        ? { fromGarmin: true }
+        ? { fromGarmin: true, rpe: ride.rpe ?? null }
         : {
             minutes: minutes(ride.movingSeconds),
             km: km(ride.distanceM),
@@ -70,6 +73,29 @@ export function rideShape(r: RecentRide) {
     planned: r.planned,
   };
 }
+
+/**
+ * A ride from Garmin, as the rider's own part of it: what they said of it,
+ * and — when it was planned — the session's day and title, which are
+ * Kadence's. A ride nobody planned carries no day: the day it was ridden
+ * is Garmin's.
+ */
+export function garminRideShape(r: RecentRide) {
+  return {
+    id: r.id,
+    fromGarmin: true as const,
+    planned: r.planned,
+    date: r.planned ? r.onDate : null,
+    title: r.planned && "title" in r.name ? text(r.name.title, TITLE_CHARS) : "",
+    rpe: r.rpe,
+    feel: r.feel,
+    note: text(r.note),
+  };
+}
+
+/** Any ride: Kadence's numbers for one of its own, the rider's part for one from Garmin. */
+export const anyRideShape = (r: RecentRide) =>
+  fromGarmin(r.source) ? garminRideShape(r) : rideShape(r);
 
 export function checkinShape(c: CheckinRow) {
   return {
