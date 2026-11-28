@@ -151,7 +151,7 @@ describe("a demo workspace", () => {
     expect(skipped.rows[0].n).toBe(1);
   });
 
-  it("shows a rider whose sessions on one weekday were skipped for school (ADR 0118)", async () => {
+  it("shows a rider whose sessions on one weekday were skipped for school (ADR 0119)", async () => {
     const coach = { orgId, userId };
     const riders = await getRiders(coach);
     const patterns = await patternsFor(

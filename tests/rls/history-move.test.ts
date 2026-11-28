@@ -181,7 +181,7 @@ async function seedHistory() {
     scheduled_on: DAY,
     content_hash: "c".repeat(64),
   });
-  // A skipped session's reason and the rider's words (drizzle/0063, ADR 0117).
+  // A skipped session's reason and the rider's words (drizzle/0064, ADR 0117).
   await seed("session_changes", {
     id: "hm_change",
     rider_id: FROM,

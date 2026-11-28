@@ -52,7 +52,7 @@ export type InsightRace = {
   priority: "A" | "B";
 };
 
-/** A session moved or skipped for pain or injury (docs/adr/0118). */
+/** A session moved or skipped for pain or injury (docs/adr/0119). */
 export type InsightPainChange = { riderId: string; fromDate: string; reason: string | null };
 
 export type Gathered = {

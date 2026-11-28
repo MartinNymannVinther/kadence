@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { patternLine, weekDraftPrompt } from "@/modules/assist/week-draft-prompt";
 
-/** The week draft is told the patterns in a rider's changes, as codes and counts (docs/adr/0118). */
+/** The week draft is told the patterns in a rider's changes, as codes and counts (docs/adr/0119). */
 describe("patterns in the week draft", () => {
   const base = {
     monday: "2026-11-30",

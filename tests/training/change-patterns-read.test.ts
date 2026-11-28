@@ -8,7 +8,7 @@ import { adminPool } from "../helpers/db";
 import { insertSql, seedPerson } from "../helpers/rows";
 
 /**
- * What a rider's changes tell (docs/adr/0118): the coach's attention list
+ * What a rider's changes tell (docs/adr/0119): the coach's attention list
  * warns when sessions were dropped for pain twice in a week, the rider's
  * page and the planner see the patterns, and a parent reads the changes
  * without the words beside them.

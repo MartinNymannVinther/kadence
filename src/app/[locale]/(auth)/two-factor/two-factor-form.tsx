@@ -3,10 +3,12 @@
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { authClient } from "@/core/auth/client";
+import { leavesTheApp, nextPath } from "@/core/auth/next-path";
 import { useRouter } from "@/i18n/navigation";
 
 export function TwoFactorForm() {
@@ -15,6 +17,8 @@ export function TwoFactorForm() {
   const [code, setCode] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // The address the login was asked to go on to, kept through the second step.
+  const destination = nextPath(useSearchParams().get("next"));
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -27,7 +31,11 @@ export function TwoFactorForm() {
       setCode("");
       return;
     }
-    router.push("/today");
+    if (leavesTheApp(destination)) {
+      window.location.assign(destination);
+      return;
+    }
+    router.push(destination);
     router.refresh();
   }
 

@@ -5,7 +5,7 @@ import type { OrgContext } from "@/core/db/tenant";
 import { riderChanges } from "@/modules/training/session-changes";
 
 /**
- * "Ændringer i planen" on a rider's page (docs/adr/0118): how many of the
+ * "Ændringer i planen" on a rider's page (docs/adr/0119): how many of the
  * rider's sessions were moved or skipped in the last eight weeks, the
  * reasons, the patterns Kadence sees in them, and the latest changes with
  * the words beside them — where the reader may read them.

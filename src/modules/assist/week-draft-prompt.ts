@@ -26,7 +26,7 @@ export type WeekDraftContext = {
   events: PromptEvent[];
   recentWeeks: number[];
   flags: string[];
-  /** The patterns in the rider's moved and skipped sessions (docs/adr/0118); codes and counts, never words. */
+  /** The patterns in the rider's moved and skipped sessions (docs/adr/0119); codes and counts, never words. */
   patterns: ChangePattern[];
   templates: Array<{ id: string; name: string; sport: string; minutes: number }>;
 };

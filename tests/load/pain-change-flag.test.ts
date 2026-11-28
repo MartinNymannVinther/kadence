@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { painChangesFlag } from "@/modules/load";
 
-/** Sessions moved or skipped for pain twice in a week (docs/adr/0118). */
+/** Sessions moved or skipped for pain twice in a week (docs/adr/0119). */
 describe("changes for pain", () => {
   const today = "2026-11-27";
   it("warn the coach the second time in seven days", () => {

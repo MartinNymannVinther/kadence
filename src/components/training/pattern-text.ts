@@ -12,7 +12,7 @@ export function weekdayName(weekday: number, locale: string): string {
 }
 
 /**
- * One sentence for a pattern in a rider's changes (docs/adr/0118), said
+ * One sentence for a pattern in a rider's changes (docs/adr/0119), said
  * as a colleague would: what Kadence sees, and a possibility beside it.
  */
 export function patternText(pattern: ChangePattern, t: T, reason: T, locale: string): string {

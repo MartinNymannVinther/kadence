@@ -6,7 +6,7 @@ import {
   type ChangeFact,
 } from "@/modules/training/change-patterns";
 
-/** Patterns in a rider's moved and skipped sessions (docs/adr/0118). */
+/** Patterns in a rider's moved and skipped sessions (docs/adr/0119). */
 
 const TODAY = "2026-11-27"; // a Friday
 

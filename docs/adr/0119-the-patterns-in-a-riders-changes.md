@@ -1,4 +1,4 @@
-# ADR 0118: The patterns in a rider's changes
+# ADR 0119: The patterns in a rider's changes
 
 Status: accepted · Date: 2026-11-27 · Builds on 0117 (a session moved or skipped says why), 0026 (guardrails), 0043 (Planlæg ugen), 0097 (known pains)
 
@@ -38,7 +38,7 @@ the decision to the coach.
   `changed_for_pain` on the coach's attention list, in the injury
   section of the coach guide. It is computed beside the guardrails
   (`src/modules/load/pain-change-flag.ts`) and can be marked afklaret
-  like the others; a third one brings it back. Migration 0064 lets
+  like the others; a third one brings it back. Migration 0065 lets
   `flag_resolutions` hold it.
 - **The AI's week draft for one rider is told the patterns,** as codes
   and counts ("Tuesday sessions are often moved or skipped, 3 of 4

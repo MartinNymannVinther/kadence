@@ -446,6 +446,7 @@
       "team": "Team",
       "me": "Profile",
       "devices": "Devices",
+      "aiConnections": "Your AI",
       "subscription": "Subscription",
       "billing": "Billing",
       "prices": "Prices",
@@ -6558,6 +6559,54 @@
       "undone": "The session is planned again.",
       "line": "Skipped: {reason}",
       "lineNoReason": "Skipped"
+    }
+  },
+  "connect": {
+    "metaTitle": "Connect your AI",
+    "title": "{client} would like to read your training",
+    "returnsTo": "When you have answered, Kadence sends you back to {host}.",
+    "workspace": "Workspace",
+    "workspaceOne": "The connection is for {workspace}.",
+    "mayTitle": "The assistant can",
+    "mayRead": "read your plan, your rides, your form, your check-ins and your season plan",
+    "mayNotTitle": "The assistant cannot",
+    "mayNotChange": "change, delete or send anything in Kadence",
+    "mayNotOthers": "see anyone else's data, your teammates' included",
+    "mayNotGarmin": "read rides that came in from Garmin",
+    "where": "What the assistant reads goes to the service you chose yourself, which may be outside the EU. You can remove the connection again under Settings → Your AI.",
+    "name": "The assistant gave its name itself. The address above is the one you can trust.",
+    "accept": "Yes, give access",
+    "deny": "No thanks",
+    "back": "Back",
+    "error": "That did not work. Try again in a moment.",
+    "unknownTitle": "Kadence does not know the assistant",
+    "unknownBody": "Start the connection again from your assistant.",
+    "refused": {
+      "notRider": "For now only riders can connect their own AI, and only to their own data. Everything else in Kadence works as before.",
+      "tooYoung": "You can connect an AI yourself from the year you turn 15. That is what the Danish data protection act says. Everything else in Kadence works as before."
+    }
+  },
+  "aiConnections": {
+    "title": "Your AI",
+    "intro": "Here are the assistants you have given access to your training in Kadence, such as Claude, Le Chat or ChatGPT. The connections are for this workspace, and only you can see them.",
+    "empty": "You have not connected an assistant yet.",
+    "created": "Connected {date}",
+    "lastUsed": "Last used {when}",
+    "neverUsed": "Not used yet",
+    "remove": "Remove",
+    "removeTitle": "Remove {name}?",
+    "removeBody": "The assistant can no longer read your training from the moment you remove it. To use it again, connect it anew.",
+    "removed": "The connection is removed.",
+    "howTitle": "How to connect",
+    "howBody": "Add Kadence as a connection (a connector) in your assistant with the address here. The assistant sends you to Kadence, where you sign in and say yes.",
+    "address": "Address:",
+    "claude": "Claude: add a custom connector under Settings → Connectors. It also works with a free account.",
+    "leChat": "Le Chat: add an MCP connector and choose sign-in with OAuth.",
+    "chatgpt": "ChatGPT: OpenAI today lets only Business, Enterprise and Edu accounts use custom connections in full. With Pro it can only read.",
+    "where": "What the assistant reads goes to the service you chose, which may be outside the EU. Rides from Garmin are left out.",
+    "refused": {
+      "notRider": "For now only riders can connect their own AI, and only to their own data. Everything else in Kadence works as before.",
+      "tooYoung": "You can connect an AI yourself from the year you turn 15. That is what the Danish data protection act says. Everything else in Kadence works as before."
     }
   }
 }

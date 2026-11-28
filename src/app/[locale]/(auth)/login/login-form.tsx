@@ -16,6 +16,7 @@ import {
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/core/auth/client";
+import { leavesTheApp, nextPath } from "@/core/auth/next-path";
 import { Link, useRouter } from "@/i18n/navigation";
 
 export function LoginForm({ signupOpen, mailOn }: { signupOpen: boolean; mailOn: boolean }) {
@@ -26,7 +27,16 @@ export function LoginForm({ signupOpen, mailOn }: { signupOpen: boolean; mailOn:
   // An invitation link sends people here to sign in first and then back;
   // only a path on this site is followed, never an address elsewhere.
   const next = useSearchParams().get("next");
-  const destination = next && next.startsWith("/") && !next.startsWith("//") ? next : "/today";
+  const destination = nextPath(next);
+
+  function go() {
+    if (leavesTheApp(destination)) {
+      window.location.assign(destination);
+      return;
+    }
+    router.push(destination);
+    router.refresh();
+  }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -46,11 +56,10 @@ export function LoginForm({ signupOpen, mailOn }: { signupOpen: boolean; mailOn:
       return;
     }
     if (data && "twoFactorRedirect" in data && data.twoFactorRedirect) {
-      router.push("/two-factor");
+      router.push(next ? `/two-factor?next=${encodeURIComponent(destination)}` : "/two-factor");
       return;
     }
-    router.push(destination);
-    router.refresh();
+    go();
   }
 
   async function handlePasskey() {
@@ -62,8 +71,7 @@ export function LoginForm({ signupOpen, mailOn }: { signupOpen: boolean; mailOn:
       setError(t("passkeyError"));
       return;
     }
-    router.push(destination);
-    router.refresh();
+    go();
   }
 
   return (

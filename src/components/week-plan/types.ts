@@ -28,7 +28,7 @@ export type PlanRider = {
   id: string;
   name: string;
   basis: PlanBasis | null;
-  /** The patterns in the rider's moved and skipped sessions (docs/adr/0118). */
+  /** The patterns in the rider's moved and skipped sessions (docs/adr/0119). */
   patterns?: ChangePattern[];
 };
 

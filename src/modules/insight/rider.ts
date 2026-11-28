@@ -104,7 +104,7 @@ export function riderInsight(
    * (docs/adr/0097).
    */
   club = true,
-  /** Sessions moved or skipped for pain or injury (docs/adr/0118). */
+  /** Sessions moved or skipped for pain or injury (docs/adr/0119). */
   painChanges: readonly InsightPainChange[] = [],
 ): RiderInsight {
   const monday = mondayOf(todayIso);
@@ -221,7 +221,7 @@ export function riderInsight(
           }
         : null,
   });
-  // Changes for pain twice in a week (ADR 0118), beside the guardrails' own, still most serious first.
+  // Changes for pain twice in a week (ADR 0119), beside the guardrails' own, still most serious first.
   const painFlag = painChangesFlag(painChanges, todayIso);
   const flags = painFlag
     ? [...fromGuardrails, painFlag].sort((a, b) => RANK[a.severity] - RANK[b.severity])

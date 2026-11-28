@@ -5,6 +5,7 @@ import { blockItemInput } from "@/modules/training/block-items";
 import { createBlock, listBlocks, updateBlock } from "@/modules/training/blocks";
 import { listSessions } from "@/modules/training/sessions";
 import { createTemplate } from "@/modules/training/templates";
+import { addDaysIso, mondayOf, todayInCopenhagen } from "@/core/dates";
 import { adminPool } from "../helpers/db";
 import { insertSql, seedPerson } from "../helpers/rows";
 
@@ -25,7 +26,10 @@ vi.mock("@/core/dates", async (importOriginal) => {
 const ORG = "org_blocks";
 const COACH = { orgId: ORG, userId: "user_blocks_coach" };
 const RIDER = { orgId: ORG, userId: "user_blocks_rider" };
-const MONDAY = "2026-11-02";
+// Next week's Monday: applying a block more than a week back is refused,
+// so a fixed date would turn this test red as the calendar passes it.
+const MONDAY = mondayOf(addDaysIso(todayInCopenhagen(), 7));
+const day = (offset: number) => addDaysIso(MONDAY, offset);
 
 let admin: Pool;
 let blockId: string;
@@ -103,17 +107,11 @@ describe("a training block", () => {
     expect(sessions).toBe(10);
     const planned = await listSessions(COACH, {
       from: MONDAY,
-      to: "2026-11-15",
+      to: day(13),
       riderIds: ["b_ida"],
     });
     expect(planned).toHaveLength(5);
-    expect(planned.map((s) => s.onDate).sort()).toEqual([
-      "2026-11-02",
-      "2026-11-03",
-      "2026-11-04",
-      "2026-11-07",
-      "2026-11-11",
-    ]);
+    expect(planned.map((s) => s.onDate).sort()).toEqual([MONDAY, day(1), day(2), day(5), day(9)]);
     expect(planned.every((s) => s.groupKey)).toBe(true);
   });
 });
@@ -172,7 +170,7 @@ describe("a block with sessions of its own (ADR 0059)", () => {
     const [ida] = await previewBlock(COACH, {
       blockId: ownId,
       riderIds: ["b_ida"],
-      startMonday: "2026-11-16",
+      startMonday: day(14),
     });
     expect(ida!.weeks[0]).toMatchObject({ sessions: 2 });
     expect(ida!.weeks[0]!.bikeHours).toBeGreaterThanOrEqual(1.5);
@@ -182,14 +180,14 @@ describe("a block with sessions of its own (ADR 0059)", () => {
     const { sessions } = await applyBlock(COACH, {
       blockId: ownId,
       riderIds: ["b_ida", "b_noah"],
-      startMonday: "2026-11-16",
+      startMonday: day(14),
     });
     expect(sessions).toBe(4);
-    const week = await listSessions(COACH, { from: "2026-11-16", to: "2026-11-22" });
+    const week = await listSessions(COACH, { from: day(14), to: day(20) });
     const own = week.filter((s) => s.title === "Holdtur");
     expect(own).toHaveLength(2);
     expect(own[0]).toMatchObject({
-      onDate: "2026-11-17",
+      onDate: day(15),
       templateId: null,
       description: "Rolig, samlet",
       plannedMinutes: 90,
@@ -197,7 +195,7 @@ describe("a block with sessions of its own (ADR 0059)", () => {
     });
     expect(own[0]!.startTime).toBe("17:30:00");
     expect(new Set(own.map((s) => s.groupKey)).size).toBe(1);
-    const fromLibrary = week.filter((s) => s.onDate === "2026-11-19");
+    const fromLibrary = week.filter((s) => s.onDate === day(17));
     expect(fromLibrary.map((s) => s.startTime)).toEqual(["06:45:00", "06:45:00"]);
   });
 

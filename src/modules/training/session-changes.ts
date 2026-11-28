@@ -11,11 +11,11 @@ import {
 } from "./change-patterns";
 
 /**
- * A rider's moved and skipped sessions, read for the coach (docs/adr/0118):
+ * A rider's moved and skipped sessions, read for the coach (docs/adr/0119):
  * the summary and patterns for the rider's page, the patterns alone for
  * "Planlæg ugen", and the last changes with their words. Plain selects
  * under the caller's policies: a parent reads the changes and never the
- * words, a teammate nothing (drizzle/0063).
+ * words, a teammate nothing (drizzle/0064).
  */
 
 export type RecentChange = {

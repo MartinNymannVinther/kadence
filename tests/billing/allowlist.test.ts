@@ -39,6 +39,8 @@ const STILL_ALLOWED = {
     "removeUploadKeyAction",
     "deleteActivityAction",
   ],
+  // Taking an assistant's access away (docs/adr/0118).
+  "src/modules/mcp/actions.ts": ["removeAiConnectionAction"],
 } as const;
 
 function files(dir: string): string[] {

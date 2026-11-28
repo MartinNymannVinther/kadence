@@ -148,6 +148,7 @@ services:
       CALC_ENERGY: ${CALC_ENERGY:-}
       GUIDE_FOOD: ${GUIDE_FOOD:-}
       GUIDE_TEAMS: ${GUIDE_TEAMS:-}
+      MCP: ${MCP:-}
       # The teams page (ADR 0072): whether Cykling Danmark is read. What
       # was read is kept in the kadence-teams volume below.
       TEAMS_DCU: ${TEAMS_DCU:-}

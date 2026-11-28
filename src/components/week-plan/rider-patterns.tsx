@@ -4,7 +4,7 @@ import type { PlanRider } from "./types";
 
 /**
  * The patterns in the chosen riders' moved and skipped sessions, under the
- * riders in "Planlæg ugen" (docs/adr/0118): what Kadence sees, so the week
+ * riders in "Planlæg ugen" (docs/adr/0119): what Kadence sees, so the week
  * can be laid to the rider. Nothing when nobody chosen has a pattern.
  */
 export function RiderPatterns({ riders, selected }: { riders: PlanRider[]; selected: string[] }) {

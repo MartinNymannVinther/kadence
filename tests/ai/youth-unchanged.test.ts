@@ -17,7 +17,7 @@ import { parseWorkoutText } from "@/modules/workouts/parse-text";
  * same inputs; a change here is a change for young riders and needs a
  * reason of its own. The three week drafts changed on purpose with
  * docs/adr/0101: a race week is planned as a coach plans it, for young
- * riders as for adults; the week draft again with docs/adr/0118, which
+ * riders as for adults; the week draft again with docs/adr/0119, which
  * tells the model the patterns in the rider's moved and skipped sessions.
  */
 

@@ -38,7 +38,8 @@ ALTER TABLE "session_changes" ADD CONSTRAINT "session_changes_planned_session_id
 ALTER TABLE "session_changes" ADD CONSTRAINT "session_changes_changed_by_users_id_fk" FOREIGN KEY ("changed_by") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "session_change_notes_rider_idx" ON "session_change_notes" USING btree ("org_id","rider_id");--> statement-breakpoint
 CREATE INDEX "session_changes_rider_idx" ON "session_changes" USING btree ("org_id","rider_id","changed_at");--> statement-breakpoint
-ALTER TABLE "planned_sessions" ADD CONSTRAINT "planned_sessions_skip" CHECK (("planned_sessions"."skip_reason" is null or "planned_sessions"."skipped_at" is not null) and ("planned_sessions"."skip_reason" is null or "planned_sessions"."skip_reason" in ('ill','pain','tired','school','weather','time','travel','other')));--> statement-breakpoint
+ALTER TABLE "planned_sessions" ADD CONSTRAINT "planned_sessions_skip" CHECK (("planned_sessions"."skip_reason" is null or "planned_sessions"."skipped_at" is not null) and ("planned_sessions"."skip_reason" is null or "planned_sessions"."skip_reason" in ('ill','pain','tired','school','weather','time','travel','other')));
+--> statement-breakpoint
 -- Why a session was moved or skipped (docs/adr/0117). A row is a record of
 -- what somebody did: read by whoever reads the rider's training, a parent
 -- included; written by whoever may change the rider's plan, as themselves

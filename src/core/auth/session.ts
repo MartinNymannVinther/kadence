@@ -46,7 +46,7 @@ export const getSession = cache(async () => {
  * about to decide. Cached per request, so this costs one small indexed
  * lookup per page, not one per query.
  */
-const stillAMember = cache(async (userId: string, orgId: string): Promise<boolean> => {
+export const stillAMember = cache(async (userId: string, orgId: string): Promise<boolean> => {
   const [row] = await authDb
     .select({ id: memberships.id })
     .from(memberships)

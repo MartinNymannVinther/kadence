@@ -3,7 +3,7 @@ import type { Flag } from "./guardrails";
 
 /**
  * Sessions moved or skipped for pain or injury, twice or more in a week
- * (docs/adr/0118). A rider who says "Ondt eller skade" once may have had
+ * (docs/adr/0119). A rider who says "Ondt eller skade" once may have had
  * a stiff knee; twice in seven days is something the coach should know of
  * before planning the next week — a warning on the attention list, the
  * same weight as a pain answered on a check-in.

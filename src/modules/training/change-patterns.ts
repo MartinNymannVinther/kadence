@@ -1,7 +1,7 @@
 import { addDaysIso, diffDays } from "@/core/dates";
 
 /**
- * The patterns in a rider's moved and skipped sessions (docs/adr/0118):
+ * The patterns in a rider's moved and skipped sessions (docs/adr/0119):
  * what the coach sees on the rider's page and as a hint in "Planlæg
  * ugen", so the plan can be shaped to the rider. Rules, not a model:
  *

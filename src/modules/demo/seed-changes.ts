@@ -12,7 +12,7 @@ import { pick, type L } from "./seed-data";
  * one of Emma's next sessions moved a day for school, with the coach's
  * words beside it; and a third rider whose sessions on one weekday were
  * skipped for school three weeks running, so "Ændringer i planen" and
- * "Planlæg ugen" have a pattern to show (ADR 0118). Written through the
+ * "Planlæg ugen" have a pattern to show (ADR 0119). Written through the
  * ordinary services, as the coach.
  */
 export async function seedChanges(

@@ -170,7 +170,7 @@ export async function proposeWeek(
     riderIds: [rider.id],
     today: addDaysIso(input.monday, -1),
   });
-  // Codes and counts only; the rider's words beside a change never reach the model (ADR 0118).
+  // Codes and counts only; the rider's words beside a change never reach the model (ADR 0119).
   const patterns = await patternsFor(ctx, [rider.id], addDaysIso(input.monday, -1));
   const paradigm = paradigmFor(isGuidanceId(loaded.guidance) ? loaded.guidance : "dcu-2025");
   const guided = paradigm !== null;
