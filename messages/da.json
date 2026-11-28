@@ -446,6 +446,7 @@
       "team": "Holdet",
       "me": "Profil",
       "devices": "Enheder",
+      "aiConnections": "Din AI",
       "subscription": "Abonnement",
       "billing": "Betaling",
       "prices": "Priser",
@@ -6539,6 +6540,54 @@
       "undone": "Træningspasset er planlagt igen.",
       "line": "Sprunget over: {reason}",
       "lineNoReason": "Sprunget over"
+    }
+  },
+  "connect": {
+    "metaTitle": "Forbind din AI",
+    "title": "{client} vil gerne læse din træning",
+    "returnsTo": "Når du har svaret, sender Kadence dig tilbage til {host}.",
+    "workspace": "Arbejdsrum",
+    "workspaceOne": "Forbindelsen gælder {workspace}.",
+    "mayTitle": "Assistenten kan",
+    "mayRead": "læse din plan, dine ture, din form, dine check-ins og din sæsonplan",
+    "mayNotTitle": "Assistenten kan ikke",
+    "mayNotChange": "ændre, slette eller sende noget i Kadence",
+    "mayNotOthers": "se andres data, heller ikke dine holdkammeraters",
+    "mayNotGarmin": "læse ture, der er kommet ind fra Garmin",
+    "where": "Det, assistenten læser, sendes til den tjeneste, du selv har valgt, og den kan ligge uden for EU. Du kan fjerne forbindelsen igen under Indstillinger → Din AI.",
+    "name": "Navnet på assistenten har den selv opgivet. Adressen ovenfor er den, du kan stole på.",
+    "accept": "Ja, giv adgang",
+    "deny": "Nej tak",
+    "back": "Tilbage",
+    "error": "Det lykkedes ikke. Prøv igen om lidt.",
+    "unknownTitle": "Kadence kender ikke assistenten",
+    "unknownBody": "Start forbindelsen forfra fra din assistent.",
+    "refused": {
+      "notRider": "Lige nu kan kun ryttere forbinde deres egen AI, og kun til deres egne data. Alt andet i Kadence virker som før.",
+      "tooYoung": "Du kan selv forbinde en AI fra det år, du fylder 15. Sådan siger databeskyttelsesloven. Alt andet i Kadence virker som før."
+    }
+  },
+  "aiConnections": {
+    "title": "Din AI",
+    "intro": "Her ser du de assistenter, du har givet adgang til din træning i Kadence, fx Claude, Le Chat eller ChatGPT. Forbindelserne gælder dette arbejdsrum, og kun du kan se dem.",
+    "empty": "Du har ikke forbundet nogen assistent endnu.",
+    "created": "Forbundet {date}",
+    "lastUsed": "Sidst brugt {when}",
+    "neverUsed": "Ikke brugt endnu",
+    "remove": "Fjern",
+    "removeTitle": "Fjern {name}?",
+    "removeBody": "Assistenten kan ikke længere læse din træning, fra det øjeblik du fjerner den. Vil du bruge den igen, forbinder du den forfra.",
+    "removed": "Forbindelsen er fjernet.",
+    "howTitle": "Sådan forbinder du",
+    "howBody": "Tilføj Kadence som en forbindelse (en connector) i din assistent med adressen her. Assistenten sender dig til Kadence, hvor du logger ind og siger ja.",
+    "address": "Adresse:",
+    "claude": "Claude: tilføj en egen connector under Indstillinger → Connectors. Det virker også med en gratis konto.",
+    "leChat": "Le Chat: tilføj en MCP-connector, og vælg login med OAuth.",
+    "chatgpt": "ChatGPT: OpenAI lader i dag kun Business-, Enterprise- og Edu-konti bruge egne forbindelser fuldt ud. Med Pro kan den kun læse.",
+    "where": "Det, assistenten læser, sendes til den tjeneste, du har valgt, og den kan ligge uden for EU. Ture fra Garmin kommer ikke med.",
+    "refused": {
+      "notRider": "Lige nu kan kun ryttere forbinde deres egen AI, og kun til deres egne data. Alt andet i Kadence virker som før.",
+      "tooYoung": "Du kan selv forbinde en AI fra det år, du fylder 15. Sådan siger databeskyttelsesloven. Alt andet i Kadence virker som før."
     }
   }
 }

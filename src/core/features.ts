@@ -16,6 +16,7 @@ export const FEATURES = [
   "energyCalculator",
   "foodGuide",
   "teamsGuide",
+  "aiConnections",
 ] as const;
 export type Feature = (typeof FEATURES)[number];
 export type Features = Record<Feature, boolean>;
@@ -28,6 +29,7 @@ type FeatureEnv = Pick<
   | "CALC_ENERGY"
   | "GUIDE_FOOD"
   | "GUIDE_TEAMS"
+  | "MCP"
 >;
 
 /** The installation's features from its environment. Pure, for the tests. */
@@ -39,6 +41,7 @@ export function featuresFrom(source: FeatureEnv): Features {
     energyCalculator: source.CALC_ENERGY === "on",
     foodGuide: source.GUIDE_FOOD === "on",
     teamsGuide: source.GUIDE_TEAMS === "on",
+    aiConnections: source.MCP === "on",
   };
 }
 
@@ -63,6 +66,8 @@ export const PARKED_PATHS: ReadonlyArray<{ path: string; feature: Feature }> = [
   { path: "/calculators/energy", feature: "energyCalculator" },
   { path: "/guides/food", feature: "foodGuide" },
   { path: "/guides/teams", feature: "teamsGuide" },
+  { path: "/connect", feature: "aiConnections" },
+  { path: "/settings/ai-connections", feature: "aiConnections" },
 ];
 
 /**

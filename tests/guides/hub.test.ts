@@ -14,6 +14,7 @@ const off: Features = {
   energyCalculator: false,
   foodGuide: false,
   teamsGuide: false,
+  aiConnections: false,
 };
 
 describe("the open hub", () => {

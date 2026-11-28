@@ -30,6 +30,7 @@ import { AppSidebar } from "./app-sidebar";
 import { BottomBar } from "./bottom-bar";
 import { MobileHeader } from "./mobile-header";
 import { settingsItems } from "./(narrow)/settings/settings-items";
+import { mcpOn } from "@/core/auth/mcp";
 import { homeHref, menuFor, nameChild, nameWard, navFlags, navRole } from "./nav-items";
 import { SidebarShell, SidebarToggle } from "./sidebar-shell";
 import { getTeamSettings } from "@/modules/team/settings";
@@ -139,6 +140,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       isRider: Boolean(me?.rider),
       personal,
       billing,
+      mcp: mcpOn(),
     }),
     who: { coach: isCoach, riderId: me?.rider?.id ?? null },
   };

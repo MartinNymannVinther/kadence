@@ -1,6 +1,7 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { PageHeader } from "@/components/ui/page-header";
 import { ownerAccessSummary } from "@/core/access/summary";
+import { mcpOn } from "@/core/auth/mcp";
 import { getOrgContext } from "@/core/auth/session";
 import { trialLine } from "@/modules/billing/banner";
 import { formatLongDay } from "@/modules/billing/dates";
@@ -17,7 +18,13 @@ export default async function SettingsLayout({ children }: { children: React.Rea
   const me = ctx ? await whoAmI(ctx.orgId, ctx.userId) : null;
   const personal = ctx ? (await workspaceKind(ctx.orgId, ctx.userId)) === "personal" : false;
   const billing = billingOn();
-  const who = { isCoach: Boolean(me?.isCoach), isRider: Boolean(me?.rider), personal, billing };
+  const who = {
+    isCoach: Boolean(me?.isCoach),
+    isRider: Boolean(me?.rider),
+    personal,
+    billing,
+    mcp: mcpOn(),
+  };
   // A trial's days, quietly, for the people who decide (docs/adr/0090).
   const trial = ctx && billing && who.isCoach ? trialLine(await workspacePlan(ctx)) : null;
   const locale = await getLocale();

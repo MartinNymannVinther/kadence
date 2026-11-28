@@ -16,6 +16,8 @@ import { authDb } from "@/core/db/client";
 import * as schema from "@/core/db/schema";
 import { env } from "@/core/env";
 import { coachesTeam, COACH_ONLY_PATHS, trimForMember } from "./coach-only";
+import { mcpPlugins, oauthSchemaAliases, REFUSED_JWT_PATHS } from "./mcp";
+import { afterConsent, beforeConsent } from "./mcp-consent";
 import { resetByMail, verificationByMail } from "./mail-hooks";
 import { bodyNamesKind } from "./workspace-fields";
 import {
@@ -57,6 +59,7 @@ export const auth = betterAuth({
       // model names to the camelCase schema exports.
       two_factors: schema.twoFactors,
       rate_limits: schema.rateLimits,
+      ...oauthSchemaAliases(schema),
     },
   }),
   user: {
@@ -173,6 +176,9 @@ export const auth = betterAuth({
     // The endpoint is the door, not the page. Hiding the registration form
     // closes the front door only; this closes the one that matters.
     before: createAuthMiddleware(async (ctx) => {
+      // A person's own assistant (docs/adr/0118): no session's JWT, and the yes checked again.
+      if (REFUSED_JWT_PATHS.has(ctx.path)) throw new APIError("NOT_FOUND");
+      if (ctx.path === "/oauth2/consent") await beforeConsent(ctx);
       // What a workspace is — a club, or one person's own training — is
       // ours to set, right after creation (docs/adr/0080). Better Auth
       // does not know the column and would drop it; refusing a body that
@@ -209,6 +215,7 @@ export const auth = betterAuth({
       }
     }),
     after: createAuthMiddleware(async (ctx) => {
+      if (ctx.path === "/oauth2/consent") await afterConsent(ctx);
       // The club opened last is the one the next login opens (ADR 0048).
       // Before the coach-only trim below, which answers set-active itself.
       if (ctx.path === "/organization/set-active") {
@@ -278,6 +285,8 @@ export const auth = betterAuth({
         twoFactor: { modelName: "two_factors" },
       },
     }),
+    // OAuth for a person's own assistant over MCP (docs/adr/0118), when on.
+    ...mcpPlugins(),
     // Must stay last: makes Better Auth set cookies from server actions.
     nextCookies(),
   ],
