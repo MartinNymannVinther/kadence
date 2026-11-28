@@ -34,6 +34,8 @@ function session(over: Partial<CalendarCard>): CalendarCard {
     groupKey: null,
     seriesKey: null,
     programmeSession: null,
+    skipped: false,
+    skipReason: null,
     activityId: null,
     activity: null,
     commentCount: 0,

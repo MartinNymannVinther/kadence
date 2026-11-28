@@ -44,7 +44,8 @@ async function planFor(tx: AppTransaction, ctx: OrgContext, input: CopyWeekInput
           lte(plannedSessions.onDate, addDaysIso(monday, 6)),
         ),
       );
-  const source = await week(from);
+  // A skipped session is not copied into another week (docs/adr/0117).
+  const source = (await week(from)).filter((s) => s.skippedAt === null);
   const target = await week(to);
   const plan = planCopy({
     sessions: source,

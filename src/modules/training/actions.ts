@@ -15,7 +15,9 @@ import { createEvent, deleteEvent, EventInput, updateEvent } from "./events";
 import { createGroupSessions, scheduleTemplate } from "./group";
 import { RepeatInput } from "./recurrence";
 import { TimePlaceFields } from "./time-place";
-import { deleteSession, moveSession, updateSession } from "./sessions";
+import { CHANGE_REASONS } from "./change-reasons";
+import { moveSession, skipSession, unskipSession } from "./session-move";
+import { deleteSession, updateSession } from "./sessions";
 import {
   adoptTemplate,
   archiveTemplate,
@@ -67,8 +69,34 @@ export async function moveSessionAction(raw: unknown) {
       onDate: isoDate,
       copy: z.boolean().default(false),
       toRiderId: id.optional(),
+      ...Why.shape,
     }),
-    (ctx, input) => moveSession(ctx, input.sessionId, input.onDate, input.copy, input.toRiderId),
+    (ctx, input) =>
+      moveSession(ctx, input.sessionId, input.onDate, input.copy, input.toRiderId, input),
+    PATHS,
+  );
+}
+
+/** Why a session was moved or skipped: one reason in a tap, and a few words if wanted (ADR 0117). */
+const Why = z.object({
+  reason: z.enum(CHANGE_REASONS).nullish(),
+  note: z.string().trim().max(500).optional(),
+});
+
+export async function skipSessionAction(raw: unknown) {
+  return runAction(
+    raw,
+    z.object({ sessionId: id, ...Why.shape }),
+    (ctx, { sessionId, ...why }) => skipSession(ctx, sessionId, why),
+    PATHS,
+  );
+}
+
+export async function unskipSessionAction(raw: unknown) {
+  return runAction(
+    raw,
+    z.object({ sessionId: id }),
+    (ctx, { sessionId }) => unskipSession(ctx, sessionId),
     PATHS,
   );
 }

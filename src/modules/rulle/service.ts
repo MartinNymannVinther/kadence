@@ -94,6 +94,7 @@ export async function rulleStart(
   const riderId = me?.rider?.id ?? null;
   const own = riderId
     ? (await listSessions(ctx, { from: today, to: today, riderIds: [riderId] }))
+        .filter((s) => s.skippedAt === null)
         .map(toRulleSession)
         .filter((s): s is RulleSession => s !== null)
     : [];

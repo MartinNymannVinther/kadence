@@ -47,6 +47,8 @@ export async function readIntensity(
         eq(plannedSessions.sport, "bike"),
         gte(plannedSessions.onDate, from),
         lte(plannedSessions.onDate, to),
+        // A skipped session counts in no planned hours (docs/adr/0117).
+        isNull(plannedSessions.skippedAt),
       ),
     );
   const races = await tx

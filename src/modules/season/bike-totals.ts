@@ -68,6 +68,7 @@ export async function bikeTotalsIn(
                case when s.activity_id is null then 0 else 1 end as sessions_done
           from planned_sessions s
          where s.rider_id in (${ids}) and s.on_date between ${range.from}::date and ${range.to}::date
+           and s.skipped_at is null
         union all
         select a.rider_id, ${key("a.on_date")},
                0,

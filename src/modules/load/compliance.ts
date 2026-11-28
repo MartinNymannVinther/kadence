@@ -49,7 +49,11 @@ import type { PlanIntensity } from "./plan-intensity";
  * Pure: imports nothing from the database.
  */
 
-export type ComplianceColour = "green" | "yellow" | "red" | "grey" | "none";
+/**
+ * "skipped" is a session somebody skipped on purpose (docs/adr/0117): never
+ * what `compliance()` answers, but what the calendar shows in its place.
+ */
+export type ComplianceColour = "green" | "yellow" | "red" | "grey" | "none" | "skipped";
 
 export interface ComplianceSide {
   minutes: number;

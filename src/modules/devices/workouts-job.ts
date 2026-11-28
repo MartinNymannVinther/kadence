@@ -97,6 +97,7 @@ async function sessionsOf(owner: LinkOwner, today: string, end: string, named: s
         onDate: plannedSessions.onDate,
         structure: plannedSessions.structure,
         updatedAt: plannedSessions.updatedAt,
+        skippedAt: plannedSessions.skippedAt,
       })
       .from(plannedSessions)
       .where(
@@ -112,10 +113,11 @@ async function sessionsOf(owner: LinkOwner, today: string, end: string, named: s
       .select({ ftp: riders.ftpWatts, thresholdHr: riders.thresholdHr })
       .from(riders)
       .where(eq(riders.id, owner.riderId));
-    const sessions = rows.map((row): Session => {
+    const sessions = rows.map(({ skippedAt, ...row }): Session => {
       const read = row.sport === "bike" ? readStructure(row.structure, "bike") : null;
       const structure = read?.kind === "bike" && read.steps.length > 0 ? read : null;
-      return { ...row, structure, sendable: structure !== null };
+      // A skipped session is taken off the device like a deleted one (docs/adr/0117).
+      return { ...row, structure, sendable: structure !== null && skippedAt === null };
     });
     return { sessions, rider: rider ?? { ftp: null, thresholdHr: null } };
   });

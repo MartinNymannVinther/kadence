@@ -1,8 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { CalendarClock, Copy, Ellipsis, ExternalLink, Pencil, Trash2 } from "lucide-react";
+import {
+  CalendarClock,
+  CircleSlash,
+  Copy,
+  Ellipsis,
+  ExternalLink,
+  Pencil,
+  Trash2,
+  Undo2,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useRun } from "@/components/common/use-run";
+import { unskipSessionAction } from "@/modules/training/actions";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,6 +27,7 @@ import { cn } from "@/lib/utils";
 import { DeleteDialog } from "./delete-dialog";
 import { EditSessionSheet } from "./edit-session-sheet";
 import { MoveDialog } from "./move-dialog";
+import { SkipDialog } from "./skip-dialog";
 import type { Scope } from "@/modules/training/vocabulary";
 import type { CalendarCard, RiderOption } from "./types";
 
@@ -47,7 +59,9 @@ export function SessionMenu({
 }) {
   const t = useTranslations("calendar.menu");
   const router = useRouter();
-  const [dialog, setDialog] = useState<null | "move" | "copy" | "delete" | "edit">(null);
+  const [dialog, setDialog] = useState<null | "move" | "copy" | "skip" | "delete" | "edit">(null);
+  const changes = useTranslations("changes.skip");
+  const { run } = useRun();
   const close = (open: boolean) => !open && setDialog(null);
   // What a change can reach: this copy, the group's copies that day (a
   // coach's), and this and the coming copies of a series (ADR 0041).
@@ -94,6 +108,24 @@ export function SessionMenu({
               {t("move")}
             </DropdownMenuItem>
           )}
+          {!done && !session.skipped && (
+            <DropdownMenuItem onClick={() => setDialog("skip")}>
+              <CircleSlash />
+              {t("skip")}
+            </DropdownMenuItem>
+          )}
+          {!done && session.skipped && (
+            <DropdownMenuItem
+              onClick={() =>
+                void run(() => unskipSessionAction({ sessionId: session.id }), {
+                  success: changes("undone"),
+                })
+              }
+            >
+              <Undo2 />
+              {t("unskip")}
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem onClick={() => setDialog("copy")}>
             <Copy />
             {t("copy")}
@@ -116,6 +148,7 @@ export function SessionMenu({
           onMoved={onMoved}
         />
       )}
+      {dialog === "skip" && <SkipDialog open onOpenChange={close} session={session} />}
       {dialog === "delete" && (
         <DeleteDialog
           open

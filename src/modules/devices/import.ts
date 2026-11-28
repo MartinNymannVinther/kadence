@@ -196,6 +196,8 @@ export async function importFitIn(
         eq(plannedSessions.riderId, riderId),
         eq(plannedSessions.onDate, values.onDate),
         isNull(plannedSessions.activityId),
+        // A skipped session takes no ride; it stands as ridden without a plan (docs/adr/0117).
+        isNull(plannedSessions.skippedAt),
       ),
     );
   const sessionId =

@@ -67,6 +67,9 @@ export function ExplainedMark({
   const locale = useLocale();
   const week = useWeekNote();
   const viewer = useDeviationViewer();
+  // A skipped session has no deviation to explain; its reason stands on the card (docs/adr/0117).
+  if (session.skipped && !session.activity)
+    return <ComplianceMark colour="skipped" done={false} className={className} />;
   const explained = cardDeviation(session, today);
   const done = session.activity !== null;
   const isToday = session.onDate === today;

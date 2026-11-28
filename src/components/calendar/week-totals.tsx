@@ -62,8 +62,10 @@ export function WeekTotals({
     })),
   ];
   const week = weeklyTotals(done, monday, addDaysIso(monday, 6))[0];
-  const planned = sessions.reduce((sum, s) => sum + s.plannedMinutes, 0);
-  const strength = sessions.filter((s) => s.sport === "strength");
+  // A skipped session counts in no planned hours and no planned sessions (docs/adr/0117).
+  const kept = sessions.filter((s) => !s.skipped);
+  const planned = kept.reduce((sum, s) => sum + s.plannedMinutes, 0);
+  const strength = kept.filter((s) => s.sport === "strength");
   const strengthDone =
     strength.filter((s) => s.activity).length +
     activities.filter((a) => a.sport === "strength").length;

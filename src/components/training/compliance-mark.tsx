@@ -3,6 +3,7 @@ import {
   CircleAlert,
   CircleCheck,
   CircleDot,
+  CircleSlash,
   CircleX,
   type LucideIcon,
 } from "lucide-react";
@@ -29,11 +30,14 @@ export type PlannedLike = {
   structure: unknown;
   plannedMinutes: number;
   plannedLoad: number | null;
+  /** Set when the session was skipped on purpose (docs/adr/0117). */
+  skipped?: boolean;
   /** `loadMethod` decides whether the load counts: one from RPE alone only when far off (compliance.ts). */
   activity: { movingSeconds: number; load: number | null; loadMethod?: string | null } | null;
 };
 
 export function colourOf(session: PlannedLike, today: string): ComplianceColour {
+  if (session.skipped && !session.activity) return "skipped";
   const done = session.activity
     ? {
         minutes: session.activity.movingSeconds / 60,
@@ -65,6 +69,7 @@ export const COLOUR_STYLE: Record<
   red: { chip: "bg-warning-tint text-destructive", edge: "border-l-destructive", icon: CircleX },
   grey: { chip: "bg-muted text-meta", edge: "border-l-input", icon: Circle },
   none: { chip: "bg-muted text-meta", edge: "border-l-chart-3", icon: CircleDot },
+  skipped: { chip: "bg-muted text-meta", edge: "border-l-input", icon: CircleSlash },
 };
 
 /** The word for a colour: red is "missed" when nothing was done, "far off" when something was. */
@@ -80,6 +85,8 @@ export function stateKey(colour: ComplianceColour, done: boolean, isToday: boole
       return isToday ? "today" : "planned";
     case "none":
       return "unplanned";
+    case "skipped":
+      return "skipped";
   }
 }
 

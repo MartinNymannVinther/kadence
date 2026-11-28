@@ -1,3 +1,4 @@
+import { moveSession } from "@/modules/training/session-move";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { Pool } from "pg";
 import { addDaysIso, todayInCopenhagen } from "@/core/dates";
@@ -7,12 +8,7 @@ import { withOrgContext } from "@/core/db/tenant";
 import { newestPlanChange } from "@/modules/push/facts";
 import { newVapidKeyPair } from "@/modules/push/vapid";
 import { createGroupSessions } from "@/modules/training/group";
-import {
-  createSession,
-  deleteSession,
-  moveSession,
-  updateSession,
-} from "@/modules/training/sessions";
+import { createSession, deleteSession, updateSession } from "@/modules/training/sessions";
 import { adminPool } from "../helpers/db";
 import { insertSql, seedPerson } from "../helpers/rows";
 

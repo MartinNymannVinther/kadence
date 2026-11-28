@@ -14,6 +14,7 @@ import { newsWhen } from "./news-when";
  */
 export function RiderNews({ items, today }: { items: News[]; today: string }) {
   const t = useTranslations("today.news");
+  const reasons = useTranslations("changes.reason");
   const names = useTranslations("activities.names");
   const locale = useLocale();
   const words = {
@@ -23,6 +24,15 @@ export function RiderNews({ items, today }: { items: News[]; today: string }) {
   };
   const what = (item: News) => {
     if (item.kind === "checkin") return t("checkin");
+    if (item.change) {
+      const why = item.change.reason ? ` · ${reasons(item.change.reason as "ill")}` : "";
+      return item.change.kind === "moved" && item.change.toDate
+        ? t("moved", {
+            about: item.about,
+            day: `${weekdayShort(item.change.toDate, locale)} ${dayMonth(item.change.toDate, locale)}`,
+          }) + why
+        : t("skipped", { about: item.about }) + why;
+    }
     if (item.on === "day")
       return t("comment", {
         about: `${weekdayShort(item.about, locale)} ${dayMonth(item.about, locale)}`,
@@ -60,9 +70,11 @@ export function RiderNews({ items, today }: { items: News[]; today: string }) {
                       <span className="font-semibold">{item.riderName}</span>
                       <span className="text-meta"> · {what(item)}</span>
                     </span>
-                    <span className="line-clamp-3 text-2sm leading-relaxed break-words">
-                      {t("quote", { text: item.text })}
-                    </span>
+                    {item.text && (
+                      <span className="line-clamp-3 text-2sm leading-relaxed break-words">
+                        {t("quote", { text: item.text })}
+                      </span>
+                    )}
                     <span className="text-meta text-xs sm:hidden">{when}</span>
                   </span>
                   <span className="text-meta hidden shrink-0 pt-0.5 text-xs whitespace-nowrap sm:block">

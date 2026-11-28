@@ -14,6 +14,7 @@ export * from "./wellbeing";
 export * from "./calendar";
 export * from "./devices";
 export * from "./session-deletions";
+export * from "./session-changes";
 export * from "./upload";
 export * from "./results";
 export * from "./resets";

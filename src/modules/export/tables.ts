@@ -54,7 +54,21 @@ export const EXPORT_TABLES: ExportTable[] = [
     sheet: "Træningspas",
     orderBy: "rider_id, on_date, sort",
     columns:
-      "id, org_id, rider_id, on_date, sort, sport, title, description, structure, planned_minutes, planned_load, planned_km, template_id, programme_session, group_key, origin, activity_id, created_by, created_at, updated_at, series_key, start_time, meeting_place, updated_by",
+      "id, org_id, rider_id, on_date, sort, sport, title, description, structure, planned_minutes, planned_load, planned_km, template_id, programme_session, group_key, origin, activity_id, created_by, created_at, updated_at, series_key, start_time, meeting_place, updated_by, skipped_at, skip_reason",
+  },
+  // Every move and skip with its reason (ADR 0117), and the words beside it.
+  {
+    table: "session_changes",
+    sheet: "Flyttet og sprunget over",
+    orderBy: "rider_id, changed_at",
+    columns:
+      "id, org_id, rider_id, planned_session_id, kind, from_date, to_date, sport, title, planned_minutes, reason, by_role, changed_by, changed_at",
+  },
+  {
+    table: "session_change_notes",
+    sheet: "Kommentarer til ændringer",
+    orderBy: "rider_id",
+    columns: "change_id, org_id, rider_id, note",
   },
   {
     // The thinned samples behind the charts are not read: they are large,

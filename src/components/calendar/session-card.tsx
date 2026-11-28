@@ -3,6 +3,7 @@
 import { MessageSquare, Repeat, Users } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { COLOUR_STYLE, colourOf } from "@/components/training/compliance-mark";
+import { SkipLine } from "@/components/training/skip-line";
 import { ExplainedMark } from "@/components/training/explained-mark";
 import { durationText } from "@/components/training/duration";
 import { SportIcon } from "@/components/training/sport-icon";
@@ -93,6 +94,7 @@ export function SessionCard({
             </span>
           )}
         </span>
+        <SkipLine session={session} />
       </Link>
       <div className="flex min-h-8 items-center justify-between gap-1 pr-1 pb-1 pl-2.5">
         <ExplainedMark session={session} today={today} />

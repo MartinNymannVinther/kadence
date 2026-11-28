@@ -52,7 +52,8 @@ export function ChildCard({
 }) {
   const t = useTranslations("parents.child");
   const locale = useLocale();
-  const planned = child.sessions.reduce((sum, s) => sum + s.plannedMinutes, 0);
+  // A skipped session counts in no planned hours (docs/adr/0117).
+  const planned = child.sessions.reduce((sum, s) => sum + (s.skipped ? 0 : s.plannedMinutes), 0);
   const done = child.sessions.reduce(
     (sum, s) => sum + (s.activity ? s.activity.movingSeconds / 60 : 0),
     0,

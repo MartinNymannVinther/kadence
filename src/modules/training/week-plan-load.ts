@@ -1,4 +1,4 @@
-import { and, gte, inArray, lte } from "drizzle-orm";
+import { and, gte, inArray, lte, isNull } from "drizzle-orm";
 import { addDaysIso, diffDays, mondayOf } from "@/core/dates";
 import { plannedSessions, workoutTemplates, type PlannedSessionRow } from "@/core/db/schema";
 import { withOrgContext, type AppTransaction, type OrgContext } from "@/core/db/tenant";
@@ -24,6 +24,8 @@ function weekOf(tx: AppTransaction, riderIds: string[], monday: string) {
         inArray(plannedSessions.riderId, riderIds),
         gte(plannedSessions.onDate, monday),
         lte(plannedSessions.onDate, addDaysIso(monday, 6)),
+        // A skipped session is no part of a week to start from (docs/adr/0117).
+        isNull(plannedSessions.skippedAt),
       ),
     );
 }

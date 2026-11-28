@@ -11,7 +11,9 @@ import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { rideableStructure } from "@/modules/rulle/rideable";
 import { UploadDialog } from "@/components/activities/upload-dialog";
+import { SkipLine } from "@/components/training/skip-line";
 import { CompleteDialog } from "./complete-dialog";
+import { TodayChangeActions } from "./today-change-actions";
 import { timePlaceText, type TimePlace } from "./time-place";
 
 /**
@@ -81,13 +83,15 @@ export function TodaySession({
           <ExplainedMark session={session} today={today} />
         </p>
       </div>
+      <SkipLine session={session} className="text-2sm" />
       {session.description && (
         <p className="text-2sm line-clamp-3 leading-relaxed">{session.description}</p>
       )}
       <div className="flex flex-wrap items-center gap-2">
-        {canComplete && !done && <CompleteDialog session={session} />}
+        {canComplete && !done && !session.skipped && <CompleteDialog session={session} />}
         {canComplete &&
           !done &&
+          !session.skipped &&
           session.onDate === today &&
           rideableStructure(session.sport, session.structure) && (
             <Link
@@ -105,9 +109,12 @@ export function TodaySession({
         >
           {t("open")}
         </Link>
-        {canComplete && !done && session.onDate <= today && session.sport !== "strength" && (
-          <UploadDialog riderId={session.riderId} quiet />
-        )}
+        {canComplete &&
+          !done &&
+          !session.skipped &&
+          session.onDate <= today &&
+          session.sport !== "strength" && <UploadDialog riderId={session.riderId} quiet />}
+        {!done && <TodayChangeActions session={session} />}
       </div>
     </article>
   );

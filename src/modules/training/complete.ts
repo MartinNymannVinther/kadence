@@ -85,9 +85,10 @@ export async function completeSession(
       sport: session.sport as (typeof SPORTS)[number],
       title: session.title,
     });
+    // Done after all: a skipped session is planned again (docs/adr/0117).
     await tx
       .update(plannedSessions)
-      .set({ activityId: activity.id })
+      .set({ activityId: activity.id, skippedAt: null, skipReason: null })
       .where(eq(plannedSessions.id, sessionId));
     return activity;
   });

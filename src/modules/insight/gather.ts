@@ -121,6 +121,8 @@ export async function gather(
         inArray(plannedSessions.riderId, ids),
         gte(plannedSessions.onDate, range.from),
         lte(plannedSessions.onDate, sessionsTo),
+        // A skipped session counts in no planned hours (docs/adr/0117).
+        isNull(plannedSessions.skippedAt),
       ),
     );
   const checks = await tx
