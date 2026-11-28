@@ -55,7 +55,11 @@ from outside is data. The plan is `docs/plan-mcp.md`.
   chose. So a ride from Garmin keeps only that it was ridden, and the
   form, built on the rides, is refused to a rider who has any. Garmin's
   terms and the rider's yes can widen this later; until then it is the
-  narrow reading.
+  narrow reading. _Amended 28 November 2026:_ what Kadence itself holds
+  about such a ride goes along — the rider's own rating, feel and note,
+  and the planned session's day and title when it was planned — because
+  none of it came from Garmin. Garmin's numbers, and the day of a ride
+  nobody planned, stay until Garmin allows them in writing.
 - **Only riders in the first wave.** A coach's tools come with the second
   wave (docs/plan-mcp.md §8); until then a coach without a rider row of
   their own is told so on the consent page.
