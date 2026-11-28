@@ -62,6 +62,7 @@ export async function resolveFlag(
       paradigm,
       lowIntensityFirst ? await readIntensity(tx, [rider.id], window.from, window.to) : null,
       await isClubWorkspace(tx, ctx.orgId),
+      data.painChanges,
     );
     const firing = insight.flags.filter((f) => f.kind === input.kind);
     if (firing.length === 0) throw new Refused("notFound", "flagGone");

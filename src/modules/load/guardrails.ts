@@ -36,6 +36,7 @@ export const TRAINING_KINDS = [
   "strength_spacing",
   "compliance",
   "mid_zone",
+  "changed_for_pain",
 ] as const;
 /** Kinds computed from the check-ins: health data, read with the 'wellbeing' scope (drizzle/0013). */
 export const WELLBEING_KINDS = [

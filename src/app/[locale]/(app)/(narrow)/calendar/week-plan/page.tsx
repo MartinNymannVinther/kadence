@@ -17,6 +17,7 @@ import { getRiders } from "@/modules/team/riders";
 import { workspaceKind } from "@/modules/team/workspace-kind";
 import { blockPlanItem } from "@/modules/training/block-items";
 import { listBlocks } from "@/modules/training/blocks";
+import { patternsFor } from "@/modules/training/session-changes";
 import { listTemplates } from "@/modules/training/templates";
 import { weekFrom } from "@/modules/training/week";
 import { TEAM_SCOPE } from "@/modules/training/week-draft-merge";
@@ -92,10 +93,15 @@ export default async function WeekPlanPage({
 
   const season = seasonStartYear(monday);
   const scope = rider?.id ?? TEAM_SCOPE;
-  const [templates, blocks, shared] = await Promise.all([
+  const [templates, blocks, shared, patterns] = await Promise.all([
     listTemplates(ctx),
     listBlocks(ctx),
     getWeekPlanDraft(ctx, { monday, scope }),
+    patternsFor(
+      ctx,
+      riders.map((r) => r.id),
+      today,
+    ),
   ]);
 
   return (
@@ -121,6 +127,7 @@ export default async function WeekPlanPage({
           id: r.id,
           name: r.name,
           basis: riderClass(r, season).basis,
+          patterns: patterns[r.id],
         }))}
         templates={templates.map((tpl) => ({
           id: tpl.id,

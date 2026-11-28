@@ -18,6 +18,7 @@ import { ItemSheet } from "./item-sheet";
 import { moveItem, type Move } from "./move";
 import { PlanDays } from "./plan-days";
 import { RiderChoice } from "./rider-choice";
+import { RiderPatterns } from "./rider-patterns";
 import { SaveAsBlock } from "./save-as-block";
 import { StartFrom, type StartMode } from "./start-from";
 import { itemTitle, type PlanBlock, type PlanItem, type PlanRider } from "./types";
@@ -151,6 +152,7 @@ export function WeekPlanner({
             selected={riderIds}
             onChange={(ids) => change({ riderIds: ids })}
           />
+          <RiderPatterns riders={riders} selected={riderIds} />
         </section>
       )}
 

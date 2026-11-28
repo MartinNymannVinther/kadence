@@ -79,6 +79,7 @@ export async function getInsights(
         paradigm,
         intensity && forRider(intensity, rider.id),
         club,
+        data.painChanges.filter((c) => c.riderId === rider.id),
       );
     });
     return insights.sort(

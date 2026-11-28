@@ -205,6 +205,7 @@ export {
   type MidZoneInput,
 } from "./intensity-flag";
 export { LASTING_PAIN_WEEKS, lastingPainFlag, type LastingPainCheckin } from "./known-pain-flag";
+export { PAIN_CHANGES_IN_WEEK, painChangesFlag, type PainChange } from "./pain-change-flag";
 export {
   MATERIAL_STEP,
   splitResolved,

@@ -1,3 +1,4 @@
+import { patternsFor } from "@/modules/training/session-changes";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { Pool } from "pg";
 import {
@@ -141,15 +142,26 @@ describe("a demo workspace", () => {
       `select kind, reason from session_changes where org_id = $1 order by kind`,
       [orgId],
     );
-    expect(rows).toEqual([
-      { kind: "moved", reason: "school" },
-      { kind: "skipped", reason: "ill" },
-    ]);
+    expect(rows).toContainEqual({ kind: "moved", reason: "school" });
+    expect(rows).toContainEqual({ kind: "skipped", reason: "ill" });
     const skipped = await admin.query(
       `select count(*)::int as n from planned_sessions where org_id = $1 and skip_reason = 'ill'`,
       [orgId],
     );
     expect(skipped.rows[0].n).toBe(1);
+  });
+
+  it("shows a rider whose sessions on one weekday were skipped for school (ADR 0119)", async () => {
+    const coach = { orgId, userId };
+    const riders = await getRiders(coach);
+    const patterns = await patternsFor(
+      coach,
+      riders.map((r) => r.id),
+      todayInCopenhagen(),
+    );
+    expect(Object.values(patterns).flat()).toContainEqual(
+      expect.objectContaining({ key: "weekday", reason: "school" }),
+    );
   });
 
   it("proposes thresholds from a rider's rides that sit near her own (ADR 0094)", async () => {

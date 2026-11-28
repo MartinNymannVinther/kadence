@@ -64,6 +64,7 @@ describe("the race-week rules in the prompts", () => {
       events: [],
       recentWeeks: [],
       flags: [],
+      patterns: [],
       templates: [],
     };
     expect(text(weekDraftPrompt(base, "da"))).toContain(raceWeekRules("youth", "da"));
